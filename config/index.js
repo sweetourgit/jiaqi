@@ -6,14 +6,29 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+/*      '/api': {
+        target: "http://api.dayuntong.com", // 开发环境
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': 'api'
+        },
+        '/api/h3bpm': {
+          target: "http://49.4.28.5:3019/h3wf", // 开发环境
+          changeOrigin: true,
+          pathRewrite: {
+            '^/h3bpm': 'h3bpm'
+          }
+        }
+      },*/
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST  有改动，变成局域网内均可访问的ip
+    // host: '192.168.1.234', // can be overwritten by process.env.HOST  有改动，变成局域网内均可访问的ip
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,
     errorOverlay: true,

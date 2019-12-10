@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative" id="uploadStyle">
     <!--申请预付款-->
-    <el-dialog title="发票" :visible="dialogFormVisible" width=80% @close="closeAdd">
+    <el-dialog title="发票" :visible="dialogFormVisible3" width=80% @close="closeAdd">
       <div class="approval">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
           <el-row>
@@ -86,7 +86,7 @@ export default {
   name: "invoice",
   components: {},
   props: {
-    dialogFormVisible: false,
+    dialogFormVisible3: false,
     info: '',
   },
   data() {
@@ -120,9 +120,11 @@ export default {
     }
   },
   watch: {
-    info: {
+    dialogFormVisible3: {
       handler:function(){
-        this.loadData()
+        if(this.dialogFormVisible3){
+          this.loadData()
+        }
       }
     }
   },
@@ -140,6 +142,16 @@ export default {
       }
     },
     closeAdd() {
+      this.ruleForm = {
+        title: '',
+        number: '',
+        phone: '',
+        address: '',
+        bank: '',
+        voucher: '',
+      };
+      this.totalMoney = 0;
+      this.fileList = [];
       this.$emit('close', false);
     },
     submitForm(ruleForm) {
@@ -287,7 +299,7 @@ export default {
         }
       });
 //      alert(total);
-      this.totalMoney = total;
+      this.totalMoney = total.toFixed(2);
     }
   },
   created() {},

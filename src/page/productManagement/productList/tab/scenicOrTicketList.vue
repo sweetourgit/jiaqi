@@ -45,7 +45,7 @@
             <el-table-column prop="product_name" label="产品名称" width="220" align="center"></el-table-column>
             <el-table-column prop="dest_name" label="目的地" align="center">
               <template slot-scope="scope">
-                  <span v-for="item in scope.row.destinations" style="margin-right: 10px">{{ item.destination_name }}</span>
+                  <span v-for="(item,index) in scope.row.destinations" :key="index" style="margin-right: 10px">{{ item.destination_name }}</span>
               </template>
             </el-table-column>
             <!--<el-table-column prop="accpter" label="价格" width="120" align="center"></el-table-column>-->
@@ -138,7 +138,7 @@
       },
       querySearch(queryString2, cb) {
         this.destinationList = [];
-        this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+        this.$http.post(this.GLOBAL.serverSrcZb + '/universal/area/api/fuzzy', {
           "object": {
             areaName: queryString2
           }
@@ -282,7 +282,7 @@
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
               console.log(item.create_uid);
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
                 headers: {
@@ -308,7 +308,7 @@
       },
       loadOper(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
           "object": {
             "id": 0,
             "createTime": '2019-08-23T03:03:10.386Z',
@@ -403,7 +403,7 @@
     width: 300px;
   }
   #scenicOrTicketList .table_style{
-    width: 1500px;
+    width: 90%;
     margin-left: 20px;
     margin-top: 20px;
     float: left;

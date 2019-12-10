@@ -1,5 +1,5 @@
 <template>
-  <div id="app" >
+  <div id="app">
     <el-header class="page-header"><page-header v-if="$route.meta.keepAlive"></page-header></el-header>
     <el-container class="container">
        <el-aside class="navigation" v-if="$route.meta.keepAlive"><nav-left></nav-left></el-aside>
@@ -22,7 +22,7 @@ export default {
   components: {
     pageHeader,
     navLeft
-    },
+  }
 }
 </script>
 
@@ -71,7 +71,7 @@ html{
 .el-message-box.delete_country .delete_country_determine1{margin: 20px 20px 20px 0; width: 80px;}
 .city_list .el-dialog__header{background: #F6F6F6; height: 29px;padding-top: 16px} /* 弹框样式 */
 .city_list .el-dialog__title{ float: left; }
-.el-upload-list__item{width:30% !important;float:left;margin-left: 10px}
+.el-upload-list__item{display: inline;width: auto !important;float:left;margin-left: 10px}
 .el-menu-vertical-demo .el-menu-item.is-active{background: #3095FA !important;} /* 导航选中 */
 body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定 */
 /*模糊查询下拉框样式*/

@@ -1,17 +1,18 @@
 <template>
   <div class="vivo" style="position:relative" id="tradeDetail">
-    <el-dialog :visible="dialogFormVisible1" @close="closeAdd" style="width: 100%">
-      <div class="buttonDv" style="float: right;margin-right: 3%;">
+    <el-dialog title="详情" :visible="dialogFormVisible1" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
+      <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>
         <el-button type="primary" @click="editBtn">修改</el-button>
       </div>
-      <p class="stepTitle">基本信息</p>
+      <!--<p class="stepTitle">基本信息</p>-->
+      <el-divider content-position="left">基本信息</el-divider>
       <el-button type="info" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 1">待认收款</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.status_rece == 2">已认完</el-button>
       <div class="stepDv">
         <p class="inputLabel"><span>ID：</span>{{baseInfo.ID}}</p>
-        <p class="inputLabel"><span>申请人：</span>{{applicant}}</p>
+        <p class="inputLabel"><span>申请人：</span>{{orgName}}--{{applicant}}</p>
         <p class="inputLabel"><span>创建时间：</span>{{baseInfo.creatTime}}</p>
         <p class="inputLabel"><span>收款明细说明：</span>{{baseInfo.mark}}</p>
         <p class="inputLabel"><span>收款账户：</span>{{baseInfo.payAccount}}</p>
@@ -19,23 +20,26 @@
         <p class="inputLabel"><span>收款时间：</span>{{baseInfo.creditTime}}</p>
         <p class="inputLabel"><span>款项入账时间：</span>{{baseInfo.startTime}}--{{baseInfo.endTime}}</p>
         <p class="inputLabel"><span>待认收款：</span>{{baseInfo.toCollection}}</p>
-        <p class="inputLabel">
-          <span>附件：</span>
-          <el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">
-            <el-button size="small" type="primary" :disabled="disabled">点击上传</el-button>
-          </el-upload>
-        </p>
+        <div class="inputLabel">
+          <span style="vertical-align: top;">附件：</span>
+          <ul style="display: inline-block;width: 70%;list-style: none;padding: 0;margin: 0;">
+            <li v-for="item in fileList" :key="item.index">
+              <a :href="item.url" target="_blank">{{item.name}}</a>
+            </li>
+          </ul>
+        </div>
         <p class="inputLabel"><span>分销商：</span>{{baseInfo.distributor}}</p>
       </div>
-      <p class="stepTitle" v-if="showSK">收款明细</p>
+      <!--<p class="stepTitle" v-if="showSK">收款明细</p>-->
+      <el-divider content-position="left" v-if="showSK">收款明细</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showSK">
         <div class="lineTitle"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收款入账时间段：{{startTime}}--{{endTime}}</div>
-        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+        <el-table ref="singleTable" :data="tableDataSK" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
           <el-table-column prop="rece_at" label="入账时间" align="center">
           </el-table-column>
           <el-table-column prop="order_sn" label="订单编号" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.import_status == 3">{{scope.row.order_sn}}</span>
+              <span>{{scope.row.plat_order_sn}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="guest_name" label="客人名称" align="center">
@@ -65,9 +69,10 @@
           </el-table-column>
         </el-table>
       </div>
-      <p class="stepTitle" v-if="showXQ">订单详情</p>
+      <!--<p class="stepTitle" v-if="showXQ">订单详情</p>-->
+      <el-divider content-position="left" v-if="showXQ">订单详情</el-divider>
       <div class="stepDv" style="margin-bottom: 50px;" v-if="showXQ">
-        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" height="700">
+        <el-table ref="singleTable" :data="tableDataXQ" border style="width: 96%;margin: 0 auto;" :header-cell-style="getRowClass" maxHeight="700">
           <el-table-column prop="order_sn" label="订单ID" align="center" >
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
@@ -108,7 +113,7 @@
           <el-table-column prop="tour_no" label="关联产品" align="center">
             <template slot-scope="scope">
               <p v-if="scope.row.tour_no == ''">未关联产品</p>
-              <p v-else>产品名称：{{scope.row.product_name_por}}<br>团期计划：{{scope.row.tour_no}}</p>
+              <p v-else>产品名称：{{scope.row.relate_pro_name}}<br>团期计划：{{scope.row.tour_no}}</p>
             </template>
           </el-table-column>
           <el-table-column prop="create_uid" label="操作人" align="center" width="100">
@@ -155,8 +160,11 @@
             </el-table-column>
             <el-table-column prop="tour_no" label="关联产品" align="center">
               <template slot-scope="scope">
-                <span>产品名称:{{scope.row.pro_product_name}}</span><br>
-                <span>团期计划:{{scope.row.tour_no}}</span>
+                <div v-if="scope.row.tour_no">
+                  <span>产品名称:{{scope.row.pro_product_name}}</span><br>
+                  <span>团期计划:{{scope.row.tour_no}}</span>
+                </div>
+                <div v-else>未关联产品</div>
               </template>
             </el-table-column>
             <el-table-column prop="create_uid" label="操作人" align="center" width="100">
@@ -184,11 +192,9 @@
     },
     data() {
       return {
-        disabled: true,
-
+        // 基础信息
         baseInfo: {
           ID: '',
-//          applicant: '',
           creatTime: '',
           creditTime: '',
           mark: '',
@@ -202,21 +208,22 @@
           approved: '',
           status_rece: ''
         },
-        applicant: '',
-        fileList: [],
-        tableDataSK: [],
-        tableDataXQ: [],
-        totalItem: '',
-        totalMoney: '',
-        startTime: '',
-        endTime: '',
-        tableDataDD: [],
-        dialogFormVisible: false,
+        applicant: '',// 创建人
+        orgName: '',// 所属部门
+        fileList: [],// 附件凭证
+        tableDataSK: [],// 收款明细table
+        tableDataXQ: [],// 订单详情table
+        totalItem: '',// 总条数
+        totalMoney: '',// 总钱数
+        startTime: '',// 开始时间
+        endTime: '',// 结束时间
+        tableDataDD: [],// 绑定订单详情
+        dialogFormVisible: false,// 绑定订单详情 -- 弹框
 
-        showSK: true,
-        showXQ: false,
+        showSK: true,// 显示收款明细
+        showXQ: false,// 显示订单详情
 
-        payList: {
+        payList: { // 卖出支付方式
           '1': '产品自销',
           '2': '授信支付',
           '3': '微信',
@@ -249,7 +256,7 @@
           return ''
         }
       },
-//      关闭弹窗
+      // 关闭弹窗
       closeAdd(){
         this.baseInfo = {
           ID: '',
@@ -275,7 +282,7 @@
         this.tableDataXQ = [];
         this.$emit('close', false);
       },
-//      删除
+      // 删除此收款
       deleteDo(){
         this.$confirm("是否删除该笔收款?", "提示", {
           confirmButtonText: "确定",
@@ -307,10 +314,11 @@
           });
         });
       },
-//
+      // 跳转编辑页面（先关闭详情弹框，再打开编辑弹框）
       editBtn(){
         this.$emit('close', 'success');
       },
+      // 查看绑定订单详情
       detailBtn(row){
         this.dialogFormVisible = true;
         const that = this;
@@ -324,7 +332,7 @@
             response.data.data.sale_at = formatDate(new Date(response.data.data.sale_at*1000));
             response.data.data.check_at = formatDate(new Date(response.data.data.check_at*1000));
             that.tableDataDD.push(response.data.data);
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": that.tableDataDD[0].create_uid
             },{
               headers: {
@@ -348,10 +356,11 @@
           console.log(error);
         });
       },
-//      关闭订单详情
+      // 关闭订单详情
       close(){
         this.dialogFormVisible = false;
       },
+      // 加载数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
@@ -379,7 +388,8 @@
               approved: response.data.data.approved,
               status_rece: response.data.data.status_rece
             };
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            //根据id获取人名
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": response.data.data.create_uid
             },{
               headers: {
@@ -390,14 +400,22 @@
               if (response.data.isSuccess) {
                 that.applicant = response.data.object.name;
               } else {
-                that.$message.success("失败~");
+                that.$message.warning("失败~");
               }
             }).catch(function(error) {
               console.log(error);
             });
 
+            // 获取所属部门
+            that.getOrgName(response.data.data.create_uid).then(res => {
+              that.orgName = res;
+            });
+
             if(response.data.data.file != '' && response.data.data.type == 1){
               that.fileList = response.data.data.file;
+              for(let i = 0; i < that.fileList.length; i++){
+                that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
+              }
               that.tableDataXQ = [];
               that.tableDataSK = response.data.data.list;
               that.totalItem = response.data.data.list.length;
@@ -430,29 +448,58 @@
               that.showSK = true;
               that.showXQ = false;
             }else if(response.data.data.type == 2 && response.data.data.list.length != 0){
+              if(response.data.data.distributor == '票付通余额'){
+                that.fileList = response.data.data.file;
+                for(let i = 0; i < that.fileList.length; i++){
+                  that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
+                }
+              }
               that.tableDataSK = [];
               that.tableDataXQ = response.data.data.list;
+              let userGetList = [];
               that.tableDataXQ.forEach(function (item, index, arr) {
                 item.sale_at = formatDate(new Date(item.sale_at*1000));
                 item.check_at = formatDate(new Date(item.check_at*1000));
                 item.import_at = formatDate(new Date(item.import_at*1000));
-                that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
-                  "id": item.create_uid
-                },{
-                  headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                  }
-                }).then(function(response) {
-                  console.log('名字',response.data.object.name);
-                  if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name;
+
+//                that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
+//                  "id": item.create_uid
+//                },{
+//                  headers: {
+//                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+//                  }
+//                }).then(function(response) {
+//                  console.log('名字',response.data.object.name);
+//                  if (response.data.isSuccess) {
+//                    item.create_uid = response.data.object.name;
+//                  } else {
+//                    that.$message.warning("失败~");
+//                  }
+//                }).catch(function(error) {
+//                  console.log(error);
+//                });
+
+                if(userGetList.length == 0){
+                  const userItem = {
+                    id: item.create_uid,
+                    itemIndex : [index]
+                  };
+                  userGetList.push(userItem);
+                }
+                for(let i = 0; i < userGetList.length; i++){
+                  if (userGetList[i].id === item.create_uid) {
+                    userGetList[i].itemIndex.push(index);
                   } else {
-                    that.$message.warning("失败~");
+                    const userItem = {
+                      id: item.create_uid,
+                      itemIndex : [index]
+                    };
+                    userGetList.push(userItem);
                   }
-                }).catch(function(error) {
-                  console.log(error);
-                });
+                }
               });
+//              console.log(userGetList);
+              that.getUser(userGetList);
               that.totalItem = '';
               that.totalMoney = '';
               that.startTime = '';
@@ -467,7 +514,69 @@
               that.showSK = true;
               that.showXQ = false;
             }
+            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
+              {
+                "id": response.data.data.account_id
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+              }).then(function (obj) {
+//                that.tableDataZH = obj.data.objects;
+              console.log('账户查询',obj);
+              if(obj.data.isSuccess){
+                that.baseInfo.payAccount = obj.data.object.title;
+              }
+            }).catch(function (obj) {
+              console.log(obj)
+            });
           } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+      // 获取用户名称
+      getUser(userGetList){
+        const that = this;
+        userGetList.forEach(function (item, index, arr) {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
+            "id": item.id
+          },{
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+          }).then(function(response) {
+            console.log('名字',response.data.object.name);
+            if (response.data.isSuccess) {
+//              item.create_uid = response.data.object.name;
+              item.itemIndex.forEach(function (item, index, arr) {
+                that.tableDataXQ[item].create_uid = response.data.object.name;
+              })
+            } else {
+              that.$message.warning("失败~");
+            }
+          }).catch(function(error) {
+            console.log(error);
+          });
+        })
+      },
+      // 根据id获取所属部门
+      getOrgName(ID){
+        const that = this;
+        return this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
+          "id": ID
+        },{
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(function(response) {
+//        console.log(ID,'组织名称',response);
+          if (response.data.isSuccess) {
+            return response.data.objects[0].name
+          } else {
+            return '';
             that.$message.success("加载数据失败~");
           }
         }).catch(function(error) {
@@ -526,6 +635,14 @@
       display: inline-block;
       margin: 10px auto;
     }
+  }
+  #tradeDetail .buttonDv{
+    position: absolute;
+    top: 8px;
+    right: 3%;
+  }
+  #tradeDetail .el-divider__text, #tradeAdd .el-link{
+    font-size: 16px;
   }
   #tradeDetail .el-upload-list__item{
     margin-top: 10px !important;

@@ -1,221 +1,116 @@
 <template>
-  <div class="loanBorder">
-        <div class="plan">
-          <!-- <div class="fl">
-            <span class="emptyPlan">团期计划</span>
-            <el-input v-model="empty_01" class="empty" clearable placeholder="请输入团期计划"></el-input>
-          </div>
-          <div class="fl">
-            <span class="emptyPlan">申请人</span>
-            <el-input v-model="people_01" class="empty" clearable placeholder="请输入申请人"></el-input>
-          </div> -->
-          <div class="fl">
-            <span class="emptyPlan">发起时间</span>
-            <el-date-picker v-model="planTime_01" type="date" class="planTime" placeholder="开始天数"></el-date-picker>
-            <span class="time">——</span>
-            <el-date-picker v-model="planData_01" type="date" class="planTime" placeholder="结束天数"></el-date-picker>
-          </div>
-        </div>
-        <div class="primary">
-          <el-button type="primary">搜索</el-button>
-          <el-button @click="emptyButton_01()" type="primary">重置</el-button>
-        </div>
-        <div style="width:1130px;">
-          <el-table :data="tableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border @row-click="clickBanle">
-            <el-table-column prop="paymentID" label="借款单号" width="100" align="center"></el-table-column>
-            <el-table-column prop="createTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
-            <el-table-column prop="groupCode" label="团期计划" width="219" align="center"></el-table-column>
-            <el-table-column prop="supplierName" label="供应商名称" width="150" align="center"></el-table-column>
-            <el-table-column prop="supplierTypeEX" label="类型" width="80" align="center"></el-table-column>
-            <el-table-column prop="price" label="借款金额" width="120" align="center"></el-table-column>
-            <el-table-column prop="createUser" label="申请人" width="100" align="center"></el-table-column>
-            <el-table-column label="审批" width="150" align="center">
-              <template slot-scope="scope">
-                <el-button @click="checkIncome(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <!--分页-->
-          <!-- <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination> -->
-        </div>
-        <!-- <el-dialog title="详情" :visible.sync="detailstShow" width="80%" custom-class="city_list" :show-close='false'>
-          <div style="position:absolute; top:8px; right:10px;">
-            <el-button @click="closeDetailstShow()">取消</el-button>
-            <el-button @click="through()" type="danger" plain>通过</el-button>
-            <el-button @click="rejected()" type="danger" plain>驳回</el-button>
-          </div>
-          <div class="loanManagement">
-               <div style="margin:10px 0 0 25px; font-size:14pt;">基本信息</div>
-               <table class="basictable">
-                 <tr>
-                  <td>
-                     <div>
-                       <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
-                       <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
-                       <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500" >通过</div>
-                     </div>
-                  </td>
-                 </tr>
-                 <tr>
-                   <td class="basictd">
-                     <span class="basicspan_01">ID:</span>
-                     <span class="basicspan_02">{{fundamental.id}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">申请人:</span>
-                     <span class="basicspan_02">{{fundamental.createUser}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">创建时间:</span>
-                     <span class="basicspan_02">{{fundamental.createTime}}</span>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td class="basictd">
-                     <span class="basicspan_01">团期计划:</span>
-                     <span class="basicspan_02">{{fundamental.groupCode}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">产品名称:</span>
-                     <span class="basicspan_02">{{fundamental.plan_01}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">供应商:</span>
-                     <span class="basicspan_02">{{fundamental.supplierName}}</span>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td class="basictd">
-                     <span class="basicspan_01">借款类型:</span>
-                     <span class="basicspan_02">{{fundamental.paymentType}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">借款金额:</span>
-                     <span class="basicspan_02">{{fundamental.price}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">摘要:</span>
-                     <span class="basicspan_02">{{fundamental.mark}}</span>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td class="basictd">
-                     <span class="basicspan_01">账号:</span>
-                     <span class="basicspan_02">{{fundamental.cardNumber}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">开户行:</span>
-                     <span class="basicspan_02">{{fundamental.bankName}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">开户名:</span>
-                     <span class="basicspan_02">{{fundamental.cardName}}</span>
-                   </td>
-                 </tr>
-                 <tr>
-                   <td class="basictd">
-                     <span class="basicspan_01">附件:</span>
-                     <span class="basicspan_02">{{fundamental.files}}</span>
-                   </td>
-                   <td class="basictd">
-                     <span class="basicspan_01">支付账户:</span>
-                     <span class="basicspan_02"></span>
-                   </td>
-                 </tr>
-               </table>
-               <div style="margin:20px 0 0 25px; font-size:14pt;">审核结果</div>
-               <el-table :data="tableCourse" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-                 <el-table-column prop="ActivityName" label="审批人" align="center"></el-table-column>
-                 <el-table-column prop="ApprovalName" label="审批结果" align="center"></el-table-column>
-                 <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
-                 <el-table-column prop="UsedTime" label="审批时间" align="center"></el-table-column>
-               </el-table>
-               <div style="margin:20px 0 0 25px; font-size:14pt;">相关信息</div>
-
-               <el-table :data="tableMoney" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-                 <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
-                 <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
-                 <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
-                 <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
-                 <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
-                 <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
-                 <el-table-column prop="supTotal" label="供应商欠款总额" align="center"></el-table-column>
-              </el-table>
-              <div style="margin:0 0 0 25px;">无收入借款明细</div>
-                <el-table :data="tableIncome" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-                   <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-                   <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
-                   <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
-                   <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-                   <el-table-column prop="price" label="金额" align="center"></el-table-column>
-                   <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
-                   <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-                   <el-table-column prop="process" label="审批过程" align="center">
-                    <template slot-scope="scope">
-                      <div @click="processIncome(scope.row)">查看</div>
-                    </template>
-                   </el-table-column>
-                </el-table>
-                <div style="margin:0 0 0 25px;">预付款明细</div>
-                <el-table :data="tablePayment" border style="width: 95%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-                   <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
-                   <el-table-column prop="checkType" label="审批状态" align="center"></el-table-column>
-                   <el-table-column prop="paymentType" label="借款类型" align="center"></el-table-column>
-                   <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-                   <el-table-column prop="price" label="金额" align="center"></el-table-column>
-                   <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
-                   <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-                   <el-table-column prop="process" label="审批过程" align="center">
-                    <template slot-scope="scope">
-                  <div @click="processIncome(scope.row)">查看</div>
-                </template>
-                   </el-table-column>
-                </el-table>
-                <div style="margin:0 0 0 25px;">收入明细</div>
-                <el-table :data="tableEarning" border style="width: 90%; margin:30px 0 20px 25px;":header-cell-style="getRowClass">
-                   <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-                   <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
-                   <el-table-column prop="contactName" label="订单联系人" align="center"></el-table-column>
-                   <el-table-column prop="number" label="人数" align="center"></el-table-column>
-                   <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-                   <el-table-column prop="paid" label="已收金额" align="center"></el-table-column>
-                    <el-table-column prop="Number(payable)-Number(paid)" label="欠款金额" align="center"></el-table-column>
-                   <el-table-column label="欠款金额" align="center">
-                    <template slot-scope="scope">{{scope.row.payable-scope.row.paid}}</template>
-                   </el-table-column>
-                   <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
-                   <el-table-column prop="shouldAlso" label="应还日期" align="center"></el-table-column>
-                </el-table>
-                
-               </el-form>
-          </div>
-        </el-dialog> -->
-        <el-dialog title="借款申请详情" :visible.sync="detailstShow" width="1100px" custom-class="city_list" :show-close='false'>
-          <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
-            <div style="position:absolute; top:8px; right:10px;">
-              <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
-              <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button> -->
-              <el-button @click="closeDetailstShow()">取消</el-button>
-              <el-button @click="through()" type="danger" plain>通过</el-button>
-              <el-button @click="rejected()" type="danger" plain>驳回</el-button>
-            </div>
-          <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
-        </el-dialog>
-
-        <!--通过、驳回弹框-->
-        <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
-          <div class="transit" @click="closeTransit()">×</div>
-          <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
-          <div style="float:right; margin:0 0 30px 0;">
-            <el-button @click="closeTransit()">取消</el-button>
-            <el-button @click="confirm()" type="primary">确定</el-button>
-          </div>
-        </el-dialog>
+  <div class="distributor-content">
+    <!-- 检索 -->
+    <div class="plan">
+      <el-row type="flex" class="row-bg">
+        <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="80px" id="form-content" style="margin-top: 20px">
+          <el-row type="flex" class="row-bg">
+            <!--<el-col :span="8">
+              <el-form-item label="团期计划:" prop="empty_01">
+                <el-input v-model="ruleFormSeach.empty_01" placeholder="请输入团期计划"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="借款人:" prop="people_01">
+                <el-input v-model="ruleFormSeach.people_01" placeholder="请输入借款人"></el-input>
+              </el-form-item>
+            </el-col>-->
+            <el-col :span="15">
+              <el-form-item label="申请时间:">
+                <el-col :span="11">
+                  <el-form-item prop="planTime_01">
+                    <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleFormSeach.planTime_01" style="width: 100%;"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col style="text-align: center" :span="2">-</el-col>
+                <el-col :span="11">
+                  <el-form-item prop="planData_01">
+                    <el-date-picker type="date" placeholder="选择结束日期" v-model="ruleFormSeach.planData_01" style="width: 100%;"></el-date-picker>
+                  </el-form-item>
+                </el-col>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" style="text-align: right">
+              <el-form-item>
+                <el-button @click="planSelect()" type="primary">搜索</el-button>
+                <el-button @click="emptyButton_01('ruleFormSeach')" type="primary">重置</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-row>
+    </div>
+    <!-- 检索 END -->
+    <!-- 需要审批表格 -->
+    <el-table :data="tableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border @row-click="clickBanle" id="table-content">
+      <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
+      <el-table-column prop="createTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+      <el-table-column prop="supplierName" label="供应商名称" align="center"></el-table-column>
+      <el-table-column prop="supplierTypeEX" label="类型" align="center"></el-table-column>
+      <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
+      <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+      <el-table-column label="审批" width="150" align="center">
+        <template slot-scope="scope">
+          <el-button @click="checkIncome(scope.$index, scope.row)" type="text" size="small" class="table_details">详情</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 需要审批表格 END-->
+    <!-- 借款申请详情 -->
+    <el-dialog title="借款申请详情" :visible.sync="detailstShow" width="1100px" custom-class="city_list" :show-close='false'>
+      <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
+      <div style="position:absolute; top:8px; right:10px;">
+        <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
+        <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button> -->
+        <el-button @click="closeDetailstShow()">取消</el-button>
+        <el-button
+          @click="through()"
+          type="danger"
+          plain
+          :disabled="ifPassClick"
+          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
+        >
+          通过
+        </el-button>
+        <el-button @click="through()" type="danger" plain v-else>通过</el-button>
+        <el-button @click="rejected()" type="danger" plain>驳回</el-button>
+        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || (ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)">支付账户</el-button>
       </div>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
+    </el-dialog>
+    <!-- 借款申请详情 END -->
+    <!-- 通过、驳回弹框 -->
+    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close='false'>
+      <div class="transit" @click="closeTransit()">×</div>
+      <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
+      <el-row type="flex" class="row-bg">
+        <el-col :span="8" :offset="18">
+          <el-button @click="closeTransit()">取消</el-button>
+          <el-button @click="confirm()" type="primary">确定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <!-- 通过、驳回弹框 END -->
+    <!-- 付款账户弹窗 -->
+    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
+      <div class="close" @click="closeAccount()">×</div>
+      <el-table :data="tableSelect" border :header-cell-style="getRowClass">
+        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="addAccount(scope.$index, scope.row)" class="table_details">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <!-- 付款账户弹窗 END -->
+  </div>
 </template>
-
-
-
 
 <script>
 import checkLoanManagement from './checkLoanManagement/checkLoanManagement'
@@ -225,394 +120,478 @@ import moment from 'moment'
   components: {
     checkLoanManagement,
   },
-    data(){
-      return {
-        paymentID:0,
-        groupCode:'',
-        //表头切换
-        empty_01:'',
-        people_01:'',
+  props:{
+    refreshAprove:{
+      type: Number,
+      default: 0
+    }
+  },
+  data(){
+    return {
+      ifDY100009: false,
+      ifDY100042: false,
+      ifClick: false, // 如果点击选择账户之后这个按钮会禁止点击
+      ifPassClick: true, // 点击选择账户之后才可以点击通过
+      getCheckTypeEX: null, // 审批状态
+      getIsEBS: null, // 与审批状态一起判断 付款账户
+      acoutInfo: null,
+      tableSelect:[], // 选择弹窗表格
+      SelectAccount:false, // 选择账户弹窗
+      ruleFormSeach: {
+        empty_01: '',
+        people_01: '',
         planTime_01:'',
-        planData_01:'',
-        //借款表格
-        tableData:[],
-        //分页
-        currentPage: 1,
-        total:0,
-        pagesize:10,
-        detailstShow:false,//查看详情弹窗
-        fundamental:{},//查看详情基本信息数组
-        //无收入借款金额表格
-          tableMoney:[],
-          //无收入借款弹窗预付款明细表格
-          tablePayment:[],
-          //无收入借款弹窗中预付款明细查看弹窗
-          dialogFormVisible_paymenrt:false,
-          tableApprove:[{
-            times:' 2019-1-14 19:00:00',
-            people:'洋洋',
-            result:'通过',
-            opinion:'不同意'
-          }],
-          ////无收入借款弹窗中无收入借款明细弹窗
-          tableIncome:[],
-          //无收入借款弹窗中预付款明细查看弹窗
-          dialogFormVisible_Income:false,
-          tableIncomeCheck:[{
-            times:' 2019-1-14 19:00:00',
-            people:'洋洋1',
-            result:'通过',
-            opinion:'不同意'
-          }],
-          //无收入借款弹窗中收入明细表格
-          tableEarning:[],
-          //查看无收入借款弹窗
-          checkIncomeShow:false,
-          //查看无收入借款审批过程
-           tableCourse:[],
-           tour_id:0,
-           multipleSelection: [],
-           pid:'',
-           arr1:[],
-           guid:'',
-           transitShow:false,//通过驳回弹窗
-           title:"",
-           commentText:'',
+        planData_01:'', //借款表格
+      },
+      paymentID:0,
+      groupCode:'', //表头切换
+      empty_01:'',
+      people_01:'',
+      tableData:[], // 需要审批表格数据
+      currentPage: 1,
+      total:0,
+      pagesize:10,
+      detailstShow:false,// 查看详情弹窗
+      fundamental:{}, // 查看详情基本信息数组
+      tableMoney:[], // 无收入借款金额表格
+      tablePayment:[], // 无收入借款弹窗预付款明细表格
+      dialogFormVisible_paymenrt:false, // 无收入借款弹窗中预付款明细查看弹窗
+      tableIncome:[], //无收入借款弹窗中无收入借款明细弹窗
+      dialogFormVisible_Income:false, // 无收入借款弹窗中预付款明细查看弹窗
+      tableEarning:[], // 无收入借款弹窗中收入明细表格
+      checkIncomeShow:false, // 查看无收入借款弹窗
+      tableCourse:[], // 查看无收入借款审批过程
+      tour_id:0,
+      multipleSelection: [],
+      pid:'',
+      arr1:[],
+      arr2:[],
+      guid:'',
+      creatUserOrgID: null, // 用来判断付款账户是否显示
+      transitShow:false, // 通过驳回弹窗
+      title:"",
+      commentText:'',
+      presentRouter: null, // 当前路由
+      getWorkItemId: null, // 保存匹配的guid
+    }
+  },
+  created(){
+    if(sessionStorage.getItem('userCode') == 'DY100009') {
+      this.ifDY100009 = true
+    }else {
+      this.ifDY100009 = false
+    }
+    if(sessionStorage.getItem('userCode') == 'DY100042') {
+      this.ifDY100042 = true
+    } else {
+      this.ifDY100042 = false
+    }
+    this.presentRouter = this.$route.name
+    this.pageList();
+  },
+  computed: {
+    countTest:function () {
+      return this.$store.state.advinceData
+    }
+  },
+  watch:{
+    countTest:function(newV, oldV){
+      let _this = this
+      if(newV != oldV) {
+        setTimeout(function () {
+          _this.pageList()
+        },500)
       }
     },
-    methods: {
+    refreshAprove:function(newV, oldV){
+      let _this = this
+      if(newV != oldV){
+        setTimeout(function () {
+          _this.pageList()
+        },500)
+      }
+    },
+    deep:true
+  },
+  methods: {
+      // 关闭选择账户弹窗
+      closeAccount(){
+      this.SelectAccount = false;
+      },
+      // 选择账户弹窗，选择对应的选项事件
+      addAccount(index, row){
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
+        "paymentID": this.paymentID,
+        "accountID": row.id
+      }).then(function (obj) {
+        if(obj.data.isSuccess == true) {
+          that.ifClick = true
+          that.ifPassClick = false
+        }
+        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+        // that.getList()
+      }).catch(function (obj) {})
+      this.SelectAccount = false
+      },
+      // 选择账户弹窗
+      bankAccount(){
+      this.SelectAccount = true;
+      this.selectList();
+      },
+      // 选择账户表格查询
+      selectList(){
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
+        "object": {
+          "isDeleted": 0
+        }
+      }).then(function (obj) {
+        that.tableSelect = obj.data.objects
+      }).catch(function (obj) {})
+      },
       // 起始时间格式转换
       dateFormat: function(row, column) {
-        let date = row[column.property];
-        if(date == undefined) {
-          return '';
-        }
-        return moment(date).format('YYYY-MM-DD')
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
       },
-      //重置
-      emptyButton_01(){
-        this.empty_01 = '';
-        this.people_01 = '';
-        this.planTime_01 = '';
-        this.planData_01 = '';
-      }, 
+      // 重置
+      emptyButton_01(formName){
+      this.$refs[formName].resetFields();
+      },
       getRowClass({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
-          return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
-        } else {
-          return ''
-        }
+      if (rowIndex == 0) {
+        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
+      } else {
+        return ''
+      }
       },
-      //分页
-      handleSizeChange(page) {
-        this.currentPage = 1;
-        this.pagesize = page;
-        this.pageList();
-      },
-      handleCurrentChange(currentPage) {
-        this.currentPage = currentPage;
-        this.pageList();
-      },
-      
-      //启动工作流
-      sendBPM(result) {
-        this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/StartUpWorkFlowForJQ', {
-          jQ_ID: result.guid,
-          jQ_Type: result.flowModel,
-          workflowCode: result.flowModelName,
-          userCode: sessionStorage.getItem('account'), //未指定呢
-        }).then(res => {
-          let result = JSON.parse(res.data);
-          if (result.code == '0') {
-            console.log('启动工作流成功');
-          } else {
-            console.log('启动工作流错误!');
-            console.log(res.data);
-          }
-        }).catch(err => {
-          console.log(err);
-        })
-      },
-      //请求工作流接口获取未完成的任务
-      pageList(){
-        var that = this
-        var arr = []
-        //workflowCode获取FlowModel传递
-        this.$http.post('http://test.dayuntong.com/universal/supplier/api/dictionaryget?enumname=FlowModel')
+      // 检索
+      planSelect(){
+      let getJqId = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
-          console.log(obj)
-          this.$http.post(this.GLOBAL.jqUrl + "/api/JQ/GettingUnfinishedTasksForJQ",{
-                //"userCode": sessionStorage.getItem('userCode'),
-                "userCode": sessionStorage.getItem('userCode'),
-                "startTime": this.startTime?this.startTime:"1970-07-23T01:30:54.452Z",
-                "endTime": this.endTime?this.endTime:new Date(),
-                "startIndex": this.currentPage,  //页码
-                "endIndex": this.pagesize ,  //每页条数
-                "workflowCode": obj.data.objects[0].name
-              }
-          )
-          .then(obj => {
+          let getWorkflowCode
+          if(this.presentRouter == '无收入借款管理') {
+            getWorkflowCode = 'loan_noIncome4'
+          } else if(this.presentRouter == '预付款管理') {
+            getWorkflowCode = 'borrow_Moneys4'
+          }else {}
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
+            "userCode": sessionStorage.getItem('tel'),
+            "startTime": this.ruleFormSeach.planTime_01 ? moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : '',
+            "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : '',
+            "startIndex": -1,
+            "endIndex": -1,
+            // "workflowCode": obj.data.objects[0].name
+            "workflowCode": getWorkflowCode
+          }).then(res => {
+            let keepRes = res.data
+            keepRes.forEach(function (item) {
+              getJqId.push(item.jq_ID)
+            })
+            this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', { // 通过GUID查找无收入/预付款列表
+              "guid": getJqId
+            }).then(obj =>{
+              this.tableData = obj.data.objects;
+            })
+          }).catch(err => {
+            console.log(err);
+          })
+        }).catch(err => {
+          console.log(err)
+      })
+      },
+      // 请求工作流接口获取未完成的任务
+      pageList(){
+      console.log('请求工作流接口获取未完成的任务')
+      var that = this
+      var arr = []
+      that.tableData  = []
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+        .then(obj => {
+          let getWorkflowCode
+          if(this.presentRouter == '无收入借款管理') {
+            getWorkflowCode = 'loan_noIncome4'
+          } else if(this.presentRouter == '预付款管理') {
+            getWorkflowCode = 'borrow_Moneys4'
+          }else {}
+          this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
+              //"userCode": sessionStorage.getItem('userCode'),
+              "userCode": sessionStorage.getItem('tel'),
+              "startTime": this.ruleFormSeach.planTime_01 ?  moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
+              "endTime": this.ruleFormSeach.planData_01 ? moment(this.ruleFormSeach.planData_01).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+              "startIndex": -1,  // 页码
+              "endIndex": -1 ,  // 每页条数
+              "workflowCode": getWorkflowCode
+            }).then(obj => {
              obj.data.forEach(v=>{
-              arr.push(v.jq_ID)
+               arr.push(v.jq_ID)
               that.arr1.push(v.workItemID)
+              that.arr2.push(v)
              })
-             this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid',
-              {
+             this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', { // 通过GUID查找无收入/预付款列表
                 "guid": arr
               }).then(obj =>{
-                console.log(obj)
                 that.total = obj.data.total;
                 that.tableData = obj.data.objects;
+                that.$emit('headCallBack',that.tableData.length)
               })
-          // .then(obj =>{
-          //   this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ',
-          //     {
-          //       "jQ_ID": "974fdbc7-2f1d-4e9c-8bf1-e910e3d4ac01",
-          //       "jQ_Type":1
-          //     }).then(obj =>{
-          //       that.tableCourse = obj.data.objects;
-          //     })
-          // })
-             console.log(arr)
           })
         })
-        },
-        //审核结果
-        auditResult(result) {
-          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/GetInstanceActityInfoForJQ', {
-            jQ_ID: result,
-            jQ_Type: 1,
-          }).then(obj => {
-            that.tableCourse = obj.data.objects;
-          }).catch(obj => {
-            console.log(obj);
-          })
-        },
-        //删除
-        repeal(){
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
-            {
-              "id": this.paymentID
-            })
-            .then(res => {
-              if(res.data.isSuccess == true){
-                 this.$message.success("撤销成功");
-                 this.pageList();
-                 this.detailstShow = false;
-                }
-             })
-          .then(res =>() => {
-            console.log(res)
-          })
-          .catch(res =>() => {
-            console.log(res)
-          });
-        },
-        //通过
-        through(){
-          this.title="审批通过";
-          this.transitShow = true;
-        },
-        rejected(){
-          this.title="审批驳回";
-          this.transitShow = true;
-        },
-        closeTransit(){
-          this.transitShow = false;
-        },
-        confirm(formName){
-          if(this.title == "审批通过"){
-            this.transit(formName);
-         }else{
-            this.rejected_01(formName);
-         }
-        },
-        transit(formName){
-          var that = this;
-          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/SubmitWorkAssignmentsForJQ',
-          {
-            //"userCode": "rbop01",
-            "userCode":sessionStorage.getItem('userCode'),
-            "workItemID": this.arr1[0],
-            "commentText": this.commentText
-          }).then(res =>{
-              that.transitShow = false;
-              that.detailstShow = false;
-              that.pageList();
-              //that.repeal();
-          })
-        },
-        //驳回
-        rejected_01(formName){
-          var that = this;
-          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/RejectionOfWorkTasksForJQ',
-          {
-            //"userCode": "rbop01",
-            "userCode":sessionStorage.getItem('userCode'),
-            "workItemID": this.arr1[0],
-            "commentText": this.commentText
-          }).then(res =>{
-              that.transitShow = false;
-              that.detailstShow = false;
-              that.rejectedSuccess();
-              that.pageList();
-              //that.repeal();
-          })
-          this.$http.post(this.GLOBAL.jqUrl + '/api/JQ/EndProcess',
-          {
-            //"userCode": "rbop01",
+      },
+      // 删除
+      repeal(){
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/delete',
+        {
+          "id": this.paymentID
+        })
+        .then(res => {
+          if(res.data.isSuccess == true){
+             this.$message.success("撤销成功");
+             this.pageList();
+             this.detailstShow = false;
+            }
+         })
+      .then(res =>() => {
+        console.log(res)
+      })
+      .catch(res =>() => {
+        console.log(res)
+      });
+      },
+      // 通过
+      through(){
+      this.title="审批通过";
+      this.transitShow = true;
+      },
+      rejected(){
+      this.title="审批驳回";
+      this.transitShow = true;
+      },
+      closeTransit(){
+      this.transitShow = false;
+      },
+      confirm(formName){
+      if(this.title == "审批通过"){
+        this.transit(formName);
+      }else{
+        this.rejected_01(formName);
+      }
+      },
+      transit(formName){
+        var that = this;
+        // this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
+        let getWorkflowCode
+        if(this.presentRouter == '无收入借款管理') {
+          // getWorkflowCode = 'loan_noIncome2'
+          getWorkflowCode = 1
+        } else if(this.presentRouter == '预付款管理') {
+          // getWorkflowCode = 'borrow_Moneys2'
+          getWorkflowCode = 2
+        }else {}
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',
+        {
+          "jQ_ID":that.guid,
+          "jQ_Type": getWorkflowCode,
+          "userCode":sessionStorage.getItem('tel'),
+          "workItemID": that.getWorkItemId,
+          "commentText": that.commentText
+        }).then(res =>{
+          that.transitShow = false;
+          that.detailstShow = false;
+          that.pageList();
+            //that.repeal();
+        })
+      },
+      // 驳回
+      rejected_01(formName){
+      var that = this;
+      let getWorkflowCode
+      if(this.presentRouter == '无收入借款管理') {
+        getWorkflowCode = 1
+      } else if(this.presentRouter == '预付款管理') {
+        getWorkflowCode = 2
+      }else {}
+      // this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',
+      {
+        "jQ_ID": that.guid,
+        "jQ_Type": getWorkflowCode,
+        "userCode":sessionStorage.getItem('tel'),
+        "workItemID": that.getWorkItemId,
+        "commentText": that.commentText
+      }).then(res =>{
+          that.transitShow = false;
+          that.detailstShow = false;
+          that.rejectedSuccess();
+          //that.repeal();
+          let getWorkflowCode
+          if(this.presentRouter == '无收入借款管理') {
+            getWorkflowCode = 1
+          } else if(this.presentRouter == '预付款管理') {
+            getWorkflowCode = 2
+          }else {}
+          // 结束工作流
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
             "jq_id":this.guid,
-            "jQ_Type": 1
-          })
-        },
-        //驳回成功通过guid将checktype修改成2
-        rejectedSuccess(){
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',
-          {
-            /*"guid": this.guid,
-            "checkType": 2*/
-             "object": {               
-                "guid": this.guid,
-                "checkType": 2
-              }
-          })
-        },
-
-        //详情弹窗
-        checkIncome(row){
-          this.pid = row.paymentID;
-          this.detailstShow = true;
-          //this.getLabel();
-          
-        },
-        closeDetailstShow(){
-          this.detailstShow = false;
-        },
-        //获取一条详情
-        // getLabel(){
-
-        //   console.log(this.tableData)
-        //   this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-        //       "id":this.pid
-        //   }).then(res => {
-        //     if(res.data.isSuccess == true){
-        //        this.guid = res.data.object.guid
-        //        this.fundamental=res.data.object;
-        //        this.tour_id = res.data.object.planID;
-        //        this.getTourByPlanId(res.data.object.planID);
-        //        this.getPaymentdetails(res.data.object.planID);
-        //        this.auditResult(res.data.object.guid);
-        //        /*res.data.object.files.forEach(function(v, k, arr) {
-        //             that.fileList.push({
-        //               "url": that.GLOBAL.imgUrl + '/upload' + arr[k]['url'],
-        //               "name": arr[k]['name'],
-        //             });
-        //           })*/
-        //     }
-        //  })
-
-        // },
-        getTourByPlanId(val) {
-          var that = this
-          that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-            "object": {
-              planID: val, //团期计划ID
-            }
+            "jQ_Type": getWorkflowCode
           }).then(res => {
-            if (res.data.isSuccess == true) {
-              that.fundamental.groupCode = res.data.objects[0].groupCode
-              that.fundamental.plan_01 = res.data.objects[0].title
-            }
-          }).catch(err => {
-            console.log(err)
+            that.pageList();
+            that.$store.commit('changeAparoveState')
           })
-        },
-        getPaymentdetails(val) {
-          var that = this
-          //预付付款明细
-          that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
-            "object": {
-              "paymentType": 2,
-              "planID": val,
-            }
-          }).then(res => {
-            if (res.data.isSuccess == true) {
-              that.tablePayment = res.data.objects
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-          //无收入借款明细
-          that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
-            "object": {
-              "paymentType": 1,
-              "planID": val,
-            }
-          }).then(res => {
-            if (res.data.isSuccess == true) {
-              that.tableIncome = res.data.objects
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-          //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
-          that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
-            "object": {
-              "id": val,
-            }
-          }).then(res => {
-            if (res.data.isSuccess == true) {
-              that.tableMoney = []
-              that.tableMoney.push(res.data.object)
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-          //收入明细
-          that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
-            "object": {
-              "planID": val,
-            }
-          }).then(res => {
-            if (res.data.isSuccess == true) {
-              that.tableEarning = res.data.objects
-              //that.tableEarning.push(res.data.object)
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-        },
-        //获取id
-        clickBanle(row, event, column) {
-          // this.pid = row['id'];
-          this.reable = false;
-          this.paymentID=row.paymentID;
-          this.tour_id = row['planID'];
-          this.id = row.id;
-        },
-
-    },
-    mounted(){
-      this.pageList();
-    },
-    created(){
-      
+      })
+      },
+      // 驳回成功通过guid将checktype修改成2
+      rejectedSuccess(){
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
+        /*"guid": this.guid,
+        "checkType": 2*/
+       "object": {
+          "guid": this.guid,
+          "checkType": 2
+        }
+      })
+      },
+      // 详情弹窗()
+      checkIncome(index, row){
+      console.log(row,'审批您列表详情弹窗')
+      this.getCheckTypeEX = row.checkTypeEX
+      let _this = this
+      this.arr2.forEach(function (item) {
+        if (row.guid == item.jq_ID){
+          _this.getWorkItemId = item.workItemID
+        }
+      })
+      this.paymentID=row.paymentID;
+      this.pid = row.paymentID;
+      this.acoutInfo = row
+      this.detailstShow = true;
+      this.getLabel();
+      },
+      closeDetailstShow(){
+      this.detailstShow = false;
+      },
+      // 获取一条详情
+      getLabel(){
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+            "id":this.pid
+        }).then(res => {
+          if(res.data.isSuccess == true){
+            this.guid = res.data.object.guid
+            this.creatUserOrgID = res.data.object.creatUserOrgID
+          }
+        })
+      },
+      getTourByPlanId(val) {
+      var that = this
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
+        "object": {
+          planID: val, //团期计划ID
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.fundamental.groupCode = res.data.objects[0].groupCode
+          that.fundamental.plan_01 = res.data.objects[0].title
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      },
+      getPaymentdetails(val) {
+      var that = this
+      //预付付款明细
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "paymentType": 2,
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tablePayment = res.data.objects
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //无收入借款明细
+      that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
+        "object": {
+          "paymentType": 1,
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableIncome = res.data.objects
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
+      that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
+        "object": {
+          "id": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableMoney = []
+          that.tableMoney.push(res.data.object)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      //收入明细
+      that.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderlist', {
+        "object": {
+          "planID": val,
+        }
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          that.tableEarning = res.data.objects
+          //that.tableEarning.push(res.data.object)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+      },
+      //获取id
+      clickBanle(row, event, column) {
+      // this.pid = row['id'];
+      this.reable = false;
+      this.paymentID=row.paymentID;
+      this.tour_id = row['planID'];
+      this.id = row.id;
+      },
     }
   }
 </script>
-<style scoped>
-	.loanManagement{text-align: center; font-family: '微软雅黑'; font-size: 11pt;overflow: hidden; text-align: left; margin: -15px 0 100px 0;}
-  .loanBorder{border-left:1px solid #e6e6e6;border-right:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6; margin:0 0 20px 0; overflow: hidden; clear: both;}
-  /*搜索框*/
-  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
-  .fl{float:left; margin: 20px 0 20px 0;}
-  .emptyPlan{margin: 0 0 0 30px; }
-  .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
-  .time{margin: 0 0 0 10px;}
-  /*重置*/
-  .primary{clear: both;overflow: hidden;margin: 0 0 20px 30px;}
-  /*表格*/
-  .multipleTable{margin: 0 30px 20px 30px; text-align: center;width: 1100px;}
+<style lang="scss" scoped>
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+    .plan{
+      background: #f7f7f7;
+      padding: 20px 10px;
+      margin: 20px 10px;
+      .time{
+        margin: 0 0 0 10px;
+      }
+      .fl{
+        float:left;
+        margin: 20px 0 20px 0;
+      }
+    }
+    #table-content{
+      width: 98%;
+      margin: 40px auto 10px;
+    }
+  }
+
+
   /*分页*/
   .pageList{float:right; margin: 0 0 20px 0;}
   /*申请无收入借款弹窗*/

@@ -20,25 +20,31 @@
         </div>
         <div class="search-input">
           <el-input v-model="input" placeholder="请输入内容"  clearable></el-input>
-        </div>
+        </div> 
         <div class="button-search">
           <el-button  size="medium" type="primary" icon="el-icon-search" @click="searchSubmit"></el-button>
         </div>
       </div>
       <!--搜索end-->
       <div class="add-user">
-        <router-link to="/userlist/adduser"><el-button type="primary" >添加用户</el-button></router-link>
+        <router-link to="/userlist/adduser"><el-button type="primary">添加用户</el-button></router-link>&nbsp;&nbsp;
+        <el-button :disabled="forbidden" type="primary" @click="auth">授权</el-button>
+        <el-button :disabled="forbidden" type="primary" @click="dialogFormCopyPer=true">复制权限</el-button>
       </div>
     </div>
     <!--表格-->
     <div class="user-table" style="width: 1031px">
       <el-table
+        ref="multipleTable" 
         :data="tableData3"
         border
         :header-row-style="tableHead"
         :cell-style="tableHeight"
         :header-cell-style="getRowClass"
+        :row-style="rowClass"
         style="width: 100%"
+        @row-click="clickRow"
+        @selection-change="changeFun"
       >
         <el-table-column
           prop="id"
@@ -96,7 +102,7 @@
           width="150%"
       >
           <template slot-scope="scope">
-            <el-button  size="small" @click="find(scope.$index, scope.row)">查看</el-button>
+            <el-button size="small" @click="find(scope.$index, scope.row)">查看</el-button>
             <el-button type="primary" size="small" @click="edit(scope.$index, scope.row)">编辑</el-button>
           </template>
         </el-table-column>
@@ -104,6 +110,7 @@
       <!--分页-->
       <div class="block">
         <el-pagination
+          v-if="pageshow"
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -176,7 +183,28 @@
         </div>
       </div>
     </el-dialog>
-
+    <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormAuth" width="1000px" class="abow_dialog" @close="cenclePer">
+      <div :style="authDiocss">
+        <el-form ref="form" :model="form">           
+             <div v-for="(menuList,index) in authData">
+               <el-checkbox v-model="menuList.isJur" :label="menuList.id" :key="menuList.id" @change="menuChanged(index)">{{menuList.name}}</el-checkbox>
+               <div class="check-list">
+                 <el-checkbox  v-model="actList.isJur" v-for="actList in menuList.act" :label="actList.id" :key="actList.id" @change="actChanged(index)">{{actList.name}}</el-checkbox>
+               </div>
+             </div>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click="cenclePer">取消</el-button>
+          <el-button type="primary" @click="perSubmit">确 定</el-button>
+        </div>
+      </div> 
+    </el-dialog>
+    <el-dialog title="复制权限" custom-class="city_list" :visible.sync="dialogFormCopyPer" width="450px" @close="permissionId=''">
+      <div>
+         <el-input v-model="permissionId" style="width:200px;margin:10px 10px 20px 50px"></el-input>
+         <el-button type="primary" @click="copyPerSubmit">确 定</el-button>
+      </div> 
+    </el-dialog>
   </div>
 </template>
 
@@ -190,6 +218,7 @@
         qqq: [],
         total:600,
         currentPage:1,
+        pageshow: true,
         input:"",
         dialogFormVisible: false,
         form: {
@@ -236,16 +265,128 @@
         }],
         user: '',
 
-        tableData3: [],
-
+        tableData3:[],
+        dialogFormAuth:false,
+        dialogFormCopyPer:false,
+        permissionId:'',
+        multipleSelection:[], //选中的list
+        authDiocss:{
+　　　　　　height:'',
+            overflowY:'scroll'
+　　　　},
+        authData:[],
+        forbidden:true,  
       }
     },
     methods:{
-      getRowClass({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
+      cenclePer(){
+         this.dialogFormAuth = false;
+         this.authData = [];
+      },
+      menuChanged(index){
+        if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
+            var actArray = this.authData[index].act.length;          
+            if(actArray>0){            
+                for(let i = 0,len = this.authData[index].act.length;i<len;i++){
+                    this.authData[index].act[i].isJur = false;          
+                }
+            }
+        }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
+            var actArray = this.authData[index].act.length;
+            if(actArray>0){
+                for(let i = 0,len = this.authData[index].act.length;i<len;i++){
+                    this.authData[index].act[i].isJur = true;
+                }
+            } 
+        }
+      },
+      actChanged(index){
+        var childrenArray = this.authData[index].act;
+        var tickCount = 0,
+            unTickCount = 0,
+            len = childrenArray.length
+        for(var i = 0; i < len; i++) {
+            if(childrenArray[i].isJur == true){
+                tickCount++;
+            }
+            if(childrenArray[i].isJur == false){
+                unTickCount++;
+            }
+        }
+        if(tickCount == len){ //二级全勾选  一级勾选            
+            this.authData[index].isJur = true;
+        }
+      },
+      auth(){
+        if(this.multipleSelection[0].id > 0){
+           this.dialogFormAuth = true;
+           this.getHeight();
+           this.getActs();
+        }
+      },
+      getHeight(){
+        this.authDiocss.height=document.body.clientHeight-200+"px";
+      },
+      getActs(){
+          this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
+                "userID":this.multipleSelection[0].id,
+              }).then(res => {              
+                this.authData=res.data.objects;              
+          })
+      },
+      perSubmit(){
+        if(this.multipleSelection[0].id > 0){
+          this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
+                 "userID": this.multipleSelection[0].id,
+                 "object": this.authData
+              }).then(res => {         
+                if(res.data.isSuccess == true){
+                   this.$message.success('提交成功');
+                   this.cenclePer();
+                }
+          })
+        }
+      },
+      copyPerSubmit(){
+        if(this.multipleSelection[0].id > 0){
+          this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/copy',{
+                 "sourceID": this.multipleSelection[0].id,
+                 "objectID": this.permissionId
+              }).then(res => {         
+                if(res.data.isSuccess == true){
+                   this.$message.success('提交成功');
+                   this.dialogFormCopyPer = false;
+                }
+          })
+        }
+      },
+      getRowClass({ row, column, rowIndex, columnIndex }){
+        if (rowIndex == 0){
           return 'background:#F7F7F7'
         } else {
           return ''
+        }
+      },
+      changeFun(val) {
+        //保存选中项的数据
+        this.multipleSelection = val;
+        if(this.multipleSelection.length>0){
+           this.forbidden=false;
+        }else{
+           this.forbidden=true;
+        }
+      },
+      clickRow(row) {
+      //选中行复选框勾选
+        this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+        this.$refs.multipleTable.toggleRowSelection(row);
+      },
+      rowClass({ row, rowIndex }){
+        //选中行样式改变
+        for (var i = 0; i < this.multipleSelection.length; i++) {
+          if (this.multipleSelection[i].id == row.id) {
+            return { "background-color": "#ecf5ff" };
+          }
         }
       },
       handleSizeChange(val) {
@@ -261,7 +402,7 @@
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
+              "name":this.input,
 
             },
             "pageSize":val,
@@ -320,7 +461,7 @@
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
+              "name":this.input,
 
             },
             "pageSize":this.pagesize,
@@ -370,17 +511,14 @@
       searchSubmit(){
         //搜索
         var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/org/api/userpage",
-          // "http://api.dayuntong.com:3009/api/org/userpage",
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userpage",
           {
             "object": {
               "isDeleted": 0,
               "value":this.value,
               "type":this.type,
               "user":this.user,
-              "input":this.input,
-
+              "name":this.input,
             },
             "pageSize":this.pagesize,
             "pageIndex": 1,
@@ -393,6 +531,11 @@
           }
         )
           .then(function (obj) {
+            if(that.input == ''){
+              that.pageshow = true;
+            }else {
+              that.pageshow = false;
+            }
             // console.log(obj.data.objects)
             that.tableData3 = obj.data.objects
             that.tableData3.forEach(function (v,k,arr) {
@@ -449,7 +592,6 @@
         console.log();
 
       }
-
     },
     created(){
       //用户列表
@@ -513,7 +655,12 @@
 </script>
 
 <style scoped>
-
+  .abow_dialog {
+     margin:-100px 0 0 0;
+    }
+  .check-list{
+    margin:10px 0 15px 25px;
+  }
   .user-table{
     margin-left:26px;
     margin-top: 70px;

@@ -73,7 +73,7 @@ export default {
     //目的地
     querySearch(queryString2, cb) {
       this.tableData2 = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+      this.$http.post(this.GLOBAL.serverSrcZb + '/universal/area/api/fuzzy', {
         "object": {
           areaName: queryString2
         }

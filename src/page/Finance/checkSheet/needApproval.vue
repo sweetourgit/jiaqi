@@ -4,25 +4,39 @@
       <!--报销-->
       <div class="borders">
         <div class="search">
-          <span class="search_style">团期计划：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-          <span class="search_style">报账人：</span>
-          <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
-          <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
-          <span class="search_style">发起时间：</span>
-          <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-          <div class="date-line"></div>
-          <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
-          <div style="margin-top: 20px;"></div>
-          <span class="search_style">产品名称：</span> <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
-          <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
-          <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
-
+          <el-row>
+            <el-col :span="7">
+              <span class="search_style">团期计划：</span>
+              <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+            </el-col>
+            <el-col :span="7">
+              <span class="search_style">报账人：</span>
+              <!--<el-input v-model="reimbursementPer" placeholder="请输入内容" class="search_input"></el-input>-->
+              <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
+            </el-col>
+            <el-col :span="9">
+              <span class="search_style">发起时间：</span>
+              <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+              <div class="date-line"></div>
+              <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="7">
+              <span class="search_style">产品名称：</span>
+              <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
+            </el-col>
+            <el-col :span="9" :offset="7">
+              <el-button type="primary" @click="resetFun" plain class="buttonSearch">重置</el-button>
+              <el-button type="primary" @click="searchFun" class="buttonSearch">搜索</el-button>
+            </el-col>
+          </el-row>
         </div>
         <div class="table_style">
-          <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
+          <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;" v-loading="loading">
             <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
             <el-table-column prop="bill_status" label="状态" width="120" align="center">
-              <template slot-scope="scope">
+              <template>
                 <div style="color: #7F7F7F">报账中</div>
               </template>
             </el-table-column>
@@ -85,7 +99,8 @@
         dialogFormVisible: false,
         info: '',
         //待审批table
-        tableData: []
+        tableData: [],
+        loading: true
       };
     },
     methods: {
@@ -97,7 +112,7 @@
           return ''
         }
       },
-      //        操作人员
+      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
@@ -132,9 +147,11 @@
         }
       },
       searchFun(){
+        this.loading = true;
         this.loadData();
       },
       resetFun(){
+        this.loading = true;
         this.plan = '';
         this.reimbursementPer = '';
         this.productName = '';
@@ -145,14 +162,17 @@
       },
       handleClick(tab, event) {
 //        console.log(tab, event);
+        this.loading = true;
         this.loadData();
       },
       handleSizeChange(val) {
+        this.loading = true;
         this.pageSize = val;
         this.currentPage = 1;
         this.loadData()
       },
       handleCurrentChange(val) {
+        this.loading = true;
         this.currentPage = val;
         this.loadData()
       },
@@ -173,12 +193,13 @@
           "tour_no": this.plan,
           "start_time": this.startTime,
           "end_time": this.endTime,
-          "create_account": this.reimbursementPerID,
+          "create_uid": this.reimbursementPerID,
           "bill_status": '5'
         }, ).then(function(response) {
 //            console.log(response);
           if (response.data.code == '200') {
             console.log('需要审批',response);
+            that.loading = false;
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.$parent.$parent.$parent.number = response.data.data.list.length;
@@ -186,7 +207,7 @@
               item.created_at = formatDate(new Date(item.created_at*1000));
               item.created_at = item.created_at.split(" ")[0];
 
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
                 headers: {
@@ -212,7 +233,7 @@
       },
       loadOper(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
           "object": {
             "id": 0,
             "createTime": '2019-08-23T03:03:10.386Z',
@@ -274,45 +295,57 @@
   }
 </script>
 
-<style>
-  #needApprovalAll .el-tabs__header{
-    margin-top: -14px!important;
-  }
-  #needApprovalAll .borders{
+<style scoped>
+  .borders{
     overflow: hidden;
     border: 1px solid #E6E6E6;
     margin-bottom: 30px;
+    margin-top: 11px;
   }
-  #needApprovalAll .search{
+  .search{
     float: left;
     margin-top: 30px;
+    width: 100%;
   }
-  #needApprovalAll .date-line {
+  .date-line {
     width: 10px;
     border-bottom: 1px solid #e6e6e6;
     display: inline-block;
     margin: 0 3px 3px 0
   }
-  #needApprovalAll .search_style{
+  .table_style{
+    width: 100%;
+    padding: 0 20px;
+    float: left;
+    box-sizing: border-box;
+  }
+  .el-row{
+    margin-bottom: 20px;
+  }
+  .search_style{
     /*float: left;*/
     margin-top: 10px;
     margin-left: 20px;
-    font-size: 14px
+    font-size: 14px;
+    display: inline-block;
+    width: 100px;
   }
-  #needApprovalAll .search_input{
+  .search_input{
     /*float: left;*/
-    width: 200px
+    width: 65%;
   }
-  #needApprovalAll .table_style{
-    width: 1500px;
-    margin-left: 20px;
-    margin-top: 20px;
-    float: left;
+  .start-time{
+    width: 32.5%;
   }
-  #needApprovalAll .block{
+  .buttonSearch{
+    float: right;
+    margin-right: 20px;
+  }
+  .block{
     float: left;
     margin-left: 600px;
     margin-top: 70px;
     margin-bottom: 30px;
   }
+
 </style>

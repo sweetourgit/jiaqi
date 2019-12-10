@@ -30,6 +30,12 @@
                   <el-radio label="2">女</el-radio>
                 </el-radio-group>
               </el-form-item>
+              <!-- <el-form-item label="状态" prop="state">
+                <div>
+                  <el-radio label="1" class="radiomar" v-model="ruleForm.state">启用</el-radio>
+                  <el-radio label="2" class="radiomar" v-model="ruleForm.state">停用</el-radio>
+                </div>
+              </el-form-item> -->
               <el-form-item label="用户类型" prop="type">
                 <el-radio-group v-model="ruleForm.type" class="form_type">
                   <el-radio label="1" class="from-radio">普通用户</el-radio>
@@ -299,6 +305,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           trailid:'',
           sex:'1',
           type:'1',
+          state:'',
           orderList:'',
           domains: [{
             value: ''
@@ -326,6 +333,9 @@ import Permission from '@/page/account/userList/addUser/permission'
           ],
           type: [
             { required: true, message: '请选择用户类型', trigger: 'change' }
+          ],
+          state: [
+            { required: true, message: '请选择状态', trigger: 'change' }
           ],
 
         },
@@ -828,6 +838,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "tourGuide": this.ruleForm.trailid,
                     "sex": this.ruleForm.sex,
                     "userType": this.ruleForm.type,
+                    //"userState":this.ruleForm.state = 1 ? 2 : 3,
                     "userState":this.userState,
                     "orgID": this.ppid,
                   },

@@ -12,6 +12,7 @@
             <el-button type="warning" round size="mini" v-if="statusBtn == 5">报账中</el-button>
             <el-button type="danger" round size="mini" v-if="statusBtn == 6">报账驳回</el-button>
             <el-button type="success" round size="mini" v-if="statusBtn == 7">已报账</el-button>
+            <el-button type="success" round size="mini" v-if="statusBtn == 8">已报账</el-button>
           </div>
         </el-col>
         <el-col :span="8">
@@ -22,7 +23,7 @@
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
             <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
             <!--<el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>-->
-            <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7">提交报账单</el-button>
+            <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7 && statusBtn != 8">提交报账单</el-button>
             <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>
 
           </div>
@@ -310,10 +311,19 @@ export default {
       this.updateSource = row.rec_id;
       this.dialogFormVisible2 = true;
     },
-    close2() {
+//    手动添加收入来源（为解决loadData因性能加载不出来的问题）
+    close2(str) {
+      const that = this;
       this.dialogFormVisible2 = false;
-      this.loadData();
-      this.updateSource = '';
+      if(str){
+        this.tableData.forEach(function (item, index, arr) {
+          if(item.rec_id == that.updateSource){
+            item.handler = str;
+          }
+        });
+        this.loadData();
+        this.updateSource = '';
+      }
     },
 //    toUpddateIncome(row) {
 //      this.dialogFormVisible3 = true;
@@ -393,8 +403,27 @@ export default {
             startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
+          that.msg = {
+            tour_no: dataList.tour_no,
+            op_id: dataList.op_id,
+            op_name: '',
+            billTime: billTime,
+            team_num: dataList.team_num,
+            days: dataList.days||'1',
+            total_income: dataList.total_income,
+            total_cost: dataList.total_cost,
+            gross_profit: dataList.gross_profit,
+            gross_rate: dataList.gross_rate,
+            product_name: dataList.product_name,
+            startTime: startTime,
+            endTime: endTime,
+            reduce_num: dataList.reduce_num,
+            guide: dataList.guide,
+            associations: dataList.associations,
+            org_id: dataList.org_id
+          };
           that.getOrgName(dataList.op_id);
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": response.data.data.op_id
           },{
             headers: {
@@ -403,25 +432,9 @@ export default {
           }).then(function(response) {
 
             if (response.data.isSuccess) {
-              that.msg = {
-                tour_no: dataList.tour_no,
-                op_id: dataList.op_id,
-                op_name: response.data.object.name,
-                billTime: billTime,
-                team_num: dataList.team_num,
-                days: dataList.days||'1',
-                total_income: dataList.total_income,
-                total_cost: dataList.total_cost,
-                gross_profit: dataList.gross_profit,
-                gross_rate: dataList.gross_rate,
-                product_name: dataList.product_name,
-                startTime: startTime,
-                endTime: endTime,
-                reduce_num: dataList.reduce_num,
-                guide: dataList.guide,
-                associations: dataList.associations,
-                org_id: dataList.org_id
-              };
+              if(response.data.object.name){
+                that.msg.op_name = response.data.object.name;
+              }
             } else {
               that.$message.success("加载数据失败~");
             }
@@ -439,7 +452,7 @@ export default {
     },
     getOrgName(ID){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
         "id": ID
       },{
         headers: {

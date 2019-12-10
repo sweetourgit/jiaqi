@@ -20,7 +20,6 @@
         <el-col :span="8">
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
-            <!--<el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>-->
             <el-button class="el-button" type="primary" @click="pledging" v-if="statusBtn == 1 || statusBtn == 3">认 款</el-button>
             <el-button class="el-button" type="danger" @click="delInfo" v-if="statusBtn == 1 || (statusBtn == 3 && approved != 1)">删 除</el-button>
           </div>
@@ -131,12 +130,12 @@
                 </el-table-column>
                 <el-table-column prop="collectionCode" label="收款编码" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.receipt_code" @click="turnTab2" style="cursor: pointer">{{item.rec_sn}}</p>
+                    <p v-for="item in scope.row.receipt_code" :key="item.index" @click="turnTab2" style="cursor: pointer">{{item.rec_sn}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column prop="invoice" label="发票" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.invoice" @click="turnTab3" style="cursor: pointer">{{item.rec_sn}}</p>
+                    <p v-for="item in scope.row.invoice" :key="item.index" @click="turnTab3" style="cursor: pointer">{{item.rec_sn}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column prop="option" label="操作" align="center" width="100" v-if="statusBtn == 1 || statusBtn == 3">
@@ -185,7 +184,7 @@
                 </el-table-column>
                 <el-table-column prop="voucher" label="凭证" align="center">
                   <template slot-scope="scope">
-                    <p v-for="item in scope.row.file">
+                    <p v-for="item in scope.row.file" :key="item.index">
                       <a :href="item.url" target="_blank">{{item.name}}</a>
                     </p>
                   </template>
@@ -209,20 +208,17 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <ToUpdate :dialogFormVisible="dialogFormVisible2" @close="close2" :info="info"></ToUpdate>
       <GetOrder :dialogFormVisible="dialogFormVisible" @close="close2" :info="info"></GetOrder>
     </div>
   </div>
 </template>
 <script type="text/javascript">
 import GetOrder from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/getOrder'
-//import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
 import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "scenicTicketingDetails",
   components: {
     GetOrder,
-//    ToUpdate
   },
   data() {
     return {
@@ -288,17 +284,13 @@ export default {
       this.$router.push({
         path: "/scenicTicketingPledging",
         name: "产品管理  /团期计划  /认款",
-        params: this.$route.params
+        query: this.$route.query
       });
     },
     closeAdd() {
 //      this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
       this.$router.go(-1);
     },
-//    toUpdate() {
-//      this.dialogFormVisible2 = true;
-//
-//    },
     delInfo() {
       const that = this;
       this.$confirm('是否删除此团期计划?', '提示', {
@@ -409,6 +401,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/viewgroup", {
         "id": this.param,
       }, ).then(function(response) {
+        console.log('详情',response);
         if (response.data.code == '200') {
           console.log(response);
           response.data.data.basic_info.created_at = formatDate(new Date(response.data.data.basic_info.created_at*1000));
@@ -417,7 +410,7 @@ export default {
           response.data.data.basic_info.end_at = formatDate(new Date(response.data.data.basic_info.end_at*1000));
           response.data.data.basic_info.end_at = response.data.data.basic_info.end_at.split(' ')[0];
           that.baseInfo = response.data.data;
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": that.baseInfo.basic_info.create_uid
           },{
             headers: {
@@ -483,7 +476,7 @@ export default {
             that.tableData3.forEach(function (item, index, arr) {
               item.file = JSON.parse(item.file);
               console.log(item.file);
-              for(var i = 0; i < item.file.length; i++){
+              for(let i = 0; i < item.file.length; i++){
                 item.file[i].url = that.GLOBAL.serverSrcPhp + item.file[i].url;
               }
             })
@@ -497,7 +490,7 @@ export default {
     },
     getOrgName(ID){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
         "id": ID
       },{
         headers: {

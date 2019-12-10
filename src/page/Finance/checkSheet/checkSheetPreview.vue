@@ -18,25 +18,25 @@
         <p class="dateP">报账日期：<span>{{topData}}</span></p>
         <section>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               部门
             </el-col>
             <el-col :span="3" class="content">
               {{org_name}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               操作人
             </el-col>
             <el-col :span="3" class="content">
               {{create_uid}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               导陪
             </el-col>
             <el-col :span="3" class="content">
               {{msg.guide}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               接团社
             </el-col>
             <el-col :span="7" class="content">
@@ -44,13 +44,13 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               团号
             </el-col>
             <el-col :span="8" class="content">
               {{msg.tour_no}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               线路名称
             </el-col>
             <el-col :span="12" class="content">
@@ -58,31 +58,31 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               团队人数
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="2" class="content">
               {{msg.team_num}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               减免人数
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="2" class="content">
               {{msg.reduce_num}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               出发日期
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="4" class="content">
               {{msg.startTime}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               返回日期
             </el-col>
-            <el-col :span="3" class="content">
+            <el-col :span="4" class="content">
               {{msg.endTime}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               全程天数
             </el-col>
             <el-col :span="2" class="content">
@@ -90,30 +90,30 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24" class="title">
+            <el-col :span="24" class="title1">
               团队收入成本结算
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               总收入
             </el-col>
             <el-col :span="3" class="content">
               {{msg.total_income}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               总支出
             </el-col>
             <el-col :span="3" class="content">
               {{msg.total_cost}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               毛利额
             </el-col>
             <el-col :span="3" class="content">
               {{msg.gross_profit}}
             </el-col>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               毛利率
             </el-col>
             <el-col :span="7" class="content">
@@ -125,30 +125,30 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2" class="title">
+            <el-col :span="2" class="title1">
               序号
             </el-col>
-            <el-col :span="5" class="title">
-              收入
+            <el-col :span="5" class="title1">
+              收入来源
             </el-col>
-            <el-col :span="5" class="title">
+            <el-col :span="5" class="title1">
               经手人
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               人数
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               实收款
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               发票号码
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               备注
             </el-col>
           </el-row>
           <template v-for="(bill,index) in billReporting">
-            <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
+            <el-row :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}" :key="index">
               <el-col :span="2" class="content" :style="{height: Math.ceil((bill.remark || 'zhan').length/7)*33+'px'}">
                 {{index + 1}}
               </el-col>
@@ -173,7 +173,7 @@
             </el-row>
           </template>
           <el-row>
-            <el-col :span="12" class="title">
+            <el-col :span="12" class="title1">
               合计：
             </el-col>
             <el-col :span="3" class="content">
@@ -190,119 +190,119 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="24" class="title">
+            <el-col :span="24" class="title1">
               团队成本明细
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               序号
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="4" class="title1">
               成本项目
             </el-col>
-            <el-col :span="4" class="title">
-              供应商
-            </el-col>
-            <el-col :span="2" class="title">
+            <!--<el-col :span="4" class="title">-->
+              <!--供应商-->
+            <!--</el-col>-->
+            <el-col :span="2" class="title1">
               人数
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               成本合计
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               已支付
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               挂账
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="6" class="title1">
               备注
             </el-col>
           </el-row>
           <template v-for="(cost,index) in costDetails">
-            <el-row :style="{height: Math.ceil(cost.supplier.length/14)*33+'px'}">
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
+            <el-row :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}" :key="index">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{index + 1}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
+              <el-col :span="4" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.cost_type}}
               </el-col>
-              <el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
-                {{cost.supplier}}
-              </el-col>
-              <el-col :span="2" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
+              <!--<el-col :span="4" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">-->
+                <!--{{cost.supplier}}-->
+              <!--</el-col>-->
+              <el-col :span="2" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.people_num}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.cost}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.paid_cost}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
+              <el-col :span="3" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.settle_cost}}
               </el-col>
-              <el-col :span="3" class="content" :style="{height: Math.ceil(cost.supplier.length/7)*33+'px'}">
+              <el-col :span="6" class="content" :style="{height: cost.remarks ? Math.ceil(cost.remarks.length/10)*33+'px' : '33px'}">
                 {{cost.remarks}}
               </el-col>
             </el-row>
           </template>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               合计
             </el-col>
-            <el-col :span="6" class="title">
+            <el-col :span="4" class="title1">
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="2" class="title1">
               {{costTotalNumber}}
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               {{costTotalCost}}
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               {{costPaymented}}
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               <!--挂账-->
             </el-col>
-            <el-col :span="3" class="title">
+            <el-col :span="6" class="title1">
               <!--备注-->
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               审批人
             </el-col>
-            <el-col :span="3" class="title" style="">
+            <el-col :span="3" class="title1" style="">
               <div style="position:relative;z-index: 99;top: 16px;">计调</div>
             </el-col>
             <el-col :span="4" class="">
             </el-col>
-            <el-col :span="3" class="title" style="border-bottom:0px solid #ccc;z-index: 99">
+            <el-col :span="3" class="title1" style="border-bottom:0px solid #ccc;z-index: 99">
               <div style="position:relative;z-index: 99;top: 16px;">财务部</div>
             </el-col>
             <el-col :span="4" class="">
             </el-col>
-            <el-col :span="3" class="title" style="">
+            <el-col :span="3" class="title1" style="">
               <div style="position:relative;z-index: 99;top: 16px;">总经理</div>
             </el-col>
             <el-col :span="4" class="">
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="3" class="title">
+            <el-col :span="3" class="title1">
               签字
             </el-col>
-            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
             <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
             <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="3" class="title" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
             <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
@@ -310,6 +310,73 @@
           <!-- <div class="no-print">不要打印我</div> -->
         </section>
       </div>
+
+      <div class="bottomCode">
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="收款编码" name="code">
+            <div class="table_trip" style="width: 100%;">
+              <el-table ref="singleTable" :data="tableData2" border style="width: 100%" :header-cell-style="getRowClass">
+                <el-table-column prop="rec_sn" label="收款编码" align="center">
+                </el-table-column>
+                <el-table-column prop="status" label="审批状态" align="center">
+                  <template slot-scope="scope">
+                    {{status[scope.row.approval_status]}}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="approval_comments" label="审批意见" align="center">
+                </el-table-column>
+                <el-table-column prop="approval_money" label="审批金额" align="center">
+                </el-table-column>
+                <el-table-column prop="option" label="操作" align="center" width="100">
+                  <template slot-scope="scope">
+                    <el-button @click="getOrder(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="发票" name="invoice">
+            <div class="table_trip" style="width: 100%;">
+              <el-table ref="singleTable" :data="tableData3" border style="width: 100%" :header-cell-style="getRowClass">
+                <el-table-column prop="rec_sn" label="发票" align="center">
+                </el-table-column>
+                <el-table-column prop="invoiceInfo" label="发票信息" align="center">
+                  <template slot-scope="scope">
+                    <span>发票抬头：{{scope.row.title}}</span><br>
+                    <span>纳税人识别号：{{scope.row.pay_taxes_no}}</span><br>
+                    <span>手机号：{{scope.row.phone}}</span><br>
+                    <span>地址：{{scope.row.address}}</span><br>
+                    <span>开户行：{{scope.row.bank}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="voucher" label="凭证" align="center">
+                  <template slot-scope="scope">
+                    <p v-for="item in scope.row.file" :key="item.index">
+                      <a :href="item.url" target="_blank">{{item.name}}</a>
+                    </p>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="status" label="审批状态" align="center">
+                  <template slot-scope="scope">
+                    {{status[scope.row.approval_status]}}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="approval_comments" label="审批意见" align="center">
+                </el-table-column>
+                <el-table-column prop="approval_money" label="审批金额" align="center">
+                </el-table-column>
+                <el-table-column prop="option" label="操作" align="center" width="100">
+                  <template slot-scope="scope">
+                    <el-button @click="getOrder(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+      <GetOrder :dialogFormVisible1="dialogFormVisible1" @close="close2" :sendID="sendID"></GetOrder>
+      <!--审批通过-->
       <div>
         <el-dialog
           style="text-align: left;"
@@ -335,6 +402,7 @@
           </div>
         </el-dialog>
       </div>
+      <!--审批驳回-->
       <div>
         <el-dialog
           style="text-align: left;"
@@ -364,11 +432,14 @@
   </div>
 </template>
 <script type="text/javascript">
+import GetOrder from '@/page/Finance/checkSheet/getOrder.vue'
 import {formatDate} from '@/js/libs/publicMethod.js'
 
 export default {
   name: "checkSheetPreview",
-  components: {},
+  components: {
+    GetOrder
+  },
   props: {
     dialogFormVisible: false,
     info: '',
@@ -393,25 +464,31 @@ export default {
       costTotalNumber: 0,
       costTotalCost: 0,
       costPaymented: 0,
-      ruleForm: {
-        days: ''
+
+      //收款编码，发票数据
+      activeName: 'code',
+      tableData2: [],
+      tableData3: [],
+      status: {
+        1: '审批中',
+        2: '驳回',
+        3: '通过',
       },
-      rules: {
-        days: [{ required: true, message: '天数不能为空!', trigger: 'blur' },
-          { pattern: /^[0-9]+$/, message: '天数必须是正整数!' }
-        ],
-      },
+      dialogFormVisible1: false,
+      sendID: ''
     }
   },
   computed: {
     // 计算属性的 getter
   },
   watch: {
-    info: {
+    dialogFormVisible: {
       handler:function(){
 //        console.log('info',this.info);
-        if(this.info != ''){
+        if(this.info !== '' && this.dialogFormVisible === true){
           this.loadData();
+          this.loadDatabyNum(1);
+          this.loadDatabyNum(2);
           if(this.info.bill_status != 7){
             this.topData = formatDate(new Date()).split(" ")[0];
           }
@@ -424,6 +501,14 @@ export default {
     }
   },
   methods: {
+    // 表格头部背景颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
     closeAdd() {
       this.$emit('close');
     },
@@ -450,7 +535,7 @@ export default {
             startTime = formatDate(new Date(response.data.data.start_at*1000)).split(" ")[0];
             endTime = formatDate(new Date(response.data.data.back_at*1000)).split(" ")[0];
           }
-          that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
             "id": response.data.data.op_id
           },{
             headers: {
@@ -466,7 +551,7 @@ export default {
           }).catch(function(error) {
             console.log(error);
           });
-          that.$http.post(that.GLOBAL.serverSrc + "/org/user/api/orgshort", {
+          that.$http.post(that.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
             "id": response.data.data.op_id
           },{
             headers: {
@@ -545,6 +630,45 @@ export default {
         console.log(error);
       });
     },
+    loadDatabyNum(num){
+      const that = this;
+//      console.log(this.param);
+      this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/receiptlist", {
+        "tour_no": this.info.tour_no,
+        "apply_type": num,
+        "limit": 0
+      }, ).then(function(response) {
+        if (response.data.code == '200') {
+          console.log(response);
+          if(num == 1){
+            console.log("1",response.data.data.list);
+            that.tableData2 = response.data.data.list;
+          }else if(num == 2){
+            console.log("2",response.data.data.list);
+            that.tableData3 = response.data.data.list;
+            that.tableData3.forEach(function (item, index, arr) {
+              item.file = JSON.parse(item.file);
+              console.log(item.file);
+              for(let i = 0; i < item.file.length; i++){
+                item.file[i].url = that.GLOBAL.serverSrcPhp + item.file[i].url;
+              }
+            })
+          }
+        } else {
+          that.$message.success("加载数据失败~");
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
+    getOrder(row) {
+      this.sendID = row.id;
+      this.dialogFormVisible1 = true;
+    },
+    close2() {
+      this.sendID = '';
+      this.dialogFormVisible1 = false;
+    },
     goDetail(){
 //      console.log(this.info);
       this.$router.push({
@@ -620,7 +744,7 @@ export default {
 
     getTitleName(id){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/fullpath", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/fullpath", {
         'id': id
       }, {
         headers: {
@@ -683,9 +807,10 @@ export default {
   margin: 0 auto 20px;
   overflow: hidden;
 }
-.title {
+.title1 {
   background-color: #CCCCCC;
   color: black;
+  font-size: 14px;
 }
 .content {
   background-color: white;
@@ -693,8 +818,6 @@ export default {
 .el-row {
   height: 34px;
   line-height: 33px;
-
-  &:first-child {}
 
   .el-col {
     border: 1px solid black;

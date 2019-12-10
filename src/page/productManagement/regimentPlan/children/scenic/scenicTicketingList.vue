@@ -51,6 +51,7 @@
               <p v-if="scope.row.bill_status == 5">报账中</p>
               <p v-if="scope.row.bill_status == 6">报账驳回</p>
               <p v-if="scope.row.bill_status == 7">已报账</p>
+              <p v-if="scope.row.bill_status == 8">已报账</p>
             </template>
           </el-table-column>
           <el-table-column prop="created_at" label="创建时间" align="center">
@@ -80,7 +81,7 @@
                   <el-button @click="delTour(scope.row)" type="danger" size="small" class="table_details">删除</el-button>
                 </div>
               </div>
-              <div v-if="scope.row.bill_status == 4 || scope.row.bill_status == 5 || scope.row.bill_status == 6 || scope.row.bill_status == 7">
+              <div v-if="scope.row.bill_status == 4 || scope.row.bill_status == 5 || scope.row.bill_status == 6 || scope.row.bill_status == 7 || scope.row.bill_status == 8">
                 <el-button @click="infoTour(scope.row)" type="primary" size="small" class="table_details">详情</el-button>
                 <el-button @click="billReporting(scope.row)" type="success" size="small" class="table_details">报账单</el-button>
               </div>
@@ -327,7 +328,7 @@ export default {
             item.end_at = item.end_at.split(" ")[0];
             item.created_at = formatDate(new Date(item.created_at*1000));
             item.created_at = item.created_at.split(" ")[0];
-            that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": item.create_uid
             },{
               headers: {
@@ -353,7 +354,7 @@ export default {
     },
     loadUser(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
         "object": {
           "id": 0,
           "createTime": '2019-08-23T03:03:10.386Z',

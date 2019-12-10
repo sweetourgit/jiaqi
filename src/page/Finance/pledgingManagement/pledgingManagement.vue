@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <div class="demo-input-suffix ">
-      <span class="search-title">报账团期：</span>
+      <span class="search-title">报账团号：</span>
       <el-input v-model="activeForm.tour" class="input" placeholder="请输入"></el-input>
       <span class="search-title">操作人：</span>
       <!--<el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>-->
@@ -157,7 +157,7 @@ export default {
     },
     loadOper(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+      this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
         "object": {
           "id": 0,
           "createTime": '2019-08-23T03:03:10.386Z',

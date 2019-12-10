@@ -1,11 +1,11 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
-    <el-dialog title="收款编码数据详情" :visible="dialogFormVisible" width=70% @close="closeAdd">
+    <el-dialog title="收款编码数据详情" :visible="dialogFormVisible2" width=70% @close="closeAdd">
       <div class="totalMoney"><i class="el-icon-info"></i>总计：{{totalMoney}}元 </div>
       <div class="table_trip">
-        <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-          <el-table-column prop="order_sn" label="订单ID" align="center" width="80%">
+        <el-table ref="singleTable" :data="tableDataCode" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
+          <el-table-column prop="order_sn" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
@@ -44,23 +44,25 @@ export default {
   name: "receiptCode",
   components: {},
   props: {
-    dialogFormVisible: false,
+    dialogFormVisible2: false,
     info: '',
   },
   data() {
     return {
       totalMoney: '0', //总计
       currentRow: true,
-      tableData: [],
+      tableDataCode: [],
     }
   },
   computed: {
 
   },
   watch: {
-    info: {
+    dialogFormVisible2: {
       handler:function(){
-        this.loadData()
+        if(this.dialogFormVisible2){
+          this.loadData()
+        }
       }
     }
   },
@@ -78,13 +80,14 @@ export default {
       }
     },
     closeAdd() {
+      this.totalMoney = 0;
       this.$emit('close', false);
     },
     submitForm(formName) {
       const that = this;
       let canSave = true;
       let num = 0;
-      this.tableData.forEach(function (item, index, arr) {
+      this.tableDataCode.forEach(function (item, index, arr) {
         if(item.money){
           num++;
         }
@@ -105,7 +108,7 @@ export default {
       }
       if(canSave){
         let orderList = [];
-        this.tableData.forEach(function (item, index, arr) {
+        this.tableDataCode.forEach(function (item, index, arr) {
           if(item.money){
             let itemOrder = {
               "order_no": item.order_sn,
@@ -115,7 +118,7 @@ export default {
           }
         });
 //        alert(this.$parent.param);
-        if(num == this.tableData.length){
+        if(num == this.tableDataCode.length){
           that.postData(orderList);
         }else{
           this.$confirm('存在订单未填写申请金额 , 点击保存则自动移除以上订单。', '提示', {
@@ -161,18 +164,23 @@ export default {
       });
     },
     loadData(){
-      this.tableData = this.info;
+      this.tableDataCode = this.info;
+      console.log(this.info);
+      this.tableDataCode.forEach(function(item, index, arr){
+        item.money = item.proce_amount;
+      })
+      this.addMoney();
     },
     addMoney(){
       let total = 0;
-      this.tableData.forEach(function (item, index, arr) {
+      this.tableDataCode.forEach(function (item, index, arr) {
         console.log(item.money);
         if(item.money){
           total += parseFloat(item.money);
         }
       });
 //      alert(total);
-      this.totalMoney = total;
+      this.totalMoney = total.toFixed(2);
     }
   },
   created() {},

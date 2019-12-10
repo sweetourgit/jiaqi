@@ -1,27 +1,54 @@
 <template>
-  <div class="all" id="trade">
+  <div class="all" id="externalOrderManagement">
     <div class="borders">
+      <!--搜索-->
       <div class="search">
-        <span class="search_style">分销商：</span> <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
-        <span class="search_style">申请人：</span>
-        <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
-        <span class="search_style">收款时间：</span>
-        <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
-        <div class="date-line"></div>
-        <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
-        <div style="margin-top: 20px;"></div>
-        <span class="search_style">状态</span>
-        <el-select v-model="status" placeholder="请选择" style="width:200px;">
-          <el-option key="" label="全部" value=""></el-option>
-          <el-option key="1" label="待认收款" value="1"></el-option>
-          <el-option key="2" label="已认完" value="2"></el-option>
-        </el-select>
-        <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
-        <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
+        <el-row>
+          <el-col :span="7">
+            <span class="search_style">分销商：</span>
+            <el-input v-model="plan" placeholder="请输入内容" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="7">
+            <span class="search_style">申请人：</span>
+            <el-autocomplete class="search_input" v-model="reimbursementPer" :fetch-suggestions="querySearchOper" placeholder="请输入申请人" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
+          </el-col>
+          <el-col :span="9">
+            <span class="search_style">收款时间：</span>
+            <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
+            <div class="date-line"></div>
+            <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <span class="search_style">状态：</span>
+            <el-select v-model="status" placeholder="请选择" class="search_input">
+              <el-option key="" label="全部" value=""></el-option>
+              <el-option key="1" label="待认收款" value="1"></el-option>
+              <el-option key="2" label="已认完" value="2"></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="7">
+            <span class="search_style">收款单号：</span>
+            <el-input v-model="orderNum" placeholder="请输入收款单号" class="search_input"></el-input>
+          </el-col>
+          <el-col :span="9">
+            <span class="search_style">收款明细说明：</span>
+            <el-input v-model="explain" placeholder="请输入内容" class="search_input"></el-input>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="9" :offset="14" class="buttonCol">
+            <el-button type="primary" @click="resetFun" plain>重置</el-button>
+            <el-button type="primary" @click="searchFun">搜索</el-button>
+          </el-col>
+        </el-row>
       </div>
+      <!--添加-->
       <div class="search" style="background-color: transparent;padding: 0;">
         <el-button type="primary" @click="addFun">添加</el-button>
       </div>
+      <!--表格-->
       <div class="table_style">
         <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;">
           <el-table-column prop="rece_code" label="收款单号" align="center"></el-table-column>
@@ -50,6 +77,7 @@
           </el-table-column>
         </el-table>
       </div>
+      <!--分页-->
       <div class="block">
         <el-pagination
           @size-change="handleSizeChange"
@@ -69,8 +97,8 @@
 </template>
 
 <script>
-  import orderEdit from '@/page/Finance/collectionManagement/externalOrder/orderEdit.vue'
-  import orderDetail from '@/page/Finance/collectionManagement/externalOrder/orderDetail.vue'
+  import orderEdit from '@/page/Finance/collectionManagement/externalOrder/orderEdit.vue'// 编辑
+  import orderDetail from '@/page/Finance/collectionManagement/externalOrder/orderDetail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
@@ -80,28 +108,31 @@
     },
     data() {
       return {
-        disabled: false,
+        disabled: false,// 日期不可编辑
 
-        plan: '',
-        reimbursementPer: '',
-        productName: '',
-        startTime: '',
-        endTime: '',
-        status: '',
-        reimbursementPerID: '',
-        operatorList: [],
+        // 搜索项
+        plan: '',// 分销商
+        reimbursementPer: '',// 申请人
+        startTime: '',// 收款时间 -- 开始
+        endTime: '',// 收款时间 -- 结束
+        status: '',// 状态（待认收款，已认完）
+        orderNum: '',// 收款单号
+        explain: '',// 收款明细说明
+        reimbursementPerID: '',// 申请人ID
+        operatorList: [],// 申请人list
 
-        pageSize: 10,
-        currentPage: 1,
-        pageCount: 2,
+        pageSize: 10,// 每页条数
+        currentPage: 1,// 当前页数
+        pageCount: 2,// 总条数
 
         //待审批table
-        tableData: [{}],
+        tableData: [{}],// 列表数据
 
-        dialogFormVisible: false,
-        dialogFormVisible1: false,
-        info: '',
+        dialogFormVisible: false,// 编辑弹框 -- 显示/隐藏
+        dialogFormVisible1: false,// 详情弹框 -- 显示/隐藏
+        info: '',// 数据传递
 
+        // 时间限制
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate()
       };
@@ -115,6 +146,7 @@
           return ''
         }
       },
+      // 关闭弹窗事件（详情内执行弹窗关闭返回success时，要继续打开编辑弹框）
       closeAdd(str) {
         if(str == 'success'){
           this.dialogFormVisible = false;
@@ -128,7 +160,7 @@
           this.loadData();
         }
       },
-      //        操作人员
+      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
@@ -162,30 +194,37 @@
           }
         }
       },
+      // 搜索事件
       searchFun(){
         this.loadData();
       },
+      // 重置
       resetFun(){
         this.plan = '';
         this.reimbursementPer = '';
-        this.productName = '';
         this.startTime = '';
         this.endTime = '';
         this.reimbursementPerID = '';
         this.status = '';
+        this.explain = '';
+        this.orderNum = '';
         this.loadData();
       },
+      // 添加
       addFun(){
         this.dialogFormVisible = true;
       },
+      // 详情
       detail(row){
         this.info = row.id;
         this.dialogFormVisible1 = true;
       },
+      // 编辑
       editOrder(row){
         this.info = row.id;
         this.dialogFormVisible = true;
       },
+      // 删除
       deleteFun(row){
         this.$confirm("是否删除该笔收款?", "提示", {
           confirmButtonText: "确定",
@@ -217,15 +256,18 @@
           });
         });
       },
+      // 条数改变
       handleSizeChange(val) {
         this.pageSize = val;
         this.currentPage = 1;
         this.loadData()
       },
+      // 页数改变
       handleCurrentChange(val) {
         this.currentPage = val;
         this.loadData();
       },
+      // 数据加载
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/listpage", {
@@ -236,6 +278,8 @@
           "rece_start": this.startTime,
           "rece_end": this.endTime,
           "status_rece": this.status,
+          "explain": this.explain,
+          "rece_code": this.orderNum,
           "limit": 0
         }, ).then(function(response) {
           if (response.data.code == '200') {
@@ -249,7 +293,7 @@
               item.rece_start = item.rece_start.split(" ")[0];
               item.rece_end = formatDate(new Date(item.rece_end*1000));
               item.rece_end = item.rece_end.split(" ")[0];
-              that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
                 headers: {
@@ -273,9 +317,10 @@
           console.log(error);
         });
       },
+      // 加载申请人list
       loadOper(){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+        this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
           "object": {
             "id": 0,
             "createTime": '2019-08-23T03:03:10.386Z',
@@ -329,6 +374,8 @@
           console.log(error);
         });
       },
+
+      // 时间限制
       beginDate(){
 //      alert(begin);
         const that = this;
@@ -363,54 +410,60 @@
   }
 </script>
 
-<style scoped>
-  #trade .el-tabs__header{
-    margin-top: -14px!important;
-  }
-  #trade .borders{
+<style lang="scss" scoped>
+  #externalOrderManagement .borders{
     overflow: hidden;
-    /*border: 1px solid #E6E6E6;*/
-    margin-bottom: 30px;
-  }
-  #trade .search{
-    width: 96%;
-    min-width: 1079px;
-    margin-left: 20px;
-    margin-top: 20px;
-    float: left;
-    background-color: #f7f7f7;
-    padding: 20px 10px;
-    box-sizing: border-box;
-  }
-  #trade .date-line {
-    width: 10px;
-    border-bottom: 1px solid #e6e6e6;
-    display: inline-block;
-    margin: 0 3px 3px 0
-  }
-  #trade .search_style{
-    /*float: left;*/
-    margin-top: 10px;
-    margin-left: 20px;
-    font-size: 14px;
-    display: inline-block;
-    width: 80px;
-  }
-  #trade .search_input{
-    /*float: left;*/
-    width: 200px
-  }
-  #trade .table_style{
-    width: 96%;
-    min-width: 1079px;
-    margin-left: 20px;
-    margin-top: 20px;
-    float: left;
-  }
-  #trade .block{
-    float: left;
-    margin-left: 600px;
-    margin-top: 70px;
-    margin-bottom: 30px;
+    border: 1px solid #E6E6E6;
+    margin: 25px auto 30px;
+    .search{
+      width: 96%;
+      min-width: 1079px;
+      margin: 20px 2%;
+      float: left;
+      background-color: #f7f7f7;
+      padding: 20px 10px;
+      box-sizing: border-box;
+      .el-row{
+        margin-bottom: 20px;
+      }
+      .search_style{
+        /*float: left;*/
+        margin-top: 10px;
+        margin-left: 20px;
+        font-size: 14px;
+        display: inline-block;
+        width: 110px;
+      }
+      .search_input{
+        /*float: left;*/
+        width: 60%;
+      }
+      .start-time{
+        width: 30%;
+      }
+      .date-line {
+        width: 10px;
+        border-bottom: 1px solid #e6e6e6;
+        display: inline-block;
+        margin: 0 3px 3px 0
+      }
+      .buttonCol button{
+        float: right;
+        margin-right: 20px;
+      }
+    }
+    .table_style{
+      width: 96%;
+      min-width: 1079px;
+      margin-left: 20px;
+      margin-top: 20px;
+      float: left;
+    }
+    .block{
+      float: left;
+      margin-left: 600px;
+      margin-top: 70px;
+      margin-bottom: 30px;
+    }
   }
 </style>

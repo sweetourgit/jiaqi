@@ -1,78 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import userList from '@/page/account/userList/userList'
-import userList1 from '@/page/account/userList/userList1'//临时文件
-import organList from '@/page/account/organList/organList'
-import role from '@/page/account/role/role'
-import perList from '@/page/account/perList/perList'
-import accountInfor from '@/page/perCenter/accountInfor/accountInfor'
-import positionList from '@/page/account/positionList/positionList'
-import login from '@/page/login/login'
-import addRole from '@/page/account/role/addRole'
-import addUser from '@/page/account/userList/addUser/addUser'
-import cityList from '@/page/contentInfo/cityList/cityList'
-import customArea from '@/page/contentInfo/customArea/customArea'
-import scenicList from '@/page/contentInfo/scenicList/scenicList'
-import labelList from '@/page/contentInfo/labelList/labelList'
-import materialList from '@/page/contentInfo/materialList/materialList'
-import hotelList from '@/page/contentInfo/hotelList/hotelList'
-import supplierInfo from '@/page/contentInfo/supplierInfo/supplierInfo'
-import productList from '@/page/productManagement/productList/productList'
-import baseInfo from '@/page/productManagement/listInfo/listInfo'
-import listInfoScenic from '@/page/productManagement/listInfoScenic/listInfoScenic'
-import travelTemplate from '@/page/productManagement/travelTemplate/travelTemplate'
-//团期计划
-import regimentPlan from '@/page/productManagement/regimentPlan/regimentPlan'
-import teamPlanList from '@/page/productManagement/regimentPlan/children/team/teamPlanList'
-import scenicTicketingList from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingList'
-import scenicTicketingDetails from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingDetails'
-import scenicTicketingPledging from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingPledging'
-import scenicTicketingBillReporting from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingBillReporting'
-import sharedInventory from '@/page/productManagement/sharedInventory/sharedInventory'
-import changePro from '@/page/productManagement/changePro/changePro'
-import changeInfo from '@/page/productManagement/changeInfo/changeInfo'
-import blacklist from '@/page/contentInfo/blacklist/blacklist'
-import workFlowList from '@/page/contentInfo/workFlowList/workFlowList'//工作流接口查询管理t
-import merchantInfo from '@/page/contentInfo/merchantInfo/merchantInfo'
-import merchantInfo1 from '@/page/contentInfo/merchantInfo/merchantInfo1'
-import controlList from '@/page/contentInfo/priManagement/controlList'
-import priList from '@/page/contentInfo/priManagement/priList'
-import proList from '@/page/contentInfo/proList/proList'
-import orderList from '@/page/orderManagement/orderList/orderList'
-import externalOrderList from '@/page/orderManagement/externalOrderList/externalOrderList'
-import canRecognition from '@/page/orderManagement/externalOrderList/canRecognition'
-import noRecognition from '@/page/orderManagement/externalOrderList/noRecognition'
-import noCost from '@/page/orderManagement/externalOrderList/noCost'
-import recognitionMsg from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionMsg'
-// import recognitionDo from '@/page/orderManagement/externalOrderList/recognitionMsg/recognitionDo'
-import importHistory from '@/page/orderManagement/externalOrderList/importHistory'
-import loanManagement from '@/page/Finance/loanManagement/loanManagement'
-import advancePayment from '@/page/Finance/advancePayment/advancePayment'
-import reimburseManagement from '@/page/Finance/reimburseManagement/reimburseManagement'
-import arrearsManagement from '@/page/Finance/arrearsManagement/arrearsManagement'
-import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement'
-import predepositManagement from '@/page/Finance/predepositManagement/predepositList'
-import bankAccount from '@/page/Finance/bankAccount/bankAccount'
-import pledgingManagement from '@/page/Finance/pledgingManagement/pledgingManagement'
-import pledgingManagementApproval from '@/page/Finance/pledgingManagement/pledgingManagementApproval'
-import pledgingManagementSee from '@/page/Finance/pledgingManagement/pledgingManagementSee'
-import enrollTypeA from '@/page/contentInfo/enrollType/enrollTypeA'
-import enrollTypeB from '@/page/contentInfo/enrollType/enrollTypeB'
-import checkSheet from '@/page/Finance/checkSheet/checkSheet'
-import packageTour from '@/page/productManagement/productList/tab/packageTour'
-import scenicOrTicketList from '@/page/productManagement/productList/tab/scenicOrTicketList'
-import listInfoEdit from '@/page/productManagement/listInfoScenic/listInfoEdit'
-import balanceOrder from '@/page/Finance/balanceOrder/balanceOrder'
-import distributorsInfo from'@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo'
+
 Vue.use(Router);
 
 export default new Router({
   routes: [{
       path: '/',
       redirect: 'login',
-    }, {
+    },  {
+      path: '/blankPages',
+      component: () => import('@/page/blank/blankPages/blankPages'),
+      name: '空白页',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
       path: '/userList',
-      component: userList,
+      component: () => import('@/page/account/userList/userList'),
       name: '用户列表',
       meta: {
         keepAlive: true,
@@ -80,14 +25,14 @@ export default new Router({
       }
     },{
       path: '/userList1',
-      component: userList1,
+      component: () => import('@/page/account/userList/userList1'),
       meta: {
         keepAlive: true,
         auth: true
       }
     }, {
       path: '/organList',
-      component: organList,
+      component: () => import('@/page/account/organList/organList'),
       name: '组织列表',
       meta: {
         keepAlive: true,
@@ -96,7 +41,7 @@ export default new Router({
       }
     }, {
       path: '/role',
-      component: role,
+      component: () => import('@/page/account/role/role'),
       name: '角色模板',
       meta: {
         keepAlive: true,
@@ -104,7 +49,7 @@ export default new Router({
       }
     }, {
       path: '/addRole',
-      component: addRole,
+      component: () => import('@/page/account/role/addRole'),
       name: "添加角色权限模板",
       meta: {
         keepAlive: true,
@@ -121,7 +66,7 @@ export default new Router({
      }*/
     , {
       path: '/accountInfor',
-      component: accountInfor,
+      component: () => import('@/page/perCenter/accountInfor/accountInfor'),
       name: '个人中心',
       meta: {
         keepAlive: true,
@@ -129,13 +74,13 @@ export default new Router({
       }
     }, {
       path: '/login',
-      component: login,
+      component: () => import('@/page/login/login'),
       meta: {
         keepAlive: false
       }
     }, {
       path: '/positionList',
-      component: positionList,
+      component: () => import('@/page/account/positionList/positionList'),
       name: '职位列表',
       meta: {
         keepAlive: true,
@@ -143,14 +88,14 @@ export default new Router({
       }
     }, {
       path: '/userList',
-      component: userList,
+      component: () => import('@/page/account/userList/userList'),
       meta: {
         keepAlive: true,
         auth: true
       }
     }, {
       path: '/userList/addUser',
-      component: addUser,
+      component: () => import('@/page/account/userList/addUser/addUser'),
       name: '用户添加',
       meta: {
         keepAlive: true,
@@ -158,7 +103,7 @@ export default new Router({
       }
     }, {
       path: '/cityList',
-      component: cityList,
+      component: () => import('@/page/contentInfo/cityList/cityList1'),
       name: '区域列表',
       meta: {
         keepAlive: true,
@@ -166,7 +111,7 @@ export default new Router({
       }
     }, {
       path: '/customArea',
-      component: customArea,
+      component: () => import('@/page/contentInfo/customArea/customArea'),
       name: '自定义地区',
       meta: {
         keepAlive: true,
@@ -174,7 +119,7 @@ export default new Router({
       }
     }, {
       path: '/scenicList',
-      component: scenicList,
+      component: () => import('@/page/contentInfo/scenicList/scenicList'),
       name: '景点列表',
       meta: {
         keepAlive: true,
@@ -182,7 +127,7 @@ export default new Router({
       }
     }, {
       path: '/labelList',
-      component: labelList,
+      component: () => import('@/page/contentInfo/labelList/labelList'),
       name: '标签列表',
       meta: {
         keepAlive: true,
@@ -190,7 +135,7 @@ export default new Router({
       }
     }, {
       path: '/materialList',
-      component: materialList,
+      component: () => import('@/page/contentInfo/materialList/materialList'),
       name: '素材列表',
       meta: {
         keepAlive: true,
@@ -198,7 +143,7 @@ export default new Router({
       }
     }, {
       path: '/hotelList',
-      component: hotelList,
+      component: () => import('@/page/contentInfo/hotelList/hotelList'),
       name: '酒店列表',
       meta: {
         keepAlive: true,
@@ -206,47 +151,63 @@ export default new Router({
       }
     }, {
       path: '/supplierInfo',
-      component: supplierInfo,
+      component: () => import('@/page/contentInfo/supplierInfo/supplierList/supplierList.vue'),
       name: '供应商信息',
       meta: {
         keepAlive: true,
         auth: true
       }
     }, {
+      path: '/supplierAdd',
+      component: () => import('@/page/contentInfo/supplierInfo/supplierEdit/supplierEdit.vue'),
+      name: '新增供应商',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/supplierEdit',
+      component: () => import('@/page/contentInfo/supplierInfo/supplierEdit/supplierEdit.vue'),
+      name: '编辑供应商',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/supplierDetails',
+      component: () => import('@/page/contentInfo/supplierInfo/supplierDetails/supplierDetails'),
+      name: '供应商详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/merchantInfo',
-      component: merchantInfo,
+      component: () => import('@/page/contentInfo/merchantInfo/merchantInfo1'),
       name: '商户信息',
       meta: {
         keepAlive: true,
         auth: true
       }
-    }, {
-      path: '/merchantInfo1',
-      component: merchantInfo1,
-      name: '商户信息1',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
     },{
-      path: '/priList',
-      component: priList,
+      path: '/actList',
+      component: () => import('@/page/contentInfo/priManagement/actList'),
       name: '功能列表',
       meta: {
         keepAlive: true,
         auth: true
       }
-    }, {
+    }, /*{
       path: '/proList',
-      component: proList,
+      //component: proList,
       name: '权限列表',
       meta: {
         keepAlive: true,
         auth: true
       }
-    }, {
+    },*/ {
       path: '/blacklist',
-      component: blacklist,
+      component: () => import('@/page/contentInfo/blacklist/blacklist'),
       name: '黑名单',
       meta: {
         keepAlive: true,
@@ -254,7 +215,7 @@ export default new Router({
       }
     }, {
       path: '/enrollTypeA',
-      component: enrollTypeA,
+      component: () => import('@/page/contentInfo/enrollType/enrollTypeA'),
       name: '报名类型A',
       meta: {
         keepAlive: true,
@@ -262,7 +223,7 @@ export default new Router({
       }
     }, {
       path: '/enrollTypeB',
-      component: enrollTypeB,
+      component: () => import('@/page/contentInfo/enrollType/enrollTypeB'),
       name: '报名类型B',
       meta: {
         keepAlive: true,
@@ -270,7 +231,7 @@ export default new Router({
       }
     },{
       path: '/workFlowList',
-      component: workFlowList,
+      component: () => import('@/page/contentInfo/workFlowList/workFlowList'),
       name: '工作流接口查询管理',
       meta: {
         keepAlive: true,
@@ -278,8 +239,8 @@ export default new Router({
       }
     },
     {
-      path: '/controlList',
-      component: controlList,
+      path: '/menuList',
+      component: () => import('@/page/contentInfo/priManagement/menuList'),
       name: '权限配置',
       meta: {
         keepAlive: true,
@@ -287,12 +248,12 @@ export default new Router({
       }
     }, {
       path: '/productList',
-      component: productList,
+      component: () => import('@/page/productManagement/productList/productList'),
       name: '产品列表',
       children: [{
         path: 'packageTour',
         name: '跟团游',
-        component: packageTour,
+        component: () => import('@/page/productManagement/productList/tab/packageTour'),
         meta: {
           keepAlive: true,
           auth: true
@@ -301,7 +262,7 @@ export default new Router({
         {
           path: 'scenicOrTicketList',
           name: '景区/票务',
-          component: scenicOrTicketList,
+          component: () => import('@/page/productManagement/productList/tab/scenicOrTicketList'),
           meta: {
             keepAlive: true,
             auth: true
@@ -310,7 +271,7 @@ export default new Router({
       ]
     }, {
       path: '/listInfo',
-      component: baseInfo,
+      component: () => import('@/page/productManagement/listInfo/listInfo'),
       name: '添加跟团游',
       meta: {
         keepAlive: true,
@@ -318,7 +279,7 @@ export default new Router({
       }
     }, {
       path: '/listInfoScenic',
-      component: listInfoScenic,
+      component: () => import('@/page/productManagement/listInfoScenic/listInfoScenic'),
       name: '添加景区/票务',
       meta: {
         keepAlive: true,
@@ -326,7 +287,7 @@ export default new Router({
       }
     }, {
       path: '/listInfoEdit',
-      component: listInfoEdit,
+      component: () => import('@/page/productManagement/listInfoScenic/listInfoEdit'),
       name: '编辑景区/票务',
       meta: {
         keepAlive: true,
@@ -334,7 +295,7 @@ export default new Router({
       }
     }, {
       path: '/travelTemplate',
-      component: travelTemplate,
+      component: () => import('@/page/productManagement/travelTemplate/travelTemplate'),
       name: '出行模板',
       meta: {
         keepAlive: true,
@@ -342,12 +303,12 @@ export default new Router({
       }
     }, {
       path: '/regimentPlan',
-      component: regimentPlan,
+      component: () => import('@/page/productManagement/regimentPlan/regimentPlan'),
       name: '团期计划',
       children: [{
           path: 'teamPlanList',
           name: '团期计划列表',
-          component: teamPlanList,
+          component: () => import('@/page/productManagement/regimentPlan/children/team/teamPlanList'),
           meta: {
             keepAlive: true,
             auth: true
@@ -356,7 +317,7 @@ export default new Router({
         {
           path: 'scenicTicketingList',
           name: '景区/票务',
-          component: scenicTicketingList,
+          component: () => import('@/page/productManagement/regimentPlan/children/scenic/scenicTicketingList'),
           meta: {
             keepAlive: true,
             auth: true
@@ -368,7 +329,7 @@ export default new Router({
     {
       path: '/scenicTicketingDetails',
       name: '产品管理  /团期计划  /详情',
-      component: scenicTicketingDetails,
+      component: () => import('@/page/productManagement/regimentPlan/children/scenic/scenicTicketingDetails'),
       meta: {
         keepAlive: true,
         auth: true
@@ -376,7 +337,7 @@ export default new Router({
     }, {
       path: '/scenicTicketingPledging',
       name: '产品管理  /团期计划  /认款',
-      component: scenicTicketingPledging,
+      component: () => import('@/page/productManagement/regimentPlan/children/scenic/scenicTicketingPledging'),
       meta: {
         keepAlive: true,
         auth: true
@@ -384,14 +345,14 @@ export default new Router({
     }, {
       path: '/scenicTicketingBillReporting',
       name: '产品管理  /团期计划  /报账单',
-      component: scenicTicketingBillReporting,
+      component: () => import('@/page/productManagement/regimentPlan/children/scenic/scenicTicketingBillReporting'),
       meta: {
         keepAlive: true,
         auth: true
       },
     }, {
       path: '/orderList',
-      component: orderList,
+      component: () => import('@/page/orderManagement/orderList/orderList'),
       name: '订单管理',
       meta: {
         keepAlive: true,
@@ -399,12 +360,12 @@ export default new Router({
       }
     }, {
       path: '/externalOrderList',
-      component: externalOrderList,
+      component: () => import('@/page/orderManagement/externalOrderList/externalOrderList'),
       name: '外部订单',
       children: [{
         path: 'canRecognition',
         name: '外部订单  /可认款报账',
-        component: canRecognition,
+        component: () => import('@/page/orderManagement/externalOrderList/canRecognition'),
         meta: {
           keepAlive: true,
           auth: true
@@ -412,15 +373,7 @@ export default new Router({
       }, {
           path: 'noRecognition',
           name: '外部订单  /未认收款',
-          component: noRecognition,
-          meta: {
-            keepAlive: true,
-            auth: true
-          },
-        }, {
-          path: 'noCost',
-          name: '外部订单  /无成本',
-          component: noCost,
+          component: () => import('@/page/orderManagement/externalOrderList/noRecognition'),
           meta: {
             keepAlive: true,
             auth: true
@@ -429,7 +382,7 @@ export default new Router({
       ]
     }, {
       path: '/importHistory',
-      component: importHistory,
+      component: () => import('@/page/orderManagement/externalOrderList/importHistory'),
       name: '外部订单管理/订单管理/导入历史',
       meta: {
         keepAlive: true,
@@ -437,7 +390,7 @@ export default new Router({
       }
     }, {
       path: '/recognitionMsg',
-      component: recognitionMsg,
+      component: () => import('@/page/orderManagement/externalOrderList/recognitionMsg/recognitionMsg'),
       name: '订单管理/外部订单/认收款信息',
       meta: {
         keepAlive: true,
@@ -453,7 +406,7 @@ export default new Router({
       }
     },*/ {
       path: '/sharedInventory',
-      component: sharedInventory,
+      component: () => import('@/page/productManagement/sharedInventory/sharedInventory'),
       name: '共享库存',
       meta: {
         keepAlive: true,
@@ -461,7 +414,7 @@ export default new Router({
       }
     }, {
       path: '/changePro',
-      component: changePro,
+      component: () => import('@/page/productManagement/listInfo/listInfo'),
       name: '编辑产品',
       meta: {
         keepAlive: true,
@@ -469,8 +422,25 @@ export default new Router({
       }
     }, {
       path: '/changeInfo',
-      component: changeInfo,
+      component: () => import('@/page/productManagement/changeInfo/changeInfo'),
       name: '行程信息',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/planInventory',
+      component: () => import('@/page/productManagement/planInventory/index'),
+      name: '团期/库存',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/approve',
+      component: () => import('@/page/Finance/approve/approveList'),
+      name: '需要您审批',
       meta: {
         keepAlive: true,
         auth: true
@@ -478,7 +448,7 @@ export default new Router({
     },
     {
       path: '/loanManagement',
-      component: loanManagement,
+      component: () => import('@/page/Finance/loanManagement/loanManagement'),
       name: '无收入借款管理',
       meta: {
         keepAlive: true,
@@ -487,7 +457,7 @@ export default new Router({
     },
     {
       path: '/advancePayment',
-      component: advancePayment,
+      component: () => import('@/page/Finance/advancePayment/advancePayment'),
       name: '预付款管理',
       meta: {
         keepAlive: true,
@@ -496,7 +466,7 @@ export default new Router({
     },
     {
       path: '/reimburseManagement',
-      component: reimburseManagement,
+      component: () => import('@/page/Finance/reimburseManagement/reimburseManagement'),
       name: '报销管理',
       meta: {
         keepAlive: true,
@@ -504,16 +474,35 @@ export default new Router({
       }
     },
     {
+      path: '/invoiceManagement',
+      component: () => import('@/page/Finance/invoiceManagement/invoiceManagement'),
+      name: '发票管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/collectionManagement',
-      component: collectionManagement,
+      component: () => import('@/page/Finance/collectionManagement/collectionManagement'),
       name: '收款管理',
       meta: {
         keepAlive: true,
         auth: true
       }
-    },{
+    },
+    {
+      path: '/gatheringDel',
+      component: () => import('@/page/Finance/collectionManagement/distributorsInfo/gatheringDel'),
+      name: ' 收款管理/详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path:'distributorsInfo',
-      component:distributorsInfo,
+      component:　() => import('@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo'),
       name:'分销商收款',
       meta:{
         keepAlive:true,
@@ -522,16 +511,31 @@ export default new Router({
     },
     {
       path: '/arrearsManagement',
-      component: arrearsManagement,
+      component: () => import('@/page/Finance/arrearsManagement/arrearsManagement'),
       name: '供应商欠款管理',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
+      children: [{
+          path: 'arrearsList',
+          name: '欠款列表',
+          component: () => import('@/page/Finance/arrearsManagement/arrearsList/arrearsList'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'supplierArrears',
+          name: '供应商欠款',
+          component: () => import('@/page/Finance/arrearsManagement/supplierArrears/supplierArrears'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+      ]
     },
     {
       path: '/predepositManagement',
-      component: predepositManagement,
+      component: () => import('@/page/Finance/predepositManagement/predepositList'),
       name: '客商预存款管理',
       meta: {
         keepAlive: true,
@@ -540,7 +544,7 @@ export default new Router({
     },
     {
       path: '/bankAccount',
-      component: bankAccount,
+      component: () => import('@/page/Finance/bankAccount/bankAccount'),
       name: '银行账号管理',
       meta: {
         keepAlive: true,
@@ -548,7 +552,7 @@ export default new Router({
       }
     }, {
       path: '/pledgingManagement',
-      component: pledgingManagement,
+      component: () => import('@/page/Finance/pledgingManagement/pledgingManagement'),
       name: '财务认款管理',
       meta: {
         keepAlive: true,
@@ -556,7 +560,7 @@ export default new Router({
       }
     },{
       path: '/balanceOrder',
-      component: balanceOrder,
+      component: () => import('@/page/Finance/balanceOrder/balanceOrder'),
       name: '欠款订单管理',
       meta:{
         keepAlive:true,
@@ -565,7 +569,7 @@ export default new Router({
     },
     {
       path: '/pledgingManagementApproval',
-      component: pledgingManagementApproval,
+      component: () => import('@/page/Finance/pledgingManagement/pledgingManagementApproval'),
       name: '财务管理   / 财务认款管理   / 审批',
       meta: {
         keepAlive: true,
@@ -573,16 +577,101 @@ export default new Router({
       }
     }, {
       path: '/pledgingManagementSee',
-      component: pledgingManagementSee,
+      component: () => import('@/page/Finance/pledgingManagement/pledgingManagementSee'),
       name: '财务管理   / 财务认款管理   / 查看',
       meta: {
         keepAlive: true,
         auth: true
       }
     }, {
+      path: '/pledgingHistory',
+      component: () => import('@/page/Finance/pledgingManagement/pledgingHistory'),
+      name: '财务管理   / 财务认款管理   / 审批历史',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/checkSheet',
-      component: checkSheet,
+      component: () => import('@/page/Finance/checkSheet/checkSheet1'),
       name: '报账单',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/checkSheetDetail',
+      component: () => import('@/page/Finance/checkSheetDetail/checkSheetDetail'),
+      name: '报账单详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/addCheckSheet',
+      component: () => import('@/page/Finance/checkSheetDetail/checkSheetDetail'),
+      name: '新建报账单',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/businessRecognitionManagement',
+      component: () => import('@/page/Finance/businessRecognitionManagement/businessRecognitionManagement.vue'),
+      name: '业务待认款管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/aroundBorrowingManagement',
+      component: () => import('@/page/Finance/aroundBorrowingManagement/aroundBorrowingManagement.vue'),
+      name: '周边借款管理',
+      children: [{
+        path: 'noIncomeBorrowing',
+        component: () => import('@/page/Finance/aroundBorrowingManagement/noIncomeBorrowing.vue'),
+        name: '周边借款管理   /无收入借款',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }, {
+        path: 'advancePaymentAround',
+        component: () => import('@/page/Finance/aroundBorrowingManagement/advancePayment.vue'),
+        name: '周边借款管理   /预付款管理',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }, {
+        path: 'balancePaymentBorrowing',
+        component: () => import('@/page/Finance/aroundBorrowingManagement/balancePaymentBorrowing.vue'),
+        name: '周边借款管理   /余额支付借款',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }, {
+        path: 'pendingApproval',
+        component: () => import('@/page/Finance/aroundBorrowingManagement/pendingApproval.vue'),
+        name: '周边借款管理   /待审批',
+        meta: {
+          keepAlive: true,
+          auth: true
+        }
+      }]
+    }, {
+      path: '/bankStatement',
+      component: () => import('@/page/Finance/bankStatement/index.vue'),
+      name: '银行流水单管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/bankStatement/payDetails',
+      component: () => import('@/page/Finance/bankStatement/payDetails.vue'),
+      name: '银行流水单管理  /微信支付宝明细',
       meta: {
         keepAlive: true,
         auth: true
