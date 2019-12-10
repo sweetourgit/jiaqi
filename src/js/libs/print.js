@@ -36,7 +36,7 @@ Print.prototype = {
     }
     str += `
       <style>
-        ${(this.options.noPrint ? this.options.noPrint : '.no-print')}{
+        /*${(this.options.noPrint ? this.options.noPrint : '.no-print')}{
           display:none;
         }
         @media print {
@@ -44,10 +44,11 @@ Print.prototype = {
             size: 210mm 297mm;
             size: 297mm 420mm;
           }
-        }
+        }*/
         *{
           font-size: 14px;
         }
+        .row-bg {padding: 5px 0;font-size: 12px;}
       </style>
     `;
     return str;
@@ -106,7 +107,7 @@ Print.prototype = {
     doc = f.contentDocument || f.contentWindow.document;
     doc.open();
     /* 以下样式为无收入，预付款借款详情，临时新增样式。后期会做调整（避免命名重复） */
-    f.contentDocument.write('<style type="text/css"> .row-bg {padding: 23px 0;} .print-hidden{display: none;} .print-title{font-weight: bolder; font-size: 26px; text-align: center;margin-bottom: 30px; height: 60px; line-height: 60px; border-bottom: 1px solid #ccc;} </style>');
+    f.contentDocument.write('<style type="text/css"> .print-acount-padding{margin-top: 30px;} .row-bg {padding: 10px 0; font-size: 16px;} .print-hidden{display: none;} .print-title{font-weight: 400; font-size: 26px; text-align: center;margin-bottom: 30px; height: 60px; line-height: 60px; border-bottom: 1px solid #ccc;} </style>');
     doc.write(content);
     doc.close();
     var _this = this
