@@ -1,43 +1,46 @@
 <template>
   <div>
-    <div class="search">
-      <!--供应商-->
-      <span class="search-title">供应商</span>
-      <el-input placeholder="请输入" v-model="name" class="group-no"></el-input>
-      <!--搜索-->
-      <el-button type="primary" class="search-but" @click="search">搜索</el-button>
-      <el-button type="primary" plain @click="reset">重置</el-button>
-    
-      </br></br>
-      <el-button type="primary" :disabled="forbidden" @click="operation">查看</el-button>
-      <!--list-->
-      <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
-          <el-table-column prop="name" label="供应商名称" min-width="140" header-align="center"></el-table-column>
-          <el-table-column prop="price" label="欠款金额" min-width="60" header-align="center"></el-table-column>
-      </el-table>
-      <el-pagination v-if="pageshow" class="pagination"
-              @size-change="handleSizeChange"
-              background
-              @current-change="handleCurrentChange"
-              :current-page="1"
-              :page-sizes="[10, 30, 50, 100]"
-              :page-size="10"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total">
-      </el-pagination>
-      <supplier-detail :supplierID="supplierID" :variable="variable"></supplier-detail>
-    </div>
-  </div> 
+       <el-dialog title="供应商欠款详情" :visible.sync="dialogForm" class="city_list" width="1200px">
+            <div class="search">
+              <!--供应商-->
+              <span class="search-title">供应商</span>
+              <el-input placeholder="请输入" v-model="name" class="group-no"></el-input>
+              <!--搜索-->
+              <el-button type="primary" class="search-but" @click="search">搜索</el-button>
+              <el-button type="primary" plain @click="reset">重置</el-button>
+            
+              </br></br>
+              <el-button type="primary" :disabled="forbidden">查看</el-button>
+              <!--list-->
+              <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
+                  <el-table-column prop="name" label="供应商名称" min-width="140" header-align="center"></el-table-column>
+                  <el-table-column prop="price" label="欠款金额" min-width="60" header-align="center"></el-table-column>
+              </el-table>
+              <el-pagination v-if="pageshow" class="pagination"
+                      @size-change="handleSizeChange"
+                      background
+                      @current-change="handleCurrentChange"
+                      :current-page="1"
+                      :page-sizes="[10, 30, 50, 100]"
+                      :page-size="10"
+                      layout="total, sizes, prev, pager, next, jumper"
+                      :total="total">
+              </el-pagination>
+              <supplier-detail :supplierID="supplierID" :variable="variable"></supplier-detail>
+            </div>
+       </el-dialog>
+  </div>
 </template>
 
 <script>
-import supplierDetail from './comp/supplierDetail';
-export default{
-  components:{
-    "supplier-detail":supplierDetail
+export default {
+  props:{
+    supplierID:0,
+    variable:0
   },
-  data(){
+  data() {
     return {
+      dialogForm:false,
       name:"",
       pageshow:true,
       pageSize: 10, 
@@ -46,17 +49,15 @@ export default{
       arrearsList: [],
       multipleSelection: [],
       forbidden:true,
-      supplierID:0,
-      variable:0,
-
-
-
     }
   },
-  mounted(){
-    this.paymentpage();
+  watch: {
+      variable:function(){        
+        this.dialogForm=true;    
+        this.paymentpage();
+     }
   },
-  methods:{
+  methods: {
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'

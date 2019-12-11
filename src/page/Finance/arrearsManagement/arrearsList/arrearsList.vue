@@ -123,15 +123,15 @@ export default{
       this.paymentpage(val,this.pageSize);
     },
     search(){
-      this.pageIndex = 1;
       this.pageshow = false;
+      this.pageIndex = 1;
       this.paymentpage();
-      this.$nextTick(() => {
-          this.pageshow = true;
-      })
     },
     reset(){
-
+      this.supplierName = "";
+      this.groupCode = "";
+      this.op = "";
+      this.date = [];
     },
     formatDate(date) {
       var y = date.getFullYear();
@@ -152,17 +152,17 @@ export default{
           let y=startDate.getFullYear();
           let m=(startDate.getMonth()+1)>9?startDate.getMonth()+1:'0'+(startDate.getMonth()+1);
           let d=startDate.getDate()>9?startDate.getDate():'0'+startDate.getDate();
-          startDate=''+ y + m + d
+          startDate=''+ y +"-" + m + "-" + d;
         }else{
-          startDate=0
+          startDate = "0001-01-01";
         }
         if(endDate){
           let y=endDate.getFullYear();
           let m=(endDate.getMonth()+1)>9?endDate.getMonth()+1:'0'+(endDate.getMonth()+1);
           let d=endDate.getDate()>9?endDate.getDate():'0'+endDate.getDate();
-          endDate=''+ y + m + d
+          endDate=''+ y +"-" + m + "-" + d;
         }else{
-          endDate=0
+          endDate = "0001-01-01";
         }
         this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentpage',{
             "pageIndex": pageIndex,
@@ -170,9 +170,9 @@ export default{
             "object":{            
               "supplierName":supplierName,
               "groupCode": groupCode,
-              "startDate": startDate,
-              "endDate": endDate,
-              //"op":op,
+              "beginTime": startDate,
+              "endTime": endDate,
+              "name":op,
              }
           }).then(res => {
             this.arrearsList=[];
@@ -180,6 +180,9 @@ export default{
             if(res.data.isSuccess == true){
                this.arrearsList=res.data.objects;              
             }
+            this.$nextTick(() => {
+                this.pageshow = true;
+            })
           }).catch(err => {
             console.log(err)
           })
@@ -187,13 +190,12 @@ export default{
     operation(){
         this.paymentID = this.multipleSelection[0].id;
         this.variable++;       
-    }
+    },
   }
 };
 </script>
 
-<style>
-/*search*/
+<style scoped>
 .demo-input-suffix {
   padding: 20px 0 0px 20px;
   width: 1390px;
