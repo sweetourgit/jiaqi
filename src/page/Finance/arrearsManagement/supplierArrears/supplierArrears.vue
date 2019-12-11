@@ -9,7 +9,7 @@
       <el-button type="primary" plain @click="reset">重置</el-button>
     
       </br></br>
-      <el-button type="primary" :disabled="forbidden" @click="operation">查看</el-button>
+      <el-button type="primary" :disabled="forbidden" @click="operation" v-show="false">查看</el-button>
       <!--list-->
       <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
           <el-table-column prop="name" label="供应商名称" min-width="140" header-align="center"></el-table-column>

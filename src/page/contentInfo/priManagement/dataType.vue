@@ -1,6 +1,6 @@
 <template>
   <div> 
-      <el-dialog title="数据权限列表" :visible.sync="dialogDate" class="city_list" width="1000px" @close="close">
+      <el-dialog title="数据类型" :visible.sync="dialogDate" class="city_list" width="1000px" @close="close">
          <el-row class="button">
            <el-button @click="openAct(1,'新增')">新增</el-button>
            <el-button :disabled="forbidden" @click="delAct">删除</el-button>
@@ -77,7 +77,7 @@ export default {
   },
   watch: {
       variable:function(){           
-        if(this.dialogType == 2){
+        if(this.dialogType == 3){
           this.dialogDate = true;
           this.actList();   
         }
