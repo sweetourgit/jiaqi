@@ -284,6 +284,9 @@
             });
             that.loadingZK = false;
           }else{
+            that.totalZK = 0;
+            that.numZK = 0;
+            that.tableDataZK = [];
             that.loadingZK = false;
           }
         }).catch(function(obj) {
@@ -343,6 +346,9 @@
             });
             that.loadingTY = false;
           }else{
+            that.totalTY = 0;
+            that.numTY = 0;
+            that.tableDataTY = [];
             that.loadingTY = false;
           }
         }).catch(function(obj) {
@@ -395,6 +401,9 @@
             });
             that.loadingNBSK = false;
           }else{
+            that.totalNBSK = 0;
+            that.numNBSK = 0;
+            that.tableDataNBSK = [];
             that.loadingNBSK = false;
           }
         })

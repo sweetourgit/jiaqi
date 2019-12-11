@@ -304,7 +304,7 @@
               >
               </el-date-picker>
             </div>
-            <el-button type="primary" class="search" @click="getList()">搜索</el-button>
+            <el-button type="primary" class="search indialog_button" @click="getList()">搜索</el-button>
             <el-button class="indialog_button" @click="planStage()" type="primary">重置</el-button>
           </div>
           <div class="table_trip" style=" width: 100%;">
