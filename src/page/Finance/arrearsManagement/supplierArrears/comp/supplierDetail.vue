@@ -1,9 +1,9 @@
 <template>
   <div>
-       <el-dialog title="供应商欠款详情" :visible.sync="dialogForm" class="city_list" width="1200px">
+       <el-dialog title="供应商欠款详情" :visible.sync="dialogForm" class="city_list" width="1080px">
             <div class="search">
               <!--供应商-->
-              <span class="search-title">供应商</span>
+              <span class="search-title">团期</span>
               <el-input placeholder="请输入" v-model="name" class="group-no"></el-input>
               <!--搜索-->
               <el-button type="primary" class="search-but" @click="search">搜索</el-button>
@@ -13,8 +13,13 @@
               <el-button type="primary" :disabled="forbidden">查看</el-button>
               <!--list-->
               <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
-                  <el-table-column prop="name" label="供应商名称" min-width="140" header-align="center"></el-table-column>
-                  <el-table-column prop="price" label="欠款金额" min-width="60" header-align="center"></el-table-column>
+                  <el-table-column prop="name" label="团期" header-align="center"></el-table-column>
+                  <el-table-column prop="price" label="总欠款" min-width="80" header-align="center"></el-table-column>
+                  <el-table-column prop="price" label="订单总额" min-width="80" header-align="center"></el-table-column>
+                  <el-table-column prop="price" label="已审批总额" min-width="80" header-align="center"></el-table-column>
+                  <el-table-column prop="price" label="审批中总额" min-width="80" header-align="center"></el-table-column>
+                  <el-table-column prop="price" label="已收总额" min-width="80" header-align="center"></el-table-column>
+                  <el-table-column prop="price" label="供应商欠款总额" min-width="80" header-align="center"></el-table-column>
               </el-table>
               <el-pagination v-if="pageshow" class="pagination"
                       @size-change="handleSizeChange"
@@ -26,7 +31,6 @@
                       layout="total, sizes, prev, pager, next, jumper"
                       :total="total">
               </el-pagination>
-              <supplier-detail :supplierID="supplierID" :variable="variable"></supplier-detail>
             </div>
        </el-dialog> 
   </div>
@@ -111,22 +115,18 @@ export default {
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object":{            
-              "name":name,
+              "id":this.supplierID,
              }
           }).then(res => {
-            this.arrearsList=[];
-            this.total=res.data.total;
-            if(res.data.isSuccess == true){
-               this.arrearsList=res.data.objects;              
-            }
+           // this.arrearsList=[];
+           // this.total=res.data.total;
+           // if(res.data.isSuccess == true){
+           //    this.arrearsList=res.data.objects;              
+           // }
           }).catch(err => {
             console.log(err)
           })
-    },
-    operation(){
-        this.supplierID = this.multipleSelection[0].id;
-        this.variable++;       
-    },
+    }
   }
 };
 </script>
@@ -135,7 +135,7 @@ export default {
 /*search*/
 .search{
   padding-left: 20px;
-  width:800px;
+  width:1000px;
 }
 .el-input {
   width: auto;
