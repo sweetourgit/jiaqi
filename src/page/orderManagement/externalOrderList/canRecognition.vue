@@ -136,6 +136,7 @@
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
       <el-button type="primary" :disabled="reable" @click="relation" plain>关联报账团期</el-button>
       <el-button type="primary" :disabled="reable" @click="unbinding" plain>解绑报账团期</el-button>
+      <el-button type="primary" :disabled="reable" @click="backout">撤销认收款</el-button>
     </div>
     <!--功能按钮  end-->
     <!--table-->
@@ -214,7 +215,7 @@
           <el-table-column prop="bill_status" label="认收款信息" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="showBtn(scope.row)">查看</el-button>
-              <el-button type="text" @click="undoBtn(scope.row)" v-if="scope.row.pay_type != 5 || (scope.row.pay_type == 5 && scope.row.rec_id == null)  ">撤销</el-button>
+              <el-button type="text" @click="undoBtn(scope.row)" v-if="scope.row.pay_type != 5 || (scope.row.pay_type == 5 && scope.row.rec_id == null)">撤销</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -431,6 +432,62 @@
         }else{
           orderS = orderS.substr(0,orderS.length-1);
           this.$message.warning(orderS + "订单不是已关联或未报账状态，不可解绑");
+        }
+      },
+      // 批量撤销认收款
+      backout(){
+        console.log(this.multipleSelection);
+        let num = 0;
+        let orderS = '';
+        this.multipleSelection.forEach(function (item, index, arr) {
+          if(item.pay_type != 5 || (item.pay_type == 5 && item.rec_id == null)){
+
+          }else{
+            orderS += item.order_sn + ",";
+            num++;
+            return;
+          }
+        });
+        if(num == 0){
+          this.$confirm('是否需要讲选中订单撤销认收款?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+
+            let order_sn = '';
+            this.multipleSelection.forEach(function (item, index, arr) {
+              order_sn += item.order_sn + ','
+            });
+            order_sn = order_sn.substr(0,order_sn.length-1);
+            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/order/external-order/batchrevokerec', {
+              "order_sn": order_sn
+            }).then(res => {
+              console.log(res);
+              if (res.data.code == 200) {
+                this.$message({
+                  type: 'success',
+                  message: '撤销成功!'
+                });
+                this.loadData();
+              }else{
+                this.$message({
+                  type: 'warning',
+                  message: res.data.message
+                });
+              }
+            }).catch(err => {
+              console.log(err)
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
+        }else{
+          orderS = orderS.substr(0,orderS.length-1);
+          this.$message.warning(orderS + "订单不可撤销认收款");
         }
       },
       //查看
