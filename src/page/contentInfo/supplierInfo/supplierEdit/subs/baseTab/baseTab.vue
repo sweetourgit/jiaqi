@@ -10,7 +10,7 @@
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
         <el-form-item label="供应商名称：" prop="name">
-          <el-input size="small" placeholder="供应商名称" style="width: 100%;"
+          <el-input size="small" placeholder="供应商名称" style="width: 100%;" maxlength="40" show-word-limit
             v-model="submitForm.name"
             :disabled="isSave">
           </el-input>
@@ -18,7 +18,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="法人代表：" prop="legalPerson">
-          <el-input size="small" placeholder="法人代表" style="width: 100%;"
+          <el-input size="small" placeholder="法人代表" style="width: 100%;" maxlength="20" show-word-limit
             v-model="submitForm.legalPerson">
           </el-input>
         </el-form-item>
@@ -28,7 +28,7 @@
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
         <el-form-item label="供应商编码：" prop="supplierCode">
-          <el-input size="small" placeholder="供应商编码" style="width: 100%;"
+          <el-input size="small" placeholder="供应商编码" style="width: 100%;" maxlength="40" show-word-limit
             v-model="submitForm.supplierCode"
             :disabled="isSave">
           </el-input>
@@ -36,7 +36,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="合同编号：" prop="taxNumber">
-          <el-input size="small" placeholder="供应商名称" style="width: 100%;"
+          <el-input size="small" placeholder="合同编号" style="width: 100%;" maxlength="20" show-word-limit
             v-model="submitForm.taxNumber">
           </el-input>
         </el-form-item>
@@ -59,7 +59,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="经手人：" prop="handPerson">
-          <el-input size="small" placeholder="经手人" style="width: 100%;"
+          <el-input size="small" placeholder="经手人" style="width: 100%;" maxlength="20" show-word-limit
             v-model="submitForm.handPerson">
           </el-input>
         </el-form-item>
@@ -82,7 +82,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="经手人电话：" prop="handPhone">
-          <el-input size="small" placeholder="经手人电话" style="width: 100%;"
+          <el-input size="small" placeholder="经手人电话" style="width: 100%;" maxlength="20" show-word-limit
             v-model="submitForm.handPhone">
           </el-input>
         </el-form-item>
@@ -105,7 +105,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="负责人：" prop="leader">
-          <el-input size="small" placeholder="负责人" style="width: 100%;"
+          <el-input size="small" placeholder="负责人" style="width: 100%;" maxlength="20" show-word-limit
             v-model="submitForm.leader">
           </el-input>
         </el-form-item>
@@ -128,7 +128,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="负责人电话：" prop="phone">
-          <el-input size="small" placeholder="负责人电话" style="width: 100%;"
+          <el-input size="small" placeholder="负责人电话" style="width: 100%;" maxlength="20" show-word-limit
             v-model="submitForm.phone">
           </el-input>
         </el-form-item>
@@ -151,7 +151,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="操作负责人：" prop="billName">
-          <el-input size="small" placeholder="操作负责人" style="width: 100%;"
+          <el-input size="small" placeholder="操作负责人" style="width: 100%;" maxlength="20" show-word-limit
             v-model="submitForm.billName">
           </el-input>
         </el-form-item>
@@ -161,7 +161,7 @@
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
         <el-form-item label="产品主要方向：" prop="productDirection">
-          <el-input size="small" placeholder="产品主要方向" style="width: 100%;"
+          <el-input size="small" placeholder="产品主要方向" style="width: 100%;" maxlength="80" show-word-limit
             v-model="submitForm.productDirection">
           </el-input>
         </el-form-item>
@@ -188,7 +188,7 @@
       </el-col>
       <el-col :span="12">
         <el-form-item label="备注：" prop="memo">
-          <el-input size="small" placeholder="备注" style="width: 100%;"
+          <el-input size="small" placeholder="备注" style="width: 100%;" maxlength="100" show-word-limit
             v-model="submitForm.memo">
           </el-input>
         </el-form-item>
@@ -289,7 +289,7 @@ export default {
             },
             {
               validator: this.nameValidator, 
-              message: '供应商编码重复', 
+              message: '供应商名称重复', 
               trigger: 'blur'
             }
           ],

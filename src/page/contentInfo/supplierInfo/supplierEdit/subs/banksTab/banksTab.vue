@@ -35,6 +35,7 @@
     </main>
     <footer>
       <edit-form ref="editForm"
+        :table-data="tableData"
         @save-bank="saveBank">
       </edit-form>
     </footer>
@@ -119,7 +120,7 @@ export default {
         .then(() => {
           this.tableData.splice(index, 1);
         })
-      }
+      },
     }
   )
 
