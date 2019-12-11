@@ -41,7 +41,7 @@
         border: 1px solid #ddd;
         text-align: center;
         width: 14.28%;
-        & /deep/ .week-text{
+        & >>> .week-text{
           font-weight: bold;
           font-size: 18px;
         }
