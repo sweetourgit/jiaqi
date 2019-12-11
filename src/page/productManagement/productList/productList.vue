@@ -47,7 +47,7 @@
         this.activeName = "2"
       }else if(this.$route.path == "/productList/packageTour"){ // 跟团游
         this.activeName = "1"
-      }else if(val.path == "/productList/productVisa"){ // 签证
+      }else if(this.$route.path == "/productList/productVisa"){ // 签证
         this.activeName = "3"
       }
     },
