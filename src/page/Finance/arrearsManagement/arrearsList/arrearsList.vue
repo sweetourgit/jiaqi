@@ -28,7 +28,7 @@
           <el-table-column prop="title" label="产品名称" min-width="180" header-align="center"></el-table-column>
           <el-table-column label="发起时间" min-width="110" header-align="center">
              <template slot-scope="scope">{{formatDate(new Date(scope.row.createTime))}}</template> 
-          </el-table-column>
+          </el-table-column> 
           <el-table-column prop="supplierName" label="供应商名称" min-width="140" header-align="center"></el-table-column>
           <el-table-column prop="supplierType" label="类型" min-width="60" header-align="center"></el-table-column>
           <el-table-column prop="orgName" label="申请组织" min-width="90" header-align="center"></el-table-column>
