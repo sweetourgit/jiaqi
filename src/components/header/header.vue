@@ -27,7 +27,7 @@
              <div class="peo-list" v-for="item in peoList">{{item.orgName}}-{{item.name}}</div>
            </div>
       </el-dialog>
-    </div>
+    </div> 
 </template>
 
 <script>

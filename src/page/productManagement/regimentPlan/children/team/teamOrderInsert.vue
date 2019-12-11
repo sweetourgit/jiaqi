@@ -2483,6 +2483,7 @@ export default {
 .registration {
   float: left;
   margin: 12px;
+  text-align: center;
 }
 .el-input-number--medium {
   width: 170px;

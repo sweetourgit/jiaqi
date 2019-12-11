@@ -28,7 +28,7 @@
               </el-pagination>
               <supplier-detail :supplierID="supplierID" :variable="variable"></supplier-detail>
             </div>
-       </el-dialog>
+       </el-dialog> 
   </div>
 </template>
 

@@ -310,7 +310,6 @@ export default {
   text-align: center;
   margin: 10px 10px 10px 10px;
   max-width: 1400px;
-  padding: 1px;
 }
 .blue {
   color: #2e94f9;

@@ -26,7 +26,7 @@
                 </el-col>
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="6"> 
                 <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
               </el-col>
