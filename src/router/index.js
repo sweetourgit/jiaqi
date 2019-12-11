@@ -334,6 +334,30 @@ export default new Router({
         }
 
       ]
+    },{
+      path: '/orderManagement',
+      component: () => import('@/page/orderManagement/allOrders/orderManagement'),
+      name: '订单管理',
+      children: [{
+          path: 'orderList',
+          name: '订单管理-跟团游',
+          component: () => import('@/page/orderManagement/allOrders/orderList/orderList'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'visaOrderlist',
+          name: '订单管理-签证',
+          component: () => import('@/page/orderManagement/allOrders/visaOrder/visaOrderlist'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+
+      ]
     },
     {
       path: '/scenicTicketingDetails',
@@ -359,14 +383,6 @@ export default new Router({
         keepAlive: true,
         auth: true
       },
-    }, {
-      path: '/orderList',
-      component: () => import('@/page/orderManagement/orderList/orderList'),
-      name: '订单管理',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
     }, {
       path: '/externalOrderList',
       component: () => import('@/page/orderManagement/externalOrderList/externalOrderList'),
