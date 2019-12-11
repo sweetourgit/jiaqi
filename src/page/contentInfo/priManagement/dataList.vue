@@ -1,22 +1,16 @@
 <template>
   <div> 
-      <el-dialog title="功能列表" :visible.sync="dialogAct" class="city_list" width="1000px" @close="close">
+      <el-dialog title="数据权限列表" :visible.sync="dialogDate" class="city_list" width="1000px" @close="close">
          <el-row class="button">
-           <el-button @click="openAct(1,'新增动作')">新增</el-button>
+           <el-button @click="openAct(1,'新增')">新增</el-button>
            <el-button :disabled="forbidden" @click="delAct">删除</el-button>
-           <el-button :disabled="forbidden" @click="openAct(2,'编辑动作')">编辑</el-button>
+           <el-button :disabled="forbidden" @click="openAct(2,'编辑')">编辑</el-button>
          </el-row>
         <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-           <el-table-column  prop="characteristic" label="标识" min-width="60" align="center"></el-table-column>
-           <el-table-column  prop="uri" label="地址" min-width="150" align="center"></el-table-column>
-           <el-table-column  prop="name" label="名称" min-width="280" align="center"></el-table-column>
-           <el-table-column  prop="overt" label="公开" min-width="150" align="center">
-               <template slot-scope="scope">
-                  <div v-if="scope.row.overt == '1'">是</div>
-                  <div v-else>否</div>
-               </template>
-           </el-table-column>
+           <el-table-column  prop="characteristic" label="标识" min-width="60" align="center"></el-table-column>   
+           <el-table-column  prop="name" label="名称" min-width="200" align="center"></el-table-column>
+           <el-table-column  prop="uri" label="匹配" min-width="180" align="center"></el-table-column>
            <el-table-column  prop="remarks" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
          
@@ -25,19 +19,15 @@
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
              <el-form-item label="标识" prop="characteristic">
-                 <el-input v-model="rformB.characteristic"></el-input>
-             </el-form-item>
-             <el-form-item label="地址" prop="uri">
-                 <el-input v-model="rformB.uri"></el-input>
+                <el-select v-model="rformB.characteristic" placeholder="请选择标识" class="w270">
+                  <el-option :key="item.id" v-for="item in characteristics" :label="item.name" :value="item.id"></el-option>
+                </el-select>
              </el-form-item>
              <el-form-item label="名称" prop="name">
                  <el-input v-model="rformB.name"></el-input>
              </el-form-item>
-             <el-form-item label="公开" prop="overt">
-                 <el-radio-group v-model="rformB.overt">
-                   <el-radio label="1">是</el-radio>
-                   <el-radio label="2">否</el-radio>
-                 </el-radio-group>
+             <el-form-item label="匹配" prop="uri">
+                 <el-input v-model="rformB.uri"></el-input>
              </el-form-item>
              <el-form-item label="备注" prop="remarks">
                  <el-input v-model="rformB.remarks"></el-input>
@@ -60,35 +50,37 @@ export default {
   },
   data() {
     return {
-        dialogAct:false,
+        dialogDate:false,
         guid:"",
         groupList: [],
         multipleSelection: [],   //选中的list
         forbidden:true,         //按钮是否禁用
         title:"",
         dialogFormVisible:false,
+        characteristics:[
+          {name:'jack',id:1},
+          {name:'tom',id:2},
+        ],
         rformB: {
           id:0,
           characteristic:"",
           uri: "",
           name: "",
-          overt: "2",
           remarks: ""
         },
         rules: {
           characteristic: [{ required: true, message: '标识不能为空', trigger: 'blur' }],
-          uri: [{ required: true, message: '地址不能为空', trigger: 'blur' }],
+          uri: [{ required: true, message: '匹配不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-          overt: [{ required: true, message: '公开不能为空', trigger: 'blur' }],
         }
     }
   },
   watch: {
-      variable:function(){        
-        if(this.dialogType == 1){
+      variable:function(){           
+        if(this.dialogType == 2){
+          this.dialogDate = true;
           this.actList();   
-          this.dialogAct = true;  
-        }  
+        }
      }
   },
   methods: {
@@ -119,7 +111,7 @@ export default {
         }
       },
       close(){
-        this.dialogAct=false;
+        this.dialogDate=false;
       },
       actList(){  //获取Act
         this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/list',{
@@ -156,7 +148,7 @@ export default {
         });
       },
       saveAct(formName){
-         if(this.title == "新增动作"){
+         if(this.title == "新增"){
             this.insertAct(formName,'/org/act/api/insert');
          }else{
             this.insertAct(formName,'/org/act/api/save');
@@ -176,7 +168,6 @@ export default {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
                  this.rformB=data;
-                 this.rformB.overt += '';
               }
         }) 
       },
@@ -192,7 +183,6 @@ export default {
                         "name": this.rformB.name,
                         "createTime": 0,
                         "menuID": this.menuId,
-                        "overt": this.rformB.overt,
                         "guid": "",
                         "remarks": this.rformB.remarks
                     }
@@ -231,4 +221,5 @@ export default {
        .confirm{margin:0 140px 0 20px}
        .demo-ruleForm{margin:20px}
        .demo-ruleForm .el-input{width:300px}
+       .w270{width:300px}
 </style>
