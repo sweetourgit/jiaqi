@@ -267,6 +267,15 @@ export default new Router({
             keepAlive: true,
             auth: true
           },
+        },
+        {
+          path: 'productVisa',
+          name: '签证',
+          component: () => import('@/page/productManagement/productList/tab/productVisa'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
         }
       ]
     }, {
