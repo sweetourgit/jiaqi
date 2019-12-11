@@ -302,6 +302,14 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
+    },{
+      path: '/visaProducts',
+      component: () => import('@/page/productManagement/visa/visaProducts'),
+      name: '添加签证',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
     }, {
       path: '/travelTemplate',
       component: () => import('@/page/productManagement/travelTemplate/travelTemplate'),
