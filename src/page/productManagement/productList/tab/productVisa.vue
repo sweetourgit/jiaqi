@@ -35,7 +35,7 @@
     </div>
     <!--按钮-->
     <div class="productbut">
-      <el-button type="primary">添加</el-button>
+      <el-button type="primary" @click="addProducts">添加</el-button>
       <el-button :disabled="forbidden">编辑</el-button>
       <el-button :disabled="forbidden">预订</el-button>
       <el-button :disabled="forbidden">库存</el-button>
@@ -177,6 +177,9 @@ export default {
     handleCurrentChange(val) {
       this.pageIndex = val;
       this.pageList();
+    },
+    addProducts(){
+      this.$router.push({ path: "/visaProducts" });
     },
   }
 };

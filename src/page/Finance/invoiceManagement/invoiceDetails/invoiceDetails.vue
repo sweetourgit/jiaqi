@@ -7,7 +7,7 @@
         <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
         <el-button class="ml13" v-if="invoiceList.state!='3'" type="primary" @click="rejectedIncoice(invoiceID)">驳回</el-button>
         <el-button type="primary" v-if="invoiceList.state=='1'" @click="openInvoice(invoiceID)" class="ml13">开票</el-button>
-        <el-button type="primary" v-if="invoiceList.state=='2'" class="ml13">换发票</el-button>
+        <el-button type="primary" v-if="invoiceList.state=='2'" @click="changeInvoice(invoiceID)" class="ml13">换发票</el-button>
       </div>
       <div class="planBorder">
         <div class="order-title"><span>基本信息</span></div>
@@ -15,7 +15,7 @@
           <div v-if="invoiceList.state=='1'" class="state01">待开票</div>
           <div v-if="invoiceList.state=='2'">
             <div class="state02">已开票</div>
-            <div class="state03">发票号码:{{invoiceList.invoiceNumber}}</div>
+            <div class="state03">发票号码:{{originalBanks}}</div>
           </div>
           <div v-if="invoiceList.state=='3'" class="state04">开票驳回</div>
         </div>
@@ -58,7 +58,7 @@
               </td>
               <td width="33%">
                 <div width="80" class="fl">发票金额:</div>
-                <div class="fl ml13">{{invoiceList.invoicePrice}}</div>
+                <div class="fl ml13">{{invoicePrice}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl">直客/商户:</div>
@@ -96,8 +96,9 @@
                 </div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">发票时间:</div>
-                <div class="fl ml13" v-if="invoiceList.selStartGrantTime !='0' ">{{invoiceList.selStartGrantTime}}</div>
+                <div width="80" class="fl">开票日期:</div>
+                <div class="fl ml13" v-if="invoiceList.endTime !='0' ">{{formatDate01(new Date(invoiceList.endTime))}}</div>
+                <!-- <div class="fl ml13" v-if="invoiceList.selStartGrantTime !='0' ">{{invoiceList.selStartGrantTime}}</div> -->
               </td>
             </tr>
             <tr>
@@ -221,6 +222,7 @@ export default {
       online:0,
       ifOnly:true,
       originalBanks:'',
+      invoicePrice:'',
     };
 
   },
@@ -241,10 +243,10 @@ export default {
       if (this.dialogType == 1) { // 详情
         setTimeout(() => {
           this.getInvoice(this.invoiceID);
-        }, 200);
+        },200);
         this.dialogFormOrder = true;
       }else if(this.dialogType == 2){
-        setTimeout(() => {
+        setTimeout(() => { // 驳回
           this.rejectedIncoice(this.invoiceID);
         }, 200);
       }else if(this.dialogType == 3){
@@ -263,6 +265,20 @@ export default {
     },
   },
   methods: {
+    formatDate01(date) {//时间转化
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      var h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = date.getSeconds();
+      second = second < 10 ? "0" + second : second;
+      return y + "-" + m + "-" + d;
+    },
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
@@ -291,12 +307,13 @@ export default {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
-          this.guest = res.data.object.invoicePrice;
           this.invoiceList = res.data.object;
-          this.tableDate = res.data.object.ordelist;
+          this.guest = res.data.object.invoicePrice;
+          this.invoicePrice = res.data.object.invoicePrice; // 点击详情获取开票金额
+          this.tableDate = res.data.object.ordelist; // 点击详情获取关联订单表格
           this.invoiceDate.push(res.data.object);
           this.invoiceDate[0].invoicePrice = "";
-          this.originalBanks =  res.data.object.invoiceNumber;
+          this.originalBanks =  res.data.object.invoiceNumber; // 点击详情获取开票号
           this.invoiceDate[0].invoiceNumber = "";
         }
       });
@@ -336,6 +353,14 @@ export default {
     openInvoice(ID){ // 在详情弹窗里点击开票按钮
       this.invoiceDate = [];
       this.getInvoice(ID);
+      this.title = '开票';
+      this.dialogFormOrder = false;
+      this.openInvoiceShow = true;
+    },
+    changeInvoice(ID){
+      this.invoiceDate = [];
+      this.getInvoice(ID);
+      this.title = '换票';
       this.dialogFormOrder = false;
       this.openInvoiceShow = true;
     },
