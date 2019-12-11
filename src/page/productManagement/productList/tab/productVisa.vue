@@ -107,7 +107,11 @@ export default {
         value:'5',
         label:'商务签证'
       }],
-      tableDate:[],//表格
+      tableDate:[{
+        productID:'1'
+      },{
+        productID:'2'
+      }],//表格
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
