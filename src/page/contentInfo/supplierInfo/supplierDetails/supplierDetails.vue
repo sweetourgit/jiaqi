@@ -18,7 +18,7 @@
       position: fixed;
     }
   }
-  & /deep/ .grey-null{
+  & >>> .grey-null{
     color: grey;
   }
 }

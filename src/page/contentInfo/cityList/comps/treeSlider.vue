@@ -9,7 +9,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   box-sizing: border-box;
-  & /deep/ *{
+  & >>> *{
     font-size: 14px;
   }
   header{
