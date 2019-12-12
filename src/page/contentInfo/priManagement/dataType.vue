@@ -8,9 +8,8 @@
          </el-row>
         <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-           <el-table-column  prop="characteristic" label="标识" min-width="60" align="center"></el-table-column>   
            <el-table-column  prop="name" label="名称" min-width="200" align="center"></el-table-column>
-           <el-table-column  prop="uri" label="匹配" min-width="180" align="center"></el-table-column>
+           <el-table-column  prop="uri" label="值" min-width="180" align="center"></el-table-column>
            <el-table-column  prop="remarks" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
          
@@ -18,15 +17,10 @@
        <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
-             <el-form-item label="标识" prop="characteristic">
-                <el-select v-model="rformB.characteristic" placeholder="请选择标识" class="w270">
-                  <el-option :key="item.id" v-for="item in characteristics" :label="item.name" :value="item.id"></el-option>
-                </el-select>
-             </el-form-item>
              <el-form-item label="名称" prop="name">
                  <el-input v-model="rformB.name"></el-input>
              </el-form-item>
-             <el-form-item label="匹配" prop="uri">
+             <el-form-item label="值" prop="uri">
                  <el-input v-model="rformB.uri"></el-input>
              </el-form-item>
              <el-form-item label="备注" prop="remarks">
@@ -57,10 +51,6 @@ export default {
         forbidden:true,         //按钮是否禁用
         title:"",
         dialogFormVisible:false,
-        characteristics:[
-          {name:'jack',id:1},
-          {name:'tom',id:2},
-        ],
         rformB: {
           id:0,
           characteristic:"",
@@ -69,8 +59,7 @@ export default {
           remarks: ""
         },
         rules: {
-          characteristic: [{ required: true, message: '标识不能为空', trigger: 'blur' }],
-          uri: [{ required: true, message: '匹配不能为空', trigger: 'blur' }],
+          uri: [{ required: true, message: '值不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
         }
     }
