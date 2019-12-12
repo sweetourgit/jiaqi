@@ -790,10 +790,11 @@ export default {
                             type: "success",
                             message: "创建成功!"
                           });
+                          this.dialogFormVisible = false;
                           this.beginWokeing(res.data.object);
                           this.pageList();
                           //this.getUserList(1);
-                          this.dialogFormVisible = false;
+                         
                           this.ruleForm.editableTabs=[{
                               title: "报销1",
                               name: "1",
@@ -1403,8 +1404,9 @@ export default {
 
                 console.log(obj.data.objects,'查询数据');
                 that.pageCount = obj.data.total;
+
                   for(let j in obj.data.objects){
-                     this.tableData.push({
+                     that.tableData.push({
                       beginTime: obj.data.objects[j].beginTime,
                       checkType: obj.data.objects[j].checkType,
                       checkTypeEX:  obj.data.objects[j].checkTypeEX,
@@ -1419,7 +1421,7 @@ export default {
                       price:  obj.data.objects[j].price,
                 })
                 }
-                console.log(this.tableData,'查询数据');
+                console.log(that.tableData,'查询数据');
                 })
               .catch(function(obj) {
                 console.log(obj);
