@@ -11,7 +11,7 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="剩余金额" align="center">
+      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="transaction_time" label="交易时间" align="center">
       </el-table-column>
@@ -112,7 +112,11 @@ export default {
     },
     orderDetail(row){
       this.dialogFormVisible = true;
-      this.info = row.id;
+      this.info = {
+        id: row.id,
+        type: 2
+      };
+      
     },
     close(){
       this.dialogFormVisible = false;
@@ -163,17 +167,16 @@ export default {
     },
     loadData(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/page", {
+      // console.log(this.$route.query)
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search", {
         "pageIndex": this.pageCurrent,
         "pageSize": this.pageSize,
-        // "object": {
-        //   "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-        //   "transaction_reference_number": this.ruleForm.code,
-        //   "begin": this.ruleForm.dateStart ? this.ruleForm.dateStart : "2000-05-16",
-        //   "end": this.ruleForm.dateEnd ? this.ruleForm.dateEnd : "2099-05-16"
-        // }
+        "object": {
+          "purpose_Merchant_code": this.$route.query.purpose_Merchant_code,
+          "purpose_Date": this.$route.query.purpose_Date
+        }
       }).then(function (obj) {
-        console.log('微信支付宝明细',obj);
+        // console.log('微信支付宝明细',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;

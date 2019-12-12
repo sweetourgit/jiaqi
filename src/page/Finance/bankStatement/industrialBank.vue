@@ -44,8 +44,6 @@
     </el-form>
     <!-- 搜索表单 END -->
     <div class="buttonsDv">
-      <!-- <el-button @click="addStatement" type="primary">添加兴业银行流水单</el-button>
-      <el-button @click="addDetails" type="primary" plain>添加微信支付宝明细</el-button> -->
       <el-upload
         class="upload-demo"
         :action="UploadUrl1()"
@@ -177,12 +175,6 @@ export default {
         return ''
       }
     },
-    addStatement(){
-
-    },
-    addDetails(){
-
-    },
     UploadUrl1(){
       return this.GLOBAL.serverSrc + '/finance/industrialbank/api/ImportExcel';
     },
@@ -238,7 +230,10 @@ export default {
     },
     orderDetail(row){
       this.dialogFormVisible = true;
-      this.info = row.id;
+      this.info = {
+        id: row.id,
+        type: 1
+      };
     },
     close(){
       this.dialogFormVisible = false;
@@ -249,7 +244,8 @@ export default {
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',
         query: {
-          id: row.id
+          "purpose_Merchant_code": row.purpose_Merchant_code,
+          "purpose_Date": row.purpose_Date
         }
       });
     },

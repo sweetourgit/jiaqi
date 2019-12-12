@@ -200,7 +200,10 @@ export default {
     },
     orderDetail(row){
       this.dialogFormVisible = true;
-      this.info = row.id;
+      this.info = {
+        id: row.id,
+        type: 0
+      };
     },
     close(){
       this.dialogFormVisible = false;
