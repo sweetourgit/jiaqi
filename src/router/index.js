@@ -489,6 +489,15 @@ export default new Router({
       }
     },
     {
+      path: '/approve/splitLoan',
+      component: () => import('@/page/Finance/approve/splitLoan'),
+      name: '拆分借款单',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/loanManagement',
       component: () => import('@/page/Finance/loanManagement/loanManagement'),
       name: '无收入借款管理',

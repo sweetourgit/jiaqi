@@ -1,11 +1,9 @@
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
-      <el-col :span="6" :offset="18">
+      <el-col :span="6" :offset="21">
         <el-button type="warning" plain @click="handleCancel">取消</el-button>
-        <el-button type="primary" plain @click="handleSplitRepaymentJump">拆分/还款</el-button>
-        <el-button type="success" plain @click="handlePass">通过</el-button>
-        <el-button type="danger" plain @click="handleReject">驳回</el-button>
+        <el-button type="danger" plain @click="handleRevoke">撤销</el-button>
       </el-col>
     </el-row>
     <el-divider content-position="left" class='title-margin title-margin-t'>基本信息</el-divider>
@@ -94,6 +92,13 @@
                 </el-table-column>
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
+                <el-table-column prop="hkOfCf" label="还款/拆分" align="center"></el-table-column>
+                <el-table-column prop="peopleCount" label="操作" align="center" width="200">
+                  <template slot-scope="scope">
+                    <el-button type="success" size="small" plain v-if="scope.row.hkOfCf != '' || scope.row.hkOfCf == null">查看</el-button>
+                    <el-button type="primary" size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0">拆分/还款</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-row>
           </el-tab-pane>
@@ -103,33 +108,12 @@
         </el-tabs>
       </el-col>
     </el-row>
-    <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
-    <el-row type="flex" class="row-bg row-content" justify="space-between">
-      <el-table :data="examineData" border :header-cell-style="getRowClass">
-        <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
-        <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
-        <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
-        <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
-      </el-table>
-    </el-row>
-    <!-- 拆分/还款 -->
-    <el-dialog
-      title="拆分/还款"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose">
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleDialogKeep">保 存</el-button>
-      </span>
-    </el-dialog>
-    <!-- 拆分/还款 END -->
   </div>
 </template>
 
 <script>
   export default {
-    name: "approveDetail",
+    name: "splitLoan",
     created(){
 
     },
@@ -143,42 +127,47 @@
             supplierName: '供应商',
             supplierName: '申请人',
             paymentMark: '摘要',
-            paymentPrice: 20,
-            price: 5,
+            paymentPrice: 40,
+            price: 20,
             noPrice: 0,
-            peopleCount: '人数'
-          }
-        ],
-        examineData: [ // 审核
+            peopleCount: '人数',
+            hkOfCf: '还款'
+          },
           {
-            createTime: '2010',
-            spName: '审批人',
-            spState: '审批结果',
-            spContent: '审批意见',
+            paymentID: 1,
+            supplierTypeEX: '借款类型',
+            supplierName: '供应商',
+            supplierName: '申请人',
+            paymentMark: '摘要',
+            paymentPrice: 60,
+            price: 20,
+            noPrice: 0,
+            peopleCount: '人数',
+            hkOfCf: ''
+          },
+          {
+            paymentID: 1,
+            supplierTypeEX: '借款类型',
+            supplierName: '供应商',
+            supplierName: '申请人',
+            paymentMark: '摘要',
+            paymentPrice: 60,
+            price: 20,
+            noPrice: 0,
+            peopleCount: '人数',
+            hkOfCf: '拆分'
           }
-        ],
+        ]
       }
     },
     methods: {
-      // 弹窗保存
-      handleDialogKeep(){
-
-      },
       // 取消
       handleCancel(){
         this.$router.go(-1)
       },
-      // 通过
-      handlePass(){
+      // 撤销
+      handleRevoke(){
 
-      },
-      // 驳回
-      handleReject(){
-
-      },
-      // 拆分/还款
-      handleSplitRepaymentJump(){
-        this.$router.push({ path: "/approve/splitLoan" })
       },
       handleClick(){},
       // 表格表头颜色
