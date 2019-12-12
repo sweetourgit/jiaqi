@@ -179,16 +179,16 @@
           pay_type: ''
         };
 
-        this.$emit('close', false);
+        this.$emit('close', 'detail');
       },
       // 选择付款账户
       chooseAccount(row){
-//        this.info = this.info;
         this.dialogFormVisible2 = true;
       },
 
       close(){
         this.dialogFormVisible2 = false;
+        this.closeAdd();
       },
 
       // 撤销操作
@@ -229,7 +229,7 @@
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
-          console.log('工作流结束进程', response);
+          // console.log('工作流结束进程', response);
 
         }).catch(function(error) {
           console.log(error);
@@ -243,7 +243,7 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/info", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('详情',response);
+          // console.log('详情',response);
           if (response.data.code == '200') {
             response.data.data.info.created_at = formatDate(new Date(response.data.data.info.created_at*1000));
 
@@ -298,7 +298,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   that.baseInfo.supplier = response.data.object.name
                 } else {
@@ -340,7 +340,7 @@
               that.tableDataResult.forEach(function (item, index, arr) {
                 item.approval_at = formatDate(new Date(item.approval_at*1000));
                 that.getName(item.approval_uid).then(res => {
-                  console.log(res);
+                  // console.log(res);
                   item.approval_uid = res;
                 });
               })
@@ -370,7 +370,7 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(function(response) {
-          console.log('名字',response.data.object.name);
+          // console.log('名字',response.data.object.name);
           if (response.data.isSuccess) {
             return response.data.object.name;
           } else {
