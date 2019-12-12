@@ -178,7 +178,44 @@ export default{
             this.arrearsList=[];
             this.total=res.data.total;
             if(res.data.isSuccess == true){
-               this.arrearsList=res.data.objects;              
+               this.arrearsList=res.data.objects;
+               this.arrearsList.forEach(function(v,k,arr){   
+                  switch(arr[k]['supplierType']){
+                      case 1:
+                           arr[k]['supplierType'] = '地接'
+                           break;
+                      case 2:
+                           arr[k]['supplierType'] = '机票（本公司）'
+                           break;
+                      case 3:
+                           arr[k]['supplierType'] = '机票（非本公司）'
+                           break;
+                      case 4:
+                           arr[k]['supplierType'] = '小费'
+                           break;
+                      case 5:
+                           arr[k]['supplierType'] = '地接（其他）'
+                           break;
+                      case 6:
+                           arr[k]['supplierType'] = '火车票'
+                           break;
+                      case 7:
+                           arr[k]['supplierType'] = '汽车票'
+                           break;
+                      case 8:
+                           arr[k]['supplierType'] = '船票'
+                           break;
+                      case 9:
+                           arr[k]['supplierType'] = '其他'
+                           break;
+                      case 10:
+                           arr[k]['supplierType'] = '机票押金'
+                           break;
+                      case 11:
+                           arr[k]['supplierType'] = '火车票押金'
+                           break;
+                  }
+               })        
             }
             this.$nextTick(() => {
                 this.pageshow = true;
