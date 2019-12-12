@@ -5,8 +5,8 @@
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.approval_status == 1 && showBack == true">撤销</el-button>
-        <!-- baseInfo.type != 3 && baseInfo.approval_status == 3 && baseInfo.pay_type == null -->
-        <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.pay_type == null">选择付款账户</el-button>
+        <!-- 选择付款账户需求更改，改到审批时选择 -->
+        <!-- <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.pay_type == null">选择付款账户</el-button> -->
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>

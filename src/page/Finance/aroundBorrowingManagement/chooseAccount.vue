@@ -114,7 +114,8 @@
               type: 'success',
               message: '提交成功!'
             });
-            that.close();
+            // that.close();
+            this.$emit('close', 'success');
           } else {
             if(res.data.message){
               that.$message({
