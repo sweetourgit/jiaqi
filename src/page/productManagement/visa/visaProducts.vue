@@ -42,7 +42,9 @@ export default {
   width:150px;
 }
 .one{
-  width:40px; hidden:40px;
+  width:40px; 
+  hidden:40px;
+  bother:2px solid 
 }
 </style>
 
