@@ -1401,7 +1401,7 @@ export default {
                 object: object
               })
               .then(function(obj) {
-
+                that.tableData=[];
                 console.log(obj.data.objects,'查询数据');
                 that.pageCount = obj.data.total;
 
