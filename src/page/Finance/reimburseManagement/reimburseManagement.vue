@@ -45,7 +45,7 @@
             </div>
           </div>
           <div class="table_style">
-            <el-table  :data="tableData" border style="width: 100%;">
+            <el-table  :data="tableData" border style="width:100%;">
               <el-table-column prop="expenseID" label="报销单号" width="180" align="center"></el-table-column>
               <el-table-column prop="checkTypeEX" label="状态" width="180" align="center">
                 <template slot-scope="scope">
@@ -122,7 +122,7 @@
                 <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{item.content.createTime}}</span></div>
               </div>
 
-              <div style="color: red; position: absolute;left: 20px;top: 115px;">*</div>
+              <div style="color: red; position: absolute;left: 20px;top: 65px;">*</div>
                 <!-- <el-form-item label="团期计划" porp="groupCode">
                   <el-input
                     v-model="item.content.groupCode"
@@ -170,23 +170,25 @@
                     :disabled="change"
                   ></el-input>
                 </el-form-item>
-                <div style="color: red; color: red; position: absolute;top:177px;left: 48px;">*</div>
+                <div style="color: red; color: red; position: absolute;top:127px;left: 48px;">*</div>
                 <el-form-item label="附件：" label-width="140px" required>
                   <el-upload 
                   ref="image" 
                   prop="image"
                   class="upload-demo" 
+                  multiple
                   name="files"
                   :action= "uploadUrl"
                   :on-success="handleSucess" 
                   :on-change="handleChange"
-                  :on-remove="handleRemove" 
+                  :on-remove="handleRemove"
+                  :on-error="handleError" 
+                  :on-preview="handlePreview"
                   :before-remove="beforeRemove" 
-                  :file-list="item.content.fileList">
+                  :file-list="item.content.files">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
                 </el-form-item>
-
                 <div class="re_style">
                   <el-radio v-model="radio" label="1">关联单据</el-radio>
                   <!-- <el-radio v-model="radio" label="2">手添报销明细</el-radio> -->
@@ -244,7 +246,7 @@
                   </div>
                   <!-- <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div> -->
                 </div>
-                <div v-if="radio==2">
+                <!-- <div v-if="radio==2">
                   <div style="float:left;margin: 10px 0 0 65px;width: 70px;">报销明细:</div>
                   <div class="re_style" style="margin-top: 20px;">
                     <el-input
@@ -280,7 +282,7 @@
                     ></el-input>
                     <el-button type="danger" @click="removeDomain(domain)" v-if="find==0">删除</el-button>
                   </div>
-                </div>
+                </div> -->
               </el-tab-pane>
             </el-tabs>
 
@@ -373,7 +375,7 @@
       </el-dialog>
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
-      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body >
+      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body @close="t_text_del('joinData')" >
          <span class="search_style">供应商：</span>
               <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
           <div class="reform_s">
@@ -411,7 +413,7 @@
            </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible3 = false">取 消</el-button>
+          <el-button @click="t_text_del('joinData')">取 消</el-button>
           <el-button type="primary" @click="t_text('joinData')">确 定2</el-button>
         </div>
       </el-dialog>
@@ -525,18 +527,14 @@ export default {
               mark: "",
               t_sum:0,//一共多少项
               t_price:0,//一共多少钱
-              fileList:[],
+              files:[],
               payments:[],
               joinData:[],
               plan: {
                 planId: "",
                 planName: ""
               },
-              monkeys: {
-                mark: "0",
-                price: "0"
-              },
-       
+             
           }
         }
       ],
@@ -585,7 +583,7 @@ export default {
       payments:[],
       file: [],
       //文件上传列表
-      fileList: [],
+      files: [],
       
       tabIndex: 1
     };
@@ -595,21 +593,17 @@ export default {
         //切换时候，换内容
         tabClick() {
           console.log(9);
-          // this.ruleForm = {
-          //   groupCode: {
-          //     planId: "",
-          //     planName: ""
-          //   },
-          //   monkeys: {
-          //     mark: "0",
-          //     price: "0"
-          //   },
-          //   mark: ""
-          // }; 
-          // this.$refs[ruleForm].resetFields();
+           
         },
         chanceSubmit() { // 取消按钮
-          this.ruleForm.editableTabs=[{
+        if(this.find == 0){
+          this.$confirm("是否取消本次报销申请", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          })
+          .then(() => {
+               this.ruleForm.editableTabs=[{
                 title: "报销1",
                 name: "1",
                 content:{
@@ -621,38 +615,53 @@ export default {
                     mark: "",
                     t_sum:0,//一共多少项
                     t_price:0,//一共多少钱
-                    fileList:[],
+                    files:[],
                     payments:[],
                     joinData:[],
                     plan: {
                       planId: "",
                       planName: ""
                     },
-                    monkeys: {
-                      mark: "0",
-                      price: "0"
-                    },
-                  }
+                   }
               }];
-        this.tabIndex = 1;
-        this.radio= "1";
-        this.dialogFormVisible = false;
-          // this.ruleForm = {
-          //   groupCode:"",
-          //   productName:"",
-          //   monkeys: {
-          //     mark: "小费",
-          //     price: "1000.00"
-          //   },
-          //   mark: ""
-          //   }
-          // this.t_sum = 0;
-          // this.fileList=[];
-          // 
-          // this.t_price = 0;
-          // this.joinData_s = [];
-          // this.$refs[ruleForm].resetFields();
-          
+              this.tabIndex = 1;
+              this.radio= "1";
+              this.dialogFormVisible = false;
+
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消"
+            });
+          });
+       }else if(this.find == 1){
+              this.ruleForm.editableTabs=[{
+                    title: "报销1",
+                    name: "1",
+                    content:{
+                        createUser:"",
+                        createTime: "",
+                        id:"",
+                        groupCode: "",
+                        productName: "",
+                        mark: "",
+                        t_sum:0,//一共多少项
+                        t_price:0,//一共多少钱
+                        files:[],
+                        payments:[],
+                        joinData:[],
+                        plan: {
+                          planId: "",
+                          planName: ""
+                        },
+                       }
+                  }];
+              this.tabIndex = 1;
+              this.radio= "1";
+              this.dialogFormVisible = false;
+        }
+         
         },
         addplan(editableTabsValue) {//确定1
           let one = editableTabsValue - 1;
@@ -697,7 +706,7 @@ export default {
                           price:object[i].price,
                           paymentPrice:object[i].price,
                           bcount:0,
-                          createTime:object[i].createTime,
+                          createTime:object[i].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
                           supplierName:object[i].supplierName,
                           peopleCount:object[i].peopleCount,
                           orgName:object[i].orgName,
@@ -754,13 +763,13 @@ export default {
             this.endTime2 ="";//搜索用结束日期
             this.searchHand4(1)
         },
-        //删除
-        removeDomain(item) {
-          var index = this.domains.indexOf(item);
-          if (index !== -1) {
-            this.domains.splice(index, 1);
-          }
-        },
+        //  //删除
+        // removeDomain(item) {
+        //   var index = this.domains.indexOf(item);
+        //   if (index !== -1) {
+        //     this.domains.splice(index, 1);
+        //   }
+        // },
         //添加
         addDomain() {
           this.domains.push({
@@ -776,15 +785,38 @@ export default {
                       .then(res => {
                         console.log(res.data.isSuccess);
                         if (res.data.isSuccess == true) {
+                          this.pageList(1, this.pageSize);
                           this.$message({
                             type: "success",
                             message: "创建成功!"
                           });
+                          this.dialogFormVisible = false;
                           this.beginWokeing(res.data.object);
-                          this.reimList();
-                          this.getUserList(1);
-                          this.pageList(1, this.pageSize);
-                          
+                          this.pageList();
+                          //this.getUserList(1);
+                         
+                          this.ruleForm.editableTabs=[{
+                              title: "报销1",
+                              name: "1",
+                              content:{
+                                  createUser:"",
+                                  createTime: "",
+                                  id:"",
+                                  groupCode: "",
+                                  productName: "",
+                                  mark: "",
+                                  t_sum:0,//一共多少项
+                                  t_price:0,//一共多少钱
+                                  files:[],
+                                  payments:[],
+                                  joinData:[],
+                                  plan: {
+                                    planId: "",
+                                    planName: ""
+                                  },
+                                  
+                                }
+                            }];
                         }else{
                             this.$message({
                             type: "error",
@@ -795,21 +827,17 @@ export default {
                       .catch(err => {
                         console.log(err);
                       });
-                  this.dialogFormVisible = false;
+                 
                   
         },
         // 报销申请提交
         submitForm(ruleForm) {
           var joinData_sn=[];
-          var fileList_s=[];
+          var files_s=[];
           var editableTabs = ruleForm.editableTabs;
           for(var j in editableTabs){
               let submitForm_list = editableTabs[j].content;
-                if(submitForm_list.groupCode !=="" || submitForm_list.mark !== "" ||submitForm_list.fileList.length !== 0 ){ // 判断必填内容
-
-                  // for (var i = 0; i < this.domains.length; i++) {
-                  //     this.hand.push(this.domains[i]);
-                  //   };
+                if(submitForm_list.groupCode !=="" || submitForm_list.mark !== "" ||submitForm_list.files.length !== 0 ){ // 判断必填内容
                   // for (var i in submitForm_list.joinData_s) { //获取关联订单
                   //   joinData_sn.push({
                   //     price:submitForm_list.joinData_s[i].price,
@@ -817,10 +845,10 @@ export default {
                   //     peopleCount:submitForm_list.joinData_s[i].peopleCount
                   //   });
                   // };
-                  for (var i in submitForm_list.fileList) {//获取上传图片名字和地址
-                    fileList_s.push({
-                      name:submitForm_list.fileList[i].name,
-                      url:submitForm_list.fileList[i].url,
+                  for (var i in submitForm_list.files) {//获取上传图片名字和地址
+                    files_s.push({
+                      name:submitForm_list.files[i].name,
+                      url:submitForm_list.files[i].url,
                     });
                   };
                     
@@ -852,20 +880,21 @@ export default {
                             planID:this.plans.pid,//团期计划id
                             price:submitForm_list.t_price,//总价
                             mark:submitForm_list.mark,
-                            files: fileList_s , //关联数据
+                            files: files_s , //关联数据
                             payments: submitForm_list.payments, //关联付款单据报销明细
-                            others:this.domains,//手填报销记录明细
                             checkType:0,//审批状态 
                           })
-                          console.log(this.object_lisr,'ddb')
-                  
-              }else{
+                          //others:this.domains,//手填报销记录明细
+                          console.log(this.object_lisr,'ddb');
+                          this.add_form(this.object_lisr)//调用提交接口
+                }else{
+
                   this.$message({
                       message: '请检查必填项',
                       type: 'warning' 
                   });
               }
-              this.add_form(this.object_lisr)
+             
             }
             
 
@@ -922,7 +951,7 @@ export default {
             this.ruleForm.editableTabs[one_index].content.payments=[];
             for(let v in joinData){
                t_joinData.push({
-                  createTime: joinData[v].createTime,
+                  createTime: joinData[v].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
                   createUser:joinData[v].createUser,
                   groupCode:joinData[v].groupCode,
                   orgName: joinData[v].orgName,
@@ -947,6 +976,12 @@ export default {
             this.t_price_sum()
             this.dialogFormVisible3 = false;
             this.ruleForm.editableTabs[one_index].content.joinData=[];
+        },
+        t_text_del(){//确认取消
+         console.log("取消2");
+         let one_index = this.ruleForm.editableTabsValue - 1; 
+         this.dialogFormVisible3 = false;
+         this.ruleForm.editableTabs[one_index].content.joinData=[];
         },
         t_delete(paymentID){// 添加数据删除
           let one_index = this.ruleForm.editableTabsValue - 1;
@@ -996,16 +1031,6 @@ export default {
         },
         // 报销弹窗
         dialogchange() {
-          //  this.ruleForm = {
-          //   groupCode:"",
-          //   productName:"",
-          //   monkeys: {
-          //     mark: "小费",
-          //     price: "1000.00"
-          //   },
-          //   mark: ""
-          //   }
-          
           this.payments = [];
           this.find = 0;
           this.change = false;
@@ -1039,7 +1064,7 @@ export default {
                               d_price_box.push(d_objects[i].payments[s].price);
                               new_payments_box.push({
                                           code: d_objects[i].payments[s].code,
-                                          createTime: d_objects[i].payments[s].createTime,
+                                          createTime: d_objects[i].payments[s].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
                                           expenseID: d_objects[i].payments[s].expenseID,
                                           id: d_objects[i].payments[s].id,
                                           paymentID: d_objects[i].payments[s].paymentID,
@@ -1060,19 +1085,20 @@ export default {
 
                        d_objects_content.push({
                           createUser:d_objects[i].createUser,
-                          createTime: d_objects[i].createTime,
+                          createTime: d_objects[i].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
                           id:d_objects[i].id,
                           groupCode: d_objects[i].groupCode,
                           productName: d_objects[i].productName,
                           mark:  d_objects[i].mark,
                           t_sum:t_sum,//一共多少项
                           t_price:qian,//一共多少钱
-                          fileList:d_objects[i].fileList,
+                          files:d_objects[i].files,
                           payments:new_payments_box,
                           joinData:d_objects[i].joinData,
-                          others:d_objects[i].others,
+                         
 
                        })
+                       // others:d_objects[i].others,
                        console.log( d_objects_content,'大宝贝')
                     }
 
@@ -1153,11 +1179,11 @@ export default {
         handleSizeChange(val) {
           this.pageSize = val;
           this.currentPage4 = 1;
-          this.reimList();
+          this.pageList();
         },
         handleCurrentChange(val) {
           this.currentPage4 = val;
-          this.reimList();
+          this.pageList();
         },
         //选择报销人
         handleCurrentChange1(val) {
@@ -1165,26 +1191,35 @@ export default {
           console.log(`当前页: ${val}`);
         },
         //文件上传
-        handleChange(file, fileList) {
-          this.fileList = fileList.slice(-3);
+        handleChange(file, files) {
+          this.files = files.slice(-3);
         },
         //图片上传成功
-        handleSucess(res, file, fileList) {
+        handleSucess(res, file, files) {
           var paths = [];
           let one_index = this.ruleForm.editableTabsValue - 1;
-          this.ruleForm.editableTabs[one_index].content.fileList = fileList;
-          for (var i = 0; i < fileList.length; i++) {
-            paths = JSON.parse(fileList[i].response).paths[0];
-            this.$set(this.ruleForm.editableTabs[one_index].content.fileList[i], "url", paths.Url);
-            this.$set(this.ruleForm.editableTabs[one_index].content.fileList[i], "name", paths.Name);
+          this.ruleForm.editableTabs[one_index].content.files = files;
+          for (var i = 0; i < files.length; i++) {
+            paths = JSON.parse(files[i].response).paths[0];
+            this.$set(this.ruleForm.editableTabs[one_index].content.files[i], "url", paths.Url);
+            this.$set(this.ruleForm.editableTabs[one_index].content.files[i], "name", paths.Name);
           }
           this.image = 1;
         }, 
-        handleRemove(file, fileList) {//图片删除
-            console.log(file, fileList);
-            this.fileList = fileList;
+        handleRemove(file, files) {//图片删除
+            console.log(file, files);
+            this.files = files;
           },
-        beforeRemove(file, fileList) {
+        handleError(err, file) {// 上传失败
+          this.files = []
+        },
+       handlePreview(file) {
+            console.log(file);
+            window.open(file.url);
+          },
+        
+        beforeRemove(file, files) {
+
           return this.$confirm(`确定移除 ${ file.name }？`);
         },
         //添加报销和删除
@@ -1203,15 +1238,18 @@ export default {
             console.log( this.ruleForm.editableTabs );
           }
           if (action === "remove") {
-            console.log(this.ruleForm.editableTabs.length);
-            if (this.ruleForm.editableTabs.length == 1) {
-              console.log(123);
-            } else {
-              console.log(567);
-            }
-            console.log("报销" + targetName);
-            console.log(this.ruleForm.editableTabs);
-            let tabs = this.ruleForm.editableTabs;
+          //  if (this.ruleForm.editableTabs.length == 1) {
+          //     console.log(123);
+          //   } else {
+          //     console.log(567);
+          //   }
+           this.$confirm("是否需要删除 报销" + targetName, "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          })
+          .then(() => {
+           let tabs = this.ruleForm.editableTabs;
                 let activeName = this.ruleForm.editableTabsValue;
                 if (activeName === targetName) {
                   tabs.forEach((tab, index) => {
@@ -1226,6 +1264,15 @@ export default {
 
                 this.ruleForm.editableTabsValue = activeName;
                 this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
+
+          })
+          .catch(() => {
+            console.log(7);
+            this.$message({
+              type: "info",
+              message: "已取消"
+            });
+          });
           }
         },
       
@@ -1237,7 +1284,7 @@ export default {
               productName:"",
               id:"",
               mark:"",
-              fileList:[],
+              files:[],
               joinData:[],
               payments:[],
               t_sum:0,//一共多少项
@@ -1246,30 +1293,44 @@ export default {
                 planId: "",
                 planName: ""
               },
-              monkeys: {
-                mark: "0",
-                price: "0"
-              },
               }
         },
-        reimList() {  //获取报销列表数据
-            var that = this;
-            this.$http
-              .post(this.GLOBAL.serverSrc + "/finance/expense/api/page", {
-                pageIndex: this.currentPage4,
-                pageSize: this.pageSize,
-                total: 0,
-                object: {}
-              })
-              .then(function(obj) {
-                that.pageCount = obj.data.total;
-                that.tableData = obj.data.objects;
-                //console.log('获取列表报销数据',that.tableData);
-              })
-              .catch(function(obj) {
-                console.log(obj);
-              });
-        },
+        // reimList() {  //获取报销列表数据
+        //     var that = this;
+        //     this.$http
+        //       .post(this.GLOBAL.serverSrc + "/finance/expense/api/page", {
+        //         pageIndex: this.currentPage4,
+        //         pageSize: this.pageSize,
+        //         total: 0,
+        //         object: {}
+        //       })
+        //       .then(function(obj) {
+        //         that.pageCount = obj.data.total;
+        //         for(let j in obj.data.objects){
+        //              that.tableData.push({
+        //               beginTime: obj.data.objects[j].beginTime,
+        //               checkType: obj.data.objects[j].checkType,
+        //               checkTypeEX:  obj.data.objects[j].checkTypeEX,
+        //               createTime:  obj.data.objects[j].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
+        //               createUser:  obj.data.objects[j].createUser,
+        //               endTime:  obj.data.objects[j].endTime,
+        //               expenseID:  obj.data.objects[j].expenseID,
+        //               groupCode:  obj.data.objects[j].groupCode,
+        //               guid:  obj.data.objects[j].guid,
+        //               orgName:  obj.data.objects[j].orgName,
+        //               planID:  obj.data.objects[j].planID,
+        //               price:  obj.data.objects[j].price,
+        //         })
+        //         }
+               
+
+
+        //         //console.log('获取列表报销数据',that.tableData);
+        //       })
+        //       .catch(function(obj) {
+        //         console.log(obj);
+        //       });
+        // },
 
         T_check(){ //添加报销搜索
           this.joinData=[];
@@ -1293,19 +1354,20 @@ export default {
           },
         handleSearch() {// 搜索1
             this.pageIndex = 1;
-            this.pageList(1, this.pageSize);
             this.currentPage4 = 1;
+            this.pageList(1, this.pageSize);
+            
           },
         handleReset() { // 重置
             this.pageIndex = 1;
+            this.currentPage4 = 1;
             this.expenseID = "";
             this.groupCode = "";
             this.createUser = "";
             this.beginDate = "";
             this.endDate = "";
             this.pageList(1, this.pageSize);
-            this.currentPage4 = 1;
-          },
+         },
           //查询列表
         pageList(
             pageIndex = this.pageIndex,
@@ -1325,11 +1387,13 @@ export default {
               createUser !== ""? (object.createUser = createUser): createUser;
               beginDate !== ""? (object.beginDate = beginDate): beginDate;
               endDate !== ""? (object.endDate = endDate): endDate;
+
             if (endDate !== "" && beginDate !== "") {
                 object.beginDate = moment(beginDate).format("YYYY-MM-DD");
                 object.endDate = moment(endDate).format("YYYY-MM-DD");
                 } 
-            this.$http
+
+            that.$http
               .post(that.GLOBAL.serverSrc + "/finance/expense/api/page", {
                 pageIndex: that.currentPage4,
                 pageSize: that.pageSize,
@@ -1337,8 +1401,27 @@ export default {
                 object: object
               })
               .then(function(obj) {
-                  that.pageCount = obj.data.total;
-                  that.tableData = obj.data.objects;
+                that.tableData=[];
+                console.log(obj.data.objects,'查询数据');
+                that.pageCount = obj.data.total;
+
+                  for(let j in obj.data.objects){
+                     that.tableData.push({
+                      beginTime: obj.data.objects[j].beginTime,
+                      checkType: obj.data.objects[j].checkType,
+                      checkTypeEX:  obj.data.objects[j].checkTypeEX,
+                      createTime:  obj.data.objects[j].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
+                      createUser:  obj.data.objects[j].createUser,
+                      endTime:  obj.data.objects[j].endTime,
+                      expenseID:  obj.data.objects[j].expenseID,
+                      groupCode:  obj.data.objects[j].groupCode,
+                      guid:  obj.data.objects[j].guid,
+                      orgName:  obj.data.objects[j].orgName,
+                      planID:  obj.data.objects[j].planID,
+                      price:  obj.data.objects[j].price,
+                })
+                }
+                console.log(that.tableData,'查询数据');
                 })
               .catch(function(obj) {
                 console.log(obj);
@@ -1413,7 +1496,7 @@ export default {
      },
 
       created() {
-        this.reimList();
+        this.pageList();
         if (sessionStorage.getItem('hasCashierInfo')) {
           this.ifAccountBtn = true
         } else {
@@ -1429,8 +1512,10 @@ export default {
 
 <style scoped>
 .borders {
-  height: 900px;
-  border: 1px solid #e6e6e6;
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
 }
 .search {
   float: left;
@@ -1454,7 +1539,7 @@ export default {
 }
 .reform {
   float: left;
-  width: 1550px;
+  width: 99%;
   margin-left: 20px;
   margin-top: 20px;
 }
@@ -1464,7 +1549,7 @@ export default {
   margin-top: 20px;
 }
 .table_style {
-  width: 1500px;
+  width: 98%;
   margin-left: 20px;
   margin-top: 20px;
   float: left;
@@ -1473,7 +1558,7 @@ export default {
   float: left;
   margin-left: 600px;
   margin-top: 70px;
-  margin-bottom: 30px;
+  margin-bottom: 60px;
 }
 .reimbursementer {
   float: left;
@@ -1507,9 +1592,9 @@ export default {
   width: 30%;
 }
 .handle_div {
-  height: 100px;
-  line-height: 100px;
-  margin-left: 20px;
+  height: 50px;
+  line-height: 40px;
+  margin-left: 40px;
 }
 .handle_id {
   float: left;
