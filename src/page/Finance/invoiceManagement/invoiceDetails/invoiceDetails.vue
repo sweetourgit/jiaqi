@@ -144,12 +144,12 @@
         <div class="aggregate">总计:<span>{{guest| numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <!-- <el-table-column v-if="title == '换票'" label="原票号" align="center">
+        <el-table-column v-if="title == '换票'" label="原票号" align="center">
           <template slot-scope="scope">
             <span>{{originalBanks}}</span>
           </template>
-        </el-table-column> -->
-        <el-table-column prop="oldInvoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column>
+        </el-table-column>
+        <!-- <el-table-column prop="oldInvoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column> -->
         <el-table-column prop="invoiceHeader" v-if="title == '开票'" label="发票抬头" align="center"></el-table-column>
         <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center"></el-table-column>
         <el-table-column prop="tel" label="电话" align="center"></el-table-column>
