@@ -333,7 +333,9 @@
               approval_status: response.data.data.info.approval_status
             };
 
-
+            if(response.data.data.info.periphery_type == 3){
+              that.passButtonDo = false;
+            }
             if(response.data.data.info.pay_type){
               const payType = JSON.parse(response.data.data.info.pay_type);
               that.baseInfo.accountCode = payType.account;
