@@ -5,7 +5,8 @@
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.approval_status == 1 && showBack == true">撤销</el-button>
-        <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.approval_status == 3 && baseInfo.pay_type == null">选择付款账户</el-button>
+        <!-- baseInfo.type != 3 && baseInfo.approval_status == 3 && baseInfo.pay_type == null -->
+        <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.pay_type == null">选择付款账户</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -18,9 +19,9 @@
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
         <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
-        <p class="inputLabel" v-if="baseInfo.type != 1"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
-        <p class="inputLabel" v-if="baseInfo.type == 1"><span>借款金额：</span>{{baseInfo.money}}</p>
-        <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != '1'"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
+        <p class="inputLabel" v-if="baseInfo.type == '1'"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <!-- <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p> -->
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户行：</span>{{baseInfo.accountBank}}</p>

@@ -308,13 +308,21 @@
               type: response.data.data.info.periphery_type,
               money: response.data.data.info.loan_money,
               remark: response.data.data.info.mark,
-              account: response.data.data.info.supplier_code,
+              // account: response.data.data.info.supplier_code,
+              // accountBank: response.data.data.info.opening_bank,
+              // accountName: response.data.data.info.account_name,
+              accountCode: '',
+              account: response.data.data.info.remittance_account,
               accountBank: response.data.data.info.opening_bank,
               accountName: response.data.data.info.account_name,
-              accountCode: response.data.data.info.remittance_account,
               reimbursed_money: response.data.data.info.reimbursed_money,
               approval_status: response.data.data.info.approval_status
             };
+
+            if(response.data.data.info.pay_type){
+              const payType = JSON.parse(response.data.data.info.pay_type);
+              that.baseInfo.accountCode = payType.account;
+            }
 
             // 根据ID获取人名
             that.getName(response.data.data.info.create_uid).then(res => {
@@ -326,22 +334,6 @@
 //              console.log(res);
               that.baseInfo.orgName = res;
             });
-
-            // 根据分销商ID获取名称
-//            if(response.data.data.distributor_code){
-//              that.$http.post(that.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
-//                "id": response.data.data.distributor_code
-//              }).then(function(obj) {
-////              console.log('获取分销商',obj);
-//                if(obj.data.isSuccess){
-//                  that.baseInfo.distributor_code = obj.data.object.name;
-//                }else{
-//                  that.$message.warning("加载数据失败~");
-//                }
-//              }).catch(function(obj) {
-//                console.log(obj);
-//              });
-//            }
 
             // 获取供应商名称
             if(response.data.data.info.supplier_code){
@@ -368,22 +360,6 @@
               });
             }
 
-            // 根据账户ID获取账户名称
-//            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
-//              {
-//                "id": response.data.data.account_id
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-//                }
-//              }).then(function (obj) {
-////              console.log('账户查询',obj);
-//              if(obj.data.isSuccess){
-//                that.baseInfo.account = obj.data.object.title;
-//              }
-//            }).catch(function (obj) {
-//              console.log(obj)
-//            });
             // 凭证
             that.fileList = JSON.parse(response.data.data.info.file);
             for(let i = 0; i < that.fileList.length; i++){
