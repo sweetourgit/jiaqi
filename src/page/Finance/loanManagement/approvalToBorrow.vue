@@ -307,19 +307,19 @@ import moment from 'moment'
       },
       // 请求工作流接口获取未完成的任务
       pageList(){
-      console.log('请求工作流接口获取未完成的任务')
-      var that = this
-      var arr = []
-      that.tableData  = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
-        .then(obj => {
-          let getWorkflowCode
-          if(this.presentRouter == '无收入借款管理') {
-            getWorkflowCode = 'loan_noIncome2'
-          } else if(this.presentRouter == '预付款管理') {
-            getWorkflowCode = 'borrow_Moneys2'
-          }else {}
-          this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
+        console.log('请求工作流接口获取未完成的任务')
+        var that = this
+        var arr = []
+        that.tableData  = []
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+          .then(obj => {
+            let getWorkflowCode
+            if(this.presentRouter == '无收入借款管理') {
+              getWorkflowCode = 'loan_noIncome2'
+            } else if(this.presentRouter == '预付款管理') {
+              getWorkflowCode = 'borrow_Moneys2'
+            }else {}
+            this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
               "userCode": sessionStorage.getItem('tel'),
               "startTime": this.ruleFormSeach.planTime_01 ?  moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
