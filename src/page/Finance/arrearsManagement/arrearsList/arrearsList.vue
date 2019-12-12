@@ -192,7 +192,7 @@ export default{
 };
 </script>
 
-<style>
+<style scoped>
 /*search*/
 .demo-input-suffix {
   padding: 20px 0 0px 20px;
