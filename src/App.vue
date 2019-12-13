@@ -22,6 +22,16 @@ export default {
   components: {
     pageHeader,
     navLeft
+  },
+  watch:{
+    $route: {
+    handler: function(val, oldVal){
+          if(val.fullPath != "/login"){
+             
+          }
+        },
+        deep: true
+      }
   }
 }
 </script>

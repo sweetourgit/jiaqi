@@ -437,6 +437,7 @@
                       sessionStorage.setItem('name',res.data.name)
                       //sessionStorage.setItem('account',this.ruleForm.user)//刚掉account
                       sessionStorage.setItem('userCode',res.data.userCode)
+                      sessionStorage.setItem('jurisdiction',res.data.jurisdiction)
 
                       store.save('name',res.data.name)
                       this.$router.push('/blankPages')
