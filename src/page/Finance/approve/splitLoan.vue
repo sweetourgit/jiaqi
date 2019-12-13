@@ -2,8 +2,8 @@
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
       <el-col :span="6" :offset="21">
-        <el-button type="warning" plain @click="handleCancel">取消</el-button>
-        <el-button type="danger" plain @click="handleRevoke">撤销</el-button>
+        <el-button type="warning" @click="handleCancel">取消</el-button>
+        <el-button type="danger" @click="handleRevoke">撤销</el-button>
       </el-col>
     </el-row>
     <el-divider content-position="left" class='title-margin title-margin-t'>基本信息</el-divider>
@@ -44,7 +44,7 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
     <el-row class="row-content">
       <el-col :span="24">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tabs v-model="tabShowWhich" @tab-click="handleClick">
           <el-tab-pane label="用户管理" name="first">
             <el-row type="flex" class="row-bg" justify="space-between">
               <el-col :span="6">
@@ -95,8 +95,8 @@
                 <el-table-column prop="hkOfCf" label="还款/拆分" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="操作" align="center" width="200">
                   <template slot-scope="scope">
-                    <el-button type="success" size="small" plain v-if="scope.row.hkOfCf != '' || scope.row.hkOfCf == null">查看</el-button>
-                    <el-button type="primary" size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0">拆分/还款</el-button>
+                    <el-button type="success" plain size="small" plain v-if="scope.row.hkOfCf != '' || scope.row.hkOfCf == null">查看</el-button>
+                    <el-button type="primary" plain size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0">拆分/还款</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -119,7 +119,7 @@
     },
     data(){
       return {
-        activeName: 'jack',
+        tabShowWhich: 'first',
         reimbursementData: [ // 报销列表
           {
             paymentID: 1,

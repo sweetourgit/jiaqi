@@ -1,52 +1,59 @@
+<!-- 需要您审批列表页 -->
 <template>
   <div class="distributor-content">
-    <!-- 检索 -->
-    <div class="plan">
-      <el-row type="flex" class="row-bg">
-        <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="80px" id="form-content" style="margin-top: 20px">
+    <el-tabs v-model="tabShowWhich" @tab-click="handleClick" style="width: 98%;margin: 20px auto;">
+      <el-tab-pane label="报销管理" name="reimburse">
+        <!-- 检索 -->
+        <div class="plan">
           <el-row type="flex" class="row-bg">
-            <el-col :span="15">
-              <el-form-item label="申请时间:">
-                <el-col :span="11">
-                  <el-form-item prop="planTime_01">
-                    <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleFormSeach.planTime_01" style="width: 100%;"></el-date-picker>
+            <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="80px" id="form-content" style="margin-top: 20px">
+              <el-row type="flex" class="row-bg">
+                <el-col :span="15">
+                  <el-form-item label="申请时间:">
+                    <el-col :span="11">
+                      <el-form-item prop="planTime_01">
+                        <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleFormSeach.planTime_01" style="width: 100%;"></el-date-picker>
+                      </el-form-item>
+                    </el-col>
+                    <el-col style="text-align: center" :span="2">-</el-col>
+                    <el-col :span="11">
+                      <el-form-item prop="planData_01">
+                        <el-date-picker type="date" placeholder="选择结束日期" v-model="ruleFormSeach.planData_01" style="width: 100%;"></el-date-picker>
+                      </el-form-item>
+                    </el-col>
                   </el-form-item>
                 </el-col>
-                <el-col style="text-align: center" :span="2">-</el-col>
-                <el-col :span="11">
-                  <el-form-item prop="planData_01">
-                    <el-date-picker type="date" placeholder="选择结束日期" v-model="ruleFormSeach.planData_01" style="width: 100%;"></el-date-picker>
+                <el-col :span="8" style="text-align: right">
+                  <el-form-item>
+                    <el-button @click="HandleSearchApprove()" type="primary">搜索</el-button>
+                    <el-button @click="HandleResetApprove('ruleFormSeach')" type="primary">重置</el-button>
                   </el-form-item>
                 </el-col>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8" style="text-align: right">
-              <el-form-item>
-                <el-button @click="HandleSearchApprove()" type="primary">搜索</el-button>
-                <el-button @click="HandleResetApprove('ruleFormSeach')" type="primary">重置</el-button>
-              </el-form-item>
-            </el-col>
+              </el-row>
+            </el-form>
           </el-row>
-        </el-form>
-      </el-row>
-    </div>
-    <!-- 检索 END -->
-    <!-- 需要审批表格 -->
-    <el-table :data="approveTableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content">
-      <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
-      <el-table-column prop="createTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
-      <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-      <el-table-column prop="supplierName" label="供应商名称" align="center"></el-table-column>
-      <el-table-column prop="supplierTypeEX" label="类型" align="center"></el-table-column>
-      <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
-      <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-      <el-table-column label="审批" width="150" align="center">
-        <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small" class="table_details">详情</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 需要审批表格 END-->
+        </div>
+        <!-- 检索 END -->
+        <!-- 需要审批表格 -->
+        <el-table :data="approveTableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content">
+          <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
+          <el-table-column prop="createTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
+          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+          <el-table-column prop="supplierName" label="供应商名称" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="类型" align="center"></el-table-column>
+          <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+          <el-table-column label="审批" width="150" align="center">
+            <template slot-scope="scope">
+              <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small" class="table_details">详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 需要审批表格 END-->
+      </el-tab-pane>
+      <el-tab-pane label="无收入借款管理" name="borrow"></el-tab-pane>
+      <el-tab-pane label="预付款管理" name="advance"></el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -61,6 +68,7 @@
           planData_01:'', //借款表格
         },
         approveTableData: [], // 未审批业务表格
+        tabShowWhich: 'reimburse' // 显示哪一个tab
       }
     },
     created(){
@@ -68,6 +76,10 @@
     },
     methods: {
       moment,
+      // tab切换
+      handleClick(tab, event) {
+        console.log(tab, event);
+      },
       // 重置
       HandleResetApprove (){
 

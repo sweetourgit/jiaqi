@@ -1,13 +1,15 @@
+<!-- 审批详情 -->
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
       <el-col :span="6" :offset="18">
-        <el-button type="warning" plain @click="handleCancel">取消</el-button>
-        <el-button type="primary" plain @click="handleSplitRepaymentJump">拆分/还款</el-button>
-        <el-button type="success" plain @click="handlePass">通过</el-button>
-        <el-button type="danger" plain @click="handleReject">驳回</el-button>
+        <el-button type="warning" @click="handleCancel">取消</el-button>
+        <el-button type="primary" @click="handleSplitRepaymentJump">拆分/还款</el-button>
+        <el-button type="success" @click="handlePass">通过</el-button>
+        <el-button type="danger" @click="handleReject">驳回</el-button>
       </el-col>
     </el-row>
+    <!-- 基本信息 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>基本信息</el-divider>
     <el-row style="margin-top: 20px;">
       <div class="item-content print-hidden">
@@ -43,10 +45,12 @@
         <el-col :span="15"><div class="grid-del ">创建时间</div></el-col>
       </el-col>
     </el-row>
+    <!-- 基本信息 END -->
+    <!-- 报销信息 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
     <el-row class="row-content">
       <el-col :span="24">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tabs v-model="tabShowWhich" @tab-click="handleClick">
           <el-tab-pane label="用户管理" name="first">
             <el-row type="flex" class="row-bg" justify="space-between">
               <el-col :span="6">
@@ -103,6 +107,8 @@
         </el-tabs>
       </el-col>
     </el-row>
+    <!-- 报销信息 END -->
+    <!-- 审核结果 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <el-row type="flex" class="row-bg row-content" justify="space-between">
       <el-table :data="examineData" border :header-cell-style="getRowClass">
@@ -112,18 +118,19 @@
         <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
       </el-table>
     </el-row>
-    <!-- 拆分/还款 -->
+    <!-- 审核结果 END -->
+    <!-- 拆分/还款(弹窗) -->
     <el-dialog
       title="拆分/还款"
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose">
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleDialogKeep">保 存</el-button>
+        <el-button plain @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" plain @click="handleDialogKeep">保 存</el-button>
       </span>
     </el-dialog>
-    <!-- 拆分/还款 END -->
+    <!-- 拆分/还款(弹窗)  END -->
   </div>
 </template>
 
@@ -135,7 +142,7 @@
     },
     data(){
       return {
-        activeName: 'jack',
+        tabShowWhich: 'first', // 显示哪个tab
         reimbursementData: [ // 报销列表
           {
             paymentID: 1,
