@@ -2181,12 +2181,10 @@ export default {
         } else {
           arr[idx].sex = 0;
         }
-        if (arr[idx].state == "正常") {
+        if (arr[idx].state == "正常" || arr[idx].state == "") {
           arr[idx].state = 2;
-        } else if (arr[idx].state == "停用") {
-          arr[idx].state = 3;
         } else {
-          arr[idx].state = 0;
+          arr[idx].state = 3;
         }
       });
       // console.log(this.useList, "上传的账号信息");
