@@ -118,7 +118,7 @@
                 @blur="travelOp()"
                 :fetch-suggestions="querySearch2"
                 placeholder="请输入销售名称"
-                :trigger-on-focus="false"
+                :trigger-on-focus="true"
                 @select="departure2"
               ></el-autocomplete>
               <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
@@ -131,7 +131,7 @@
                 v-model="ruleForm.merchantsSell"
                 :fetch-suggestions="querySearch4"
                 placeholder="请输入商户销售"
-                :trigger-on-focus="false"
+                :trigger-on-focus="true"
                 @select="departure4"
               ></el-autocomplete>
               <div v-if="nullShow" style="color:red;">请输入有效的商户销售</div>
@@ -737,14 +737,16 @@ export default {
           { required: true, message: "请输入商户名称", trigger: "blur" }
         ],
         merchantsSell: [
-          { required: true, message: "请输入商户销售", trigger: "blur" }
+          { required: true, message: "请输入商户销售", trigger: "blur" },
+          { required: true, message: "请输入商户销售", trigger: "change" }
         ],
         // market: [//直客下单销售
         //   { required: true, message: "请输入销售", trigger: "blur" }
         // ],
         travelSales: [
           //商户下单销售
-          { required: true, message: "请输入销售", trigger: "blur" }
+          { required: true, message: "请输入销售", trigger: "blur" },
+          { required: true, message: "请输入销售", trigger: "change" }
         ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: "价格必须为数字值" }],
@@ -1844,24 +1846,34 @@ export default {
           {
             object: {
               localCompID: this.productPos,
-              jqUserType: 2
+              jqUserType: 2,
+              state:2,
+              isDeleted:0
             }
           }
         )
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              this.marketList.push({
-                value: res.data.objects[i].name,
-                id: res.data.objects[i].id,
-                userCode: res.data.objects[i].userCode
-              });
-              this.supplier_id = res.data.objects[i].id
-                ? res.data.objects[i].id
-                : 0;
+              if(this.ruleForm.travelSales==""){
+                this.marketList.push({
+                  value: res.data.objects[i].name,
+                  id: res.data.objects[i].id,
+                  userCode: res.data.objects[i].userCode
+                });
+                queryString2 = " ";
+              }else{
+                if (res.data.objects[i].name.indexOf(this.ruleForm.travelSales) != -1) {
+                  this.marketList.push({
+                    value: res.data.objects[i].name,
+                    id: res.data.objects[i].id,
+                    userCode: res.data.objects[i].userCode
+                  });
+                }
+              }
             }
           }
-          if (res.data.objects) {
+          if (this.marketList.length > 0 ) {
             this.nullShowOp = false;
           } else {
             this.nullShowOp = true;
@@ -1977,15 +1989,19 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.object.useList.length; i++) {
-              if (
-                res.data.object.useList[i].name.indexOf(
-                  this.ruleForm.merchantsSell
-                ) != -1
-              ) {
+              if(this.ruleForm.merchantsSell == ""){
                 this.useList.push({
                   value: res.data.object.useList[i].name,
                   id: res.data.object.useList[i].id
                 });
+                queryString4 = " "
+              }else{
+                if (res.data.object.useList[i].name.indexOf(this.ruleForm.merchantsSell) != -1) {
+                  this.useList.push({
+                    value: res.data.object.useList[i].name,
+                    id: res.data.object.useList[i].id
+                  });
+                }
               }
             }
           }
