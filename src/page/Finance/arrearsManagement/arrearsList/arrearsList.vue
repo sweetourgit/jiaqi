@@ -42,7 +42,7 @@
               @current-change="handleCurrentChange"
               :current-page="1"
               :page-sizes="[10, 30, 50, 100]"
-              :page-size="10"
+              :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total">
        </el-pagination>
@@ -122,10 +122,13 @@ export default{
     handleCurrentChange(val){
       this.paymentpage(val,this.pageSize);
     },
-    search(){
-      this.pageshow = false;
+    search(){    
       this.pageIndex = 1;
+      this.pageshow = false;
       this.paymentpage();
+      this.$nextTick(() => {
+          this.pageshow = true;
+      })
     },
     reset(){
       this.supplierName = "";
@@ -217,9 +220,6 @@ export default{
                   }
                })        
             }
-            this.$nextTick(() => {
-                this.pageshow = true;
-            })
           }).catch(err => {
             console.log(err)
           })
