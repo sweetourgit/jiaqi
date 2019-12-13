@@ -36,16 +36,14 @@
         <!-- 检索 END -->
         <!-- 需要审批表格 -->
         <el-table :data="approveTableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content">
-          <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
-          <el-table-column prop="createTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
+          <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
+          <el-table-column prop="beginTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="supplierName" label="供应商名称" align="center"></el-table-column>
-          <el-table-column prop="supplierTypeEX" label="类型" align="center"></el-table-column>
           <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
           <el-table-column label="审批" width="150" align="center">
             <template slot-scope="scope">
-              <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small" class="table_details">详情</el-button>
+              <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -68,7 +66,7 @@
           planData_01:'', //借款表格
         },
         approveTableData: [], // 未审批业务表格
-        tabShowWhich: 'reimburse' // 显示哪一个tab
+        tabShowWhich: 'reimburse', // 显示哪一个tab
       }
     },
     created(){
@@ -89,8 +87,11 @@
 
       },
       //  详情跳转
-      handleJumpDetail(){
-        this.$router.push({ path: "/approve/approveDetail" })
+      handleJumpDetail(index, row){
+        let getCurrentGuid = row.guid // 获取当前行的 guid
+        this.$router.push({ path: "/approve/approveDetail", query: { approveListGuid: getCurrentGuid } })
+
+
       },
       // 请求工作流接口获取未完成的任务
       approveTableList(){
@@ -121,10 +122,9 @@
                 // that.arr1.push(v.workItemID)
                 // that.arr2.push(v)
               })
-              this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', { // 通过GUID查找无收入/预付款列表
+              this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/listforguid', { // 通过GUID查找无收入/预付款列表
                 "guid": arr
               }).then(obj =>{
-                that.total = obj.data.total;
                 that.approveTableData = obj.data.objects;
               })
             })

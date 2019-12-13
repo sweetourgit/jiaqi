@@ -9,8 +9,8 @@
         <el-button type="danger" @click="handleReject">驳回</el-button>
       </el-col>
     </el-row>
-    <!-- 基本信息 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>基本信息</el-divider>
+    <!-- 报销信息 -->
+    <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
     <el-row style="margin-top: 20px;">
       <div class="item-content print-hidden">
         <el-tag type="warning" class="distributor-status">审批中</el-tag>
@@ -19,40 +19,37 @@
         <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>-->
       </div>
     </el-row>
-    <el-row type="flex" class="row-bg row-content" justify="space-between">
-      <!--<el-col :span="6">
-        <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
-        <el-col :span="17"><div class="grid-del">{{ fundamental.id }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
-        <el-col :span="17"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-        <el-col :span="15"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
-      </el-col>-->
-      <el-col :span="6">
-        <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
-        <el-col :span="17"><div class="grid-del">ID</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
-        <el-col :span="17"><div class="grid-del ">申请人</div></el-col>
-      </el-col>
-      <el-col :span="6">
-        <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-        <el-col :span="15"><div class="grid-del ">创建时间</div></el-col>
-      </el-col>
-    </el-row>
-    <!-- 基本信息 END -->
-    <!-- 报销信息 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
     <el-row class="row-content">
       <el-col :span="24">
         <el-tabs v-model="tabShowWhich" @tab-click="handleClick">
           <el-tab-pane label="用户管理" name="first">
-            <el-row type="flex" class="row-bg" justify="space-between">
+            <el-row type="flex" class="row-bg row-content" justify="space-between">
+              <!--<el-col :span="6">
+                <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
+                <el-col :span="17"><div class="grid-del">{{ fundamental.id }}</div></el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
+                <el-col :span="17"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
+                <el-col :span="15"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
+              </el-col>-->
+              <el-col :span="6">
+                <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
+                <el-col :span="17"><div class="grid-del">ID</div></el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
+                <el-col :span="17"><div class="grid-del ">申请人</div></el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
+                <el-col :span="15"><div class="grid-del ">创建时间</div></el-col>
+              </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="6">
                 <el-col :span="7"><div class="grid-del label-color">团期计划:</div></el-col>
                 <el-col :span="17"><div class="grid-del">团期计划</div></el-col>
@@ -66,7 +63,7 @@
                 <el-col :span="15"><div class="grid-del ">摘要</div></el-col>
               </el-col>
             </el-row>
-            <el-row type="flex" class="row-bg" justify="space-between">
+            <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="14">
                 <el-col :span="6"><div class="grid-del label-color print-hidden">附件:</div></el-col>
                 <el-col :span="18">
@@ -137,9 +134,6 @@
 <script>
   export default {
     name: "approveDetail",
-    created(){
-
-    },
     data(){
       return {
         tabShowWhich: 'first', // 显示哪个tab
@@ -164,9 +158,36 @@
             spContent: '审批意见',
           }
         ],
+        getApproveListGuid: null, // 获取列表页的的guid
+        dialogVisible: false,
+        keepBackContent: null // 保存详情内容
       }
     },
+    created(){
+      this.getApproveListGuid = this.$route.query.approveListGuid
+      this.getApproveDetail(this.getApproveListGuid)
+    },
     methods: {
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
+      // 获取详情
+      getApproveDetail(guidParams){
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+          "object": {
+            guid: guidParams
+          }
+        })
+        .then(obj => {
+          this.keepBackContent = obj
+        }).catch(err => {
+          console.log(err)
+        })
+      },
       // 弹窗保存
       handleDialogKeep(){
 
