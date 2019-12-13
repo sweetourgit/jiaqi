@@ -141,7 +141,7 @@
       <div class="associated" v-if="title == '开票'">
         <div class="warning"><i class="el-icon-warning"></i></div>
         <div class="fl">已关联<span class="relateditems">{{invoiceDate.length}}</span>项</div>
-        <div class="aggregate">总计:<span>{{guest| numFilter}}</span>元</div>
+        <div class="aggregate">总计:<span>{{sum| numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
         <el-table-column v-if="title == '换票'" label="原票号" align="center">
@@ -168,9 +168,9 @@
             <div class="validation" v-if="scope.row.taxpayerIDNumber == '' && a == true">纳税人识别号不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column label="发票金额" align="center" min-width="120">
+        <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="120">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.invoicePrice" class="w150"></el-input>
+            <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()"></el-input>
             <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
           </template>
         </el-table-column>
@@ -182,6 +182,11 @@
         </el-table-column>
       </el-table>
       <div class="order-title"><span>关联订单</span></div>
+      <div class="associated">
+        <div class="warning"><i class="el-icon-warning"></i></div>
+        <div class="fl">已关联<span class="relateditems">{{tableDate.length}}</span>项</div>
+        <div class="aggregate">总计:<span>{{ sum_01 | numFilter}}</span>元</div>
+      </div>
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
         <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
         <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
@@ -223,6 +228,8 @@ export default {
       ifOnly:true,
       originalBanks:'',
       invoicePrice:'',
+      sum:0,//发票金额的总和
+      sum_01:0,
     };
 
   },
@@ -312,9 +319,13 @@ export default {
           this.invoicePrice = res.data.object.invoicePrice; // 点击详情获取开票金额
           this.tableDate = res.data.object.ordelist; // 点击详情获取关联订单表格
           this.invoiceDate.push(res.data.object);
-          this.invoiceDate[0].invoicePrice = "";
+          //this.invoiceDate[0].invoicePrice = "";
           this.originalBanks =  res.data.object.invoiceNumber; // 点击详情获取开票号
           this.invoiceDate[0].invoiceNumber = "";
+          this.associated(); // 点击开票或者换票 显示关联订单总计金额
+          if(this.invoiceList.invoicePrice !== ''){
+            this.sum = this.guest
+          }
         }
       });
     },
@@ -345,6 +356,8 @@ export default {
       });
     },
     closeOpenInvoice(){// 关闭开票、换票弹窗
+      this.sum = 0;
+      this.sum_01 = 0;
       this.openInvoiceShow = false;
       this.invoiceDate = [];
       this.ruleFormSeach.invoicePrice = '';
@@ -392,6 +405,21 @@ export default {
         }
         
       });
+    },
+    invoiceSum(){//求发票金额的总和
+      let sum = 0; 
+      this.invoiceDate.forEach(function(item) {
+        sum += Number(item.invoicePrice);
+      });
+      this.sum = sum;
+      console.log(sum)
+    },
+    associated(){ //求关联订单剩余开票金额的总和
+      let sum_01 = 0;
+      this.tableDate.forEach(function(item) {
+        sum_01 += Number(item.skPrice);
+      });
+      this.sum_01 = sum_01;
     },
     openInvoicement(ID){ // 点击开票按钮
       this.online = 0;
