@@ -192,7 +192,8 @@
         <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
         <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
         <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
-        <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
+        <!-- <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column> -->
+        <el-table-column prop="coPrice" label="已付金额" align="center"></el-table-column>
         <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
       </el-table>
     </el-dialog>
@@ -308,6 +309,7 @@ export default {
     cancelInfoOrder(){ // 关闭详情弹窗
       this.dialogFormOrder = false;
       this.tableDate = [];
+      this.invoiceDate = [];
     },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/get", {

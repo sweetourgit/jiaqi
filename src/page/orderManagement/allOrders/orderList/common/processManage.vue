@@ -464,7 +464,7 @@ export default {
         })
         .then(res => {
           if (res.data.isSuccess == true) {
-            // console.log(1)
+            console.log(1)
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
             // 报名信息
