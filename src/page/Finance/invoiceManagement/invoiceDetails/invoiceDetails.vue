@@ -381,8 +381,8 @@ export default {
       if(this.ruleFormSeach.invoicePrice <= 0){
         return;
       }
-      let str = Math.ceil(this.guest/this.ruleFormSeach.invoicePrice)
-      let remainder =this.guest%this.ruleFormSeach.invoicePrice;
+      let str = Math.ceil(this.sum/this.ruleFormSeach.invoicePrice)
+      let remainder =this.sum%this.ruleFormSeach.invoicePrice;
       let guestAll = this.invoiceDate[0];
       this.invoiceDate=[];
       for(let i=0; i < str; i++){
