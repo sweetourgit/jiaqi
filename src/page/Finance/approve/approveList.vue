@@ -89,9 +89,8 @@
       //  详情跳转
       handleJumpDetail(index, row){
         let getCurrentGuid = row.guid // 获取当前行的 guid
-        this.$router.push({ path: "/approve/approveDetail", query: { approveListGuid: getCurrentGuid } })
-
-
+        let getCurrentExpenseID = row.expenseID // 获取当前行的 guid
+        this.$router.push({ path: "/approve/approveDetail", query: { approveListGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID } })
       },
       // 请求工作流接口获取未完成的任务
       approveTableList(){

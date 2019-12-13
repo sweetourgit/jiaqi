@@ -22,6 +22,21 @@ export default {
   components: {
     pageHeader,
     navLeft
+  },
+  watch:{
+    $route: {
+    handler: function(val, oldVal){
+          if(val.fullPath != "/login"){
+             let jurisdiction = JSON.parse(sessionStorage.getItem('jurisdiction'));
+             for (var x in jurisdiction){
+                if(jurisdiction[x].Uri == val.fullPath){
+                   sessionStorage.setItem('butPermission',JSON.stringify(jurisdiction[x]))
+                }
+             }
+          }
+        },
+        deep: true
+      }
   }
 }
 </script>
