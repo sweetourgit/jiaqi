@@ -110,10 +110,10 @@ export default {
       }],
       typeList:[{ // 直客/商户
         value:'1',
-        label:'直客'
+        label:'商户'
       },{
         value:'2',
-        label:'商户'
+        label:'直客'
       }],
       tableDate:[{
         endTime:1580428800000 // 2020-01-31
@@ -124,6 +124,7 @@ export default {
       total: 0,
       current:1,
       multipleSelection: [], //选中的list
+      current:1,
     };
 
   },
@@ -155,9 +156,10 @@ export default {
       return moment(date).format('YYYY-MM-DD')
     },      
     search(){ // 搜索
-      this.pageList();
+      this.current = 1;
+      this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
     },
-    reset(){ // 重置
+    reset(curPage){ // 重置
       this.invoiceNumber = '';//发票号码
       this.merchantsName = '';//商户名称
       this.applyForDate = ''; // 申请日期
@@ -165,6 +167,9 @@ export default {
       this.invoiceTitle = '';// 发票抬头
       this.invoiceDate = '';// 开票日期
       this.types = ''; // 直客/商户
+      this.pageIndex = 1 ? 1 : 1;
+      this.current = curPage;
+      this.pageList();
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
@@ -220,8 +225,8 @@ export default {
           "selEndGrantTime":selEndGrantTime,
           "collectionType":types == '' ? 0 : types
         },
-        "pageSize":this.pageSize,
-        "pageIndex":this.pageIndex,
+        "pageSize":pageSize,
+        "pageIndex":pageIndex,
       }).then(res => {
           that.total = res.data.total
           that.tableDate = res.data.objects
@@ -246,11 +251,11 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.pageList();
+      this.pageList(this.pageIndex,val);
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
-      this.pageList();
+      this.pageList(val,this.pageSize);
     },
     operation(i) {// 显示详情、开票、换票弹窗
       this.variable++;
