@@ -192,7 +192,7 @@ export default {
   methods: {
     permission(){
       let orgID = sessionStorage.getItem('orgID');
-      let arr = ['492','493','494','545','501','320'];
+      let arr = ['492','493','494','545','501','520'];
       if(arr.indexOf(orgID)==-1){     
         this.show1 = true ;
       }else{
