@@ -418,11 +418,10 @@
         </div>
       </el-dialog>
       <!--添加报销弹窗end-->
-      <!--需要你审批-->
-      <el-tab-pane label="需要您审批" name="second">
-        <!-- <NeedApproval></NeedApproval> -->
-        <approvalToBorrow></approvalToBorrow>
-      </el-tab-pane>
+      <!--需要你审批 先隐藏有需要在打开-->
+      <!-- <el-tab-pane label="需要您审批" name="second">
+         <approvalToBorrow></approvalToBorrow>
+      </el-tab-pane> -->
       <!--审批end-->
     </el-tabs>
   </div>
@@ -593,8 +592,7 @@ export default {
         //切换时候，换内容
         tabClick() {
           console.log(9);
-           
-        },
+         },
         chanceSubmit() { // 取消按钮
         if(this.find == 0){
           this.$confirm("是否取消本次报销申请", "提示", {
@@ -831,70 +829,66 @@ export default {
                   
         },
         // 报销申请提交
-        submitForm(ruleForm) {
+        submitForm(ruleForm) { /// 12/12 没弄完
           var joinData_sn=[];
           var files_s=[];
           var editableTabs = ruleForm.editableTabs;
+          var verify = 0;
           for(var j in editableTabs){
               let submitForm_list = editableTabs[j].content;
                 if(submitForm_list.groupCode !=="" || submitForm_list.mark !== "" ||submitForm_list.files.length !== 0 ){ // 判断必填内容
-                  // for (var i in submitForm_list.joinData_s) { //获取关联订单
-                  //   joinData_sn.push({
-                  //     price:submitForm_list.joinData_s[i].price,
-                  //     paymentID:submitForm_list.joinData_s[i].paymentID,
-                  //     peopleCount:submitForm_list.joinData_s[i].peopleCount
-                  //   });
-                  // };
-                  for (var i in submitForm_list.files) {//获取上传图片名字和地址
-                    files_s.push({
-                      name:submitForm_list.files[i].name,
-                      url:submitForm_list.files[i].url,
-                    });
-                  };
-                    
-
-                  if(submitForm_list.mark.length > 80 ){
-                          this.$message({
-                            message:'摘要字数不能超过80字',
-                            type: 'warning' 
-                        });
-                        return false;
-                    }
-                    for(var n in submitForm_list.payments){
-                      if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
-                            this.$message({
-                                message:'报销金额不得大于未报销金额',
-                                type: 'warning' 
-                              });
-                              return false;
-                        }else if(submitForm_list.payments[n].peopleCount === 0){
-                          this.$message({
-                                message:'人数不能为空',
-                                type: 'warning' 
-                              });
-                              return false;
+                        for (var i in submitForm_list.files) {//重塑图片上传数组
+                            files_s.push({
+                              name:submitForm_list.files[i].name,
+                              url:submitForm_list.files[i].url,
+                            });
+                          };
+                        if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
+                                  this.$message({
+                                    message:'摘要字数不能超过80字',
+                                    type: 'warning' 
+                                });
+                                return false;
+                            }
+                        for(var n in submitForm_list.payments){//判断填写的报销金额
+                            if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
+                                  this.$message({
+                                      message:'报销金额不得大于未报销金额',
+                                      type: 'warning' 
+                                    });
+                                    return false;
+                              }else if(submitForm_list.payments[n].peopleCount === 0){
+                                this.$message({
+                                      message:'人数不能为空',
+                                      type: 'warning' 
+                                    });
+                                    return false;
+                              }
                         }
-                  }
-                  this.object_lisr.push({
-                            createUser: sessionStorage.getItem('id'),//用户id
-                            planID:this.plans.pid,//团期计划id
-                            price:submitForm_list.t_price,//总价
-                            mark:submitForm_list.mark,
-                            files: files_s , //关联数据
-                            payments: submitForm_list.payments, //关联付款单据报销明细
-                            checkType:0,//审批状态 
-                          })
-                          //others:this.domains,//手填报销记录明细
-                          console.log(this.object_lisr,'ddb');
-                          this.add_form(this.object_lisr)//调用提交接口
-                }else{
+                        this.object_lisr.push({//给数组赋值
+                                  createUser: sessionStorage.getItem('id'),//用户id
+                                  planID:this.plans.pid,//团期计划id
+                                  price:submitForm_list.t_price,//总价
+                                  mark:submitForm_list.mark,
+                                  files: files_s , //关联数据
+                                  payments: submitForm_list.payments, //关联付款单据报销明细
+                                  checkType:0,//审批状态 
+                                })
+                         console.log(this.object_lisr,'ddb');
+                         verify = 1
+                 }else{
 
                   this.$message({
                       message: '请检查必填项',
                       type: 'warning' 
                   });
               }
+              return false;
              
+            }
+
+            if(verify !== 0){
+               this.add_form(this.object_lisr)//调用提交接口
             }
             
 
@@ -978,7 +972,6 @@ export default {
             this.ruleForm.editableTabs[one_index].content.joinData=[];
         },
         t_text_del(){//确认取消
-         console.log("取消2");
          let one_index = this.ruleForm.editableTabsValue - 1; 
          this.dialogFormVisible3 = false;
          this.ruleForm.editableTabs[one_index].content.joinData=[];
@@ -1224,9 +1217,7 @@ export default {
         },
         //添加报销和删除
         handleTabsEdit(targetName, action) {
-          console.log(action);
-          console.log(targetName);
-            let newTab= this.getNewTab();
+          let newTab= this.getNewTab();
           if (action === "add") {
             let newTabName = ++this.tabIndex + "";
             this.ruleForm.editableTabs.push({
@@ -1235,7 +1226,6 @@ export default {
               content: newTab
             });
             this.ruleForm.editableTabsValue = newTabName;
-            console.log( this.ruleForm.editableTabs );
           }
           if (action === "remove") {
           //  if (this.ruleForm.editableTabs.length == 1) {
@@ -1243,13 +1233,55 @@ export default {
           //   } else {
           //     console.log(567);
           //   }
-           this.$confirm("是否需要删除 报销" + targetName, "提示", {
+            if(this.ruleForm.editableTabs.length == 1){
+                 this.$confirm("是否取消本次报销申请", "提示", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning"
+                  })
+                .then(() => {
+                  targetName = "1"
+                  this.ruleForm.editableTabs=[{
+                      title: "报销"+ targetName,
+                      name: targetName,
+                      content:{
+                          createUser:"",
+                          createTime: "",
+                          id:"",
+                          groupCode: "",
+                          productName: "",
+                          mark: "",
+                          t_sum:0,//一共多少项
+                          t_price:0,//一共多少钱
+                          files:[],
+                          payments:[],
+                          joinData:[],
+                          plan: {
+                            planId: "",
+                            planName: ""
+                          },
+                        }
+                    }];
+                    this.tabIndex = 1;
+                    this.radio= "1";
+                    this.dialogFormVisible = false;
+                      
+                  })
+                .catch(() => {
+                  this.$message({
+                    type: "info",
+                    message: "已取消"
+                  });
+          });
+        }else{
+          this.$confirm("是否需要删除 报销" + targetName, "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning"
           })
           .then(() => {
-           let tabs = this.ruleForm.editableTabs;
+           
+                let tabs = this.ruleForm.editableTabs;
                 let activeName = this.ruleForm.editableTabsValue;
                 if (activeName === targetName) {
                   tabs.forEach((tab, index) => {
@@ -1264,8 +1296,7 @@ export default {
 
                 this.ruleForm.editableTabsValue = activeName;
                 this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
-
-          })
+            })
           .catch(() => {
             console.log(7);
             this.$message({
@@ -1273,6 +1304,9 @@ export default {
               message: "已取消"
             });
           });
+        }
+
+           
           }
         },
       
@@ -1402,9 +1436,7 @@ export default {
               })
               .then(function(obj) {
                 that.tableData=[];
-                console.log(obj.data.objects,'查询数据');
                 that.pageCount = obj.data.total;
-
                   for(let j in obj.data.objects){
                      that.tableData.push({
                       beginTime: obj.data.objects[j].beginTime,
@@ -1421,8 +1453,7 @@ export default {
                       price:  obj.data.objects[j].price,
                 })
                 }
-                console.log(that.tableData,'查询数据');
-                })
+              })
               .catch(function(obj) {
                 console.log(obj);
               });
