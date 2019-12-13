@@ -63,7 +63,7 @@
                   >{{scope.row.checkTypeEX}}</div>
                 </template>
               </el-table-column>
-              <el-table-column prop="createTime" label="发起时间" align="center"></el-table-column>
+              <el-table-column prop="createTime" :formatter='dateFormat'  label="发起时间" align="center"></el-table-column>
               <el-table-column prop="groupCode" label="团期计划" width="250" align="center"></el-table-column>
               <el-table-column prop="price" label="报销金额" width="180" align="center"></el-table-column>
               <el-table-column prop="createUser" label="申请人" width="150" align="center"></el-table-column>
@@ -119,7 +119,7 @@
               <div class="handle_div">
                 <div class="handle_id" v-if="find==1"><span>ID:</span><span style="margin-left: 10px;">{{item.content.id}}</span></div>
                 <div class="handle_people" v-if="find==1"><span>申请人:</span><span style="margin-left: 10px;">{{item.content.createUser}}</span></div>
-                <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;">{{item.content.createTime}}</span></div>
+                <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;" >{{item.content.createTime | formatDate}}</span></div>
               </div>
 
               <div style="color: red; position: absolute;left: 20px;top: 65px;">*</div>
@@ -224,7 +224,7 @@
 
                       <el-table-column prop="price" label="报销金额" style="background: yellow" width="140"  v-if="find==0">
                         <template slot-scope="scope">
-                          <el-input v-model="scope.row.price" style="width:100px;"></el-input>
+                          <el-input @input='addressChange(scope.row.price)' v-model="scope.row.price" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
                       <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==0">
@@ -392,7 +392,7 @@
           <!-- <el-table-column prop="supplierName" label="供应商" v-if="this.supplier == 1"></el-table-column> -->
           <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
           <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
-          <el-table-column prop="createTime" label="发起日期" width="130"></el-table-column>
+          <el-table-column prop="createTime" :formatter='dateFormat'  label="发起日期" width="130"></el-table-column>
           <el-table-column prop="paymentMark" label="摘要" width="130"></el-table-column>
           <el-table-column prop="price" label="金额" width="90"></el-table-column>
           <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
@@ -587,7 +587,12 @@ export default {
       tabIndex: 1
     };
   },
-      methods: {
+   filters: {// 时间过滤
+          formatDate: function (value) {
+            return moment(value).format('YYYY-MM-DD HH:mm:ss')
+          },
+        },
+   methods: {
         moment,
         //切换时候，换内容
         tabClick() {
@@ -704,7 +709,7 @@ export default {
                           price:object[i].price,
                           paymentPrice:object[i].price,
                           bcount:0,
-                          createTime:object[i].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
+                          createTime:object[i].createTime,
                           supplierName:object[i].supplierName,
                           peopleCount:object[i].peopleCount,
                           orgName:object[i].orgName,
@@ -945,7 +950,7 @@ export default {
             this.ruleForm.editableTabs[one_index].content.payments=[];
             for(let v in joinData){
                t_joinData.push({
-                  createTime: joinData[v].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
+                  createTime: joinData[v].createTime,
                   createUser:joinData[v].createUser,
                   groupCode:joinData[v].groupCode,
                   orgName: joinData[v].orgName,
@@ -1022,6 +1027,16 @@ export default {
           this.ruleForm.editableTabs[one_index].content.t_sum = this.ruleForm.editableTabs[one_index].content.payments.length;//多少项
           this.ruleForm.editableTabs[one_index].content.t_price = sss //多少钱
         },
+         addressChange() {
+            this.t_price_box=[];
+            let one_index = this.ruleForm.editableTabsValue - 1; 
+            let payments_change = this.ruleForm.editableTabs[one_index].content.payments;
+            for(var t in payments_change){
+                   this.t_price_box.push(payments_change[t].price);
+                }
+                
+          this.t_price_sum();
+          },
         // 报销弹窗
         dialogchange() {
           this.payments = [];
@@ -1053,11 +1068,16 @@ export default {
                        console.log(d_objects[i],'66');
                        let t_sum = d_objects[i].payments.length;//多少项 
                        for( let s in d_objects[i].payments){
-                              wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
+                         if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
+                            wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
+                         }else{
+                            wcount_s=d_objects[i].payments[s].paymentPrice
+                         }
+                             
                               d_price_box.push(d_objects[i].payments[s].price);
                               new_payments_box.push({
                                           code: d_objects[i].payments[s].code,
-                                          createTime: d_objects[i].payments[s].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
+                                          createTime: d_objects[i].payments[s].createTime,
                                           expenseID: d_objects[i].payments[s].expenseID,
                                           id: d_objects[i].payments[s].id,
                                           paymentID: d_objects[i].payments[s].paymentID,
@@ -1078,7 +1098,7 @@ export default {
 
                        d_objects_content.push({
                           createUser:d_objects[i].createUser,
-                          createTime: d_objects[i].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
+                          createTime: d_objects[i].createTime,
                           id:d_objects[i].id,
                           groupCode: d_objects[i].groupCode,
                           productName: d_objects[i].productName,
@@ -1125,14 +1145,6 @@ export default {
               this.Associated(this.plans.pid);
               this.dialogFormVisible3 = true;
           }
-          //  this.$refs[item].validate(valid => {
-          //     if (valid) {
-          //     } else {
-          //     }
-          // });
-          
-          
-        
         },
         //报销人选择弹窗
         adddialog() {
@@ -1410,8 +1422,8 @@ export default {
             groupCode = this.groupCode,//计划
             productName = this.productName,
             createUser = this.createUser,//申请人
-            beginDate= this.beginDate,//开始时间
-            endDate = this.endDate,//结束时间
+            beginTime= this.beginDate,//开始时间
+            endTime = this.endDate,//结束时间
         ){
             var that = this;
             let object = {};
@@ -1419,12 +1431,12 @@ export default {
               groupCode !== "" ? (object.groupCode = groupCode) : groupCode,
               productName !== "" ?(object.productName = productName) : productName,
               createUser !== ""? (object.createUser = createUser): createUser;
-              beginDate !== ""? (object.beginDate = beginDate): beginDate;
-              endDate !== ""? (object.endDate = endDate): endDate;
+              beginTime !== ""? (object.beginTime = beginTime): beginTime;
+              endTime !== ""? (object.endTime = endTime): endTime;
 
-            if (endDate !== "" && beginDate !== "") {
-                object.beginDate = moment(beginDate).format("YYYY-MM-DD");
-                object.endDate = moment(endDate).format("YYYY-MM-DD");
+            if (endTime !== "" && beginTime !== "") {
+                object.beginTime = moment(beginTime).format("YYYY-MM-DD");
+                object.endTime = moment(endTime).format("YYYY-MM-DD");
                 } 
 
             that.$http
@@ -1442,7 +1454,7 @@ export default {
                       beginTime: obj.data.objects[j].beginTime,
                       checkType: obj.data.objects[j].checkType,
                       checkTypeEX:  obj.data.objects[j].checkTypeEX,
-                      createTime:  obj.data.objects[j].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
+                      createTime:  obj.data.objects[j].createTime,
                       createUser:  obj.data.objects[j].createUser,
                       endTime:  obj.data.objects[j].endTime,
                       expenseID:  obj.data.objects[j].expenseID,
@@ -1468,13 +1480,15 @@ export default {
             }
           }
         },
-
-        // beginDateBlur() {
-        //   if (this.beginDate == "" && this.endDate == "") {
-        //     this.pageList(1, this.pageSize);
-        //   }
-        // },
-        
+        // 起始时间格式转换
+        dateFormat: function(row, column) {
+          let date = row[column.property];
+          if(date == undefined || date == '') {
+            return '';
+          }
+          return moment(date).format('YYYY-MM-DD HH:mm:ss')
+        },
+         
         querySearch3Plan(queryStringPlan, cb) { // 团号搜索联想
             let one = this.ruleForm.editableTabsValue - 1;
             let groupCode = this.ruleForm.editableTabs[one].content.groupCode;
