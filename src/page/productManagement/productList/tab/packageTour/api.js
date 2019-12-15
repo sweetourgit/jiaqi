@@ -22,7 +22,7 @@ export const getProductList= function(conditions){
 // 出发地目的地模糊查询
 export const getFuzzyAction= function(areaName){
   return new Promise((resolve, reject) => {
-    this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+    $http.post(GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
       object: {
         areaName
       }

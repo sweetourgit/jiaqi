@@ -28,7 +28,7 @@
         :highlight-current-row="true"
         :header-cell-style="getRowClass">
         <el-table-column prop="id" label="产品编号" align="center"></el-table-column>
-        <el-table-column prop="type" label="类型" align="center">跟团游</el-table-column>
+        <el-table-column prop="type" label="类型" align="center"></el-table-column>
         <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
         <el-table-column label="目的地" align="center">
           <template slot-scope="scope">
@@ -36,10 +36,10 @@
           </template>
         </el-table-column>
         <el-table-column prop="createUser" label="操作人" align="center"></el-table-column>
-        <el-table-column label="状态" align="center">已上架</el-table-column>
-        <el-table-column label="推送平台" align="center">飞猪、携程</el-table-column>
+        <el-table-column prop="state" label="状态" align="center">已上架</el-table-column>
+        <el-table-column prop="opers" label="推送平台" align="center">飞猪、携程</el-table-column>
         <el-table-column label="操作" align="center">
-          <template>
+          <template slot-scope="scope">
             <el-button type="text">编辑</el-button>
             <el-button type="text">删除</el-button>
           </template>
@@ -68,6 +68,11 @@
 import searchConditions from './childs/searchConditions'
 import { getProductList } from './api'
 
+const staticObj= {
+  type: '跟团游',
+  state: '已上架',
+  opers: '携程、飞猪'
+}
 const getPageInfo= function(){
   return {
     pageIndex: 1,
@@ -127,28 +132,16 @@ export default {
     },
 
     getListActionConditions(){
-      // let object= this.$refs.searchConditions.getConditions();
-      // // adaptor
-      // object.isDeleted= 0;
-      // this.$isNull(object.name) && (object.name= '');
-      // this.$isNull(object.isMonthly) && (object.isMonthly= 0);
-      // this.$isNull(object.supplierType) && (object.supplierType= -1);
-      // this.$isNull(object.UserState) && (object.UserState= -1);
-
-      let object= { 
-        id: 0,
-        title: '',
-        createUser: '',
-        minPrice: 0,
-        maxPrice: 0,
-        podID: 0,
-        destinationID: 0
-      }
-      return {
-        pageIndex: 1,
-        pageSize: 10,
-        object
-      }
+      let object= this.$refs.searchConditions.getConditions();
+      console.log(object)
+      this.$isNull(object.id) && (object.id= 0);
+      this.$isNull(object.title) && (object.title= '');
+      this.$isNull(object.createUser) && (object.createUser= '');
+      this.$isNull(object.podID) && (object.podID= 0);
+      this.$isNull(object.destinationID) && (object.destinationID= 0);
+      object.minPrice= this.$isNull(object.minPrice)? 0: parseFloat(object.minPrice);
+      object.maxPrice= this.$isNull(object.maxPrice)? 0: parseFloat(object.maxPrice);
+      return Object.assign({ object }, this.pageInfo )
     },
 
     getListAction(){
@@ -158,7 +151,7 @@ export default {
         let { total, objects }= res;
         this.pageInfo.total= total;
         this.tableData.splice(0);
-        this.tableData.push(...objects);
+        this.tableData.push(...objects.map(obj => Object.assign(obj, staticObj)));
       })
       .catch(err => {
         this.tableData.splice(0);
