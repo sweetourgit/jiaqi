@@ -1,9 +1,11 @@
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
-      <el-col :span="6" :offset="21">
+      <el-col :span="6" :offset="18">
         <el-button type="warning" @click="handleCancel">取消</el-button>
         <el-button type="danger" @click="handleRevoke">撤销</el-button>
+        <el-button type="success" @click="handlePass">通过</el-button>
+        <el-button type="danger" @click="handleReject">驳回</el-button>
       </el-col>
     </el-row>
     <!-- 报销信息 -->
@@ -63,8 +65,7 @@
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg reimbursement-mt" justify="space-between">
-<!--              <el-table :data="tabItem.payments" border :header-cell-style="getRowClass">-->
-              <el-table :data="reimbursementData" border :header-cell-style="getRowClass">
+              <el-table :data="tabItem.payments" border :header-cell-style="getRowClass">
                 <el-table-column prop="paymentID" label="无收入借款或预付款ID" align="center"></el-table-column>
                 <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
                 <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
@@ -77,15 +78,15 @@
                 </el-table-column>
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
-                <el-table-column prop="hkOfCf" label="还款/拆分" align="center">
+                <el-table-column prop="splitOfLoan" label="还款/拆分" align="center">
                   <template slot-scope="scope">
-                    <div v-if="scope.row.hkOfCf == 1">拆分</div>
-                    <div v-if="scope.row.hkOfCf == 2">还款</div>
+                    <div v-if="scope.row.splitOfLoan == 1">还款</div>
+                    <div v-if="scope.row.splitOfLoan == 2">拆分</div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="peopleCount" label="操作" align="center" width="200">
                   <template slot-scope="scope">
-                    <el-button type="success" plain size="small" plain v-if="scope.row.hkOfCf != '' || scope.row.hkOfCf == null" @click="handleTableLook">查看</el-button>
+                    <el-button type="success" plain size="small" plain v-if="scope.row.splitOfLoan != '' || scope.row.splitOfLoan == null" @click="handleTableLook">查看</el-button>
                     <el-button type="primary" plain size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0" @click="handleTableSplitLoan(scope.$index, scope.row)">拆分/还款</el-button>
                   </template>
                 </el-table-column>
@@ -148,8 +149,8 @@
         isShowTableDialog: false, // 是否显示表格弹窗
         getApproveListGuid: null, // 获取列表页的的guid
         keepBackContent: null, // 保存详情内容
-        reimbursementData: [ // 报销列表
-          {
+        reimbursementData: [
+          /*{
             paymentID: 1,
             supplierTypeEX: '借款类型',
             supplierName: '供应商',
@@ -159,7 +160,7 @@
             price: 20,
             noPrice: 0,
             peopleCount: '人数',
-            hkOfCf: 2
+            splitOfLoan: 2
           },
           {
             paymentID: 12,
@@ -171,7 +172,7 @@
             price: 20,
             noPrice: 0,
             peopleCount: '人数',
-            hkOfCf: ''
+            splitOfLoan: ''
           },
           {
             paymentID: 6,
@@ -183,9 +184,9 @@
             price: 20,
             noPrice: 0,
             peopleCount: '人数',
-            hkOfCf: 1
-          }
-        ],
+            splitOfLoan: 1
+          }*/
+        ], // 报销列表
         bankAccountData: [], // 银行账户表格
         ruleFormSplitLoan:{
           formItemSplitLoan: '',
@@ -205,7 +206,8 @@
     methods: {
       // 弹窗内的拆分和还款单选框切换时触发
       handleChangeSplitLoan(val){
-        if(val == '1') {
+        console.log(val)
+        if(val == 2) {
           this.isDisabledKeepBtn = false
           this.isShowAcountTable = false
         }else {
@@ -240,7 +242,7 @@
       handleTableDialogKeep(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.keepWhichRow.hkOfCf = this.ruleFormSplitLoan.formItemSplitLoan
+            this.keepWhichRow.splitOfLoan = this.ruleFormSplitLoan.formItemSplitLoan
             this.isShowTableDialog = false
             // this.getAcountId
           } else {
@@ -254,7 +256,7 @@
         this.isDisabledKeepBtn = false
         this.getAcountId = row.id
       },
-      // 表格内的拆分/还款按钮
+      // 表格内的 ’拆分/还款’ 按钮
       handleTableSplitLoan(index, row){
         this.keepWhichRow = row
         // 获取银行账户数据
@@ -271,7 +273,7 @@
           console.log(err)
         })
       },
-      // 表格内的查看事件
+      // 表格内的 ‘查看’ 按钮
       handleTableLook(){
         this.isShowLookOfSlit = true
         this.isShowTableDialog = true
@@ -282,6 +284,15 @@
       },
       // 撤销
       handleRevoke(){
+
+      },
+      // 通过
+      handlePass(){
+        // 能拿到 splitOfLoan 的值
+        console.log(this.keepBackContent)
+      },
+      // 驳回
+      handleReject(){
 
       },
       handleClick(){},
