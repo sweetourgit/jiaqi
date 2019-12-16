@@ -222,7 +222,7 @@
       },
       // 取消
       handleCancel(){
-        this.$router.go(-1)
+        this.$router.push({ path: "/approve/approveList" })
       },
       // 通过
       handlePass(){
@@ -234,7 +234,7 @@
       },
       // 拆分/还款
       handleSplitRepaymentJump(){
-        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich} })
+        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid} })
       },
       handleClick(){},
       // 表格表头颜色

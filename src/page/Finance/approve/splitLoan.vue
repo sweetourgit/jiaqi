@@ -95,28 +95,34 @@
     <el-dialog
       title="拆分/还款"
       :visible.sync="isShowTableDialog"
-      width="30%"
+      width="50%"
       :before-close="handleClose"
     >
-      <el-form :model="ruleFormSplitLoan" :rules="rules" ref="ruleFormSplitLoan" label-width="100px">
+      <!-- 查看 -->
+      <div v-show="isShowLookOfSlit">
+        <p><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+        <p style="margin-top: 10px;"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+      </div>
+      <!-- 查看 END -->
+      <!-- 还款/拆分表单 -->
+      <el-form :model="ruleFormSplitLoan" :rules="rules" ref="ruleFormSplitLoan" label-width="100px" v-show="!isShowLookOfSlit">
         <el-form-item label="还款/拆分" prop="formItemSplitLoan">
-          <el-radio-group v-model="ruleFormSplitLoan.formItemSplitLoan">
+          <el-radio-group v-model="ruleFormSplitLoan.formItemSplitLoan" @change="handleChangeSplitLoan">
             <el-radio label="还款"></el-radio>
             <el-radio label="拆分"></el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <el-table :data="reimbursementData" border :header-cell-style="getRowClass">
-        <el-table-column prop="paymentID" label="类型" align="center"></el-table-column>
-        <el-table-column prop="supplierTypeEX" label="账号名称" align="center"></el-table-column>
-        <el-table-column prop="supplierName" label="卡号" align="center"></el-table-column>
-        <el-table-column prop="paymentMark" label="开户行" align="center"></el-table-column>
-        <el-table-column prop="paymentPrice" label="开户人" align="center"></el-table-column>
-        <el-table-column prop="paymentPrice" label="操作" align="center"></el-table-column>
+      <el-table :data="bankAccountData" border :header-cell-style="getRowClass" :highlight-current-row="true" @row-click="handleAcountRow"  v-show="!isShowLookOfSlit && isShowAcountTable">
+        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
       </el-table>
+      <!-- 还款/拆分表单 END -->
       <span slot="footer" class="dialog-footer">
-        <el-button @click="handleTableDialogCanel">取 消</el-button>
-        <el-button type="primary" @click="handleTableDialogKeep">保 存</el-button>
+        <el-button type="primary" @click="handleTableDialogKeep('ruleFormSplitLoan')" v-show="!isShowLookOfSlit" :disabled="isDisabledKeepBtn">保 存</el-button>
       </span>
     </el-dialog>
     <!-- 拆分/还款(弹窗)  END -->
@@ -128,6 +134,10 @@
     name: "splitLoan",
     data(){
       return {
+        isShowAcountTable: true, // 是否显示表格
+        isDisabledKeepBtn: true, // 拆分借款弹窗保存按钮没选银行账户之前是禁止点击的
+        getAcountId: null, // 银行账户id
+        isShowLookOfSlit: false, // 显示查看还是显示，拆分还款
         tabShowWhich: null, // 显示哪个tab
         isShowTableDialog: false, // 是否显示表格弹窗
         getApproveListGuid: null, // 获取列表页的的guid
@@ -170,6 +180,7 @@
             hkOfCf: '拆分'
           }
         ],
+        bankAccountData: [], // 银行账户表格
         ruleFormSplitLoan:{
           formItemSplitLoan: '',
         },
@@ -181,11 +192,20 @@
       }
     },
     created(){
-      this.getApproveListGuid = this.$route.query.approveListGuid
+      this.getApproveListGuid = this.$route.query.approveDetailGuid
       this.getApproveDetail(this.getApproveListGuid)
       this.tabShowWhich = String(this.$route.query.approveDetailTab)
     },
     methods: {
+      handleChangeSplitLoan(val){
+        if(val == '拆分') {
+          this.isDisabledKeepBtn = false
+          this.isShowAcountTable = false
+        }else {
+          this.isDisabledKeepBtn = true
+          this.isShowAcountTable = true
+        }
+      },
       // 获取详情
       getApproveDetail(guidParams){
         this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
@@ -193,39 +213,61 @@
             guid: guidParams
           }
         })
-          .then(obj => {
-            let keepData = obj.data.objects
-            this.keepBackContent = keepData
-          }).catch(err => {
+        .then(obj => {
+          let keepData = obj.data.objects
+          this.keepBackContent = keepData
+        }).catch(err => {
           console.log(err)
         })
       },
+      // 关闭银行账户弹窗前回调
       handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {
+            this.isDisabledKeepBtn = true
             done();
           })
           .catch(_ => {});
       },
-      // 拆分/还款弹窗关闭
-      handleTableDialogCanel(){
-        this.isShowTableDialog = false
+      // 拆分/还款弹窗，保存按钮
+      handleTableDialogKeep(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       },
-      // 拆分/还款弹窗保存
-      handleTableDialogKeep(){
-
+      // 点击银行账户的行时触发
+      handleAcountRow(row, event, column){
+        this.isDisabledKeepBtn = false
+        this.getAcountId = row.id
       },
       // 表格内的拆分/还款按钮
       handleTableSplitLoan(){
-        this.isShowTableDialog = true
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
+          "object": {
+            "isDeleted": 0
+          }
+        }).then( obj =>  {
+          this.bankAccountData = obj.data.objects
+          this.isShowLookOfSlit = false
+          this.isShowTableDialog = true
+          this.ruleFormSplitLoan.formItemSplitLoan = '还款'
+        }).catch( err => {
+          console.log(err)
+        })
       },
       // 表格内的查看事件
       handleTableLook(){
-
+        this.isShowLookOfSlit = true
+        this.isShowTableDialog = true
       },
       // 取消
       handleCancel(){
-        this.$router.push({ path: "/approve/approveDetail", query: { queryApproveExpenseID: this.tabShowWhich} })
+        this.$router.push({ path: "/approve/approveDetail", query: { queryApproveExpenseID: this.tabShowWhich, approveListGuid: this.getApproveListGuid } })
       },
       // 撤销
       handleRevoke(){
