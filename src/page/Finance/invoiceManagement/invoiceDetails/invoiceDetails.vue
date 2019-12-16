@@ -119,7 +119,7 @@
           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
-          <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
+          <el-table-column prop="coPrice" label="已付金额" align="center"></el-table-column>
           <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
         </el-table>
       </div>
@@ -129,7 +129,7 @@
       @close="closeOpenInvoice()">
       <div class="controlButton">
         <el-button class="ml13" @click="closeOpenInvoice()">取 消</el-button>
-        <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '开票'" class="ml13">开票</el-button>
+        <el-button type="primary" @click="invoiceOnly(invoiceID)" v-if="title == '开票'" class="ml13">开票</el-button>
         <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '换票'" class="ml13">换票</el-button>
       </div>
       <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px" v-if="title == '开票'">
@@ -387,8 +387,8 @@ export default {
         return;
       }
       let str = Math.ceil(this.sum/this.ruleFormSeach.invoicePrice)
-      let remainder = this.sum%this.ruleFormSeach.invoicePrice + "";
-      remainder = remainder.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
+      let remainder = Math.ceil((this.sum%this.ruleFormSeach.invoicePrice) * 1000)/1000 + "";
+      remainder = remainder.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1'); // 取余后保留小数点后两位
       let guestAll = this.invoiceDate[0];
       this.invoiceDate=[];
       for(let i=0; i < str; i++){
@@ -399,18 +399,22 @@ export default {
         this.invoiceDate[str-1].invoicePrice = remainder;
       }
     },
-    invoiceOnly(ID,i){ // 验证发票号唯一性
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
-        id: ID,
-        invoiceNumber:this.invoiceDate[i].invoiceNumber
-      }).then(res => {
-        this.online++;
-        if (res.data.isSuccess === false && this.invoiceDate[i].invoiceNumber !== '') {
-          this.$message.success("第 "+(i+1)+" 条发票号码已存在");
-          this.ifOnly = false;
-        }
-        
-      });
+    invoiceOnly(ID){ // 验证发票号唯一性
+      this.ifOnly = true ;
+      for(let i = 0 ; i < this.invoiceDate.length ; i ++){
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
+          id: ID,
+          invoiceNumber:this.invoiceDate[i].invoiceNumber
+        }).then(res => {
+          if (res.data.isSuccess === false && this.invoiceDate[i].invoiceNumber !== '') {
+            this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+            this.ifOnly = false;
+          }
+          if(i == this.invoiceDate.length - 1){
+            this.openInvoicement();
+          }
+        });
+      }
     },
     invoiceSum(){//求发票金额的总和
       let sum = 0; 
@@ -428,16 +432,16 @@ export default {
       this.sum_01 = sum_01;
     },
     openInvoicement(ID){ // 点击开票按钮
-      this.online = 0;
-      this.ifOnly = true;
-      for(let i =0 ; i < this.invoiceDate.length; i++){
-        this.invoiceOnly(ID,i); // 验证发票号唯一方法
-        // if(this.invoiceDate.filter(v => this.invoiceDate[i].invoiceNumber == v.invoiceNumber).length != 0) {
-        //   this.$message.error("该发票号已存在");
-        //   return;
-        // }   
-      }
-      //if(this.online==this.invoiceDate.length-1 && this.ifOnly == true){
+      // this.online = 0;
+      // this.ifOnly = true;
+      // for(let i =0 ; i < this.invoiceDate.length; i++){
+      //   this.invoiceOnly(ID,i); // 验证发票号唯一方法
+      //   // if(this.invoiceDate.filter(v => this.invoiceDate[i].invoiceNumber == v.invoiceNumber).length != 0) {
+      //   //   this.$message.error("该发票号已存在");
+      //   //   return;
+      //   // }   
+      // }
+      if(this.ifOnly == true){
         this.a = true;
         let sum = 0; //求发票金额的总和
         this.invoiceDate.forEach(function(item) {
@@ -475,7 +479,7 @@ export default {
         }else{
           this.$message.success("该发票金额已超过剩余开票金额");
         }
-     // }
+      }
     },
     changeTicket(ID){ // 换票
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/replacereceipt", {
