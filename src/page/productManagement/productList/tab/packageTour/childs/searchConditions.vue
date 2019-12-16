@@ -61,6 +61,7 @@
             <el-autocomplete size="small" placeholder="目的地" clearable style="width:100%;max-width:300px;"
               ref="autocompleteRef"
               v-model="destination"
+              :value-key="'areaName'"
               :fetch-suggestions="getFuzzyAction"
               :trigger-on-focus="false"
               @select="selectDes">

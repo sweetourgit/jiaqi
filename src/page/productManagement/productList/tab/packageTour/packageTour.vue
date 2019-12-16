@@ -20,13 +20,23 @@
         <!-- <el-button type="primary" size="small">复制</el-button>
         <el-button type="primary" size="small">到处行程</el-button>
         <el-button type="primary" size="small">退改</el-button> -->
-        <el-button type="primary" size="small">团期/库存</el-button>
-        <el-button type="primary" size="small">修改行程信息</el-button>
+        <el-button type="primary" size="small"
+          :disabled="!currentRowId"
+          @click="routeToPlanInventory">
+          团期/库存
+        </el-button>
+        <el-button type="primary" size="small"
+          :disabled="!currentRowId"
+          @click="routeToChangeInfo">
+          修改行程信息
+        </el-button>
       </div>
-      <el-table style="width: 100%" border
+      <el-table border style="width: 100%"
+        ref="elTable"
         :data="tableData"
         :highlight-current-row="true"
-        :header-cell-style="getRowClass">
+        :header-cell-style="getRowClass"
+        @row-click="rowClick">
         <el-table-column prop="id" label="产品编号" align="center"></el-table-column>
         <el-table-column prop="type" label="类型" align="center"></el-table-column>
         <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
@@ -36,11 +46,14 @@
           </template>
         </el-table-column>
         <el-table-column prop="createUser" label="操作人" align="center"></el-table-column>
-        <el-table-column prop="state" label="状态" align="center">已上架</el-table-column>
-        <el-table-column prop="opers" label="推送平台" align="center">飞猪、携程</el-table-column>
+        <el-table-column prop="state" label="状态" align="center"></el-table-column>
+        <el-table-column prop="opers" label="推送平台" align="center"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="text">编辑</el-button>
+            <el-button type="text"
+              @click="routeToChangepro(scope.row.id)">
+              编辑
+            </el-button>
             <el-button type="text">删除</el-button>
           </template>
         </el-table-column>
@@ -90,6 +103,10 @@ export default {
 
   data(){
     return Object.assign(
+      // 视图
+      {
+        currentRowId: null,
+      },
       // 分页信息
       {
         pageInfo: getPageInfo(),
@@ -160,6 +177,24 @@ export default {
 
     podsColumnMaker(pods){
       return pods.map(pod => pod.pod).join('、');
+    },
+
+    rowClick(row, column){
+      let { id }= row;
+      if(this.currentRowId && this.currentRowId=== id){
+        this.currentRowId= null;
+        return this.$refs.elTable.setCurrentRow();
+      }
+      this.currentRowId= id;
+    },
+    routeToPlanInventory(){
+      this.currentRowId && this.$router.push({ path: '/planInventory', query: { id: this.currentRowId } });
+    },
+    routeToChangeInfo(){
+      this.currentRowId && this.$router.push({ path: '/changeinfo', query: { id: this.currentRowId } });
+    },
+    routeToChangepro(id){
+      this.$router.push({ path: '/changepro', query: { id } });
     }
   }
 
