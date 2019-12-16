@@ -2,7 +2,7 @@
 import Vue from 'vue'
 /**权限指令**/
 Vue.directive('has', {
-  insterted: function (el, binding) {
+  bind: function (el, binding) {
     if (!Vue.prototype.$_has(binding.value)) {
        if(el.parentNode!=null){
          el.parentNode.removeChild(el);        
