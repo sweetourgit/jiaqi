@@ -101,11 +101,11 @@
           .then(obj => {
             let getWorkflowCode
             if(this.presentRouter == '无收入借款管理') {
-              getWorkflowCode = 'loan_noIncome2'
+              getWorkflowCode = 'loan_noIncome4'
             } else if(this.presentRouter == '预付款管理') {
-              getWorkflowCode = 'borrow_Moneys2'
+              getWorkflowCode = 'borrow_Moneys4'
             }else {
-              getWorkflowCode = 'Reimbursement_noIncome2'
+              getWorkflowCode = 'Reimbursement_noIncome4'
             }
             this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),

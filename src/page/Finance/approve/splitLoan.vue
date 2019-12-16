@@ -77,11 +77,16 @@
                 </el-table-column>
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
-                <el-table-column prop="hkOfCf" label="还款/拆分" align="center"></el-table-column>
+                <el-table-column prop="hkOfCf" label="还款/拆分" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.hkOfCf == 1">拆分</div>
+                    <div v-if="scope.row.hkOfCf == 2">还款</div>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="peopleCount" label="操作" align="center" width="200">
                   <template slot-scope="scope">
                     <el-button type="success" plain size="small" plain v-if="scope.row.hkOfCf != '' || scope.row.hkOfCf == null" @click="handleTableLook">查看</el-button>
-                    <el-button type="primary" plain size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0" @click="handleTableSplitLoan">拆分/还款</el-button>
+                    <el-button type="primary" plain size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0" @click="handleTableSplitLoan(scope.$index, scope.row)">拆分/还款</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -108,8 +113,8 @@
       <el-form :model="ruleFormSplitLoan" :rules="rules" ref="ruleFormSplitLoan" label-width="100px" v-show="!isShowLookOfSlit">
         <el-form-item label="还款/拆分" prop="formItemSplitLoan">
           <el-radio-group v-model="ruleFormSplitLoan.formItemSplitLoan" @change="handleChangeSplitLoan">
-            <el-radio label="还款"></el-radio>
-            <el-radio label="拆分"></el-radio>
+            <el-radio label="1">还款</el-radio>
+            <el-radio label="2">拆分</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -134,6 +139,7 @@
     name: "splitLoan",
     data(){
       return {
+        keepWhichRow: null, // 保存当前点击的拆分借款按钮是那一行的（实现设置 ‘拆分/还款’ 列的值）
         isShowAcountTable: true, // 是否显示表格
         isDisabledKeepBtn: true, // 拆分借款弹窗保存按钮没选银行账户之前是禁止点击的
         getAcountId: null, // 银行账户id
@@ -153,10 +159,10 @@
             price: 20,
             noPrice: 0,
             peopleCount: '人数',
-            hkOfCf: '还款'
+            hkOfCf: 2
           },
           {
-            paymentID: 1,
+            paymentID: 12,
             supplierTypeEX: '借款类型',
             supplierName: '供应商',
             supplierName: '申请人',
@@ -168,7 +174,7 @@
             hkOfCf: ''
           },
           {
-            paymentID: 1,
+            paymentID: 6,
             supplierTypeEX: '借款类型',
             supplierName: '供应商',
             supplierName: '申请人',
@@ -177,7 +183,7 @@
             price: 20,
             noPrice: 0,
             peopleCount: '人数',
-            hkOfCf: '拆分'
+            hkOfCf: 1
           }
         ],
         bankAccountData: [], // 银行账户表格
@@ -197,8 +203,9 @@
       this.tabShowWhich = String(this.$route.query.approveDetailTab)
     },
     methods: {
+      // 弹窗内的拆分和还款单选框切换时触发
       handleChangeSplitLoan(val){
-        if(val == '拆分') {
+        if(val == '1') {
           this.isDisabledKeepBtn = false
           this.isShowAcountTable = false
         }else {
@@ -233,7 +240,9 @@
       handleTableDialogKeep(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.keepWhichRow.hkOfCf = this.ruleFormSplitLoan.formItemSplitLoan
+            this.isShowTableDialog = false
+            // this.getAcountId
           } else {
             console.log('error submit!!');
             return false;
@@ -246,7 +255,9 @@
         this.getAcountId = row.id
       },
       // 表格内的拆分/还款按钮
-      handleTableSplitLoan(){
+      handleTableSplitLoan(index, row){
+        this.keepWhichRow = row
+        // 获取银行账户数据
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
           "object": {
             "isDeleted": 0
@@ -255,7 +266,7 @@
           this.bankAccountData = obj.data.objects
           this.isShowLookOfSlit = false
           this.isShowTableDialog = true
-          this.ruleFormSplitLoan.formItemSplitLoan = '还款'
+          this.ruleFormSplitLoan.formItemSplitLoan = '1'
         }).catch( err => {
           console.log(err)
         })
