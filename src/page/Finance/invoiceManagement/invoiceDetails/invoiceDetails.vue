@@ -170,7 +170,7 @@
         </el-table-column>
         <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="120">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()"></el-input>
+            <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()" @change="clearNoNum(scope.row.invoicePrice)"></el-input>
             <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
           </template>
         </el-table-column>
@@ -273,6 +273,12 @@ export default {
     },
   },
   methods: {
+    clearNoNum(obj){
+      console.log(123)
+      obj = 1
+      //obj = obj.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');//只能输入两个小数
+      console.log(obj)
+    },
     formatDate01(date) {//时间转化
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
@@ -466,9 +472,9 @@ export default {
               this.openInvoiceShow = false ;
               this.$parent.pageList();
             })
-          }else{
-            this.changeTicket(ID);
           }
+        }else if(this.invoiceDate[0].invoicePrice <= sum_01 + this.invoicePrice){
+          this.changeTicket(ID);
         }else{
           this.$message.success("该发票金额已超过剩余开票金额");
         }
@@ -500,7 +506,7 @@ export default {
 .state03{color:#008000;float: left; line-height: 30px; margin: 10px 0 0 10px; font-weight: bold;}
 .state04{text-align: center; background: #eb0000; border-radius: 5px; color: #fff;width:60px;padding: 2px; margin: 10px 0 0 0;}
 .pro-info{margin: 15px 0 20px 0;line-height: 30px;}
-.table{margin: 10px 0 0 0;}
+.table{margin: 10px 0 0 0;padding:1px;}
 .w200{width: 200px;}
 .associated{background: #e6f3fc;border: 1px solid #d5f0fc; line-height: 30px;border-radius: 5px;overflow: hidden;}
 .warning{float: left;color: #108ee9;margin: 0 0 0 15px;font-size: 16px;}
