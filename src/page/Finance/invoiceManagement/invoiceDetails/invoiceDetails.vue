@@ -170,7 +170,7 @@
         </el-table-column>
         <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="120">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()" @change="clearNoNum(scope.row.invoicePrice)"></el-input>
+            <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()" @input="clearNoNum(scope.$index,scope.row.invoicePrice)"></el-input>
             <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
           </template>
         </el-table-column>
@@ -273,11 +273,8 @@ export default {
     },
   },
   methods: {
-    clearNoNum(obj){
-      console.log(123)
-      obj = 1
-      //obj = obj.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');//只能输入两个小数
-      console.log(obj)
+    clearNoNum(index,data){
+      this.invoiceDate[index].invoicePrice = data.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');//只能输入两个小数
     },
     formatDate01(date) {//时间转化
       var y = date.getFullYear();
@@ -390,7 +387,8 @@ export default {
         return;
       }
       let str = Math.ceil(this.sum/this.ruleFormSeach.invoicePrice)
-      let remainder =this.sum%this.ruleFormSeach.invoicePrice;
+      let remainder = this.sum%this.ruleFormSeach.invoicePrice + "";
+      remainder = remainder.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       let guestAll = this.invoiceDate[0];
       this.invoiceDate=[];
       for(let i=0; i < str; i++){
@@ -439,7 +437,6 @@ export default {
         //   return;
         // }   
       }
-
       //if(this.online==this.invoiceDate.length-1 && this.ifOnly == true){
         this.a = true;
         let sum = 0; //求发票金额的总和
