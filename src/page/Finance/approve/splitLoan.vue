@@ -11,7 +11,7 @@
     <el-row class="row-content">
       <el-col :span="24">
         <el-tabs v-model="tabShowWhich" @tab-click="handleClick">
-          <el-tab-pane v-for="tabItem in keepBackContent" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
+          <el-tab-pane v-for="tabItem in keepBackContent" :key="tabItem.id" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
             <el-row class="item-content">
               <el-tag type="warning" v-if="tabItem.checkType=='0'" class="distributor-status">审批中</el-tag>
               <el-tag type="danger" v-if="tabItem.checkType=='2'" class="distributor-status">驳回</el-tag>
