@@ -837,7 +837,8 @@ export default {
       nullShowOp: false, //同业销售输入的不是有效的提示
       nullShowGuest: false, //直客销售输入的不是有效的提示
       enrollDetail: "", //订单需要
-      newEnrollDetail: "" //传给后台用的
+      newEnrollDetail: "", //传给后台用的
+      tradeID:0,//获取同业销售ID
     };
   },
   filters: {
@@ -1895,6 +1896,7 @@ export default {
     },
     departure2(item) {
       this.tradeSales = item.userCode;
+      this.tradeID = item.id;
       //this.userID = item.id
     },
     //商户名称模糊查询
@@ -1947,13 +1949,23 @@ export default {
         return restaurant.value;
       };
     },
-    departure(item) {
+    departure(item,useList) {
       this.productPos = item.id; //获取供应商的id传给下单接口的orgID
       this.lines = item.balance; //获取剩余额度
       this.deposit = item.deposit; //获取预存款
       this.payment = item.settlementType; //获取结算方式
-      this.originPlace = item.value;
       this.amount = this.lines + this.deposit;
+      this.originPlace = item.value;
+      this.querySearch2();
+      setTimeout(() =>{ // 输入同业社名称同业销售带出来
+      	this.ruleForm.travelSales = this.marketList[0].value;
+      	this.tradeID = this.marketList[0].id;
+      },300)
+      this.querySearch4();
+      setTimeout(() =>{ // 输入同业社名称商户销售带出来
+      	this.ruleForm.merchantsSell = this.useList[0].value;
+      	this.userID = this.useList[0].id;
+      },300)
     },
     travelGuest() {
       //直客销售清空后输入信息不对的验证取消
@@ -1971,6 +1983,8 @@ export default {
       //商户名称添加时，商户销售可以填写
       if (this.ruleForm.travel == "") {
         this.nullShowName = false;
+        this.ruleForm.travelSales = "" // 同业销售
+		    this.ruleForm.merchantsSell = ""  // 商户销售
       }
     },
     merchants() {
@@ -1992,14 +2006,16 @@ export default {
               if(this.ruleForm.merchantsSell == ""){
                 this.useList.push({
                   value: res.data.object.useList[i].name,
-                  id: res.data.object.useList[i].id
+                  id: res.data.object.useList[i].id,
+                  name: res.data.object.useList[i].name,
                 });
                 queryString4 = " "
               }else{
                 if (res.data.object.useList[i].name.indexOf(this.ruleForm.merchantsSell) != -1) {
                   this.useList.push({
                     value: res.data.object.useList[i].name,
-                    id: res.data.object.useList[i].id
+                    id: res.data.object.useList[i].id,
+                    name: res.data.object.useList[i].name,
                   });
                 }
               }
@@ -2027,6 +2043,7 @@ export default {
     },
     departure4(item) {
       this.userID = item.id;
+      //this.userName = item.name;
     },
     //订单来源切换清空相应下的文本框内容
     changeTab() {

@@ -111,7 +111,7 @@
             >
               <el-tab-pane
                 :key="item.name"
-                v-for="item in ruleForm.editableTabs"
+                v-for="(item,index) in ruleForm.editableTabs"
                 :label="item.title"
                 :name="item.name"
               >
@@ -465,12 +465,13 @@ export default {
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       hand: [],
       plans: {
-        planNum: "1",
-        planName: "2",
+        planNum: "",
+        planName: "",
         pid: ""
       },
       beginDate: "",//报销开始时间+
       endDate: "",//报销结束时间+
+      uid: 0, // 上传图片缩略图选中项
       planTotal: 100,
       userSize: 10,
       userTotal: 100,
@@ -538,6 +539,7 @@ export default {
         }
       ],
       },
+      s_content:[],//获取当前页面s_content
       querySearchPlanData: [], // 团期计划检索联想数组
       object_lisr:[],//最后提交的数组
       //报销表单验证
@@ -594,10 +596,6 @@ export default {
         },
    methods: {
         moment,
-        //切换时候，换内容
-        tabClick() {
-          console.log(9);
-         },
         chanceSubmit() { // 取消按钮
         if(this.find == 0){
           this.$confirm("是否取消本次报销申请", "提示", {
@@ -606,32 +604,37 @@ export default {
             type: "warning"
           })
           .then(() => {
-               this.ruleForm.editableTabs=[{
-                title: "报销1",
-                name: "1",
-                content:{
-                    createUser:"",
-                    createTime: "",
-                    id:"",
-                    groupCode: "",
-                    productName: "",
-                    mark: "",
-                    t_sum:0,//一共多少项
-                    t_price:0,//一共多少钱
-                    files:[],
-                    payments:[],
-                    joinData:[],
-                    plan: {
-                      planId: "",
-                      planName: ""
-                    },
-                   }
-              }];
-              this.tabIndex = 1;
-              this.radio= "1";
-              this.dialogFormVisible = false;
-
-          })
+               this.tabIndex = 1;
+               this.radio= "1";
+               this.dialogFormVisible = false;
+               this.ruleForm= {
+                  editableTabsValue: "1",
+                  editableTabs: [
+                    {
+                      title: "报销1",
+                      name: "1",
+                      content:{
+                          createUser:"",
+                          createTime: "",
+                          id:"",
+                          groupCode: "",
+                          productName: "",
+                          mark: "",
+                          t_sum:0,//一共多少项
+                          t_price:0,//一共多少钱
+                          files:[],
+                          payments:[],
+                          joinData:[],
+                          plan: {
+                            planId: "",
+                            planName: ""
+                          },
+                        
+                      }
+                    }
+                  ]
+                  };
+        })
           .catch(() => {
             this.$message({
               type: "info",
@@ -639,42 +642,60 @@ export default {
             });
           });
        }else if(this.find == 1){
-              this.ruleForm.editableTabs=[{
-                    title: "报销1",
-                    name: "1",
-                    content:{
-                        createUser:"",
-                        createTime: "",
-                        id:"",
-                        groupCode: "",
-                        productName: "",
-                        mark: "",
-                        t_sum:0,//一共多少项
-                        t_price:0,//一共多少钱
-                        files:[],
-                        payments:[],
-                        joinData:[],
-                        plan: {
-                          planId: "",
-                          planName: ""
-                        },
-                       }
-                  }];
               this.tabIndex = 1;
               this.radio= "1";
               this.dialogFormVisible = false;
+              this.ruleForm= {
+                  editableTabsValue: "1",
+                  editableTabs: [
+                    {
+                      title: "报销1",
+                      name: "1",
+                      content:{
+                          createUser:"",
+                          createTime: "",
+                          id:"",
+                          groupCode: "",
+                          productName: "",
+                          mark: "",
+                          t_sum:0,//一共多少项
+                          t_price:0,//一共多少钱
+                          files:[],
+                          payments:[],
+                          joinData:[],
+                          plan: {
+                            planId: "",
+                            planName: ""
+                          },
+                        
+                      }
+                    }
+                  ]
+                  };
         }
          
         },
+        subscript(){ //判断当前tab页
+             for(let j in this.ruleForm.editableTabs){
+              if(this.ruleForm.editableTabs[j].name == this.ruleForm.editableTabsValue){
+                   this.s_content = this.ruleForm.editableTabs[j].content;
+                }
+              }
+             
+        },
         addplan(editableTabsValue) {//确定1
-          let one = editableTabsValue - 1;
-          let editableTabs = this.ruleForm.editableTabs;
-          // let one = editableTabsValue;
-          
-          editableTabs[one].content.groupCode = this.plans.planNum;
-          editableTabs[one].content.productName = this.plans.planName;
-          // this.Associated(this.plans.pid);
-          this.dialogFormVisible2 = false;
+           this. subscript()
+           if(this.plans.planNum !== "" || this.plans.planName !== ""){
+                  this.s_content.groupCode = this.plans.planNum;
+                  this.s_content.productName = this.plans.planName;
+                  this.dialogFormVisible2 = false;
+           }else{
+                  this.dialogFormVisible2 = true;
+                  this.$message({ message:'请选择团期计划',
+                                  type: 'warning' 
+                                });
+           }
+         
           
         },
         //获取关联单据
@@ -683,6 +704,7 @@ export default {
           suppliername = this.t_supplier,
         // createUser = this.t_plan
           ) {
+            this.subscript();
             let object = {};
                 suppliername !== "" ? (object.suppliername = suppliername) : suppliername,
                 planID !=="" ? (object.planID = planID) : planID,
@@ -698,8 +720,7 @@ export default {
                       if(object[i].orgName==null){
                           object[i].orgName="无";
                         }
-                        let one_index = this.ruleForm.editableTabsValue - 1; 
-                        this.ruleForm.editableTabs[one_index].content.joinData.push({
+                      this.s_content.joinData.push({
                           paymentID:  object[i].paymentID,
                           supplierTypeEX:object[i].supplierTypeEX,
                           groupCode:object[i].groupCode,
@@ -718,7 +739,7 @@ export default {
                       });
                       
                     
-                      this.joinData = this.ruleForm.editableTabs[one_index].content.joinData
+                      this.joinData =this.s_content.joinData
                     }
                     
                       
@@ -786,8 +807,7 @@ export default {
                         object:object
                       })
                       .then(res => {
-                        console.log(res.data.isSuccess);
-                        if (res.data.isSuccess == true) {
+                         if (res.data.isSuccess == true) {
                           this.pageList(1, this.pageSize);
                           this.$message({
                             type: "success",
@@ -796,30 +816,33 @@ export default {
                           this.dialogFormVisible = false;
                           this.beginWokeing(res.data.object);
                           this.pageList();
-                          //this.getUserList(1);
-                         
-                          this.ruleForm.editableTabs=[{
-                              title: "报销1",
-                              name: "1",
-                              content:{
-                                  createUser:"",
-                                  createTime: "",
-                                  id:"",
-                                  groupCode: "",
-                                  productName: "",
-                                  mark: "",
-                                  t_sum:0,//一共多少项
-                                  t_price:0,//一共多少钱
-                                  files:[],
-                                  payments:[],
-                                  joinData:[],
-                                  plan: {
-                                    planId: "",
-                                    planName: ""
-                                  },
-                                  
-                                }
-                            }];
+                          this.ruleForm= {
+                                editableTabsValue: "1",
+                                editableTabs: [
+                                  {
+                                    title: "报销1",
+                                    name: "1",
+                                    content:{
+                                        createUser:"",
+                                        createTime: "",
+                                        id:"",
+                                        groupCode: "",
+                                        productName: "",
+                                        mark: "",
+                                        t_sum:0,//一共多少项
+                                        t_price:0,//一共多少钱
+                                        files:[],
+                                        payments:[],
+                                        joinData:[],
+                                        plan: {
+                                          planId: "",
+                                          planName: ""
+                                        },
+                                      
+                                    }
+                                  }
+                                ]
+                                };
                         }else{
                             this.$message({
                             type: "error",
@@ -839,6 +862,8 @@ export default {
           var files_s=[];
           var editableTabs = ruleForm.editableTabs;
           var verify = 0;
+          this.object_lisr=[];
+
           for(var j in editableTabs){
               let submitForm_list = editableTabs[j].content;
                 if(submitForm_list.groupCode !=="" || submitForm_list.mark !== "" ||submitForm_list.files.length !== 0 ){ // 判断必填内容
@@ -882,20 +907,18 @@ export default {
                          console.log(this.object_lisr,'ddb');
                          verify = 1
                  }else{
-
                   this.$message({
                       message: '请检查必填项',
                       type: 'warning' 
                   });
+                  verify = 0
               }
-              return false;
-             
-            }
-
+             }
             if(verify !== 0){
                this.add_form(this.object_lisr)//调用提交接口
             }
             
+           
 
         },
         beginWokeing(res) {  //启动工作流
@@ -941,13 +964,14 @@ export default {
                 });
               });
           },
+           
         t_text() {//确认添加
-            let one_index = this.ruleForm.editableTabsValue - 1; 
-            let joinData = this.ruleForm.editableTabs[one_index].content.joinData;
+            this.subscript(); 
+            let joinData =this.s_content.joinData;
             let t_joinData=[];
-            this.ruleForm.editableTabs[one_index].content.t_price = 0
+           this.s_content.t_price = 0
             this.t_price_box = [];
-            this.ruleForm.editableTabs[one_index].content.payments=[];
+           this.s_content.payments=[];
             for(let v in joinData){
                t_joinData.push({
                   createTime: joinData[v].createTime,
@@ -967,32 +991,33 @@ export default {
             }
             for(let i in t_joinData){
                     if(t_joinData[i].price!= "0" ){
-                        this.ruleForm.editableTabs[one_index].content.payments.push(t_joinData[i]);
+                       this.s_content.payments.push(t_joinData[i]);
                         this.t_price_box.push(t_joinData[i].price);
                     }
               }
 
             this.t_price_sum()
             this.dialogFormVisible3 = false;
-            this.ruleForm.editableTabs[one_index].content.joinData=[];
+            joinData=[];
         },
+       
         t_text_del(){//确认取消
-         let one_index = this.ruleForm.editableTabsValue - 1; 
+         this.subscript();
          this.dialogFormVisible3 = false;
-         this.ruleForm.editableTabs[one_index].content.joinData=[];
+         this.s_content.joinData=[];
         },
         t_delete(paymentID){// 添加数据删除
-          let one_index = this.ruleForm.editableTabsValue - 1;
-          let payments_box = this.ruleForm.editableTabs[one_index].content.payments;
+          this.subscript();
+          let payments_box = this.s_content.payments;
           this.$confirm("此操作将删除该跟团游信息", "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning"
           })
           .then(() => {
-            this.ruleForm.editableTabs[one_index].content.t_price = 0
+            this.s_content.t_price = 0
             this.t_price_box = [];
-            this.ruleForm.editableTabs[one_index].content.payments=[];
+            this.s_content.payments=[];
               for(let j in payments_box){
                 console.log(payments_box[j].paymentID);
                 if(payments_box[j].paymentID === paymentID){
@@ -1003,7 +1028,7 @@ export default {
                         });
                       
                   }
-                    this.ruleForm.editableTabs[one_index].content.payments.push(payments_box[j]);
+                    this.s_content.payments.push(payments_box[j]);
                     this.t_price_box.push(payments_box[j].price);
                     this.t_price_sum();
                  }
@@ -1017,20 +1042,21 @@ export default {
             });
           });
         },
+         
         t_price_sum(){//多少项总价多少
-          let one_index = this.ruleForm.editableTabsValue - 1; 
+          this.subscript();
           let t_price_box = this.t_price_box;
           let sss = 0 ;
             for(let i=0;i < t_price_box.length;i++){
                   sss = Number(t_price_box[i]) + sss  
               }
-          this.ruleForm.editableTabs[one_index].content.t_sum = this.ruleForm.editableTabs[one_index].content.payments.length;//多少项
-          this.ruleForm.editableTabs[one_index].content.t_price = sss //多少钱
+         this.s_content.t_sum = this.s_content.payments.length;//多少项
+         this.s_content.t_price= sss //多少钱
         },
          addressChange() {
             this.t_price_box=[];
-            let one_index = this.ruleForm.editableTabsValue - 1; 
-            let payments_change = this.ruleForm.editableTabs[one_index].content.payments;
+            this.subscript();
+            let payments_change = this.s_content.payments;
             for(var t in payments_change){
                    this.t_price_box.push(payments_change[t].price);
                 }
@@ -1064,34 +1090,37 @@ export default {
                     let new_payments_box =[];
                     let qian = 0;
                     let wcount_s = 0;
+                    console.log(d_objects,'21');
                     for(let i in d_objects){
-                       console.log(d_objects[i],'66');
-                       let t_sum = d_objects[i].payments.length;//多少项 
+
+                            let t_sum = d_objects[i].payments.length;//多少项 
+                                
                        for( let s in d_objects[i].payments){
-                         if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
-                            wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
-                         }else{
-                            wcount_s=d_objects[i].payments[s].paymentPrice
-                         }
-                             
+                              if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
+                                  wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
+                              }else{
+                                  wcount_s=d_objects[i].payments[s].paymentPrice
+                              }
                               d_price_box.push(d_objects[i].payments[s].price);
-                              new_payments_box.push({
-                                          code: d_objects[i].payments[s].code,
-                                          createTime: d_objects[i].payments[s].createTime,
-                                          expenseID: d_objects[i].payments[s].expenseID,
-                                          id: d_objects[i].payments[s].id,
-                                          paymentID: d_objects[i].payments[s].paymentID,
-                                          paymentMark: d_objects[i].payments[s].paymentMark,
-                                          paymentPrice: d_objects[i].payments[s].paymentPrice,
-                                          peopleCount: d_objects[i].payments[s].peopleCount,
-                                          price: d_objects[i].payments[s].price,
-                                          supplierName: d_objects[i].payments[s].supplierName,
-                                          supplierType: d_objects[i].payments[s].supplierType,
-                                          supplierTypeEX: d_objects[i].payments[s].supplierTypeEX,
-                                          createUser:d_objects[i].createUser,
-                                          wcount:wcount_s
-                              })
-                       }
+                              let paylist = d_objects[i].payments;
+                                paylist.push({ // 关联单据列表
+                                              code: d_objects[i].payments[s].code,
+                                              createTime: d_objects[i].payments[s].createTime,
+                                              expenseID: d_objects[i].payments[s].expenseID,
+                                              id: d_objects[i].payments[s].id,
+                                              paymentID: d_objects[i].payments[s].paymentID,
+                                              paymentMark: d_objects[i].payments[s].paymentMark,
+                                              paymentPrice: d_objects[i].payments[s].paymentPrice,
+                                              peopleCount: d_objects[i].payments[s].peopleCount,
+                                              price: d_objects[i].payments[s].price,
+                                              supplierName: d_objects[i].payments[s].supplierName,
+                                              supplierType: d_objects[i].payments[s].supplierType,
+                                              supplierTypeEX: d_objects[i].payments[s].supplierTypeEX,
+                                              createUser:d_objects[i].createUser,
+                                              wcount:wcount_s
+                                            })
+                        }
+                       console.log(d_objects[i].payments,'omg')
                       for(let i=0;i < d_price_box.length;i++){ // 多少钱
                           qian = Number(d_price_box[i]) + qian  
                       }
@@ -1105,25 +1134,30 @@ export default {
                           mark:  d_objects[i].mark,
                           t_sum:t_sum,//一共多少项
                           t_price:qian,//一共多少钱
+                          guid:d_objects[i].guid,
                           files:d_objects[i].files,
-                          payments:new_payments_box,
+                          payments:d_objects[i].payments,
                           joinData:d_objects[i].joinData,
                          
 
                        })
+                        console.log(d_objects_content,'哎呀')
                        // others:d_objects[i].others,
-                       console.log( d_objects_content,'大宝贝')
+                    
                     }
-
+                       console.log( d_objects_content,'大宝贝')
                     for(let i in d_objects_content){
-                          let newTabName = ++this.tabIndex;
-                              newTabName=newTabName-1 +"";
-                              console.log(newTabName,"详情");
-                                this.ruleForm.editableTabs.push({
-                                  title: "报销" + newTabName,
-                                  name: newTabName,
-                                  content: d_objects_content[i]
-                                });
+                           if(d_objects_content[i].guid == scope.row.guid){
+                                    let newTabName = ++this.tabIndex;
+                                        newTabName=newTabName-1 +"";
+                                        console.log(newTabName,'rr');
+                                    this.ruleForm.editableTabs.push({
+                                        title: "报销" + newTabName,
+                                        name: newTabName,
+                                        content: d_objects_content[i]
+                                      });
+                              }
+                                
                       }
                         
                       
@@ -1167,7 +1201,6 @@ export default {
             .then(function(obj) {
               that.userTotal = obj.data.total;
               that.tableData1 = obj.data.objects;
-              console.log(that.tableData1);
             })
             .catch(function(obj) {
               console.log(obj);
@@ -1199,27 +1232,32 @@ export default {
         handleChange(file, files) {
           this.files = files.slice(-3);
         },
+        
         //图片上传成功
         handleSucess(res, file, files) {
+          this.subscript();
           var paths = [];
-          let one_index = this.ruleForm.editableTabsValue - 1;
-          this.ruleForm.editableTabs[one_index].content.files = files;
+          //let one_index = this.ruleForm.editableTabsValue - 1;
+              this.s_content.files = files;
           for (var i = 0; i < files.length; i++) {
             paths = JSON.parse(files[i].response).paths[0];
-            this.$set(this.ruleForm.editableTabs[one_index].content.files[i], "url", paths.Url);
-            this.$set(this.ruleForm.editableTabs[one_index].content.files[i], "name", paths.Name);
+            this.$set(this.s_content.files[i], "url", paths.Url);
+            this.$set(this.s_content.files[i], "name", paths.Name);
           }
           this.image = 1;
+          console.log(files);
+          this.uid = files[0].uid;
         }, 
         handleRemove(file, files) {//图片删除
-            console.log(file, files);
-            this.files = files;
+            this.uid = files[0].uid;
+            this.files = files
+            this.image = files.length
+    
           },
         handleError(err, file) {// 上传失败
           this.files = []
         },
        handlePreview(file) {
-            console.log(file);
             window.open(file.url);
           },
         
@@ -1285,30 +1323,32 @@ export default {
                     message: "已取消"
                   });
           });
-        }else{
-          this.$confirm("是否需要删除 报销" + targetName, "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          })
-          .then(() => {
-           
-                let tabs = this.ruleForm.editableTabs;
-                let activeName = this.ruleForm.editableTabsValue;
-                if (activeName === targetName) {
-                  tabs.forEach((tab, index) => {
-                    if (tab.name === targetName) {
-                      let nextTab = tabs[index + 1] || tabs[index - 1];
-                      if (nextTab) {
-                        activeName = nextTab.name;
-                      }
-                    }
-                  });
-                }
-
-                this.ruleForm.editableTabsValue = activeName;
-                this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
+          }else{
+            this.$confirm("是否需要删除 报销" + targetName, "提示", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
             })
+            .then(() => {
+            
+                  let tabs = this.ruleForm.editableTabs;
+                  let activeName = this.ruleForm.editableTabsValue;
+
+                  if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                      if (tab.name === targetName) {
+                        let nextTab = tabs[index + 1] || tabs[index - 1];
+                        if (nextTab) {
+                          activeName = nextTab.name;
+                        }
+                      }
+                    });
+                  }
+
+                  this.ruleForm.editableTabsValue = activeName;
+                  this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
+              })
+              
           .catch(() => {
             console.log(7);
             this.$message({
@@ -1316,11 +1356,13 @@ export default {
               message: "已取消"
             });
           });
-        }
-
-           
+          }
           }
         },
+         //切换时候，换内容
+        tabClick(targetName) {
+          this.ruleForm.editableTabsValue = targetName.name
+           },
       
         getNewTab(){  // 获取新tab实例
           return {
@@ -1427,6 +1469,9 @@ export default {
         ){
             var that = this;
             let object = {};
+            if(beginTime == null){
+              beginTime = "";
+            }
               expenseID !== "" ? (object.expenseID = expenseID) : expenseID,
               groupCode !== "" ? (object.groupCode = groupCode) : groupCode,
               productName !== "" ?(object.productName = productName) : productName,
@@ -1488,13 +1533,11 @@ export default {
           }
           return moment(date).format('YYYY-MM-DD HH:mm:ss')
         },
-         
         querySearch3Plan(queryStringPlan, cb) { // 团号搜索联想
-            let one = this.ruleForm.editableTabsValue - 1;
-            let groupCode = this.ruleForm.editableTabs[one].content.groupCode;
+            this.subscript();
             this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
               "object": {
-                "groupCode": groupCode, // 团号
+                "groupCode": this.s_content.groupCode, // 团号
               }
             }).then(res => {
                 for (let i = 0; i < res.data.objects.length; i++) {
@@ -1508,17 +1551,17 @@ export default {
             }).catch(err => {})
         },
         tour_check() {   // 团期计划输入框失去焦点时
-            let one = this.ruleForm.editableTabsValue - 1;
-            let groupCode = this.ruleForm.editableTabs[one].content.groupCode;
-            if (groupCode != '') {
+           this.subscript();
+           if (this.s_content.groupCode != '') {
               this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist", {
                 "object": {
-                  "groupCode": groupCode, // 团号
+                  "groupCode": this.s_content.groupCode, // 团号
                 }
               }).then(res => {
+                
                 if (res.data.isSuccess == true) {
-                  this.ruleForm.editableTabs[one].content.productName = res.data.objects[0].title
-                  this.plans.pid  = res.data.objects[0].planID
+                      this.s_content.productName = res.data.objects[0].title
+                      this.plans.pid  = res.data.objects[0].planID
                   }
               }).catch(err => {
                 console.log(err)
