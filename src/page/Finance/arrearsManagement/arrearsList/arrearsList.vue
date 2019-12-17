@@ -54,7 +54,7 @@
     
   </div>
 </template>
-
+ 
 <script>
 import arrearsDetail from './comp/arrearsDetail';
 export default{
