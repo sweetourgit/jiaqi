@@ -1090,33 +1090,37 @@ export default {
                     let new_payments_box =[];
                     let qian = 0;
                     let wcount_s = 0;
+                    console.log(d_objects,'21');
                     for(let i in d_objects){
-                       let t_sum = d_objects[i].payments.length;//多少项 
+
+                            let t_sum = d_objects[i].payments.length;//多少项 
+                                
                        for( let s in d_objects[i].payments){
-                         if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
-                            wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
-                         }else{
-                            wcount_s=d_objects[i].payments[s].paymentPrice
-                         }
-                             
+                              if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
+                                  wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
+                              }else{
+                                  wcount_s=d_objects[i].payments[s].paymentPrice
+                              }
                               d_price_box.push(d_objects[i].payments[s].price);
-                              new_payments_box.push({
-                                          code: d_objects[i].payments[s].code,
-                                          createTime: d_objects[i].payments[s].createTime,
-                                          expenseID: d_objects[i].payments[s].expenseID,
-                                          id: d_objects[i].payments[s].id,
-                                          paymentID: d_objects[i].payments[s].paymentID,
-                                          paymentMark: d_objects[i].payments[s].paymentMark,
-                                          paymentPrice: d_objects[i].payments[s].paymentPrice,
-                                          peopleCount: d_objects[i].payments[s].peopleCount,
-                                          price: d_objects[i].payments[s].price,
-                                          supplierName: d_objects[i].payments[s].supplierName,
-                                          supplierType: d_objects[i].payments[s].supplierType,
-                                          supplierTypeEX: d_objects[i].payments[s].supplierTypeEX,
-                                          createUser:d_objects[i].createUser,
-                                          wcount:wcount_s
-                              })
-                       }
+                              let paylist = d_objects[i].payments;
+                                paylist.push({ // 关联单据列表
+                                              code: d_objects[i].payments[s].code,
+                                              createTime: d_objects[i].payments[s].createTime,
+                                              expenseID: d_objects[i].payments[s].expenseID,
+                                              id: d_objects[i].payments[s].id,
+                                              paymentID: d_objects[i].payments[s].paymentID,
+                                              paymentMark: d_objects[i].payments[s].paymentMark,
+                                              paymentPrice: d_objects[i].payments[s].paymentPrice,
+                                              peopleCount: d_objects[i].payments[s].peopleCount,
+                                              price: d_objects[i].payments[s].price,
+                                              supplierName: d_objects[i].payments[s].supplierName,
+                                              supplierType: d_objects[i].payments[s].supplierType,
+                                              supplierTypeEX: d_objects[i].payments[s].supplierTypeEX,
+                                              createUser:d_objects[i].createUser,
+                                              wcount:wcount_s
+                                            })
+                        }
+                       console.log(d_objects[i].payments,'omg')
                       for(let i=0;i < d_price_box.length;i++){ // 多少钱
                           qian = Number(d_price_box[i]) + qian  
                       }
@@ -1130,25 +1134,30 @@ export default {
                           mark:  d_objects[i].mark,
                           t_sum:t_sum,//一共多少项
                           t_price:qian,//一共多少钱
+                          guid:d_objects[i].guid,
                           files:d_objects[i].files,
-                          payments:new_payments_box,
+                          payments:d_objects[i].payments,
                           joinData:d_objects[i].joinData,
                          
 
                        })
+                        console.log(d_objects_content,'哎呀')
                        // others:d_objects[i].others,
-                       console.log( d_objects_content,'大宝贝')
+                    
                     }
-
+                       console.log( d_objects_content,'大宝贝')
                     for(let i in d_objects_content){
-                          let newTabName = ++this.tabIndex;
-                              newTabName=newTabName-1 +"";
-                              console.log(newTabName,"详情");
-                                this.ruleForm.editableTabs.push({
-                                  title: "报销" + newTabName,
-                                  name: newTabName,
-                                  content: d_objects_content[i]
-                                });
+                           if(d_objects_content[i].guid == scope.row.guid){
+                                    let newTabName = ++this.tabIndex;
+                                        newTabName=newTabName-1 +"";
+                                        console.log(newTabName,'rr');
+                                    this.ruleForm.editableTabs.push({
+                                        title: "报销" + newTabName,
+                                        name: newTabName,
+                                        content: d_objects_content[i]
+                                      });
+                              }
+                                
                       }
                         
                       
