@@ -838,9 +838,6 @@ export default {
       nullShowGuest: false, //直客销售输入的不是有效的提示
       enrollDetail: "", //订单需要
       newEnrollDetail: "", //传给后台用的
-      userName:'',//获取商户销售名字
-      useList:[],
-      name:'',
     };
   },
   filters: {
@@ -1984,6 +1981,8 @@ export default {
       //商户名称添加时，商户销售可以填写
       if (this.ruleForm.travel == "") {
         this.nullShowName = false;
+        this.ruleForm.travelSales = "" // 同业销售
+		this.ruleForm.merchantsSell = ""  // 商户销售
       }
     },
     merchants() {
@@ -2042,7 +2041,7 @@ export default {
     },
     departure4(item) {
       this.userID = item.id;
-      this.userName = item.name;
+      //this.userName = item.name;
     },
     //订单来源切换清空相应下的文本框内容
     changeTab() {

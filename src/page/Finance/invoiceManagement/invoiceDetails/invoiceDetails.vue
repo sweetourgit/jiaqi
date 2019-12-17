@@ -411,7 +411,7 @@ export default {
             this.ifOnly = false;
           }
           if(i == this.invoiceDate.length - 1){
-            this.openInvoicement();
+            this.openInvoicement(ID);
           }
         });
       }
