@@ -141,7 +141,7 @@
       <div class="associated" v-if="title == '开票'">
         <div class="warning"><i class="el-icon-warning"></i></div>
         <div class="fl">已关联<span class="relateditems">{{invoiceDate.length}}</span>项</div>
-        <div class="aggregate">总计:<span>{{sum| numFilter}}</span>元</div>
+        <div class="aggregate">总计:<span>{{sum | numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
         <el-table-column v-if="title == '换票'" label="原票号" align="center">
@@ -150,7 +150,11 @@
           </template>
         </el-table-column>
         <!-- <el-table-column prop="oldInvoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column> -->
-        <el-table-column prop="invoiceHeader" v-if="title == '开票'" label="发票抬头" align="center"></el-table-column>
+        <el-table-column v-if="title == '开票'" label="发票抬头" align="center">
+          <template slot-scope="scope">
+            <span>{{invoiceHeader}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center"></el-table-column>
         <el-table-column prop="tel" label="电话" align="center"></el-table-column>
         <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
@@ -231,6 +235,7 @@ export default {
       invoicePrice:'',
       sum:0,//发票金额的总和
       sum_01:0,
+      invoiceHeader:'',
     };
 
   },
@@ -331,6 +336,7 @@ export default {
           if(this.invoiceList.invoicePrice !== ''){
             this.sum = this.guest
           }
+          this.invoiceHeader = res.data.object.invoiceHeader;
         }
       });
     },
