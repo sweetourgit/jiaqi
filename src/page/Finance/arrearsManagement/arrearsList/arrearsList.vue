@@ -54,7 +54,7 @@
     
   </div>
 </template>
-
+ 
 <script>
 import arrearsDetail from './comp/arrearsDetail';
 export default{
@@ -77,9 +77,14 @@ export default{
       paymentID:0,
       variable:0,
 
-
-
     }
+  },
+  watch: {
+     date:function(){        
+        if(this.date==null){
+          this.date = [];
+        }
+     }
   },
   mounted(){
     this.paymentpage();

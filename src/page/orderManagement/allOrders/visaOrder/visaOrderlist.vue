@@ -9,9 +9,9 @@
           <span class="search-title">团期计划</span>
           <el-input v-model="groupCode" class="input"></el-input>
           <span class="search-title">订单时间</span>
-          <el-date-picker v-model="beginDate" type="date" placeholder="开始日期" class="start-time"></el-date-picker>
+          <el-date-picker v-model="beginDate" type="date" placeholder="开始日期" class="start-time" @change="endDateChange"></el-date-picker>
              <div class="date-line"></div>
-          <el-date-picker v-model="endDate" type="date" placeholder="终止日期" class="start-time"></el-date-picker></br>
+          <el-date-picker v-model="endDate" type="date" placeholder="终止日期" class="start-time" @change="endDateChange"></el-date-picker></br>
           <span class="search-title por">签证地区<span v-if="isDes" class="poa">没有该地区名称</span></span>
           <el-autocomplete class="input" v-model="destination" :fetch-suggestions="querySearch" :trigger-on-focus="false" @select="departure" @blur="isToastFun(1)"></el-autocomplete>
           <span class="search-title">订单联系人</span>
@@ -20,19 +20,25 @@
           <el-autocomplete class="input" v-model="localcomp" :fetch-suggestions="handleBusinessGet" :trigger-on-focus="false" @select="handleChooseOrgID" @blur="isToastFun(2)"></el-autocomplete>
           <span class="search-title">销售</span>
           <el-input v-model="saler" class="input"></el-input></br>
-
-
           <!--订单状态-->
           <div class="status-title">订单状态</div>
           <ul class="order-status">
             <li v-for="(item,index) in orderStatusSearch" @click="statusTab(1,index,item.status)" v-bind:class="{statusbg: orderNum==index}">{{item.name}}</li>
-          </ul></br>
+          </ul>
           <!--退款状态-->
-          <div class="status-title">退款状态</div>
-          <ul class="order-status">
+          <ul class="order-status1">
             <li v-for="(item,index) in refundStatusSearch" @click="statusTab(2,index,item.status)" v-bind:class="{statusbg: refundNum==index}">{{item.name}}</li>
-          </ul></br>
-          <el-button type="primary" class="search-but" @click="orderPage(1,pageSize)">搜索</el-button>
+          </ul>
+          <div class="search-but">
+             <el-button type="primary" @click="orderPage(1,pageSize)">搜索</el-button>
+             <el-button type="primary" plain @click="reset">重置</el-button>
+          </div>
+
+
+
+
+
+
           <!--订单列表-->
           <div class="pro-info" v-for="(item,index) in orderpage">
             <table cellpadding="5">
@@ -146,32 +152,36 @@ export default {
        localcomp:'',
        localcompID:0,
        isToast:false,
-       saler:'',   
-
-
-
-
+       saler:'',
        orderStatusSearch:[
          {'status':0,'name':"全部"},
-         {'status':7,'name':"未确认"},
-         {'status':1,'name':"补充资料"},
-         {'status':8,'name':"签署合同"},
-         {'status':4,'name':"出行中"},
-         {'status':5,'name':"待点评"},
-         {'status':6,'name':"完成订单"},
-         {'status':9,'name':"作废订单"}
+         {'status':0,'name':"下单成功(2)"},
+         {'status':0,'name':"收到材料"},
+         {'status':0,'name':"材料审核(2)"},
+         {'status':0,'name':"材料补交中"},
+         {'status':0,'name':"材料制作中(2)"},
+         {'status':0,'name':"成功预约时间"},
+         {'status':0,'name':"送签/面签"},
+         {'status':0,'name':"使馆审理中(2)"},
+         {'status':0,'name':"使馆审理完毕"},
+         {'status':0,'name':"过签"},
+         {'status':0,'name':"拒签"},
+         {'status':0,'name':"邮寄中"},
+         {'status':0,'name':"待评价(2)"},
+         {'status':0,'name':"订单完成"},
+         {'status':0,'name':"订单作废"},
        ],
-       orderNum:"0",
+       orderNum:0,
        orderStatus:0,
        refundStatusSearch:[
-         {'status':0,'name':"全部"},
-         {'status':5,'name':"申请退款"},
-         {'status':1,'name':"退款中"},
-         {'status':6,'name':"完成退款"},
-         {'status':2,'name':"拒绝退款"}
+         {'status':0,'name':"申请退款(2)"},
+         {'status':0,'name':"退款中(2)"},
+         {'status':0,'name':"完成退款"},
+         {'status':0,'name':"拒绝退款"},
        ],
+       refundNum:null,
        refundStatus:0,
-       refundNum:"0",
+       
        
        
        
@@ -271,18 +281,33 @@ export default {
           this.localcompID = 0;
         }
       },
-      //
+      endDateChange() {
+        let beginTime = new Date(this.beginDate).getTime();
+        let entTime = new Date(this.endDate).getTime();
+        if (this.beginDate !== "") {
+          if (entTime < beginTime) {
+            this.$message.error("结束时间不能早于开始时间");
+            this.endDate = "";
+          }
+        }
+      },
       statusTab(num,index,status){
         if(num==1){
           this.orderNum = index;
+          this.refundNum = null;
           this.orderStatus = status;
-          this.orderPage(1,this.pageSize)
+          this.refundStatus = 0;
         }
         if(num==2){
           this.refundNum = index;
+          this.orderNum = null;
           this.refundStatus = status;
-          this.orderPage(1,this.pageSize)
+          this.orderStatus = 0;
         }
+        this.orderPage(1,this.pageSize)
+      },
+      reset(){
+
       },
       //订单列表
       handleSizeChange(val){
@@ -426,10 +451,10 @@ export default {
        .date-line{width:15px;border-bottom:1px solid #e6e6e6;display:inline-block;margin:0 -10px 3px 0}
        .sec-type{margin-left:10px}
        .status-title{float:left;font-size: 14px;margin:22px 0 0 15px;width:75px;}
-       .order-status{list-style-type:none;margin:13px 0 0 0;display:inline-block;padding: 0;font-size:14px;border: 1px solid #eaeaea;border-right: 0;line-height: 35px;overflow: hidden;text-align: center;}
-       .order-status li{float: left;width:120px;border-right: 1px solid #eaeaea;cursor: pointer;}
-       .order-status li:first-child{width:80px}
-       .search-but{margin: 20px 0 15px 10px}
+       .order-status{float:left;width: 1000px;list-style-type:none;margin:13px 0 0 0;display:inline-block;padding: 0;font-size:14px;line-height: 35px;overflow: hidden;text-align: center;}
+       .order-status1{float:left;width: 1000px;list-style-type:none;margin:15px 0 0 90px;display:inline-block;padding: 0;font-size:14px;line-height: 35px;overflow: hidden;text-align: center;}
+       .order-status1 li,.order-status li{float: left;width:120px;border:1px solid #eaeaea;cursor: pointer;}
+       .search-but{clear:both;display:block;padding:25px 0 25px 17px;}
        .statusbg{background-color:#f6f6f6}
        .poa{position: absolute;left: 76px;top: 30px;width: 100px;color: red;font-size: 12px}
        .por {position: relative}

@@ -353,11 +353,15 @@ export default {
         },
         // 别名组件配置
         aliasInputProps: {
-          factory: (alias) => {
-            if(!alias) return null;
+          factory: (name) => {
+            if(!name) return;
+            if(this.submitForm.alias.find(alia => alia.name=== name)){
+              this.$message.error(`别名 ${name} 已存在`);
+              return;
+            }
             let supplierID= this.submitForm.id;
             return Object.assign(
-              { name: alias }, (supplierID? { supplierID }: {})
+              { name }, (supplierID? { supplierID }: {})
             )
           },
         }

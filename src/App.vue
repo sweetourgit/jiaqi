@@ -28,11 +28,17 @@ export default {
     handler: function(val, oldVal){
           if(val.fullPath != "/login"){
              let jurisdiction = JSON.parse(sessionStorage.getItem('jurisdiction'));
-             for (var x in jurisdiction){
-                if(jurisdiction[x].Uri == val.fullPath){
-                   sessionStorage.setItem('butPermission',JSON.stringify(jurisdiction[x]))
+             let butPermission=[];
+             for (let i = 0;i < jurisdiction.length;i++){
+                if(jurisdiction[i].Uri == val.fullPath){
+                  if(jurisdiction[i].Act.length > 0){
+                    for (let j = 0;j < jurisdiction[i].Act.length;j++){
+                       butPermission.push(jurisdiction[i].Act[j].Characteristic);
+                     }
+                   }
                 }
              }
+             sessionStorage.setItem('butPermission',JSON.stringify(butPermission));
           }
         },
         deep: true

@@ -2,15 +2,11 @@
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
-      <el-col :span="6" :offset="18" v-show="!ifShowSplitBtn">
+      <el-col :span="6" :offset="18">
         <el-button type="warning" @click="handleCancel">取消</el-button>
         <el-button type="primary" @click="handleSplitRepaymentJump">拆分/还款</el-button>
         <el-button type="success" @click="handlePass">通过</el-button>
         <el-button type="danger" @click="handleReject">驳回</el-button>
-      </el-col>
-      <el-col :span="6" :offset="21" v-show="ifShowSplitBtn">
-        <el-button type="warning" @click="handleSplitCancel">取消</el-button>
-        <el-button type="danger" @click="handleSplitRevoke">撤销</el-button>
       </el-col>
     </el-row>
     <!-- 报销信息 -->
@@ -18,7 +14,7 @@
     <el-row class="row-content">
       <el-col :span="24">
         <el-tabs v-model="tabShowWhich" @tab-click="handleClick">
-          <el-tab-pane v-for="tabItem in keepBackContent" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
+          <el-tab-pane v-for="tabItem in keepBackContent" :key="tabItem.id" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
             <el-row class="item-content">
                 <el-tag type="warning" v-if="tabItem.checkType=='0'" class="distributor-status">审批中</el-tag>
                 <el-tag type="danger" v-if="tabItem.checkType=='2'" class="distributor-status">驳回</el-tag>
@@ -95,25 +91,13 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <el-row type="flex" class="row-bg row-content" justify="space-between">
       <el-table :data="examineData" border :header-cell-style="getRowClass">
-        <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
-        <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
-        <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
+        <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
+        <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+        <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
         <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
       </el-table>
     </el-row>
     <!-- 审核结果 END -->
-    <!-- 拆分/还款(弹窗) -->
-    <el-dialog
-      title="拆分/还款"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose">
-      <span slot="footer" class="dialog-footer">
-        <el-button plain @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" plain @click="handleDialogKeep">保 存</el-button>
-      </span>
-    </el-dialog>
-    <!-- 拆分/还款(弹窗)  END -->
   </div>
 </template>
 
@@ -122,16 +106,8 @@
     name: "approveDetail",
     data(){
       return {
-        ifShowSplitBtn: false, // 当点击拆分通过按钮时显示拆分（撤销，取消按钮）
         tabShowWhich: null, // 显示哪个tab
-        examineData: [ // 审核
-          {
-            createTime: '2010',
-            spName: '审批人',
-            spState: '审批结果',
-            spContent: '审批意见',
-          }
-        ],
+        examineData: [], // 审核
         getApproveListGuid: null, // 获取列表页的的guid
         dialogVisible: false,
         keepBackContent: null // 保存详情内容
@@ -144,13 +120,6 @@
       this.auditResult(this.getApproveListGuid)
     },
     methods: {
-      handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-      },
       // 获取审核结果
       auditResult(paramsGuid) {
         var that =this
@@ -246,7 +215,7 @@
       },
       // 取消
       handleCancel(){
-        this.$router.go(-1)
+        this.$router.push({ path: "/approve/approveList" })
       },
       // 通过
       handlePass(){
@@ -258,16 +227,7 @@
       },
       // 拆分/还款
       handleSplitRepaymentJump(){
-        this.ifShowSplitBtn = true
-        // this.$router.push({ path: "/approve/splitLoan" })
-      },
-      // 取消
-      handleSplitCancel(){
-        this.ifShowSplitBtn = false
-      },
-      // 撤销
-      handleSplitRevoke() {
-
+        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid} })
       },
       handleClick(){},
       // 表格表头颜色

@@ -119,7 +119,7 @@
           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
-          <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
+          <el-table-column prop="coPrice" label="已付金额" align="center"></el-table-column>
           <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
         </el-table>
       </div>
@@ -129,8 +129,8 @@
       @close="closeOpenInvoice()">
       <div class="controlButton">
         <el-button class="ml13" @click="closeOpenInvoice()">取 消</el-button>
-        <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '开票'" class="ml13">开票</el-button>
-        <el-button type="primary" @click="openInvoicement(invoiceID)" v-if="title == '换票'" class="ml13">换票</el-button>
+        <el-button type="primary" @click="invoiceOnly(invoiceID)" v-if="title == '开票'" class="ml13">开票</el-button>
+        <el-button type="primary" @click="invoiceOnly(invoiceID)" v-if="title == '换票'" class="ml13">换票</el-button>
       </div>
       <el-form :model="ruleFormSeach" ref="ruleFormSeach" label-width="120px" v-if="title == '开票'">
         <el-form-item label="单张发票金额:" prop="invoicePrice">
@@ -141,7 +141,7 @@
       <div class="associated" v-if="title == '开票'">
         <div class="warning"><i class="el-icon-warning"></i></div>
         <div class="fl">已关联<span class="relateditems">{{invoiceDate.length}}</span>项</div>
-        <div class="aggregate">总计:<span>{{sum| numFilter}}</span>元</div>
+        <div class="aggregate">总计:<span>{{sum | numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
         <el-table-column v-if="title == '换票'" label="原票号" align="center">
@@ -150,7 +150,11 @@
           </template>
         </el-table-column>
         <!-- <el-table-column prop="oldInvoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column> -->
-        <el-table-column prop="invoiceHeader" v-if="title == '开票'" label="发票抬头" align="center"></el-table-column>
+        <el-table-column v-if="title == '开票'" label="发票抬头" align="center">
+          <template slot-scope="scope">
+            <span>{{invoiceHeader}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center"></el-table-column>
         <el-table-column prop="tel" label="电话" align="center"></el-table-column>
         <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
@@ -170,7 +174,7 @@
         </el-table-column>
         <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="120">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()"></el-input>
+            <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()" @input="clearNoNum(scope.$index,scope.row.invoicePrice)"></el-input>
             <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
           </template>
         </el-table-column>
@@ -192,7 +196,8 @@
         <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
         <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
         <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
-        <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
+        <!-- <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column> -->
+        <el-table-column prop="coPrice" label="已付金额" align="center"></el-table-column>
         <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
       </el-table>
     </el-dialog>
@@ -230,6 +235,7 @@ export default {
       invoicePrice:'',
       sum:0,//发票金额的总和
       sum_01:0,
+      invoiceHeader:'',
     };
 
   },
@@ -272,6 +278,9 @@ export default {
     },
   },
   methods: {
+    clearNoNum(index,data){
+      this.invoiceDate[index].invoicePrice = data.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');//只能输入两个小数
+    },
     formatDate01(date) {//时间转化
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
@@ -308,6 +317,7 @@ export default {
     cancelInfoOrder(){ // 关闭详情弹窗
       this.dialogFormOrder = false;
       this.tableDate = [];
+      this.invoiceDate = [];
     },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/get", {
@@ -326,6 +336,7 @@ export default {
           if(this.invoiceList.invoicePrice !== ''){
             this.sum = this.guest
           }
+          this.invoiceHeader = res.data.object.invoiceHeader;
         }
       });
     },
@@ -382,7 +393,8 @@ export default {
         return;
       }
       let str = Math.ceil(this.sum/this.ruleFormSeach.invoicePrice)
-      let remainder =this.sum%this.ruleFormSeach.invoicePrice;
+      let remainder = Math.ceil((this.sum%this.ruleFormSeach.invoicePrice) * 1000)/1000 + "";
+      remainder = remainder.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1'); // 取余后保留小数点后两位
       let guestAll = this.invoiceDate[0];
       this.invoiceDate=[];
       for(let i=0; i < str; i++){
@@ -393,18 +405,22 @@ export default {
         this.invoiceDate[str-1].invoicePrice = remainder;
       }
     },
-    invoiceOnly(ID,i){ // 验证发票号唯一性
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
-        id: ID,
-        invoiceNumber:this.invoiceDate[i].invoiceNumber
-      }).then(res => {
-        this.online++;
-        if (res.data.isSuccess === false && this.invoiceDate[i].invoiceNumber !== '') {
-          this.$message.success("第 "+(i+1)+" 条发票号码已存在");
-          this.ifOnly = false;
-        }
-        
-      });
+    invoiceOnly(ID){ // 验证发票号唯一性
+      this.ifOnly = true ;
+      for(let i = 0 ; i < this.invoiceDate.length ; i ++){
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
+          id: ID,
+          invoiceNumber:this.invoiceDate[i].invoiceNumber
+        }).then(res => {
+          if (res.data.isSuccess === false && this.invoiceDate[i].invoiceNumber !== '') {
+            this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+            this.ifOnly = false;
+          }
+          if(i == this.invoiceDate.length - 1){
+            this.openInvoicement(ID);
+          }
+        });
+      }
     },
     invoiceSum(){//求发票金额的总和
       let sum = 0; 
@@ -422,17 +438,7 @@ export default {
       this.sum_01 = sum_01;
     },
     openInvoicement(ID){ // 点击开票按钮
-      this.online = 0;
-      this.ifOnly = true;
-      for(let i =0 ; i < this.invoiceDate.length; i++){
-        this.invoiceOnly(ID,i); // 验证发票号唯一方法
-        // if(this.invoiceDate.filter(v => this.invoiceDate[i].invoiceNumber == v.invoiceNumber).length != 0) {
-        //   this.$message.error("该发票号已存在");
-        //   return;
-        // }   
-      }
-
-      //if(this.online==this.invoiceDate.length-1 && this.ifOnly == true){
+      if(this.ifOnly == true){
         this.a = true;
         let sum = 0; //求发票金额的总和
         this.invoiceDate.forEach(function(item) {
@@ -464,13 +470,13 @@ export default {
               this.openInvoiceShow = false ;
               this.$parent.pageList();
             })
-          }else{
-            this.changeTicket(ID);
           }
+        }else if(this.invoiceDate[0].invoicePrice <= sum_01 + this.invoicePrice){
+          this.changeTicket(ID);
         }else{
           this.$message.success("该发票金额已超过剩余开票金额");
         }
-     // }
+      }
     },
     changeTicket(ID){ // 换票
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/replacereceipt", {
@@ -498,7 +504,7 @@ export default {
 .state03{color:#008000;float: left; line-height: 30px; margin: 10px 0 0 10px; font-weight: bold;}
 .state04{text-align: center; background: #eb0000; border-radius: 5px; color: #fff;width:60px;padding: 2px; margin: 10px 0 0 0;}
 .pro-info{margin: 15px 0 20px 0;line-height: 30px;}
-.table{margin: 10px 0 0 0;}
+.table{margin: 10px 0 0 0;padding:1px;}
 .w200{width: 200px;}
 .associated{background: #e6f3fc;border: 1px solid #d5f0fc; line-height: 30px;border-radius: 5px;overflow: hidden;}
 .warning{float: left;color: #108ee9;margin: 0 0 0 15px;font-size: 16px;}

@@ -38,7 +38,13 @@
       <!--列表表格-->
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun">
         <el-table-column prop="id" label="发票ID" align="center"></el-table-column>
-        <el-table-column prop="state" label="状态" align="center"></el-table-column>
+        <el-table-column prop="state" label="状态" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.state=='待开票'" style="color: #7F7F7F" >{{scope.row.state}}</div>
+            <div v-if="scope.row.state=='开票驳回'" style="color: #FF4A3D" >{{scope.row.state}}</div>
+            <div v-if="scope.row.state=='已开票'" style="color: #33D174" >{{scope.row.state}}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="invoiceNumber" label="发票号码" align="center"></el-table-column>
         <el-table-column prop="invoiceHeader" label="发票抬头" align="center"></el-table-column>
         <el-table-column prop="taxpayerIDNumber" label="纳税人识别号" align="center"></el-table-column>
@@ -110,10 +116,10 @@ export default {
       }],
       typeList:[{ // 直客/商户
         value:'1',
-        label:'直客'
+        label:'商户'
       },{
         value:'2',
-        label:'商户'
+        label:'直客'
       }],
       tableDate:[{
         endTime:1580428800000 // 2020-01-31
@@ -142,7 +148,7 @@ export default {
       h = h < 10 ? "0" + h : h;
       var minute = date.getMinutes();
       minute = minute < 10 ? "0" + minute : minute;
-      var second = date.getSeconds();
+      var second = date.getSeconds();  
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
@@ -155,9 +161,10 @@ export default {
       return moment(date).format('YYYY-MM-DD')
     },      
     search(){ // 搜索
-      this.pageList();
+      this.current = 1;
+      this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
     },
-    reset(){ // 重置
+    reset(curPage){ // 重置
       this.invoiceNumber = '';//发票号码
       this.merchantsName = '';//商户名称
       this.applyForDate = ''; // 申请日期
@@ -165,6 +172,9 @@ export default {
       this.invoiceTitle = '';// 发票抬头
       this.invoiceDate = '';// 开票日期
       this.types = ''; // 直客/商户
+      this.pageIndex = 1 ? 1 : 1;
+      this.current = curPage;
+      this.pageList();
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
@@ -176,40 +186,27 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,invoiceNumber = this.invoiceNumber, merchantsName = this.merchantsName,selStartCreateTime=this.applyForDate[0],selEndCreateTime=this.applyForDate[1],states = this.states, invoiceTitle = this.invoiceTitle,selStartGrantTime = this.invoiceDate[0],selEndGrantTime = this.invoiceDate[1],types = this.types){
-      if(selStartCreateTime){
-        let y=selStartCreateTime.getFullYear();
-        let m=(selStartCreateTime.getMonth()+1)>9?selStartCreateTime.getMonth()+1:'0'+(selStartCreateTime.getMonth()+1);
-        let d=selStartCreateTime.getDate()>9?selStartCreateTime.getDate():'0'+selStartCreateTime.getDate();
-        selStartCreateTime=''+ y + m + d
+    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,invoiceNumber = this.invoiceNumber, merchantsName = this.merchantsName,selStartCreateTime=this.applyForDate == null ? 0 : this.applyForDate[0],selEndCreateTime = this.applyForDate == null ? 0 : this.applyForDate[1],states = this.states, invoiceTitle = this.invoiceTitle,selStartGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[0],selEndGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[1],types = this.types){
+      if(selStartCreateTime){ //YYYY-MM-DD 转换成时间戳
+         selStartCreateTime = (new Date(selStartCreateTime)).getTime()
       }else{
-        selStartCreateTime=0
+        selStartCreateTime = 0 ;
       }if(selEndCreateTime){
-        let y=selEndCreateTime.getFullYear();
-        let m=(selEndCreateTime.getMonth()+1)>9?selEndCreateTime.getMonth()+1:'0'+(selEndCreateTime.getMonth()+1);
-        let d=selEndCreateTime.getDate()>9?selEndCreateTime.getDate():'0'+selEndCreateTime.getDate();
-        selEndCreateTime=''+ y + m + d
+        selEndCreateTime = (new Date(selEndCreateTime)).getTime() + 24*60*60*1000
       }else{
-        selEndCreateTime=0
+        selEndCreateTime = 0 ;
       }if(selStartGrantTime){
-        let y=selStartGrantTime.getFullYear();
-        let m=(selStartGrantTime.getMonth()+1)>9?selStartGrantTime.getMonth()+1:'0'+(selStartGrantTime.getMonth()+1);
-        let d=selStartGrantTime.getDate()>9?selStartGrantTime.getDate():'0'+selStartGrantTime.getDate();
-        selStartGrantTime=''+ y + m + d
+        selStartGrantTime = (new Date(selStartGrantTime)).getTime()
       }else{
-        selStartGrantTime=0
+        selStartGrantTime = 0 ;
       }if(selEndGrantTime){
-        let y=selEndGrantTime.getFullYear();
-        let m=(selEndGrantTime.getMonth()+1)>9?selEndGrantTime.getMonth()+1:'0'+(selEndGrantTime.getMonth()+1);
-        let d=selEndGrantTime.getDate()>9?selEndGrantTime.getDate():'0'+selEndGrantTime.getDate();
-        selEndGrantTime=''+ y + m + d
+        selEndGrantTime = (new Date(selEndGrantTime)).getTime() + 24*60*60*1000
       }else{
-        selEndGrantTime=0
+        selEndGrantTime = 0 ;
       }
       var that = this
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/page",{
         "object": {
-          "isDeleted": 0,
           "invoiceNumber":invoiceNumber,
           "localCompName":merchantsName,
           "selStartCreateTime":selStartCreateTime,
@@ -220,8 +217,8 @@ export default {
           "selEndGrantTime":selEndGrantTime,
           "collectionType":types == '' ? 0 : types
         },
-        "pageSize":this.pageSize,
-        "pageIndex":this.pageIndex,
+        "pageSize":pageSize,
+        "pageIndex":pageIndex,
       }).then(res => {
           that.total = res.data.total
           that.tableDate = res.data.objects
@@ -246,11 +243,11 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.pageList();
+      this.pageList(this.pageIndex,val);
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
-      this.pageList();
+      this.pageList(val,this.pageSize);
     },
     operation(i) {// 显示详情、开票、换票弹窗
       this.variable++;
