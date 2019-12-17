@@ -838,6 +838,7 @@ export default {
       nullShowGuest: false, //直客销售输入的不是有效的提示
       enrollDetail: "", //订单需要
       newEnrollDetail: "", //传给后台用的
+      tradeID:0,//获取同业销售ID
     };
   },
   filters: {
@@ -1895,6 +1896,7 @@ export default {
     },
     departure2(item) {
       this.tradeSales = item.userCode;
+      this.tradeID = item.id;
       //this.userID = item.id
     },
     //商户名称模糊查询
@@ -1957,7 +1959,7 @@ export default {
       this.querySearch2();
       setTimeout(() =>{ // 输入同业社名称同业销售带出来
       	this.ruleForm.travelSales = this.marketList[0].value;
-      	this.tradeSales = this.marketList[0].userCode;
+      	this.tradeID = this.marketList[0].id;
       },300)
       this.querySearch4();
       setTimeout(() =>{ // 输入同业社名称商户销售带出来
@@ -1982,7 +1984,7 @@ export default {
       if (this.ruleForm.travel == "") {
         this.nullShowName = false;
         this.ruleForm.travelSales = "" // 同业销售
-		this.ruleForm.merchantsSell = ""  // 商户销售
+		    this.ruleForm.merchantsSell = ""  // 商户销售
       }
     },
     merchants() {
