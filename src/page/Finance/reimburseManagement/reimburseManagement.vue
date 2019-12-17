@@ -716,7 +716,7 @@ export default {
           planID,
           suppliername = this.t_supplier,
         // createUser = this.t_plan
-          ) {
+            ){
             this.subscript();
             let object = {};
                 suppliername !== "" ? (object.suppliername = suppliername) : suppliername,
@@ -985,18 +985,42 @@ export default {
               });
           },
         //撤销申请
-        chanelSubmit() {
+        chanelSubmit(ruleForm) {
+          console.log(ruleForm.editableTabs[0].content.guid);
             this.$confirm("是否需要撤销该笔报销", "提示", {
               confirmButtonText: "确定",
               cancelButtonText: "取消",
               type: "warning"
             })
               .then(() => {
-                this.$message({
-                  type: "success",
-                  message: "撤销成功!"
-                });
-                this.dialogFormVisible = false;
+              this.$http
+                    .post(this.GLOBAL.serverSrc + "/finance/expense/api/delete", {
+                        guid:ruleForm.editableTabs[0].content.guid
+                      })
+                      .then(res => {
+                          this.pageList(1, this.pageSize);
+                          this.dialogFormVisible = false;
+                        if(res.data.isSuccess == true){
+                            this.$message({
+                            type: "success",
+                            message: "撤销成功!"
+                          });
+                           let text = res.config.data
+                           this.beginWokeing(text);
+                        }else{
+                          this.$message({
+                              type: "info",
+                              message: "已取消撤销"
+                            });
+                          this.dialogFormVisible = false;
+                        }
+                        })
+                      .catch(err => {
+                        console.log(err);
+                      });
+                 
+                
+              
               })
               .catch(() => {
                 this.$message({
@@ -1111,7 +1135,7 @@ export default {
           this.change = false;
           this.dialogFormVisible = true;
         },
-        //报销弹窗查看
+         
         dialogFind(scope) {//详情
           this.find = 1;
           this.change = true;
@@ -1133,18 +1157,18 @@ export default {
                             let t_sum = d_objects[i].payments.length;//多少项 
                             let qian = 0;
                             let d_price_box =[];
-                       for( let s in d_objects[i].payments){
-                                 d_price_box.push(d_objects[i].payments[s].price);
+                      for( let s in d_objects[i].payments){
+                                d_price_box.push(d_objects[i].payments[s].price);
                               if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
                                   wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
                               }else{
                                   wcount_s=d_objects[i].payments[s].paymentPrice
                               }
-                               let new_payments_box =[];
+                              let new_payments_box =[];
                                 d_objects[i].payments[s].createUser = d_objects[i].createUser,
                                 d_objects[i].payments[s].wcount = wcount_s
                               }
-                       
+                      
                           
                       for(let i=0;i < d_price_box.length;i++){ // 多少钱
                           qian = Number(d_price_box[i]) + qian  
@@ -1162,20 +1186,20 @@ export default {
                           files:d_objects[i].files,
                           payments:d_objects[i].payments,
                           joinData:d_objects[i].joinData,
-                       })
+                      })
                     }
                       
                     for(let i in d_objects_content){
-                           if(d_objects_content[i].guid == scope.row.guid){
-                                    let newTabName = ++this.tabIndex;
+                              let newTabName = ++this.tabIndex;
                                         newTabName=newTabName-1 +"";
-                                        console.log(newTabName,'rr');
-                                    this.ruleForm.editableTabs.push({
+                                  this.ruleForm.editableTabs.push({
                                         title: "报销" + newTabName,
                                         name: newTabName,
                                         content: d_objects_content[i]
                                       });
-                              }
+                      if(d_objects_content[i].id == scope.row.expenseID){
+                           this.ruleForm.editableTabsValue = this.ruleForm.editableTabs.length.toString();
+                        }
                                 
                       }
                         
@@ -1188,16 +1212,15 @@ export default {
         },
         //添加报销
         addbx(item) { 
-        //   this.joinData = [];
           if(item.groupCode === "" || item.mark === "" || item.productName === "" || this.image === 0 ){
-              this.$message({
-                message: '请检查必填项',
-                type: 'warning'
-              });
-          }else{
-              this.Associated(this.plans.pid);
-              this.dialogFormVisible3 = true;
-          }
+                this.$message({
+                  message: '请检查必填项',
+                  type: 'warning'
+                });
+            }else{
+                this.Associated(this.plans.pid);
+                this.dialogFormVisible3 = true;
+            }
         },
         //报销人选择弹窗
         adddialog() {
@@ -1402,44 +1425,7 @@ export default {
               },
               }
         },
-        // reimList() {  //获取报销列表数据
-        //     var that = this;
-        //     this.$http
-        //       .post(this.GLOBAL.serverSrc + "/finance/expense/api/page", {
-        //         pageIndex: this.currentPage4,
-        //         pageSize: this.pageSize,
-        //         total: 0,
-        //         object: {}
-        //       })
-        //       .then(function(obj) {
-        //         that.pageCount = obj.data.total;
-        //         for(let j in obj.data.objects){
-        //              that.tableData.push({
-        //               beginTime: obj.data.objects[j].beginTime,
-        //               checkType: obj.data.objects[j].checkType,
-        //               checkTypeEX:  obj.data.objects[j].checkTypeEX,
-        //               createTime:  obj.data.objects[j].createTime.replace(/T/g, ' ').replace(/.[\d]{3}Z/, ' '),
-        //               createUser:  obj.data.objects[j].createUser,
-        //               endTime:  obj.data.objects[j].endTime,
-        //               expenseID:  obj.data.objects[j].expenseID,
-        //               groupCode:  obj.data.objects[j].groupCode,
-        //               guid:  obj.data.objects[j].guid,
-        //               orgName:  obj.data.objects[j].orgName,
-        //               planID:  obj.data.objects[j].planID,
-        //               price:  obj.data.objects[j].price,
-        //         })
-        //         }
-               
-
-
-        //         //console.log('获取列表报销数据',that.tableData);
-        //       })
-        //       .catch(function(obj) {
-        //         console.log(obj);
-        //       });
-        // },
-
-        T_check(){ //添加报销搜索
+       T_check(){ //添加报销搜索
           this.joinData=[];
           this.Associated(this.plans.pid);
         },
@@ -1490,7 +1476,13 @@ export default {
             let object = {};
             if(beginTime == null){
               beginTime = "";
+            }else if(endTime == null){
+             this.$message({
+              type: "warning",
+              message: "请选择结束时间"
+            });
             }
+              
               expenseID !== "" ? (object.expenseID = expenseID) : expenseID,
               groupCode !== "" ? (object.groupCode = groupCode) : groupCode,
               productName !== "" ?(object.productName = productName) : productName,
