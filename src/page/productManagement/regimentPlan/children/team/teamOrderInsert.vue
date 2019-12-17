@@ -1957,6 +1957,8 @@ export default {
       this.amount = this.lines + this.deposit;
       this.originPlace = item.value;
       this.querySearch2();
+      this.ruleForm.travelSales = "";
+      this.tradeID = "";
       setTimeout(() =>{ // 输入同业社名称同业销售带出来
       	this.ruleForm.travelSales = this.marketList[0].value;
       	this.tradeID = this.marketList[0].id;
