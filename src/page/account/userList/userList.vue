@@ -321,12 +321,11 @@
         }
       },
       dataChanged(index,indexD){
-        /*
          for(let i=0;i<this.authData[index].dataJurisdiction.length;i++){
-            this.authData[index].dataJurisdiction[i].isJur=false;
+            if(i!=indexD){
+              this.authData[index].dataJurisdiction[i].isJur=false;
+            }
          } 
-         let choose = this.authData[index].dataJurisdiction[indexD].isJur;
-         choose=true;*/
       },
       auth(){
         if(this.multipleSelection[0].id > 0){
