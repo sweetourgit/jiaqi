@@ -78,15 +78,17 @@
                 </el-table-column>
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
-                <el-table-column prop="splitOfLoan" label="还款/拆分" align="center">
+                <el-table-column prop="expenseType" label="还款/拆分" align="center"><!-- 报销类型--默认0-无，1-拆分，2-还款 -->
                   <template slot-scope="scope">
-                    <div v-if="scope.row.splitOfLoan == 1">还款</div>
-                    <div v-if="scope.row.splitOfLoan == 2">拆分</div>
+                    <!--<el-input v-model="scope.row.ExpenseType" :disabled="true"></el-input>-->
+                    <div v-show="scope.row.expenseType == 1">拆分</div>
+                    <div v-show="scope.row.expenseType == 2">还款</div>
+                    <div v-show="scope.row.expenseType == 0">暂无</div>
                   </template>
                 </el-table-column>
                 <el-table-column prop="peopleCount" label="操作" align="center" width="200">
                   <template slot-scope="scope">
-                    <el-button type="success" plain size="small" plain v-if="scope.row.splitOfLoan != '' || scope.row.splitOfLoan == null" @click="handleTableLook">查看</el-button>
+                    <el-button type="success" plain size="small" plain v-if="scope.row.expenseType != '' || scope.row.expenseType == null" @click="handleTableLook">查看</el-button>
                     <el-button type="primary" plain size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0" @click="handleTableSplitLoan(scope.$index, scope.row)">拆分/还款</el-button>
                   </template>
                 </el-table-column>
@@ -114,8 +116,8 @@
       <el-form :model="ruleFormSplitLoan" :rules="rules" ref="ruleFormSplitLoan" label-width="100px" v-show="!isShowLookOfSlit">
         <el-form-item label="还款/拆分" prop="formItemSplitLoan">
           <el-radio-group v-model="ruleFormSplitLoan.formItemSplitLoan" @change="handleChangeSplitLoan">
-            <el-radio label="1">还款</el-radio>
-            <el-radio label="2">拆分</el-radio>
+            <el-radio label="1">拆分</el-radio>
+            <el-radio label="2">还款</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -140,6 +142,7 @@
     name: "splitLoan",
     data(){
       return {
+        pamentsOnlyId: null, // 无收入预付款表格的id
         keepWhichRow: null, // 保存当前点击的拆分借款按钮是那一行的（实现设置 ‘拆分/还款’ 列的值）
         isShowAcountTable: true, // 是否显示表格
         isDisabledKeepBtn: true, // 拆分借款弹窗保存按钮没选银行账户之前是禁止点击的
@@ -149,44 +152,6 @@
         isShowTableDialog: false, // 是否显示表格弹窗
         getApproveListGuid: null, // 获取列表页的的guid
         keepBackContent: null, // 保存详情内容
-        reimbursementData: [
-          /*{
-            paymentID: 1,
-            supplierTypeEX: '借款类型',
-            supplierName: '供应商',
-            supplierName: '申请人',
-            paymentMark: '摘要',
-            paymentPrice: 40,
-            price: 20,
-            noPrice: 0,
-            peopleCount: '人数',
-            splitOfLoan: 2
-          },
-          {
-            paymentID: 12,
-            supplierTypeEX: '借款类型',
-            supplierName: '供应商',
-            supplierName: '申请人',
-            paymentMark: '摘要',
-            paymentPrice: 60,
-            price: 20,
-            noPrice: 0,
-            peopleCount: '人数',
-            splitOfLoan: ''
-          },
-          {
-            paymentID: 6,
-            supplierTypeEX: '借款类型',
-            supplierName: '供应商',
-            supplierName: '申请人',
-            paymentMark: '摘要',
-            paymentPrice: 60,
-            price: 20,
-            noPrice: 0,
-            peopleCount: '人数',
-            splitOfLoan: 1
-          }*/
-        ], // 报销列表
         bankAccountData: [], // 银行账户表格
         ruleFormSplitLoan:{
           formItemSplitLoan: '',
@@ -206,7 +171,6 @@
     methods: {
       // 弹窗内的拆分和还款单选框切换时触发
       handleChangeSplitLoan(val){
-        console.log(val)
         if(val == 2) {
           this.isDisabledKeepBtn = false
           this.isShowAcountTable = false
@@ -242,9 +206,8 @@
       handleTableDialogKeep(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.keepWhichRow.splitOfLoan = this.ruleFormSplitLoan.formItemSplitLoan
+            this.keepWhichRow.expenseType = this.ruleFormSplitLoan.formItemSplitLoan
             this.isShowTableDialog = false
-            // this.getAcountId
           } else {
             console.log('error submit!!');
             return false;
@@ -258,6 +221,7 @@
       },
       // 表格内的 ’拆分/还款’ 按钮
       handleTableSplitLoan(index, row){
+        this.pamentsOnlyId = row.id
         this.keepWhichRow = row
         // 获取银行账户数据
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
@@ -288,8 +252,42 @@
       },
       // 通过
       handlePass(){
-        // 能拿到 splitOfLoan 的值
-        console.log(this.keepBackContent)
+        // 进行验证，如果每一个报销都进行了拆分则可以向下自行
+        let paymentsArr = this.keepBackContent.map((item) => {
+          return item.payments
+        })
+        // 拉平数组
+        let flatPaymentsArr = paymentsArr.flat()
+        console.log(flatPaymentsArr)
+        // 如果每一项都进行了拆分借款则返回true
+        let hasExpenseType = flatPaymentsArr.every((item) => {
+          return item.expenseType != 0;
+        })
+
+        if(!hasExpenseType){
+          this.$notify({
+            title: '提示',
+            message: '还存在待拆分的报销单',
+            type: 'warning',
+            // position: 'bottom-right',
+            showClose: false,
+            duration: 2000
+          });
+        }
+        console.log(hasExpenseType)
+
+        // 先提交拆分、还款记录，成功之后在调用工作流接口
+        /*this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
+          "object": [{
+            'id': this.pamentsOnlyId,
+            'expenseType': this.ruleFormSplitLoan.formItemSplitLoan,
+            'accountID': this.getAcountId
+          }]
+        }).then( obj =>  {
+
+        }).catch( err => {
+          console.log(err)
+        })*/
       },
       // 驳回
       handleReject(){

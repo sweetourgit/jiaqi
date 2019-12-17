@@ -91,9 +91,9 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <el-row type="flex" class="row-bg row-content" justify="space-between">
       <el-table :data="examineData" border :header-cell-style="getRowClass">
-        <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
-        <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
-        <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
+        <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
+        <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+        <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
         <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
       </el-table>
     </el-row>
@@ -107,14 +107,7 @@
     data(){
       return {
         tabShowWhich: null, // 显示哪个tab
-        examineData: [ // 审核
-          {
-            createTime: '2010',
-            spName: '审批人',
-            spState: '审批结果',
-            spContent: '审批意见',
-          }
-        ],
+        examineData: [], // 审核
         getApproveListGuid: null, // 获取列表页的的guid
         dialogVisible: false,
         keepBackContent: null // 保存详情内容
