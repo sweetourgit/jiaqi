@@ -7,7 +7,10 @@
     </div>
     <div class="bother">
       <div class="left">
-        <div class="one">1</div>
+        <div class="one">
+          <div class="border">1</div>
+          <div class="fl">基础信息</div>
+        </div>
       </div>
     </div>
   </div>
@@ -42,9 +45,20 @@ export default {
   width:150px;
 }
 .one{
-  width:40px; 
-  hidden:40px;
-  bother:2px solid 
+ 
+}
+.border{
+  width:40px;
+  height:40px;
+  border:2px solid #e6e6e6;
+  line-height:40px;
+  text-align:center;
+  border-radius:50%;
+  float:left;
+}
+.fl{
+  float:left;
+  line-height:40px;
 }
 </style>
 
