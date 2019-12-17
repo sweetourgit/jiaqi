@@ -77,9 +77,14 @@ export default{
       paymentID:0,
       variable:0,
 
-
-
     }
+  },
+  watch: {
+     date:function(){        
+        if(this.date==null){
+          this.date = [];
+        }
+     }
   },
   mounted(){
     this.paymentpage();

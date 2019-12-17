@@ -190,7 +190,9 @@
                <el-checkbox v-model="menuList.isJur" :label="menuList.id" :key="menuList.id" @change="menuChanged(index)">{{menuList.name}}</el-checkbox>
                <div class="check-list">
                  <el-checkbox  v-model="actList.isJur" v-for="actList in menuList.act" :label="actList.id" :key="actList.id" @change="actChanged(index)">{{actList.name}}</el-checkbox>
-                 
+                 <div style="margin-top:5px">
+                 <el-checkbox v-model="dataList.isJur" v-for="(dataList,indexD) in menuList.dataJurisdiction" :label="dataList.id" :key="dataList.id" @change="dataChanged(index,indexD)"><span class="data-check">{{dataList.name}}</span></el-checkbox>
+                 </div>
                </div>
              </div>
         </el-form>
@@ -276,7 +278,7 @@
             overflowY:'scroll'
 　　　　},
         authData:[],
-        forbidden:true,  
+        forbidden:true,
       }
     },
     methods:{
@@ -318,6 +320,14 @@
             this.authData[index].isJur = true;
         }
       },
+      dataChanged(index,indexD){
+        /*
+         for(let i=0;i<this.authData[index].dataJurisdiction.length;i++){
+            this.authData[index].dataJurisdiction[i].isJur=false;
+         } 
+         let choose = this.authData[index].dataJurisdiction[indexD].isJur;
+         choose=true;*/
+      },
       auth(){
         if(this.multipleSelection[0].id > 0){
            this.dialogFormAuth = true;
@@ -332,7 +342,7 @@
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
                 "userID":this.multipleSelection[0].id,
               }).then(res => {              
-                this.authData=res.data.objects;              
+                this.authData=res.data.objects;           
           })
       },
       perSubmit(){
@@ -656,6 +666,7 @@
 </script>
 
 <style scoped>
+  .data-check{color: #339966}
   .abow_dialog {
      margin:-100px 0 0 0;
     }
