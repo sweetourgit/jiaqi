@@ -821,7 +821,8 @@ export default {
                       })
                       .then(res => {
                           this.pageList(1, this.pageSize);
-                          
+                          this.radio= "1";
+                          this.tabIndex = 1;
                           this.dialogFormVisible = false;
                          if (res.data.isSuccess == true) {
                            this.$message({
@@ -829,32 +830,32 @@ export default {
                             message: "创建成功!"
                           });
                          this.ruleForm= {
-                                editableTabsValue: "1",
-                                editableTabs: [
-                                  {
-                                    title: "报销1",
-                                    name: "1",
-                                    content:{
-                                        createUser:"",
-                                        createTime: "",
-                                        id:"",
-                                        groupCode: "",
-                                        productName: "",
-                                        mark: "",
-                                        t_sum:0,//一共多少项
-                                        t_price:0,//一共多少钱
-                                        files:[],
-                                        payments:[],
-                                        joinData:[],
-                                        plan: {
-                                          planId: "",
-                                          planName: ""
-                                        },
-                                      
-                                    }
+                              editableTabsValue: "1",
+                              editableTabs: [
+                                {
+                                  title: "报销1",
+                                  name: "1",
+                                  content:{
+                                      createUser:"",
+                                      createTime: "",
+                                      id:"",
+                                      groupCode: "",
+                                      productName: "",
+                                      mark: "",
+                                      t_sum:0,//一共多少项
+                                      t_price:0,//一共多少钱
+                                      files:[],
+                                      payments:[],
+                                      joinData:[],
+                                      plan: {
+                                        planId: "",
+                                        planName: ""
+                                      },
+                                    
                                   }
-                                ]
-                                };
+                                }
+                              ]
+                              };
                         this.beginWokeing(res.data.object);
                           
                         }else{
@@ -908,12 +909,12 @@ export default {
           for(var j in editableTabs){
               let submitForm_list = editableTabs[j].content;
                 if(submitForm_list.groupCode !=="" || submitForm_list.mark !== "" ||submitForm_list.files.length !== 0 ){ // 判断必填内容
-                        for (var i in submitForm_list.files) {//重塑图片上传数组
-                            files_s.push({
-                              name:submitForm_list.files[i].name,
-                              url:submitForm_list.files[i].url,
-                            });
-                          };
+                        // for (var i in submitForm_list.files) {//重塑图片上传数组
+                        //     files_s.push({
+                        //       name:submitForm_list.files[i].name,
+                        //       url:submitForm_list.files[i].url,
+                        //     });
+                        //   };
                         if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
                                   this.$message({
                                     message:'摘要字数不能超过80字',
@@ -941,7 +942,7 @@ export default {
                                   planID:this.plans.pid,//团期计划id
                                   price:submitForm_list.t_price,//总价
                                   mark:submitForm_list.mark,
-                                  files: files_s , //关联数据
+                                  files: submitForm_list.files , //关联数据
                                   payments: submitForm_list.payments, //关联付款单据报销明细
                                   checkType:0,//审批状态 
                                 })
@@ -999,12 +1000,41 @@ export default {
                       })
                       .then(res => {
                           this.pageList(1, this.pageSize);
+                          this.radio= "1";
+                          this.tabIndex = 1;
                           this.dialogFormVisible = false;
                         if(res.data.isSuccess == true){
                             this.$message({
                             type: "success",
                             message: "撤销成功!"
                           });
+                           this.ruleForm= {
+                              editableTabsValue: "1",
+                              editableTabs: [
+                                {
+                                  title: "报销1",
+                                  name: "1",
+                                  content:{
+                                      createUser:"",
+                                      createTime: "",
+                                      id:"",
+                                      groupCode: "",
+                                      productName: "",
+                                      mark: "",
+                                      t_sum:0,//一共多少项
+                                      t_price:0,//一共多少钱
+                                      files:[],
+                                      payments:[],
+                                      joinData:[],
+                                      plan: {
+                                        planId: "",
+                                        planName: ""
+                                      },
+                                    
+                                  }
+                                }
+                              ]
+                              };
                            let text = res.config.data
                            this.beginWokeing(text);
                         }else{
