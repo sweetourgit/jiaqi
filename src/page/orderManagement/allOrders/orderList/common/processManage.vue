@@ -68,7 +68,10 @@
           报名人数
         </div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          <span class="multi-wrap" :title="`${item.enrollName}￥${isPricechange ? item.price_01 : item.price_02}`">
+          <span
+            class="multi-wrap"
+            :title="`${item.enrollName}￥${isPricechange ? item.price_01 : item.price_02}`"
+          >
             <span>{{item.enrollName}}￥</span>
             <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
             <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
@@ -366,6 +369,8 @@ export default {
       winTitle: "", //弹窗标题
       enrollDetail: "", //报名信息传给后台的格式
       enrollDetailShow: "", //报名信息展示在页面的格式
+      tempresult: [], //报名信息的格式转换 用来较少和总价
+      enrollformatData: [], //get到的enrolldetail数据整理
       conForm: {
         id: 0,
         isDeleted: 0,
@@ -464,11 +469,11 @@ export default {
         })
         .then(res => {
           if (res.data.isSuccess == true) {
-            console.log(1)
             this.orderget = res.data.object;
             this.payable = res.data.object.payable;
             // 报名信息
             this.enrollDetail = res.data.object.enrollDetail;
+            this.enrollDetail = JSON.parse(this.enrollDetail);
             this.ruleForm.favourable = this.orderget.favourable;
             this.getOrderStatus(
               this.orderget.orderStatus,
@@ -496,76 +501,69 @@ export default {
             this.teampreview(res.data.object.planID);
             // 记录最开始的总价 isSaveBtnClick需要
             this.prePayable = this.orderget.payable;
-            this.enrollDetail = this.enrollDetail.replace(/\s*/g, "");
-            let _arr = this.enrollDetail.split(",");
-
-            _arr.splice(_arr.length - 1, 1);
-            let obj = this.counterArray(_arr);
-            let str = JSON.stringify(obj);
-            let newStr = str.substr(1, str.length - 2);
-            let newArr = newStr.split(",");
-            let endARR = [];
-            for (let i = 0; i < newArr.length; i++) {
-              let a = newArr[i].split(":");
-              let b = a[0].split("*");
-              b[0] = b[0].substr(1, str.length - 1);
-              endARR.push(b[0] + "x" + a[1] + ")");
-            }
-            this.enrollDetailShow = endARR.toString();
-
-            // 根据报名信息求总价
-            // for(let i = 0;i < _arr.length;) {
-            //   let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1]
-            //   let Price,Num;
-            //   Price = Number(priceAndNum.substring(0,priceAndNum.indexOf('*')))
-            //   Num = Number(priceAndNum.substring(priceAndNum.indexOf('*')+1,priceAndNum.length))
-            //   // console.log(Price,Num)
-            //   this.prePayable += Price * Num
-            // }
-            // console.log("this.prePayable")
-
-            // let _res = []; //
-            // // _arr.sort();
-            // for (let i = 0; i < _arr.length; ) {
-            //   // let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1]
-            //   // let Price,Num;
-            //   // Price = Number(priceAndNum.substring(0,priceAndNum.indexOf('*')))
-            //   // Num = Number(priceAndNum.substring(priceAndNum.indexOf('*')+1,priceAndNum.length))
-            //   // // console.log(Price,Num)
-            //   // this.prePayable += Price * Num
-            //   let count = 0;
-            //   for (let j = i; j < _arr.length; j++) {
-            //     if (_arr[i] == _arr[j]) {
-            //       count++;
-            //     }
-            //   }
-            //   _res.push([_arr[i], count]);
-            //   i += count;
-            // }
-            // //_res 二维数维中保存了 值和值的重复数
-            // let _newArr = [];
-            // for (let i = 0; i < _res.length; i++) {
-            //   let a = _res[i][0].split("*");
-            //   _newArr.push(a[0] + "x" + _res[i][1] + ")");
-            // }
-            // this.enrollDetailShow = _newArr.toString();
-
-            // 计算最开始的总价
-            // let arr = this.enrollDetailShow.split(",")
-            // console.log(arr)
-            // for (let i = 0; i < arr.length; ) {
-            // }
-            // console.log(this.prePayable)
+            this.showEnrollDetail();
           }
         })
         .catch(err => {
           console.log(err);
         });
     },
+    // 报名信息显示 格式整理
+    showEnrollDetail() {
+      this.formatData(this.enrollDetail)
+      this.showApplyInfo(this.enrollformatData)
+    },
+    formatData(origindata) {
+      let data = origindata;
+      let keys = Object.keys(data);
+      let [result, tempresult] = [[], []];
+      keys.forEach(key => {
+        let values = data[key];
+        values.forEach(value => {
+          tempresult.push({
+            type: key,
+            price: value[0],
+            number: value[1]
+          });
+          result.push({
+            type: key,
+            price: value[0],
+            number: 0
+          });
+        });
+      });
+      this.tempresult = tempresult;
+      result.forEach(res => {
+        tempresult.forEach(tempres => {
+          if (tempres.type == res.type && tempres.price == res.price) {
+            res.number += tempres.number;
+          }
+        });
+      });
+      let [_resultstring, splitstring] = [[], "?*&"];
+      result.forEach(res => {
+        let resstring = [res.type, res.price, res.number].join(splitstring);
+        if (_resultstring.indexOf(resstring) < 0) {
+          _resultstring.push(resstring);
+        }
+      });
+
+      result = _resultstring.map(res => {
+        return res.split(splitstring);
+      });
+
+      return this.enrollformatData = result;
+    },
+    // 报名信息显示
+    showApplyInfo(res) {
+      res.forEach(item => {
+        this.enrollDetailShow += `${item[0]}(${item[1]}*${item[2]})`;
+      });
+    },
 
     //字符串相同的个数 报名信息需要
     counterArray(arr) {
-      var obj = {};
+      let obj = {};
       arr.forEach((v, k) => {
         if (obj[v]) {
           obj[v]++;
@@ -911,6 +909,7 @@ export default {
       let arrLength; //报名人数
       let preLength; //记录上一次报名人数
       preLength = this.preLength[index]; //获取上一次报名人数
+      let enrollDetailNum = [...this.preLength];
       arrLength = this.enrolNum[index]; //获取当前报名人数
       this.preLength[index] = this.enrolNum[index]; //记录上一次报名人数为当前报名人数
       let len;
@@ -949,12 +948,16 @@ export default {
           });
         }
         // 报名信息增加enrollDetail拼接
-        for (let i = 0; i < nums - preLength; i++) {
-          let price;
-          this.isPricechange == true ? (price = price_01) : (price = price_02);
-          price = this.toDecimal2(price);
-          this.enrollDetail += `${enrollName}(${price} * 1),`;
-        }
+        this.getEnrollDetailPj(enrollDetailNum);
+        enrollDetailNum[index] = this.enrolNum[index];
+        this.formatData(this.enrollDetail)
+
+        // for (let i = 0; i < nums - preLength; i++) {
+        //   let price;
+        //   this.isPricechange == true ? (price = price_01) : (price = price_02);
+        //   price = this.toDecimal2(price);
+        //   this.enrollDetail += `${enrollName}(${price} * 1),`;
+        // }
       } else {
         // 循环判断表格中的出行人信息是否有没填写的如果有则自动删除 没有则提示手动删除
         for (let i = 0; i < preLength - nums; i++) {
@@ -973,23 +976,6 @@ export default {
 
           if (isInfNull) {
             this.tour[index].splice(isInfNullIndex, 1);
-            // this.tour[index].splice((num-1)==-1?0:(num-1), preLength - num);
-            // console.log(this.enrollDetail, "之前的");
-            // 报名信息减少enrollDetail拼接
-
-            // console.log(_arr,"减少")
-            // for (let j = 0; j < preLength - num; j++) {
-            let _arr = this.enrollDetail.split(",");
-            for (let i = _arr.length - 1; i => 0; i--) {
-              if (_arr[i].indexOf(enrollName) != -1) {
-                _arr.splice(i, 1);
-                this.enrollDetail = _arr.toString();
-                break;
-              }
-            }
-            // console.log(this.enrollDetail,"最后的arr")
-            // }
-            // console.log(this.enrollDetail, "之后的");
           } else {
             const num = this.tour[index].length.toString();
             this.preLength[index] = num;
@@ -998,15 +984,35 @@ export default {
             break;
           }
         }
-
-        // let tour = this.tour[index];
-        // if (tour[tour.length - 1].cnName != "") {
-        //   const num = this.tour[index].length.toString()
-        //   this.$set(this.enrolNum,index,num)
-        //   this.$message.error("请手动删除表格中的出行人");
-        // } else {
-        //   this.tour[index].splice(arrLength - preLength, preLength - arrLength);
-        // }
+        
+        let gap = preLength - nums;
+        for (let i = this.tempresult.length - 1; i >= 0; i--) {
+          if (this.tempresult[i].type == enrollName) {
+            if (this.tempresult[i].number - gap == 0) {
+              this.tempresult.splice(i, 1);
+            } else if (this.tempresult[i].number - gap > 0) {
+              this.tempresult[i].number = this.tempresult[i].number - gap;
+            } else {
+            }
+          }
+        }
+        let obj = {};
+        for (let i = 0; i < this.tempresult.length; i++) {
+          if (JSON.stringify(obj).indexOf(this.tempresult[i].type) < 0) {
+            obj[this.tempresult[i].type] = [];
+            obj[this.tempresult[i].type].push([
+              this.tempresult[i].price,
+              this.tempresult[i].number
+            ]);
+          } else {
+            obj[this.tempresult[i].type].push([
+              this.tempresult[i].price,
+              this.tempresult[i].number
+            ]);
+          }
+        }
+        this.enrollDetail = obj;
+        this.formatData(this.enrollDetail)
       }
       this.compPrice();
       setTimeout(() => {
@@ -1196,24 +1202,15 @@ export default {
         // }
         // 原先结束
       }
-      // begin
+
+       // begin
       // 根据报名信息求总价
-      this.payable = 0;
-      let _arr = this.enrollDetail.split(",");
-      _arr.pop();
-      for (let i = 0; i < _arr.length; i++) {
-        let priceAndNum = _arr[i].match(/\(([^)]*)\)/)[1];
-        // console.log("priceAndNum",priceAndNum)
-        let Price, Num;
-        Price = Number(priceAndNum.substring(0, priceAndNum.indexOf("*")));
-        Num = Number(
-          priceAndNum.substring(
-            priceAndNum.indexOf("*") + 1,
-            priceAndNum.length
-          )
-        );
-        this.payable += Price * Num;
+      this.payable = 0
+       for (let i = 0; i < this.tempresult.length; i++) {
+         this.payable += (this.tempresult[i].number * this.tempresult[i].price)
       }
+      // this.payable = this.payable - this.prePayable
+      
       // end
 
       // console.log(type,"type")
@@ -1327,20 +1324,8 @@ export default {
             obj.orderStatus = 10;
           }
 
-          // 拼接字段 enrollDetail报名类型详情
-          // let enrollDetail = "";
-          // let price;
-          // this.salePrice.forEach((ele, idx) => {
-          //   if (this.isPricechange) {
-          //     price = this.toDecimal2(ele.price_01);
-          //   } else {
-          //     price = this.toDecimal2(ele.price_02);
-          //   }
-          //   if (this.enrolNum[idx] !== 0) {
-          //     enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
-          //   }
-          // });
-
+          // enrollDetail拼接
+          // this.getEnrollDetailPj();
           // 签署订单按钮
           if (id === 3) {
             obj.orderStatus = 3;
@@ -1366,7 +1351,7 @@ export default {
           if (sum !== guest.length) {
             this.$message.error("报名人数与出行人信息不符，请修改出行人信息");
           } else {
-            obj.enrollDetail = this.enrollDetail;
+            obj.enrollDetail = JSON.stringify(this.enrollDetail);
             obj.guests = guest;
             obj.payable = this.prePayable + (this.payable - this.prePayable);
             this.$http
@@ -1412,14 +1397,14 @@ export default {
     },
     // 删除出行人 同步报名信息的字段
     applyEnrollDetail(enrollName, index) {
-      let _arr = this.enrollDetail.split(",");
-      for (let i = _arr.length - 1; i => 0; i--) {
-        if (_arr[i].indexOf(enrollName) != -1) {
-          _arr.splice(i, 1);
-          this.enrollDetail = _arr.toString();
-          break;
-        }
-      }
+      // let _arr = this.enrollDetail.split(",");
+      // for (let i = _arr.length - 1; i => 0; i--) {
+      //   if (_arr[i].indexOf(enrollName) != -1) {
+      //     _arr.splice(i, 1);
+      //     this.enrollDetail = _arr.toString();
+      //     break;
+      //   }
+      // }
       let salePrice = this.salePrice[index];
       let enrolNum = this.enrolNum[index];
       this.peoNum(
@@ -1430,6 +1415,43 @@ export default {
         salePrice.price_02,
         enrolNum[index]
       );
+    },
+    // 拼接enrollDetail报名类型详情
+    getEnrollDetailPj(enrollDetailNum) {
+      let price;
+      this.salePrice.forEach((ele, idx) => {
+        if (this.isPricechange) {
+          price = this.toDecimal2(ele.price_01);
+        } else {
+          price = this.toDecimal2(ele.price_02);
+        }
+        // 报名类型一开始的人数不为0 和 报名人数一开始为0保存的时候不为0的两种情况下
+        if (
+          this.enrolNum[idx] !== 0 ||
+          this.enrolNum[idx] > enrollDetailNum[idx]
+        ) {
+          if (this.enrolNum[idx] - enrollDetailNum[idx] > 0) {
+            if (enrollDetailNum[idx] == 0) {
+              this.enrollDetail[ele.enrollName] = [];
+              this.enrollDetail[ele.enrollName].push([
+                price,
+                this.enrolNum[idx]
+              ]);
+            } else {
+              if (this.enrolNum[idx] - this.applyInfomations[idx] >= 2) {
+                let arr = this.enrollDetail[ele.enrollName];
+                arr[arr.length - 1][1] += 1;
+              } else {
+                this.enrollDetail[ele.enrollName].push([
+                  price,
+                  this.enrolNum[idx] - enrollDetailNum[idx]
+                ]);
+              }
+            }
+          }
+        }
+      });
+      // this.enrollDetail = JSON.stringify(this.enrollDetail);
     },
 
     // 监听订单来源是同业社还是直客下单  是直客则返回true 等于1就是同业
@@ -1470,6 +1492,7 @@ export default {
       this.isSaveBtn = false;
       this.applyInfomations = [];
       this.enrollDetail = "";
+      this.enrollDetailShow = "";
       this.isPricechange = null;
       this.prePayable = 0;
       this.payable = 0;
@@ -1547,7 +1570,7 @@ export default {
 .ml13 {
   margin-left: 13px;
 }
-.multi-wrap  {
+.multi-wrap {
   text-align: center;
   display: -webkit-box !important;
   overflow: hidden;

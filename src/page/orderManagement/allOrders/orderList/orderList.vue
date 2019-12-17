@@ -203,7 +203,7 @@
                 <td class="longWeight">{{getListOneMessage.date}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">数量&nbsp;&nbsp;</td>
-                  <td class="longWeight" valign="top">{{getListOneMessage.enrollDetail}}</td>
+                  <td class="longWeight" valign="top">{{enrollDetailShow}}</td>
                 </div>
                 <td class="tr">产品类型&nbsp;&nbsp;</td>
                 <td class="longWeight">跟团游</td>
@@ -412,7 +412,8 @@ export default {
       getListOneMessage: {},
       showContent: null, //list折叠展示的
       businessLists: [], //商户名称下拉列表展示
-      isToast: false //商户名称模糊搜索 没有数据然后的提示语显示
+      isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
+      enrollDetailShow: "" //报名信息的数量
     };
   },
   watch: {
@@ -525,44 +526,44 @@ export default {
         })
         .then(res => {
           // console.log("请求一条数据的",res)
+          this.enrollDetailShow = ""
           this.getListOneMessage = res.data.object;
           let enrollDetail = this.getListOneMessage.enrollDetail;
+          this.formatData(enrollDetail);
           // console.log(enrollDetail);
           // if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
           //   this.getListOneMessage.enrollDetail = enrollDetail.substring(
           //     0,
           //     enrollDetail.length - 1
           //   );
-          enrollDetail = enrollDetail.replace(/\s*/g, "");
-          let _arr = enrollDetail.split(",");
-          _arr.splice(_arr.length - 1, 1);
-          // console.log(_arr)
-          let _res = [];
-          _arr.sort();
-          for (let i = 0; i < _arr.length; ) {
-            let count = 0;
-            for (let j = i; j < _arr.length; j++) {
-              if (_arr[i] == _arr[j]) {
-                count++;
-              }
-            }
-            _res.push([_arr[i], count]);
-            i += count;
-          }
-          // console.log(_res)
-          //_res 二维数维中保存了 值和值的重复数
-          let _newArr = [];
-          for (let i = 0; i < _res.length; i++) {
-            let a = _res[i][0].split("*");
-            _newArr.push(a[0] + "x" + _res[i][1] + ")");
-          }
-          this.getListOneMessage.enrollDetail = _newArr.toString();
+          // enrollDetail = enrollDetail.replace(/\s*/g, "");
+          // let _arr = enrollDetail.split(",");
+          // _arr.splice(_arr.length - 1, 1);
+          // // console.log(_arr)
+          // let _res = [];
+          // _arr.sort();
+          // for (let i = 0; i < _arr.length; ) {
+          //   let count = 0;
+          //   for (let j = i; j < _arr.length; j++) {
+          //     if (_arr[i] == _arr[j]) {
+          //       count++;
+          //     }
+          //   }
+          //   _res.push([_arr[i], count]);
+          //   i += count;
+          // }
+          // // console.log(_res)
+          // //_res 二维数维中保存了 值和值的重复数
+          // let _newArr = [];
+          // for (let i = 0; i < _res.length; i++) {
+          //   let a = _res[i][0].split("*");
+          //   _newArr.push(a[0] + "x" + _res[i][1] + ")");
+          // }
+          // this.getListOneMessage.enrollDetail = _newArr.toString();
           // }
 
           let date = res.data.object.date.toString();
-          this.getListOneMessage.date = moment(date).format(
-            "YYYY-MM-DD"
-          );
+          this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;
           //订单来源
@@ -584,6 +585,52 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    // 整理数据报名信息的格式显示
+    formatData(origindata) {
+      let data = JSON.parse(origindata);
+      let keys = Object.keys(data);
+      let [result, tempresult] = [[], []];
+      keys.forEach(key => {
+        let values = data[key];
+        values.forEach(value => {
+          tempresult.push({
+            type: key,
+            price: value[0],
+            number: value[1]
+          });
+          result.push({
+            type: key,
+            price: value[0],
+            number: 0
+          });
+        });
+      });
+      // this.tempresult = tempresult;
+      result.forEach(res => {
+        tempresult.forEach(tempres => {
+          if (tempres.type == res.type && tempres.price == res.price) {
+            res.number += tempres.number;
+          }
+        });
+      });
+      let [_resultstring, splitstring] = [[], "?*&"];
+      result.forEach(res => {
+        let resstring = [res.type, res.price, res.number].join(splitstring);
+        if (_resultstring.indexOf(resstring) < 0) {
+          _resultstring.push(resstring);
+        }
+      });
+
+      result = _resultstring.map(res => {
+        return res.split(splitstring);
+      });
+      result.forEach(item => {
+        this.enrollDetailShow += `${item[0]}(${item[1]}*${
+          item[2]
+        })`;
+      });
+      return result;
     },
 
     createFilter(queryString) {
