@@ -125,6 +125,13 @@
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="closeDetailstShow()">取消</el-button>
         <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType == 0 || getRowCheckType == 2 ">撤销</el-button>
+        <el-button
+          type="success"
+          @click="touchPrint"
+          plain
+        >
+          打印本页详情信息
+        </el-button>
       </div>
       <div>
         <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -135,79 +142,82 @@
           <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
           <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag>
         </div>
-        <!-- 第一行 -->
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
-          </el-col>
-        </el-row>
-        <!-- 第一行 END -->
-        <!-- 第二行 -->
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">同业社名称:</div></el-col>
-            <el-col :span="18"><div class="grid-del">{{ fundamental.localCompName }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">收款账户:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.collectionNumber }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">收款金额:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
-          </el-col>
-        </el-row>
-        <!-- 第二行 END -->
-        <!-- 第三行 -->
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">收款时间:</div></el-col>
-            <el-col :span="18">
-              <div class="grid-del">{{ fundamental.collectionTime | formatDate }}</div>
+        <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
+        <div ref="print">
+          <!-- 第一行 -->
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
+              <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
             </el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
-            <el-col :span="18"><div class="grid-del">{{ fundamental.abstract }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">开发票:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div></el-col>
-          </el-col>
-        </el-row>
-        <!-- 第三行 END -->
-        <!-- 第四行 -->
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">凭证:</div></el-col>
-            <el-col :span="18">
-              <el-upload
-                class="upload-demo"
-                name="files"
-                ref="upload"
-                :file-list="fundamental.files"
-                :show-file-list=true
-                action="test"
-                :disabled=true
-                :on-preview="handlePreview"
-              >
-              </el-upload>
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
+              <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
             </el-col>
-          </el-col>
-          <el-col :span="6"></el-col>
-          <el-col :span="6"></el-col>
-        </el-row>
-        <!-- 第四行 END -->
-        <!-- 基本信息 -->
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
+              <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
+            </el-col>
+          </el-row>
+          <!-- 第一行 END -->
+          <!-- 第二行 -->
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">同业社名称:</div></el-col>
+              <el-col :span="18"><div class="grid-del">{{ fundamental.localCompName }}</div></el-col>
+            </el-col>
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">收款账户:</div></el-col>
+              <el-col :span="18"><div class="grid-del ">{{ fundamental.collectionNumber }}</div></el-col>
+            </el-col>
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">收款金额:</div></el-col>
+              <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
+            </el-col>
+          </el-row>
+          <!-- 第二行 END -->
+          <!-- 第三行 -->
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">收款时间:</div></el-col>
+              <el-col :span="18">
+                <div class="grid-del">{{ fundamental.collectionTime | formatDate }}</div>
+              </el-col>
+            </el-col>
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
+              <el-col :span="18"><div class="grid-del">{{ fundamental.abstract }}</div></el-col>
+            </el-col>
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">开发票:</div></el-col>
+              <el-col :span="18"><div class="grid-del ">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div></el-col>
+            </el-col>
+          </el-row>
+          <!-- 第三行 END -->
+          <!-- 第四行 -->
+          <el-row type="flex" class="row-bg" justify="space-around">
+            <el-col :span="6">
+              <el-col :span="6"><div class="grid-del label-color">凭证:</div></el-col>
+              <el-col :span="18">
+                <el-upload
+                  class="upload-demo"
+                  name="files"
+                  ref="upload"
+                  :file-list="fundamental.files"
+                  :show-file-list=true
+                  action="test"
+                  :disabled=true
+                  :on-preview="handlePreview"
+                >
+                </el-upload>
+              </el-col>
+            </el-col>
+            <el-col :span="6"></el-col>
+            <el-col :span="6"></el-col>
+          </el-row>
+          <!-- 第四行 END -->
+          <!-- 基本信息 -->
+        </div>
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
@@ -327,6 +337,9 @@ export default {
     }
   },
   methods: {
+    touchPrint(){
+      this.$print(this.$refs.print)
+    },
     // 点击图片钩子
     handlePreview(file) {
       window.open(file.url);
