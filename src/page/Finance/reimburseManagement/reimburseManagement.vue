@@ -173,6 +173,7 @@
                 <div style="color: red; color: red; position: absolute;top:127px;left: 48px;">*</div>
                 <el-form-item label="附件：" label-width="140px" required>
                   <el-upload 
+                  v-if="find==0"
                   ref="image" 
                   prop="image"
                   class="upload-demo" 
@@ -188,6 +189,18 @@
                   :file-list="item.content.files">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
+                  <el-upload 
+                  v-if="find==1"
+                  class="upload-demo" 
+                  name="files"
+                  :action= "uploadUrl"
+                  :show-file-list=true
+                  :disabled=true
+                  :on-change="handleChange"
+                  :on-preview="handlePreview"
+                  :file-list="item.content.files">
+                  </el-upload>
+ 
                 </el-form-item>
                 <div class="re_style">
                   <el-radio v-model="radio" label="1">关联单据</el-radio>
@@ -807,15 +820,44 @@ export default {
                         object:object
                       })
                       .then(res => {
-                         if (res.data.isSuccess == true) {
                           this.pageList(1, this.pageSize);
-                          this.$message({
+                          
+                          this.dialogFormVisible = false;
+                         if (res.data.isSuccess == true) {
+                           this.$message({
                             type: "success",
                             message: "创建成功!"
                           });
-                          this.dialogFormVisible = false;
-                          this.beginWokeing(res.data.object);
-                          this.pageList();
+                         this.ruleForm= {
+                                editableTabsValue: "1",
+                                editableTabs: [
+                                  {
+                                    title: "报销1",
+                                    name: "1",
+                                    content:{
+                                        createUser:"",
+                                        createTime: "",
+                                        id:"",
+                                        groupCode: "",
+                                        productName: "",
+                                        mark: "",
+                                        t_sum:0,//一共多少项
+                                        t_price:0,//一共多少钱
+                                        files:[],
+                                        payments:[],
+                                        joinData:[],
+                                        plan: {
+                                          planId: "",
+                                          planName: ""
+                                        },
+                                      
+                                    }
+                                  }
+                                ]
+                                };
+                        this.beginWokeing(res.data.object);
+                          
+                        }else{
                           this.ruleForm= {
                                 editableTabsValue: "1",
                                 editableTabs: [
@@ -843,7 +885,6 @@ export default {
                                   }
                                 ]
                                 };
-                        }else{
                             this.$message({
                             type: "error",
                             message: "创建失败!"
@@ -1086,46 +1127,29 @@ export default {
                   if (res.data.isSuccess == true) {
                     var d_objects = res.data.objects; 
                     let d_objects_content =[];
-                    let d_price_box =[];
                     let new_payments_box =[];
-                    let qian = 0;
                     let wcount_s = 0;
-                    console.log(d_objects,'21');
                     for(let i in d_objects){
-
                             let t_sum = d_objects[i].payments.length;//多少项 
-                                
+                            let qian = 0;
+                            let d_price_box =[];
                        for( let s in d_objects[i].payments){
+                                 d_price_box.push(d_objects[i].payments[s].price);
                               if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
                                   wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
                               }else{
                                   wcount_s=d_objects[i].payments[s].paymentPrice
                               }
-                              d_price_box.push(d_objects[i].payments[s].price);
-                              let paylist = d_objects[i].payments;
-                                paylist.push({ // 关联单据列表
-                                              code: d_objects[i].payments[s].code,
-                                              createTime: d_objects[i].payments[s].createTime,
-                                              expenseID: d_objects[i].payments[s].expenseID,
-                                              id: d_objects[i].payments[s].id,
-                                              paymentID: d_objects[i].payments[s].paymentID,
-                                              paymentMark: d_objects[i].payments[s].paymentMark,
-                                              paymentPrice: d_objects[i].payments[s].paymentPrice,
-                                              peopleCount: d_objects[i].payments[s].peopleCount,
-                                              price: d_objects[i].payments[s].price,
-                                              supplierName: d_objects[i].payments[s].supplierName,
-                                              supplierType: d_objects[i].payments[s].supplierType,
-                                              supplierTypeEX: d_objects[i].payments[s].supplierTypeEX,
-                                              createUser:d_objects[i].createUser,
-                                              wcount:wcount_s
-                                            })
-                        }
-                       console.log(d_objects[i].payments,'omg')
+                               let new_payments_box =[];
+                                d_objects[i].payments[s].createUser = d_objects[i].createUser,
+                                d_objects[i].payments[s].wcount = wcount_s
+                              }
+                       
+                          
                       for(let i=0;i < d_price_box.length;i++){ // 多少钱
                           qian = Number(d_price_box[i]) + qian  
                       }
-
-                       d_objects_content.push({
+                        d_objects_content.unshift({
                           createUser:d_objects[i].createUser,
                           createTime: d_objects[i].createTime,
                           id:d_objects[i].id,
@@ -1138,14 +1162,9 @@ export default {
                           files:d_objects[i].files,
                           payments:d_objects[i].payments,
                           joinData:d_objects[i].joinData,
-                         
-
                        })
-                        console.log(d_objects_content,'哎呀')
-                       // others:d_objects[i].others,
-                    
                     }
-                       console.log( d_objects_content,'大宝贝')
+                      
                     for(let i in d_objects_content){
                            if(d_objects_content[i].guid == scope.row.guid){
                                     let newTabName = ++this.tabIndex;
