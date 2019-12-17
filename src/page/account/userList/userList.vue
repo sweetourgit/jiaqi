@@ -190,6 +190,7 @@
                <el-checkbox v-model="menuList.isJur" :label="menuList.id" :key="menuList.id" @change="menuChanged(index)">{{menuList.name}}</el-checkbox>
                <div class="check-list">
                  <el-checkbox  v-model="actList.isJur" v-for="actList in menuList.act" :label="actList.id" :key="actList.id" @change="actChanged(index)">{{actList.name}}</el-checkbox>
+                 
                </div>
              </div>
         </el-form>

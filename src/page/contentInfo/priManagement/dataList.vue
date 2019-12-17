@@ -8,7 +8,7 @@
          </el-row>
         <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-           <el-table-column  prop="key" label="标识" min-width="60" align="center"></el-table-column>   
+           <el-table-column  prop="symbol" label="标识" min-width="120" align="center"></el-table-column>   
            <el-table-column  prop="name" label="名称" min-width="200" align="center"></el-table-column>
            <el-table-column  prop="match" label="匹配" min-width="180" align="center"></el-table-column>
            <el-table-column  prop="mark" label="备注" min-width="150" align="center"></el-table-column>
@@ -21,8 +21,8 @@
              <el-form-item label="名称" prop="name">
                  <el-input v-model="rformB.name"></el-input>
              </el-form-item>
-             <el-form-item label="标识" prop="key">
-                 <el-input v-model="rformB.key"></el-input>
+             <el-form-item label="标识" prop="symbol">
+                 <el-input v-model="rformB.symbol"></el-input>
              </el-form-item>
              <el-form-item label="匹配" prop="match">
                  <el-input v-model="rformB.match"></el-input>
@@ -57,13 +57,13 @@ export default {
         dialogFormVisible:false,
         rformB: {
           id:0,
-          key:"",
+          symbol:"",
           match: "",
           name: "",
           mark: ""
         },
         rules: {
-          key: [{ required: true, message: '标识不能为空', trigger: 'blur' }],
+          symbol: [{ required: true, message: '标识不能为空', trigger: 'blur' }],
           match: [{ required: true, message: '匹配不能为空', trigger: 'blur' }],
           name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
         }
@@ -107,7 +107,8 @@ export default {
       close(){
         this.dialogDate=false;
       },
-      jurisdictionList(){  //获取Act
+      jurisdictionList(){  
+        this.groupList=[];
         this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/data/list',{
              "object": {
                "menuId": this.menuId
@@ -118,7 +119,7 @@ export default {
                 }
         })
       },
-      delJurisdiction(){ //删除Act
+      delJurisdiction(){ 
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -148,14 +149,14 @@ export default {
             this.insertJurisdiction(formName,'/org/jurisdiction/data/save');
          }
       },
-      openJurisdiction(index,title){  //弹窗
+      openJurisdiction(index,title){  
         this.title=title;
         this.dialogFormVisible = true;
         if(index===2){
           this.getJurisdiction();
         }
       },
-      getJurisdiction(){   //获取一条Act
+      getJurisdiction(){   
         this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/data/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -165,14 +166,13 @@ export default {
               }
         }) 
       },
-      insertJurisdiction(formName,url) {  //新增保存
-        console.log()
+      insertJurisdiction(formName,url) {  
         this.$refs[formName].validate((valid) => {
           if(valid){
                    this.$http.post(this.GLOBAL.serverSrc + url,{
                      "object": {
                         "id": this.rformB.id,
-                        "key": this.rformB.key,
+                        "symbol": this.rformB.symbol,
                         "match": this.rformB.match,
                         "name": this.rformB.name,
                         "createTime": 0,
