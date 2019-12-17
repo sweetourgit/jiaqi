@@ -67,14 +67,14 @@
               @select="departure1"
             ></el-autocomplete>
           </div>
-          <div class="options">
+          <!-- <div class="options">
             产品操作人
             <el-input
               v-model="productUser"
               style="width: 150px; margin-left: 10px;"
               placeholder="请输入内容"
             ></el-input>
-          </div>
+          </div> -->
         </div>
         <div class="select_two">
           <div class="options11">
