@@ -118,7 +118,7 @@
                 @blur="travelOp()"
                 :fetch-suggestions="querySearch2"
                 placeholder="请输入销售名称"
-                :trigger-on-focus="false"
+                :trigger-on-focus="true"
                 @select="departure2"
               ></el-autocomplete>
               <div v-show="nullShowOp" style="color:red;">请输入有效的同业销售</div>
@@ -131,7 +131,7 @@
                 v-model="ruleForm.merchantsSell"
                 :fetch-suggestions="querySearch4"
                 placeholder="请输入商户销售"
-                :trigger-on-focus="false"
+                :trigger-on-focus="true"
                 @select="departure4"
               ></el-autocomplete>
               <div v-if="nullShow" style="color:red;">请输入有效的商户销售</div>
@@ -737,14 +737,16 @@ export default {
           { required: true, message: "请输入商户名称", trigger: "blur" }
         ],
         merchantsSell: [
-          { required: true, message: "请输入商户销售", trigger: "blur" }
+          { required: true, message: "请输入商户销售", trigger: "blur" },
+          { required: true, message: "请输入商户销售", trigger: "change" }
         ],
         // market: [//直客下单销售
         //   { required: true, message: "请输入销售", trigger: "blur" }
         // ],
         travelSales: [
           //商户下单销售
-          { required: true, message: "请输入销售", trigger: "blur" }
+          { required: true, message: "请输入销售", trigger: "blur" },
+          { required: true, message: "请输入销售", trigger: "change" }
         ],
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         price1: [{ pattern: /^[+]{0,1}(\d+)$/, message: "价格必须为数字值" }],
@@ -835,7 +837,8 @@ export default {
       nullShowOp: false, //同业销售输入的不是有效的提示
       nullShowGuest: false, //直客销售输入的不是有效的提示
       enrollDetail: "", //订单需要
-      newEnrollDetail: "" //传给后台用的
+      newEnrollDetail: "", //传给后台用的
+      tradeID:0,//获取同业销售ID
     };
   },
   filters: {
@@ -1844,24 +1847,34 @@ export default {
           {
             object: {
               localCompID: this.productPos,
-              jqUserType: 2
+              jqUserType: 2,
+              state:2,
+              isDeleted:0
             }
           }
         )
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              this.marketList.push({
-                value: res.data.objects[i].name,
-                id: res.data.objects[i].id,
-                userCode: res.data.objects[i].userCode
-              });
-              this.supplier_id = res.data.objects[i].id
-                ? res.data.objects[i].id
-                : 0;
+              if(this.ruleForm.travelSales==""){
+                this.marketList.push({
+                  value: res.data.objects[i].name,
+                  id: res.data.objects[i].id,
+                  userCode: res.data.objects[i].userCode
+                });
+                queryString2 = " ";
+              }else{
+                if (res.data.objects[i].name.indexOf(this.ruleForm.travelSales) != -1) {
+                  this.marketList.push({
+                    value: res.data.objects[i].name,
+                    id: res.data.objects[i].id,
+                    userCode: res.data.objects[i].userCode
+                  });
+                }
+              }
             }
           }
-          if (res.data.objects) {
+          if (this.marketList.length > 0 ) {
             this.nullShowOp = false;
           } else {
             this.nullShowOp = true;
@@ -1883,6 +1896,7 @@ export default {
     },
     departure2(item) {
       this.tradeSales = item.userCode;
+      this.tradeID = item.id;
       //this.userID = item.id
     },
     //商户名称模糊查询
@@ -1935,13 +1949,25 @@ export default {
         return restaurant.value;
       };
     },
-    departure(item) {
+    departure(item,useList) {
       this.productPos = item.id; //获取供应商的id传给下单接口的orgID
       this.lines = item.balance; //获取剩余额度
       this.deposit = item.deposit; //获取预存款
       this.payment = item.settlementType; //获取结算方式
-      this.originPlace = item.value;
       this.amount = this.lines + this.deposit;
+      this.originPlace = item.value;
+      this.querySearch2();
+      this.ruleForm.travelSales = "";
+      this.tradeID = "";
+      setTimeout(() =>{ // 输入同业社名称同业销售带出来
+      	this.ruleForm.travelSales = this.marketList[0].value;
+      	this.tradeID = this.marketList[0].id;
+      },300)
+      this.querySearch4();
+      setTimeout(() =>{ // 输入同业社名称商户销售带出来
+      	this.ruleForm.merchantsSell = this.useList[0].value;
+      	this.userID = this.useList[0].id;
+      },300)
     },
     travelGuest() {
       //直客销售清空后输入信息不对的验证取消
@@ -1959,6 +1985,8 @@ export default {
       //商户名称添加时，商户销售可以填写
       if (this.ruleForm.travel == "") {
         this.nullShowName = false;
+        this.ruleForm.travelSales = "" // 同业销售
+		    this.ruleForm.merchantsSell = ""  // 商户销售
       }
     },
     merchants() {
@@ -1977,15 +2005,21 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.object.useList.length; i++) {
-              if (
-                res.data.object.useList[i].name.indexOf(
-                  this.ruleForm.merchantsSell
-                ) != -1
-              ) {
+              if(this.ruleForm.merchantsSell == ""){
                 this.useList.push({
                   value: res.data.object.useList[i].name,
-                  id: res.data.object.useList[i].id
+                  id: res.data.object.useList[i].id,
+                  name: res.data.object.useList[i].name,
                 });
+                queryString4 = " "
+              }else{
+                if (res.data.object.useList[i].name.indexOf(this.ruleForm.merchantsSell) != -1) {
+                  this.useList.push({
+                    value: res.data.object.useList[i].name,
+                    id: res.data.object.useList[i].id,
+                    name: res.data.object.useList[i].name,
+                  });
+                }
               }
             }
           }
@@ -2011,6 +2045,7 @@ export default {
     },
     departure4(item) {
       this.userID = item.id;
+      //this.userName = item.name;
     },
     //订单来源切换清空相应下的文本框内容
     changeTab() {
