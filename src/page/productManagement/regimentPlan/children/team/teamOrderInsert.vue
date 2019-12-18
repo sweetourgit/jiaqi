@@ -836,6 +836,8 @@ export default {
       nullShowName: false, //商户名称输入的不是有效的提示
       nullShowOp: false, //同业销售输入的不是有效的提示
       nullShowGuest: false, //直客销售输入的不是有效的提示
+      enrollDetail: "", //订单需要
+      newEnrollDetail: "", //传给后台用的
       tradeID:0,//获取同业销售ID
     };
   },
@@ -1067,11 +1069,29 @@ export default {
             userID: 0
           });
         }
+        // 报名信息增加enrollDetail拼接
+        for (let i = 0; i < num - preLength; i++) {
+          let price;
+          this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
+          price = this.toDecimal2(price);
+          this.enrollDetail += `${enrollName}(${price} * 1),`;
+        }
       } else {
         for (var i = 0; i < this.tour[index].length; i++) {
           if (this.tour[index][i].cnName === "") {
             this.tour[index].splice(i, preLength - arrLength);
             break;
+          }
+        }
+        // 报名信息减少enrollDetail拼接
+        let _arr = this.enrollDetail.split(",");
+        for (let j = 0; j < preLength - num; j++) {
+          for (let i = _arr.length - 1; i => 0; i--) {
+            if (_arr[i].indexOf(enrollName) != -1) {
+              _arr.splice(i, 1);
+              this.enrollDetail = _arr.toString();
+              break
+            }
           }
         }
       }
@@ -1210,6 +1230,25 @@ export default {
         // console.log(guestAll);
       });
     },
+    // 点击确认占位时 取他用的是直客价格还是同业价格然后拼接enrollDetail this.ruleForm.price = 1 取price_01的价格  2就是price_02
+    getTypePrice() {
+      // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成 
+      let arr = this.enrollDetail.split(",")
+      arr.pop()
+      for(let i = 0; i < arr.length; i++) {
+        arr[i] = arr[i].replace(/\s*/g, '')
+        for(let j = 0; j < this.salePrice.length; j++) {
+          if(arr[i].indexOf(this.salePrice[j].enrollName) !== -1) {
+            let first = arr[i].indexOf("(")
+            let end = arr[i].indexOf("*")
+            let str = arr[i].substring(first+1,end)
+            let price = "";
+            this.ruleForm.price == 1 ? price = this.toDecimal2(this.salePrice[j].price_01) : price = this.toDecimal2(this.salePrice[j].price_02)
+            this.newEnrollDetail += (arr[i].replace(str,price).toString() + ',')
+          }
+        }
+      }
+    },
     regimentType(ID, index, formName) {
       //获取状态
       this.$http
@@ -1248,28 +1287,25 @@ export default {
           //   }
           // }
           // 拼接字段 enrollDetail报名类型详情
-          let enrollDetail = "";
-          let enrollDetailObj = {};
-          this.salePrice.forEach((ele, idx) => {
-            let price = 0;
-            if (this.ruleForm.price == 1) {
-              price = this.toDecimal2(ele.price_01);
-            } else {
-              price = this.toDecimal2(ele.price_02);
-            } 
-            if (this.enrolNum[idx] !== 0) {
-              let name = ele.enrollName;
-              enrollDetailObj[name] = [];
-              let arr = [price, this.enrolNum[idx]];
-              enrollDetailObj[name].push(arr);
-            }
-          });
-          enrollDetail = JSON.stringify(enrollDetailObj);
+          // let enrollDetail = "";
+          // this.salePrice.forEach((ele, idx) => {
+          //   let price=0;
+          //   if(this.ruleForm.price == 1){
+          //     price = this.toDecimal2(ele.price_01);
+          //   }else{
+          //     price = this.toDecimal2(ele.price_02);
+          //   }
+          //   //let price = this.toDecimal2(ele.price_01);
+          //   if(this.enrolNum[idx]!==0){
+          //     enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
+          //   }
+          // });
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
             if (this.ifOrderInsert === true) {
               if (this.teampreviewData.regimentType === 1) {
                 //判断是否停售 1正常
+                this.getTypePrice();
                 if (this.ruleForm.orderRadio === "1") {
                   //判断是同业下单还是直客下单  1是直客  2是同业
                   this.ifOrderInsert = true;
@@ -1335,7 +1371,7 @@ export default {
                           guests: guestAll,
                           //guests: guest,
                           number: number,
-                          enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                          enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
                         }
                       }
                     )
@@ -1441,7 +1477,7 @@ export default {
                                 guests: guestAll,
                                 // guests: guest,
                                 number: number,
-                                enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                                enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
                               }
                             }
                           )
@@ -1567,7 +1603,7 @@ export default {
                               guests: guestAll,
                               //guests: guest,
                               number: number,
-                              enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
+                              enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
                             }
                           }
                         )
@@ -1685,10 +1721,21 @@ export default {
         this.tour[index].splice(type, 1); //手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
+        this.applyEnrollDetail(enrollName);
         //console.log(this.enrolNum[index])
       });
     },
-    
+    // 删除出行人 同步报名信息的字段
+    applyEnrollDetail(enrollName) {
+      let _arr = this.enrollDetail.split(",");
+      for (let i = _arr.length - 1; i => 0; i--) {
+        if (_arr[i].indexOf(enrollName) != -1) {
+          _arr.splice(i, 1);
+          this.enrollDetail = _arr.toString();
+          break;
+        }
+      }
+    },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
       if (this.tour[type][index].enName != "") {
@@ -1727,6 +1774,8 @@ export default {
       this.dialogFormOrder = false;
       this.$refs[formName].resetFields();
       this.costList = [];
+      this.enrollDetail = ""
+      this.newEnrollDetail= ""
     },
     compPrice() {
       //计算总价

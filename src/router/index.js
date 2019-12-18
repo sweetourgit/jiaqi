@@ -304,7 +304,7 @@ export default new Router({
       }
     },{
       path: '/visaProducts',
-      component: () => import('@/page/productManagement/visa/visaProducts'),
+      component: () => import('@/page/productManagement/visa/addVisa/visaProducts'),
       name: '添加签证',
       meta: {
         keepAlive: true,
