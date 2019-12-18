@@ -76,7 +76,7 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="account_balance" label="剩余金额" align="center">
+      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="purpose_fee" label="手续费" align="center">
       </el-table-column>
@@ -289,13 +289,13 @@ export default {
       this.loadData();
     },
     handleCurrentChange(val){
-      this.pageCurrent = 1;
+      this.pageCurrent = val;
       this.loadData();
     },
     loadData(){
       const that = this;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-        "pageIndex": this.pageCurrent,
+        "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
         "object": {
           "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
