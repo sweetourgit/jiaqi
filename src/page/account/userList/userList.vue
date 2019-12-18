@@ -667,7 +667,7 @@
 
 <style scoped>
   .data-check{
-    color: #fff;display: inline-block;background-color: #42ae67;border-radius: 5px;padding: 0 5px
+    color: #d67121;display: inline-block;border-radius: 5px;padding: 0 5px
   }
   .abow_dialog {
      margin:-100px 0 0 0;
