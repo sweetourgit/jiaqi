@@ -872,53 +872,56 @@ export default {
 
           for(var j in editableTabs){
               let submitForm_list = editableTabs[j].content;
-                if(submitForm_list.groupCode !=="" || submitForm_list.mark !== "" ||submitForm_list.files.length !== 0 ){ // 判断必填内容
-                        // for (var i in submitForm_list.files) {//重塑图片上传数组
-                        //     files_s.push({
-                        //       name:submitForm_list.files[i].name,
-                        //       url:submitForm_list.files[i].url,
-                        //     });
-                        //   };
                         if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
                                   this.$message({
-                                    message:'摘要字数不能超过80字',
-                                    type: 'warning' 
-                                });
-                                return false;
-                            }
-                        for(var n in submitForm_list.payments){//判断填写的报销金额
-                            if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
-                                  this.$message({
-                                      message:'报销金额不得大于未报销金额',
+                                      message:'摘要字数不能超过80字',
                                       type: 'warning' 
-                                    });
-                                    return false;
-                              }else if(submitForm_list.payments[n].peopleCount === 0){
-                                this.$message({
-                                      message:'人数不能为空',
-                                      type: 'warning' 
-                                    });
-                                    return false;
+                                  });
+                                  verify = 0
+                                  return;
+                                }    
+                        if(submitForm_list.groupCode !=="" && submitForm_list.mark !== "" && submitForm_list.files.length !== 0 && submitForm_list.payments.length !== 0){ // 判断必填内容
+                              // for (var i in submitForm_list.files) {//重塑图片上传数组
+                              //     files_s.push({
+                              //       name:submitForm_list.files[i].name,
+                              //       url:submitForm_list.files[i].url,
+                              //     });
+                              //   };
+                                   
+                              for(var n in submitForm_list.payments){//判断填写的报销金额
+                                    if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
+                                          this.$message({
+                                              message:'报销金额不得大于未报销金额',
+                                              type: 'warning' 
+                                            });
+                                            verify = 0
+                                             return;
+                                      }else if(submitForm_list.payments[n].peopleCount === 0){
+                                        this.$message({
+                                              message:'人数不能为空',
+                                              type: 'warning' 
+                                            });
+                                            verify = 0
+                                            return;
+                                      }
                               }
-                        }
-                        this.object_lisr.push({//给数组赋值
-                                  createUser: sessionStorage.getItem('id'),//用户id
-                                  planID:this.plans.pid,//团期计划id
-                                  price:submitForm_list.t_price,//总价
-                                  mark:submitForm_list.mark,
-                                  files: submitForm_list.files , //关联数据
-                                  payments: submitForm_list.payments, //关联付款单据报销明细
-                                  checkType:0,//审批状态 
-                                })
-                         console.log(this.object_lisr,'ddb');
-                         verify = 1
-                 }else{
-                  this.$message({
-                      message: '请检查必填项',
-                      type: 'warning' 
-                  });
-                  verify = 0
-              }
+                              this.object_lisr.push({//给数组赋值
+                                        createUser: sessionStorage.getItem('id'),//用户id
+                                        planID:this.plans.pid,//团期计划id
+                                        price:submitForm_list.t_price,//总价
+                                        mark:submitForm_list.mark,
+                                        files: submitForm_list.files , //关联数据
+                                        payments: submitForm_list.payments, //关联付款单据报销明细
+                                        checkType:0,//审批状态 
+                                      })
+                                      verify = 1
+                        }else{
+                            verify = 0
+                            this.$message({
+                                message: '请检查必填项',
+                                type: 'warning' 
+                            });
+                   }
              }
             if(verify !== 0){
                this.add_form(this.object_lisr)//调用提交接口
