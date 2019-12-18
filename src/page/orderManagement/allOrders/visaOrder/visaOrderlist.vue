@@ -307,7 +307,17 @@ export default {
         this.orderPage(1,this.pageSize)
       },
       reset(){
-
+        this.orderCode='';
+        this.productName='';
+        this.groupCode='';
+        this.beginDate='';
+        this.endDate='';
+        this.destination='';
+        this.destinationID=0;
+        this.orderContact='';
+        this.localcomp='';
+        this.localcompID=0;
+        this.saler='';
       },
       //订单列表
       handleSizeChange(val){

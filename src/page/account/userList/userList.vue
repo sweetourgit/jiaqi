@@ -291,7 +291,8 @@
             var actArray = this.authData[index].act.length;          
             if(actArray>0){            
                 for(let i = 0,len = this.authData[index].act.length;i<len;i++){
-                    this.authData[index].act[i].isJur = false;          
+                    this.authData[index].act[i].isJur = false;
+                    this.authData[index].dataJurisdiction[i].isJur = false;      
                 }
             }
         }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
@@ -665,7 +666,7 @@
 </script>
 
 <style scoped>
-  .data-check{color: #339966}
+  .data-check{color: #f37b00}
   .abow_dialog {
      margin:-100px 0 0 0;
     }
