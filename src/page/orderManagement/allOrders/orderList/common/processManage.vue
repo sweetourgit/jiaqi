@@ -67,6 +67,7 @@
           <span class="num-req">*</span>
           报名人数
         </div>
+        {{ salePrice }}
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
           <span
             class="multi-wrap"
@@ -80,16 +81,12 @@
           </span>
           <div>
             <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
-            <el-input-number
-              class="input-num"
-              v-model="enrolNum[index]"
-              @change="peoNum(index,item.enrollID,item.enrollName,item.price_01,item.price_02,enrolNum[index])"
-              :min="0"
-              :max="salePriceNum[index].quota"
-              readonly="readonly"
-              size="medium"
+            <!-- :max="salePriceNum[index].quota" -->
+            <numberInputer class="input-num"
+              :proto="item"
               :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
-            ></el-input-number>
+              @change="enrollChangeHandler">
+            </numberInputer>
           </div>
           <!-- <div> -->
           <!-- 余位{{item.quota}} -->
@@ -312,7 +309,13 @@
 
 <script>
 import { max } from "moment";
+import numberInputer from './comps/numberInputer'
+import ProcessManageMixin from './ProcessManageMixin'
+
 export default {
+  mixins: [ProcessManageMixin],
+  components: { numberInputer },
+  
   props: {
     orderId: 0,
     variable: 0,
@@ -461,53 +464,54 @@ export default {
 
   methods: {
     //流程管理
-    processManage(orderId) {
-      //查询一条订单信息
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/order/all/api/orderget", {
-          id: orderId
-        })
-        .then(res => {
-          if (res.data.isSuccess == true) {
-            this.orderget = res.data.object;
-            this.payable = res.data.object.payable;
-            // 报名信息
-            this.enrollDetail = res.data.object.enrollDetail;
-            this.enrollDetail = JSON.parse(this.enrollDetail);
-            this.ruleForm.favourable = this.orderget.favourable;
-            this.getOrderStatus(
-              this.orderget.orderStatus,
-              this.orderget.endTime,
-              this.orderget.occupyStatus,
-              this.orderget.orderChannel
-            );
-            this.propPriceType == 1
-              ? (this.isPricechange = true)
-              : (this.isPricechange = false);
-            this.propPriceType == 1
-              ? (this.priceChange = "直客")
-              : (this.priceChange = "同业");
-            this.occupyStatus = this.orderget.occupyStatus; // 唐 占位状态
-            //联系人信息
-            this.Timechange(this.orderget.endTime);
-            this.ruleForm.contactName = JSON.parse(
-              res.data.object.contact
-            ).Name;
-            this.ruleForm.contactPhone = JSON.parse(
-              res.data.object.contact
-            ).Tel;
-            this.orderSourceFun(res.data.object.orderChannel);
-            this.dialogFormProcess = true;
-            this.teampreview(res.data.object.planID);
-            // 记录最开始的总价 isSaveBtnClick需要
-            this.prePayable = this.orderget.payable;
-            this.showEnrollDetail();
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
+    // processManage(orderId) {
+    //   //查询一条订单信息
+    //   this.$http
+    //     .post(this.GLOBAL.serverSrc + "/order/all/api/orderget", {
+    //       id: orderId
+    //     })
+    //     .then(res => {
+    //       console.log(res.data);
+    //       if (res.data.isSuccess == true) {
+    //         this.orderget = res.data.object;
+    //         this.payable = res.data.object.payable;
+    //         // 报名信息
+    //         this.enrollDetail = res.data.object.enrollDetail;
+    //         this.enrollDetail = JSON.parse(this.enrollDetail);
+    //         this.ruleForm.favourable = this.orderget.favourable;
+    //         this.getOrderStatus(
+    //           this.orderget.orderStatus,
+    //           this.orderget.endTime,
+    //           this.orderget.occupyStatus,
+    //           this.orderget.orderChannel
+    //         );
+    //         this.propPriceType == 1
+    //           ? (this.isPricechange = true)
+    //           : (this.isPricechange = false);
+    //         this.propPriceType == 1
+    //           ? (this.priceChange = "直客")
+    //           : (this.priceChange = "同业");
+    //         this.occupyStatus = this.orderget.occupyStatus; // 唐 占位状态
+    //         //联系人信息
+    //         this.Timechange(this.orderget.endTime);
+    //         this.ruleForm.contactName = JSON.parse(
+    //           res.data.object.contact
+    //         ).Name;
+    //         this.ruleForm.contactPhone = JSON.parse(
+    //           res.data.object.contact
+    //         ).Tel;
+    //         this.orderSourceFun(res.data.object.orderChannel);
+    //         this.dialogFormProcess = true;
+    //         this.teampreview(res.data.object.planID);
+    //         // 记录最开始的总价 isSaveBtnClick需要
+    //         this.prePayable = this.orderget.payable;
+    //         this.showEnrollDetail();
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // },
     // 报名信息显示 格式整理
     showEnrollDetail() {
       this.formatData(this.enrollDetail)
@@ -851,33 +855,34 @@ export default {
         this.isChangeNumber = false;
       }
     },
-    changeQuota() {
-      //余位变化方法
-      this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
-      let salePriceType = {};
-      // 实时减少相关余位信息，提示库存不足
-      //判断下单时  是否是预订占位 如果是则余位不变
-      if (this.orderget.occupyStatus !== 1 || this.orderget.orderStatus !== 0) {
-        for (let i = 0; i < this.salePrice.length; i++) {
-          // this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
-          this.salePrice[i].quota =
-            parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
-          salePriceType = this.salePrice[i];
-          // if (salePriceType.quota < 0) {
-          //   //判断是否显示库存不足
-          //   this.quota[i] = true;
-          // } else {
-          //   this.quota[i] = false;
-          // }
-          if (this.enrolNum[i] == undefined) {
-            this.enrolNum[i] = "";
-          }
-          if (salePriceType.quota === -1) {
-            salePriceType.quota = 0;
-          }
-        }
-      }
-    },
+
+    // changeQuota() {
+    //   //余位变化方法
+    //   this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
+    //   let salePriceType = {};
+    //   // 实时减少相关余位信息，提示库存不足
+    //   //判断下单时  是否是预订占位 如果是则余位不变
+    //   if (this.orderget.occupyStatus !== 1 || this.orderget.orderStatus !== 0) {
+    //     for (let i = 0; i < this.salePrice.length; i++) {
+    //       // this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
+    //       this.salePrice[i].quota =
+    //         parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
+    //       salePriceType = this.salePrice[i];
+    //       // if (salePriceType.quota < 0) {
+    //       //   //判断是否显示库存不足
+    //       //   this.quota[i] = true;
+    //       // } else {
+    //       //   this.quota[i] = false;
+    //       // }
+    //       if (this.enrolNum[i] == undefined) {
+    //         this.enrolNum[i] = "";
+    //       }
+    //       if (salePriceType.quota === -1) {
+    //         salePriceType.quota = 0;
+    //       }
+    //     }
+    //   }
+    // },
 
     // 订单是否需要跳转回确认占位的状态
     isEqualityFun() {
