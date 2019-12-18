@@ -466,6 +466,7 @@ import moment from 'moment'
       // 详情弹窗()
       checkIncome(index, row){
       this.ifClick = false
+      this.ifPassClick = true
       this.getCheckTypeEX = row.checkTypeEX
       let _this = this
       this.arr2.forEach(function (item) {
