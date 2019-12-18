@@ -75,7 +75,14 @@
         </el-button>
         <el-button @click="through()" type="danger" plain v-else>通过</el-button>
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
-        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || (ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)">支付账户</el-button>
+        <el-button
+          type="danger"
+          :disabled="ifClick"
+          @click="bankAccount(acoutInfo)"
+          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || (ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
+        >
+          支付账户
+        </el-button>
       </div>
       <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow"></checkLoanManagement>
     </el-dialog>
@@ -458,7 +465,7 @@ import moment from 'moment'
       },
       // 详情弹窗()
       checkIncome(index, row){
-      console.log(row,'审批您列表详情弹窗')
+      this.ifClick = false
       this.getCheckTypeEX = row.checkTypeEX
       let _this = this
       this.arr2.forEach(function (item) {
