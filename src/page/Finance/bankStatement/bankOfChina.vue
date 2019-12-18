@@ -263,7 +263,7 @@ export default {
     loadData(){
       const that = this;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-        "pageIndex": this.pageCurrent,
+        "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
         "object": {
           "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
