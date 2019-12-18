@@ -332,7 +332,7 @@
            this.dialogFormAuth = true;
            this.getHeight();
            this.getActs();
-        }
+        } 
       },
       getHeight(){
         this.authDiocss.height=document.body.clientHeight-200+"px";
