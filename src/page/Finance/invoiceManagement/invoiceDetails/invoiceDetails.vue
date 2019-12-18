@@ -413,8 +413,14 @@ export default {
           invoiceNumber:this.invoiceDate[i].invoiceNumber
         }).then(res => {
           if (res.data.isSuccess === false && this.invoiceDate[i].invoiceNumber !== '') {
-            this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+            if(this.title == '开票'){
+              this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+            }else if(this.title == '换票'){
+              this.$message.success("该发票号码已存在");
+            }
             this.ifOnly = false;
+            // this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+            // this.ifOnly = false;
           }
           if(i == this.invoiceDate.length - 1){
             this.openInvoicement(ID);
@@ -458,20 +464,18 @@ export default {
           this.$message.success("请填写发票号或者发票金额");
           return;
         }
-        if(sum <= sum_01){
-          if(this.title == '开票'){
-            this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirm", {
-              "object":{
-                receiptList:this.invoiceDate,
-                receiptID:ID
-              }
-            }).then(res => {
-              this.$message.success("开票成功");
-              this.openInvoiceShow = false ;
-              this.$parent.pageList();
-            })
-          }
-        }else if(this.invoiceDate[0].invoicePrice <= sum_01 + this.invoicePrice){
+        if(sum <= sum_01 && this.title == '开票'){
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/confirm", {
+            "object":{
+              receiptList:this.invoiceDate,
+              receiptID:ID
+            }
+          }).then(res => {
+            this.$message.success("开票成功");
+            this.openInvoiceShow = false ;
+            this.$parent.pageList();
+          })
+        }else if(this.invoiceDate[0].invoicePrice <= sum_01 + this.invoicePrice && this.title == '换票'){
           this.changeTicket(ID);
         }else{
           this.$message.success("该发票金额已超过剩余开票金额");
