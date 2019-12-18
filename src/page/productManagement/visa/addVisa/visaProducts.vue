@@ -11,6 +11,16 @@
           <div class="border">1</div>
           <div class="fl">基础信息</div>
         </div>
+        <div class="line"></div>
+        <div class="one">
+          <div class="border">2</div>
+          <div class="fl">签证信息</div>
+        </div>
+        <div class="line"></div>
+        <div class="one">
+          <div class="border">3</div>
+          <div class="fl">重要提示</div>
+        </div>
       </div>
     </div>
   </div>
@@ -55,10 +65,19 @@ export default {
   text-align:center;
   border-radius:50%;
   float:left;
+  margin:10px 0 10px 0;
 }
 .fl{
   float:left;
   line-height:40px;
+  margin:10px 0 0 10px;
+}
+.line{
+  clear:both;
+  width:3px;
+  height:40px;
+  background:#e6e6e6;
+  margin:0 0 0 19px;
 }
 </style>
 
