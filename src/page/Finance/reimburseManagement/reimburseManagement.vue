@@ -39,9 +39,6 @@
             </div>
             <div class="reform">
               <el-button type="primary" plain @click="dialogchange">申请</el-button>
-              <!--
-                <el-button type="primary" @click="dialogFind" plain>查看</el-button>
-              -->
             </div>
           </div>
           <div class="table_style">
@@ -257,8 +254,7 @@
                        
                     </el-table>
                   </div>
-                  <!-- <div class="re_style" style="margin-top: 30px; margin-bottom: 30px">报销金额：100.00</div> -->
-                </div>
+                 </div>
                 <!-- <div v-if="radio==2">
                   <div style="float:left;margin: 10px 0 0 65px;width: 70px;">报销明细:</div>
                   <div class="re_style" style="margin-top: 20px;">
@@ -402,7 +398,6 @@
           <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
           <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
           <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
-          <!-- <el-table-column prop="supplierName" label="供应商" v-if="this.supplier == 1"></el-table-column> -->
           <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
           <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
           <el-table-column prop="createTime" :formatter='dateFormat'  label="发起日期" width="130"></el-table-column>
@@ -448,7 +443,6 @@ import moment from "moment";
 export default {
   name: "reimburseManagement",
   components: {
-    //NeedApproval
     approvalToBorrow
   },
   data() {
@@ -472,9 +466,7 @@ export default {
 
     return {
       uploadUrl: this.GLOBAL.serverSrc + '/upload/obs/api/picture/', // 上传凭证
-      image: 0,
-      value1: "",
-      value2: "",
+      image: 0,//验证上传图片没
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       hand: [],
       plans: {
@@ -485,47 +477,34 @@ export default {
       beginDate: "",//报销开始时间+
       endDate: "",//报销结束时间+
       uid: 0, // 上传图片缩略图选中项
-      planTotal: 100,
+      planTotal: 1,
       userSize: 10,
       userTotal: 100,
-      supplier:0,//供应商没有的时候显示这个
-      startTime2: "",
+      startTime2: "",   // supplier:0,//供应商没有的时候显示这个
       endTime2: "",
       pageSize: 10,//每页偏移量
       pageCount: 100,
       change: false,
-      //分辨查看
-      find: 0,
-      // 单选
-      radio: "1",
-      //团期计划弹窗
-      dialogFormVisible2: false,
-      //添加报销
-      dialogFormVisible3: false,
-      //报销表单弹窗
-      dialogFormVisible: false,
-      //报销人弹窗
-      dialogFormVisible1: false,
-      //团期计划搜索
-      tour_name: "",
+      find: 0, //分辨查看
+      radio: "1",  // 单选
+      dialogFormVisible2: false, //团期计划弹窗
+      dialogFormVisible3: false,  //添加报销
+      dialogFormVisible: false,   //报销表单弹窗
+      dialogFormVisible1: false,  //报销人弹窗
+      tour_name: "", //团期计划搜索
       product_name: "",
-      planTime: "",
-      planTime1: "",
-      //手添报销
-      domains: [
+      domains: [  //手添报销
         {
           mark: "0",
           price: "0"
         }
       ],
-      // 选中报销人字段
-      people: {
+      people: {  // 选中报销人字段
         tt: "大运通-日本",
         peo: "qq"
       },
       t_price_box:[],//所有价格数组
-      //报销表单
-    ruleForm: {
+      ruleForm: {  //报销表单
       editableTabsValue: "1",
       editableTabs: [
         {
@@ -555,8 +534,7 @@ export default {
       s_content:[],//获取当前页面s_content
       querySearchPlanData: [], // 团期计划检索联想数组
       object_lisr:[],//最后提交的数组
-      //报销表单验证
-      rules: {
+      rules: { //报销表单验证
         name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
         groupCode: [{ validator: areaIdRule, trigger: "blur" }],
         image: [{ validator: imageIdRule, trigger: "blur" }],
@@ -570,9 +548,7 @@ export default {
           }
         ]
       },
-      
-      //审批意见
-      reimData: [{
+      reimData: [{  //审批意见
           reier: "",
           reisult: "",
           info: "",
@@ -588,17 +564,12 @@ export default {
       createUser: "",
       createtime1: "",
       createtime2: "",
-      //报销table
-      tableData: [],
-      //团期计划表格
-      planData: [],
-      //关联单据表单
-      joinData:[],
+      tableData: [], //报销table
+      planData: [],  //团期计划表格
+      joinData:[],  //关联单据表单
       payments:[],
       file: [],
-      //文件上传列表
-      files: [],
-      
+      files: [], //文件上传列表
       tabIndex: 1
     };
   },
@@ -610,82 +581,82 @@ export default {
    methods: {
         moment,
         chanceSubmit() { // 取消按钮
-        if(this.find == 0){
-          this.$confirm("是否取消本次报销申请", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          })
-          .then(() => {
-               this.tabIndex = 1;
-               this.radio= "1";
-               this.dialogFormVisible = false;
-               this.ruleForm= {
-                  editableTabsValue: "1",
-                  editableTabs: [
-                    {
-                      title: "报销1",
-                      name: "1",
-                      content:{
-                          createUser:"",
-                          createTime: "",
-                          id:"",
-                          groupCode: "",
-                          productName: "",
-                          mark: "",
-                          t_sum:0,//一共多少项
-                          t_price:0,//一共多少钱
-                          files:[],
-                          payments:[],
-                          joinData:[],
-                          plan: {
-                            planId: "",
-                            planName: ""
-                          },
-                        
-                      }
-                    }
-                  ]
-                  };
-        })
-          .catch(() => {
-            this.$message({
-              type: "info",
-              message: "已取消"
-            });
-          });
-       }else if(this.find == 1){
-              this.tabIndex = 1;
-              this.radio= "1";
-              this.dialogFormVisible = false;
-              this.ruleForm= {
-                  editableTabsValue: "1",
-                  editableTabs: [
-                    {
-                      title: "报销1",
-                      name: "1",
-                      content:{
-                          createUser:"",
-                          createTime: "",
-                          id:"",
-                          groupCode: "",
-                          productName: "",
-                          mark: "",
-                          t_sum:0,//一共多少项
-                          t_price:0,//一共多少钱
-                          files:[],
-                          payments:[],
-                          joinData:[],
-                          plan: {
-                            planId: "",
-                            planName: ""
-                          },
-                        
-                      }
-                    }
-                  ]
-                  };
-        }
+            if(this.find == 0){
+              this.$confirm("是否取消本次报销申请", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+              .then(() => {
+                  this.tabIndex = 1;
+                  this.radio= "1";
+                  this.dialogFormVisible = false;
+                  this.ruleForm= {
+                      editableTabsValue: "1",
+                      editableTabs: [
+                        {
+                          title: "报销1",
+                          name: "1",
+                          content:{
+                              createUser:"",
+                              createTime: "",
+                              id:"",
+                              groupCode: "",
+                              productName: "",
+                              mark: "",
+                              t_sum:0,//一共多少项
+                              t_price:0,//一共多少钱
+                              files:[],
+                              payments:[],
+                              joinData:[],
+                              plan: {
+                                planId: "",
+                                planName: ""
+                              },
+                            
+                          }
+                        }
+                      ]
+                      };
+            })
+              .catch(() => {
+                this.$message({
+                  type: "info",
+                  message: "已取消"
+                });
+              });
+          }else if(this.find == 1){
+                  this.tabIndex = 1;
+                  this.radio= "1";
+                  this.dialogFormVisible = false;
+                  this.ruleForm= {
+                      editableTabsValue: "1",
+                      editableTabs: [
+                        {
+                          title: "报销1",
+                          name: "1",
+                          content:{
+                              createUser:"",
+                              createTime: "",
+                              id:"",
+                              groupCode: "",
+                              productName: "",
+                              mark: "",
+                              t_sum:0,//一共多少项
+                              t_price:0,//一共多少钱
+                              files:[],
+                              payments:[],
+                              joinData:[],
+                              plan: {
+                                planId: "",
+                                planName: ""
+                              },
+                            
+                          }
+                        }
+                      ]
+                      };
+            }
          
         },
         subscript(){ //判断当前tab页
@@ -800,15 +771,8 @@ export default {
             this.endTime2 ="";//搜索用结束日期
             this.searchHand4(1)
         },
-        //  //删除
-        // removeDomain(item) {
-        //   var index = this.domains.indexOf(item);
-        //   if (index !== -1) {
-        //     this.domains.splice(index, 1);
-        //   }
-        // },
-        //添加
-        addDomain() {
+       
+        addDomain() {  //添加
           this.domains.push({
               mark: "0",
               price: "0"
@@ -898,8 +862,8 @@ export default {
                  
                   
         },
-        // 报销申请提交
-        submitForm(ruleForm) { /// 12/12 没弄完
+        
+        submitForm(ruleForm) { // 报销申请提交
           var joinData_sn=[];
           var files_s=[];
           var editableTabs = ruleForm.editableTabs;
@@ -985,8 +949,8 @@ export default {
                 console.log(err);
               });
           },
-        //撤销申请
-        chanelSubmit(ruleForm) {
+      
+        chanelSubmit(ruleForm) {   //撤销申请
           console.log(ruleForm.editableTabs[0].content.guid);
             this.$confirm("是否需要撤销该笔报销", "提示", {
               confirmButtonText: "确定",
@@ -1148,7 +1112,7 @@ export default {
          this.s_content.t_sum = this.s_content.payments.length;//多少项
          this.s_content.t_price= sss //多少钱
         },
-         addressChange() {
+        addressChange() {
             this.t_price_box=[];
             this.subscript();
             let payments_change = this.s_content.payments;
@@ -1158,8 +1122,8 @@ export default {
                 
           this.t_price_sum();
           },
-        // 报销弹窗
-        dialogchange() {
+       
+        dialogchange() {  // 报销弹窗
           this.payments = [];
           this.find = 0;
           this.change = false;
@@ -1240,8 +1204,7 @@ export default {
                   console.log(err);
                 });
         },
-        //添加报销
-        addbx(item) { 
+        addbx(item) { //添加报销 
           if(item.groupCode === "" || item.mark === "" || item.productName === "" || this.image === 0 ){
                 this.$message({
                   message: '请检查必填项',
@@ -1252,13 +1215,11 @@ export default {
                 this.dialogFormVisible3 = true;
             }
         },
-        //报销人选择弹窗
-        adddialog() {
+        adddialog() {    //报销人选择弹窗
           this.getUserList(1);
           this.dialogFormVisible1 = true;
         },
-        //获取用户列表
-        getUserList(val) {
+        getUserList(val) {   //获取用户列表
           var that = this;
           this.$http
             .post(this.GLOBAL.serverSrc + "/org/api/userpage", {
@@ -1278,8 +1239,8 @@ export default {
               console.log(obj);
             });
         },
-        //团期计划弹窗
-        planDialog() {
+       
+        planDialog() {  //团期计划弹窗
           this.dialogFormVisible2 = true;
           this.searchHand4(1);
         },
@@ -1295,18 +1256,17 @@ export default {
           this.currentPage4 = val;
           this.pageList();
         },
-        //选择报销人
-        handleCurrentChange1(val) {
+      
+        handleCurrentChange1(val) {   //选择报销人
           this.getUserList(val);
           console.log(`当前页: ${val}`);
         },
-        //文件上传
-        handleChange(file, files) {
+       
+        handleChange(file, files) {  //文件上传
           this.files = files.slice(-3);
         },
         
-        //图片上传成功
-        handleSucess(res, file, files) {
+        handleSucess(res, file, files) {  //图片上传成功
           this.subscript();
           var paths = [];
           //let one_index = this.ruleForm.editableTabsValue - 1;
@@ -1329,16 +1289,14 @@ export default {
         handleError(err, file) {// 上传失败
           this.files = []
         },
-       handlePreview(file) {
+        handlePreview(file) {
             window.open(file.url);
           },
         
         beforeRemove(file, files) {
-
           return this.$confirm(`确定移除 ${ file.name }？`);
         },
-        //添加报销和删除
-        handleTabsEdit(targetName, action) {
+        handleTabsEdit(targetName, action) {   //添加报销和删除
           let newTab= this.getNewTab();
           if (action === "add") {
             let newTabName = ++this.tabIndex + "";
@@ -1431,8 +1389,7 @@ export default {
           }
           }
         },
-         //切换时候，换内容
-        tabClick(targetName) {
+        tabClick(targetName) {  //切换时候，换内容
           this.ruleForm.editableTabsValue = targetName.name
            },
       
@@ -1455,7 +1412,7 @@ export default {
               },
               }
         },
-       T_check(){ //添加报销搜索
+        T_check(){ //添加报销搜索
           this.joinData=[];
           this.Associated(this.plans.pid);
         },
@@ -1566,8 +1523,7 @@ export default {
             }
           }
         },
-        // 起始时间格式转换
-        dateFormat: function(row, column) {
+        dateFormat: function(row, column) { // 起始时间格式转换
           let date = row[column.property];
           if(date == undefined || date == '') {
             return '';
@@ -1617,11 +1573,7 @@ export default {
             return (restaurant.value);
           }
         },
-      
-     
-     
-
-     //方法结尾
+        //方法结尾
      },
 
       created() {
