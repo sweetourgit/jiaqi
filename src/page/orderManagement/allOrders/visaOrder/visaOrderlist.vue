@@ -31,7 +31,7 @@
           </ul>
           <div class="search-but">
              <el-button type="primary" @click="orderPage(1,pageSize)">搜索</el-button>
-             <el-button type="primary" plain @click="reset">重置</el-button>
+             <el-button type="primary" @click="reset">重置</el-button>
           </div>
 
 
@@ -462,9 +462,9 @@ export default {
        .sec-type{margin-left:10px}
        .status-title{float:left;font-size: 14px;margin:22px 0 0 15px;width:75px;}
        .order-status{float:left;width: 1000px;list-style-type:none;margin:13px 0 0 0;display:inline-block;padding: 0;font-size:14px;line-height: 35px;overflow: hidden;text-align: center;}
-       .order-status1{float:left;width: 1000px;list-style-type:none;margin:15px 0 0 90px;display:inline-block;padding: 0;font-size:14px;line-height: 35px;overflow: hidden;text-align: center;}
-       .order-status1 li,.order-status li{float: left;width:120px;border:1px solid #eaeaea;cursor: pointer;}
-       .search-but{clear:both;display:block;padding:25px 0 25px 17px;}
+       .order-status1{float:left;width: 1000px;list-style-type:none;margin:0 0 0 90px;display:inline-block;padding: 0;font-size:14px;line-height: 35px;overflow: hidden;text-align: center;}
+       .order-status1 li,.order-status li{float: left;width:120px;border:1px solid #eaeaea;cursor: pointer;margin-bottom: 8px}
+       .search-but{clear:both;display:block;padding:13px 0 25px 17px;}
        .statusbg{background-color:#f6f6f6}
        .poa{position: absolute;left: 76px;top: 30px;width: 100px;color: red;font-size: 12px}
        .por {position: relative}
