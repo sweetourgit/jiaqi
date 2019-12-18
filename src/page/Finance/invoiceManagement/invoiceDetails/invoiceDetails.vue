@@ -144,7 +144,7 @@
         <div class="aggregate">总计:<span>{{sum | numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column v-if="title == '换票'" label="原票号" align="center":key=Math.random()>
+        <el-table-column v-if="title == '换票'" label="原票号" align="center":key="Math.random()">
           <template slot-scope="scope">
             <span>{{originalBanks}}</span>
           </template>
