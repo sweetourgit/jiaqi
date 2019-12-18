@@ -83,4 +83,5 @@ body .el-table th.gutter{ display: table-cell!important; } /* 表格头部固定
 .el-select-dropdown__item.hover, .el-select-dropdown__item:hover{background-color: #3095fa !important;color: #fff !important}
 .el-select-dropdown{background-color: #e9eaea !important}
 .navigation::-webkit-scrollbar { width: 0 !important } /* 隐藏导航栏滚动条 */
+.select-option{width:auto !important;}
 </style>

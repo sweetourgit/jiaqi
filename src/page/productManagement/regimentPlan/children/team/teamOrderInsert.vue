@@ -106,6 +106,7 @@
                 :fetch-suggestions="querySearch3"
                 placeholder="请输入商户名称"
                 :trigger-on-focus="false"
+                popper-class="select-option"
                 @select="departure"
               ></el-autocomplete>
               <div v-show="nullShowName" style="color:red;">请输入有效的商户名称</div>
