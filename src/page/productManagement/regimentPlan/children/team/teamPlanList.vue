@@ -231,8 +231,11 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.teamQueryList(this.pageIndex,val);
-      this.getUserCode();
+      if(this.op == ""){
+        this.teamQueryList(this.pageIndex,val);
+      }else{
+        this.getUserCode();
+      }
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
