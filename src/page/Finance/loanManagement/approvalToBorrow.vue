@@ -58,7 +58,7 @@
     </el-table>
     <!-- 需要审批表格 END-->
     <!-- 借款申请详情 -->
-    <el-dialog title="借款申请详情" :visible.sync="detailstShow" width="1100px" custom-class="city_list" :show-close='false'>
+    <el-dialog title="借款申请详情" :visible.sync="detailstShow" width="1100px" custom-class="city_list" :show-close='false' v-if="detailstShow">
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
       <div style="position:absolute; top:8px; right:10px;">
         <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
@@ -77,7 +77,7 @@
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
         <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || (ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)">支付账户</el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow"></checkLoanManagement>
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
