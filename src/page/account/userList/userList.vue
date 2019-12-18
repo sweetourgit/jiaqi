@@ -325,7 +325,7 @@
             if(i!=indexD){
               this.authData[index].dataJurisdiction[i].isJur=false;
             }
-         } 
+         }  
       },
       auth(){
         if(this.multipleSelection[0].id > 0){
