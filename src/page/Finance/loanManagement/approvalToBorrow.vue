@@ -100,8 +100,7 @@
     </el-dialog>
     <!-- 通过、驳回弹框 END -->
     <!-- 付款账户弹窗 -->
-    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
-      <div class="close" @click="closeAccount()">×</div>
+    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list">
       <el-table :data="tableSelect" border :header-cell-style="getRowClass">
         <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
         <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
@@ -221,10 +220,6 @@ import moment from 'moment'
     deep:true
   },
   methods: {
-      // 关闭选择账户弹窗
-      closeAccount(){
-      this.SelectAccount = false;
-      },
       // 选择账户弹窗，选择对应的选项事件
       addAccount(index, row){
       var that = this
