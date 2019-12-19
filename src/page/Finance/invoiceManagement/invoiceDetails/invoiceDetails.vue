@@ -410,14 +410,21 @@ export default {
       }
     },
     invoiceOnly(ID){ // 验证发票号唯一性
-      let invoice = JSON.stringify(this.invoiceDate)
+      let number = []
+      this.invoiceDate.forEach(v=>{
+       number.push(v.invoiceNumber)
+      })
       for(let i = 0 ; i< this.invoiceDate.length ; i ++){
-        let invoiceNumber = JSON.stringify(this.invoiceDate[i].invoiceNumber)
-        console.log(invoiceNumber)
-        console.log(invoice)
-        if (invoice.indexOf(invoiceNumber) != -1) {
+        let count=0;
+        for(let j = 0 ; j < number.length; j++){
+           if(this.invoiceDate[i].invoiceNumber==number[j]){
+              count++;
+           }
+        }
+        if(count>1){
           this.$message.error("发票号重复,已存在该发票号");
           return;
+          break;
         }
       }
       this.ifOnly = true ;
