@@ -23,45 +23,45 @@
           <table width="100%">
             <tr>
               <td width="33%">
-                <div width="80" class="fl">ID:</div>
+                <div width="80" class="fl fb">ID:</div>
                 <div class="fl ml13">{{invoiceList.id}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">申请人:</div>
+                <div width="80" class="fl fb">申请人:</div>
                 <div class="fl ml13">{{invoiceList.userName}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">申请时间:</div>
+                <div width="80" class="fl fb">申请时间:</div>
                 <div class="fl ml13">{{invoiceList.createTime | formatDate}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
-                <div width="80" class="fl">发票抬头:</div>
+                <div width="80" class="fl fb">发票抬头:</div>
                 <div class="fl ml13">{{invoiceList.invoiceHeader}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">纳税人识别号:</div>
+                <div width="80" class="fl fb">纳税人识别号:</div>
                 <div class="fl ml13">{{invoiceList.taxpayerIDNumber}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">手机号:</div>
+                <div width="80" class="fl fb">手机号:</div>
                 <div class="fl ml13">{{invoiceList.tel}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
-                <div width="80" class="fl">发票项目:</div>
+                <div width="80" class="fl fb">发票项目:</div>
                 <div class="fl ml13">
                   <div v-if="invoiceList.invoiceItem=='1'">旅游费</div>
                 </div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">发票金额:</div>
+                <div width="80" class="fl fb">发票金额:</div>
                 <div class="fl ml13">{{invoicePrice}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">直客/商户:</div>
+                <div width="80" class="fl fb">直客/商户:</div>
                 <div class="fl ml13">
                   <div v-if="invoiceList.collectionType=='1'">商户</div>
                   <div v-if="invoiceList.collectionType=='2'">直客</div>
@@ -69,45 +69,45 @@
               </td>
             <tr>
               <td width="33%">
-                <div width="80" class="fl">账号:</div>
+                <div width="80" class="fl fb">账号:</div>
                 <div class="fl ml13">{{invoiceList.cardNumber}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">开户行:</div>
+                <div width="80" class="fl fb">开户行:</div>
                 <div class="fl ml13">{{invoiceList.bankName}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">地址:</div>
+                <div width="80" class="fl fb">地址:</div>
                 <div class="fl ml13">{{invoiceList.address}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
-                <div width="80" class="fl">发票类型:</div>
+                <div width="80" class="fl fb">发票类型:</div>
                 <div class="fl ml13">
                   <div v-if="invoiceList.invoiceID=='1'">纸质发票</div>
                 </div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">个人/单位:</div>
+                <div width="80" class="fl fb">个人/单位:</div>
                 <div class="fl ml13">
                   <div v-if="invoiceList.invoiceType=='1'">个人</div>
                   <div v-if="invoiceList.invoiceType=='2'">单位</div>
                 </div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">开票日期:</div>
+                <div width="80" class="fl fb">开票日期:</div>
                 <div class="fl ml13" v-if="invoiceList.endTime !='0' ">{{formatDate01(new Date(invoiceList.endTime))}}</div>
                 <!-- <div class="fl ml13" v-if="invoiceList.selStartGrantTime !='0' ">{{invoiceList.selStartGrantTime}}</div> -->
               </td>
             </tr>
             <tr>
               <td width="33%">
-                <div width="80" class="fl">收款单号:</div>
+                <div width="80" class="fl fb">收款单号:</div>
                 <div class="fl ml13">{{invoiceList.collectionID}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl">报账团号:</div>
+                <div width="80" class="fl fb">报账团号:</div>
                 <div class="fl ml13">{{invoiceList.accountGroupCode}}</div>
               </td>
             </tr>
@@ -160,25 +160,25 @@
         <el-table-column prop="cardNumber" label="账号" align="center":key="5"></el-table-column>
         <el-table-column prop="address" label="地址" align="center":key="6"></el-table-column>
         <el-table-column prop="bankName" label="开户行" align="center":key="7"></el-table-column>
-        <el-table-column prop="invoiceHeader" v-if="title == '换票'" label="发票抬头" align="center" min-width="120":key="8">
+        <el-table-column prop="invoiceHeader" v-if="title == '换票'" label="发票抬头" align="center" min-width="150":key="8">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoiceHeader" class="w150"></el-input>
             <div class="validation" v-if="scope.row.invoiceHeader == '' && a == true">发票抬头不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="100":key="9">
+        <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="150":key="9">
           <template slot-scope="scope">
             <el-input v-model="scope.row.taxpayerIDNumber" class="w150"></el-input>
             <div class="validation" v-if="scope.row.taxpayerIDNumber == '' && a == true">纳税人识别号不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="120":key="10">
+        <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="150":key="10">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()" @input="clearNoNum(scope.$index,scope.row.invoicePrice)"></el-input>
             <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column label="发票号码" align="center" min-width="120":key="11">
+        <el-table-column label="发票号码" align="center" min-width="150":key="11">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoiceNumber" class="w150"></el-input>
             <div class="validation" v-if="scope.row.invoiceNumber == '' && a == true">发票号码不能为空</div>
@@ -414,6 +414,16 @@ export default {
       }
     },
     invoiceOnly(ID){ // 验证发票号唯一性
+      let invoice = JSON.stringify(this.invoiceDate)
+      for(let i = 0 ; i< this.invoiceDate.length ; i ++){
+        let invoiceNumber = JSON.stringify(this.invoiceDate[i].invoiceNumber)
+        console.log(invoiceNumber)
+        console.log(invoice)
+        if (invoice.indexOf(invoiceNumber) != -1) {
+          this.$message.error("发票号重复,已存在该发票号");
+          return;
+        }
+      }
       this.ifOnly = true ;
       for(let i = 0 ; i < this.invoiceDate.length ; i ++){
         this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/exisinvoicenumber", {
@@ -423,12 +433,11 @@ export default {
           if (res.data.isSuccess === false && this.invoiceDate[i].invoiceNumber !== '') {
             if(this.title == '开票'){
               this.$message.success("第 "+(i+1)+" 条发票号码已存在");
+              this.ifOnly = false;
             }else if(this.title == '换票'){
               this.$message.success("该发票号码已存在");
+              this.ifOnly = false;
             }
-            this.ifOnly = false;
-            // this.$message.success("第 "+(i+1)+" 条发票号码已存在");
-            // this.ifOnly = false;
           }
           if(i == this.invoiceDate.length - 1){
             this.openInvoicement(ID);
@@ -510,6 +519,7 @@ export default {
 .order-title{font-size: 14pt; color:#000;line-height: 40px;}
 .controlButton{position: absolute; top: 8px; right: 10px;}
 .fl{float: left;}
+.fb{font-weight: bold;}
 .ml13{margin: 0 0 0 13px;}
 .state01{text-align: center; background: #ffaa00; border-radius: 5px; color: #fff;width:60px;padding: 2px; margin: 10px 0 0 0;}
 .state02{text-align: center; background: #008000; border-radius: 5px; color: #fff;width:60px;padding: 2px; margin: 10px 0 0 0;float: left;}
@@ -523,6 +533,6 @@ export default {
 .relateditems{color: #108ee9; margin: 0 5px 0 5px;}
 .aggregate{margin: 0 0 0 15px;float: left;}
 .aggregate span{ margin: 0 0 0 15px;}
-.w150{width: 100px;}
-.validation{color: red;width: 140px;line-height: 30px;}
+.w150{width: 150px;}
+.validation{color: red;width: 150px;line-height: 30px;}
 </style>
