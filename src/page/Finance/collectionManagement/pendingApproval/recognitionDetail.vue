@@ -11,8 +11,8 @@
               <el-button type="text" size="small" class="table_details" disabled>已选</el-button>
             </template>
           </el-table-column> -->
-          <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
-          </el-table-column>
+          <!-- <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+          </el-table-column> -->
           <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
           </el-table-column>
           <el-table-column prop="transaction_Date" label="交易日期" align="center">
@@ -66,8 +66,8 @@
               <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" disabled>已选</el-button>
             </template>
           </el-table-column> -->
-          <el-table-column prop="account_balance" label="剩余金额" align="center">
-          </el-table-column>
+          <!-- <el-table-column prop="account_balance" label="剩余金额" align="center">
+          </el-table-column> -->
           <el-table-column prop="purpose_fee" label="手续费" align="center">
           </el-table-column>
           <el-table-column prop="bank_serial_number" label="银行流水号" align="center">
@@ -118,8 +118,8 @@
               <el-button type="text" size="small" class="table_details" disabled>已选</el-button>
             </template>
           </el-table-column> -->
-          <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
-          </el-table-column>
+          <!-- <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+          </el-table-column> -->
           <el-table-column prop="transaction_time" label="交易时间" align="center">
           </el-table-column>
           <el-table-column prop="transaction_amount" label="交易金额" align="center">

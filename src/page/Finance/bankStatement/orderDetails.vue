@@ -118,7 +118,7 @@ export default {
           that.tableData = obj.data.objects;
           let totalM = 0;
           that.tableData.forEach(function (item, index, arr) {
-            // item.createTime_dt = item.createTime_dt.split('T')[0];
+            item.createTime_dt = item.createTime_dt.split('T')[0] +' '+ item.createTime_dt.split('T')[1].split('.')[0];
             totalM += parseFloat(item.price);
           });
           that.totalMoney = totalM;
