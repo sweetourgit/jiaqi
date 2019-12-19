@@ -6,6 +6,7 @@
       <el-button type="primary">下一步</el-button>
     </div>
     <div class="bother">
+      <!--左侧导航-->
       <div class="left">
         <div class="one">
           <div class="border">1</div>
@@ -22,6 +23,7 @@
           <div class="fl">重要提示</div>
         </div>
       </div>
+      <!--右侧内容-->
     </div>
   </div>
 </template>

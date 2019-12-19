@@ -258,8 +258,8 @@ export default {
           this.getInvoice(this.invoiceID);
         },200);
         this.dialogFormOrder = true;
-      }else if(this.dialogType == 2){
-        setTimeout(() => { // 驳回
+      }else if(this.dialogType == 2){ // 驳回
+        setTimeout(() => {
           this.rejectedIncoice(this.invoiceID);
         }, 200);
       }else if(this.dialogType == 3){
