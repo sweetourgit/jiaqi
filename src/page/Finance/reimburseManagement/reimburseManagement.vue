@@ -232,7 +232,7 @@
                       <el-table-column prop="paymentPrice" label="借款金额" width="100"></el-table-column>
                       <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column>
 
-                      <el-table-column prop="price" label="报销金额" style="background: yellow" width="140"  v-if="find==0">
+                      <el-table-column prop="price" label="本次报销金额" style="background: yellow" width="140"  v-if="find==0">
                         <template slot-scope="scope">
                           <el-input @input='addressChange(scope.row.price)' v-model="scope.row.price" style="width:100px;"></el-input>
                         </template>
@@ -249,7 +249,7 @@
                       </el-table-column>
                     
                       <!-- 不能改的 -->
-                       <el-table-column prop="price" label="报销金额" style="background: yellow" width="140" v-if="find==1">  </el-table-column>
+                       <el-table-column prop="price" label="本次报销金额" style="background: yellow" width="140" v-if="find==1">  </el-table-column>
                        <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==1"> </el-table-column>
                        
                     </el-table>
@@ -404,7 +404,7 @@
           <el-table-column prop="paymentMark" label="摘要" width="130"></el-table-column>
           <el-table-column prop="price" label="金额" width="90"></el-table-column>
           <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
-          <el-table-column prop="bcount" width="120" label="报销金额">
+          <el-table-column prop="bcount" width="120" label="本次报销金额">
             <template slot-scope="scope">
               <el-input v-model="scope.row.bcount" style="width:90px;"></el-input>
             </template>
@@ -718,11 +718,11 @@ export default {
                           supplierName:object[i].supplierName,
                           peopleCount:object[i].peopleCount,
                           orgName:object[i].orgName,
-                          wcount :object[i].price - object[i].collectionPrice
+                          wcount: object[i].price - object[i].expensePrice
                           //  wcount :object[i].price - object[i].expensePrice
                       });
                       
-                    
+                   // console.log(this.s_content.joinData,'898')
                       this.joinData =this.s_content.joinData
                     }
                     
@@ -886,8 +886,7 @@ export default {
                               //       name:submitForm_list.files[i].name,
                               //       url:submitForm_list.files[i].url,
                               //     });
-                              //   };
-                                   
+                              //   }; 
                               for(var n in submitForm_list.payments){//判断填写的报销金额
                                     if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
                                           this.$message({
@@ -1148,22 +1147,20 @@ export default {
                   if (res.data.isSuccess == true) {
                     var d_objects = res.data.objects; 
                     let d_objects_content =[];
-                    let new_payments_box =[];
-                    let wcount_s = 0;
+                    // let wcount_s = 0;
                     for(let i in d_objects){
                             let t_sum = d_objects[i].payments.length;//多少项 
                             let qian = 0;
                             let d_price_box =[];
                       for( let s in d_objects[i].payments){
                                 d_price_box.push(d_objects[i].payments[s].price);
-                              if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
-                                  wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
-                              }else{
-                                  wcount_s=d_objects[i].payments[s].paymentPrice
-                              }
-                              let new_payments_box =[];
+                              // if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
+                              //     wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
+                              // }else{
+                              //     wcount_s=d_objects[i].payments[s].paymentPrice
+                              // }
                                 d_objects[i].payments[s].createUser = d_objects[i].createUser,
-                                d_objects[i].payments[s].wcount = wcount_s
+                                d_objects[i].payments[s].wcount = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;
                               }
                       
                           

@@ -11,7 +11,7 @@
           <p class="inputLabel" v-if="collectionType == 5"><span>分销商：</span>{{baseInfo.distributor}}</p>
           <p class="inputLabel"><span>收款账户：</span>{{baseInfo.collectionNumber}}</p>
           <p class="inputLabel"><span>收款金额：</span>{{baseInfo.price}}</p>
-          <p class="inputLabel"><span>收款时间：</span>{{baseInfo.collectionTime}}</p>
+          <p class="inputLabel"><span>收款时间：</span>{{baseInfo.collectionTime.split('T')[0]}}</p>
           <p class="inputLabel"><span>摘要：</span>{{baseInfo.abstract}}</p>
           <div class="inputLabel">
             <span>凭证：</span>

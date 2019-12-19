@@ -99,7 +99,7 @@
             <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
             <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
             <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-            <el-table-column prop="prop" label="操作" align="center">
+            <el-table-column prop="prop" label="操作" align="center" v-if="baseInfo.collectionNumber != '现金'">
               <template slot-scope="scope">
                 <el-button v-if="scope.row.checkType != 3" type="text" @click="recognitionDo(scope.row)">去认款</el-button>
                 <el-button v-else type="text" @click="recognitionDetail(scope.row)">查看认款详情</el-button>
@@ -376,13 +376,20 @@
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            that.tableAssociated.forEach( item => {
+            if(response.data.object.collectionNumber === '现金'){
+              that.tableAssociated.forEach( item => {
+                that.getCollectionPriceTotal += item.matchingPrice;
+              });
+            }else{
+              that.tableAssociated.forEach( item => {
               that.getCollectionPriceTotal += item.matchingPrice;
 
               if(item.checkType != 3){
                 that.passDisabled = true;
               }
             });
+            }
+            
             // 凭证
             that.fileList = response.data.object.files;
           } else {
