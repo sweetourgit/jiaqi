@@ -121,9 +121,7 @@ export default {
         value:'2',
         label:'直客'
       }],
-      tableDate:[{
-        endTime:1580428800000 // 2020-01-31
-      }],//表格
+      tableDate:[],//表格 {endTime:1580428800000 // 2020-01-31}
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
