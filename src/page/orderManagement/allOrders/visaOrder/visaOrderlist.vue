@@ -129,7 +129,7 @@
                 <div class="but-row">
                   <span class="dotFather">
                     <span class="dot"></span>
-                    <span>{{item.orderStatus}}</span>
+                    <span>{{getOrderStatus(item.orderStatus)}}</span>
                   </span>
                   <span v-if="item.occupyStatus == '预订不占' || item.occupyStatus == '预订占位'">待确认剩余
                     <span class="moneyColor">1天22:33:33</span>
@@ -453,29 +453,6 @@ export default {
               break;
             case 10:
               return '订单确认';
-              break;
-          }
-      },
-      //列表退款状态显示
-      getrefundStatus(status){
-         switch(status){
-            case 1:
-              return '退款中';
-              break;
-            case 2:
-              return '拒绝退款';
-              break;
-            case 3:
-              return '已退款';
-              break;
-            case 4:
-              return '无退款';
-              break;
-            case 5:
-              return '申请退款';
-              break;
-            case 6:
-              return '完成退款';
               break;
           }
       },
