@@ -144,41 +144,41 @@
         <div class="aggregate">总计:<span>{{sum | numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column v-if="title == '换票'" label="原票号" align="center":key="Math.random()">
+        <el-table-column v-if="title == '换票'" label="原票号" align="center":key="1">
           <template slot-scope="scope">
             <span>{{originalBanks}}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column prop="oldInvoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column> -->
-        <el-table-column v-if="title == '开票'" label="发票抬头" align="center":key="Math.random()">
+        <el-table-column v-if="title == '开票'" label="发票抬头" align="center":key="2">
           <template slot-scope="scope">
             <span>{{invoiceHeader}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="tel" label="电话" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="cardNumber" label="账号" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="address" label="地址" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="bankName" label="开户行" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="invoiceHeader" v-if="title == '换票'" label="发票抬头" align="center" min-width="120":key="Math.random()">
+        <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center":key="3"></el-table-column>
+        <el-table-column prop="tel" label="电话" align="center":key="4"></el-table-column>
+        <el-table-column prop="cardNumber" label="账号" align="center":key="5"></el-table-column>
+        <el-table-column prop="address" label="地址" align="center":key="6"></el-table-column>
+        <el-table-column prop="bankName" label="开户行" align="center":key="7"></el-table-column>
+        <el-table-column prop="invoiceHeader" v-if="title == '换票'" label="发票抬头" align="center" min-width="120":key="8">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoiceHeader" class="w150"></el-input>
             <div class="validation" v-if="scope.row.invoiceHeader == '' && a == true">发票抬头不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="100":key="Math.random()">
+        <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="100":key="9">
           <template slot-scope="scope">
             <el-input v-model="scope.row.taxpayerIDNumber" class="w150"></el-input>
             <div class="validation" v-if="scope.row.taxpayerIDNumber == '' && a == true">纳税人识别号不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="120":key="Math.random()">
+        <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="120":key="10">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()" @input="clearNoNum(scope.$index,scope.row.invoicePrice)"></el-input>
             <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column label="发票号码" align="center" min-width="120":key="Math.random()">
+        <el-table-column label="发票号码" align="center" min-width="120":key="11">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoiceNumber" class="w150"></el-input>
             <div class="validation" v-if="scope.row.invoiceNumber == '' && a == true">发票号码不能为空</div>
@@ -192,13 +192,13 @@
         <div class="aggregate">总计:<span>{{ sum_01 | numFilter}}</span>元</div>
       </div>
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="orderCode" label="订单编号" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="title" label="产品名称" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="groupCode" label="团期计划" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center":key="Math.random()"></el-table-column>
+        <el-table-column prop="orderCode" label="订单编号" align="center":key="12"></el-table-column>
+        <el-table-column prop="title" label="产品名称" align="center":key="13"></el-table-column>
+        <el-table-column prop="groupCode" label="团期计划" align="center":key="14"></el-table-column>
+        <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center":key="15"></el-table-column>
         <!-- <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column> -->
-        <el-table-column prop="coPrice" label="已付金额" align="center":key="Math.random()"></el-table-column>
-        <el-table-column prop="skPrice" label="剩余开票金额" align="center":key="Math.random()"></el-table-column>
+        <el-table-column prop="coPrice" label="已付金额" align="center":key="16"></el-table-column>
+        <el-table-column prop="skPrice" label="剩余开票金额" align="center":key="17"></el-table-column>
       </el-table>
     </el-dialog>
   </div> 
@@ -392,14 +392,22 @@ export default {
       if(this.ruleFormSeach.invoicePrice <= 0){
         return;
       }
+      let preLength = this.invoiceDate.length;
       let str = Math.ceil(this.sum/this.ruleFormSeach.invoicePrice)
       let remainder = Math.ceil((this.sum%this.ruleFormSeach.invoicePrice) * 1000)/1000 + "";
       remainder = remainder.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1'); // 取余后保留小数点后两位
-      let guestAll = this.invoiceDate[0];
-      this.invoiceDate=[];
-      for(let i=0; i < str; i++){
-        guestAll.invoicePrice = this.ruleFormSeach.invoicePrice;
-        this.invoiceDate.push(JSON.parse(JSON.stringify(guestAll)))
+      if(str > preLength){
+        for(let i=0; i < str; i++){
+          if(i>preLength-1){
+            this.invoiceDate.push(JSON.parse(JSON.stringify(this.invoiceDate[0])))
+            this.invoiceDate[i].invoiceNumber="";
+          }
+        }
+      }else{
+        this.invoiceDate.splice(str - preLength,preLength - str);
+      }
+      for(let i = 0 ; i < str ; i++){
+        this.invoiceDate[i].invoicePrice = this.ruleFormSeach.invoicePrice;
       }
       if(remainder > 0){
         this.invoiceDate[str-1].invoicePrice = remainder;
