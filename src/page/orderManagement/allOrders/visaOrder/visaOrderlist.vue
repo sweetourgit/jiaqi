@@ -33,85 +33,112 @@
              <el-button type="primary" @click="orderPage(1,pageSize)">搜索</el-button>
              <el-button type="primary" @click="reset">重置</el-button>
           </div>
-
-
-
-
-
-
           <!--订单列表-->
-          <div class="pro-info" v-for="(item,index) in orderpage">
-            <table cellpadding="5">
+          <div class="pro-info" v-for="(item,index) in orderpage" :key="index">
+          <h3>{{item.name}}</h3>
+          <div class="contentHeader" @click="handleContentHeader(index)">
+              <table>
                 <tr>
-                  <td width="60" class="tr">订单ID</td>
+                  <td class="tr">订单ID</td>
                   <td>{{item.orderCode}}</td>
-                  <td width="60" class="tr">产品ID</td>
-                  <td width="220">{{item.teamID}}</td>
-                  <td width="85" class="tr">订单状态</td>
-                  <td width="90">{{getOrderStatus(item.orderStatus)}}</td>
-                  <td width="60" class="tr">退款状态</td>
-                  <td width="60">{{getrefundStatus(item.refundStatus)}}</td>
-                  <td width="60" class="tr">订单时间</td>
+                  <div class="tableCenter">
+                    <td class="tr">团期计划</td>
+                    <td>{{item.groupCode}}</td>
+                  </div>
+                  <td class="tr">订单时间</td>
                   <td>{{formatDate(new Date(item.createTime))}}</td>
                 </tr>
                 <tr>
-                  <td width="60" class="tr">产品名</td>
-                  <td colspan="9">{{item.name}}</td>
+                  <td class="tr">联系人</td>
+                  <td valign="top">{{item.contactName}}</td>
+                  <div class="tableCenter">
+                    <td class="tr">电话</td>
+                    <td valign="top">{{item.contactTel}}</td>
+                  </div>
                 </tr>
-                <tr>
-                  <td width="60" class="tr">套餐名称</td>
-                  <td colspan="3">{{item.package}}</td>
-                  <td width="60" class="tr">团号</td>
-                  <td colspan="5">{{item.groupCode}}</td>
-                </tr>
-                <tr>
-                  <td width="60" class="tr">应付</td>
-                  <td>{{item.payable}}</td>
-                  <td width="60" class="tr">电话</td>
-                  <td rowspan="2" valign="top">{{item.contactTel}}</td>
-                  <td width="60" class="tr">优惠</td>
-                  <td colspan="4" rowspan="2" valign="top">{{item.favTitle}}</td>
-                  <td rowspan="2">&nbsp;</td>
-                </tr>
-                <tr>
-                  <td width="60" class="tr">已付</td>
-                  <td>{{item.paid}}</td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td width="60" class="tr">平台</td>
-                  <td>苹果</td>
-                  <td width="60" class="tr">支付方式</td>
-                  <td>微信支付</td>
-                  <td width="60" class="tr">订单来源</td>
-                  <td colspan="3">xxx旅行社</td>
-                  <td width="60" class="tr">销售</td>
-                  <td>{{item.saler}}</td>
-                </tr>
-                <tr>
-                  <td width="60" class="tr">用户姓名</td>
-                  <td>{{item.contactName}}</td>
-                  <td width="60" class="tr"></td>
-                  <td></td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                  <td>&nbsp;</td>
-                </tr>
-            </table>
-            <div class="confirm-time">待确认剩余<span>1天22:33:33</span></div>
-            <el-row class="but-row">
-               <el-button>联系客人</el-button>
-               <el-button @click="operation(item.id,1)">流程管理</el-button>
-               <el-button @click="operation(item.id,2)">备注信息</el-button>
-               <el-button>未申请退款</el-button>
-               <el-button @click="operation(item.id,4)">转团</el-button>
-            </el-row>
+              </table>
+              <i :class="['contentHeaderIcon', showContent !== index ? 'el-icon-arrow-right': 'el-icon-arrow-down']"></i>
+            </div>
+            <transition name="el-fade-in">
+              <div class="contentBody" v-show="showContent == index">
+                <table>
+                  <tr>
+                    <td class="tr">套餐名称</td>
+                    <td class="longWeight">{{item.package}}</td>
+                    <div class="BodyTableCenter">
+                      <td class="tr">出发地</td>
+                      <td class="longWeight">{{item.pod}}</td>
+                    </div>
+                    <td class="tr">目的地</td>
+                    <td class="longWeight">{{item.destination}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tr">出发日期</td>
+                    <td class="longWeight">{{item.date}}</td>
+                    <div class="BodyTableCenter">
+                      <td class="tr">数量</td>
+                      <td class="longWeight" valign="top"></td>
+                    </div>
+                    <td class="tr">产品类型</td>
+                    <td class="longWeight">跟团游</td>
+                  </tr>
+                  <tr>
+                    <td class="tr">整体优惠</td>
+                    <td class="longWeight" valign="top">{{toDecimal2(item.entiretyFav)}}</td>
+                    <div class="BodyTableCenter">
+                      <td class="tr">其他费用</td>
+                      <td class="longWeight" valign="top">
+                        {{item.otherTitle}}
+                        <span>{{toDecimal2(item.otherPrice)}}</span>
+                      </td>
+                    </div>
+                    <td class="tr">订单来源</td>
+                    <td class="longWeight">{{item.orderChannels}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tr">支付方式</td>
+                    <td class="longWeight"></td>
+                    <div class="BodyTableCenter">
+                      <td class="tr">操作</td>
+                      <td class="longWeight" valign="top">{{item.op}}</td>
+                    </div>
+                    <td class="tr">商户销售</td>
+                    <td class="longWeight" valign="top" v-if="item.orderChannel == 1">{{item.saler}}</td>
+                    <td class="longWeight" valign="top" v-if="item.orderChannel !== 1"></td>
+                  </tr>
+                  <tr>
+                    <td class="tr">平台&nbsp;&nbsp;</td>
+                    <td class="longWeight" valign="top">{{item.platform}}</td>
+                    <div class="BodyTableCenter">
+                      <td class="tr">销售&nbsp;&nbsp;</td>
+                      <td class="longWeight" valign="top" v-if="item.orderChannel !== 1">{{item.saler}}</td>
+                      <td class="longWeight" valign="top" v-if="item.orderChannel == 1"></td>
+                    </div>
+                    <td class="tr">订单总额&nbsp;&nbsp;</td>
+                    <td class="longWeight" valign="top">{{toDecimal2(item.payable)}}</td>
+                  </tr>
+                  <tr>
+                    <td class="tr">已付金额&nbsp;&nbsp;</td>
+                    <td class="longWeight" valign="top">{{toDecimal2(item.paid)}}</td>
+                  </tr>
+                </table>
+                <el-breadcrumb separator="|" class="confirm-time">
+                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">备注</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,1,item.orderCode)">流程管理</el-breadcrumb-item>
+                </el-breadcrumb>
+                <div class="but-row">
+                  <span class="dotFather">
+                    <span class="dot"></span>
+                    <span>{{item.orderStatus}}</span>
+                  </span>
+                  <span v-if="item.occupyStatus == '预订不占' || item.occupyStatus == '预订占位'">待确认剩余
+                    <span class="moneyColor">1天22:33:33</span>
+                  </span>
+                </div>
+              </div>
+            </transition>
           </div>
-          <el-pagination class="pagination"
+          <el-pagination v-if="pageshow" class="pagination"
             @size-change="handleSizeChange"
             background
             @current-change="handleCurrentChange"
@@ -181,12 +208,9 @@ export default {
        ],
        refundNum:null,
        refundStatus:0,
-       
-       
-       
-       
-       
        //订单列表
+       pageshow:true,
+       showContent: null,
        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
        pageIndex: 1, // 设定当前页数
        total: 0,
@@ -318,8 +342,29 @@ export default {
         this.localcomp='';
         this.localcompID=0;
         this.saler='';
+        this.showContent = null;
       },
       //订单列表
+      toDecimal2(x) {
+        let f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf(".");
+        if (rs < 0) {
+          rs = s.length;
+          s += ".";
+        }
+        while (s.length <= rs + 2) {
+          s += "0";
+        }
+        return s;
+      },
+      handleContentHeader(index){
+        if(this.showContent != index){
+          this.showContent = index;
+        }else{
+          this.showContent = null;
+        }
+      },
       handleSizeChange(val){
         this.pageSize = val;
         this.pageIndex = 1;
@@ -330,13 +375,14 @@ export default {
         this.pageIndex=val;
       },
       orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize,orderCode=this.orderCode,teamID=this.teamID,groupCode=this.groupCode,beginDate=this.beginDate,endDate=this.endDate,name=this.name,destinationID=this.destinationID,saler=this.saler,productType=this.productType,orderStatus=this.orderStatus,refundStatus=this.refundStatus){
+        this.pageshow = false;
         if(beginDate){
           let y=beginDate.getFullYear();
           let m=(beginDate.getMonth()+1)>9?beginDate.getMonth()+1:'0'+(beginDate.getMonth()+1);
           let d=beginDate.getDate()>9?beginDate.getDate():'0'+beginDate.getDate();
           beginDate=''+ y + m + d
         }else{
-          beginDate=0
+          beginDate = "0001-01-01";
         }
         if(endDate){
           let y=endDate.getFullYear();
@@ -344,7 +390,7 @@ export default {
           let d=endDate.getDate()>9?endDate.getDate():'0'+endDate.getDate();
           endDate=''+ y + m + d
         }else{
-          endDate=0
+          endDate = "0001-01-01";
         }
         this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage',{
             "pageIndex": pageIndex,
@@ -370,6 +416,9 @@ export default {
             }
           }).catch(err => {
             console.log(err)
+          })
+          this.$nextTick(() => {
+              this.pageshow = true;
           })
       },
       //列表订单状态显示
@@ -469,11 +518,16 @@ export default {
        .poa{position: absolute;left: 76px;top: 30px;width: 100px;color: red;font-size: 12px}
        .por {position: relative}
        /*订单列表*/
-       .pro-info{font-size: 14px;background-color: #e4e4e4;margin:0 30px 30px 10px;line-height: 25px;padding:10px;width: 70%;min-width:1120px}
-       .tr{text-align: right;font-weight: bold}
-       .but-row{margin:40px 0 20px 10px}
-       .but-row .el-button{border: 1px solid #2f95f9}
-       .confirm-time{float: right;margin: 50px 55px 0 0;font-weight: bold;font-size:15px}
-       .confirm-time span{color:#ff4c3d;margin-left: 20px}
-       .pagination{text-align:center;margin:50px 0}
+       .pro-info{font-size: 14px;background-color: #e4e4e4;margin: 0 30px 30px 10px;line-height: 25px;padding: 15px;width: 70%;min-width: 1120px;}
+       .moneyColor{color: #ff0000;}
+       .orderMoney{margin: 0;margin-left: 2px;}
+       .breadCrumbPointer{cursor: pointer;}
+       .tableCenter{margin-left: 80px;margin-right: 80px;}
+       .tr{font-weight: bold;vertical-align: top;}
+       .but-row{margin: 40px 0 20px 10px;}
+       .but-row .el-button{border: 1px solid #2f95f9;}
+       .confirm-time{float: right;margin-top: 46px;margin-right: 20px;}
+       .pagination{text-align: center;margin: 50px 0;}
+       .dotFather{margin-right: 16px;}
+       .dot{display: inline-block;width: 7px;height: 7px;background-color: #7ec856;border-radius: 50%;margin-top: -2px;margin-right: 6px;}
 </style>
