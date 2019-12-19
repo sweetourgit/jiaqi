@@ -28,15 +28,26 @@ const ProcessManageMixin= {
           getTeampreviewAction(planID)
         ])
         .then(res => {
+          // propPriceType来自processManage
+          this.propPriceType= priceType;
+          this.globalMount();
           let [enrollsRes, teampreviewRes]= res;
           // 兼容旧逻辑
           this.oldLogicAdaptor(orderDetail);
           // 原处理
           this.teampreviewData= teampreviewRes;
           // 计算余位
-          this.sourceMaker(enrollsRes, guests, priceType)
+          this.sourceMaker(enrollsRes, guests)
         })
       })
+    },
+
+    // 记录挂载的全局对象
+    globalMount(){
+      // 出行人信息数组的映射
+      this.salePriceReflect= {};
+      // 新添加的所有报名实例
+      this.newEnrollList= [];
     },
 
     // 兼容旧逻辑
@@ -51,6 +62,7 @@ const ProcessManageMixin= {
         orderChannel,
         contact,
       }= orderDetail;
+      this.orderget = orderDetail;
       this.payable = payable;
       this.ruleForm.favourable = favourable;
       this.getOrderStatus(
@@ -79,43 +91,50 @@ const ProcessManageMixin= {
      * @description: 制作数据源
      * @param {Array} enrolls: 计划的所有报名类型
      * @param {Array} guests: 已报名的信息
-     * @param {Numer} priceType: 价格类型 1直客 2同业 
      * @return: 
      */
-    sourceMaker(enrolls, guests, priceType){
-      // 创建出行人信息数组的映射并挂载到全局
-      let salePriceReflect= {};
-      this.salePriceReflect= salePriceReflect;
+    sourceMaker(enrolls, guests){
+      let salePriceReflect= this.salePriceReflect;
 
       this.salePrice.splice(0);
       this.salePrice.push(
         ...enrolls.map((enroll, index) => {
           let result= [];
-          // enrollName 用于共享配额
-          result.enrollName= enroll.enrollName;
-          salePriceReflect[this.enrollKeyMaker(enroll, priceType)]= result;
+          result.enroll= enroll;
+          // 收集所有相同报名类型的实例，只有当前存在的报名类型需要这个属性，不存在的报名类型肯定不可以新增实例了
+          enroll.children= [];
+          salePriceReflect[this.enrollKeyMaker(enroll)]= result;
           return result;
         })
       )
       guests.forEach(guest => {
         let { enrollName, singlePrice }= guest;
         let key= `${enrollName}_${singlePrice}`;
+        /**
+         * @description: 不知道存不存在这个情况，过去有一个报名类型，但是现在没有了，这个时候hitEnroll为undefined
+         */
+        let hitEnroll= enrolls.find(el => el.enrollName=== enrollName);
+        // guest的报名类型不存在于当前enrolls
         if(!key in salePriceReflect){
           salePriceReflect[key]= [];
-          salePriceReflect[key].enrollName= enrollName;
+          salePriceReflect[key].enroll= hitEnroll;
+          this.salePrice.push(salePriceReflect[key]);
         };
+        // guest的报名类型存在于当前enrolls
         salePriceReflect[key].push(guest);  
       })
-      console.log(this.salePrice);
-      
+      // 这里的el就是上边的salePriceReflect[key]
+      this.salePrice.forEach(el => {
+        el.enroll && el.enroll.children.push(el);
+      })
     },
     
     /**
      * @description: 根据报名类型和价格类型返回key
      */
-    enrollKeyMaker(enroll, priceType){
+    enrollKeyMaker(enroll){
       let { enrollName, price_01, price_02 }= enroll;
-      return `${enrollName}_${priceType=== 1? price_01: price_02}`
+      return `${enrollName}_${this.propPriceType=== 1? price_01: price_02}`
     },
 
     /**
@@ -128,10 +147,61 @@ const ProcessManageMixin= {
       varied > 0? 
         this.enrollPlusChangeHandler(payload): this.enrollMinusChangeHandler(payload)
     },
-
+    
+    // 未考虑余位情况
     enrollPlusChangeHandler(payload){
       let { varied, proto }= payload;
+      let enroll= proto.enroll;
+      console.log(varied, proto)
+      // 计算剩余位置逻辑
       
+      // 计算剩余位置逻辑
+      let staticObj= {
+        orderID: this.orderget.id,
+        orderCode: this.orderget.orderCode,
+        orgID: this.orderget.orgID,
+        userID: this.orderget.userID,
+        productType: this.orderget.productTyp
+      }
+      console.log(staticObj)
+      for(let i= 0; i< varied; i++){
+        let newEnroll= this.enrollMaker(enroll, staticObj)
+        proto.push(newEnroll);
+        this.newEnrollList.push(newEnroll);
+      }
+    },
+
+    enrollMinusChangeHandler(payload){
+      let { varied, proto }= payload;
+      let result= proto.splice(0);
+      this.$nextTick(() => { proto.push(...result) })
+    },
+
+    /**
+     * @description: 穿件新的报名实例，在提交时统一赋值createTime，根据createTime区分添加批次
+     * @param {Object} enroll: { enrollID, enrollName, singlePrice }
+     * @param {Object} staticObj: { orderID, orderCode, orgID, userID, productType }
+     * @return: 
+     */            
+    enrollMaker(enroll, staticObj){
+      let { enrollID, enrollName, price_01, price_02 }= enroll;
+      return Object.assign({
+        enrollID,
+        enrollName,
+        singlePrice: this.propPriceType=== 1? price_01: price_02,
+        createTime: null,
+        id: 0,
+        isDeleted: 0,
+        code: "",
+        cnName: "",
+        enName: "",
+        sex: null,
+        idCard: "",
+        mobile: "",
+        bornDate: 0,
+        credType: 0,
+        credCode: "",
+      }, staticObj)
     },
 
     changeQuota() {

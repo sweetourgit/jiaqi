@@ -27,9 +27,9 @@ export default {
   },
 
   watch: {
-    value: {
+    proto: {
       handler(nval, oval){
-        console.log(nval, oval)
+        this.num= nval.length
       },
       deep: true,
       immediate: true
@@ -44,7 +44,6 @@ export default {
 
   methods: {
     changeHandler(nval, oval){
-      console.log(nval, oval)
       // 未输入值就blur的情况
       if(this.$isNull(nval)){
         this.$refs.mainer.focus();

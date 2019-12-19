@@ -67,7 +67,7 @@
           <span class="num-req">*</span>
           报名人数
         </div>
-        {{ salePrice }}
+        <div style="white-space:pre-wrap" v-html="salePrice"></div>
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
           <span
             class="multi-wrap"
@@ -170,46 +170,9 @@
 
         <!-- 出行人表格后加 begin -->
         <div class="travelMessage">出行人信息</div>
-        <table
-          :class="['costList',orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9 ? 'disableColor':'']"
-          v-for="(item,indexPrice) in salePrice"
-          :key="item.id + indexPrice"
-          border="1"
-          cellpadding="0"
-          cellspacing="0"
-        >
-          <tr class="costList_01">
-            <td width="120">姓名</td>
-            <td width="100">报名类型</td>
-            <td width="120">电话</td>
-            <td width="180">身份证</td>
-            <td width="80">性别</td>
-            <td width="140">操作</td>
-          </tr>
-          <tr v-for="(item,index) in tour[indexPrice]" :key="'b'+index">
-            <td>{{item.cnName}}</td>
-            <td>{{item.enrollName}}</td>
-            <td>{{item.mobile}}</td>
-            <td>{{item.idCard}}</td>
-            <td>
-              <div v-if="item.sex=='0'">男</div>
-              <div v-if="item.sex=='1'">女</div>
-            </td>
-            <td class="tc">
-              <el-button
-                class="fl cursor"
-                @click="fillTour(indexPrice,index)"
-                :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
-              >编辑</el-button>
-              <span class="fl">|</span>
-              <el-button
-                class="fl cursor"
-                @click="delTravel(index,indexPrice,item.enrollName)"
-                :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6"
-              >删除</el-button>
-            </td>
-          </tr>
-        </table>
+        <travelMessage
+          :proto="salePrice">
+        </travelMessage>
         <!-- 出行人表格后加end -->
       </el-form>
       <!--按钮-->
@@ -310,11 +273,12 @@
 <script>
 import { max } from "moment";
 import numberInputer from './comps/numberInputer'
+import travelMessage from './comps/travelMessage'
 import ProcessManageMixin from './ProcessManageMixin'
 
 export default {
   mixins: [ProcessManageMixin],
-  components: { numberInputer },
+  components: { numberInputer, travelMessage },
   
   props: {
     orderId: 0,
@@ -1077,6 +1041,7 @@ export default {
       this.dialogFormTour = false;
       setTimeout(() => {
         this.$refs[formName].resetFields();
+        this.$destroy();
       }, 500);
     },
 
