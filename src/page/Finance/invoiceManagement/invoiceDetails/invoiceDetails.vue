@@ -263,13 +263,17 @@ export default {
           this.rejectedIncoice(this.invoiceID);
         }, 200);
       }else if(this.dialogType == 3){
-        this.getInvoice(this.invoiceID);
-        this.openInvoiceShow = true;
-        this.title = "开票"
+        setTimeout(() => { 
+          this.getInvoice(this.invoiceID);
+          this.openInvoiceShow = true;
+          this.title = "开票"
+        }, 200);
       }else if(this.dialogType == 4){
-        this.getInvoice(this.invoiceID);
-        this.openInvoiceShow = true;
-        this.title = "换票"
+        setTimeout(() => { 
+          this.getInvoice(this.invoiceID);
+          this.openInvoiceShow = true;
+          this.title = "换票"
+        }, 200);
       }
     },
   },
