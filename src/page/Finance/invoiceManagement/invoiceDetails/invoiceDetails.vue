@@ -258,22 +258,18 @@ export default {
           this.getInvoice(this.invoiceID);
         },200);
         this.dialogFormOrder = true;
-      }else if(this.dialogType == 2){ // 驳回
-        setTimeout(() => {
+      }else if(this.dialogType == 2){
+        setTimeout(() => { // 驳回
           this.rejectedIncoice(this.invoiceID);
         }, 200);
       }else if(this.dialogType == 3){
-        setTimeout(() => {
-          this.getInvoice(this.invoiceID);
-          this.openInvoiceShow = true;
-          this.title = "开票"
-        }, 200)
+        this.getInvoice(this.invoiceID);
+        this.openInvoiceShow = true;
+        this.title = "开票"
       }else if(this.dialogType == 4){
-        setTimeout(() => {
-          this.getInvoice(this.invoiceID);
-          this.openInvoiceShow = true;
-          this.title = "换票"
-        }, 200)
+        this.getInvoice(this.invoiceID);
+        this.openInvoiceShow = true;
+        this.title = "换票"
       }
     },
   },
