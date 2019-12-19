@@ -84,6 +84,9 @@ export default {
       }
     },
     closeAdd() {
+      this.total = 0;
+      this.pageCurrent = 1;
+      this.totalMoney = 0;
       this.$emit('close', false);
     },
     // unbind(row) {
