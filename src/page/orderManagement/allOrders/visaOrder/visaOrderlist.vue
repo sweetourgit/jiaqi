@@ -134,7 +134,7 @@
                   <span v-if="item.occupyStatus == '预订不占' || item.occupyStatus == '预订占位'">待确认剩余
                     <span class="moneyColor">1天22:33:33</span>
                   </span>
-                </div>
+                </div> 
               </div>
             </transition>
           </div>
