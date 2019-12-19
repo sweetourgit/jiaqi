@@ -422,6 +422,7 @@ export default {
            }
         }
         if(count>1){
+
           this.$message.error("发票号重复,已存在该发票号");
           return;
           break;
