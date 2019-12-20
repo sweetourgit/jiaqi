@@ -211,21 +211,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.visalist{
-  max-width: 1200px; 
-  overflow: hidden;
-  margin:0 0 50px 0;
-}
-.button{
-  float:right;
-}
-.bother{
-  clear:both;
-}
-.left{
-  float:left;
-  width:150px;
-}
+.visalist{max-width: 1200px; overflow: hidden;margin:0 0 50px 0;}
+.button{float:right;}
+.bother{clear:both;}
+.left{float:left;width:150px;}
 .border{
   width:40px;
   height:40px;

@@ -1973,7 +1973,7 @@ export default {
       this.tradeID = "";
       setTimeout(() =>{ // 输入同业社名称同业销售带出来
       	this.ruleForm.travelSales = this.marketList[0].value;
-      	this.tradeID = this.marketList[0].id;
+      	//this.tradeID = this.marketList[0].id;
         this.tradeSales = this.marketList[0].userCode;
       },300)
       this.querySearch4();
