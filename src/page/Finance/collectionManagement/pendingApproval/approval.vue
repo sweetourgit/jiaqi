@@ -305,10 +305,13 @@
           // console.log('审批操作',response);
           if (response.data.isSuccess) {
             // that.$message.success("审批提交成功~");
+            if(that.approval_status == '1'){
+              that.insert();
+            }
             that.dialogVisibleApproval = false;
             that.approval_status = '';
             that.approvalMark = '';
-            that.insert();
+            
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -321,6 +324,7 @@
         });
       },
       insert(){
+        // alert('insert');
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insert", {
           "object": {
