@@ -31,7 +31,6 @@ ul {
 </style>
 <template>
   <div>
-    <span>{{ sourceData }}</span>
     <table border="1" cellpadding="0" cellspacing="0"
       v-for="(item,indexPrice) in sourceData"
       :class="['costList', orderStatus == 4 || orderStatus == 6|| orderStatus===9 ? 'disableColor':'']"
@@ -60,13 +59,13 @@ ul {
         <td class="tc">
           <el-button
             class="fl cursor"
-            @click="fillTour(indexPrice,index)"
+            @click="$emit('edit-guest', guest)"
             :disabled="orderStatus == 4 || orderStatus == 6"
           >编辑</el-button>
           <span class="fl">|</span>
           <el-button
             class="fl cursor"
-            @click="delTravel(index,indexPrice,guest.enrollName)"
+            @click="delTravel(guest, item)"
             :disabled="orderStatus == 4 || orderStatus == 6"
           >删除</el-button>
         </td>
@@ -87,7 +86,6 @@ export default {
     proto: {
       handler(nval, oval){
         if(nval && nval.length){
-          console.log(nval)
           this.sourceData.splice(0);
           this.sourceData.push(...nval);
         }
@@ -104,6 +102,10 @@ export default {
   },
 
   methods: {
+    delTravel(guest, enroll){
+      this.$emit('remove-guest', { guest, enroll });
+    },
+
     toDecimal2(x) {
       let f = Math.round(x * 100) / 100;
       var s = f.toString();

@@ -48,7 +48,7 @@
       </ul>
       <!--报名信息end-->
 
-      <p class="yuwei">余位：{{teampreviewData.remaining}}</p>
+      <p class="yuwei">余位：{{ positionLeft }}</p>
 
       <!-- switch 更改价格(直客价和同业价) :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"  beign-->
       <p>当前使用{{priceChange}}价格</p>
@@ -67,17 +67,14 @@
           <span class="num-req">*</span>
           报名人数
         </div>
-        <div style="white-space:pre-wrap" v-html="salePrice"></div>
+        <!-- <div style="white-space:pre-wrap" v-html="salePrice"></div> -->
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          <span
-            class="multi-wrap"
-            :title="`${item.enrollName}￥${isPricechange ? item.price_01 : item.price_02}`"
-          >
-            <span>{{item.enrollName}}￥</span>
+          <span class="multi-wrap">
+            <span>{{ getShowName(item) }}</span>
+            <span>￥</span>
             <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
             <span v-show="ruleForm.price==2">{{item.price_02}}*{{enrolNum[index]}}</span>-->
-            <span v-show="propPriceType==1">{{item.price_01}}</span>
-            <span v-show="propPriceType==2">{{item.price_02}}</span>
+            <span>{{ getShowPrice(item) }}</span>
           </span>
           <div>
             <!-- 后期收款后 的报名人数显示 不可增加但是可以减少  减少后再增加的人数不可超过收款时的报名人数  :max="paidMaxEnrolNum[index]"-->
@@ -93,6 +90,7 @@
           <!-- <span v-show="quota[index]">库存不足</span>  v-bind:class="{red:quota[index]}" -->
           <!-- </div> -->
         </div>
+
         <div class="red cb" v-show="enrolNums">{{enrolNumsWarn}}</div>
         <!--其他费用-->
         <div v-for="(item,index) in ruleForm.favourable" :key="index" class="other-cost">
@@ -171,7 +169,9 @@
         <!-- 出行人表格后加 begin -->
         <div class="travelMessage">出行人信息</div>
         <travelMessage
-          :proto="salePrice">
+          :proto="salePrice"
+          @remove-guest="removeGuestEmit"
+          @edit-guest="editGuestEmit">
         </travelMessage>
         <!-- 出行人表格后加end -->
       </el-form>
@@ -215,58 +215,9 @@
         <el-button type="primary" @click="orderModification(9,0)">确 定</el-button>
       </span>
     </el-dialog>
-
-    <!--填写游客信息-->
-    <el-dialog
-      :title="'出行人信息（'+winTitle+'）'"
-      :visible.sync="dialogFormTour"
-      class="city_list"
-      @close="cancelInfo('conForm')"
-      width="700px"
-      height="500"
-    >
-      <el-form :model="conForm" :rules="rules" ref="conForm">
-        <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.cnName" class="w200 fl"></el-input>
-        </el-form-item>
-        <el-form-item label="英文姓名" prop="enName" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.enName" class="w200"></el-input>
-        </el-form-item>
-        <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
-          <el-radio-group v-model="conForm.sex">
-            <el-radio :label="0">男</el-radio>
-            <el-radio :label="1">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="电话" prop="mobile" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.mobile" class="w200"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证" prop="idCard" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.idCard" class="w200"></el-input>
-        </el-form-item>
-        <el-form-item label="出生日期" prop="bornDate" label-width="110px" class="fl">
-          <el-date-picker v-model="conForm.bornDate" type="date" placeholder="选择日期" class="w200"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
-          <el-select v-model="conForm.credType" placeholder="请选择">
-            <el-option label="请选择" :value="0" />
-            <el-option label="护照" :value="1" />
-            <el-option label="港澳通行证" :value="2" />
-            <el-option label="军官证" :value="3" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
-          <el-input type="text" v-model="conForm.credCode" class="w200"></el-input>
-        </el-form-item>
-        <!-- <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl">
-          <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" class="w200"></el-date-picker>
-        </el-form-item>-->
-      </el-form>
-      <div slot="footer" class="dialog-footer cb">
-        <el-button @click="cancelInfo('conForm')">取 消</el-button>
-        <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
-      </div>
-    </el-dialog>
+    <guestEditDialog ref="guestEditDialog"
+      @save-guest="saveGuestEmit">
+    </guestEditDialog>
   </div>
 </template>
 
@@ -274,11 +225,12 @@
 import { max } from "moment";
 import numberInputer from './comps/numberInputer'
 import travelMessage from './comps/travelMessage'
+import guestEditDialog from './comps/guestEditDialog'
 import ProcessManageMixin from './ProcessManageMixin'
 
 export default {
   mixins: [ProcessManageMixin],
-  components: { numberInputer, travelMessage },
+  components: { numberInputer, travelMessage, guestEditDialog },
   
   props: {
     orderId: 0,
@@ -1627,9 +1579,6 @@ hr {
 }
 .red {
   color: red;
-}
-.w200 {
-  width: 200px;
 }
 .text {
   font-size: 14px;
