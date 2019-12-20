@@ -196,7 +196,7 @@
           type="primary"
           v-if="orderget.orderStatus==0||orderget.orderStatus==10||orderget.orderStatus==1"
           @click="orderModification(orderget.orderStatus,orderget.occupyStatus)"
-          :disabled="isChangeNumber || isLowPrice"
+          :disabled="isChangeNumber"
           class="confirm fr"
         >{{statusNext}}</el-button>
         <!--保存游客信息按钮-->
@@ -589,8 +589,8 @@ export default {
             break;
           case 1:
             for (let i = 0; i < this.salePrice.length; i++) {
-              for (let j = 0; j < this.tour[i].length; j++) {
-                if (this.tour[i][j].cnName == "") {
+              for (let j = 0; j < this.salePrice[i].length; j++) {
+                if (this.salePrice[i][j].cnName == "") {
                   this.$message.error("请补全出行人信息");
                   // this.isChangeNumber = true;
                   return;
@@ -1112,7 +1112,7 @@ export default {
     },
 
     compPrice(type, index) {
-      // console.log(type,index)
+      console.log(type,index)
       //计算总价
       if (type == 2) {
         this.isChangeNumber = true; //数量有变动 则动态按钮不可点击
@@ -1173,6 +1173,7 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
+      
       //更新订单，补充游客信息
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
@@ -1290,7 +1291,7 @@ export default {
           }
           obj.number= guest.length;
           // 第一次保存，赋值时间错
-          if('altKey' in id){
+          if(typeof id=== 'object' && 'altKey' in id){
             let timestamp= Date.now();
             this.newEnrollList.forEach(el => {
               el.createTime= timestamp;

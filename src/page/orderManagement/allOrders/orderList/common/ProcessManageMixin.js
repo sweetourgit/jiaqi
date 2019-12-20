@@ -297,7 +297,7 @@ const ProcessManageMixin= {
           code: "",
           cnName: "",
           enName: "",
-          sex: null,
+          sex: 1,
           idCard: "",
           mobile: "",
           bornDate: 0,
