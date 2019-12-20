@@ -262,15 +262,12 @@ export default {
     },
     loadData(){
       const that = this;
+      let dateStart = '', dateEnd = '';
       if(this.ruleForm.dateStart){
-        let dateStart = this.ruleForm.dateStart.toLocaleDateString() + ' ' + '00:00:00';
-        const date= new Date(Date.parse(dateStart.replace(/-/g, '/')));
-        this.ruleForm.dateStart = date;
+        dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
       if(this.ruleForm.dateEnd){
-        let dateEnd = this.ruleForm.dateEnd.toLocaleDateString() + ' ' + '23:59:59';
-        const date= new Date(Date.parse(dateEnd.replace(/-/g, '/')));
-        this.ruleForm.dateEnd = date;
+        dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
       
       this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
@@ -279,8 +276,8 @@ export default {
         "object": {
           "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
           "transaction_reference_number": this.ruleForm.code,
-          "begin": this.ruleForm.dateStart ? this.ruleForm.dateStart : "2000-05-16",
-          "end": this.ruleForm.dateEnd ? this.ruleForm.dateEnd : "2099-05-16",
+          "begin": dateStart ? dateStart : "2000-05-16",
+          "end": dateEnd ? dateEnd : "2099-05-16",
           "seachType": 0
         }
       }).then(function (obj) {

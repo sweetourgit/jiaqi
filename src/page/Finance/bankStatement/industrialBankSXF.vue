@@ -78,6 +78,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="状态" align="center">
+        <template>
+          <span>字段暂无</span>
+        </template>
       </el-table-column>
       <el-table-column prop="purpose_fee" label="手续费" align="center">
       </el-table-column>
@@ -129,6 +132,7 @@
 </template>
 
 <script type="text/javascript">
+import moment from 'moment'
 
 export default {
   components: {
@@ -348,8 +352,8 @@ export default {
         "pageSize": this.pageSize,
         "object": {
           "transaction_reference_number": this.ruleForm.code,
-          "begin": this.ruleForm.dateStart ? this.ruleForm.dateStart : "2000-05-16",
-          "end": this.ruleForm.dateEnd ? this.ruleForm.dateEnd : "2099-05-16",
+          "begin": this.ruleForm.dateStart ? moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00') : "2000-05-16",
+          "end": this.ruleForm.dateEnd ? moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59') : "2099-05-16",
           "seachType": 2,
           "import_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0
         }
