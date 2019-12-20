@@ -426,10 +426,16 @@ export default {
            }
         }
         if(count>1){
-
-          this.$message.error("发票号重复,已存在该发票号");
-          return;
-          break;
+          if(this.invoiceDate[i].invoiceNumber != ''){
+            this.$message.error("发票号重复,已存在该发票号");
+            return;
+            break;
+          }else{
+            this.$message.error("请填写发票号");
+            return;
+            break;
+          }
+          
         }
       }
       this.ifOnly = true ;
