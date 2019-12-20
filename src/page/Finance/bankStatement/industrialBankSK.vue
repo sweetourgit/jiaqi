@@ -1,7 +1,7 @@
 <template>
   <div class="distributor-content" id="industrialBank">
     <!-- 搜索表单 -->
-    <el-form :model="ruleForm" ref="ruleForm" label-width="110px" id="form-content">
+    <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
       <el-row type="flex" class="row-bg">
         <el-col :span="7">
           <el-form-item label="匹配状态:" class="status-length" prop="matchType">
@@ -182,7 +182,7 @@ export default {
       console.log(response);
       if(response == true){
         this.$message.success("兴业银行流水单上传成功！");
-        this.pageIndex = 1;
+        this.pageCurrent = 1;
         this.loadData();
       }else{
         this.$message.warning("兴业银行流水单上传失败！");
@@ -204,7 +204,7 @@ export default {
       console.log(response);
       if(response == true){
         this.$message.success("微信支付宝明细上传成功！");
-        this.pageIndex = 1;
+        this.pageCurrent = 1;
         this.loadData();
       }else{
         this.$message.warning("微信支付宝明细上传失败！");
@@ -220,12 +220,12 @@ export default {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
     searchHandInside(){
-      this.pageIndex = 1;
+      this.pageCurrent = 1;
       this.loadData();
     },
     emptyButtonInside(){
       this.$refs['ruleForm'].resetFields();
-      this.pageIndex = 1;
+      this.pageCurrent = 1;
       this.loadData();
     },
     orderDetail(row){
@@ -364,7 +364,7 @@ export default {
     margin: 25px auto;
     height: auto;
     border: 1px solid #e6e6e6;
-    #form-content{
+    .form-content{
       background: #f7f7f7;
       padding: 20px 10px;
       margin: 20px 10px;
