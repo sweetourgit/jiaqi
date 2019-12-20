@@ -38,14 +38,12 @@
       <!--订单状态end-->
 
       <!--报名信息begin-->
-      <ul class="clearfix applyinfoParent">
-        <li class="fl applyinfo">报名信息：{{enrollDetailShow}}</li>
-        <!-- <li class="fl applyinfo" v-for="(item,index) in salePrice" :key="index">
-          <span
-            v-show="applyInfomations[index] !== 0 ? true: false"
-          >{{item.enrollName}}￥{{item.price_01}}*{{applyInfomations[index]}}</span>
-        </li>-->
-      </ul>
+      <div class="clearfix applyinfoParent">
+        <div>
+          报名信息：
+        </div>
+        <div style="padding: 5px 10px; white-space:pre-wrap;">{{ enrollsDetailStr }}</div>
+      </div>
       <!--报名信息end-->
 
       <p class="yuwei">余位：{{ positionLeft }}</p>
@@ -93,6 +91,7 @@
 
         <div class="red cb" v-show="enrolNums">{{enrolNumsWarn}}</div>
         <!--其他费用-->
+        
         <div v-for="(item,index) in ruleForm.favourable" :key="index" class="other-cost">
           <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost">
             <div>{{item.title}}</div>
@@ -101,8 +100,7 @@
               placeholder="请输入金额"
               class="input"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
-              @input="compPrice(2,index)"
-              @blur="comPriceBlur(item,index)"
+              @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark" v-if="index == 0">
@@ -114,16 +112,15 @@
             ></el-input>
           </el-form-item>
         </div>
+
         <!--总价-->
         <div class="price">
           <!-- <p class="totle">总价：￥{{toDecimal2(payable)}}</p> -->
-          <p class="totle" v-if="payable > 0">
+          <p class="totle">
             总价：￥
-            <span v-if="payable-prePayable > 0">{{prePayable}} + {{payable-prePayable}}</span>
-            <span v-if="payable-prePayable == 0">{{prePayable}}</span>
-            <span v-if="payable-prePayable < 0">{{prePayable}} - {{prePayable-payable}}</span>
+            <span>{{ totalPrice }}</span>
+            <span v-show="changedPrice">{{ changedPrice | changedPriceFilter }}</span>
           </p>
-          <p class="totle" v-if="payable <= 0">总价：￥ 0</p>
           <p
             class="surplus"
             v-if="orderget.orderChannel===1&&settlementType===1"
@@ -1098,6 +1095,7 @@ export default {
     },
     //什么都不填写然后失去光标变为0
     comPriceBlur(item, index) {
+      let { price }= this.favourableProto[index];
       if (item.price == "") {
         item.price = 0;
       }
