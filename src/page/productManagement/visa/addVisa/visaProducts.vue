@@ -1,5 +1,5 @@
 <template>
-  <div class="visalist"><!-- 
+  <div class="visalist">
     <div class="button">
       <el-button>取消</el-button>
       <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="right">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
           <el-form-item label="产品名称" prop="name">
             <el-input v-model="ruleForm.name" class="messagename"></el-input>
             <span class="Numbers">{{ruleForm.name.length}}/30字</span>
@@ -43,26 +43,26 @@
             <el-input v-model="ruleForm.highlightWords3" class="Words"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
           </el-form-item>
-          <el-form-item label="活动区域" prop="region" class="mt80">
+          <el-form-item label="签证国家地区" prop="region" class="mt80">
             <el-input v-model="ruleForm.region" class="messagename"></el-input>
           </el-form-item>
-          <el-form-item label="活动性质" prop="type">
-            <el-checkbox-group v-model="ruleForm.type">
+          <el-form-item label="送签地" prop="sendVisa">
+            <el-radio-group v-model="ruleForm.sendVisa">
+              <el-radio label="线上品牌商赞助"></el-radio>
+              <el-radio label="线下场地免费"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="签证受理地区" prop="visaRegion">
+            <el-checkbox-group v-model="ruleForm.visaRegion">
               <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
               <el-checkbox label="地推活动" name="type"></el-checkbox>
               <el-checkbox label="线下主题活动" name="type"></el-checkbox>
               <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="特殊资源" prop="resource">
-            <el-radio-group v-model="ruleForm.resource">
-              <el-radio label="线上品牌商赞助"></el-radio>
-              <el-radio label="线下场地免费"></el-radio>
-            </el-radio-group>
-          </el-form-item>
         </el-form>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -77,8 +77,8 @@ export default {
           highlightWords2:'',//亮点词
           highlightWords3:'',//亮点词
           region: '', //签证国家地区
-          type: [],
-          resource: '',
+          sendVisa:'',//送签地
+          visaRegion: [],
         },
         rules: {
           name: [
@@ -104,11 +104,11 @@ export default {
           region: [
             { required: true, message: '请输入签证国家地区', trigger: 'change' }
           ],
-          type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+          visaRegion: [
+            { type: 'array', required: true, message: '请至少选择一个签证受理地区', trigger: 'change' }
           ],
-          resource: [
-            { required: true, message: '请选择活动资源', trigger: 'change' }
+          sendVisa: [
+            { required: true, message: '请选择送签地区', trigger: 'change' }
           ]
         },
     };
@@ -164,7 +164,7 @@ export default {
 }
 .right{
   float:left;
-  margin:15px 0 0 40px;
+  margin:15px 0 0 30px;
   width:900px;
   overflow:hidden;
   position:relative;
@@ -185,7 +185,7 @@ export default {
 .Words1{
   position:absolute;
   top:62px;
-  right:260px;
+  right:240px;
 }
 .Words2{
   position:absolute;
@@ -195,7 +195,7 @@ export default {
 .Words3{
   position:absolute;
   top:122px;
-  right:260px;
+  right:240px;
 }
 .mt80{
   margin-top:80px;

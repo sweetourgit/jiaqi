@@ -1797,7 +1797,7 @@ export default {
     },
     //线下直客销售模糊查询
     querySearch1(queryString1, cb) {
-      this.marketList = [];
+      this.marketList01 = [];
       this.$http
         .post(this.GLOBAL.serverSrc + "/org/api/userlist", {
           object: {
@@ -1808,7 +1808,7 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              this.marketList.push({
+              this.marketList01.push({
                 value: res.data.objects[i].name,
                 id: res.data.objects[i].id
               });
@@ -1823,7 +1823,7 @@ export default {
             this.nullShowGuest = false;
           }
           var results = queryString1
-            ? this.marketList.filter(this.createFilter(queryString1))
+            ? this.marketList01.filter(this.createFilter(queryString1))
             : [];
           cb(results);
         })
@@ -1915,17 +1915,6 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              // this.tableData2.push({
-              //   value: res.data.objects[i].selName,
-              //   id: res.data.objects[i].id,
-              //   supplierType: res.data.objects[i].supplierType,
-              //   balance: res.data.objects[i].balance,
-              //   deposit: res.data.objects[i].deposit,
-              //   settlementType: res.data.objects[i].settlementType
-              // });
-              // this.supplier_id = res.data.objects[i].id
-              //   ? res.data.objects[i].id
-              //   : 0;
               if(this.ruleForm.travel == ""){
                 this.tableData2.push({
                   value: res.data.objects[i].selName,
@@ -1985,6 +1974,7 @@ export default {
       setTimeout(() =>{ // 输入同业社名称同业销售带出来
       	this.ruleForm.travelSales = this.marketList[0].value;
       	this.tradeID = this.marketList[0].id;
+        this.tradeSales = this.marketList[0].userCode;
       },300)
       this.querySearch4();
       setTimeout(() =>{ // 输入同业社名称商户销售带出来
