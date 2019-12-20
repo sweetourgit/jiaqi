@@ -75,9 +75,16 @@
         </el-button>
         <el-button @click="through()" type="danger" plain v-else>通过</el-button>
         <el-button @click="rejected()" type="danger" plain>驳回</el-button>
-        <el-button type="danger" :disabled="ifClick" @click="bankAccount(acoutInfo)" v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || (ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)">支付账户</el-button>
+        <el-button
+          type="danger"
+          :disabled="ifClick"
+          @click="bankAccount(acoutInfo)"
+          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || (ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
+        >
+          支付账户
+        </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow"></checkLoanManagement>
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
@@ -93,8 +100,7 @@
     </el-dialog>
     <!-- 通过、驳回弹框 END -->
     <!-- 付款账户弹窗 -->
-    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
-      <div class="close" @click="closeAccount()">×</div>
+    <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list">
       <el-table :data="tableSelect" border :header-cell-style="getRowClass">
         <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
         <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
@@ -214,10 +220,6 @@ import moment from 'moment'
     deep:true
   },
   methods: {
-      // 关闭选择账户弹窗
-      closeAccount(){
-      this.SelectAccount = false;
-      },
       // 选择账户弹窗，选择对应的选项事件
       addAccount(index, row){
       var that = this
@@ -458,22 +460,23 @@ import moment from 'moment'
       },
       // 详情弹窗()
       checkIncome(index, row){
-      console.log(row,'审批您列表详情弹窗')
-      this.getCheckTypeEX = row.checkTypeEX
-      let _this = this
-      this.arr2.forEach(function (item) {
-        if (row.guid == item.jq_ID){
-          _this.getWorkItemId = item.workItemID
-        }
-      })
-      this.paymentID=row.paymentID;
-      this.pid = row.paymentID;
-      this.acoutInfo = row
-      this.detailstShow = true;
-      this.getLabel();
+        this.ifClick = false
+        this.ifPassClick = true
+        this.getCheckTypeEX = row.checkTypeEX
+        let _this = this
+        this.arr2.forEach(function (item) {
+          if (row.guid == item.jq_ID){
+            _this.getWorkItemId = item.workItemID
+          }
+        })
+        this.paymentID=row.paymentID;
+        this.pid = row.paymentID;
+        this.acoutInfo = row
+        this.detailstShow = true;
+        this.getLabel();
       },
       closeDetailstShow(){
-      this.detailstShow = false;
+        this.detailstShow = false;
       },
       // 获取一条详情
       getLabel(){

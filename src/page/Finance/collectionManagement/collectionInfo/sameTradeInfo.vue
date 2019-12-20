@@ -96,7 +96,7 @@
             </el-table-column>
             <el-table-column label="发票抬头" align="center">
               <template slot-scope="scope">
-                <el-form-item>
+                <el-form-item :prop="'invoiceList.' + scope.$index + '.titleOrMobile'" :rules="rules.titleOrMobile">
                   <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头"></el-input>
                 </el-form-item>
               </template>
@@ -112,8 +112,8 @@
             </el-table-column>
             <el-table-column label="金额" align="center">
               <template slot-scope="scope">
-                <el-form-item>
-                  <el-input  v-model="scope.row.money" placeholder="金额"></el-input>
+                <el-form-item :prop="'invoiceList.' + scope.$index + '.invoicemoney'" :rules="rules.invoicemoney">
+                  <el-input  v-model="scope.row.invoicemoney" placeholder="金额"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -140,7 +140,7 @@
             </el-table-column>
             <el-table-column label="电话" align="center">
               <template slot-scope="scope">
-                <el-form-item>
+                <el-form-item :prop="'invoiceList.' + scope.$index + '.mobile'" :rules="rules.mobile">
                   <el-input v-model="scope.row.mobile" placeholder="电话"></el-input>
                 </el-form-item>
               </template>
@@ -243,15 +243,6 @@
       </span>
     </el-dialog>
     <!-- 驳回意见弹窗 END -->
-    <!-- 放大图片 -->
-    <el-dialog style="text-align: left" title="放大图片:" :visible="dialogVisible" width="50%">
-      <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
-      <div>
-        <img :src="imgBig" alt="图片" :alt="imgBigName"/>
-        <span>{{imgBigName}}</span>
-      </div>
-    </el-dialog>
-    <!-- 放大图片 EDN -->
     <!-- 收款账户选择弹窗 -->
     <el-dialog title="选择账户" :visible.sync="accountShow" width="70%" custom-class="city_list">
       <div style="overflow:hidden;">
@@ -309,7 +300,6 @@ export default {
       currentPage: 1,
       imgBigName: '',
       imgBig: '',
-      dialogVisible: false,
       dialogVisibleInvoice: false,
       dialogFormVisibleAssist: false, // 协办弹窗是否显示
       dialogFormVisibleReject: false, // 驳回意见弹窗是否显示
@@ -343,6 +333,9 @@ export default {
       rules: {
         invoiceID: [{ required: true, message: '请选择发票类型', trigger: 'blur' }],
         invoiceType: [{ required: true, message: '请选择个人或者单位', trigger: 'blur' }],
+        titleOrMobile: [{ required: true, message: '请填写发票抬头', trigger: 'blur' }],
+        invoicemoney: [{ required: true, message: '请填写发票金额', trigger: 'blur' }],
+        mobile: [{ required: true, message: '请填写联系电话', trigger: 'blur' }],
         invoiceItem: [{ required: true, message: '请选择发票项目', trigger: 'blur' }],
         voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
@@ -406,11 +399,11 @@ export default {
       filterCount.forEach(function (item) {
         filterPriceCount += item.matchingMoney
       })
-      console.log(filterCount,'filterCount')
+      // console.log(filterCount,'filterCount')
       this.tableManyRow = filterCount.length
       this.getCollectionPriceTotal = filterPriceCount
-      console.log(this.arrearsList)
-      console.log(this.getCollectionPriceTotal)
+      // console.log(this.arrearsList)
+      // console.log(this.getCollectionPriceTotal)
 
     },
     // 时间插件
@@ -561,39 +554,10 @@ export default {
       });
       this.dialogFormVisibleReject = false
     },
-    // 下载图片地址和图片名
-    downloadIamge(imgsrc, name) {
-      var image = new Image();
-      // 解决跨域 Canvas 污染问题
-      image.setAttribute("crossOrigin", "anonymous");
-      image.onload = function() {
-        var canvas = document.createElement("canvas");
-        canvas.width = image.width;
-        canvas.height = image.height;
-        var context = canvas.getContext("2d");
-        context.drawImage(image, 0, 0, image.width, image.height);
-        var url = canvas.toDataURL("image/png"); //得到图片的base64编码数据
-
-        var a = document.createElement("a"); // 生成一个a元素
-        var event = new MouseEvent("click"); // 创建一个单击事件
-        a.download = name || "photo"; // 设置图片名称
-        a.href = url; // 将生成的URL设置为a.href属性
-        a.dispatchEvent(event); // 触发a的单击事件
-      };
-      image.src = imgsrc;
-    },
-    // 图片下载
-    downs() {
-      this.downloadIamge(this.imgBig, this.imgBigName)
-    },
     // 上传文件-移除
     handleRemove(file, fileList) {
       this.fileList = fileList
       this.fileCheckVal = fileList.length
-    },
-    // 文件上传
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
     },
     // 是否选择发票，复选框改变事件
     isInvoiceHandle(value) {
@@ -601,9 +565,6 @@ export default {
     },
     // 点击文件列表中已上传的文件时的钩子
     handlePreview(file) {
-      // this.dialogVisible = true
-      /*this.imgBig = file.url
-      this.imgBigName = file.name*/
       let getUrl = JSON.parse(file.response)
       this.uid = file.uid
       window.open(getUrl.paths[0].Url);
@@ -829,41 +790,15 @@ export default {
       this.planID = row['planID'];
       this.tour_id = row['planID']
     },
-    //文件上传
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
-    },
     // 文件上传失败时的钩子
     handleError(err, file) {
       this.fileList = []
     },
     // 文件上传成功时的钩子
     handleSuccess(res, file, fileList) {
+      this.fileList = fileList
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
       // this.$refs.voucher.clearValidate(); // 移除校验文字
-      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
-      if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
-        this.time = fileList.length;
-        if (this.fileList.length == 0) {
-          this.fileList = fileList;
-        } else {
-          this.len = this.fileList.length;
-          for (let i = this.len; i < fileList.length; i++) {
-            this.fileList.push(fileList[i]);
-          }
-        }
-      }
-      var paths = null;
-      for (let i = this.len; i < fileList.length; i++) {
-        paths = JSON.parse(fileList[i].response).paths[0];
-        this.$set(this.fileList[i], "width", paths.Width);
-        this.$set(this.fileList[i], "height", paths.Height);
-        this.$set(this.fileList[i], "url1", paths.Url);
-        this.$set(this.fileList[i], "length", paths.Length);
-        this.$set(this.fileList[i], "name", paths.Name);
-      }
-      this.uid = fileList[0].uid;
-      // console.log(this.fileList)
     },
     // 申请-提交表单
     submitForm(formName) {
@@ -876,7 +811,7 @@ export default {
           this.fileList.forEach(function(item){
             pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
-          console.log(this.arrearsList,'this.arrearsList')
+          // console.log(this.arrearsList,'this.arrearsList')
           // 对表格数据进行相关校验
           // 如果所有表格都没有填写关联欠款数据，则提示必填一项
           let getNoWriteData  = this.arrearsList.some(function (item) {
@@ -891,9 +826,9 @@ export default {
           } else {
             // 对已填写匹配金额的行进行如下公式校验
             let getCompareData = this.arrearsList.some(function (item) {
-              console.log(item.arrears_Amount,'item.arrears_Amount')
-              console.log(item.audited_Amount,'item.audited_Amount')
-              console.log(item.matchingMoney,'item.matchingMoney')
+              // console.log(item.arrears_Amount,'item.arrears_Amount')
+              // console.log(item.audited_Amount,'item.audited_Amount')
+              // console.log(item.matchingMoney,'item.matchingMoney')
               if(item.matchingMoney != undefined){
                 return (!(item.arrears_Amount - item.audited_Amount >= item.matchingMoney))
               }
@@ -950,7 +885,6 @@ export default {
               })
             }
           })
-
           objectRequest = {
             "GroupCode":"",
             "OrderNumber":"",
@@ -958,7 +892,7 @@ export default {
             "LocalCompName":this.originPlace,
             "ProductName":"暂无",
             "checkType": 0, // 审批状态
-            "collectionTime":  moment(this.ruleForm.collectionTime, 'yyyy-MM-dd'), // 收款时间,
+            "collectionTime": moment(this.ruleForm.collectionTime).format('YYYY-MM-DD'), // 收款时间,
             "groupCode": this.ruleForm.groupCode, // 团号,
             "orderID": 0, // 订单ID,
             "planID": 0, // 计划id,
@@ -996,7 +930,7 @@ export default {
                 "invoiceNumber": item.taxesNumber, // 纳税人识别号
                 "invoiceHeaderOrTel": item.titleOrMobile, // 发票抬头/手机号
                 "invoiceItem": item.invoiceItem, // 发票项目–旅游费
-                "invoicePrice": item.money, // 金额
+                "invoicePrice": item.invoicemoney, // 金额
                 "cardNumber": item.account, // 账号
                 "bankName": item.bank, // 开户行
                 "address": item.address, // 地址
