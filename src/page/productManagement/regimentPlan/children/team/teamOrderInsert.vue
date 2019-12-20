@@ -150,7 +150,7 @@
               商户价格(同业、门店)：
               <span v-for="(item,index) in salePrice" :key="index">{{item.enrollName}}（￥{{item.price_02}}）</span>
             </el-radio>
-            <!-- <el-radio label="自定义" class="radiomar">自定义： 
+            <!-- <el-radio label="自定义" class="radiomar">自定义：
                    成人<el-form-item prop="price1" class="disib"><el-input v-model="ruleForm.price1" class="pricew"></el-input></el-form-item>
                    儿童<el-form-item prop="price2" class="disib"><el-input v-model="ruleForm.price2" class="pricew"></el-input></el-form-item>
                    老人<el-form-item prop="price3" class="disib"><el-input v-model="ruleForm.price3" class="pricew"></el-input></el-form-item>
@@ -186,7 +186,7 @@
             <div class="red ml13" style="margin:0 0 10px 15px;" v-show="enrolNums">{{enrolNumsWarn}}</div>
           </div>
           <!--
-            <el-form-item label="" prop="">            
+            <el-form-item label="" prop="">
               <div class="ml13">单房差 ￥340</div>
             </el-form-item>
           -->
@@ -1233,7 +1233,7 @@ export default {
     },
     // 点击确认占位时 取他用的是直客价格还是同业价格然后拼接enrollDetail this.ruleForm.price = 1 取price_01的价格  2就是price_02
     getTypePrice() {
-      // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成 
+      // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成
       let arr = this.enrollDetail.split(",")
       arr.pop()
       for(let i = 0; i < arr.length; i++) {
@@ -1357,7 +1357,7 @@ export default {
                               : new Date().getTime() / 1000 + 24 * 60 * 60,
                           orderChannel: Number(this.ruleForm.orderRadio),
                           priceType: Number(this.ruleForm.price),
-                          orgID: sessionStorage.getItem("id"),
+                          orgID: 0,
                           userID: sessionStorage.getItem("id"),
                           replacesale: (this.ruleForm.market = ""
                             ? 0
@@ -1907,7 +1907,7 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
           object: {
-            name: queryString3,
+            selName: queryString3,
             isDeleted: 0,
             state: 2
           }
@@ -1915,17 +1915,28 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              this.tableData2.push({
-                value: res.data.objects[i].name,
-                id: res.data.objects[i].id,
-                supplierType: res.data.objects[i].supplierType,
-                balance: res.data.objects[i].balance,
-                deposit: res.data.objects[i].deposit,
-                settlementType: res.data.objects[i].settlementType
-              });
-              this.supplier_id = res.data.objects[i].id
-                ? res.data.objects[i].id
-                : 0;
+              if(this.ruleForm.travel == ""){
+                this.tableData2.push({
+                  value: res.data.objects[i].selName,
+                  id: res.data.objects[i].id,
+                  supplierType: res.data.objects[i].supplierType,
+                  balance: res.data.objects[i].balance,
+                  deposit: res.data.objects[i].deposit,
+                  settlementType: res.data.objects[i].settlementType
+                });
+                queryString3 = " "
+              }else{
+                if (res.data.objects[i].selName.indexOf(this.ruleForm.travel) != -1) {
+                  this.tableData2.push({
+                    value: res.data.objects[i].selName,
+                    id: res.data.objects[i].id,
+                    supplierType: res.data.objects[i].supplierType,
+                    balance: res.data.objects[i].balance,
+                    deposit: res.data.objects[i].deposit,
+                    settlementType: res.data.objects[i].settlementType
+                  });
+                }
+              }
             }
           }
           if (res.data.objects) {
@@ -1963,6 +1974,7 @@ export default {
       setTimeout(() =>{ // 输入同业社名称同业销售带出来
       	this.ruleForm.travelSales = this.marketList[0].value;
       	this.tradeID = this.marketList[0].id;
+        this.tradeSales = this.marketList[0].userCode;
       },300)
       this.querySearch4();
       setTimeout(() =>{ // 输入同业社名称商户销售带出来

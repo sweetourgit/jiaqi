@@ -129,7 +129,7 @@
           </el-button>
         </div>
       <!-- 好像是和无收入借款共用一个 -->
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" ref="printHandle"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" ref="printHandle" v-if="checkIncomeShow"></checkLoanManagement>
     </el-dialog>
     <!-- 付款账户弹窗 -->
     <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>

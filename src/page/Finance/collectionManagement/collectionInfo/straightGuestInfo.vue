@@ -121,7 +121,7 @@
             </el-table-column>
             <el-table-column label="发票抬头" align="center">
               <template slot-scope="scope">
-                <el-form-item>
+                <el-form-item :prop="'invoiceTable.' + scope.$index + '.titleOrMobile'" :rules="rules.titleOrMobile">
                   <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头"></el-input>
                 </el-form-item>
               </template>
@@ -137,8 +137,8 @@
             </el-table-column>
             <el-table-column label="金额" align="center">
               <template slot-scope="scope">
-                <el-form-item>
-                  <el-input v-model="scope.row.money" placeholder="金额" :disabled="change"></el-input>
+                <el-form-item :prop="'invoiceTable.' + scope.$index + '.invoicemoney'" :rules="rules.invoicemoney">
+                  <el-input v-model="scope.row.invoicemoney" placeholder="金额" :disabled="change"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -165,7 +165,7 @@
             </el-table-column>
             <el-table-column label="电话" align="center">
               <template slot-scope="scope">
-                <el-form-item>
+                <el-form-item :prop="'invoiceTable.' + scope.$index + '.mobile'" :rules="rules.mobile">
                   <el-input v-model="scope.row.mobile" placeholder="电话" :disabled="change"></el-input>
                 </el-form-item>
               </template>
@@ -302,17 +302,20 @@ export default {
           invoiceNumber: '', //纳税识别人编号
           invoiceHeaderOrTel: '', //发票抬头/手机号
           invoiceItem: '', //发票项目-旅游费
-          invoicePrice: '', //金额
+          invoicemoney: '', //金额
           cardNumber: '', //帐号
           bankName: '', //开户行
           address: '', //地址
-          tel: '', //电话
+          mobile: '', //电话
           createTime: formatDate(new Date(), 'yyyy-MM-dd hh:mm:ss'),
         }]
       },
       rules: {
         invoiceID: [{ required: true, message: '请选择发票类型', trigger: 'blur' }],
         invoiceType: [{ required: true, message: '请选择个人或者单位', trigger: 'blur' }],
+        titleOrMobile: [{ required: true, message: '请填写发票抬头', trigger: 'blur' }],
+        invoicemoney: [{ required: true, message: '请填写发票金额', trigger: 'blur' }],
+        mobile: [{ required: true, message: '请填写联系电话', trigger: 'blur' }],
         invoiceItem: [{ required: true, message: '请选择发票项目', trigger: 'blur' }],
         invoice: [{ required: true, message: '是否开发票不能为空', trigger: 'blur' }],
         voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
@@ -522,6 +525,7 @@ export default {
         if (valid) {
           let pictureList = [];
           let newDate = moment(new Date(), 'YYYY-MM-DD HH:mm:ss')
+          console.log(this.fileList,'pircture')
           this.fileList.forEach(function(item){
             pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
@@ -554,7 +558,7 @@ export default {
             Dept:sessionStorage.getItem('orgName'),
             ProductName:"暂无",
             checkType: 0, // 审批状态
-            collectionTime: moment(this.ruleForm.collectionTime).format('YYYY-MM-DD HH:mm:ss'), // 收款时间
+            collectionTime: moment(this.ruleForm.collectionTime).format('YYYY-MM-DD'), // 收款时间
             groupCode: this.ruleForm.groupCode, //团号
             planID: 0, //团期计划的ID
             orderID: 0, //订单ID
@@ -591,7 +595,7 @@ export default {
                 "invoiceNumber": item.taxesNumber, // 纳税人识别号
                 "invoiceHeaderOrTel": item.titleOrMobile, // 发票抬头/手机号
                 "invoiceItem": item.invoiceItem, // 发票项目–旅游费
-                "invoicePrice": item.money, // 金额
+                "invoicePrice": item.invoicemoney, // 金额
                 "cardNumber": item.account, // 账号
                 "bankName": item.bank, // 开户行
                 "address": item.address, // 地址
@@ -809,33 +813,8 @@ export default {
       this.fileCheckVal = fileList.length
     },
     handleSuccess(res, file, fileList) {
+      this.fileList = fileList
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
-      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
-      if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
-        this.time = fileList.length;
-        if (this.fileList.length == 0) {
-          this.fileList = fileList;
-        } else {
-          this.len = this.fileList.length;
-          for (let i = this.len; i < fileList.length; i++) {
-            this.fileList.push(fileList[i]);
-          }
-        }
-      }
-      var paths = null;
-      for (let i = this.len; i < fileList.length; i++) {
-        paths = JSON.parse(fileList[i].response).paths[0];
-        this.$set(this.fileList[i], "width", paths.Width);
-        this.$set(this.fileList[i], "height", paths.Height);
-        this.$set(this.fileList[i], "url1", paths.Url);
-        this.$set(this.fileList[i], "length", paths.Length);
-        this.$set(this.fileList[i], "name", paths.Name);
-      }
-      this.uid = fileList[0].uid;
-    },
-    //文件上传
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
     },
     handleError(err, file) {
       this.fileList = []
