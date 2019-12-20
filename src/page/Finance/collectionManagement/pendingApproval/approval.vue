@@ -363,7 +363,7 @@
               createTime: response.data.object.createTime,
               collectionType: response.data.object.collectionType,
               distributor: response.data.object.distributor,
-              orderNumber: response.data.object.orderNumber,
+              orderNumber: response.data.object.serialNumber,
               collectionNumber: response.data.object.collectionNumber,
               price: response.data.object.price,
               abstract: response.data.object.abstract,
