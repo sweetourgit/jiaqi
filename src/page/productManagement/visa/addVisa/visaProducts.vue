@@ -1,6 +1,6 @@
 <template>
   <div class="visalist">
-    <!-- <div class="button">
+    <div class="button">
       <el-button>取消</el-button>
       <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
     </div>
@@ -24,13 +24,27 @@
       <div class="right">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="产品名称" prop="name">
-            <el-input v-model="ruleForm.name"></el-input>
+            <el-input v-model="ruleForm.name" class="messagename"></el-input>
+            <span class="Numbers">{{ruleForm.name.length}}/30字</span>
           </el-form-item>
-          <el-form-item label="活动区域" prop="region">
-            <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
-            </el-select>
+          <el-form-item label="亮点词" prop="highlightWords">
+            <el-input v-model="ruleForm.highlightWords" class="Words"></el-input>
+            <span class="Numbers">{{ruleForm.highlightWords.length}}/8字</span>
+          </el-form-item>
+          <el-form-item prop="highlightWords1" class="Words1">
+            <el-input v-model="ruleForm.highlightWords1" class="Words"></el-input>
+            <span class="Numbers">{{ruleForm.highlightWords1.length}}/8字</span>
+          </el-form-item>
+          <el-form-item prop="highlightWords2" class="Words2">
+            <el-input v-model="ruleForm.highlightWords2" class="Words"></el-input>
+            <span class="Numbers">{{ruleForm.highlightWords2.length}}/8字</span>
+          </el-form-item>
+          <el-form-item prop="highlightWords3" class="Words3">
+            <el-input v-model="ruleForm.highlightWords3" class="Words"></el-input>
+            <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
+          </el-form-item>
+          <el-form-item label="活动区域" prop="region" class="mt80">
+            <el-input v-model="ruleForm.region" class="messagename"></el-input>
           </el-form-item>
           <el-form-item label="活动性质" prop="type">
             <el-checkbox-group v-model="ruleForm.type">
@@ -48,7 +62,7 @@
           </el-form-item>
         </el-form>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -56,37 +70,57 @@
 export default {
   data() {
     return {
-      // ruleForm: {
-      //     name: '',
-      //     region: '',
-      //     type: [],
-      //     resource: '',
-      //   },
-      //   rules: {
-      //     name: [
-      //       { required: true, message: '请输入活动名称', trigger: 'blur' },
-      //       { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-      //     ],
-      //     region: [
-      //       { required: true, message: '请选择活动区域', trigger: 'change' }
-      //     ],
-      //     type: [
-      //       { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-      //     ],
-      //     resource: [
-      //       { required: true, message: '请选择活动资源', trigger: 'change' }
-      //     ]
-      //   }
+      ruleForm: {
+          name: '',//产品名称
+          highlightWords:'',//亮点词
+          highlightWords1:'',//亮点词
+          highlightWords2:'',//亮点词
+          highlightWords3:'',//亮点词
+          region: '', //签证国家地区
+          type: [],
+          resource: '',
+        },
+        rules: {
+          name: [
+            { required: true, message: '请输入产品名称', trigger: 'change' },
+            { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change' }
+          ],
+          highlightWords: [
+            { required: true, message: '请输入亮点词', trigger: 'change' },
+            { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
+          ],
+          highlightWords1: [
+            { required: true, message: '请输入亮点词', trigger: 'change' },
+            { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
+          ],
+          highlightWords2: [
+            { required: true, message: '请输入亮点词', trigger: 'change' },
+            { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
+          ],
+          highlightWords3: [
+            { required: true, message: '请输入亮点词', trigger: 'change' },
+            { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
+          ],
+          region: [
+            { required: true, message: '请输入签证国家地区', trigger: 'change' }
+          ],
+          type: [
+            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+          ],
+          resource: [
+            { required: true, message: '请选择活动资源', trigger: 'change' }
+          ]
+        },
     };
   },
   created() {
   },
   methods: {
-    // nextMessage(formName){
-    //   this.$refs[formName].validate((valid) => {
+    nextMessage(formName){
+      this.$refs[formName].validate((valid) => {
         
-    //   });
-    // },
+      });
+    },
   }
 };
 </script>
@@ -131,6 +165,40 @@ export default {
 .right{
   float:left;
   margin:15px 0 0 40px;
+  width:900px;
+  overflow:hidden;
+  position:relative;
+}
+.messagename{
+  float:left;
+  width:470px;
+}
+.Numbers{
+  float:left;
+  margin:0 10px 0 20px;
+}
+.Words{
+  float:left;
+  width:200px;
+  margin:0 0 0 0;
+}
+.Words1{
+  position:absolute;
+  top:62px;
+  right:260px;
+}
+.Words2{
+  position:absolute;
+  top:122px;
+  left:0px;
+}
+.Words3{
+  position:absolute;
+  top:122px;
+  right:260px;
+}
+.mt80{
+  margin-top:80px;
 }
 </style>
 

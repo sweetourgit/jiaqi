@@ -1907,7 +1907,7 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
           object: {
-            name: queryString3,
+            selName: queryString3,
             isDeleted: 0,
             state: 2
           }
@@ -1915,17 +1915,39 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              this.tableData2.push({
-                value: res.data.objects[i].name,
-                id: res.data.objects[i].id,
-                supplierType: res.data.objects[i].supplierType,
-                balance: res.data.objects[i].balance,
-                deposit: res.data.objects[i].deposit,
-                settlementType: res.data.objects[i].settlementType
-              });
-              this.supplier_id = res.data.objects[i].id
-                ? res.data.objects[i].id
-                : 0;
+              // this.tableData2.push({
+              //   value: res.data.objects[i].selName,
+              //   id: res.data.objects[i].id,
+              //   supplierType: res.data.objects[i].supplierType,
+              //   balance: res.data.objects[i].balance,
+              //   deposit: res.data.objects[i].deposit,
+              //   settlementType: res.data.objects[i].settlementType
+              // });
+              // this.supplier_id = res.data.objects[i].id
+              //   ? res.data.objects[i].id
+              //   : 0;
+              if(this.ruleForm.travel == ""){
+                this.tableData2.push({
+                  value: res.data.objects[i].selName,
+                  id: res.data.objects[i].id,
+                  supplierType: res.data.objects[i].supplierType,
+                  balance: res.data.objects[i].balance,
+                  deposit: res.data.objects[i].deposit,
+                  settlementType: res.data.objects[i].settlementType
+                });
+                queryString3 = " "
+              }else{
+                if (res.data.objects[i].selName.indexOf(this.ruleForm.travel) != -1) {
+                  this.tableData2.push({
+                    value: res.data.objects[i].selName,
+                    id: res.data.objects[i].id,
+                    supplierType: res.data.objects[i].supplierType,
+                    balance: res.data.objects[i].balance,
+                    deposit: res.data.objects[i].deposit,
+                    settlementType: res.data.objects[i].settlementType
+                  });
+                }
+              }
             }
           }
           if (res.data.objects) {
