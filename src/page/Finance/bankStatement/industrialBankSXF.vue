@@ -347,10 +347,11 @@ export default {
         "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
         "object": {
-          "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
           "transaction_reference_number": this.ruleForm.code,
           "begin": this.ruleForm.dateStart ? this.ruleForm.dateStart : "2000-05-16",
-          "end": this.ruleForm.dateEnd ? this.ruleForm.dateEnd : "2099-05-16"
+          "end": this.ruleForm.dateEnd ? this.ruleForm.dateEnd : "2099-05-16",
+          "seachType": 2,
+          "import_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0
         }
       }).then(function (obj) {
         // console.log('中国银行',obj);
