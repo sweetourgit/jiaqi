@@ -1357,7 +1357,7 @@ export default {
                               : new Date().getTime() / 1000 + 24 * 60 * 60,
                           orderChannel: Number(this.ruleForm.orderRadio),
                           priceType: Number(this.ruleForm.price),
-                          orgID: sessionStorage.getItem("id"),
+                          orgID: 0,
                           userID: sessionStorage.getItem("id"),
                           replacesale: (this.ruleForm.market = ""
                             ? 0

@@ -28,19 +28,19 @@
             <span class="Numbers">{{ruleForm.name.length}}/30字</span>
           </el-form-item>
           <el-form-item label="亮点词" prop="highlightWords">
-            <el-input v-model="ruleForm.highlightWords" class="Words"></el-input>
+            <el-input v-model="ruleForm.highlightWords" class="Words" @blur="highlight()"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords.length}}/8字</span>
           </el-form-item>
           <el-form-item prop="highlightWords1" class="Words1">
-            <el-input v-model="ruleForm.highlightWords1" class="Words"></el-input>
+            <el-input v-model="ruleForm.highlightWords1" class="Words" @blur="highlight()"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords1.length}}/8字</span>
           </el-form-item>
           <el-form-item prop="highlightWords2" class="Words2">
-            <el-input v-model="ruleForm.highlightWords2" class="Words"></el-input>
+            <el-input v-model="ruleForm.highlightWords2" class="Words" @blur="highlight()"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords2.length}}/8字</span>
           </el-form-item>
           <el-form-item prop="highlightWords3" class="Words3">
-            <el-input v-model="ruleForm.highlightWords3" class="Words"></el-input>
+            <el-input v-model="ruleForm.highlightWords3" class="Words" @blur="highlight()"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
           </el-form-item>
           <el-form-item label="签证国家地区" prop="region" class="mt80">
@@ -109,11 +109,11 @@
           <el-form-item label="产品概括" prop="content">
             <div class="cost_content">
               <vue-editor v-model="ruleForm.content"></vue-editor>
-            </div> -->
+            </div>
           </el-form-item>
         </el-form>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -204,6 +204,8 @@ export default {
         
       });
     },
+    highlight(formName){
+ }
   }
 };
 </script>
