@@ -122,7 +122,7 @@ export default {
       this.instructions.push(...proto.instructions);
       this.others.push(...proto.others);
     },
-
+ 
     preAction(){
       if(this.vm.saveActionLock) return this.$message.info('数据保存中，请稍后再试');
       let hasChange= this.checkHasChange();

@@ -8,9 +8,9 @@
          </el-row>
         <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-           <el-table-column  prop="symbol" label="标识" min-width="120" align="center"></el-table-column>   
+           <el-table-column  prop="symbol" label="标识" min-width="210" align="center"></el-table-column>   
            <el-table-column  prop="name" label="名称" min-width="200" align="center"></el-table-column>
-           <el-table-column  prop="match" label="匹配" min-width="180" align="center"></el-table-column>
+           <el-table-column  prop="match" label="匹配" min-width="150" align="center"></el-table-column>
            <el-table-column  prop="mark" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
          
