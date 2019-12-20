@@ -1,5 +1,5 @@
 <template>
-  <div class="visalist">
+  <div class="visalist"><!-- 
     <div class="button">
       <el-button>取消</el-button>
       <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
@@ -62,7 +62,7 @@
           </el-form-item>
         </el-form>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
