@@ -1,168 +1,400 @@
-import { getOrderAction, getTeampreviewAction, getEnrollsAction } from './api'
+import { getOrderAction, getTeampreviewAction, getEnrollsAction, orderSaveAction } from './api'
 
 const ProcessManageMixin= {
   
   data(){
-    return Object.assign(
+    return Object.assign( 
+      // 余位
       {
         positionTotal: 0, // teampreview的count，产品总数量
         positionLeft: 0,  // 产品余位
       },
+      // 价格
       {
-        //salePrice: [], // 数据源
+        totalPrice: 0,  // 之前总价
+        changedPrice: 0, //当前变动
+        
+      },
+      // 订单详情
+      {
+        enrollsDetailStr: '', // 订单详情
       }
     )
   },
 
-  methods: {
-    processManage(orderId){
-      getOrderAction(orderId)
-      .then(orderDetail => {
-        let { 
-          planID, // 计划id 
-          guests, // 报名数组
-          priceType, // 价格类型 1直客 2同业
-        }= orderDetail;
-        Promise.all([
-          getEnrollsAction(planID), 
-          getTeampreviewAction(planID)
-        ])
-        .then(res => {
-          let [enrollsRes, teampreviewRes]= res;
-          // 兼容旧逻辑
-          this.oldLogicAdaptor(orderDetail);
-          // 原处理
-          this.teampreviewData= teampreviewRes;
-          // 计算余位
-          this.sourceMaker(enrollsRes, guests, priceType)
-        })
-      })
-    },
+  filters: {
+    changedPriceFilter(val){
+      if(val> 0) return `+${val}`;
+      return val;
+    }
+  },
 
-    // 兼容旧逻辑
-    oldLogicAdaptor(orderDetail){
-      let {
-        planID,
-        payable,
-        favourable,
-        orderStatus,
-        endTime,
-        occupyStatus,
-        orderChannel,
-        contact,
-      }= orderDetail;
-      this.payable = payable;
-      this.ruleForm.favourable = favourable;
-      this.getOrderStatus(
-        orderStatus,
-        endTime,
-        occupyStatus,
-        orderChannel
-      );
-      this.occupyStatus= occupyStatus;
-      this.Timechange(endTime);
-      this.ruleForm.contactName= JSON.parse(
-        contact
-      ).Name;
-      this.ruleForm.contactPhone= JSON.parse(
-        contact
-      ).Tel;
-      this.orderSourceFun(orderChannel);
-      this.dialogFormProcess = true;
-      // this.teampreview(planID);
-      // 记录最开始的总价 isSaveBtnClick需要
-      this.prePayable= payable;
-      this.showEnrollDetail();
-    },
-
-    /**
-     * @description: 制作数据源
-     * @param {Array} enrolls: 计划的所有报名类型
-     * @param {Array} guests: 已报名的信息
-     * @param {Numer} priceType: 价格类型 1直客 2同业 
-     * @return: 
-     */
-    sourceMaker(enrolls, guests, priceType){
-      // 创建出行人信息数组的映射并挂载到全局
-      let salePriceReflect= {};
-      this.salePriceReflect= salePriceReflect;
-
-      this.salePrice.splice(0);
-      this.salePrice.push(
-        ...enrolls.map((enroll, index) => {
-          let result= [];
-          // enrollName 用于共享配额
-          result.enrollName= enroll.enrollName;
-          salePriceReflect[this.enrollKeyMaker(enroll, priceType)]= result;
-          return result;
-        })
-      )
-      guests.forEach(guest => {
-        let { enrollName, singlePrice }= guest;
-        let key= `${enrollName}_${singlePrice}`;
-        if(!key in salePriceReflect){
-          salePriceReflect[key]= [];
-          salePriceReflect[key].enrollName= enrollName;
-        };
-        salePriceReflect[key].push(guest);  
-      })
-      console.log(this.salePrice);
-      
-    },
+  methods: Object.assign(
     
     /**
-     * @description: 根据报名类型和价格类型返回key
+     * @description: 主干函数
      */
-    enrollKeyMaker(enroll, priceType){
-      let { enrollName, price_01, price_02 }= enroll;
-      return `${enrollName}_${priceType=== 1? price_01: price_02}`
+    {
+      processManage(orderId){
+        getOrderAction(orderId)
+        .then(orderDetail => {
+          let { 
+            planID, // 计划id 
+            guests, // 报名数组
+            favourable,
+            contact
+          }= orderDetail;
+          Promise.all([
+            getEnrollsAction(planID), 
+            getTeampreviewAction(planID)
+          ])
+          .then(res => {
+            let [enrollsRes, teampreviewRes]= res;
+            
+            contact= JSON.parse(contact);
+            this.ruleForm.contactName= contact.Name;
+            this.ruleForm.contactPhone= contact.Tel;
+
+            this.globalMount(orderDetail, enrollsRes, teampreviewRes);
+            // 兼容旧逻辑
+            this.oldLogicAdaptor(orderDetail);
+            // 原处理
+            this.teampreviewData= teampreviewRes;
+            this.positionTotal= teampreviewRes.count;
+            this.sourceMaker(enrollsRes, guests);
+            // 初始化总价和报名信息
+            this.viewDataMaker(favourable, guests);
+          })
+        })
+      },
+
+      /**
+       * @description: 制作数据源
+       * @param {Array} enrolls: 计划的所有报名类型
+       * @param {Array} guests: 已报名的信息
+       * @return: 
+       */
+      sourceMaker(enrolls, guests){
+        let count= 0;
+        let salePriceReflect= this.salePriceReflect;
+
+        this.salePrice.splice(0);
+        this.salePrice.push(
+          ...enrolls.map((enroll, index) => {
+            let result= [];
+            result.enroll= enroll;
+            // 收集所有相同报名类型的实例，只有当前存在的报名类型需要这个属性，不存在的报名类型肯定不可以新增实例了
+            enroll.children= [];
+            salePriceReflect[this.enrollKeyMaker(enroll)]= result;
+            return result;
+          })
+        )
+        guests.forEach(guest => {
+          let { enrollName, singlePrice }= guest;
+          let key= `${enrollName}_${singlePrice}`;
+          // 不知道存不存在这个情况，过去有一个报名类型，但是现在没有了，这个时候hitEnroll为undefined
+          let hitEnroll= enrolls.find(el => el.enrollName=== enrollName);
+          // guest的报名类型不存在于当前enrolls
+          if(!(key in salePriceReflect)){
+            salePriceReflect[key]= [];
+            // 如果hitEnroll不存在，则手动建立一个过期报名
+            salePriceReflect[key].enroll= hitEnroll || this.passedMaker(salePriceReflect[key]);
+            this.salePrice.push(salePriceReflect[key]);
+          };
+          // guest的报名类型存在于当前enrolls
+          salePriceReflect[key].push(guest); 
+        })
+        // 这里的el就是上边的salePriceReflect[key]
+        this.salePrice.forEach(el => {
+          count+= el.length;
+          el.enroll && el.enroll.children.push(el);
+        })
+        this.positionLeft= this.positionTotal- count;
+      },
+
+      viewDataMaker(favourable, guests){
+        let price;
+        let favourablePrice= 0;
+        favourable.forEach(el => favourablePrice+= (el.favMode=== 1? 1: -1)* el.price);
+        price= this.enrollDetailMaker();
+        this.totalPrice= price+ favourablePrice;
+      },
+
+      /**
+       * @description: enroll变化处理
+       * @param {Object} payload: varied 变动大小， proto 哪个变了 
+       * @return: 
+       */
+      enrollChangeHandler(payload){
+        let { varied }= payload;
+        varied > 0? 
+          this.enrollPlusChangeHandler(payload): this.enrollMinusChangeHandler(payload)
+      },
+
+      enrollPlusChangeHandler(payload){
+        // 这里的proto是salePrice的一项, cb为数据矫正
+        let { varied, proto, cb }= payload;
+        let enroll= proto.enroll;
+        let quota= enroll.quota;
+        // 当前enroll已报名的数量
+        let currentCount;
+        let successed= [];
+        // 如果enroll有过时标志，表示是现在enroll列表中不存在的项，不可以添加新报名信息
+        if(enroll.passed){
+          this.$message.info(`该报名类型已过期，不可新增报名`);
+          return cb();
+        }
+  
+  // 计算剩余位置逻辑
+        currentCount= this.currentCountHandler(enroll);
+        // 当有配额，且操作后大于配额
+        if(quota && currentCount+ varied> quota){
+          varied= quota- currentCount;
+          this.$message.info(`超过当前报名类型配额，最多新增${ varied }个报名`);
+        }
+        // 当没有配额，且操作后大于剩余数量
+        if(!quota && varied> this.positionLeft){
+          varied= this.positionLeft;
+          this.$message.info(`库存不足，最多新增${ varied }个报名`);
+        }
+  // 结束
+  
+        let staticObj= {
+          orderID: this.orderget.id,
+          orderCode: this.orderget.orderCode,
+          orgID: this.orderget.orgID,
+          userID: this.orderget.userID,
+          productType: this.orderget.productTyp
+        }
+        for(let i= 0; i< varied; i++){
+          let newEnroll= this.enrollMaker(enroll, staticObj)
+          proto.push(newEnroll);
+          successed.push(newEnroll);
+          this.newEnrollList.push(newEnroll);
+        }
+        this.guestChangedHandler(successed, true);
+      },
+
+      enrollMinusChangeHandler(payload){
+        let { varied, proto, cb }= payload;
+        let result= [...proto].reverse();
+        let removed= [];
+        let count= varied;
+        result= result.filter(el => {
+          // 如果还没减够数量，且当前项未填写信息, 则移除该项
+          if(varied< 0 && !el.cnName){
+            varied++;
+            removed.push(el);
+            return false;
+          } else {
+            return true;
+          }
+        })
+        // 没减够数量
+        varied< 0 && this.$message.info(`已完善过资料的报名信息，请手动删除`);
+        proto.splice(0);
+        this.$nextTick(() => proto.push(...result.reverse()));
+        this.guestChangedHandler(removed);
+      },
+
+      favourableChangeHandler(item){
+        let { price, favMode }= item;
+        let proto= this.favourableProto.find(el => el.id=== item.id);
+        let { price: priceProto, currentPrice }= proto;
+        let varied= 0;
+        // 如果输入不合规，则以旧值还原
+        if(this.$isNull(price) || isNaN(parseFloat(price))) return item.price= currentPrice;
+        proto.currentPrice= parseFloat(price);
+        varied= parseFloat(price)- priceProto;
+        this.changedPrice+= (favMode=== 1? 1: -1)* varied- (favMode=== 1? 1: -1)* currentPrice;
+      },
+    
+      orderSaveHandler(){
+        obj.enrollDetail = JSON.stringify(this.enrollDetail);
+        obj.guests = guest;
+        obj.payable = this.prePayable + (this.payable - this.prePayable);
+        orderSaveAction(obj)
+      }
     },
 
     /**
-     * @description: enroll变化处理
-     * @param {Object} payload: varied 变动大小， proto 哪个变了 
-     * @return: 
+     * @description: 辅助函数
      */
-    enrollChangeHandler(payload){
-      let { varied }= payload;
-      varied > 0? 
-        this.enrollPlusChangeHandler(payload): this.enrollMinusChangeHandler(payload)
-    },
+    {
+      // 记录挂载的全局对象
+      globalMount(orderDetail){
+        let { priceType, favourable }= orderDetail;
+        this.propPriceType= priceType;
+        this.favourableProto= this.$deepCopy(favourable).map(el => Object.assign(el, { currentPrice: el.price }));
+        // 出行人信息数组的映射
+        this.salePriceReflect= {};
+        // 新添加的所有报名实例
+        this.newEnrollList= [];
 
-    enrollPlusChangeHandler(payload){
-      let { varied, proto }= payload;
+        // 应该是关闭时重置，先放到这里
+        this.totalPrice= 0; // 之前总价
+        this.changedPrice= 0; //当前变动
+        this.enrollsDetailStr= ''; // 订单详情
+      },
+      // 兼容旧逻辑
+      oldLogicAdaptor(orderDetail){
+        let {
+          planID,
+          payable,
+          favourable,
+          orderStatus,
+          endTime,
+          occupyStatus,
+          orderChannel,
+          contact,
+        }= orderDetail;
+        this.orderget = orderDetail;
+        this.payable = payable;
+        this.ruleForm.favourable = favourable;
+        this.getOrderStatus(
+          orderStatus,
+          endTime,
+          occupyStatus,
+          orderChannel
+        );
+        this.occupyStatus= occupyStatus;
+        this.Timechange(endTime);
+        this.ruleForm.contactName= JSON.parse(
+          contact
+        ).Name;
+        this.ruleForm.contactPhone= JSON.parse(
+          contact
+        ).Tel;
+        this.orderSourceFun(orderChannel);
+        this.dialogFormProcess = true;
+        // this.teampreview(planID);
+        // 记录最开始的总价 isSaveBtnClick需要
+        this.prePayable= payable;
+      },
       
-    },
+      /**
+       * @description: 根据报名类型和价格类型返回key
+       */
+      enrollKeyMaker(enroll){
+        let { enrollName, price_01, price_02 }= enroll;
+        return `${enrollName}_${this.propPriceType=== 1? price_01: price_02}`
+      },
+      /**
+       * @description: 穿件新的报名实例，在提交时统一赋值createTime，根据createTime区分添加批次
+       * @param {Object} enroll: { enrollID, enrollName, singlePrice }
+       * @param {Object} staticObj: { orderID, orderCode, orgID, userID, productType }
+       * @return: 
+       */            
+      enrollMaker(enroll, staticObj){
+        let { enrollID, enrollName, price_01, price_02 }= enroll;
+        return Object.assign({
+          enrollID,
+          enrollName,
+          singlePrice: this.propPriceType=== 1? price_01: price_02,
+          createTime: null,
+          id: 0,
+          isDeleted: 0,
+          code: "",
+          cnName: "",
+          enName: "",
+          sex: null,
+          idCard: "",
+          mobile: "",
+          bornDate: 0,
+          credType: 0,
+          credCode: "",
+        }, staticObj)
+      },
 
-    changeQuota() {
-      //余位变化方法
-      this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
-      let salePriceType = {};
-      // 实时减少相关余位信息，提示库存不足
-      //判断下单时  是否是预订占位 如果是则余位不变
-      if (this.orderget.occupyStatus !== 1 || this.orderget.orderStatus !== 0) {
-        for (let i = 0; i < this.salePrice.length; i++) {
-          // this.salePrice[i].quota = parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
-          this.salePrice[i].quota =
-            parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
-          salePriceType = this.salePrice[i];
-          // if (salePriceType.quota < 0) {
-          //   //判断是否显示库存不足
-          //   this.quota[i] = true;
-          // } else {
-          //   this.quota[i] = false;
-          // }
-          if (this.enrolNum[i] == undefined) {
-            this.enrolNum[i] = "";
-          }
-          if (salePriceType.quota === -1) {
-            salePriceType.quota = 0;
-          }
+      // 报名信息
+      enrollDetailMaker(){
+        console.log(this.salePrice)
+        let str= '';
+        let singlePrice;
+        let price= 0;
+        this.salePrice.forEach(el => {
+          let { enrollName, price_01, price_02 }= el.enroll;
+          singlePrice= this.propPriceType=== 1? price_01: price_02;
+          str+= el.length? `[ ${enrollName} ${this.toDecimal2(singlePrice)} ] x ${el.length}\n`: '';
+          price+= singlePrice* el.length;
+        })
+        this.enrollsDetailStr= str;
+        return price;
+      },
+
+      passedMaker(guest){
+        let { enrollID, enrollName, singlePrice }= guest;
+        return {
+          enrollID, 
+          enrollName, 
+          price_01: singlePrice,
+          price_02: singlePrice,
         }
-      }
-    },
-  }
+      },
 
+      // 计算enroll下已报名的数量
+      currentCountHandler(enroll){
+        let num= 0;
+        enroll.children.forEach(child => num+= child.length);
+        return num;
+      },
+
+      getShowName(item){
+        return item.enroll && item.enroll.enrollName
+      },
+
+      getShowPrice(item){
+        let { price_01, price_02 }= item.enroll;
+        return this.toDecimal2(this.propPriceType=== 1? price_01: price_02);
+      },
+      
+      // 手动删除
+      removeGuestEmit(payload){
+        let { enroll, guest }= payload;
+        let removed;
+        new Promise((resolve, reject) => {
+          if(!guest.cnName) return resolve();
+          return this.$confirm(`确定要删除当前报名信息吗?`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            resolve();
+          }).catch(() => {
+            reject();
+          })
+        }).then(() => {
+          let index= enroll.findIndex(el => el=== guest);
+          removed= enroll.splice(index, 1);
+          this.guestChangedHandler(removed);
+        })
+      },
+      
+      // 编辑
+      editGuestEmit(guest){
+        this.$refs.guestEditDialog.wakeup(guest);
+      },
+
+      // 保存信息
+      saveGuestEmit(payload){
+        let { guest, formData }= payload;
+        Object.assign(guest, formData);
+      },
+      
+      // 报名信息引起的钱数余位变化
+      guestChangedHandler(guestArr, isPlus){
+        let money= 0;
+        let count= 0;
+        guestArr.forEach(guest => {
+          money+= guest.singlePrice;
+          count++;
+        });
+        this.changedPrice+= (isPlus? 1: -1)* money;
+        this.positionLeft+= (isPlus? -1: 1)* count;
+        this.$nextTick(() => this.enrollDetailMaker());
+      },
+    }
+  )
 }
 
 export default ProcessManageMixin
