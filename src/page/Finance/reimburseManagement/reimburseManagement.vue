@@ -119,24 +119,8 @@
                 <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;" >{{item.content.createTime | formatDate}}</span></div>
               </div>
 
-              <div style="color: red; position: absolute;left: 20px;top: 65px;">*</div>
-                <!-- <el-form-item label="团期计划" porp="groupCode">
-                  <el-input
-                    v-model="item.content.groupCode"
-                    ref="groupCode"
-                    placeholder="请输入"
-                    style="width: 240px;"
-                    :disabled="change"
-                   ></el-input>
-                  <el-input
-                    v-model="item.content.productName"
-                    placeholder="请输入或者选择团期计划"
-                    style="width: 240px;"
-                    :disabled="change"
-                  ></el-input>
-                  <el-button size="mini" @click="planDialog()" v-if="find==0">选择</el-button>
-                </el-form-item> -->
-                <el-form-item label="团期计划" porp="groupCode"  >
+              <div style="color: red; position: absolute;left: 20px;top: 65px;" v-if="find==0" >*</div>
+              <el-form-item label="团期计划" porp="groupCode" v-if="find==0"  >
                   <el-autocomplete
                       v-model="item.content.groupCode"
                       ref="groupCode"
@@ -156,21 +140,19 @@
                     placeholder="通过输入团期计划,自动补充产品名称"
                     ></el-input>
                     <el-button size="mini" @click="planDialog()" v-if="find==0">选择</el-button>
-                </el-form-item>
-
-                <el-form-item label="摘要" porp="mark">
-                  <el-input
-                    v-model="item.content.mark"
-                    ref="mark"
-                    placeholder="请输入"
-                    style="width: 480px;"
-                    :disabled="change"
-                  ></el-input>
-                </el-form-item>
-                <div style="color: red; color: red; position: absolute;top:127px;left: 48px;">*</div>
-                <el-form-item label="附件：" label-width="140px" required>
+              </el-form-item>
+              <div style="color: red; color: red; position: absolute;top:127px;left: 20px;" v-if="find==0">*</div>
+              <el-form-item label="摘要" porp="mark" v-if="find==0">
+                <el-input
+                  v-model="item.content.mark"
+                  ref="mark"
+                  placeholder="请输入"
+                  style="width: 480px;"
+                  :disabled="change"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="附件" label-width="75px" required   v-if="find==0">
                   <el-upload 
-                  v-if="find==0"
                   ref="image" 
                   prop="image"
                   class="upload-demo" 
@@ -186,19 +168,26 @@
                   :file-list="item.content.files">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
-                  <el-upload 
-                  v-if="find==1"
-                  class="upload-demo" 
-                  name="files"
-                  :action= "uploadUrl"
-                  :show-file-list=true
-                  :disabled=true
-                  :on-change="handleChange"
-                  :on-preview="handlePreview"
-                  :file-list="item.content.files">
-                  </el-upload>
- 
-                </el-form-item>
+                 </el-form-item>
+
+               <div class="handle_div">
+                    <div class="handle_id" v-if="find==1"><span>团期计划:</span><span style="margin-left: 10px;">{{item.content.groupCode}}</span></div>
+                    <div class="handle_people" v-if="find==1"><span>产品名称:</span><span style="margin-left: 10px;">{{item.content.productName}}</span></div>
+                    <div class="handle_time" v-if="find==1"><span>摘要:</span><span style="margin-left: 10px;" >{{item.content.mark}}</span></div>
+              </div>
+              <el-form-item  label="附件" label-width="80px" v-if="find==1">
+                    <el-upload 
+                    class="upload-demo" 
+                    name="files"
+                    :action= "uploadUrl"
+                    :show-file-list=true
+                    :disabled= true
+                    :on-change="handleChange"
+                    :on-preview="handlePreview"
+                    :file-list="item.content.files">
+                    </el-upload>
+              </el-form-item>
+
                 <div class="re_style">
                   <el-radio v-model="radio" label="1">关联单据</el-radio>
                   <!-- <el-radio v-model="radio" label="2">手添报销明细</el-radio> -->
@@ -206,7 +195,7 @@
                 <div v-if="radio==1" class="re_style" style="margin-top: 20px">
                   <el-button @click="addbx(item.content)" v-if="find==0">增加1</el-button>
                 </div>
-                <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
+                <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 40px;margin-top: 10px; ">
                   <i
                     style="float: left; margin-left: 10px;margin-top: 7px;"
                     class="el-icon-warning"
@@ -222,35 +211,34 @@
                 </div>
                 <div v-if="radio==1">
                    <div class="re_style">
-                    <el-table :data="item.content.payments" border style="width: 100%; margin-top: 30px">
+                    <el-table :data="item.content.payments" border style="width: 100%; margin-top: 30px"> 
                       
-                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
-                      <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
-                      <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
-                      <el-table-column prop="createUser" label="申请人" width="100"></el-table-column>
-                      <el-table-column prop="paymentMark" label="摘要" width="120"></el-table-column>
-                      <el-table-column prop="paymentPrice" label="借款金额" width="100"></el-table-column>
-                      <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column>
-
-                      <el-table-column prop="price" label="本次报销金额" style="background: yellow" width="140"  v-if="find==0">
+                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="140" align="center"></el-table-column>
+                      <el-table-column prop="supplierTypeEX" label="借款类型" width="100" align="center"></el-table-column>
+                      <el-table-column prop="supplierName" label="供应商" width="120" align="center"></el-table-column>
+                      <el-table-column prop="createUser" label="申请人" width="120" align="center"></el-table-column>
+                      <el-table-column prop="paymentMark" label="摘要" width="120" align="center"></el-table-column>
+                      <el-table-column prop="paymentPrice" label="借款金额" width="100" align="center"></el-table-column>
+                      <!-- <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column> -->
+                      <el-table-column prop="wcount" label="本次报销金额"   width="140"   align="center" v-if="find==0">
                         <template slot-scope="scope">
                           <el-input @input='addressChange(scope.row.price)' v-model="scope.row.price" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==0">
+                      <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==0"   align="center">
                         <template slot-scope="scope">
                           <el-input v-model="scope.row.peopleCount" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="paymentID" label="操作" width="140"  v-if="find==0">
+                      <el-table-column prop="paymentID" label="操作" width="140"  v-if="find==0" align="center">
                           <template slot-scope="scope">
                           <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</div>
                          </template>
                       </el-table-column>
                     
                       <!-- 不能改的 -->
-                       <el-table-column prop="price" label="本次报销金额" style="background: yellow" width="140" v-if="find==1">  </el-table-column>
-                       <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==1"> </el-table-column>
+                       <el-table-column prop="price" label="本次报销金额" width="140" align="center" v-if="find==1">  </el-table-column>
+                       <el-table-column prop="peopleCount" label="人数" width="140" align="center"  v-if="find==1"> </el-table-column>
                        
                     </el-table>
                   </div>
@@ -392,33 +380,20 @@
             <el-button @click="T_update" type="primary">重置2</el-button>
           </div>
         <el-table 
-        :data="joinData" 
-        border 
+         :data="joinData" 
+         border 
+         :highlight-current-row="true"
+         @row-click="joinData_btn"
         style="width: 100%; margin-top: 30px">
-          <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
-          <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
-          <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
-          <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
-          <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
-          <el-table-column prop="createTime" :formatter='dateFormat'  label="发起日期" width="130"></el-table-column>
-          <el-table-column prop="paymentMark" label="摘要" width="130"></el-table-column>
-          <el-table-column prop="price" label="金额" width="90"></el-table-column>
-          <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
-          <el-table-column prop="bcount" width="120" label="本次报销金额">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.bcount" style="width:90px;"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="peopleCount" width="120" label="人数">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.peopleCount" style="width:90px;"></el-input>
-            </template>
-          </el-table-column>
-           <el-table-column prop="paymentID" label="操作" width="140"  v-if="find==2">
-            <template slot-scope="scope">
-             <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</div>
-            </template>
-           </el-table-column>
+          <el-table-column prop="paymentID" label="预付款和无收入结款ID" width="130" align="center"></el-table-column>
+         
+          <el-table-column prop="supplierName" label="供应商" width="170" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" width="150" align="center"></el-table-column>
+          <el-table-column prop="orgName" label="部门" width="100"  align="center"></el-table-column>
+          <el-table-column prop="price" label="金额" width="90" align="center"></el-table-column>
+          <!-- <el-table-column prop="wcount" label="未报销金额" width="150" align="center"></el-table-column> -->
+          <el-table-column prop="paymentMark" label="摘要" width="170" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" width="100" align="center"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="t_text_del('joinData')">取 消</el-button>
@@ -567,6 +542,7 @@ export default {
       tableData: [], //报销table
       planData: [],  //团期计划表格
       joinData:[],  //关联单据表单
+      t_joinData:[],
       payments:[],
       file: [],
       files: [], //文件上传列表
@@ -965,9 +941,10 @@ export default {
                         guid:ruleForm.editableTabs[0].content.guid
                       })
                       .then(res => {
-                          this.pageList(1, this.pageSize);
-                          this.radio= "1";
                           this.tabIndex = 1;
+                          this.pageIndex = 1;
+                          this.currentPage4 = 1;
+                          this.pageList(1, this.pageSize);
                           this.dialogFormVisible = false;
                         if(res.data.isSuccess == true){
                             this.$message({
@@ -1025,42 +1002,48 @@ export default {
                 });
               });
           },
-           
+        joinData_btn(row) {  //获取管理订单
+         this.subscript(); 
+         this.s_content.joinData = row;
+        },
         t_text() {//确认添加
             this.subscript(); 
             let joinData =this.s_content.joinData;
-            let t_joinData=[];
-           this.s_content.t_price = 0
-            this.t_price_box = [];
-           this.s_content.payments=[];
-            for(let v in joinData){
-               t_joinData.push({
-                  createTime: joinData[v].createTime,
-                  createUser:joinData[v].createUser,
-                  groupCode:joinData[v].groupCode,
-                  orgName: joinData[v].orgName,
-                  paymentID: joinData[v].paymentID,
-                  paymentMark:joinData[v].paymentMark,
-                  paymentPrice: joinData[v].paymentPrice,
-                  peopleCount: joinData[v].peopleCount,
-                  price: joinData[v].bcount,
-                  productName:joinData[v].productName,
-                  supplierName: joinData[v].supplierName,
-                  supplierTypeEX: joinData[v].supplierTypeEX,
-                  wcount: joinData[v].wcount
-              })
-            }
-            for(let i in t_joinData){
-                    if(t_joinData[i].price!= "0" ){
-                       this.s_content.payments.push(t_joinData[i]);
-                        this.t_price_box.push(t_joinData[i].price);
-                    }
-              }
-
+            this.s_content.payments.push(joinData);
+            this.t_price_box.push(joinData.price);
             this.t_price_sum()
             this.dialogFormVisible3 = false;
             joinData=[];
-        },
+
+             //console.log(joinData,'85');
+          //   let t_joinData=[];
+          //  this.s_content.t_price = 0
+          //   this.t_price_box = [];
+          //  this.s_content.payments=[];
+            // for(let v in joinData){
+            //   this.t_joinData.push({
+            //       createTime: joinData[v].createTime,
+            //      createUser:joinData[v].createUser,
+            //      groupCode:joinData[v].groupCode,
+            //       orgName: joinData[v].orgName,
+            //      paymentID: joinData[v].paymentID,
+            //       paymentMark:joinData[v].paymentMark,
+            //       paymentPrice: joinData[v].paymentPrice,
+            //       peopleCount: joinData[v].peopleCount,
+            //       price: joinData[v].bcount,
+            //       productName:joinData[v].productName,
+            //       supplierName: joinData[v].supplierName,
+            //       supplierTypeEX: joinData[v].supplierTypeEX,
+            //       wcount: joinData[v].wcount
+            //   })
+            // }
+             // for(let i in this.t_joinData){
+            //         if(this.t_joinData[i].price!= "0" ){
+                      
+            //            
+            //         }
+            //   }
+      },
        
         t_text_del(){//确认取消
          this.subscript();
@@ -1618,6 +1601,9 @@ export default {
   margin-left: 10px;
   margin-right: 10px;
 }
+.yellow{
+  background:#ffff00
+  }
 .reform {
   float: left;
   width: 99%;
@@ -1657,7 +1643,7 @@ export default {
   clear: both;
 }
 .re_style {
-  margin-left: 65px;
+  margin-left: 40px;
 }
 .sh_style {
   background: rgb(234, 234, 234);
@@ -1677,15 +1663,18 @@ export default {
   line-height: 40px;
   margin-left: 40px;
 }
-.handle_id {
+.handle_id {   /*css66666*/
   float: left;
+  width: 30%;
 }
 .handle_people {
   float: left;
-  margin-left: 250px;
+  width: 30%;
+  /* margin-left: 250px; */
 }
 .handle_time {
   float: left;
-  margin-left: 250px;
+  width: 30%;
+  /* margin-left: 250px; */
 }
 </style>
