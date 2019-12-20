@@ -96,6 +96,16 @@
           <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost">
             <div>{{item.title}}</div>
             <el-input
+              v-if="!index"
+              v-model="item.price"
+              placeholder="请输入金额"
+              class="input"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              @change="favourableChangeHandler(item)"
+            ></el-input>
+            <el-input
+              v-else
+              v-has="'others'"
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
@@ -1193,6 +1203,7 @@ export default {
           //   }
           // }
 
+          /*
           //获取报名总人数
           obj.number = this.number;
           for (let i = 0; i < this.enrolNum.length; i++) {
@@ -1233,6 +1244,7 @@ export default {
             if (guest[i].sex == null) guest[i].sex = 2; //出行人没有填写时传值性别为2 要不报错  正确的 0 男  1 女
             // // guest[i].credTOV = new Date(guest[i].credTOV).getTime();
           }
+          */
 
           // 补充资料和待出行 信息更改跳转回到确认占位状态
           if (
@@ -1268,12 +1280,36 @@ export default {
           this.enrolNum.forEach(item => {
             sum += item;
           });
-          if (sum !== guest.length) {
+
+          
+          let guest = [];
+          for (let i = 0; i < this.salePrice.length; i++) {
+            for (let j = 0; j < this.salePrice[i].length; j++) {
+              guest.push(this.salePrice[i][j]);
+            }
+          }
+          obj.number= guest.length;
+          // 第一次保存，赋值时间错
+          if('altKey' in id){
+            let timestamp= Date.now();
+            this.newEnrollList.forEach(el => {
+              el.createTime= timestamp;
+            })
+          }
+
+          
+          // if (sum !== guest.length ) {
+          if (0) {
             this.$message.error("报名人数与出行人信息不符，请修改出行人信息");
           } else {
-            obj.enrollDetail = JSON.stringify(this.enrollDetail);
+            // obj.enrollDetail = JSON.stringify(this.enrollDetail);
+            obj.enrollDetail= this.enrollsDetailStr;
+            
+            // obj.payable = this.prePayable + (this.payable - this.prePayable);
+            obj.payable= this.totalPrice+ this.changedPrice;
+
             obj.guests = guest;
-            obj.payable = this.prePayable + (this.payable - this.prePayable);
+            
             this.$http
               .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                 object: obj

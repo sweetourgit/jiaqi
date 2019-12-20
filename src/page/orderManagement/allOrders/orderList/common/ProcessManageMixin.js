@@ -1,4 +1,4 @@
-import { getOrderAction, getTeampreviewAction, getEnrollsAction } from './api'
+import { getOrderAction, getTeampreviewAction, getEnrollsAction, orderSaveAction } from './api'
 
 const ProcessManageMixin= {
   
@@ -41,7 +41,8 @@ const ProcessManageMixin= {
           let { 
             planID, // 计划id 
             guests, // 报名数组
-            favourable
+            favourable,
+            contact
           }= orderDetail;
           Promise.all([
             getEnrollsAction(planID), 
@@ -49,6 +50,11 @@ const ProcessManageMixin= {
           ])
           .then(res => {
             let [enrollsRes, teampreviewRes]= res;
+            
+            contact= JSON.parse(contact);
+            this.ruleForm.contactName= contact.Name;
+            this.ruleForm.contactPhone= contact.Tel;
+
             this.globalMount(orderDetail, enrollsRes, teampreviewRes);
             // 兼容旧逻辑
             this.oldLogicAdaptor(orderDetail);
@@ -201,6 +207,13 @@ const ProcessManageMixin= {
         proto.currentPrice= parseFloat(price);
         varied= parseFloat(price)- priceProto;
         this.changedPrice+= (favMode=== 1? 1: -1)* varied- (favMode=== 1? 1: -1)* currentPrice;
+      },
+    
+      orderSaveHandler(){
+        obj.enrollDetail = JSON.stringify(this.enrollDetail);
+        obj.guests = guest;
+        obj.payable = this.prePayable + (this.payable - this.prePayable);
+        orderSaveAction(obj)
       }
     },
 

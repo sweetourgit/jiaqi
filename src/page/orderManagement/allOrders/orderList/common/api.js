@@ -54,3 +54,26 @@ export const getTeampreviewAction= function(id){
     })
   })
 }
+
+export const orderSaveAction= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + `/order/all/api/ordersave`, {
+      object
+    })
+    .then(res => {
+      if (res.data.isSuccess == true) {
+        this.$message({
+          message: "更改成功",
+          type: "success"
+        });
+        this.$emit("orderPage");
+        this.$emit("childByValue", this.showContent);
+        this.cancle();
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      err && $message.error(err.toString());
+    })
+  })
+}
