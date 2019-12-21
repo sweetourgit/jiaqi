@@ -88,12 +88,11 @@ const ProcessManageMixin= {
           let { enrollName, singlePrice }= guest;
           let key= `${enrollName}_${singlePrice}`;
           // 不知道存不存在这个情况，过去有一个报名类型，但是现在没有了，这个时候hitEnroll为undefined
-          let hitEnroll= enrolls.find(el => el.enrollName=== enrollName);
           // guest的报名类型不存在于当前enrolls
           if(!(key in salePriceReflect)){
             salePriceReflect[key]= [];
-            // 如果hitEnroll不存在，则手动建立一个过期报名
-            salePriceReflect[key].enroll= hitEnroll || this.passedMaker(salePriceReflect[key]);
+            // 手动建立一个过期报名类型
+            salePriceReflect[key].enroll= this.passedMaker(guest);
             this.salePrice.push(salePriceReflect[key]);
           };
           // guest的报名类型存在于当前enrolls
@@ -165,6 +164,7 @@ const ProcessManageMixin= {
           let newEnroll= this.enrollMaker(enroll, staticObj)
           proto.push(newEnroll);
           successed.push(newEnroll);
+          // 新增的再提交的时候要赋值相同的 createTime ，用来区分批次
           this.newEnrollList.push(newEnroll);
         }
         this.guestChangedHandler(successed, true);
@@ -237,6 +237,8 @@ const ProcessManageMixin= {
         this.salePriceReflect= {};
         // 新添加的所有报名实例
         this.newEnrollList= [];
+        // 过期报名类型
+        this.passedMakerCache= {};
 
         // 应该是关闭时重置，先放到这里
         this.totalPrice= 0; // 之前总价
@@ -315,7 +317,6 @@ const ProcessManageMixin= {
 
       // 报名信息
       enrollDetailMaker(){
-        console.log(this.salePrice)
         let str= '';
         let singlePrice;
         let price= 0;
@@ -328,14 +329,21 @@ const ProcessManageMixin= {
         this.enrollsDetailStr= str;
         return price;
       },
-
+      
+      /**
+       * @description: 过期的报名类型，先查 passedMakerCache 里是否有对应的enroll，没有则建立一个带有passed属性enroll
+       */
       passedMaker(guest){
         let { enrollID, enrollName, singlePrice }= guest;
+        let key= `${enrollName}_${singlePrice}`;
+        if(key in this.passedMakerCache) return this.passedMakerCache[key];
         return {
           enrollID, 
           enrollName, 
           price_01: singlePrice,
           price_02: singlePrice,
+          children: [],
+          passed: true
         }
       },
 
