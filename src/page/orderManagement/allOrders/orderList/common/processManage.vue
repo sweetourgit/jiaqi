@@ -514,8 +514,15 @@ export default {
     //     }
     //   }
     // },
-    isSaveBtnClick() {
-      this.isSaveBtn= !!this.changedPrice;
+    isSaveBtnClick(){
+      this.isSaveBtn = false
+      if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
+        if(this.changedPrice > this.deposit + this.balance) return this.isSaveBtn = true;
+      }
+    },
+
+    isChangeNumberClick() {
+      this.isChangeNumber= !!this.changedPrice;
     },
 
     //唐时间转换
