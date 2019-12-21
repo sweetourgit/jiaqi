@@ -59,6 +59,9 @@ const ProcessManageMixin= {
             this.sourceMaker(enrollsRes, guests);
             // 初始化总价和报名信息
             this.viewDataMaker(favourable, guests);
+            
+            // 默认执行一次
+            this.replenishInfoToastFun(this.orderget.orderChannel);
           })
         })
       },

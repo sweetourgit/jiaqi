@@ -60,13 +60,13 @@ ul {
           <el-button
             class="fl cursor"
             @click="$emit('edit-guest', guest)"
-            :disabled="orderStatus == 4 || orderStatus == 6"
+            :disabled="disabled"
           >编辑</el-button>
           <span class="fl">|</span>
           <el-button
             class="fl cursor"
             @click="delTravel(guest, item)"
-            :disabled="orderStatus == 4 || orderStatus == 6"
+            :disabled="disabled"
           >删除</el-button>
         </td>
       </tr>
@@ -79,7 +79,8 @@ export default {
 
   props: {
     orderStatus: Number,
-    proto: Array
+    proto: Array,
+    disabled: Boolean,
   },
 
   watch: {
