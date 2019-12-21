@@ -19,7 +19,7 @@
   // const serverSrc= "http://web.17lvju.com/app/jialv"
   // const imgUrl="http://test.dayuntong.com";
 
-  const imgUrl ="https://jiaqi-server.obs.myhwclouds.com";//图片预览地址
+  const imgUrl ="https://jiaqi-server.obs.myhwclouds.com"; //图片预览地址
   //http://test.dayuntong.com/upload/obs/api/picture  图片上传地址
   //const imgUrl="http://192.168.2.65:3024";
   //const imgUrl="http://192.168.2.65:3009";
