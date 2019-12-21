@@ -202,7 +202,24 @@ const ProcessManageMixin= {
         proto.currentPrice= parseFloat(price);
         varied= parseFloat(price)- priceProto;
         this.changedPrice+= (favMode=== 1? 1: -1)* varied- (favMode=== 1? 1: -1)* currentPrice;
-      }
+        // 旧逻辑
+        this.isSaveBtnClick();
+      },
+
+      // 报名信息引起的钱数余位变化
+      guestChangedHandler(guestArr, isPlus){
+        let money= 0;
+        let count= 0;
+        guestArr.forEach(guest => {
+          money+= guest.singlePrice;
+          count++;
+        });
+        this.changedPrice+= (isPlus? 1: -1)* money;
+        this.positionLeft+= (isPlus? -1: 1)* count;
+        this.$nextTick(() => this.enrollDetailMaker());
+        // 旧逻辑
+        this.isSaveBtnClick();
+      },
     },
 
     /**
@@ -367,22 +384,7 @@ const ProcessManageMixin= {
       saveGuestEmit(payload){
         let { guest, formData }= payload;
         Object.assign(guest, formData);
-      },
-      
-      // 报名信息引起的钱数余位变化
-      guestChangedHandler(guestArr, isPlus){
-        let money= 0;
-        let count= 0;
-        guestArr.forEach(guest => {
-          money+= guest.singlePrice;
-          count++;
-        });
-        this.changedPrice+= (isPlus? 1: -1)* money;
-        this.positionLeft+= (isPlus? -1: 1)* count;
-        this.$nextTick(() => this.enrollDetailMaker());
-        // 旧逻辑
-        this.isSaveBtnClick();
-      },
+      }
     }
   )
 }

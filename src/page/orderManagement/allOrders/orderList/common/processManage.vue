@@ -515,18 +515,8 @@ export default {
     //   }
     // },
     isSaveBtnClick() {
-      if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
-        if (this.totalPrice + this.changedPrice > this.deposit + this.balance) {
-          return (this.isSaveBtn = true);
-        } else {
-          this.isSaveBtn = false;
-        }
-        if (this.payable + this.prePayable <= 0) {
-          return (this.isSaveBtn = false);
-        }
-      }
+      this.isSaveBtn= !!this.changedPrice;
     },
-
 
     //唐时间转换
     timeFormat(param) {
@@ -573,7 +563,7 @@ export default {
         this.settlementType === 1 &&
       
         // this.payable < this.balance + this.deposit &&
-        this.totalPrice + this.changedPrice > this.balance + this.deposit &&
+        this.changedPrice > this.balance + this.deposit &&
 
         status !== 9
       ) {
