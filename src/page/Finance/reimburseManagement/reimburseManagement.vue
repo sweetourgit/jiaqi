@@ -127,22 +127,19 @@
                       style="width: 240px;"
                       placeholder="请输入团期计划"
                       :disabled="change"
-                      :fetch-suggestions="querySearch3Plan"
-                      @select="departurePlan"
                       @blur="tour_check"
-                      :trigger-on-focus="false"
-                    >
+                     >
                     </el-autocomplete>
-                  
                     <el-input 
                     style="width:300px;" 
                     disabled 
                     v-model="item.content.productName"  
                     placeholder="通过输入团期计划,自动补充产品名称"
                     ></el-input>
+
                     <el-button size="mini" @click="planDialog()" v-if="find==0">选择</el-button>
               </el-form-item>
-               <div style="color:rgba(255,255,255,0.4)">{{item.content.id}}</div>
+               <div style="color:rgba(255,255,255,0.4);float:left">{{item.content.id}}</div>
               <div style="color: red; color: red; position: absolute;top:80px;left: 20px;" v-if="find==0">*</div>
               <el-form-item label="摘要" porp="mark" v-if="find==0">
                 <el-input
@@ -509,7 +506,6 @@ export default {
       ],
       },
       s_content:[],//获取当前页面s_content
-      querySearchPlanData: [], // 团期计划检索联想数组
       object_lisr:[],//最后提交的数组
       rules: { //报销表单验证
         name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
@@ -758,155 +754,6 @@ export default {
               price: "0"
             });
         },
-        add_form(object){ // 提交代码
-              this.$http
-                    .post(this.GLOBAL.serverSrc + "/finance/expense/api/insertlist", {
-                        object:object
-                      })
-                      .then(res => {
-                          this.pageList(1, this.pageSize);
-                          this.radio= "1";
-                          this.tabIndex = 1;
-                          this.dialogFormVisible = false;
-                         if (res.data.isSuccess == true) {
-                           this.$message({
-                            type: "success",
-                            message: "创建成功!"
-                          });
-                         this.ruleForm= {
-                              editableTabsValue: "1",
-                              editableTabs: [
-                                {
-                                  title: "报销1",
-                                  name: "1",
-                                  content:{
-                                      createUser:"",
-                                      createTime: "",
-                                      id:"",
-                                      groupCode: "",
-                                      productName: "",
-                                      mark: "",
-                                      t_sum:0,//一共多少项
-                                      t_price:0,//一共多少钱
-                                      files:[],
-                                      payments:[],
-                                      joinData:[],
-                                      plan: {
-                                        planId: "",
-                                        planName: ""
-                                      },
-                                    
-                                  }
-                                }
-                              ]
-                              };
-                        this.beginWokeing(res.data.object);
-                          
-                        }else{
-                          this.ruleForm= {
-                                editableTabsValue: "1",
-                                editableTabs: [
-                                  {
-                                    title: "报销1",
-                                    name: "1",
-                                    content:{
-                                        createUser:"",
-                                        createTime: "",
-                                        id:"",
-                                        groupCode: "",
-                                        productName: "",
-                                        mark: "",
-                                        t_sum:0,//一共多少项
-                                        t_price:0,//一共多少钱
-                                        files:[],
-                                        payments:[],
-                                        joinData:[],
-                                        plan: {
-                                          planId: "",
-                                          planName: ""
-                                        },
-                                      
-                                    }
-                                  }
-                                ]
-                                };
-                            this.$message({
-                            type: "error",
-                            message: "创建失败!"
-                          });
-                        }
-                      })
-                      .catch(err => {
-                        console.log(err);
-                      });
-                 
-                  
-        },
-        
-        submitForm(ruleForm) { // 报销申请提交
-          var joinData_sn=[];
-          var files_s=[];
-          var editableTabs = ruleForm.editableTabs;
-          var verify = 0;
-          this.object_lisr=[];
-
-          for(var j in editableTabs){
-              let submitForm_list = editableTabs[j].content;
-                        if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
-                                  this.$message({
-                                      message:'摘要字数不能超过80字',
-                                      type: 'warning' 
-                                  });
-                                  verify = 0
-                                  return;
-                                }    
-                        if(submitForm_list.groupCode !=="" && submitForm_list.mark !== "" && submitForm_list.files.length !== 0 && submitForm_list.payments.length !== 0){ // 判断必填内容
-                              // for (var i in submitForm_list.files) {//重塑图片上传数组
-                              //     files_s.push({
-                              //       name:submitForm_list.files[i].name,
-                              //       url:submitForm_list.files[i].url,
-                              //     });
-                              //   }; 
-                              for(var n in submitForm_list.payments){//判断填写的报销金额
-                                    if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
-                                          this.$message({
-                                              message:'报销金额不得大于未报销金额',
-                                              type: 'warning' 
-                                            });
-                                            verify = 0
-                                             return;
-                                      }else if(submitForm_list.payments[n].peopleCount === 0 || submitForm_list.payments[n].peopleCount === ""){
-                                        this.$message({
-                                              message:'人数不能为空',
-                                              type: 'warning' 
-                                            });
-                                            verify = 0
-                                            return;
-                                      }
-                              }
-                              console.log(submitForm_list,'8080')
-                              this.object_lisr.push({//给数组赋值
-                                        createUser: sessionStorage.getItem('id'),//用户id
-                                        planID:submitForm_list.id,//团期计划id
-                                        price:submitForm_list.t_price,//总价
-                                        mark:submitForm_list.mark,
-                                        files: submitForm_list.files , //关联数据
-                                        payments: submitForm_list.payments, //关联付款单据报销明细
-                                        checkType:0,//审批状态 
-                                      })
-                                      verify = 1
-                        }else{
-                            verify = 0
-                            this.$message({
-                                message: '请检查必填项',
-                                type: 'warning' 
-                            });
-                   }
-             }
-            if(verify !== 0){
-               this.add_form(this.object_lisr)//调用提交接口
-            }
-       },
         beginWokeing(res) {  //启动工作流
             console.log(res);
             this.$http
@@ -1009,8 +856,11 @@ export default {
          this.s_content.joinData = row;
         },
         t_text() {//确认添加
+          this.subscript(); 
          let joinData =this.s_content.joinData;
-          if(joinData.length  == 0){
+         let joinDataid = this.s_content.joinData.paymentID;
+         let payments = this.s_content.payments;
+         if(joinData.length  == 0){
             this.$message({
                 type: "warning",
                 message: "请重新选择团期计划"
@@ -1018,41 +868,27 @@ export default {
               this.dialogFormVisible3 = false;
 
           }else{
-              this.subscript(); 
-               let payments = this.s_content.payments;
-              if(payments.length == 0 ){
-                  this.s_content.payments.push(joinData);
-                  this.t_price_box.push(joinData.price);
-                  this.t_price_sum()
-                  this.dialogFormVisible3 = false;
-                  joinData=[];
-            }else{
-                 for(let i=0;i < payments.length;i++){
-                      console.log(payments[i].paymentID,'8')
-                      console.log(joinData,"9")
-                      if(joinData.paymentID != payments[i].paymentID ){
-                             this.s_content.payments.push(joinData);
-                              this.t_price_box.push(joinData.price);
-                              this.t_price_sum()
-                              this.dialogFormVisible3 = false;
-                              joinData=[];
-                          }else{
+                if(payments.length != 0){
+                      for(let i in payments){
+                        if( payments[i].paymentID === joinDataid ){
+                              //payments.splice(i, 1);
+                              this.dialogFormVisible3 = true;
                               this.$message({
-                                type: "warning",
-                                message: "请重新选择关联单据"
-                              });
-                              this.dialogFormVisible3 = false;
-                              joinData=[];
-                          }
-                      }
-                 
-              }
-            
-              
-
-             
-             
-          }
+                                      type: "warning",
+                                    message: "请重新选择关联单据"
+                                    }); 
+                                    return;
+                                } 
+                             }
+                            
+                }
+                this.s_content.payments.push(joinData);
+                this.t_price_box.push(joinData.price);
+                this.t_price_sum()
+                this.dialogFormVisible3 = false;
+                joinData=[];
+  
+         }
             
       },
        
@@ -1275,9 +1111,12 @@ export default {
           this.uid = files[0].uid;
         }, 
         handleRemove(file, files) {//图片删除
-            this.uid = files[0].uid;
-            this.files = files
-            this.image = files.length
+          this.subscript(); 
+          let files_n = this.s_content;
+          if(files.length == 0){
+            files_n.files = [];
+          }
+         this.uid = file[0].uid;
     
           },
         handleError(err, file) {// 上传失败
@@ -1524,23 +1363,8 @@ export default {
           }
           return moment(date).format('YYYY-MM-DD HH:mm:ss')
         },
-        querySearch3Plan(queryStringPlan, cb) { // 团号搜索联想
-            this.subscript();
-            this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
-              "object": {
-                "groupCode": this.s_content.groupCode, // 团号
-              }
-            }).then(res => {
-                for (let i = 0; i < res.data.objects.length; i++) {
-                      this.querySearchPlanData.push({
-                          "value": res.data.objects[i].groupCode,
-                          "planID": res.data.objects[i].planID,
-                        })
-                    }
-              var results = queryStringPlan ? this.querySearchPlanData.filter(this.createFilter(queryStringPlan)) : [];
-              cb(results)
-            }).catch(err => {})
-        },
+        
+       
         tour_check() {   // 团期计划输入框失去焦点时
            this.subscript();
            if (this.s_content.groupCode != '') {
@@ -1549,7 +1373,7 @@ export default {
                   "groupCode": this.s_content.groupCode, // 团号
                 }
               }).then(res => {
-                
+                console.log(res.data,"80802")
                 if (res.data.isSuccess == true) {
                       this.s_content.productName = res.data.objects[0].title
                       this.plans.pid  = res.data.objects[0].planID
@@ -1559,16 +1383,161 @@ export default {
               })
             } 
         },
-        departurePlan(item) { // 团期计划选中
-         this.subscript();
-          this.plans.pid = item.planID
-          this.s_content.id =item.planID
+        
+         
+        add_form(object){ // 提交代码
+              this.$http
+                    .post(this.GLOBAL.serverSrc + "/finance/expense/api/insertlist", {
+                        object:object
+                      })
+                      .then(res => {
+                          this.pageList(1, this.pageSize);
+                          this.radio= "1";
+                          this.tabIndex = 1;
+                          this.dialogFormVisible = false;
+                         if (res.data.isSuccess == true) {
+                           this.$message({
+                            type: "success",
+                            message: "创建成功!"
+                          });
+                         this.ruleForm= {
+                              editableTabsValue: "1",
+                              editableTabs: [
+                                {
+                                  title: "报销1",
+                                  name: "1",
+                                  content:{
+                                      createUser:"",
+                                      createTime: "",
+                                      id:"",
+                                      groupCode: "",
+                                      productName: "",
+                                      mark: "",
+                                      t_sum:0,//一共多少项
+                                      t_price:0,//一共多少钱
+                                      files:[],
+                                      payments:[],
+                                      joinData:[],
+                                      plan: {
+                                        planId: "",
+                                        planName: ""
+                                      },
+                                    
+                                  }
+                                }
+                              ]
+                              };
+                        this.beginWokeing(res.data.object);
+                          
+                        }else{
+                          this.ruleForm= {
+                                editableTabsValue: "1",
+                                editableTabs: [
+                                  {
+                                    title: "报销1",
+                                    name: "1",
+                                    content:{
+                                        createUser:"",
+                                        createTime: "",
+                                        id:"",
+                                        groupCode: "",
+                                        productName: "",
+                                        mark: "",
+                                        t_sum:0,//一共多少项
+                                        t_price:0,//一共多少钱
+                                        files:[],
+                                        payments:[],
+                                        joinData:[],
+                                        plan: {
+                                          planId: "",
+                                          planName: ""
+                                        },
+                                      
+                                    }
+                                  }
+                                ]
+                                };
+                            this.$message({
+                            type: "error",
+                            message: "创建失败!"
+                          });
+                        }
+                      })
+                      .catch(err => {
+                        console.log(err);
+                      });
+                 
+                  
         },
-        createFilter(queryString1){   // 模糊查询返回下拉选中项 - 查询返回value的
-          return (restaurant) => {
-            return (restaurant.value);
-          }
-        },
+        
+        submitForm(ruleForm) { // 报销申请提交
+            var joinData_sn=[];
+            var files_s=[];
+            var editableTabs = ruleForm.editableTabs;
+            var verify = 0;
+            this.object_lisr=[];
+                console.log(editableTabs,"801");
+            for(var j in editableTabs){
+                let submitForm_list = editableTabs[j].content;
+                          if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
+                                    this.$message({
+                                        message:'摘要字数不能超过80字',
+                                        type: 'warning' 
+                                    });
+                                    verify = 0
+                                    return;
+                                  }    
+                                  console.log(submitForm_list.files.length);
+                          if(submitForm_list.groupCode !=="" && submitForm_list.mark !== "" && submitForm_list.files.length !== 0 && submitForm_list.payments.length !== 0){ // 判断必填内容
+                                // for (var i in submitForm_list.files) {//重塑图片上传数组
+                                //     files_s.push({
+                                //       name:submitForm_list.files[i].name,
+                                //       url:submitForm_list.files[i].url,
+                                //     });
+                                //   }; 
+                                for(var n in submitForm_list.payments){//判断填写的报销金额
+                                      if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
+                                            this.$message({
+                                                message:'报销金额不得大于未报销金额',
+                                                type: 'warning' 
+                                              });
+                                              verify = 0
+                                              return;
+                                        }else if(submitForm_list.payments[n].peopleCount === 0 || submitForm_list.payments[n].peopleCount === ""){
+                                          this.$message({
+                                                message:'人数不能为空',
+                                                type: 'warning' 
+                                              });
+                                              verify = 0
+                                              return;
+                                        }
+                                }
+                              
+                                this.object_lisr.push({//给数组赋值
+                                          createUser: sessionStorage.getItem('id'),//用户id
+                                          planID:submitForm_list.id,//团期计划id
+                                          price:submitForm_list.t_price,//总价
+                                          mark:submitForm_list.mark,
+                                          files: submitForm_list.files , //关联数据
+                                          payments: submitForm_list.payments, //关联付款单据报销明细
+                                          checkType:0,//审批状态 
+                                        })
+                                        verify = 1
+                          }else{
+                              verify = 0
+                              this.$message({
+                                  message: '请检查必填项',
+                                  type: 'warning' 
+                              });
+                              return;
+                    }
+              }
+                console.log(this.object_lisr,'87077')
+              console.log(verify,"verify==1啦")
+              // if(verify !== 0){
+              //    this.add_form(this.object_lisr)//调用提交接口
+              // }
+          },
         //方法结尾
      },
 
