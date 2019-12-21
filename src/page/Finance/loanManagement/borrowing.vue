@@ -1018,13 +1018,13 @@ export default {
     },
     // 查看无收入借款弹窗(列表中的详情)
     checkIncome(row){
-      console.log(row, 'row')
       this.checkIncomeShow = true;
       this.pid = row.paymentID;
       this.acoutInfo = row
       this.status = row.checkTypeEX;
       this.ruleForm = row;
       this.getLabel(row.paymentID)
+      console.log(row.paymentID,'参数错置')
     },
     // 获取一条详情（控制打印按钮）
     getLabel(paramsPaymentID){
