@@ -145,11 +145,13 @@ const ProcessManageMixin= {
         if(quota && currentCount+ varied> quota){
           varied= quota- currentCount;
           this.$message.info(`超过当前报名类型配额，最多新增${ varied }个报名`);
+          cb();
         }
         // 当没有配额，且操作后大于剩余数量
         if(!quota && varied> this.positionLeft){
           varied= this.positionLeft;
           this.$message.info(`库存不足，最多新增${ varied }个报名`);
+          cb();
         }
   // 结束
   
@@ -205,6 +207,7 @@ const ProcessManageMixin= {
         // 旧逻辑
         this.isSaveBtnClick();
         this.isChangeNumberClick();
+        this.replenishInfoToastFun(this.orderget.orderChannel);
       },
 
       // 报名信息引起的钱数余位变化
@@ -221,6 +224,7 @@ const ProcessManageMixin= {
         // 旧逻辑
         this.isSaveBtnClick();
         this.isChangeNumberClick();
+        this.replenishInfoToastFun(this.orderget.orderChannel);
       },
     },
 
