@@ -132,14 +132,14 @@ export default {
 
   methods: {
     wakeup(guest){
-      // Object.assign(this.submitForm, guest);
-      Object.assign(this.submitForm, {
-        cnName: '丁丁',
-        enName: 'dingding',
-        sex: 1,
-        mobile: 15710560343,
-        idCard: 211403198904228211
-      })
+      Object.assign(this.submitForm, guest);
+      // Object.assign(this.submitForm, {
+      //   cnName: '丁丁',
+      //   enName: 'dingding',
+      //   sex: 1,
+      //   mobile: 15710560343,
+      //   idCard: 211403198904228211
+      // })
       this.proto= guest;
       this.visible= true;
       this.title= guest.enrollName;

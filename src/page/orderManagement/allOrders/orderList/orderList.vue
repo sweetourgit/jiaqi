@@ -244,8 +244,8 @@
                   <td
                     class="longWeight"
                     valign="top"
-                    v-if="getListOneMessage.orderChannel !== 1"
-                  >{{getListOneMessage.saler}}</td>
+                    v-html="getListOneMessage.orderChannel !== 1 ? getListOneMessage.saler : getListOneMessage.indirectSale"
+                  ></td>
                   <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel == 1"></td>
                 </div>
                 <td class="tr">订单总额&nbsp;&nbsp;</td>

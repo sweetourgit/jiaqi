@@ -67,7 +67,7 @@
         </div>
         <!-- <div style="white-space:pre-wrap" v-html="salePrice"></div> -->
         <div class="registration" v-for="(item,index) in salePrice" :key="'a'+index">
-          <span class="multi-wrap">
+          <span class="multi-wrap" :title="getShowName(item) + getShowPrice(item)">
             <span>{{ getShowName(item) }}</span>
             <span>￥</span>
             <!-- <span v-show="ruleForm.price==1">{{item.price_01}}*{{enrolNum[index]}}</span>
@@ -196,7 +196,7 @@
           type="primary"
           v-if="orderget.orderStatus==0||orderget.orderStatus==10||orderget.orderStatus==1"
           @click="orderModification(orderget.orderStatus,orderget.occupyStatus)"
-          :disabled="isChangeNumber"
+          :disabled="isChangeNumber || isLowPrice"
           class="confirm fr"
         >{{statusNext}}</el-button>
         <!--保存游客信息按钮-->
@@ -516,6 +516,7 @@ export default {
     // },
     isSaveBtnClick(){
       this.isSaveBtn = false
+      if(this.totalPrice + this.changedPrice<= 0) return this.isSaveBtn = true;
       if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
         if(this.changedPrice > this.deposit + this.balance) return this.isSaveBtn = true;
       }
@@ -1430,12 +1431,17 @@ export default {
       if (orderChannel !== 1) return true;
     },
 
-    // 当订单来源为线下直客，订单总额不等于已付金额的时候 补充资料下方出现提示语
+    // 当订单来源为线下直客，订单总额不等于已付金额的时候 补充资料下方出现提示语 this.orderget.orderChannel
+    // replenishInfoToastFun(orderChannel) {
+    //   if (this.orderSourceFun(orderChannel) == true) {
+    //     if (this.payable > this.paid) {
+    //       this.isLowPrice = true;
+    //     }
+    //   }
+    // },
     replenishInfoToastFun(orderChannel) {
       if (this.orderSourceFun(orderChannel) == true) {
-        if (this.payable > this.paid) {
-          this.isLowPrice = true;
-        }
+        this.isLowPrice = this.totalPrice > this.paid;
       }
     },
 
@@ -1528,7 +1534,7 @@ export default {
   color: red;
 }
 .registration {
-  float: left;
+  display: inline-block;
   margin: 40px 15px 40px 3px;
   text-align: center;
 }

@@ -88,12 +88,11 @@ const ProcessManageMixin= {
           let { enrollName, singlePrice }= guest;
           let key= `${enrollName}_${singlePrice}`;
           // 不知道存不存在这个情况，过去有一个报名类型，但是现在没有了，这个时候hitEnroll为undefined
-          let hitEnroll= enrolls.find(el => el.enrollName=== enrollName);
           // guest的报名类型不存在于当前enrolls
           if(!(key in salePriceReflect)){
             salePriceReflect[key]= [];
-            // 如果hitEnroll不存在，则手动建立一个过期报名
-            salePriceReflect[key].enroll= hitEnroll || this.passedMaker(salePriceReflect[key]);
+            // 手动建立一个过期报名类型
+            salePriceReflect[key].enroll= this.passedMaker(guest);
             this.salePrice.push(salePriceReflect[key]);
           };
           // guest的报名类型存在于当前enrolls
@@ -146,11 +145,13 @@ const ProcessManageMixin= {
         if(quota && currentCount+ varied> quota){
           varied= quota- currentCount;
           this.$message.info(`超过当前报名类型配额，最多新增${ varied }个报名`);
+          cb();
         }
         // 当没有配额，且操作后大于剩余数量
         if(!quota && varied> this.positionLeft){
           varied= this.positionLeft;
           this.$message.info(`库存不足，最多新增${ varied }个报名`);
+          cb();
         }
   // 结束
   
@@ -165,6 +166,7 @@ const ProcessManageMixin= {
           let newEnroll= this.enrollMaker(enroll, staticObj)
           proto.push(newEnroll);
           successed.push(newEnroll);
+          // 新增的再提交的时候要赋值相同的 createTime ，用来区分批次
           this.newEnrollList.push(newEnroll);
         }
         this.guestChangedHandler(successed, true);
@@ -195,16 +197,18 @@ const ProcessManageMixin= {
       favourableChangeHandler(item){
         let { price, favMode }= item;
         let proto= this.favourableProto.find(el => el.id=== item.id);
-        let { price: priceProto, currentPrice }= proto;
+        let { price: priceProto, varied: variedProto }= proto;
         let varied= 0;
-        // 如果输入不合规，则以旧值还原
-        if(this.$isNull(price) || isNaN(parseFloat(price))) return item.price= currentPrice;
-        proto.currentPrice= parseFloat(price);
+        // 如果输入不合规，则以旧值(原值加上最后一次改变)还原
+        if(this.$isNull(price) || isNaN(parseFloat(price))) return item.price= priceProto + variedProto;
         varied= parseFloat(price)- priceProto;
-        this.changedPrice+= (favMode=== 1? 1: -1)* varied- (favMode=== 1? 1: -1)* currentPrice;
+        this.changedPrice+= (favMode=== 1? 1: -1) * (varied- variedProto);
+        // 记录最后一次
+        proto.varied= varied;
         // 旧逻辑
         this.isSaveBtnClick();
         this.isChangeNumberClick();
+        this.replenishInfoToastFun(this.orderget.orderChannel);
       },
 
       // 报名信息引起的钱数余位变化
@@ -221,6 +225,7 @@ const ProcessManageMixin= {
         // 旧逻辑
         this.isSaveBtnClick();
         this.isChangeNumberClick();
+        this.replenishInfoToastFun(this.orderget.orderChannel);
       },
     },
 
@@ -232,11 +237,13 @@ const ProcessManageMixin= {
       globalMount(orderDetail){
         let { priceType, favourable }= orderDetail;
         this.propPriceType= priceType;
-        this.favourableProto= this.$deepCopy(favourable).map(el => Object.assign(el, { currentPrice: el.price }));
+        this.favourableProto= this.$deepCopy(favourable).map(el => Object.assign(el, { varied: 0 }));
         // 出行人信息数组的映射
         this.salePriceReflect= {};
         // 新添加的所有报名实例
         this.newEnrollList= [];
+        // 过期报名类型
+        this.passedMakerCache= {};
 
         // 应该是关闭时重置，先放到这里
         this.totalPrice= 0; // 之前总价
@@ -315,7 +322,6 @@ const ProcessManageMixin= {
 
       // 报名信息
       enrollDetailMaker(){
-        console.log(this.salePrice)
         let str= '';
         let singlePrice;
         let price= 0;
@@ -328,14 +334,21 @@ const ProcessManageMixin= {
         this.enrollsDetailStr= str;
         return price;
       },
-
+      
+      /**
+       * @description: 过期的报名类型，先查 passedMakerCache 里是否有对应的enroll，没有则建立一个带有passed属性enroll
+       */
       passedMaker(guest){
         let { enrollID, enrollName, singlePrice }= guest;
+        let key= `${enrollName}_${singlePrice}`;
+        if(key in this.passedMakerCache) return this.passedMakerCache[key];
         return {
           enrollID, 
           enrollName, 
           price_01: singlePrice,
           price_02: singlePrice,
+          children: [],
+          passed: true
         }
       },
 
