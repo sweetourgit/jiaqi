@@ -1444,7 +1444,7 @@ export default {
     // },
     replenishInfoToastFun(orderChannel) {
       if (this.orderSourceFun(orderChannel) == true) {
-        this.isLowPrice = this.totalPrice > this.paid;
+        this.isLowPrice = (this.totalPrice + this.changedPrice) >= this.paid;
       }
     },
 
