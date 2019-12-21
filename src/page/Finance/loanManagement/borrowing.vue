@@ -385,7 +385,7 @@
           打印本页详情信息
         </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo" ref="printHandle"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo" ref="printHandle" v-if="checkIncomeShow"></checkLoanManagement>
     </el-dialog>
     <!-- 查看无收入借款申请详情弹窗 END -->
   </div>

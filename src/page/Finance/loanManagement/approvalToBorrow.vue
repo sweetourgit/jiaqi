@@ -460,23 +460,23 @@ import moment from 'moment'
       },
       // 详情弹窗()
       checkIncome(index, row){
-      this.ifClick = false
-      this.ifPassClick = true
-      this.getCheckTypeEX = row.checkTypeEX
-      let _this = this
-      this.arr2.forEach(function (item) {
-        if (row.guid == item.jq_ID){
-          _this.getWorkItemId = item.workItemID
-        }
-      })
-      this.paymentID=row.paymentID;
-      this.pid = row.paymentID;
-      this.acoutInfo = row
-      this.detailstShow = true;
-      this.getLabel();
+        this.ifClick = false
+        this.ifPassClick = true
+        this.getCheckTypeEX = row.checkTypeEX
+        let _this = this
+        this.arr2.forEach(function (item) {
+          if (row.guid == item.jq_ID){
+            _this.getWorkItemId = item.workItemID
+          }
+        })
+        this.paymentID=row.paymentID;
+        this.pid = row.paymentID;
+        this.acoutInfo = row
+        this.detailstShow = true;
+        this.getLabel();
       },
       closeDetailstShow(){
-      this.detailstShow = false;
+        this.detailstShow = false;
       },
       // 获取一条详情
       getLabel(){

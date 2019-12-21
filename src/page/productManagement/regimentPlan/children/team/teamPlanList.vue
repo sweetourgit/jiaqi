@@ -473,7 +473,7 @@ export default {
   padding: 20px 0 10px 10px;
   width: 1390px;
   background-color: #f7f7f7;
-}
+} 
 .el-input {
   width: auto;
 }
