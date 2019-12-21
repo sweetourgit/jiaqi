@@ -192,7 +192,7 @@
         >取消订单</el-button>
         <!-- 修改订单状态按钮:disabled="isChangeNumber || isLowPrice"-->
         <!-- 订单来源为线下直客的时候订单总额不等于已付金额时 加上islowPrice -->
-        <el-button
+        <el-button sign="sign"
           type="primary"
           v-if="orderget.orderStatus==0||orderget.orderStatus==10||orderget.orderStatus==1"
           @click="orderModification(orderget.orderStatus,orderget.occupyStatus)"
@@ -502,18 +502,32 @@ export default {
     },
 
     //同业的订单（月结的）记录以前的订单总价 改变后的总价差和剩余预存款和额度作对比 超过则不可保存更改
+    // isSaveBtnClick() {
+    //   if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
+    //     if (this.payable - this.prePayable > this.deposit + this.balance) {
+    //       return (this.isSaveBtn = true);
+    //     } else {
+    //       this.isSaveBtn = false;
+    //     }
+    //     if (this.payable === this.prePayable) {
+    //       return (this.isSaveBtn = false);
+    //     }
+    //   }
+    // },
     isSaveBtnClick() {
       if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
-        if (this.payable - this.prePayable > this.deposit + this.balance) {
+        if (this.totalPrice + this.changedPrice > this.deposit + this.balance) {
           return (this.isSaveBtn = true);
         } else {
           this.isSaveBtn = false;
         }
-        if (this.payable === this.prePayable) {
+        if (this.payable + this.prePayable <= 0) {
           return (this.isSaveBtn = false);
         }
       }
     },
+
+
     //唐时间转换
     timeFormat(param) {
       return param < 10 ? "0" + param : param;
@@ -557,7 +571,10 @@ export default {
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
-        this.payable < this.balance + this.deposit &&
+      
+        // this.payable < this.balance + this.deposit &&
+        this.totalPrice + this.changedPrice > this.balance + this.deposit &&
+
         status !== 9
       ) {
         this.$message.error("总价超过剩余预存款和额度");
