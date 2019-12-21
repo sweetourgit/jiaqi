@@ -204,6 +204,7 @@ const ProcessManageMixin= {
         this.changedPrice+= (favMode=== 1? 1: -1)* varied- (favMode=== 1? 1: -1)* currentPrice;
         // 旧逻辑
         this.isSaveBtnClick();
+        this.isChangeNumberClick();
       },
 
       // 报名信息引起的钱数余位变化
@@ -219,6 +220,7 @@ const ProcessManageMixin= {
         this.$nextTick(() => this.enrollDetailMaker());
         // 旧逻辑
         this.isSaveBtnClick();
+        this.isChangeNumberClick();
       },
     },
 
