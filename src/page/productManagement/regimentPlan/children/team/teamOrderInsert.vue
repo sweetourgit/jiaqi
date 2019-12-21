@@ -1071,12 +1071,12 @@ export default {
           });
         }
         // 报名信息增加enrollDetail拼接
-        for (let i = 0; i < num - preLength; i++) {
-          let price;
-          this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
-          price = this.toDecimal2(price);
-          this.enrollDetail += `${enrollName}(${price} * 1),`;
-        }
+        // for (let i = 0; i < num - preLength; i++) {
+        //   let price;
+        //   this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
+        //   price = this.toDecimal2(price);
+        //   this.enrollDetail += `${enrollName}(${price} * 1),`;
+        // }
       } else {
         for (var i = 0; i < this.tour[index].length; i++) {
           if (this.tour[index][i].cnName === "") {
@@ -1085,16 +1085,16 @@ export default {
           }
         }
         // 报名信息减少enrollDetail拼接
-        let _arr = this.enrollDetail.split(",");
-        for (let j = 0; j < preLength - num; j++) {
-          for (let i = _arr.length - 1; i => 0; i--) {
-            if (_arr[i].indexOf(enrollName) != -1) {
-              _arr.splice(i, 1);
-              this.enrollDetail = _arr.toString();
-              break
-            }
-          }
-        }
+        // let _arr = this.enrollDetail.split(",");
+        // for (let j = 0; j < preLength - num; j++) {
+        //   for (let i = _arr.length - 1; i => 0; i--) {
+        //     if (_arr[i].indexOf(enrollName) != -1) {
+        //       _arr.splice(i, 1);
+        //       this.enrollDetail = _arr.toString();
+        //       break
+        //     }
+        //   }
+        // }
       }
     },
     submitForm(formName, index) {
@@ -1232,24 +1232,24 @@ export default {
       });
     },
     // 点击确认占位时 取他用的是直客价格还是同业价格然后拼接enrollDetail this.ruleForm.price = 1 取price_01的价格  2就是price_02
-    getTypePrice() {
-      // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成 
-      let arr = this.enrollDetail.split(",")
-      arr.pop()
-      for(let i = 0; i < arr.length; i++) {
-        arr[i] = arr[i].replace(/\s*/g, '')
-        for(let j = 0; j < this.salePrice.length; j++) {
-          if(arr[i].indexOf(this.salePrice[j].enrollName) !== -1) {
-            let first = arr[i].indexOf("(")
-            let end = arr[i].indexOf("*")
-            let str = arr[i].substring(first+1,end)
-            let price = "";
-            this.ruleForm.price == 1 ? price = this.toDecimal2(this.salePrice[j].price_01) : price = this.toDecimal2(this.salePrice[j].price_02)
-            this.newEnrollDetail += (arr[i].replace(str,price).toString() + ',')
-          }
-        }
-      }
-    },
+    // getTypePrice() {
+    //   // 先去indexof是否有报名类型相等然后找到 （ 和 * 的索引 之后replace替换成 
+    //   let arr = this.enrollDetail.split(",")
+    //   arr.pop()
+    //   for(let i = 0; i < arr.length; i++) {
+    //     arr[i] = arr[i].replace(/\s*/g, '')
+    //     for(let j = 0; j < this.salePrice.length; j++) {
+    //       if(arr[i].indexOf(this.salePrice[j].enrollName) !== -1) {
+    //         let first = arr[i].indexOf("(")
+    //         let end = arr[i].indexOf("*")
+    //         let str = arr[i].substring(first+1,end)
+    //         let price = "";
+    //         this.ruleForm.price == 1 ? price = this.toDecimal2(this.salePrice[j].price_01) : price = this.toDecimal2(this.salePrice[j].price_02)
+    //         this.newEnrollDetail += (arr[i].replace(str,price).toString() + ',')
+    //       }
+    //     }
+    //   }
+    // },
     regimentType(ID, index, formName) {
       //获取状态
       this.$http
@@ -1288,25 +1288,25 @@ export default {
           //   }
           // }
           // 拼接字段 enrollDetail报名类型详情
-          // let enrollDetail = "";
-          // this.salePrice.forEach((ele, idx) => {
-          //   let price=0;
-          //   if(this.ruleForm.price == 1){
-          //     price = this.toDecimal2(ele.price_01);
-          //   }else{
-          //     price = this.toDecimal2(ele.price_02);
-          //   }
-          //   //let price = this.toDecimal2(ele.price_01);
-          //   if(this.enrolNum[idx]!==0){
-          //     enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
-          //   }
-          // });
+          let enrollDetail = "";
+          this.salePrice.forEach((ele, idx) => {
+            let price=0;
+            if(this.ruleForm.price == 1){
+              price = this.toDecimal2(ele.price_01);
+            }else{
+              price = this.toDecimal2(ele.price_02);
+            }
+            //let price = this.toDecimal2(ele.price_01);
+            if(this.enrolNum[idx]!==0){
+              enrollDetail += ` [${ele.enrollName}${price}]*${this.enrolNum[idx]},`;
+            }
+          });
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
             if (this.ifOrderInsert === true) {
               if (this.teampreviewData.regimentType === 1) {
                 //判断是否停售 1正常
-                this.getTypePrice();
+                // this.getTypePrice();
                 if (this.ruleForm.orderRadio === "1") {
                   //判断是同业下单还是直客下单  1是直客  2是同业
                   this.ifOrderInsert = true;
@@ -1357,7 +1357,7 @@ export default {
                               : new Date().getTime() / 1000 + 24 * 60 * 60,
                           orderChannel: Number(this.ruleForm.orderRadio),
                           priceType: Number(this.ruleForm.price),
-                          orgID: sessionStorage.getItem("id"),
+                          orgID: 0,
                           userID: sessionStorage.getItem("id"),
                           replacesale: (this.ruleForm.market = ""
                             ? 0
@@ -1372,7 +1372,7 @@ export default {
                           guests: guestAll,
                           //guests: guest,
                           number: number,
-                          enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
+                          enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                         }
                       }
                     )
@@ -1478,7 +1478,7 @@ export default {
                                 guests: guestAll,
                                 // guests: guest,
                                 number: number,
-                                enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
+                                enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                               }
                             }
                           )
@@ -1604,7 +1604,7 @@ export default {
                               guests: guestAll,
                               //guests: guest,
                               number: number,
-                              enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
+                              enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                             }
                           }
                         )
@@ -1722,21 +1722,21 @@ export default {
         this.tour[index].splice(type, 1); //手动删除单条出行人信息
         this.enrolNum[index] = this.tour[index].length; //删除出行人信息后，表格长度和报名人数相等
         this.preLength[index] = this.enrolNum[index];
-        this.applyEnrollDetail(enrollName);
+        // this.applyEnrollDetail(enrollName);
         //console.log(this.enrolNum[index])
       });
     },
     // 删除出行人 同步报名信息的字段
-    applyEnrollDetail(enrollName) {
-      let _arr = this.enrollDetail.split(",");
-      for (let i = _arr.length - 1; i => 0; i--) {
-        if (_arr[i].indexOf(enrollName) != -1) {
-          _arr.splice(i, 1);
-          this.enrollDetail = _arr.toString();
-          break;
-        }
-      }
-    },
+    // applyEnrollDetail(enrollName) {
+    //   let _arr = this.enrollDetail.split(",");
+    //   for (let i = _arr.length - 1; i => 0; i--) {
+    //     if (_arr[i].indexOf(enrollName) != -1) {
+    //       _arr.splice(i, 1);
+    //       this.enrollDetail = _arr.toString();
+    //       break;
+    //     }
+    //   }
+    // },
     fillTour(type, index) {
       this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
       if (this.tour[type][index].enName != "") {
@@ -1797,7 +1797,7 @@ export default {
     },
     //线下直客销售模糊查询
     querySearch1(queryString1, cb) {
-      this.marketList = [];
+      this.marketList01 = [];
       this.$http
         .post(this.GLOBAL.serverSrc + "/org/api/userlist", {
           object: {
@@ -1808,7 +1808,7 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              this.marketList.push({
+              this.marketList01.push({
                 value: res.data.objects[i].name,
                 id: res.data.objects[i].id
               });
@@ -1823,7 +1823,7 @@ export default {
             this.nullShowGuest = false;
           }
           var results = queryString1
-            ? this.marketList.filter(this.createFilter(queryString1))
+            ? this.marketList01.filter(this.createFilter(queryString1))
             : [];
           cb(results);
         })
@@ -1907,7 +1907,7 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
           object: {
-            name: queryString3,
+            selName: queryString3,
             isDeleted: 0,
             state: 2
           }
@@ -1915,17 +1915,28 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             for (let i = 0; i < res.data.objects.length; i++) {
-              this.tableData2.push({
-                value: res.data.objects[i].name,
-                id: res.data.objects[i].id,
-                supplierType: res.data.objects[i].supplierType,
-                balance: res.data.objects[i].balance,
-                deposit: res.data.objects[i].deposit,
-                settlementType: res.data.objects[i].settlementType
-              });
-              this.supplier_id = res.data.objects[i].id
-                ? res.data.objects[i].id
-                : 0;
+              if(this.ruleForm.travel == ""){
+                this.tableData2.push({
+                  value: res.data.objects[i].selName,
+                  id: res.data.objects[i].id,
+                  supplierType: res.data.objects[i].supplierType,
+                  balance: res.data.objects[i].balance,
+                  deposit: res.data.objects[i].deposit,
+                  settlementType: res.data.objects[i].settlementType
+                });
+                queryString3 = " "
+              }else{
+                if (res.data.objects[i].selName.indexOf(this.ruleForm.travel) != -1) {
+                  this.tableData2.push({
+                    value: res.data.objects[i].selName,
+                    id: res.data.objects[i].id,
+                    supplierType: res.data.objects[i].supplierType,
+                    balance: res.data.objects[i].balance,
+                    deposit: res.data.objects[i].deposit,
+                    settlementType: res.data.objects[i].settlementType
+                  });
+                }
+              }
             }
           }
           if (res.data.objects) {
@@ -1962,7 +1973,8 @@ export default {
       this.tradeID = "";
       setTimeout(() =>{ // 输入同业社名称同业销售带出来
       	this.ruleForm.travelSales = this.marketList[0].value;
-      	this.tradeID = this.marketList[0].id;
+      	//this.tradeID = this.marketList[0].id;
+        this.tradeSales = this.marketList[0].userCode;
       },300)
       this.querySearch4();
       setTimeout(() =>{ // 输入同业社名称商户销售带出来

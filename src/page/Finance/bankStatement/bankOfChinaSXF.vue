@@ -1,14 +1,14 @@
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
-    <el-form :model="ruleForm" ref="ruleForm" label-width="110px" id="form-content">
+    <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
       <el-row type="flex" class="row-bg">
         <el-col :span="7">
-          <el-form-item label="匹配状态:" class="status-length" prop="matchType">
-            <el-select v-model="ruleForm.matchType" placeholder="请选择匹配状态">
+          <el-form-item label="状态:" class="status-length" prop="matchType">
+            <el-select v-model="ruleForm.matchType" placeholder="请选择状态">
               <el-option label="全部" value="0"></el-option>
-              <el-option label="剩余金额为0" value="1"></el-option>
-              <el-option label="剩余金额不为0" value="2"></el-option>
+              <el-option label="未导入" value="1"></el-option>
+              <el-option label="已导入" value="2"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -44,7 +44,7 @@
     </el-form>
     <!-- 搜索表单 END -->
     <div class="buttonsDv">
-      <!-- <el-button @click="addStatement" type="primary">添加中国银行流水单</el-button> -->
+      <el-button @click="importFun" type="warning" :disabled="clickable">导入财务系统</el-button>
       <el-upload
         class="upload-demo"
         :action="UploadUrl()"
@@ -58,14 +58,18 @@
       </el-upload>
     </div>
     <!-- 表格 -->
-    <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
+    <el-table ref="multipleTable" :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content" @row-click="handleRowClick" @selection-change="selectionChange">
+      <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
+      </el-table-column>
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
-          <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+      <el-table-column prop="id" label="状态" align="center">
+        <template>
+          <span>字段暂无</span>
+        </template>
       </el-table-column>
       <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
       </el-table-column>
@@ -115,20 +119,18 @@
       </el-pagination>
     </div>
     <!-- 表格 END -->
-    <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
 
 <script type="text/javascript">
 import moment from 'moment'
-import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
 
 export default {
   components: {
-    orderDetail
   },
   data() {
     return {
+      clickable: true,
       tableData: [], // 表格数据
       ruleForm: {
         matchType: '', // 匹配状态 
@@ -136,6 +138,8 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
+
+      multipleSelection: [], // 选择项
 
       pageCurrent: 1,
       pageSize: 10,
@@ -167,6 +171,70 @@ export default {
         return ''
       }
     },
+
+    // 导入
+    importFun(){
+      const that = this;
+      this.$confirm('是否确认导入财务系统', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(() => {
+        // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/delete", {
+        //   "id": row.id,
+        // }).then(function(response) {
+        //   if (response.data.isSuccess) {
+        //     that.loadData();
+        //     that.$message({
+        //       type: 'info',
+        //       message: '已删除'
+        //     });
+        //   } else {
+        //     if(response.data.message){
+        //       that.$message.warning(response.data.result.message);
+        //     }else{
+        //       that.$message.warning("删除失败~");
+        //     }
+        //   }
+        // }).catch(function(error) {
+        //   console.log(error);
+        //   that.$message.warning("删除失败~");
+        // });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消导入'
+        });
+      })
+    },
+
+    selectInit(row, index){
+      if(row.id == ''){
+        return false  //不可勾选
+      }else{
+        return true  //可勾选
+      }
+    },
+
+    // 整行点击
+    handleRowClick(row, column, event){
+      if(row.id){
+        this.$refs.multipleTable.toggleRowSelection(row);
+      }
+    },
+
+    // 选择项更改
+    selectionChange(val) {
+      console.log(val);
+      if(val.length > 0){
+        this.clickable = false;
+      }else{
+        this.clickable = true;
+      }
+      this.multipleSelection = val;
+    },
+
+    // 文件上传
     UploadUrl(){
       return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
     },
@@ -189,26 +257,8 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
-    searchHandInside(){
-      this.pageIndex = 1;
-      this.loadData();
-    },
-    emptyButtonInside(){
-      this.$refs['ruleForm'].resetFields();
-      this.pageIndex = 1;
-      this.loadData();
-    },
-    orderDetail(row){
-      this.dialogFormVisible = true;
-      this.info = {
-        id: row.id,
-        type: 0
-      };
-    },
-    close(){
-      this.dialogFormVisible = false;
-      this.info = '';
-    },
+
+    // 删除
     deleteFun(row){
       const that = this;
       this.$confirm('是否需要删除', '提示', {
@@ -243,6 +293,18 @@ export default {
         });
       })
     },
+
+    // 搜索/重置
+    searchHandInside(){
+      this.pageIndex = 1;
+      this.loadData();
+    },
+    emptyButtonInside(){
+      this.$refs['ruleForm'].resetFields();
+      this.pageIndex = 1;
+      this.loadData();
+    },
+    
     handleSizeChange(val){
       this.pageSize = val;
       this.pageCurrent = 1;
@@ -262,14 +324,16 @@ export default {
     },
     loadData(){
       const that = this;
+
       this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-        "pageIndex": this.pageCurrent,
+        "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
         "object": {
-          "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
           "transaction_reference_number": this.ruleForm.code,
-          "begin": this.ruleForm.dateStart ? this.ruleForm.dateStart : "2000-05-16",
-          "end": this.ruleForm.dateEnd ? this.ruleForm.dateEnd : "2099-05-16"
+          "begin": this.ruleForm.dateStart ? moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00') : "2000-05-16",
+          "end": this.ruleForm.dateEnd ? moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59') : "2099-05-16",
+          "seachType": 2,
+          "import_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0
         }
       }).then(function (obj) {
         // console.log('中国银行',obj);
@@ -287,6 +351,7 @@ export default {
         }
       })
     },
+    // 时间限制
     beginDate(){
       const that = this;
       return {
@@ -321,7 +386,7 @@ export default {
     margin: 25px auto;
     height: auto;
     border: 1px solid #e6e6e6;
-    #form-content{
+    .form-content{
       background: #f7f7f7;
       padding: 20px 10px;
       margin: 20px 10px;
@@ -338,6 +403,9 @@ export default {
     .buttonsDv{
       width: 98%;
       margin: 5px auto;
+      .el-button{
+        margin-right: 10px;
+      }
     }
     #table-content{
       width: 98%;
@@ -351,8 +419,11 @@ export default {
       text-align: center;
       margin: 30px auto;
     }
-    .el-upload-list{
-      display: none!important;
+    .upload-demo{
+      display: inline-block!important;
+      .el-upload-list{
+        display: none!important;
+      }
     }
   }
 

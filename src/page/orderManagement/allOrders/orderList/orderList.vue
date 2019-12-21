@@ -203,7 +203,7 @@
                 <td class="longWeight">{{getListOneMessage.date}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">数量&nbsp;&nbsp;</td>
-                  <td class="longWeight" valign="top">{{enrollDetailShow}}</td>
+                  <td class="longWeight" valign="top">{{getListOneMessage.enrollDetail}}</td>
                 </div>
                 <td class="tr">产品类型&nbsp;&nbsp;</td>
                 <td class="longWeight">跟团游</td>
@@ -528,8 +528,8 @@ export default {
           // console.log("请求一条数据的",res)
           this.enrollDetailShow = ""
           this.getListOneMessage = res.data.object;
-          let enrollDetail = this.getListOneMessage.enrollDetail;
-          this.formatData(enrollDetail);
+          // let enrollDetail = this.getListOneMessage.enrollDetail;
+          // this.formatData(enrollDetail);
           // console.log(enrollDetail);
           // if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
           //   this.getListOneMessage.enrollDetail = enrollDetail.substring(
@@ -587,51 +587,51 @@ export default {
         });
     },
     // 整理数据报名信息的格式显示
-    formatData(origindata) {
-      let data = JSON.parse(origindata);
-      let keys = Object.keys(data);
-      let [result, tempresult] = [[], []];
-      keys.forEach(key => {
-        let values = data[key];
-        values.forEach(value => {
-          tempresult.push({
-            type: key,
-            price: value[0],
-            number: value[1]
-          });
-          result.push({
-            type: key,
-            price: value[0],
-            number: 0
-          });
-        });
-      });
+    // formatData(origindata) {
+    //   let data = JSON.parse(origindata);
+    //   let keys = Object.keys(data);
+    //   let [result, tempresult] = [[], []];
+    //   keys.forEach(key => {
+    //     let values = data[key];
+    //     values.forEach(value => {
+    //       tempresult.push({
+    //         type: key,
+    //         price: value[0],
+    //         number: value[1]
+    //       });
+    //       result.push({
+    //         type: key,
+    //         price: value[0],
+    //         number: 0
+    //       });
+    //     });
+    //   });
       // this.tempresult = tempresult;
-      result.forEach(res => {
-        tempresult.forEach(tempres => {
-          if (tempres.type == res.type && tempres.price == res.price) {
-            res.number += tempres.number;
-          }
-        });
-      });
-      let [_resultstring, splitstring] = [[], "?*&"];
-      result.forEach(res => {
-        let resstring = [res.type, res.price, res.number].join(splitstring);
-        if (_resultstring.indexOf(resstring) < 0) {
-          _resultstring.push(resstring);
-        }
-      });
+    //   result.forEach(res => {
+    //     tempresult.forEach(tempres => {
+    //       if (tempres.type == res.type && tempres.price == res.price) {
+    //         res.number += tempres.number;
+    //       }
+    //     });
+    //   });
+    //   let [_resultstring, splitstring] = [[], "?*&"];
+    //   result.forEach(res => {
+    //     let resstring = [res.type, res.price, res.number].join(splitstring);
+    //     if (_resultstring.indexOf(resstring) < 0) {
+    //       _resultstring.push(resstring);
+    //     }
+    //   });
 
-      result = _resultstring.map(res => {
-        return res.split(splitstring);
-      });
-      result.forEach(item => {
-        this.enrollDetailShow += `${item[0]}(${item[1]}*${
-          item[2]
-        })`;
-      });
-      return result;
-    },
+    //   result = _resultstring.map(res => {
+    //     return res.split(splitstring);
+    //   });
+    //   result.forEach(item => {
+    //     this.enrollDetailShow += `${item[0]}(${item[1]}*${
+    //       item[2]
+    //     })`;
+    //   });
+    //   return result;
+    // },
 
     createFilter(queryString) {
       return restaurant => {

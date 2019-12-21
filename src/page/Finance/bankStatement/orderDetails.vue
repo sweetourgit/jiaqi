@@ -2,7 +2,7 @@
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
     <el-dialog title="查看订单" :visible="dialogFormVisible" width=70% @close="closeAdd">
-      <div class="totalMoney"><i class="el-icon-info"></i>总计：{{totalMoney}}元 </div>
+      <div class="totalMoney"><i class="el-icon-info"></i>总收款金额：{{totalMoney}}元 </div>
       <div class="table_trip">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
           <el-table-column prop="orderID" label="订单ID" align="center">
@@ -21,11 +21,12 @@
           </el-table-column>
           <el-table-column prop="price" label="收款金额" align="center">
           </el-table-column>
-          <el-table-column prop="guestInformation" label="操作" align="center">
+          <!-- 解绑暂时不需要做 -->
+          <!-- <el-table-column prop="guestInformation" label="操作" align="center">
             <template slot-scope="scope">
-              <el-button @click="unbind(scope.row)" type="text"></el-button>
+              <el-button @click="unbind(scope.row)" type="text">解绑</el-button>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <div class="block">
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
@@ -83,11 +84,14 @@ export default {
       }
     },
     closeAdd() {
+      this.total = 0;
+      this.pageCurrent = 1;
+      this.totalMoney = 0;
       this.$emit('close', false);
     },
-    unbind(row) {
-      alert("解绑~未绑定接口！");
-    },
+    // unbind(row) {
+    //   alert("解绑~未绑定接口！");
+    // },
     handleSizeChange(val){
       this.pageSize = val;
       this.pageCurrent = 1;
@@ -108,14 +112,14 @@ export default {
           "type": this.info.type // 0 中国银行；1 兴业银行；2 微信支付宝明细；
         }
       }).then(function (obj) {
-        console.log('关联订单',obj);
+        // console.log('关联订单',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
           let totalM = 0;
           that.tableData.forEach(function (item, index, arr) {
-            // item.createTime_dt = item.createTime_dt.split('T')[0];
-            totalM += parseFloat(item.payable);
+            item.createTime_dt = item.createTime_dt.split('T')[0] +' '+ item.createTime_dt.split('T')[1].split('.')[0];
+            totalM += parseFloat(item.price);
           });
           that.totalMoney = totalM;
         }else{

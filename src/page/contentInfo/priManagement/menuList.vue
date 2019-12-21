@@ -6,7 +6,7 @@
      <div class="tree-list">
      <div v-if="showList" style="padding-bottom:50px">
      <el-row class="button">
-       <el-button :disabled="forbiddenAdd" @click="openMenu(1,'添加菜单')">新增</el-button>
+       <el-button @click="openMenu(1,'添加菜单')">新增</el-button>
        <el-button :disabled="forbidden" @click="delMenu">删除</el-button>
        <el-button :disabled="forbidden" @click="openMenu(2,'编辑菜单')">编辑</el-button>
        <el-button :disabled="forbidden" @click="operation(1)">页面权限</el-button>
@@ -109,7 +109,6 @@ export default {
         groupList: [],
         multipleSelection: [],   
         forbidden:true,         
-        forbiddenAdd:false,
         title:"",
         dialogFormVisible:false,
         showList:false,
@@ -149,15 +148,12 @@ export default {
       },
       // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
-        console.log(treeNode)
-        this.forbiddenAdd=false;
-        this.parentID = treeNode.id;
         if(treeNode.isParent === true){
-          this.menuList();
+          this.parentID = treeNode.id;
         }else{
-          this.forbiddenAdd=true;
-          console.log("末级");
+          this.parentID = treeNode.parentID;       
         }
+        this.menuList();         
       },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {

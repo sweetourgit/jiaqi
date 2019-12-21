@@ -119,24 +119,8 @@
                 <div class="handle_time" v-if="find==1"><span>创建时间:</span><span style="margin-left: 10px;" >{{item.content.createTime | formatDate}}</span></div>
               </div>
 
-              <div style="color: red; position: absolute;left: 20px;top: 65px;">*</div>
-                <!-- <el-form-item label="团期计划" porp="groupCode">
-                  <el-input
-                    v-model="item.content.groupCode"
-                    ref="groupCode"
-                    placeholder="请输入"
-                    style="width: 240px;"
-                    :disabled="change"
-                   ></el-input>
-                  <el-input
-                    v-model="item.content.productName"
-                    placeholder="请输入或者选择团期计划"
-                    style="width: 240px;"
-                    :disabled="change"
-                  ></el-input>
-                  <el-button size="mini" @click="planDialog()" v-if="find==0">选择</el-button>
-                </el-form-item> -->
-                <el-form-item label="团期计划" porp="groupCode"  >
+              <div style="color: red; position: absolute;left: 20px;top:15px;" v-if="find==0" >*</div>
+              <el-form-item label="团期计划" porp="groupCode" v-if="find==0"  >
                   <el-autocomplete
                       v-model="item.content.groupCode"
                       ref="groupCode"
@@ -149,6 +133,7 @@
                       :trigger-on-focus="false"
                     >
                     </el-autocomplete>
+                  
                     <el-input 
                     style="width:300px;" 
                     disabled 
@@ -156,21 +141,20 @@
                     placeholder="通过输入团期计划,自动补充产品名称"
                     ></el-input>
                     <el-button size="mini" @click="planDialog()" v-if="find==0">选择</el-button>
-                </el-form-item>
-
-                <el-form-item label="摘要" porp="mark">
-                  <el-input
-                    v-model="item.content.mark"
-                    ref="mark"
-                    placeholder="请输入"
-                    style="width: 480px;"
-                    :disabled="change"
-                  ></el-input>
-                </el-form-item>
-                <div style="color: red; color: red; position: absolute;top:127px;left: 48px;">*</div>
-                <el-form-item label="附件：" label-width="140px" required>
+              </el-form-item>
+               <div style="color:rgba(255,255,255,0.4)">{{item.content.id}}</div>
+              <div style="color: red; color: red; position: absolute;top:80px;left: 20px;" v-if="find==0">*</div>
+              <el-form-item label="摘要" porp="mark" v-if="find==0">
+                <el-input
+                  v-model="item.content.mark"
+                  ref="mark"
+                  placeholder="请输入"
+                  style="width: 480px;"
+                  :disabled="change"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="附件" label-width="75px" required   v-if="find==0">
                   <el-upload 
-                  v-if="find==0"
                   ref="image" 
                   prop="image"
                   class="upload-demo" 
@@ -186,19 +170,26 @@
                   :file-list="item.content.files">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
-                  <el-upload 
-                  v-if="find==1"
-                  class="upload-demo" 
-                  name="files"
-                  :action= "uploadUrl"
-                  :show-file-list=true
-                  :disabled=true
-                  :on-change="handleChange"
-                  :on-preview="handlePreview"
-                  :file-list="item.content.files">
-                  </el-upload>
- 
-                </el-form-item>
+                 </el-form-item>
+
+               <div class="handle_div">
+                    <div class="handle_id" v-if="find==1"><span>团期计划:</span><span style="margin-left: 10px;">{{item.content.groupCode}}</span></div>
+                    <div class="handle_people" v-if="find==1"><span>产品名称:</span><span style="margin-left: 10px;">{{item.content.productName}}</span></div>
+                    <div class="handle_time" v-if="find==1"><span>摘要:</span><span style="margin-left: 10px;" >{{item.content.mark}}</span></div>
+              </div>
+              <el-form-item  label="附件" label-width="80px" v-if="find==1">
+                    <el-upload 
+                    class="upload-demo" 
+                    name="files"
+                    :action= "uploadUrl"
+                    :show-file-list=true
+                    :disabled= true
+                    :on-change="handleChange"
+                    :on-preview="handlePreview"
+                    :file-list="item.content.files">
+                    </el-upload>
+              </el-form-item>
+
                 <div class="re_style">
                   <el-radio v-model="radio" label="1">关联单据</el-radio>
                   <!-- <el-radio v-model="radio" label="2">手添报销明细</el-radio> -->
@@ -206,7 +197,7 @@
                 <div v-if="radio==1" class="re_style" style="margin-top: 20px">
                   <el-button @click="addbx(item.content)" v-if="find==0">增加1</el-button>
                 </div>
-                <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 64px;margin-top: 10px; ">
+                <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 40px;margin-top: 10px; ">
                   <i
                     style="float: left; margin-left: 10px;margin-top: 7px;"
                     class="el-icon-warning"
@@ -222,35 +213,34 @@
                 </div>
                 <div v-if="radio==1">
                    <div class="re_style">
-                    <el-table :data="item.content.payments" border style="width: 100%; margin-top: 30px">
+                    <el-table :data="item.content.payments" border style="width: 100%; margin-top: 30px"> 
                       
-                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="100"></el-table-column>
-                      <el-table-column prop="supplierTypeEX" label="借款类型" width="90"></el-table-column>
-                      <el-table-column prop="supplierName" label="供应商" width="100"></el-table-column>
-                      <el-table-column prop="createUser" label="申请人" width="100"></el-table-column>
-                      <el-table-column prop="paymentMark" label="摘要" width="120"></el-table-column>
-                      <el-table-column prop="paymentPrice" label="借款金额" width="100"></el-table-column>
-                      <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column>
-
-                      <el-table-column prop="price" label="报销金额" style="background: yellow" width="140"  v-if="find==0">
+                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="180" align="center"></el-table-column>
+                      <el-table-column prop="supplierTypeEX" label="借款类型" width="130" align="center"></el-table-column>
+                      <el-table-column prop="supplierName" label="供应商" width="180" align="center"></el-table-column>
+                      <el-table-column prop="createUser" label="申请人" width="125" align="center"></el-table-column>
+                      <el-table-column prop="paymentMark" label="摘要" width="180" align="center"></el-table-column>
+                      <el-table-column prop="paymentPrice" label="借款金额" width="130" align="center"></el-table-column>
+                      <!-- <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column> -->
+                      <el-table-column prop="wcount" label="本次报销金额"   width="140"   align="center" v-if="find==0">
                         <template slot-scope="scope">
                           <el-input @input='addressChange(scope.row.price)' v-model="scope.row.price" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==0">
+                      <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==0"   align="center">
                         <template slot-scope="scope">
                           <el-input v-model="scope.row.peopleCount" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="paymentID" label="操作" width="140"  v-if="find==0">
+                      <el-table-column prop="paymentID" label="操作" width="120"  v-if="find==0" align="center">
                           <template slot-scope="scope">
                           <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</div>
                          </template>
                       </el-table-column>
                     
                       <!-- 不能改的 -->
-                       <el-table-column prop="price" label="报销金额" style="background: yellow" width="140" v-if="find==1">  </el-table-column>
-                       <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==1"> </el-table-column>
+                       <el-table-column prop="price" label="本次报销金额" width="140" align="center" v-if="find==1">  </el-table-column>
+                       <el-table-column prop="peopleCount" label="人数" width="140" align="center"  v-if="find==1"> </el-table-column>
                        
                     </el-table>
                   </div>
@@ -392,33 +382,20 @@
             <el-button @click="T_update" type="primary">重置2</el-button>
           </div>
         <el-table 
-        :data="joinData" 
-        border 
+         :data="joinData" 
+         border 
+         :highlight-current-row="true"
+         @row-click="joinData_btn"
         style="width: 100%; margin-top: 30px">
-          <el-table-column prop="paymentID" label="关联单号" width="60"></el-table-column>
-          <el-table-column prop="supplierTypeEX" label="类型" width="80"></el-table-column>
-          <el-table-column prop="supplierName" label="供应商" width="90"></el-table-column>
-          <el-table-column prop="orgName" label="部门" width="60"></el-table-column>
-          <el-table-column prop="createUser" label="申请人" width="80"></el-table-column>
-          <el-table-column prop="createTime" :formatter='dateFormat'  label="发起日期" width="130"></el-table-column>
-          <el-table-column prop="paymentMark" label="摘要" width="130"></el-table-column>
-          <el-table-column prop="price" label="金额" width="90"></el-table-column>
-          <el-table-column prop="wcount" label="未报销金额" width="90"></el-table-column>
-          <el-table-column prop="bcount" width="120" label="报销金额">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.bcount" style="width:90px;"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="peopleCount" width="120" label="人数">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.peopleCount" style="width:90px;"></el-input>
-            </template>
-          </el-table-column>
-           <el-table-column prop="paymentID" label="操作" width="140"  v-if="find==2">
-            <template slot-scope="scope">
-             <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</div>
-            </template>
-           </el-table-column>
+          <el-table-column prop="paymentID" label="预付款和无收入结款ID" width="170" align="center"></el-table-column>
+         
+          <el-table-column prop="supplierName" label="供应商" width="220" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" width="160" align="center"></el-table-column>
+          <!-- <el-table-column prop="orgName" label="部门" width="140"  align="center"></el-table-column> -->
+          <el-table-column prop="price" label="金额" width="150" align="center"></el-table-column>
+          <!-- <el-table-column prop="wcount" label="未报销金额" width="150" align="center"></el-table-column> -->
+          <el-table-column prop="paymentMark" label="摘要" width="220" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" width="160" align="center"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="t_text_del('joinData')">取 消</el-button>
@@ -567,6 +544,7 @@ export default {
       tableData: [], //报销table
       planData: [],  //团期计划表格
       joinData:[],  //关联单据表单
+      t_joinData:[],
       payments:[],
       file: [],
       files: [], //文件上传列表
@@ -672,6 +650,7 @@ export default {
            if(this.plans.planNum !== "" || this.plans.planName !== ""){
                   this.s_content.groupCode = this.plans.planNum;
                   this.s_content.productName = this.plans.planName;
+                  this.s_content.id = this.plans.pid;
                   this.dialogFormVisible2 = false;
            }else{
                   this.dialogFormVisible2 = true;
@@ -704,6 +683,9 @@ export default {
                       if(object[i].orgName==null){
                           object[i].orgName="无";
                         }
+                          if(object[i].peopleCount == 0){
+                                   object[i].peopleCount = 1
+                                }
                       this.s_content.joinData.push({
                           paymentID:  object[i].paymentID,
                           supplierTypeEX:object[i].supplierTypeEX,
@@ -718,12 +700,10 @@ export default {
                           supplierName:object[i].supplierName,
                           peopleCount:object[i].peopleCount,
                           orgName:object[i].orgName,
-                          wcount :object[i].price - object[i].collectionPrice
+                          wcount: object[i].price - object[i].expensePrice
                           //  wcount :object[i].price - object[i].expensePrice
                       });
-                      
-                    
-                      this.joinData =this.s_content.joinData
+                       this.joinData =this.s_content.joinData
                     }
                     
                       
@@ -872,61 +852,61 @@ export default {
 
           for(var j in editableTabs){
               let submitForm_list = editableTabs[j].content;
-                if(submitForm_list.groupCode !=="" || submitForm_list.mark !== "" ||submitForm_list.files.length !== 0 ){ // 判断必填内容
-                        // for (var i in submitForm_list.files) {//重塑图片上传数组
-                        //     files_s.push({
-                        //       name:submitForm_list.files[i].name,
-                        //       url:submitForm_list.files[i].url,
-                        //     });
-                        //   };
                         if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
                                   this.$message({
-                                    message:'摘要字数不能超过80字',
-                                    type: 'warning' 
-                                });
-                                return false;
-                            }
-                        for(var n in submitForm_list.payments){//判断填写的报销金额
-                            if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
-                                  this.$message({
-                                      message:'报销金额不得大于未报销金额',
+                                      message:'摘要字数不能超过80字',
                                       type: 'warning' 
-                                    });
-                                    return false;
-                              }else if(submitForm_list.payments[n].peopleCount === 0){
-                                this.$message({
-                                      message:'人数不能为空',
-                                      type: 'warning' 
-                                    });
-                                    return false;
+                                  });
+                                  verify = 0
+                                  return;
+                                }    
+                        if(submitForm_list.groupCode !=="" && submitForm_list.mark !== "" && submitForm_list.files.length !== 0 && submitForm_list.payments.length !== 0){ // 判断必填内容
+                              // for (var i in submitForm_list.files) {//重塑图片上传数组
+                              //     files_s.push({
+                              //       name:submitForm_list.files[i].name,
+                              //       url:submitForm_list.files[i].url,
+                              //     });
+                              //   }; 
+                              for(var n in submitForm_list.payments){//判断填写的报销金额
+                                    if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
+                                          this.$message({
+                                              message:'报销金额不得大于未报销金额',
+                                              type: 'warning' 
+                                            });
+                                            verify = 0
+                                             return;
+                                      }else if(submitForm_list.payments[n].peopleCount === 0 || submitForm_list.payments[n].peopleCount === ""){
+                                        this.$message({
+                                              message:'人数不能为空',
+                                              type: 'warning' 
+                                            });
+                                            verify = 0
+                                            return;
+                                      }
                               }
-                        }
-                        this.object_lisr.push({//给数组赋值
-                                  createUser: sessionStorage.getItem('id'),//用户id
-                                  planID:this.plans.pid,//团期计划id
-                                  price:submitForm_list.t_price,//总价
-                                  mark:submitForm_list.mark,
-                                  files: submitForm_list.files , //关联数据
-                                  payments: submitForm_list.payments, //关联付款单据报销明细
-                                  checkType:0,//审批状态 
-                                })
-                         console.log(this.object_lisr,'ddb');
-                         verify = 1
-                 }else{
-                  this.$message({
-                      message: '请检查必填项',
-                      type: 'warning' 
-                  });
-                  verify = 0
-              }
+                              console.log(submitForm_list,'8080')
+                              this.object_lisr.push({//给数组赋值
+                                        createUser: sessionStorage.getItem('id'),//用户id
+                                        planID:submitForm_list.id,//团期计划id
+                                        price:submitForm_list.t_price,//总价
+                                        mark:submitForm_list.mark,
+                                        files: submitForm_list.files , //关联数据
+                                        payments: submitForm_list.payments, //关联付款单据报销明细
+                                        checkType:0,//审批状态 
+                                      })
+                                      verify = 1
+                        }else{
+                            verify = 0
+                            this.$message({
+                                message: '请检查必填项',
+                                type: 'warning' 
+                            });
+                   }
              }
             if(verify !== 0){
                this.add_form(this.object_lisr)//调用提交接口
             }
-            
-           
-
-        },
+       },
         beginWokeing(res) {  //启动工作流
             console.log(res);
             this.$http
@@ -963,9 +943,10 @@ export default {
                         guid:ruleForm.editableTabs[0].content.guid
                       })
                       .then(res => {
-                          this.pageList(1, this.pageSize);
-                          this.radio= "1";
                           this.tabIndex = 1;
+                          this.pageIndex = 1;
+                          this.currentPage4 = 1;
+                          this.pageList(1, this.pageSize);
                           this.dialogFormVisible = false;
                         if(res.data.isSuccess == true){
                             this.$message({
@@ -1023,42 +1004,57 @@ export default {
                 });
               });
           },
-           
-        t_text() {//确认添加
-            this.subscript(); 
-            let joinData =this.s_content.joinData;
-            let t_joinData=[];
-           this.s_content.t_price = 0
-            this.t_price_box = [];
-           this.s_content.payments=[];
-            for(let v in joinData){
-               t_joinData.push({
-                  createTime: joinData[v].createTime,
-                  createUser:joinData[v].createUser,
-                  groupCode:joinData[v].groupCode,
-                  orgName: joinData[v].orgName,
-                  paymentID: joinData[v].paymentID,
-                  paymentMark:joinData[v].paymentMark,
-                  paymentPrice: joinData[v].paymentPrice,
-                  peopleCount: joinData[v].peopleCount,
-                  price: joinData[v].bcount,
-                  productName:joinData[v].productName,
-                  supplierName: joinData[v].supplierName,
-                  supplierTypeEX: joinData[v].supplierTypeEX,
-                  wcount: joinData[v].wcount
-              })
-            }
-            for(let i in t_joinData){
-                    if(t_joinData[i].price!= "0" ){
-                       this.s_content.payments.push(t_joinData[i]);
-                        this.t_price_box.push(t_joinData[i].price);
-                    }
-              }
-
-            this.t_price_sum()
-            this.dialogFormVisible3 = false;
-            joinData=[];
+        joinData_btn(row) {  //获取管理订单
+         this.subscript(); 
+         this.s_content.joinData = row;
         },
+        t_text() {//确认添加
+         let joinData =this.s_content.joinData;
+          if(joinData.length  == 0){
+            this.$message({
+                type: "warning",
+                message: "请重新选择团期计划"
+              });
+              this.dialogFormVisible3 = false;
+
+          }else{
+              this.subscript(); 
+               let payments = this.s_content.payments;
+              if(payments.length == 0 ){
+                  this.s_content.payments.push(joinData);
+                  this.t_price_box.push(joinData.price);
+                  this.t_price_sum()
+                  this.dialogFormVisible3 = false;
+                  joinData=[];
+            }else{
+                 for(let i=0;i < payments.length;i++){
+                      console.log(payments[i].paymentID,'8')
+                      console.log(joinData,"9")
+                      if(joinData.paymentID != payments[i].paymentID ){
+                             this.s_content.payments.push(joinData);
+                              this.t_price_box.push(joinData.price);
+                              this.t_price_sum()
+                              this.dialogFormVisible3 = false;
+                              joinData=[];
+                          }else{
+                              this.$message({
+                                type: "warning",
+                                message: "请重新选择关联单据"
+                              });
+                              this.dialogFormVisible3 = false;
+                              joinData=[];
+                          }
+                      }
+                 
+              }
+            
+              
+
+             
+             
+          }
+            
+      },
        
         t_text_del(){//确认取消
          this.subscript();
@@ -1068,7 +1064,7 @@ export default {
         t_delete(paymentID){// 添加数据删除
           this.subscript();
           let payments_box = this.s_content.payments;
-          this.$confirm("此操作将删除该跟团游信息", "提示", {
+          this.$confirm("是否删除关联信息", "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning"
@@ -1145,22 +1141,20 @@ export default {
                   if (res.data.isSuccess == true) {
                     var d_objects = res.data.objects; 
                     let d_objects_content =[];
-                    let new_payments_box =[];
-                    let wcount_s = 0;
+                    // let wcount_s = 0;
                     for(let i in d_objects){
                             let t_sum = d_objects[i].payments.length;//多少项 
                             let qian = 0;
                             let d_price_box =[];
                       for( let s in d_objects[i].payments){
                                 d_price_box.push(d_objects[i].payments[s].price);
-                              if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
-                                  wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
-                              }else{
-                                  wcount_s=d_objects[i].payments[s].paymentPrice
-                              }
-                              let new_payments_box =[];
+                              // if(d_objects[i].payments[s].checkType == 1){ //返回0是审核中
+                              //     wcount_s = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;//未报销金额
+                              // }else{
+                              //     wcount_s=d_objects[i].payments[s].paymentPrice
+                              // }
                                 d_objects[i].payments[s].createUser = d_objects[i].createUser,
-                                d_objects[i].payments[s].wcount = wcount_s
+                                d_objects[i].payments[s].wcount = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;
                               }
                       
                           
@@ -1277,7 +1271,7 @@ export default {
             this.$set(this.s_content.files[i], "name", paths.Name);
           }
           this.image = 1;
-          console.log(files);
+          // console.log(files);
           this.uid = files[0].uid;
         }, 
         handleRemove(file, files) {//图片删除
@@ -1566,7 +1560,9 @@ export default {
             } 
         },
         departurePlan(item) { // 团期计划选中
+         this.subscript();
           this.plans.pid = item.planID
+          this.s_content.id =item.planID
         },
         createFilter(queryString1){   // 模糊查询返回下拉选中项 - 查询返回value的
           return (restaurant) => {
@@ -1618,6 +1614,9 @@ export default {
   margin-left: 10px;
   margin-right: 10px;
 }
+.yellow{
+  background:#ffff00
+  }
 .reform {
   float: left;
   width: 99%;
@@ -1657,7 +1656,9 @@ export default {
   clear: both;
 }
 .re_style {
-  margin-left: 65px;
+  margin-left: 40px;
+  margin-right: 40px;
+  overflow:hidden;
 }
 .sh_style {
   background: rgb(234, 234, 234);
@@ -1673,19 +1674,24 @@ export default {
   width: 30%;
 }
 .handle_div {
-  height: 50px;
+  /* height: 50px; */
   line-height: 40px;
   margin-left: 40px;
-}
-.handle_id {
+  width: 100%;
   float: left;
+}
+.handle_id {   /*css66666*/
+  float: left;
+  width: 30%;
 }
 .handle_people {
   float: left;
-  margin-left: 250px;
+  width: 30%;
+  /* margin-left: 250px; */
 }
 .handle_time {
   float: left;
-  margin-left: 250px;
+  width: 30%;
+  /* margin-left: 250px; */
 }
 </style>

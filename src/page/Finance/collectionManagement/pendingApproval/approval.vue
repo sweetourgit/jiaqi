@@ -4,7 +4,7 @@
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
-        <el-button type="primary" @click="approvalPass">通过</el-button>
+        <el-button type="primary" @click="approvalPass" :disabled="passDisabled">通过</el-button>
         <el-button type="primary" @click="approvalReject">驳回</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
@@ -99,9 +99,16 @@
             <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
             <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
             <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
+            <el-table-column prop="prop" label="操作" align="center" v-if="baseInfo.collectionNumber != '现金'">
+              <template slot-scope="scope">
+                <el-button v-if="scope.row.checkType != 3" type="text" @click="recognitionDo(scope.row)">去认款</el-button>
+                <el-button v-else type="text" @click="recognitionDetail(scope.row)">查看认款详情</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <!--同业/直客 end-->
+
         <!--内部收款 关联欠款-->
         <div class="stepDv bottomDis" v-if="info.collectionType == 5">
           <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
@@ -135,15 +142,21 @@
         </el-dialog>
       </div>
       <!--审批结束-->
-
+      
+      <recognitionDo :dialogFormVisible2="dialogFormVisible2" :msg="msg" @close="recognitionClose"></recognitionDo>
+      <recognitionDetail :dialogFormVisible3="dialogFormVisible3" :msg="msg" @close="recognitionClose"></recognitionDetail>
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
+  import recognitionDo from '@/page/Finance/collectionManagement/pendingApproval/recognitionDo.vue'
+  import recognitionDetail from '@/page/Finance/collectionManagement/pendingApproval/recognitionDetail.vue'
   export default {
     name: "collectionDetail",
     components: {
+      recognitionDo,
+      recognitionDetail
     },
     props: {
       dialogFormVisible: false,
@@ -151,6 +164,7 @@
     },
     data() {
       return {
+        passDisabled: false, // 通过按钮是否禁用
         // 基础信息
         baseInfo: {
           id: '',
@@ -187,7 +201,11 @@
         approvalMark: '',
 
         tableManyRow: 0,
-        getCollectionPriceTotal: 0
+        getCollectionPriceTotal: 0,
+
+        dialogFormVisible2: false, // 去认款显示隐藏
+        dialogFormVisible3: false, // 查看认款详情
+        msg: '' // 传值字段
       }
     },
     computed: {
@@ -196,8 +214,8 @@
     watch: {
       dialogFormVisible: {
         handler:function(){
-//          console.log(this.info);
           if(this.info != '' && this.dialogFormVisible){
+            this.passDisabled = false;
             this.loadData();
             this.getMoment();
           }
@@ -211,6 +229,33 @@
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
         } else {
           return ''
+        }
+      },
+      // 去认款
+      recognitionDo(row){
+        this.dialogFormVisible2 = true;
+        this.msg = {
+          "collectionType": this.info.collectionType,
+          "baseInfo": this.baseInfo,
+          "tableDataOrder": row,
+          "fileList": this.fileList
+        }
+      },
+      // 查看认款详情
+      recognitionDetail(row){
+        this.msg = {
+          "id": row.id
+        }
+        this.dialogFormVisible3 = true;
+      },
+      recognitionClose(str){
+        this.dialogFormVisible2 = false;
+        this.dialogFormVisible3 = false;
+        this.msg = '';
+        // console.log(str);
+        if(str == 'success'){
+          this.passDisabled = false;
+          this.loadData();
         }
       },
       // 关闭弹窗
@@ -257,13 +302,16 @@
           "checktype": this.approval_status,
           "id": this.info.id
         }, ).then(function(response) {
-//          console.log('审批操作',response);
+          // console.log('审批操作',response);
           if (response.data.isSuccess) {
             // that.$message.success("审批提交成功~");
+            if(that.approval_status == '1'){
+              that.insert();
+            }
             that.dialogVisibleApproval = false;
             that.approval_status = '';
             that.approvalMark = '';
-            that.insert();
+            
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -274,10 +322,9 @@
         }).catch(function(error) {
           console.log(error);
         });
-
-
       },
       insert(){
+        // alert('insert');
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insert", {
           "object": {
@@ -303,12 +350,11 @@
       // 加载数据
       loadData(){
         const that = this;
-//        const
         // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/coll", {
           "id": this.info.id
         }, ).then(function(response) {
-          console.log('审批详情',response);
+          // console.log('审批详情',response);
           if (response.data.isSuccess) {
             const hasInvoice = response.data.object.invoice == 1 ? '有':'无';
             that.baseInfo = {
@@ -317,7 +363,7 @@
               createTime: response.data.object.createTime,
               collectionType: response.data.object.collectionType,
               distributor: response.data.object.distributor,
-              orderNumber: response.data.object.orderNumber,
+              orderNumber: response.data.object.serialNumber,
               collectionNumber: response.data.object.collectionNumber,
               price: response.data.object.price,
               abstract: response.data.object.abstract,
@@ -334,16 +380,22 @@
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            that.tableAssociated.forEach( item => {
-              that.getCollectionPriceTotal += item.matchingPrice
+            if(response.data.object.collectionNumber === '现金'){
+              that.tableAssociated.forEach( item => {
+                that.getCollectionPriceTotal += item.matchingPrice;
+              });
+            }else{
+              that.tableAssociated.forEach( item => {
+              that.getCollectionPriceTotal += item.matchingPrice;
+
+              if(item.checkType != 3){
+                that.passDisabled = true;
+              }
             });
+            }
+            
             // 凭证
             that.fileList = response.data.object.files;
-//            for(let i = 0; i < that.fileList.length; i++){
-//              that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
-//            }
-
-
           } else {
             that.$message.warning("加载数据失败~");
           }
@@ -360,7 +412,6 @@
         const month = (now.getMonth() + 1).toString();
         const day = now.getDate().toString();
 
-//        console.log(year+month+day);
         return year+month+day;
       }
 

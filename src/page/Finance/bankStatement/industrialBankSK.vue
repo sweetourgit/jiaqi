@@ -1,7 +1,7 @@
 <template>
   <div class="distributor-content" id="industrialBank">
     <!-- 搜索表单 -->
-    <el-form :model="ruleForm" ref="ruleForm" label-width="110px" id="form-content">
+    <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
       <el-row type="flex" class="row-bg">
         <el-col :span="7">
           <el-form-item label="匹配状态:" class="status-length" prop="matchType">
@@ -76,7 +76,7 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="account_balance" label="剩余金额" align="center">
+      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="purpose_fee" label="手续费" align="center">
       </el-table-column>
@@ -129,6 +129,7 @@
 </template>
 
 <script type="text/javascript">
+import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
 
 export default {
@@ -182,7 +183,7 @@ export default {
       console.log(response);
       if(response == true){
         this.$message.success("兴业银行流水单上传成功！");
-        this.pageIndex = 1;
+        this.pageCurrent = 1;
         this.loadData();
       }else{
         this.$message.warning("兴业银行流水单上传失败！");
@@ -204,7 +205,7 @@ export default {
       console.log(response);
       if(response == true){
         this.$message.success("微信支付宝明细上传成功！");
-        this.pageIndex = 1;
+        this.pageCurrent = 1;
         this.loadData();
       }else{
         this.$message.warning("微信支付宝明细上传失败！");
@@ -220,12 +221,12 @@ export default {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
     searchHandInside(){
-      this.pageIndex = 1;
+      this.pageCurrent = 1;
       this.loadData();
     },
     emptyButtonInside(){
       this.$refs['ruleForm'].resetFields();
-      this.pageIndex = 1;
+      this.pageCurrent = 1;
       this.loadData();
     },
     orderDetail(row){
@@ -289,19 +290,28 @@ export default {
       this.loadData();
     },
     handleCurrentChange(val){
-      this.pageCurrent = 1;
+      this.pageCurrent = val;
       this.loadData();
     },
     loadData(){
       const that = this;
+      let dateStart = '', dateEnd = '';
+      if(this.ruleForm.dateStart){
+        dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
+      }
+      if(this.ruleForm.dateEnd){
+        dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
+      }
+      
       this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-        "pageIndex": this.pageCurrent,
+        "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
         "object": {
           "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
           "transaction_reference_number": this.ruleForm.code,
-          "begin": this.ruleForm.dateStart ? this.ruleForm.dateStart : "2000-05-16",
-          "end": this.ruleForm.dateEnd ? this.ruleForm.dateEnd : "2099-05-16"
+          "begin": dateStart ? dateStart : "2000-05-16",
+          "end": dateEnd ? dateEnd : "2099-05-16",
+          "seachType": 0
         }
       }).then(function (obj) {
         // console.log('中国银行',obj);
@@ -353,7 +363,7 @@ export default {
     margin: 25px auto;
     height: auto;
     border: 1px solid #e6e6e6;
-    #form-content{
+    .form-content{
       background: #f7f7f7;
       padding: 20px 10px;
       margin: 20px 10px;
