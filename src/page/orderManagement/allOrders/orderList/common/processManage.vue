@@ -517,6 +517,8 @@ export default {
     isSaveBtnClick(){
       this.isSaveBtn = false
       if(this.totalPrice + this.changedPrice<= 0) return this.isSaveBtn = true;
+      // 如果一个报名也没有也不可以保存
+      if(this.positionLeft=== this.positionTotal) return this.isSaveBtn = true;
       if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
         if(this.changedPrice > this.deposit + this.balance) return this.isSaveBtn = true;
       }
