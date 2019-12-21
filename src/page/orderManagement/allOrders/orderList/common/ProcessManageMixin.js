@@ -197,13 +197,14 @@ const ProcessManageMixin= {
       favourableChangeHandler(item){
         let { price, favMode }= item;
         let proto= this.favourableProto.find(el => el.id=== item.id);
-        let { price: priceProto, currentPrice }= proto;
+        let { price: priceProto, varied: variedProto }= proto;
         let varied= 0;
-        // 如果输入不合规，则以旧值还原
-        if(this.$isNull(price) || isNaN(parseFloat(price))) return item.price= currentPrice;
-        proto.currentPrice= parseFloat(price);
+        // 如果输入不合规，则以旧值(原值加上最后一次改变)还原
+        if(this.$isNull(price) || isNaN(parseFloat(price))) return item.price= priceProto + variedProto;
         varied= parseFloat(price)- priceProto;
-        this.changedPrice+= (favMode=== 1? 1: -1)* varied- (favMode=== 1? 1: -1)* currentPrice;
+        this.changedPrice+= (favMode=== 1? 1: -1) * (varied- variedProto);
+        // 记录最后一次
+        proto.varied= varied;
         // 旧逻辑
         this.isSaveBtnClick();
         this.isChangeNumberClick();
@@ -236,7 +237,7 @@ const ProcessManageMixin= {
       globalMount(orderDetail){
         let { priceType, favourable }= orderDetail;
         this.propPriceType= priceType;
-        this.favourableProto= this.$deepCopy(favourable).map(el => Object.assign(el, { currentPrice: el.price }));
+        this.favourableProto= this.$deepCopy(favourable).map(el => Object.assign(el, { varied: 0 }));
         // 出行人信息数组的映射
         this.salePriceReflect= {};
         // 新添加的所有报名实例
