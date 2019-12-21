@@ -38,12 +38,7 @@ const ProcessManageMixin= {
       processManage(orderId){
         getOrderAction(orderId)
         .then(orderDetail => {
-          let { 
-            planID, // 计划id 
-            guests, // 报名数组
-            favourable,
-            contact
-          }= orderDetail;
+          let { planID, guests, favourable, contact }= orderDetail;
           Promise.all([
             getEnrollsAction(planID), 
             getTeampreviewAction(planID)
@@ -113,7 +108,7 @@ const ProcessManageMixin= {
       },
 
       viewDataMaker(favourable, guests){
-        let price;
+        let price= 0;
         let favourablePrice= 0;
         favourable.forEach(el => favourablePrice+= (el.favMode=== 1? 1: -1)* el.price);
         price= this.enrollDetailMaker();
@@ -207,13 +202,6 @@ const ProcessManageMixin= {
         proto.currentPrice= parseFloat(price);
         varied= parseFloat(price)- priceProto;
         this.changedPrice+= (favMode=== 1? 1: -1)* varied- (favMode=== 1? 1: -1)* currentPrice;
-      },
-    
-      orderSaveHandler(){
-        obj.enrollDetail = JSON.stringify(this.enrollDetail);
-        obj.guests = guest;
-        obj.payable = this.prePayable + (this.payable - this.prePayable);
-        orderSaveAction(obj)
       }
     },
 
@@ -392,6 +380,8 @@ const ProcessManageMixin= {
         this.changedPrice+= (isPlus? 1: -1)* money;
         this.positionLeft+= (isPlus? -1: 1)* count;
         this.$nextTick(() => this.enrollDetailMaker());
+        // 旧逻辑
+        this.isSaveBtnClick();
       },
     }
   )
