@@ -17,7 +17,8 @@ const ProcessManageMixin= {
       },
       // 订单详情
       {
-        enrollsDetailStr: '', // 订单详情
+        enrollsDetailStr: '', // 订单详情,
+        guestTotal: 0,  // 总报名数
       }
     )
   },
@@ -331,13 +332,16 @@ const ProcessManageMixin= {
       enrollDetailMaker(){
         let str= '';
         let singlePrice;
+        let count= 0;
         let price= 0;
         this.salePrice.forEach(el => {
           let { enrollName, price_01, price_02 }= el.enroll;
           singlePrice= this.propPriceType=== 1? price_01: price_02;
           str+= el.length? `[ ${enrollName} ${this.toDecimal2(singlePrice)} ] x ${el.length}\n`: '';
           price+= singlePrice* el.length;
+          count+= el.length;
         })
+        this.guestTotal= count;
         this.enrollsDetailStr= str;
         return price;
       },
