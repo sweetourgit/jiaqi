@@ -225,11 +225,13 @@ const ProcessManageMixin= {
         });
         this.changedPrice+= (isPlus? 1: -1)* money;
         this.positionLeft+= (isPlus? -1: 1)* count;
-        this.$nextTick(() => this.enrollDetailMaker());
-        // 旧逻辑
-        this.isSaveBtnClick();
-        this.isChangeNumberClick();
-        this.replenishInfoToastFun(this.orderget.orderChannel);
+        this.$nextTick(() => {
+          this.enrollDetailMaker()
+          // 旧逻辑
+          this.isSaveBtnClick();
+          this.isChangeNumberClick();
+          this.replenishInfoToastFun(this.orderget.orderChannel);
+        });
       },
     },
 
