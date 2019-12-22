@@ -225,11 +225,14 @@ const ProcessManageMixin= {
         });
         this.changedPrice+= (isPlus? 1: -1)* money;
         this.positionLeft+= (isPlus? -1: 1)* count;
-        this.$nextTick(() => this.enrollDetailMaker());
-        // 旧逻辑
-        this.isSaveBtnClick();
-        this.isChangeNumberClick();
-        this.replenishInfoToastFun(this.orderget.orderChannel);
+        this.$nextTick(() => {
+          this.enrollDetailMaker()
+          // 旧逻辑
+          this.isSaveBtnClick();
+          this.isChangeNumberClick();
+          this.replenishInfoToastFun(this.orderget.orderChannel);
+        });
+
       },
     },
 
@@ -335,6 +338,7 @@ const ProcessManageMixin= {
         let count= 0;
         let price= 0;
         this.salePrice.forEach(el => {
+          console.log(el.length)
           let { enrollName, price_01, price_02 }= el.enroll;
           singlePrice= this.propPriceType=== 1? price_01: price_02;
           str+= el.length? `[ ${enrollName} ${this.toDecimal2(singlePrice)} ] x ${el.length}\n`: '';
