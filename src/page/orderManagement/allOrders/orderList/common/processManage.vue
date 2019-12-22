@@ -533,7 +533,7 @@ export default {
       this.isSaveBtn = false
       if(this.totalPrice + this.changedPrice<= 0) return this.isSaveBtn = true;
       // 如果一个报名也没有也不可以保存
-      if(guestTotal<= 0) return this.isSaveBtn = true;
+      if(this.guestTotal<= 0) return this.isSaveBtn = true;
       if (this.orderget.orderChannel === 1 && this.settlementType === 1) {
         if(this.changedPrice > this.deposit + this.balance) return this.isSaveBtn = true;
       }
@@ -1458,7 +1458,7 @@ export default {
     // },
     replenishInfoToastFun(orderChannel) {
       if (this.orderSourceFun(orderChannel) == true) {
-        this.isLowPrice = (this.totalPrice + this.changedPrice) >= this.paid;
+        this.isLowPrice = (this.totalPrice + this.changedPrice) > this.paid;
       }
     },
 
