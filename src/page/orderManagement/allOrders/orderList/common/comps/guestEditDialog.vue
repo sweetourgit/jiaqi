@@ -66,7 +66,7 @@ export default {
       submitForm: {
         cnName: null,
         enName: null,
-        sex:1,
+        sex: 0,
         mobile: null,
         idCard: null,
         bornDate: 0,
