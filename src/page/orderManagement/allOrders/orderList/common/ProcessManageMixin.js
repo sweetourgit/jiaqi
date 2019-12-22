@@ -58,6 +58,7 @@ const ProcessManageMixin= {
             // 原处理
             this.teampreviewData= teampreviewRes;
             this.positionTotal= teampreviewRes.remaining;
+            this.positionLeft= teampreviewRes.remaining;
             this.sourceMaker(enrollsRes, guests);
             // 初始化总价和报名信息
             this.viewDataMaker(favourable, guests);
@@ -75,7 +76,6 @@ const ProcessManageMixin= {
        * @return: 
        */
       sourceMaker(enrolls, guests){
-        let count= 0;
         let salePriceReflect= this.salePriceReflect;
 
         this.salePrice.splice(0);
@@ -105,10 +105,8 @@ const ProcessManageMixin= {
         })
         // 这里的el就是上边的salePriceReflect[key]
         this.salePrice.forEach(el => {
-          count+= el.length;
           el.enroll && el.enroll.children.push(el);
-        })
-        this.positionLeft= this.positionTotal- count;
+        });
       },
 
       viewDataMaker(favourable, guests){

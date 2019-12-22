@@ -109,7 +109,7 @@
             <div>{{item.title}}</div>
             <el-input
               v-model="item.price"
-              v-has="'others'"
+              v-readonly="'others'"
               placeholder="请输入金额"
               class="input"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
@@ -130,7 +130,7 @@
             v-else>
             <el-input
               v-model="item.mark"
-              v-has="'others'"
+              v-readonly="'others'"
               placeholder="请输入摘要"
               class="input1"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
