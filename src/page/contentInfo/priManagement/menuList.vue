@@ -11,7 +11,6 @@
        <el-button :disabled="forbidden" @click="openMenu(2,'编辑菜单')">编辑</el-button>
        <el-button :disabled="forbidden" @click="operation(1)">页面权限</el-button>
        <el-button :disabled="forbidden" @click="operation(2)">数据权限</el-button>
-       <el-button :disabled="forbidden" @click="operation(3)">数据类型</el-button>
      </el-row>
     <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
@@ -68,7 +67,6 @@
       </el-dialog>
       <act-list :menuId="menuId" :variable="variable" :dialogType="dialogType"></act-list>
       <data-list :menuId="menuId" :variable="variable" :dialogType="dialogType"></data-list>
-      <data-type :menuId="menuId" :variable="variable" :dialogType="dialogType"></data-type>
       </div>
    </div>
 </template>
@@ -80,12 +78,10 @@ import '../../../../static/ztree/jquery-1.4.4.min.js'
 import '../../../../static/ztree/jquery.ztree.core.js'
 import actList from './actList'
 import dataList from './dataList'
-import dataType from './dataType'
 export default {
   components:{
     "act-list":actList,
     "data-list":dataList,
-    "data-type":dataType
   }, 
   data() { 
     return {
