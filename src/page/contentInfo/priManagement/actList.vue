@@ -56,6 +56,7 @@ export default {
   props:{
     menuId:0,
     variable:0,
+    dialogType:0
   },
   data() {
     return {
@@ -84,8 +85,10 @@ export default {
   },
   watch: {
       variable:function(){        
-        this.actList();   
-        this.dialogAct=true;    
+        if(this.dialogType == 1){
+          this.actList();   
+          this.dialogAct = true;  
+        }  
      }
   },
   methods: {
