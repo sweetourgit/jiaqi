@@ -93,19 +93,10 @@
         <!--其他费用-->
         
         <div v-for="(item,index) in ruleForm.favourable" :key="index" class="other-cost">
-          <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost">
+          <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost"
+            v-if="item.favMode=== 1">
             <div>{{item.title}}</div>
             <el-input
-              v-if="!index"
-              v-model="item.price"
-              placeholder="请输入金额"
-              class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
-              @change="favourableChangeHandler(item)"
-            ></el-input>
-            <el-input
-              v-else
-              v-has="'others'"
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
@@ -113,9 +104,33 @@
               @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
-          <el-form-item class="otherCost-mark" v-if="index == 0">
+          <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost"
+            v-else>
+            <div>{{item.title}}</div>
+            <el-input
+              v-model="item.price"
+              v-has="'others'"
+              placeholder="请输入金额"
+              class="input"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              @change="favourableChangeHandler(item)"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item class="otherCost-mark"
+            v-if="item.favMode=== 1">
             <el-input
               v-model="item.mark"
+              placeholder="请输入摘要"
+              class="input1"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+            ></el-input>
+          </el-form-item>
+          <el-form-item class="otherCost-mark"
+            v-else>
+            <el-input
+              v-model="item.mark"
+              v-has="'others'"
               placeholder="请输入摘要"
               class="input1"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
@@ -140,19 +155,17 @@
         <!--订单联系人-->
         <el-form-item label="订单联系人" class="contact" prop="contactName">
           <br />
-          <el-input
+          <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactName"
-            placeholder="请输入"
-            class="input"
+            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系电话" class="contact" prop="contactPhone">
           <br />
-          <el-input
+          <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactPhone"
-            placeholder="请输入"
-            class="input"
+            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>

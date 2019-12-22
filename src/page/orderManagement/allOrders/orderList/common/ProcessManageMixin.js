@@ -38,6 +38,8 @@ const ProcessManageMixin= {
       processManage(orderId){
         getOrderAction(orderId)
         .then(orderDetail => {
+          console.log(JSON.parse(sessionStorage.getItem('butPermission')))
+
           let { planID, guests, favourable, contact }= orderDetail;
           Promise.all([
             getEnrollsAction(planID), 
@@ -55,7 +57,7 @@ const ProcessManageMixin= {
             this.oldLogicAdaptor(orderDetail);
             // 原处理
             this.teampreviewData= teampreviewRes;
-            this.positionTotal= teampreviewRes.count;
+            this.positionTotal= teampreviewRes.remaining;
             this.sourceMaker(enrollsRes, guests);
             // 初始化总价和报名信息
             this.viewDataMaker(favourable, guests);
@@ -314,7 +316,7 @@ const ProcessManageMixin= {
           code: "",
           cnName: "",
           enName: "",
-          sex: 1,
+          sex: -1,
           idCard: "",
           mobile: "",
           bornDate: 0,
