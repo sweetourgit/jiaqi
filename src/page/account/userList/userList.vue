@@ -190,6 +190,9 @@
                <el-checkbox v-model="menuList.isJur" :label="menuList.id" :key="menuList.id" @change="menuChanged(index)">{{menuList.name}}</el-checkbox>
                <div class="check-list">
                  <el-checkbox  v-model="actList.isJur" v-for="actList in menuList.act" :label="actList.id" :key="actList.id" @change="actChanged(index)">{{actList.name}}</el-checkbox>
+                 <div style="margin-top:5px">
+                 <el-checkbox v-model="dataList.isJur" v-for="(dataList,indexD) in menuList.dataJurisdiction" :label="dataList.id" :key="dataList.id" @change="dataChanged(index,indexD)"><span class="data-check">{{dataList.name}}</span></el-checkbox>
+                 </div>
                </div>
              </div>
         </el-form>
@@ -275,7 +278,7 @@
             overflowY:'scroll'
 　　　　},
         authData:[],
-        forbidden:true,  
+        forbidden:true,
       }
     },
     methods:{
@@ -288,7 +291,8 @@
             var actArray = this.authData[index].act.length;          
             if(actArray>0){            
                 for(let i = 0,len = this.authData[index].act.length;i<len;i++){
-                    this.authData[index].act[i].isJur = false;          
+                    this.authData[index].act[i].isJur = false;
+                    this.authData[index].dataJurisdiction[i].isJur = false;      
                 }
             }
         }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
@@ -317,12 +321,19 @@
             this.authData[index].isJur = true;
         }
       },
+      dataChanged(index,indexD){
+         for(let i=0;i<this.authData[index].dataJurisdiction.length;i++){
+            if(i!=indexD){
+              this.authData[index].dataJurisdiction[i].isJur=false;
+            }
+         }  
+      },
       auth(){
         if(this.multipleSelection[0].id > 0){
            this.dialogFormAuth = true;
            this.getHeight();
            this.getActs();
-        }
+        } 
       },
       getHeight(){
         this.authDiocss.height=document.body.clientHeight-200+"px";
@@ -331,7 +342,7 @@
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
                 "userID":this.multipleSelection[0].id,
               }).then(res => {              
-                this.authData=res.data.objects;              
+                this.authData=res.data.objects;           
           })
       },
       perSubmit(){
@@ -655,6 +666,9 @@
 </script>
 
 <style scoped>
+  .data-check{
+    color: #d67121;display: inline-block;border-radius: 5px;padding: 0 5px
+  }
   .abow_dialog {
      margin:-100px 0 0 0;
     }

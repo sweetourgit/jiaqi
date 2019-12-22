@@ -6,11 +6,11 @@
      <div class="tree-list">
      <div v-if="showList" style="padding-bottom:50px">
      <el-row class="button">
-       <el-button :disabled="forbiddenAdd" @click="openMenu(1,'添加菜单')">新增</el-button>
+       <el-button @click="openMenu(1,'添加菜单')">新增</el-button>
        <el-button :disabled="forbidden" @click="delMenu">删除</el-button>
        <el-button :disabled="forbidden" @click="openMenu(2,'编辑菜单')">编辑</el-button>
-       <el-button :disabled="forbidden" @click="operation">页面权限</el-button>
-       
+       <el-button :disabled="forbidden" @click="operation(1)">页面权限</el-button>
+       <el-button :disabled="forbidden" @click="operation(2)">数据权限</el-button>
      </el-row>
     <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
@@ -65,7 +65,8 @@
             <el-button type="primary" @click="saveMenu('rformA')" class="confirm">确 定</el-button>
           </div>
       </el-dialog>
-      <act-list :menuId="menuId" :variable="variable"></act-list>
+      <act-list :menuId="menuId" :variable="variable" :dialogType="dialogType"></act-list>
+      <data-list :menuId="menuId" :variable="variable" :dialogType="dialogType"></data-list>
       </div>
    </div>
 </template>
@@ -76,14 +77,17 @@ import '../../../../static/ztree/zTreeStyle/zTreeStyle.css'
 import '../../../../static/ztree/jquery-1.4.4.min.js'
 import '../../../../static/ztree/jquery.ztree.core.js'
 import actList from './actList'
+import dataList from './dataList'
 export default {
   components:{
-    "act-list":actList
+    "act-list":actList,
+    "data-list":dataList,
   }, 
   data() { 
     return {
+        dialogType:0,
         menuId:0,
-        variable:0, //设置一个变量展示弹窗,每次点开都重新加载数据
+        variable:0,
         setting: {
           async: {
               enable: true,
@@ -99,9 +103,8 @@ export default {
         },
         zNodes: [],
         groupList: [],
-        multipleSelection: [],   //选中的list
-        forbidden:true,         //按钮是否禁用
-        forbiddenAdd:false,
+        multipleSelection: [],   
+        forbidden:true,         
         title:"",
         dialogFormVisible:false,
         showList:false,
@@ -141,15 +144,12 @@ export default {
       },
       // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
-        console.log(treeNode)
-        this.forbiddenAdd=false;
-        this.parentID = treeNode.id;
         if(treeNode.isParent === true){
-          this.menuList();
+          this.parentID = treeNode.id;
         }else{
-          this.forbiddenAdd=true;
-          console.log("末级");
+          this.parentID = treeNode.parentID;       
         }
+        this.menuList();         
       },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -178,8 +178,9 @@ export default {
           }
         }
       },
-      operation(){
-          this.variable++;        
+      operation(i){
+          this.variable++;
+          this.dialogType = i;     
       },
       menuList(type){  //获取菜单列表
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
