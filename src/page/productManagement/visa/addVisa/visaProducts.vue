@@ -47,11 +47,22 @@
             <el-input v-model="ruleForm.region" class="messagename" placeholder="请输入签证国家地区"></el-input>
           </el-form-item>
           <el-form-item label="头图" prop="banner">
+            <div class="img_upload">
+              <template v-for="(item, index) in ruleForm.avatarImages">
+                <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+                <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
+              </template>
+            </div>
             <div class="figure" @click="addFigure()">
               <span>+</span>
               <div>上传</div>
             </div>
+            <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span>
           </el-form-item>
+          
+          <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
+            <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
+          </el-dialog>
           <el-form-item label="轮播图" prop="shuffling">
             <div class="figure">
               <span>+</span>
@@ -125,10 +136,12 @@
   
 <script>
 import {VueEditor} from 'vue2-editor' // 引用富文本编辑器组件
+import MaterialList from '@/common/Image' // 图片库组件
 export default {
   name: "visaProducts",
     components: {
       VueEditor, // 富文本编辑器
+      MaterialList, // 图片库
     },
   data() {
     return {
@@ -150,6 +163,7 @@ export default {
         entryNumber:'',//入境次数
         stayDays:'',//停留天数
         content:'',//产品概况
+        avatarImages: [], // 图片
       },
       rules: {
         name: [
@@ -200,13 +214,37 @@ export default {
           { required: true, message: '请输入停留天数', trigger: 'change' }
         ],
       },
+      imgUpload: false, // 上传弹窗
+      imgData: [],
+      isInfoImg:false,//头图验证
     };
   },
   created() {
   },
   methods: {
     addFigure(){ // 点击头图上传按钮，显示图片弹窗
+      this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
+      this.imgUpload = true;
+    },
+    imgClickShow(){ // 点击图片查看预览
 
+    },
+    imgDelete(){ // 删除单张图片
+
+    },
+    // 图片添加
+    checkList(data) {
+      this.ruleForm.avatarImages = data.map(v => {
+        return {
+          img_ID: v,
+        }
+      })
+    },
+    firstFigure(data){
+      this.isInfoImg = data;
+      if(!data) {
+        this.$refs.avatarImages.clearValidate();
+      }
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
       this.$refs[formName].validate((valid) => {
