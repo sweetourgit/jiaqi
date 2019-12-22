@@ -347,13 +347,6 @@
           <el-button type="primary" @click="routerHandle5()">确 定</el-button>
         </span>
     </el-dialog>
-    <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible4" width="50%">
-      <el-button type="primary" @click="downs()" style="margin-bottom: 30px;">点击下载</el-button>
-      <div>
-        <img :src="imgBig" style="width: 95%;" alt="图片" :alt="imgBigName"/>
-        <br /><span>{{imgBigName}}</span>
-      </div>
-    </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
@@ -476,7 +469,6 @@ export default {
       inputVisible3: false,
       inputVisible2: true,
       dialogVisible3: false,
-      dialogVisible4: false,
       dialogVisible6: false,
       dialogVisible2: false,
       dialogVisible: false,
@@ -490,7 +482,6 @@ export default {
       plan_name: '',
       dynamicTags3: [],
       imgBig: '',
-      imgBigName: '',
       tour_group: [],
       cardNumber_pre: '',
       bankName_pre: '',
@@ -500,7 +491,6 @@ export default {
       },
       time: 0,
       len: 0,
-      uid: 0, //上传图片缩略图选中项
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
     }
   },
@@ -617,12 +607,7 @@ export default {
     },
     handlePreview(file) {
       let getUrl = JSON.parse(file.response)
-      this.uid = file.uid
       window.open(getUrl.paths[0].Url);
-      this.imgBigName = file.name
-      // this.dialogVisible4 = true
-     /* this.imgBig = file.url
-      this.imgBigName = file.name*/
     },
     downloadIamge(imgsrc, name) { //下载图片地址和图片名
       var image = new Image();
@@ -660,48 +645,17 @@ export default {
       };
       image.src = imgsrc;
     },
-    downs() {
-      window.open(this.imgBig);
-      //this.downloadIamge(this.imgBig, this.imgBigName)
-    },
     handleRemove(file, fileList) {
-      this.uid = fileList[0].uid;
       this.fileList = fileList
       this.fileCheckVal = fileList.length
     },
-    //文件上传
-    handleChange(file, fileList) {
-      this.fileList = fileList.slice(-3);
-    },
     handleError(err, file) {
-      console.log('失败')
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
+      this.fileList = fileList
       this.ruleForm.pass = 1
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
-      //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
-      if (this.time != fileList.length) { //多张图片情况只在第一次执行数组操作
-        this.time = fileList.length;
-        if (this.fileList.length == 0) {
-          this.fileList = fileList;
-        } else {
-          this.len = this.fileList.length;
-          for (let i = this.len; i < fileList.length; i++) {
-            this.fileList.push(fileList[i]);
-          }
-        }
-      }
-      var paths = null;
-      for (let i = this.len; i < fileList.length; i++) {
-        paths = JSON.parse(fileList[i].response).paths[0];
-        this.$set(this.fileList[i], "width", paths.Width);
-        this.$set(this.fileList[i], "height", paths.Height);
-        this.$set(this.fileList[i], "url1", paths.Url);
-        this.$set(this.fileList[i], "length", paths.Length);
-        this.$set(this.fileList[i], "name", paths.Name);
-      }
-      this.uid = fileList[0].uid;
     },
     searchHand2() {
       this.pageNum = 1;

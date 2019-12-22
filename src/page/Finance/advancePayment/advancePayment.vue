@@ -470,12 +470,11 @@ export default {
           }).then(res => {
             this.$message.success("撤销成功");
             this.checkIncomeShow = false;
-            this.deleteBorrow();
-            // this.history.go(0); // 刷新页面
+            this.searchHand();
+            this.$store.commit('changeAdvance')
           })
-          this.$message.success("撤销成功");
-          this.searchHand();
-          this.checkIncomeShow = false;
+          // this.$message.success("撤销成功");
+          // this.checkIncomeShow = false;
         }
       })
       })

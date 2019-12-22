@@ -202,6 +202,7 @@ import moment from 'moment'
   },
   watch:{
     countTest:function(newV, oldV){
+      console.log(newV, oldV, 'advinceData')
       let _this = this
       if(newV != oldV) {
         setTimeout(function () {
