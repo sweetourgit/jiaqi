@@ -266,6 +266,7 @@ const ProcessManageMixin= {
           occupyStatus,
           orderChannel,
           contact,
+          priceType
         }= orderDetail;
         this.orderget = orderDetail;
         this.payable = payable;
@@ -289,6 +290,9 @@ const ProcessManageMixin= {
         // this.teampreview(planID);
         // 记录最开始的总价 isSaveBtnClick需要
         this.prePayable= payable;
+        priceType == 1
+          ? (this.priceChange = "直客")
+          : (this.priceChange = "同业");
       },
       
       /**

@@ -49,14 +49,14 @@
       <p class="yuwei">余位：{{ positionLeft }}</p>
 
       <!-- switch 更改价格(直客价和同业价) :disabled="orderget.orderStatus===4||orderget.orderStatus===6||orderget.orderStatus===9"  beign-->
-      <p>当前使用{{priceChange}}价格</p>
-      <el-switch
+      <p>当前使用【{{priceChange}}】价格</p>
+      <!-- <el-switch
         v-model="isPricechange"
         active-color="#409eff"
         inactive-color="#dcdfe6"
         @change="priceChangeEvent(isPricechange)"
         :disabled="true"
-      ></el-switch>
+      ></el-switch> -->
       <!-- switch 更改价格(直客价和同业价) end-->
 
       <!--报名人数-->
