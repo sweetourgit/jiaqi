@@ -198,9 +198,9 @@
             <el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
           </div>
           <!--整体优惠-->
-          <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">
+          <!-- <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">
             <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <!-- <div class="fl">
             备注
             <el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
@@ -1337,7 +1337,8 @@
                               {
                                 id: 0,
                                 orderID: 0,
-                                price: this.ruleForm.allDiscount,
+                                price:0,
+                                //price: this.ruleForm.allDiscount,
                                 title: "整体优惠",
                                 favMode: 2,
                                 mark: this.ruleForm.allDisRemark
@@ -1442,7 +1443,8 @@
                                     {
                                       id: 0,
                                       orderID: 0,
-                                      price: this.ruleForm.allDiscount,
+                                      price:0,
+                                      //price: this.ruleForm.allDiscount,
                                       title: "整体优惠",
                                       favMode: 2,
                                       mark: this.ruleForm.allDisRemark
@@ -1569,7 +1571,8 @@
                                   {
                                     id: 0,
                                     orderID: 0,
-                                    price: this.ruleForm.allDiscount,
+                                    price:0,
+                                    //price: this.ruleForm.allDiscount,
                                     title: "整体优惠",
                                     favMode: 2,
                                     mark: this.ruleForm.allDisRemark

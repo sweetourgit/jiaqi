@@ -24,33 +24,39 @@
       <div class="right">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
           <el-form-item label="产品名称" prop="name">
-            <el-input v-model="ruleForm.name" class="messagename"></el-input>
+            <el-input v-model="ruleForm.name" class="messagename" placeholder="请输入产品名称"></el-input>
             <span class="Numbers">{{ruleForm.name.length}}/30字</span>
           </el-form-item>
           <el-form-item label="亮点词" prop="highlightWords">
-            <el-input v-model="ruleForm.highlightWords" class="Words" @blur="highlight()"></el-input>
+            <el-input v-model="ruleForm.highlightWords" class="Words" placeholder="请输入产品亮点词"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords.length}}/8字</span>
           </el-form-item>
           <el-form-item prop="highlightWords1" class="Words1">
-            <el-input v-model="ruleForm.highlightWords1" class="Words" @blur="highlight()"></el-input>
+            <el-input v-model="ruleForm.highlightWords1" class="Words" placeholder="请输入产品亮点词"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords1.length}}/8字</span>
           </el-form-item>
           <el-form-item prop="highlightWords2" class="Words2">
-            <el-input v-model="ruleForm.highlightWords2" class="Words" @blur="highlight()"></el-input>
+            <el-input v-model="ruleForm.highlightWords2" class="Words" placeholder="请输入产品亮点词"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords2.length}}/8字</span>
           </el-form-item>
           <el-form-item prop="highlightWords3" class="Words3">
-            <el-input v-model="ruleForm.highlightWords3" class="Words" @blur="highlight()"></el-input>
+            <el-input v-model="ruleForm.highlightWords3" class="Words" placeholder="请输入产品亮点词"></el-input>
             <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
           </el-form-item>
           <el-form-item label="签证国家地区" prop="region" class="mt80">
-            <el-input v-model="ruleForm.region" class="messagename"></el-input>
+            <el-input v-model="ruleForm.region" class="messagename" placeholder="请输入签证国家地区"></el-input>
           </el-form-item>
           <el-form-item label="头图" prop="banner">
-            <el-input v-model="ruleForm.banner" class="messagename"></el-input>
+            <div class="figure" @click="addFigure()">
+              <span>+</span>
+              <div>上传</div>
+            </div>
           </el-form-item>
           <el-form-item label="轮播图" prop="shuffling">
-            <el-input v-model="ruleForm.shuffling" class="messagename"></el-input>
+            <div class="figure">
+              <span>+</span>
+              <div>上传</div>
+            </div>
           </el-form-item>
           <el-form-item label="送签地" prop="sendVisa">
             <el-radio-group v-model="ruleForm.sendVisa">
@@ -98,13 +104,13 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="签证有效期" prop="visaDate">
-            <el-input v-model="ruleForm.visaDate" class="messagename"></el-input>
+            <el-input v-model="ruleForm.visaDate" class="messagename" placeholder="请输入签证有效期"></el-input>
           </el-form-item>
           <el-form-item label="入境次数" prop="entryNumber">
-            <el-input v-model="ruleForm.entryNumber" class="messagename"></el-input>
+            <el-input v-model="ruleForm.entryNumber" class="messagename" placeholder="请输入入境次数"></el-input>
           </el-form-item>
           <el-form-item label="停留天数" prop="stayDays">
-            <el-input v-model="ruleForm.stayDays" class="messagename"></el-input>
+            <el-input v-model="ruleForm.stayDays" class="messagename" placeholder="请输入停留次数"></el-input>
           </el-form-item>
           <el-form-item label="产品概括" prop="content">
             <div class="cost_content">
@@ -116,7 +122,7 @@
     </div> -->
   </div>
 </template>
-
+  
 <script>
 import {VueEditor} from 'vue2-editor' // 引用富文本编辑器组件
 export default {
@@ -199,13 +205,14 @@ export default {
   created() {
   },
   methods: {
-    nextMessage(formName){
+    addFigure(){ // 点击头图上传按钮，显示图片弹窗
+
+    },
+    nextMessage(formName){ // 点击下一步进入签证信息页面
       this.$refs[formName].validate((valid) => {
         
       });
     },
-    highlight(formName){
- }
   }
 };
 </script>
@@ -280,6 +287,19 @@ export default {
   overflow: hidden;
   text-align: left;
   background: #FFFFFF
+}
+.figure{
+  width:80px ;
+  height:80px;
+  border:1px soild #d9d9d9;
+  background:#f2f2f2;
+  text-align:center;
+  line-height:20px;
+  cursor:pointer;
+}
+.figure span{
+  font-size:24pt;
+  line-height:50px;
 }
 </style>
 
