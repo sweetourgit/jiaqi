@@ -83,8 +83,16 @@
         >
           支付账户
         </el-button>
+        <el-button
+          type="success"
+          @click="touchPrint"
+          plain
+          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
+        >
+          打印本页详情
+        </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow" ref="printHandle"></checkLoanManagement>
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
@@ -221,6 +229,10 @@ import moment from 'moment'
     deep:true
   },
   methods: {
+      // 打印详情
+      touchPrint(){
+        this.$refs.printHandle.printDetails()
+      },
       // 选择账户弹窗，选择对应的选项事件
       addAccount(index, row){
       var that = this
