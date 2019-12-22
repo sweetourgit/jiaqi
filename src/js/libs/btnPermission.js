@@ -14,6 +14,7 @@ Vue.directive('readonly', {
     if (!Vue.prototype.$_has(binding.value)) {
        if(el.getElementsByTagName('input')[0]){
          el.getElementsByTagName('input')[0].readOnly="readonly";
+         el.getElementsByTagName('input')[0].style.backgroundColor='#eee';
        }
     }
   }
