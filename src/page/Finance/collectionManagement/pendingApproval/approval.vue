@@ -360,7 +360,7 @@
             that.baseInfo = {
               id: response.data.object.id,
               createUser: response.data.object.createUser,
-              createTime: response.data.object.createTime,
+              createTime: response.data.object.createTime.split("T")[0] +' '+ response.data.object.createTime.split("T")[1].split(".")[0],
               collectionType: response.data.object.collectionType,
               distributor: response.data.object.distributor,
               orderNumber: response.data.object.serialNumber,
