@@ -1,11 +1,19 @@
 
 import Vue from 'vue'
-/**权限指令**/
 Vue.directive('has', {
   bind: function (el, binding) {
     if (!Vue.prototype.$_has(binding.value)) {
        if(el.parentNode!=null){
          el.parentNode.removeChild(el);        
+       }
+    }
+  }
+});
+Vue.directive('readonly', {
+  bind: function (el, binding) {
+    if (!Vue.prototype.$_has(binding.value)) {
+       if(el.getElementsByTagName('input')[0]){
+         el.getElementsByTagName('input')[0].readOnly="readonly";
        }
     }
   }
