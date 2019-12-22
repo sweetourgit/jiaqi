@@ -1071,12 +1071,12 @@ export default {
           });
         }
         // 报名信息增加enrollDetail拼接
-        for (let i = 0; i < num - preLength; i++) {
-          let price;
-          this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
-          price = this.toDecimal2(price);
-          this.enrollDetail += `${enrollName}(${price} * 1),`;
-        }
+        // for (let i = 0; i < num - preLength; i++) {
+        //   let price;
+        //   this.ruleForm.price == 1 ? (price = price_01) : (price = price_02);
+        //   price = this.toDecimal2(price);
+        //   this.enrollDetail += `${enrollName}(${price} * 1),`;
+        // }
       } else {
         for (var i = 0; i < this.tour[index].length; i++) {
           if (this.tour[index][i].cnName === "") {
@@ -1085,16 +1085,16 @@ export default {
           }
         }
         // 报名信息减少enrollDetail拼接
-        let _arr = this.enrollDetail.split(",");
-        for (let j = 0; j < preLength - num; j++) {
-          for (let i = _arr.length - 1; i => 0; i--) {
-            if (_arr[i].indexOf(enrollName) != -1) {
-              _arr.splice(i, 1);
-              this.enrollDetail = _arr.toString();
-              break
-            }
-          }
-        }
+        // let _arr = this.enrollDetail.split(",");
+        // for (let j = 0; j < preLength - num; j++) {
+        //   for (let i = _arr.length - 1; i => 0; i--) {
+        //     if (_arr[i].indexOf(enrollName) != -1) {
+        //       _arr.splice(i, 1);
+        //       this.enrollDetail = _arr.toString();
+        //       break
+        //     }
+        //   }
+        // }
       }
     },
     submitForm(formName, index) {
@@ -1288,25 +1288,25 @@ export default {
           //   }
           // }
           // 拼接字段 enrollDetail报名类型详情
-          // let enrollDetail = "";
-          // this.salePrice.forEach((ele, idx) => {
-          //   let price=0;
-          //   if(this.ruleForm.price == 1){
-          //     price = this.toDecimal2(ele.price_01);
-          //   }else{
-          //     price = this.toDecimal2(ele.price_02);
-          //   }
-          //   //let price = this.toDecimal2(ele.price_01);
-          //   if(this.enrolNum[idx]!==0){
-          //     enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
-          //   }
-          // });
+          let enrollDetail = "";
+          this.salePrice.forEach((ele, idx) => {
+            let price=0;
+            if(this.ruleForm.price == 1){
+              price = this.toDecimal2(ele.price_01);
+            }else{
+              price = this.toDecimal2(ele.price_02);
+            }
+            //let price = this.toDecimal2(ele.price_01);
+            if(this.enrolNum[idx]!==0){
+              enrollDetail += `${ele.enrollName} ( ${price} * ${this.enrolNum[idx]} ),`;
+            }
+          });
           if (res.data.isSuccess == true) {
             this.teampreviewData.regimentType = res.data.object.regimentType;
             if (this.ifOrderInsert === true) {
               if (this.teampreviewData.regimentType === 1) {
                 //判断是否停售 1正常
-                this.getTypePrice();
+                //this.getTypePrice();
                 if (this.ruleForm.orderRadio === "1") {
                   //判断是同业下单还是直客下单  1是直客  2是同业
                   this.ifOrderInsert = true;
@@ -1372,7 +1372,7 @@ export default {
                           guests: guestAll,
                           //guests: guest,
                           number: number,
-                          enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
+                          enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                         }
                       }
                     )
@@ -1478,7 +1478,7 @@ export default {
                                 guests: guestAll,
                                 // guests: guest,
                                 number: number,
-                                enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
+                                enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                               }
                             }
                           )
@@ -1604,7 +1604,7 @@ export default {
                               guests: guestAll,
                               //guests: guest,
                               number: number,
-                              enrollDetail: this.newEnrollDetail //报名类型详情字段拼接  订单管理模块需要
+                              enrollDetail: enrollDetail //报名类型详情字段拼接  订单管理模块需要
                             }
                           }
                         )
