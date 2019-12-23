@@ -100,8 +100,9 @@
                   </tr>
                 </table>
                 <el-breadcrumb separator="|" class="confirm-time">
-                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">备注</el-breadcrumb-item>
-                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,1,item.orderCode)">流程管理</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,1,item.orderCode)">备注</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">收款</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,3,item.orderCode)">流程管理</el-breadcrumb-item>
                 </el-breadcrumb>
                 <div class="but-row">
                     <span class="dot"></span>
