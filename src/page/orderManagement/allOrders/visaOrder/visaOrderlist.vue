@@ -35,91 +35,68 @@
           </div>
           <!--订单列表-->
           <div class="pro-info" v-for="(item,index) in orderpage" :key="index">
-          <h3>{{item.name}}</h3>
+          <h3 class="list-title">{{item.name}}</h3>
           <div class="contentHeader" @click="handleContentHeader(index)">
               <table>
                 <tr>
                   <td class="tr">订单ID</td>
-                  <td>{{item.orderCode}}</td>
-                  <div class="tableCenter">
-                    <td class="tr">团期计划</td>
-                    <td>{{item.groupCode}}</td>
-                  </div>
-                  <td class="tr">订单时间</td>
-                  <td>{{formatDate(new Date(item.createTime))}}</td>
+                  <td width="270">{{item.orderCode}}</td>
+                  <td class="tr">团期计划</td>
+                  <td width="270">{{item.groupCode}}</td>
+                  <td class="tr">下单时间</td>
+                  <td width="270">{{formatDate(new Date(item.createTime))}}</td>
                 </tr>
                 <tr>
-                  <td class="tr">联系人</td>
-                  <td valign="top">{{item.contactName}}</td>
-                  <div class="tableCenter">
-                    <td class="tr">电话</td>
-                    <td valign="top">{{item.contactTel}}</td>
-                  </div>
+                  <td class="tr">套餐</td>
+                  <td>单人多次旅游签证</td>
+                  <td class="tr">签证类型</td>
+                  <td>5年旅游签</td>
+                  <td class="tr">签证地区</td>
+                  <td>新加坡</td>
                 </tr>
               </table>
               <i :class="['contentHeaderIcon', showContent !== index ? 'el-icon-arrow-right': 'el-icon-arrow-down']"></i>
             </div>
             <transition name="el-fade-in">
-              <div class="contentBody" v-show="showContent == index">
+              <div v-show="showContent == index">
                 <table>
                   <tr>
-                    <td class="tr">套餐名称</td>
-                    <td class="longWeight">{{item.package}}</td>
-                    <div class="BodyTableCenter">
-                      <td class="tr">出发地</td>
-                      <td class="longWeight">{{item.pod}}</td>
-                    </div>
-                    <td class="tr">目的地</td>
-                    <td class="longWeight">{{item.destination}}</td>
-                  </tr>
-                  <tr>
-                    <td class="tr">出发日期</td>
-                    <td class="longWeight">{{item.date}}</td>
-                    <div class="BodyTableCenter">
-                      <td class="tr">数量</td>
-                      <td class="longWeight" valign="top"></td>
-                    </div>
+                    <td class="tr">联系人</td>
+                    <td width="270">123</td>
+                    <td class="tr">电话</td>
+                    <td width="270">13000000000</td>
                     <td class="tr">产品类型</td>
-                    <td class="longWeight">跟团游</td>
+                    <td width="270">签证</td>
                   </tr>
                   <tr>
                     <td class="tr">整体优惠</td>
-                    <td class="longWeight" valign="top">{{toDecimal2(item.entiretyFav)}}</td>
-                    <div class="BodyTableCenter">
-                      <td class="tr">其他费用</td>
-                      <td class="longWeight" valign="top">
-                        {{item.otherTitle}}
-                        <span>{{toDecimal2(item.otherPrice)}}</span>
-                      </td>
-                    </div>
-                    <td class="tr">订单来源</td>
-                    <td class="longWeight">{{item.orderChannels}}</td>
+                    <td>0.00</td>
+                    <td class="tr">数量</td>
+                    <td>2</td>
+                    <td class="tr">其他费用</td>
+                    <td>押金（200.00）</td>
                   </tr>
                   <tr>
                     <td class="tr">支付方式</td>
-                    <td class="longWeight"></td>
-                    <div class="BodyTableCenter">
-                      <td class="tr">操作</td>
-                      <td class="longWeight" valign="top">{{item.op}}</td>
-                    </div>
+                    <td>微信</td>
+                    <td class="tr">销售</td>
+                    <td>123</td>
+                    <td class="tr">订单来源</td>
+                    <td>大运通门店</td>
+                  </tr>
+                  <tr>
+                    <td class="tr">平台</td>
+                    <td>ERP系统</td>
+                    <td class="tr">操作</td>
+                    <td>123</td>
                     <td class="tr">商户销售</td>
-                    <td class="longWeight" valign="top" v-if="item.orderChannel == 1">{{item.saler}}</td>
-                    <td class="longWeight" valign="top" v-if="item.orderChannel !== 1"></td>
+                    <td>123</td>
                   </tr>
                   <tr>
-                    <td class="tr">平台&nbsp;&nbsp;</td>
-                    <td class="longWeight" valign="top">{{item.platform}}</td>
-                    <div class="BodyTableCenter">
-                      <td class="tr">销售&nbsp;&nbsp;</td>
-                      <td class="longWeight" valign="top" v-if="item.orderChannel !== 1">{{item.saler}}</td>
-                      <td class="longWeight" valign="top" v-if="item.orderChannel == 1"></td>
-                    </div>
-                    <td class="tr">订单总额&nbsp;&nbsp;</td>
-                    <td class="longWeight" valign="top">{{toDecimal2(item.payable)}}</td>
-                  </tr>
-                  <tr>
-                    <td class="tr">已付金额&nbsp;&nbsp;</td>
-                    <td class="longWeight" valign="top">{{toDecimal2(item.paid)}}</td>
+                    <td class="tr">订单总额</td>
+                    <td>0.00</td>
+                    <td class="tr">已付金额</td>
+                    <td>0.00</td>
                   </tr>
                 </table>
                 <el-breadcrumb separator="|" class="confirm-time">
@@ -127,13 +104,8 @@
                   <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,1,item.orderCode)">流程管理</el-breadcrumb-item>
                 </el-breadcrumb>
                 <div class="but-row">
-                  <span class="dotFather">
                     <span class="dot"></span>
                     <span>{{getOrderStatus(item.orderStatus)}}</span>
-                  </span>
-                  <span v-if="item.occupyStatus == '预订不占' || item.occupyStatus == '预订占位'">待确认剩余
-                    <span class="moneyColor">1天22:33:33</span>
-                  </span>
                 </div> 
               </div>
             </transition>
@@ -495,16 +467,14 @@ export default {
        .poa{position: absolute;left: 76px;top: 30px;width: 100px;color: red;font-size: 12px}
        .por {position: relative}
        /*订单列表*/
-       .pro-info{font-size: 14px;background-color: #e4e4e4;margin: 0 30px 30px 10px;line-height: 25px;padding: 15px;width: 70%;min-width: 1120px;}
-       .moneyColor{color: #ff0000;}
-       .orderMoney{margin: 0;margin-left: 2px;}
+       .pro-info{font-size: 14px;background-color: #e4e4e4;margin:0 30px 30px 10px;line-height: 25px;padding:15px;width: 70%;min-width: 1120px;}
+       .list-title{margin-left: 4px}
        .breadCrumbPointer{cursor: pointer;}
-       .tableCenter{margin-left: 80px;margin-right: 80px;}
-       .tr{font-weight: bold;vertical-align: top;}
+       .contentHeader{position: relative;}
+       .contentHeaderIcon{position: absolute;right: 10px;top:18px;transform: translateY(-50%);}
+       .tr{font-weight: bold;vertical-align: top;width:65px;}
        .but-row{margin: 40px 0 20px 10px;}
-       .but-row .el-button{border: 1px solid #2f95f9;}
        .confirm-time{float: right;margin-top: 46px;margin-right: 20px;}
        .pagination{text-align: center;margin: 50px 0;}
-       .dotFather{margin-right: 16px;}
        .dot{display: inline-block;width: 7px;height: 7px;background-color: #7ec856;border-radius: 50%;margin-top: -2px;margin-right: 6px;}
 </style>
