@@ -47,14 +47,6 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    }, {
-      path: '/addRole',
-      component: () => import('@/page/account/role/addRole'),
-      name: "添加角色权限模板",
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
     },
     /* {
        path: '/perList',
