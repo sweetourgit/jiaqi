@@ -860,7 +860,7 @@ export default {
          let joinData = this.s_content.joinData;
          let joinDataid = this.s_content.joinData.paymentID;
          let payments = this.s_content.payments;
-         console.log(joinData.length,'擦擦擦');
+         console.log(this.ruleForm.editableTabs,'擦擦擦');
          if(joinData.length == 0){
             this.$message({
                 type: "warning",
@@ -1043,13 +1043,14 @@ export default {
                 });
         },
         addbx(item) { //添加报销 
+          this.plans.pid = item.id;
           if(item.groupCode === "" || item.mark === "" || item.productName === "" || this.image === 0 ){
                 this.$message({
                   message: '请检查必填项',
                   type: 'warning'
                 });
             }else{
-                this.Associated(this.plans.pid);
+                this.Associated( this.plans.pid);
                 this.dialogFormVisible3 = true;
             }
         },
@@ -1389,6 +1390,9 @@ export default {
                     console.log(err)
                   })
               }else{
+                 this.s_content.productName = "";
+                 this.plans.pid  = "" ;
+                 this.s_content.groupCode = "";
                   this.$message({
                   message: '请输入正确的团期计划',
                   type: 'warning'
@@ -1500,7 +1504,7 @@ export default {
                                     verify = 0
                                     return;
                                   }    
-                                  console.log(submitForm_list.files.length);
+                                  //console.log(submitForm_list.files.length);
                           if(submitForm_list.groupCode !=="" && submitForm_list.mark !== "" && submitForm_list.files.length !== 0 && submitForm_list.payments.length !== 0){ // 判断必填内容
                                 // for (var i in submitForm_list.files) {//重塑图片上传数组
                                 //     files_s.push({
@@ -1509,7 +1513,7 @@ export default {
                                 //     });
                                 //   }; 
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
-                                      if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
+                                   if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
                                             this.$message({
                                                 message:'报销金额不得大于未报销金额',
                                                 type: 'warning' 
@@ -1546,7 +1550,7 @@ export default {
                     }
               }
                 console.log(this.object_lisr,'87077')
-              console.log(verify,"verify==1啦")
+             
               // if(verify !== 0){
               //    this.add_form(this.object_lisr)//调用提交接口
               // }
