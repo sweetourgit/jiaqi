@@ -4,12 +4,13 @@
            <el-button @click="openRole(1,'新增')">新增</el-button>
            <el-button :disabled="forbidden" @click="delRole">删除</el-button>
            <el-button :disabled="forbidden" @click="openRole(2,'编辑')">编辑</el-button>
+           <el-button :disabled="forbidden">设置权限</el-button>
+           <el-button :disabled="forbidden">选择用户</el-button>
          </el-row>
         <!--list-->
          <el-table :data="dataList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
-           <el-table-column  prop="symbol" label="标识" min-width="210" align="center"></el-table-column>   
-           <el-table-column  prop="name" label="名称" min-width="200" align="center"></el-table-column>
-           <el-table-column  prop="match" label="匹配" min-width="150" align="center"></el-table-column>
+           <el-table-column  prop="title" label="模板名称" min-width="210" align="center"></el-table-column>   
+           <el-table-column  prop="count" label="人数" min-width="150" align="center"></el-table-column>
            <el-table-column  prop="mark" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
          <el-pagination class="pagination"
@@ -24,23 +25,17 @@
           </el-pagination>
        <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
-          <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
-             <el-form-item label="名称" prop="name">
-                 <el-input v-model="rformB.name"></el-input>
-             </el-form-item>
-             <el-form-item label="标识" prop="symbol">
-                 <el-input v-model="rformB.symbol"></el-input>
-             </el-form-item>
-             <el-form-item label="匹配" prop="match">
-                 <el-input v-model="rformB.match"></el-input>
+          <el-form :model="rform" :rules="rules" ref="rform" label-width="100px" class="demo-ruleForm">
+             <el-form-item label="模板名称" prop="title">
+                 <el-input v-model="rform.title"></el-input>
              </el-form-item>
              <el-form-item label="备注" prop="mark">
-                 <el-input v-model="rformB.mark"></el-input>
+                 <el-input v-model="rform.mark"></el-input>
              </el-form-item>
           </el-form>
           <div slot="footer">
             <el-button @click="cancel">取 消</el-button>
-            <el-button type="primary" @click="saveRole('rformB')" class="confirm">确 定</el-button>
+            <el-button type="primary" @click="saveRole('rform')" class="confirm">确 定</el-button>
           </div>
       </el-dialog>
   </div>
@@ -59,17 +54,13 @@ export default {
         forbidden:true,         //按钮是否禁用
         title:"",
         dialogFormVisible:false,
-        rformB: {
-          id:0,
-          symbol:"",
-          match: "",
-          name: "",
+        rform: {
+          title: "",
+          count: "",
           mark: ""
         },
         rules: {
-          symbol: [{ required: true, message: '标识不能为空', trigger: 'blur' }],
-          match: [{ required: true, message: '匹配不能为空', trigger: 'blur' }],
-          name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
+          title: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
         }
     }
   },
@@ -77,7 +68,7 @@ export default {
     this.roleList()
   },
   methods: {
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+      getRowClass({ row, column, rowIndex, columnIndex }){
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
@@ -134,7 +125,7 @@ export default {
            type: "warning"
         })
         .then(() => {
-              this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/data/unbind',{
+              this.$http.post(this.GLOBAL.serverSrc + '/org/api/roledelete',{
                     "id": this.multipleSelection[0].id
                   }).then(res => {
                       if(res.data.isSuccess == true){
@@ -152,9 +143,9 @@ export default {
       },
       saveRole(formName){
          if(this.title == "新增"){
-            this.insertRole(formName,'/org/jurisdiction/data/bind');
+            this.insertRole(formName,'/org/api/roleinsert');
          }else{
-            this.insertRole(formName,'/org/jurisdiction/data/save');
+            this.insertRole(formName,'/org/api/rolesave');
          }
       },
       openRole(index,title){  
@@ -165,12 +156,12 @@ export default {
         }
       },
       getRole(){   
-        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/data/get',{
+        this.$http.post(this.GLOBAL.serverSrc + '/org/api/roleget',{
            "id":this.multipleSelection[0].id
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.rformB=data;
+                 this.rform=data;
               }
         }) 
       },
@@ -179,20 +170,16 @@ export default {
           if(valid){
                    this.$http.post(this.GLOBAL.serverSrc + url,{
                      "object": {
-                        "id": this.rformB.id,
-                        "symbol": this.rformB.symbol,
-                        "match": this.rformB.match,
-                        "name": this.rformB.name,
-                        "createTime": 0,
-                        "menuId": this.menuId,
-                        "mark": this.rformB.mark
+                        "id": this.rform.id,
+                        "title": this.rform.title,
+                        "mark": this.rform.mark
                     }
                   }).then(res => {
                       if(res.data.isSuccess == true){
                          this.roleList();
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
-                         this.rformB.id=0;
+                         this.rform.id=0;
                       }else{
                          this.$message.success(res.data.result.message);
                       }
@@ -205,7 +192,7 @@ export default {
       },
       cancel(){
         this.dialogFormVisible = false
-        this.$refs["rformB"].resetFields();
+        this.$refs["rform"].resetFields();
       }
   }
 }
