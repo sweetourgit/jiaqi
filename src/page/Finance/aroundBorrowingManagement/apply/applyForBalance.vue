@@ -38,9 +38,13 @@
           <el-divider content-position="left">相关信息</el-divider>
           <div class="timeDv">
             <span>验证时间：</span>
-            <el-date-picker v-model="ruleForm.timeStart" type="date" placeholder="开始日期" :picker-options="startDatePicker" @change="loadRelatedData"></el-date-picker>
+            <el-date-picker v-model="ruleForm.timeStart" type="date" placeholder="开始日期" :picker-options="startDatePicker"></el-date-picker>
             <span>--</span>
-            <el-date-picker v-model="ruleForm.timeEnd" type="date" placeholder="结束日期" :picker-options="endDatePicker" @change="loadRelatedData"></el-date-picker>
+            <el-date-picker v-model="ruleForm.timeEnd" type="date" placeholder="结束日期" :picker-options="endDatePicker"></el-date-picker>
+            <span>产品名称：</span>
+            <el-input v-model="ruleForm.productName" placeholder="请输入"></el-input>
+            <el-button @click="loadRelatedData()" type="primary">搜索</el-button>
+            <el-button @click="emptyButtonInside()" type="primary" plain>重置</el-button>
           </div>
           <el-table ref="singleTable" v-loading="loading" :data="tableDataXG" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass" maxHeight="700">
             <el-table-column prop="order_sn" label="订单编号" align="center">
@@ -96,7 +100,8 @@
           number: '',
           buy_type: '',
           timeStart: '',
-          timeEnd: ''
+          timeEnd: '',
+          productName: ''
         },
 
         typeList: [
@@ -258,7 +263,8 @@
                   "rece_code": code,
                   "time_start": this.ruleForm.timeStart,
                   "time_end": this.ruleForm.timeEnd,
-                  "oracle_supplier_code": this.supplierCode
+                  "oracle_supplier_code": this.supplierCode,
+                  "product_name": this.ruleForm.productName
                 }).then(res => {
                   console.log(res);
                   if (res.data.code == 200) {
@@ -462,7 +468,8 @@
           "supplier_name": this.ruleForm.supplierName,
           "buy_type": 1,
           "time_start": this.ruleForm.timeStart,
-          "time_end": this.ruleForm.timeEnd
+          "time_end": this.ruleForm.timeEnd,
+          "product_name": this.ruleForm.productName
         }).then(function(res) {
           console.log('获取相关信息',res);
           if(res.data.code == 200){
@@ -478,11 +485,26 @@
             that.ruleForm.money = totalMoney.toFixed(2);
             that.ruleForm.number = totalNum;
             that.loading = false;
+          }else{
+            that.loading = false;
+            that.tableDataXG = [];
+            that.totalMoney = 0;
+            that.totalNum = 0;
           }
         }).catch(function(obj) {
           that.loading = false;
           console.log(obj);
         });
+      },
+
+      // 加载相关信息--重置
+      emptyButtonInside(){
+        const that = this;
+        this.ruleForm.timeStart = '';
+        this.ruleForm.timeEnd = '';
+        // this.$set(this.ruleForm.productName, '');
+        this.$set(that.ruleForm, 'productName', '');
+        this.loadRelatedData();
       },
 
       // 开始工作流
@@ -651,6 +673,13 @@
     padding: 10px;
     margin: 10px auto;
     background-color: #f7f7f7;
+    .el-input{
+      width: 220px;
+    }
+    .el-button{
+      float: right;
+      margin-right: 10px;
+    }
   }
 
 </style>

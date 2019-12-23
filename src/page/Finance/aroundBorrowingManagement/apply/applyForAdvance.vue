@@ -50,9 +50,13 @@
           <el-divider content-position="left">相关信息</el-divider>
           <div class="timeDv">
             <span>验证时间：</span>
-            <el-date-picker v-model="ruleForm.timeStart" type="date" placeholder="开始日期" :picker-options="startDatePicker" @change="loadRelatedData"></el-date-picker>
+            <el-date-picker v-model="ruleForm.timeStart" type="date" placeholder="开始日期" :picker-options="startDatePicker"></el-date-picker>
             <span>--</span>
-            <el-date-picker v-model="ruleForm.timeEnd" type="date" placeholder="结束日期" :picker-options="endDatePicker" @change="loadRelatedData"></el-date-picker>
+            <el-date-picker v-model="ruleForm.timeEnd" type="date" placeholder="结束日期" :picker-options="endDatePicker"></el-date-picker>
+            <span>产品名称：</span>
+            <el-input v-model="ruleForm.productName" placeholder="请输入"></el-input>
+            <el-button @click="loadRelatedData()" type="primary">搜索</el-button>
+            <el-button @click="emptyButtonInside()" type="primary" plain>重置</el-button>
           </div>
           <el-table ref="singleTable" v-loading="loading" :data="tableDataXG" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass" maxHeight="700">
             <el-table-column prop="order_sn" label="订单编号" align="center">
@@ -132,7 +136,8 @@
           buy_type: '',
           account_type: '',
           timeStart: '',
-          timeEnd: ''
+          timeEnd: '',
+          productName: ''
         },
 
         typeList: [
@@ -191,7 +196,6 @@
         handler: function () {
           if(this.dialogFormVisible){
             this.loadSupplier();
-//            alert(this.type);
           }
         }
       }
@@ -277,8 +281,8 @@
               });
               return;
             }
-//            this.ruleForm.supplierID = 6;
-//            this.ruleForm.supplierName = 2;
+            // this.ruleForm.supplierID = 6;
+            // this.ruleForm.supplierName = 2;
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
               "supplier_code": this.ruleForm.supplierID,
               "supplier_name": this.ruleForm.supplierName,
@@ -297,7 +301,8 @@
               "account_type": this.ruleForm.account_type,
               "time_start": this.ruleForm.timeStart,
               "time_end": this.ruleForm.timeEnd,
-              "oracle_supplier_code": this.supplierCode
+              "oracle_supplier_code": this.supplierCode,
+              "product_name": this.ruleForm.productName
             }).then(res => {
               console.log(res);
               if (res.data.code == 200) {
@@ -307,7 +312,7 @@
                 });
 
                 that.startWork(res.data.data);
-//                that.$emit('loadData');
+              // that.$emit('loadData');
               } else {
                 if(res.data.message){
                   that.$message({
@@ -340,7 +345,7 @@
           this.$message.warning("请先选择供应商~");
         }else{
           this.dialogFormVisible1 = true;
-//          this.ruleForm.supplierID = 6;//暂时替代，获取全部的接口没出
+          // this.ruleForm.supplierID = 6;//暂时替代，获取全部的接口没出
           this.$http.post(this.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
             "id": this.ruleForm.supplierID
           },).then(function (obj) {
@@ -376,9 +381,9 @@
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess(response, file, fileList){
-//        console.log(file);
-//        console.log(fileList);
-//        console.log('response',response);
+        //        console.log(file);
+        //        console.log(fileList);
+        //        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
         }else{
@@ -387,16 +392,16 @@
           }else{
             this.$message.warning('文件上传失败');
           }
-//          this.fileList = fileList;
-//          console.log(fileList);
-//          this.fileList = fileList.splice(-1, 1);
-//          for(let i = 0; i < fileList.length; i++){
-//            console.log(i);
-//          }
+          //          this.fileList = fileList;
+          //          console.log(fileList);
+          //          this.fileList = fileList.splice(-1, 1);
+          //          for(let i = 0; i < fileList.length; i++){
+          //            console.log(i);
+          //          }
 
-//          console.log(this.fileList);
-//          this.fileList = {};
-//          this.$refs.upload1.clearFiles();
+          //          console.log(this.fileList);
+          //          this.fileList = {};
+          //          this.$refs.upload1.clearFiles();
         }
       },
       handleError(err, file, fileList){
@@ -440,7 +445,7 @@
         if(nameStr.substr(nameStr.length-1,1) === ','){
           nameStr = nameStr.substr(0, nameStr.length - 1);
         }
-//        const name = 2;
+        // const name = 2;
         this.ruleForm.supplierName = nameStr;
         this.loadRelatedData();
       },
@@ -472,7 +477,7 @@
               nameStr = nameStr.substr(0, nameStr.length - 1);
             }
             that.ruleForm.supplierName = nameStr;
-//            const name = 2;
+            // const name = 2;
             this.loadRelatedData();
           }else{
             that.ruleForm.dsupplierID = '';
@@ -531,12 +536,13 @@
       loadRelatedData(){
         const that = this;
         this.loading = true;
-//        this.ruleForm.supplierName = 2;
+        // this.ruleForm.supplierName = 2;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/getorder", {
           "supplier_name": this.ruleForm.supplierName,
           "buy_type": 2,
           "time_start": this.ruleForm.timeStart,
-          "time_end": this.ruleForm.timeEnd
+          "time_end": this.ruleForm.timeEnd,
+          "product_name": this.ruleForm.productName
         }).then(function(res) {
           console.log('获取相关信息',res);
           if(res.data.code == 200){
@@ -559,17 +565,26 @@
           that.loading = false;
         });
       },
+      // 加载相关信息--重置
+      emptyButtonInside(){
+        const that = this;
+        this.ruleForm.timeStart = '';
+        this.ruleForm.timeEnd = '';
+        // this.$set(this.ruleForm.productName, '');
+        this.$set(that.ruleForm, 'productName', '');
+        this.loadRelatedData();
+      },
 
       // 开始工作流
       startWork(obj){
-//        alert('执行工作流function！');
+          //        alert('执行工作流function！');
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + '/ZB/StartUpWorkFlowForZB_V2', {
           "jQ_ID": obj.id,
           "jQ_Type": obj.periphery_type,
           "workflowCode": obj.workflowCode,
           "userCode": sessionStorage.getItem('tel'),
-//          "userCode": "zb1",// 测试
+          //          "userCode": "zb1",// 测试
           "finishStart": "true",
           "paramValues": [{
             "itemName": "amount",
@@ -585,7 +600,7 @@
             "itemValue": this.ruleForm.account_type
           }]
         }).then(res => {
-//          console.log('工作流',res);
+          //          console.log('工作流',res);
           let result = JSON.parse(res.data);
           if (result.code == '0') {
             console.log('启动工作流成功');
@@ -598,7 +613,7 @@
               that.$message.warning('启动工作流错误!');
             }
             that.cancalLoan(obj.id);
-//            that.closeAdd();
+            //            that.closeAdd();
             console.log(res.data);
           }
         }).catch(err => {
@@ -610,7 +625,6 @@
 
       // 时间限制（开始时间小于结束时间）
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -623,7 +637,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -642,11 +655,11 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {
           "id": id
         }, ).then(function(response) {
-//            console.log('借款撤销操作',response);
+          //            console.log('借款撤销操作',response);
           if (response.data.code == '200') {
-//            that.$message.success("撤销成功~");
-//            that.endWorking();
-//            that.closeAdd();
+            //            that.$message.success("撤销成功~");
+            //            that.endWorking();
+            //            that.closeAdd();
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -700,6 +713,13 @@
     padding: 10px;
     margin: 10px auto;
     background-color: #f7f7f7;
+    .el-input{
+      width: 220px;
+    }
+    .el-button{
+      float: right;
+      margin-right: 10px;
+    }
   }
 
 </style>
