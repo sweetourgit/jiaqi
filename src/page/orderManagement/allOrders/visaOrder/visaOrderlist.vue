@@ -155,17 +155,17 @@ export default {
        orderStatusSearch:[
          {'status':0,'name':"全部"},
          {'status':0,'name':"下单成功(2)"},
-         {'status':0,'name':"收到材料"},
+         {'status':0,'name':"收到材料(2)"},
          {'status':0,'name':"材料审核(2)"},
-         {'status':0,'name':"材料补交中"},
+         {'status':0,'name':"材料补交中(2)"},
          {'status':0,'name':"材料制作中(2)"},
-         {'status':0,'name':"成功预约时间"},
-         {'status':0,'name':"送签/面签"},
+         {'status':0,'name':"成功预约时间(2)"},
+         {'status':0,'name':"送签/面签(2)"},
          {'status':0,'name':"使馆审理中(2)"},
-         {'status':0,'name':"使馆审理完毕"},
-         {'status':0,'name':"过签"},
-         {'status':0,'name':"拒签"},
-         {'status':0,'name':"邮寄中"},
+         {'status':0,'name':"使馆审理完毕(2)"},
+         {'status':0,'name':"过签(2)"},
+         {'status':0,'name':"拒签(2)"},
+         {'status':0,'name':"邮寄中(2)"},
          {'status':0,'name':"待评价(2)"},
          {'status':0,'name':"订单完成"},
          {'status':0,'name':"订单作废"},
@@ -397,34 +397,52 @@ export default {
       getOrderStatus(status){
           switch(status){
             case 1:
-              return '补充游客材料';
+              return '下单成功';
               break;
             case 2:
-              return '签订电子合同';
+              return '收到材料';
               break;
             case 3:
-              return '待出行';
+              return '材料审核';
               break;
             case 4:
-              return '旅行中';
+              return '材料补交中';
               break;
             case 5:
-              return '待评价';
+              return '材料制作中';
               break;
             case 6:
-              return '已完成';
+              return '成功预约时间';
               break;
             case 7:
-              return '未确认';
+              return '送签';
               break;
             case 8:
-              return '签署合同';//？
+              return '面签';//？
               break;
             case 9:
-              return '订单作废';
+              return '使馆审理中';
               break;
             case 10:
-              return '订单确认';
+              return '使馆审理完毕';
+              break;
+            case 10:
+              return '过签';
+              break;
+            case 10:
+              return '拒签';
+              break;
+            case 10:
+              return '邮寄中';
+              break;
+            case 10:
+              return '待评价';
+              break;
+            case 10:
+              return '订单完成';
+              break;
+            case 10:
+              return '订单作废';
               break;
           }
       },
