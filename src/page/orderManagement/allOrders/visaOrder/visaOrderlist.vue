@@ -211,8 +211,8 @@ export default {
        //订单列表
        pageshow:true,
        showContent: null,
-       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
-       pageIndex: 1, // 设定当前页数
+       pageSize: 10, 
+       pageIndex: 1,
        total: 0,
        orderpage:[],
        orderId:0,
