@@ -114,6 +114,7 @@ export default {
         pacId: null,
         average: 0
       },
+      addActionLock: false,
       // 新增plan
       enrollList: [],
       // 共享库存列表
@@ -174,6 +175,7 @@ export default {
       this.inventorySuccessList.splice(0); // 成功队列
       this.linkList.splice(0) // 总队列
       this.errorList.splice(0); // 错误队列
+      this.addActionLock= false;
       this.vm.average= 0;
       this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
       this.vm.state= false;
@@ -282,11 +284,17 @@ export default {
       if(!this.validate()) return console.error('validator errors');
       // 清空enrollCache
       // 缓存子数据集合 this.getEnrollRefs().map(enrollRef => enrollRef.getData());
-      if(this.vm.share=== SHARE_STATE.SHARE) return this.shareAddAction();
-      return this.notShareAddAction().then(res => {
-        this.handleClose();
+      if(this.addActionLock) return this.$message.info('数据传输中，请耐心等待');
+      this.addActionLock= true;
+      new Promise((resolve) => {
+        if(this.vm.share=== SHARE_STATE.SHARE) return resolve(this.shareAddAction());
+        resolve(this.notShareAddAction())
+      })
+      .then(res => {
+        this.addActionLock= false;
         this.$message.success('添加成功');
         setTimeout(() => this.$emit('refresh'), 1200);
+        this.handleClose();
       });
     },
 
@@ -432,7 +440,8 @@ export default {
           this.inventorySuccessList.push({ day, inventoryID: id })
           return resolve(id);
         }).catch((err) => {
-          resolve(this.linkFailCb(day));
+          console.error(err)
+          // resolve(this.linkFailCb(day));
         })
       })
     },
@@ -448,7 +457,8 @@ export default {
           this.savingState(day, 'success');
           return resolve(true);
         }).catch((err) => {
-          resolve(this.linkFailCb(day));
+          console.error(err)
+          // resolve(this.linkFailCb(day));
         })
       })
     },
