@@ -140,6 +140,12 @@
           productName: ''
         },
 
+        postForm: {
+          timeStart: '',
+          timeEnd: '',
+          productName: ''
+        },
+
         typeList: [
           {
             value: 1,
@@ -228,6 +234,11 @@
           timeStart: '',
           timeEnd: ''
         };
+        this.postForm = {
+          timeStart: '',
+          timeEnd: '',
+          productName: ''
+        }
         this.fileList = [];
         this.tableDataXG = [];
         this.$emit('close', false);
@@ -299,10 +310,10 @@
               "org_id": sessionStorage.getItem('orgID'),
               "buy_type": 2,
               "account_type": this.ruleForm.account_type,
-              "time_start": this.ruleForm.timeStart,
-              "time_end": this.ruleForm.timeEnd,
+              "time_start": this.postForm.timeStart,
+              "time_end": this.postForm.timeEnd,
               "oracle_supplier_code": this.supplierCode,
-              "product_name": this.ruleForm.productName
+              "product_name": this.postForm.productName
             }).then(res => {
               console.log(res);
               if (res.data.code == 200) {
@@ -536,6 +547,11 @@
       loadRelatedData(){
         const that = this;
         this.loading = true;
+        this.postForm = {
+          timeStart: this.ruleForm.timeStart,
+          timeEnd: this.ruleForm.timeEnd,
+          productName: this.ruleForm.productName
+        }
         // this.ruleForm.supplierName = 2;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/getorder", {
           "supplier_name": this.ruleForm.supplierName,

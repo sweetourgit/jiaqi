@@ -104,6 +104,12 @@
           productName: ''
         },
 
+        postForm: {
+          timeStart: '',
+          timeEnd: '',
+          productName: ''
+        },
+
         typeList: [
           {
             value: 1,
@@ -187,6 +193,11 @@
           timeStart: '',
           timeEnd: ''
         };
+        this.postForm = {
+          timeStart: '',
+          timeEnd: '',
+          productName: ''
+        },
 //        this.rece_code = '';
         this.fileList = [];
         this.tableDataXG = [];
@@ -463,6 +474,11 @@
       loadRelatedData(){
         const that = this;
         this.loading = true;
+        this.postForm = {
+          timeStart: this.ruleForm.timeStart,
+          timeEnd: this.ruleForm.timeEnd,
+          productName: this.ruleForm.productName
+        },
 //        this.ruleForm.supplierName = 3;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/getorder", {
           "supplier_name": this.ruleForm.supplierName,
