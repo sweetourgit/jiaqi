@@ -1551,9 +1551,9 @@ export default {
               }
                 console.log(this.object_lisr,'87077')
              
-              // if(verify !== 0){
-              //    this.add_form(this.object_lisr)//调用提交接口
-              // }
+              if(verify !== 0){
+                 this.add_form(this.object_lisr)//调用提交接口
+              }
           },
         //方法结尾
      },
