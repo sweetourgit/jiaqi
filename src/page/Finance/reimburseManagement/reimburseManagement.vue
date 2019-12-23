@@ -478,6 +478,7 @@ export default {
         peo: "qq"
       },
       t_price_box:[],//所有价格数组
+      alljoinData:[],//所有关联数据
       ruleForm: {  //报销表单
       editableTabsValue: "1",
       editableTabs: [
@@ -860,7 +861,7 @@ export default {
          let joinData = this.s_content.joinData;
          let joinDataid = this.s_content.joinData.paymentID;
          let payments = this.s_content.payments;
-         console.log(this.ruleForm.editableTabs,'擦擦擦');
+         this.t_price_box= [];
          if(joinData.length == 0){
             this.$message({
                 type: "warning",
@@ -890,6 +891,8 @@ export default {
                              }
                }
                 this.s_content.payments.push(joinData);
+                this.alljoinData.push(joinData);
+               // console.log(this.alljoinData,"新增的")
                 this.t_price_box.push(joinData.price);
                 this.t_price_sum()
                 this.dialogFormVisible3 = false;
@@ -926,12 +929,21 @@ export default {
                            this.s_content.payments.push(payments_box[j]);
                            this.t_price_box.push(payments_box[j].price);
                           }
+                           this.t_price_sum();
+                            for(let y in this.alljoinData ){
+                                  if(this.alljoinData[y].paymentID === paymentID){
+                                      this.alljoinData.splice(j, 1);
+                                      //console.log(this.alljoinData,"删除的")
+                                    }
+                                 }
                            
-                      this.t_price_sum();
+                     
                       this.$message.success('删除成功');
+                            
                      }
+                    
              }
-
+            
           })
           .catch(() => {
             console.log(7);
@@ -1528,6 +1540,18 @@ export default {
                                               verify = 0
                                               return;
                                         }
+                                }
+                                for(var i=0; i<this.alljoinData.length; i++){
+                                  for(var j=i+1; j<this.alljoinData.length; j++){
+                                    if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
+                                        this.$message({
+                                                message:'关联单据重复，请重新选择',
+                                                type: 'warning' 
+                                              });
+                                              verify = 0
+                                              return;
+                                        }
+                                     }
                                 }
                               
                                 this.object_lisr.push({//给数组赋值
