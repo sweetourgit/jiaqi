@@ -671,12 +671,23 @@ export default new Router({
       }
     }, {
       path: '/checkSheet',
-      component: () => import('@/page/Finance/checkSheet/checkSheet1'),
+      component: () => import('@/page/Finance/checkSheet/checkSheet'),
       name: '报账单',
       meta: {
         keepAlive: true,
         auth: true
-      }
+      },
+      children: [
+        {
+          path: 'around',
+          component: () => import('@/page/Finance/checkSheet/around/checkSheet1'),
+          name: '报账单-周边游',
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+      ]
     }, {
       path: '/checkSheetDetail',
       component: () => import('@/page/Finance/checkSheetDetail/checkSheetDetail'),
