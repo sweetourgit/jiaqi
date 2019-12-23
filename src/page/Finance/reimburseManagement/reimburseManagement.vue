@@ -121,7 +121,7 @@
 
               <div style="color: red; position: absolute;left: 20px;top:15px;" v-if="find==0" >*</div>
               <el-form-item label="团期计划" porp="groupCode" v-if="find==0"  >
-                  <el-autocomplete
+                  <el-input 
                       v-model="item.content.groupCode"
                       ref="groupCode"
                       style="width: 240px;"
@@ -129,7 +129,7 @@
                       :disabled="change"
                       @blur="tour_check"
                      >
-                    </el-autocomplete>
+                    </el-input >
                     <el-input 
                     style="width:300px;" 
                     disabled 
@@ -396,7 +396,7 @@
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="t_text_del('joinData')">取 消</el-button>
-          <el-button type="primary" @click="t_text('joinData')">确 定2</el-button>
+          <el-button type="primary" @click="t_text()">确 定2</el-button>
         </div>
       </el-dialog>
       <!--添加报销弹窗end-->
@@ -854,34 +854,41 @@ export default {
         joinData_btn(row) {  //获取管理订单
          this.subscript(); 
          this.s_content.joinData = row;
-        },
+       },
         t_text() {//确认添加
-          this.subscript(); 
-         let joinData =this.s_content.joinData;
+         this.subscript(); 
+         let joinData = this.s_content.joinData;
          let joinDataid = this.s_content.joinData.paymentID;
          let payments = this.s_content.payments;
-         if(joinData.length  == 0){
+         console.log(joinData.length,'擦擦擦');
+         if(joinData.length == 0){
             this.$message({
                 type: "warning",
                 message: "请重新选择团期计划"
               });
               this.dialogFormVisible3 = false;
 
-          }else{
-                if(payments.length != 0){
+         }else if(joinData.length != undefined){
+              this.dialogFormVisible3 = true;
+              this.$message({
+                    type: "warning",
+                    message: "请选择关联单据"
+                    }); 
+                    return;
+        }else{
+             if(payments.length != 0){
                       for(let i in payments){
                         if( payments[i].paymentID === joinDataid ){
                               //payments.splice(i, 1);
                               this.dialogFormVisible3 = true;
                               this.$message({
-                                      type: "warning",
+                                    type: "warning",
                                     message: "请重新选择关联单据"
                                     }); 
                                     return;
                                 } 
                              }
-                            
-                }
+               }
                 this.s_content.payments.push(joinData);
                 this.t_price_box.push(joinData.price);
                 this.t_price_sum()
@@ -910,19 +917,20 @@ export default {
             this.t_price_box = [];
             this.s_content.payments=[];
               for(let j in payments_box){
-                console.log(payments_box[j].paymentID);
                 if(payments_box[j].paymentID === paymentID){
-                      payments_box.splice(j, 1); 
-                      this.$message({
-                          type: "success",
-                          message: "删除成功"
-                        });
-                      
-                  }
-                    this.s_content.payments.push(payments_box[j]);
-                    this.t_price_box.push(payments_box[j].price);
-                    this.t_price_sum();
-                 }
+                          payments_box.splice(j, 1);
+                          if(payments_box.length == 0){
+                           this.s_content.payments=[];
+                           this.t_price_box=[];
+                          } else{
+                           this.s_content.payments.push(payments_box[j]);
+                           this.t_price_box.push(payments_box[j].price);
+                          }
+                           
+                      this.t_price_sum();
+                      this.$message.success('删除成功');
+                     }
+             }
 
           })
           .catch(() => {
@@ -1367,21 +1375,26 @@ export default {
        
         tour_check() {   // 团期计划输入框失去焦点时
            this.subscript();
-           if (this.s_content.groupCode != '') {
-              this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist", {
-                "object": {
-                  "groupCode": this.s_content.groupCode, // 团号
-                }
-              }).then(res => {
-                console.log(res.data,"80802")
-                if (res.data.isSuccess == true) {
-                      this.s_content.productName = res.data.objects[0].title
-                      this.plans.pid  = res.data.objects[0].planID
-                  }
-              }).catch(err => {
-                console.log(err)
-              })
-            } 
+           if(this.s_content.groupCode.length > 10 ){
+                  this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist", {
+                    "object": {
+                      "groupCode": this.s_content.groupCode, // 团号
+                    }
+                  }).then(res => {
+                    if (res.data.isSuccess == true) {
+                          this.s_content.productName = res.data.objects[0].title
+                          this.plans.pid  = res.data.objects[0].planID
+                      }
+                  }).catch(err => {
+                    console.log(err)
+                  })
+              }else{
+                  this.$message({
+                  message: '请输入正确的团期计划',
+                  type: 'warning'
+                });
+
+              }
         },
         
          
