@@ -331,6 +331,15 @@ export default new Router({
             keepAlive: true,
             auth: true
           },
+        },
+        {
+          path: 'visaOrderList',
+          name: '签证',
+          component: () => import('@/page/productManagement/regimentPlan/children/visaOrder/visaOrderList'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
         }
 
       ]
