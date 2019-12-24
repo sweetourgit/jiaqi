@@ -4,8 +4,8 @@
            <el-button @click="openRole(1,'新增')">新增</el-button>
            <el-button :disabled="forbidden" @click="delRole">删除</el-button>
            <el-button :disabled="forbidden" @click="openRole(2,'编辑')">编辑</el-button>
-           <el-button :disabled="forbidden">设置权限</el-button>
-           <el-button :disabled="forbidden">选择用户</el-button>
+           <el-button :disabled="forbidden" @click="operation(1)">授权</el-button>
+           <el-button :disabled="forbidden" @click="operation(2)">选择用户</el-button>
          </el-row>
         <!--list-->
          <el-table :data="dataList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
@@ -38,11 +38,19 @@
             <el-button type="primary" @click="saveRole('rform')" class="confirm">确 定</el-button>
           </div>
       </el-dialog>
+      <grant-auth :roleId="roleId" :variable="variable" :dialogType="dialogType"></grant-auth>
+      <choose-user :roleId="roleId" :variable="variable" :dialogType="dialogType"></choose-user>
   </div>
 </template>
 
 <script>
+import grantAuth from './grantAuth'
+import chooseUser from './chooseUser'
 export default {
+  components:{
+    "grant-auth":grantAuth,
+    "choose-user":chooseUser,
+  }, 
   data() {
     return {
         guid:"",
@@ -50,6 +58,9 @@ export default {
         pageSize: 10, 
         pageIndex: 1, 
         total: 0,
+        variable:0,
+        dialogType:0,
+        roleId:0,
         multipleSelection: [],   //选中的list
         forbidden:true,         //按钮是否禁用
         title:"",
@@ -191,9 +202,14 @@ export default {
         })
       },
       cancel(){
-        this.dialogFormVisible = false
+        this.dialogFormVisible = false;
         this.$refs["rform"].resetFields();
-      }
+      },
+      operation(i){
+          this.roleId=this.multipleSelection[0].id;
+          this.variable++;
+          this.dialogType = i;    
+      },
   }
 }
 </script>
