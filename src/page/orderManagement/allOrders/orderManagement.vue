@@ -3,6 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="跟团游" name="1"></el-tab-pane>
       <el-tab-pane label="签证" name="2"></el-tab-pane>
+      <el-tab-pane label="邮轮游" name="3"></el-tab-pane>
     </el-tabs>
     <router-view></router-view>
   </div>
@@ -11,7 +12,7 @@
 export default {
   data() {
     return {
-      activeName: '1',
+      activeName: "1"
     };
   },
   methods: {
@@ -20,16 +21,20 @@ export default {
         this.$router.push({ path: "/orderManagement/orderList" });
       } else if (tab.name == 2) {
         this.$router.push({ path: "/orderManagement/visaOrderlist" });
+      } else if (tab.name == 3) {
+        this.$router.push({ path: "/orderManagement/boatOrderlist" });
       }
     }
   },
   watch: {
     $route: {
-      handler: function(val, oldVal){
-        if (val.path == "/orderManagement/visaOrderlist"){
-          this.activeName = "2"
-        }else if(val.path == "/orderManagement/orderList"){
-          this.activeName = "1"
+      handler: function(val, oldVal) {
+        if (val.path == "/orderManagement/visaOrderlist") {
+          this.activeName = "2";
+        } else if (val.path == "/orderManagement/orderList") {
+          this.activeName = "1";
+        } else if (val.path == "/orderManagement/boatOrderlist") {
+          this.activeName = "3";
         }
       },
       // 深度观察监听
@@ -38,11 +43,12 @@ export default {
   },
   created() {
     if (this.$route.path == "/orderManagement/visaOrderlist") {
-      this.activeName = "2"
-    }
-  },
+      this.activeName = "2";
+    } else if (this.$route.path == "/orderManagement/boatOrderlist") {
+      this.activeName = "3";
+    } 
+  }
 };
-
 </script>
 <style scoped>
 </style>

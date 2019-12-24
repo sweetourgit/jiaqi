@@ -2894,7 +2894,7 @@ export default {
   created() {
     this.currentPage4 = 1;
     this.list();
-    this.areaAxios();
+    // this.areaAxios();
   }
 };
 </script>

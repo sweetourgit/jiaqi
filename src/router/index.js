@@ -355,8 +355,16 @@ export default new Router({
             keepAlive: true,
             auth: true
           },
+        },
+        {
+          path: 'boatOrderlist',
+          name: '订单管理-邮轮游',
+          component: () => import('@/page/orderManagement/allOrders/boatOrder/boatOrderlist'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
         }
-
       ]
     },
     {

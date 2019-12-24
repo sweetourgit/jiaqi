@@ -268,6 +268,10 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item.id,1,item.orderCode)"
               >流程管理</el-breadcrumb-item>
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item.id,3,item.orderCode)"
+              >出团通知书</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
@@ -296,6 +300,34 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
+
+      <!--出团通知书弹窗begin-->
+      <el-dialog
+        title="出团通知书"
+        :visible.sync="dialogAdviceNote"
+        :close-on-click-modal="false"
+        width="780px"
+      >
+        <div class="adviceNote">
+          <span>出团通知书 :</span>
+          <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            multiple
+            :disabled="true"
+            :file-list="fileList"
+          ></el-upload>
+          <div class="adviceNoteBtn">
+            <el-button type="info" @click="dialogAdviceNote = false">取消</el-button>
+            <el-button type="primary" @click="adviceNoteDown">下载</el-button>
+            <el-button type="primary" @click="adviceNoteSend">发送</el-button>
+          </div>
+        </div>
+      </el-dialog>
+      <!--出团通知书弹窗end-->
+
       <process-manage
         :orderId="orderId"
         :variable="variable"
@@ -333,6 +365,13 @@ export default {
   },
   data() {
     return {
+      fileList: [
+        {
+          name: "food.jpeg",
+          url:
+            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+        }
+      ],
       defaultProps: {
         children: "children",
         label: "label"
@@ -406,14 +445,15 @@ export default {
       orderpage: [],
       orderId: 0,
       variable: 0, //设置一个变量展示弹窗
-      dialogType: 0, //弹窗类型  1：流程管理  2：备注信息
+      dialogType: 0, //弹窗类型  1：流程管理  2：备注信息 3出团通知书
       orderCode: "", //订单编号
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
       getListOneMessage: {},
       showContent: null, //list折叠展示的
       businessLists: [], //商户名称下拉列表展示
       isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
-      enrollDetailShow: "" //报名信息的数量
+      enrollDetailShow: "", //报名信息的数量
+      dialogAdviceNote: false //出团通知书
     };
   },
   watch: {
@@ -429,6 +469,16 @@ export default {
   },
   methods: {
     moment,
+    adviceNoteDown() {
+      let url = this.fileList[0].url
+      window.open(url)
+    },
+    // 出团通知书的发送
+    adviceNoteSend() {},
+    handleRemove(file, fileList) {
+    },
+    handlePreview(file,fileList) {
+    },
     //目的地
     querySearch(queryString, cb) {
       this.$http
@@ -526,7 +576,7 @@ export default {
         })
         .then(res => {
           // console.log("请求一条数据的",res)
-          this.enrollDetailShow = ""
+          this.enrollDetailShow = "";
           this.getListOneMessage = res.data.object;
           // let enrollDetail = this.getListOneMessage.enrollDetail;
           // this.formatData(enrollDetail);
@@ -606,7 +656,7 @@ export default {
     //       });
     //     });
     //   });
-      // this.tempresult = tempresult;
+    // this.tempresult = tempresult;
     //   result.forEach(res => {
     //     tempresult.forEach(tempres => {
     //       if (tempres.type == res.type && tempres.price == res.price) {
@@ -997,7 +1047,11 @@ export default {
       this.orderId = orderId;
       this.variable++;
       this.dialogType = i;
+      if (i == 3) {
+        this.dialogAdviceNote = true;
+      }
     },
+
     // 出发日期转换格式显示
     // goDataChangeFun (data) {
     //   console.log(data)
@@ -1177,5 +1231,15 @@ export default {
   border-radius: 50%;
   margin-top: -2px;
   margin-right: 6px;
+}
+/* 出团通知书 */
+.adviceNote {
+  height: 300px;
+  position: relative;
+}
+.adviceNoteBtn {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
 }
 </style>
