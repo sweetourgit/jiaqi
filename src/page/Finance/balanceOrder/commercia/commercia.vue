@@ -1,5 +1,5 @@
 <template>
-   <div  class="vivo" style="position:relative; width:1100px;">
+   <div  class="vivo" style="position:relative; width:100%;">
      <div label="商户欠款订单">
         <!--搜索框-->
         <div style="width:1100px;">
@@ -13,36 +13,38 @@
           </div>
           <div class="fl">
             <span class="emptyPlan">欠款时间</span>
-            <el-date-picker v-model="startDate" type="date" class="planTime" placeholder="日期"></el-date-picker>
+            <el-date-picker v-model="startDate" type="date" class="planTime" placeholder="日期" @change="endDateChange()"></el-date-picker>
             <span class="time">——</span>
-            <el-date-picker v-model="endDate" type="date" class="planTime" placeholder="日期"></el-date-picker>
+            <el-date-picker v-model="endDate" type="date" class="planTime" placeholder="日期" @change="endDateChange()"></el-date-picker>
           </div>
         </div>
         <div style="width:1100px;clear:both; padding:0 0 50px 0;">
           <div style=" float:left">
                <span class="emptyPlan">欠款逾期</span>
-             <el-select v-model="checkType" placeholder="请选择逾期类型" class="empty">
-                     <el-option :label="item.label" :value="item.value" v-for="(item,index) of settlement" :key="item.value" /> 
+             <el-select v-model="typeColl" placeholder="请选择逾期类型" class="empty">
+                     <el-option :label="item.label" :value="item.value" v-for="item in settlement" :key="item.value" /> 
                    </el-select>
           </div>
           <div style="float:right; margin: 0 10px 0 0;">
             <el-button type="primary" @click="handleSearch()">搜索</el-button>
-            <el-button @click="emptyButton()" type="primary">重置</el-button>
+            <el-button type="primary" @click="emptyButton()" >重置</el-button>
           </div>
         </div>
+      <!--搜索框-->
+ 
         <!--表格-->
          <el-table :data="tableData" class="labelTable" border style="width:100%">
-            <el-table-column prop="ID" label="订单ID" width="" align="center"></el-table-column>
-            <el-table-column prop="name" label="商户名称" width="" align="center"></el-table-column>
-            <el-table-column prop="moneyType" label="结款方式" width="" align="center"></el-table-column>
-            <el-table-column prop="productName" label="产品名称" width="" align="center"></el-table-column>
-            <el-table-column prop="plan" label="团期计划" width="" align="center"></el-table-column>
-            <el-table-column prop="order" label="订单金额" width="" align="center"></el-table-column>
-            <el-table-column prop="arrears" label="欠款金额" width="" align="center"></el-table-column>
-            <el-table-column prop="also" label="已还金额" width="" align="center"></el-table-column>
-            <el-table-column prop="examine" label="待审批金额" width="" align="center"></el-table-column>
-            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="" align="center"></el-table-column>
-            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="" align="center"></el-table-column>
+            <el-table-column prop="ID" label="订单ID" width="80" align="center"></el-table-column>
+            <el-table-column prop="name" label="商户名称" width="140" align="center"></el-table-column>
+            <el-table-column prop="moneyType" label="结款方式" width="80" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" width="160" align="center"></el-table-column>
+            <el-table-column prop="plan" label="团期计划" width="140" align="center"></el-table-column>
+            <el-table-column prop="order" label="订单金额" width="120" align="center"></el-table-column>
+            <el-table-column prop="arrears" label="欠款金额" width="120" align="center"></el-table-column>
+            <el-table-column prop="also" label="已还金额" width="120" align="center"></el-table-column>
+            <el-table-column prop="examine" label="待审批金额" width="120" align="center"></el-table-column>
+            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
+            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
          </el-table>
          <!-- <el-pagination 
          class="pageList" 
@@ -86,21 +88,18 @@ export default {
      return {
        activeName: 'first',
        //搜索栏
-        orderid:'',//订单id
+        orderid:"",//订单id
         ordertitle:'',//商户名称
-        startDate:'', // 开始时间
-        endDate:'', // 结束时间
-        checkType:'', //欠款逾期
+        startDate:"", // 开始时间
+        endDate:"", // 结束时间
+        typeColl:'', //欠款逾期
         settlement:[{
-          value: '0',
-          label: '审批中'
+          value:  0,
+          label: '无逾期'
          }, {
-          value: '1',
-          label: '通过'
-         }, {
-          value: '2',
-          label: '驳回'
-        }],
+          value:  1,
+          label: '有逾期'
+         }],
         tableData:[],//列表数据
         //分页
         pageSize:10, // 设定默认分页每页显示数
@@ -125,32 +124,34 @@ export default {
        pageList(
             pageIndex = this.pageIndex,
             pageSize = this.pageSize,
-            id = this.orderid,//订单id
-            title = this.ordertitle,//商户名称
+            orderCode = this.orderid,//订单id
+            localComp = this.ordertitle,//商户名称
             startDate= this.startDate,//开始时间
             endDate = this.endDate,//结束时间
-            checkType=this.checkType//选择逾期
+            typeColl=this.typeColl//选择逾期
         ){
             var that = this;
-            let object = {};
-            // if(startDate == null){
-            //   startDate = "";
-            // }else if(endDate == null){
-            //  this.$message({
-            //   type: "warning",
-            //   message: "请选择结束时间"
-            // });
-            // }
-              id !== "" ? (object.id = id) : id,
-              title !== "" ? (object.title = title) : title,
-              checkType !== ""? (object.checkType = checkType): checkType;
+            let object={};
+            
+            if(endDate !== "" && startDate !== ""){
+              endDate = Date.parse(endDate);
+              startDate = Date.parse(startDate);
+            }else{
+              endDate = ""
+              startDate = ""
+            }
+           
+            
+             
+          
+           
+              orderCode !== "" ? (object.orderCode = orderCode) : orderCode,
+              localComp !== "" ? (object.localComp = localComp) : localComp,
+              typeColl !== ""? (object.typeColl = typeColl): typeColl;
               startDate !== ""? (object.startDate = startDate): startDate;
               endDate !== ""? (object.endDate = endDate): endDate;
-
-            if (endDate !== "" && startDate !== "") {
-                object.startDate = moment(startDate).format("YYYY-MM-DD");
-                object.endDate = moment(endDate).format("YYYY-MM-DD");
-                } 
+            
+          
               console.log(object,'8ee')
             that.$http
               .post(that.GLOBAL.serverSrc + "/orderquery/get/api/SIArreaPage", {
@@ -162,13 +163,19 @@ export default {
               .then(function(obj) {
                 that.tableData=[];
                 that.total = obj.data.total;
+                let moneyType;
                 for(let j in obj.data.objects){
+                  if(obj.data.objects[j].settlement == 1){
+                      moneyType = "月结"
+                  }else if(obj.data.objects[j].settlement == 2){
+                      moneyType = "非月结"
+                  }
                   that.tableData.push({
                         ID:obj.data.objects[j].id,//id+
                         name:obj.data.objects[j].localComp,//商户名称+
-                        moneyType:obj.data.objects[j].settlement,//结款方式+
+                        moneyType:moneyType,//结款方式+
                         productName:obj.data.objects[j].title, //产品名称+
-                        plan:obj.data.objects[j].date,//团期计划
+                        plan:obj.data.objects[j].groupCode,//团期计划
                         order:obj.data.objects[j].orderPrice,//订单金额+
                         arrears: obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice, //欠款金额
                         also:obj.data.objects[j].collectionPrice, //已还金额
@@ -189,11 +196,21 @@ export default {
       this.ordertitle ='',
       this.startDate = '';
       this.endDate = '';
-      this.checkType = '';
+      this.typeColl = '';
       this.currentPage4 = 1;
       this.pageList(1, this.pageSize);
     },
-     
+    //判断结束时间不能在开始时间之前
+    endDateChange() {
+      let startDate = moment(this.startDate).format("YYYYMMDD");
+      let endDate = moment(this.endDate).format("YYYYMMDD");
+      if (this.startDate !== "") {
+        if (endDate < startDate) {
+          this.$message.error("结束时间不能早于开始时间");
+          this.endDate = "";
+        }
+      }
+    },
     handleSearch() {// 搜索
             this.pageIndex = 1;
             this.currentPage4 = 1;
@@ -216,7 +233,7 @@ export default {
           if(date == undefined || date == '') {
             return '';
           }
-          return moment(date).format('YYYY-MM-DD HH:mm:ss')
+          return moment(date).format('YYYY-MM-DD')
         },
   
   },
@@ -231,6 +248,6 @@ export default {
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
   /*表格*/
-  .labelTable{margin: 20px 30px 20px 0;max-width: 1100px;overflow: hidden;clear:both;}
+  .labelTable{margin: 20px 30px 20px 0;max-width: 90%;overflow: hidden;clear:both;}
   .pageList{float:right; margin: 0 0 60px 0;}
 </style>
