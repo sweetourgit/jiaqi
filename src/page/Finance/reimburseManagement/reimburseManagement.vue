@@ -683,7 +683,7 @@ export default {
                           if(object[i].peopleCount == 0){
                                    object[i].peopleCount = 1
                                 }
-                      this.s_content.joinData.push({
+                      this.joinData.push({
                           paymentID:  object[i].paymentID,
                           supplierTypeEX:object[i].supplierTypeEX,
                           groupCode:object[i].groupCode,
@@ -700,7 +700,8 @@ export default {
                           wcount: object[i].price - object[i].expensePrice
                           //  wcount :object[i].price - object[i].expensePrice
                       });
-                       this.joinData =this.s_content.joinData
+                       //this.joinData =this.s_content.joinData;
+                      // console.log(this.joinData,'802')
                     }
                     
                       
@@ -715,6 +716,8 @@ export default {
           this.plans.planName = row.title;
           this.plans.planNum = row.groupCode;
           this.plans.pid = row.planID;
+          this.subscript();
+          this.s_content.payments=[];
         },
       
         clickBanle(row) {  // 报销人选中行
