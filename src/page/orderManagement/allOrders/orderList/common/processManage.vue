@@ -79,7 +79,7 @@
             <!-- :max="salePriceNum[index].quota" -->
             <numberInputer class="input-num"
               :proto="item"
-              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
               @change="enrollChangeHandler">
             </numberInputer>
           </div>
@@ -100,7 +100,7 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
               @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
@@ -112,7 +112,7 @@
               v-readonly="'others'"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
               @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
@@ -123,7 +123,7 @@
               v-model="item.mark"
               placeholder="请输入摘要"
               class="input1"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark"
@@ -133,7 +133,7 @@
               v-readonly="'others'"
               placeholder="请输入摘要"
               class="input1"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
             ></el-input>
           </el-form-item>
         </div>
@@ -158,7 +158,7 @@
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactName"
             v-has="'others'"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系电话" class="contact" prop="contactPhone">
@@ -166,7 +166,7 @@
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactPhone"
             v-has="'others'"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
           ></el-input>
         </el-form-item>
         <hr />
@@ -190,7 +190,7 @@
         <div class="travelMessage">出行人信息</div>
         <travelMessage
           :proto="salePrice"
-          :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+          :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
           @remove-guest="removeGuestEmit"
           @edit-guest="editGuestEmit">
         </travelMessage>
@@ -529,7 +529,6 @@ export default {
     //   }
     // },
     isSaveBtnClick(){
-      console.log(123)
       this.isSaveBtn = false
       if(this.totalPrice + this.changedPrice<= 0) return this.isSaveBtn = true;
       // 如果一个报名也没有也不可以保存
@@ -1144,7 +1143,6 @@ export default {
     },
 
     compPrice(type, index) {
-      console.log(type,index)
       //计算总价
       if (type == 2) {
         this.isChangeNumber = true; //数量有变动 则动态按钮不可点击
