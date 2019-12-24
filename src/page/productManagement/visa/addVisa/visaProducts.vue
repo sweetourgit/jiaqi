@@ -1,5 +1,5 @@
 <template>
-  <div class="visalist">
+  <!-- <div class="visalist">
     <div class="button">
       <el-button>取消</el-button>
       <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
@@ -50,16 +50,14 @@
             <div class="img_upload">
               <template v-for="(item, index) in ruleForm.avatarImages">
                 <img class="img_list" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
-                <!-- <div class="img_div" :key="index" @click="imgDelete(item)">x</div> -->
+                <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
               </template>
             </div>
             <div class="figure" @click="addFigure()">
               <span>+</span>
               <div>上传</div>
             </div>
-            <!-- <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span> -->
           </el-form-item>
-          <!--头图弹窗-->
           <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
             <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
           </el-dialog>
@@ -132,7 +130,7 @@
       </div>
     </div>
     <visa-message :teamID="teamID" :variable="variable"></visa-message>
-  </div>
+  </div> -->
 </template>
   
 <script>

@@ -108,21 +108,25 @@
       <el-dialog title="出团通知书" :visible.sync="departure"class="city_list" width="60%" @close="clearDeparture()">
         <el-form label-width="120px" class="demo-ruleForm">
           <el-form-item label="出团通知书:">
-            <el-upload class="upload-demo" 
-              action="https://jsonplaceholder.typicode.com/posts/" 
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :before-remove="beforeRemove"
+            <el-upload
+              class="upload-demo"
+              name="files"
+              ref="upload"
               multiple
-              :limit="3"
+              :limit="1"
+              :action="this.upload_url"
+              :file-list="fileList"
+              :on-error="handleError"
+              :on-success="handleSuccess"
+              :before-remove="beforeRemove"
               :on-exceed="handleExceed"
-              :file-list="fileList">
+            >
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
           <div style="position:absolute;top:8px; right:10px;">
             <el-button @click="clearDeparture()">取 消</el-button>
-            <el-button type="primary">确定</el-button>
+            <el-button @click="uploadPicture()" type="primary">确定</el-button>
           </div>
         </el-form>
       </el-dialog>
@@ -205,6 +209,11 @@ export default {
       show2:false,
       departure:false, // 出团通知书弹窗
       fileList:[],
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
+      s_content:[],
+      img_Url:"",
+      img_Name:'',
+      uid:'',
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -490,24 +499,83 @@ export default {
         });
     },
     // 出团通知书
-    informDeparture(){ // 显示出团通知书弹窗
+    informDeparture(status){ // 显示出团通知书弹窗
       this.departure = true;
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/get",{
+        "id": status,
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+          this.fileList.push(res.data.object)
+        }
+      })
+    },
+    uploadPicture(){
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/insert",{
+        "object":{
+          "id": 0,
+          "createTime": "2019-12-24T05:35:43.775Z",
+          "code": "string",
+          "url": this.img_Url,
+          "planID": this.planId,
+          "name": this.img_Name
+        }
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+         this.$message.success("上传成功");
+         this.departure = false;
+        }
+      })
     },
     clearDeparture(){ // 取消关闭出团通知书弹窗
       this.departure = false;
       this.fileList = [];
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    handleSuccess(res, file, fileList) {
+      var paths = [];
+      this.fileList = fileList;
+      for (var i = 0; i < fileList.length; i++) {
+        paths = JSON.parse(fileList[i].response).paths[0];
+        this.img_Url = this.$set(this.fileList[i], "url", paths.Url);
+        this.img_Name = this.$set(this.fileList[i], "name", paths.Name);
+      }
     },
-    handlePreview(file) {
-      console.log(file);
+    handleError(err, file) {
+      this.fileList = []
     },
     handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      this.$message.warning(`出团通知书只能上传 1 个文件`);
     },
     beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+      // let  ifDel = this.$confirm(`确定移除 ${ file.name }？`); 
+      // if(ifDel==true){
+      //   let uid = file.id
+      //   this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/delete",{
+      //     "id": uid,
+      //   }).then(res =>{
+      //     if(res.data.isSuccess == true){
+      //       this.$message.success("删除成功");
+      //       this.departure = false;
+      //     }
+      //   })
+      // }
+      // return ifDel;
+      return this.$confirm("是否删除 ${ file.name } ?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+      .then(res => {
+        let uid = file.id
+        this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/delete",{
+          "id": uid,
+        }).then(res =>{
+          if(res.data.isSuccess == true){
+            this.$message.success("删除成功");
+            this.departure = false;
+          }
+        })
+      })
+      //return this.$confirm(`确定移除 ${ file.name }？`);
     }
   }
 };

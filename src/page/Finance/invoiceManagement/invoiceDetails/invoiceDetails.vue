@@ -169,7 +169,7 @@
         <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="150":key="9">
           <template slot-scope="scope">
             <el-input v-model="scope.row.taxpayerIDNumber" class="w150"></el-input>
-            <div class="validation" v-if="scope.row.taxpayerIDNumber == '' && a == true">纳税人识别号不能为空</div>
+            <!-- <div class="validation" v-if="scope.row.taxpayerIDNumber == '' && a == true">纳税人识别号不能为空</div> -->
           </template>
         </el-table-column>
         <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="150":key="10">
