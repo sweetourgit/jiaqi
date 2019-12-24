@@ -101,8 +101,7 @@
                 </table>
                 <el-breadcrumb separator="|" class="confirm-time">
                   <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,1,item.orderCode)">备注</el-breadcrumb-item>
-                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">收款</el-breadcrumb-item>
-                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,3,item.orderCode)">流程管理</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">流程管理</el-breadcrumb-item>
                 </el-breadcrumb>
                 <div class="but-row">
                     <span class="dot"></span>
@@ -121,22 +120,19 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
           </el-pagination>
-          <process-manage :orderId="orderId" :variable="variable" :dialogType="dialogType" @orderPage="orderPage"></process-manage>
-          <remarks-infor :orderId="orderId" :variable="variable" :dialogType="dialogType"></remarks-infor>
-          <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
+          <visa-remarksinfor :orderId="orderId" :variable="variable" :dialogType="dialogType"></visa-remarksinfor>
+          <visa-processmanage :orderId="orderId" :variable="variable" :dialogType="dialogType" @orderPage="orderPage"></visa-processmanage>
      </div>
   </div>
 </template>
 
 <script>
-import processManage from './common/processManage';
-import remarksInfor from './common/remarksInfor';
-import orderTransfer from './common/orderTransfer';
+import visaRemarksinfor from './common/visaRemarksInfor';
+import visaProcessmanage from './common/visaProcessManage';
 export default {
   components:{
-    "process-manage":processManage,
-    "remarks-infor":remarksInfor,
-    "order-transfer":orderTransfer
+    "visa-remarksinfor":visaRemarksinfor,
+    "visa-processmanage":visaProcessmanage
   },
   data() {
     return {
