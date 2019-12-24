@@ -1,5 +1,5 @@
 <template>
-  <div class="visalist"><!-- 
+  <div class="visalist">
     <div class="button">
       <el-button>取消</el-button>
       <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
@@ -46,20 +46,20 @@
           <el-form-item label="签证国家地区" prop="region" class="mt80">
             <el-input v-model="ruleForm.region" class="messagename" placeholder="请输入签证国家地区"></el-input>
           </el-form-item>
-          <el-form-item label="头图" prop="banner">
+          <el-form-item label="头图" prop="avatarImages">
             <div class="img_upload">
               <template v-for="(item, index) in ruleForm.avatarImages">
-                <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
-                <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
+                <img class="img_list" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+                <!-- <div class="img_div" :key="index" @click="imgDelete(item)">x</div> -->
               </template>
             </div>
             <div class="figure" @click="addFigure()">
               <span>+</span>
               <div>上传</div>
             </div>
-            <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span>
+            <!-- <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span> -->
           </el-form-item>
-          
+          <!--头图弹窗-->
           <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
             <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
           </el-dialog>
@@ -130,18 +130,21 @@
           </el-form-item>
         </el-form>
       </div>
-    </div> -->
+    </div>
+    <visa-message :teamID="teamID" :variable="variable"></visa-message>
   </div>
 </template>
   
 <script>
 import {VueEditor} from 'vue2-editor' // 引用富文本编辑器组件
 import MaterialList from '@/common/Image' // 图片库组件
+import visaMessage from './visaMessage/visaMessage' // 签证信息组件
 export default {
   name: "visaProducts",
     components: {
       VueEditor, // 富文本编辑器
       MaterialList, // 图片库
+      visaMessage, // 签证信息组件
     },
   data() {
     return {
@@ -152,7 +155,7 @@ export default {
         highlightWords2:'',//亮点词
         highlightWords3:'',//亮点词
         region: '', //签证国家地区
-        banner:'',//头图
+        avatarImages: [], //头图
         shuffling:'',//轮播图
         sendVisa:'',//送签地
         visaRegion: [],//签证受理地区
@@ -163,7 +166,6 @@ export default {
         entryNumber:'',//入境次数
         stayDays:'',//停留天数
         content:'',//产品概况
-        avatarImages: [], // 图片
       },
       rules: {
         name: [
@@ -217,6 +219,9 @@ export default {
       imgUpload: false, // 上传弹窗
       imgData: [],
       isInfoImg:false,//头图验证
+      pid:'',
+      teamID:0, // 进入签证信息传值teamID
+      variable: 0, //设置一个变量展示弹窗
     };
   },
   created() {
@@ -226,12 +231,6 @@ export default {
       this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
       this.imgUpload = true;
     },
-    imgClickShow(){ // 点击图片查看预览
-
-    },
-    imgDelete(){ // 删除单张图片
-
-    },
     // 图片添加
     checkList(data) {
       this.ruleForm.avatarImages = data.map(v => {
@@ -240,16 +239,24 @@ export default {
         }
       })
     },
+    imgClickShow(){ // 点击图片查看预览 
+
+    },
+    imgDelete(){ // 删除单张图片
+
+    },
     firstFigure(data){
       this.isInfoImg = data;
       if(!data) {
-        this.$refs.avatarImages.clearValidate();
+        //this.$refs.avatarImages.clearValidate();
       }
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
-      this.$refs[formName].validate((valid) => {
+      this.variable++;
+
+      // this.$refs[formName].validate((valid) => {
         
-      });
+      // });
     },
   }
 };
@@ -326,6 +333,33 @@ export default {
   text-align: left;
   background: #FFFFFF
 }
+.img_upload{
+  float:left;
+}
+.img_list {
+  float: left;
+  margin: 5px 0 0 10px;
+  width: 80px;
+  height: 80px;
+  user-select:none;
+}
+.img_list:hover {
+  cursor:pointer;
+}
+.img_div {
+  float: left;
+  margin: 9px 0 0 0;
+  width: 10px;
+  height: 18px;
+  text-align: center;
+  line-height: 16px;
+  font-size: 18px;
+  background: #FFFFFF;
+  user-select:none;
+}
+.img_div:hover {
+  cursor:pointer;
+}
 .figure{
   width:80px ;
   height:80px;
@@ -334,6 +368,7 @@ export default {
   text-align:center;
   line-height:20px;
   cursor:pointer;
+  float:left;
 }
 .figure span{
   font-size:24pt;

@@ -61,7 +61,7 @@
         <el-table-column prop="shareCN" label="是否共享" width="85"></el-table-column> -->
         <el-table-column prop="op" label="操作人员" width="80"></el-table-column>
 
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="220">
           <template slot-scope="scope">
             <span v-show="show1">
               <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
@@ -78,6 +78,8 @@
               <span class="em" v-if="scope.row.regimentType=='1'">|</span>
               <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
             </span>
+            <span class="em">|</span>
+            <span class="cursor blue" @click="informDeparture(scope.row.id)">出团通知书</span>
           </template>
         </el-table-column>
       </el-table>
@@ -86,7 +88,7 @@
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <!--报账单弹窗-->
-      <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">
+      <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list_01" width="60%">
         <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass"
           :cell-style="getCellClass" @selection-change="changeFunCost" @row-click="clickRowCost">
           <el-table-column prop="id" label fixed type="selection"></el-table-column>
@@ -102,6 +104,28 @@
         </el-table>
       </el-dialog>
       <teamOrder-insert :planId="planId" :variable="variable" :dialogType="dialogType"></teamOrder-insert>
+      <!--出团通知书弹窗-->
+      <el-dialog title="出团通知书" :visible.sync="departure"class="city_list" width="60%" @close="clearDeparture()">
+        <el-form label-width="120px" class="demo-ruleForm">
+          <el-form-item label="出团通知书:">
+            <el-upload class="upload-demo" 
+              action="https://jsonplaceholder.typicode.com/posts/" 
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              multiple
+              :limit="3"
+              :on-exceed="handleExceed"
+              :file-list="fileList">
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+          </el-form-item>
+          <div style="position:absolute;top:8px; right:10px;">
+            <el-button @click="clearDeparture()">取 消</el-button>
+            <el-button type="primary">确定</el-button>
+          </div>
+        </el-form>
+      </el-dialog>
     </div>
     <!-- </div> -->
   </div>
@@ -179,6 +203,8 @@ export default {
       dialogCost: false, //成本弹窗
       show1:false,
       show2:false,
+      departure:false, // 出团通知书弹窗
+      fileList:[],
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -463,6 +489,26 @@ export default {
           });
         });
     },
+    // 出团通知书
+    informDeparture(){ // 显示出团通知书弹窗
+      this.departure = true;
+    },
+    clearDeparture(){ // 取消关闭出团通知书弹窗
+      this.departure = false;
+      this.fileList = [];
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
+    }
   }
 };
 </script>
@@ -536,7 +582,7 @@ export default {
 .el-table--enable-row-hover .el-table__body tr:hover > td {
   background-color: #f5f7fa !important;
 }
-.city_list {
+.city_list_01 {
   text-align: center;
 }
 .pagination {
