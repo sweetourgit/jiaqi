@@ -260,17 +260,17 @@
               <!-- <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item.id,2,item.orderCode)"
+                @click.native="operation(item,2,item.orderCode)"
               >备注</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item.id,1,item.orderCode)"
+                @click.native="operation(item,1,item.orderCode)"
               >流程管理</el-breadcrumb-item>
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item.id,3,item.orderCode)"
+                @click.native="operation(item,3,item.orderCode)"
               >出团通知书</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
@@ -307,12 +307,13 @@
         :visible.sync="dialogAdviceNote"
         :close-on-click-modal="false"
         width="780px"
+        @open="getActiceNote"
       >
         <div class="adviceNote">
           <span>出团通知书 :</span>
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             multiple
@@ -322,7 +323,7 @@
           <div class="adviceNoteBtn">
             <el-button type="info" @click="dialogAdviceNote = false">取消</el-button>
             <el-button type="primary" @click="adviceNoteDown">下载</el-button>
-            <el-button type="primary" @click="adviceNoteSend">发送</el-button>
+            <!-- <el-button type="primary" @click="adviceNoteSend">发送</el-button> -->
           </div>
         </div>
       </el-dialog>
@@ -365,13 +366,7 @@ export default {
   },
   data() {
     return {
-      fileList: [
-        {
-          name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        }
-      ],
+      fileList: [], //出团通知书的图片
       defaultProps: {
         children: "children",
         label: "label"
@@ -470,15 +465,13 @@ export default {
   methods: {
     moment,
     adviceNoteDown() {
-      let url = this.fileList[0].url
-      window.open(url)
+      let url = this.fileList[0].url;
+      window.open(url);
     },
     // 出团通知书的发送
     adviceNoteSend() {},
-    handleRemove(file, fileList) {
-    },
-    handlePreview(file,fileList) {
-    },
+    handleRemove(file, fileList) {},
+    handlePreview(file, fileList) {},
     //目的地
     querySearch(queryString, cb) {
       this.$http
@@ -1043,13 +1036,32 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
-    operation(orderId, i, orderCode) {
-      this.orderId = orderId;
+    operation(item, i) {
+      this.orderId = item.id;
       this.variable++;
       this.dialogType = i;
+      this.planID = item.planID;
       if (i == 3) {
         this.dialogAdviceNote = true;
       }
+    },
+    // 出团通知书获取
+    getActiceNote() {
+      console.log("zouemizou");
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/get", {
+          id: this.planID
+        })
+        .then(res => {
+          if(res.data.isSuccess == true) {
+            let obj = {}
+            let {name,url} = res.data.object
+            obj.name = name
+            obj.url = url
+            this.fileList.push(obj)
+          }
+        })
+        .catch(err => {});
     },
 
     // 出发日期转换格式显示
