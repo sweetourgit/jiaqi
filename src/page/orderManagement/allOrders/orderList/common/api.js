@@ -55,21 +55,15 @@ export const getTeampreviewAction= function(id){
   })
 }
 
-export const orderSaveAction= function(object){
+// 检查一个直客订单是否有审批中和审批过的收款
+export const checkOrderhasCollection= function(orderCode){
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.serverSrc + `/order/all/api/ordersave`, {
-      object
+    $http.post(GLOBAL.serverSrc + `/finance/collection/api/iscollection`, {
+      orderCode
     })
     .then(res => {
-      if (res.data.isSuccess == true) {
-        this.$message({
-          message: "更改成功",
-          type: "success"
-        });
-        this.$emit("orderPage");
-        this.$emit("childByValue", this.showContent);
-        this.cancle();
-      }
+      let { isSuccess }= res.data;
+      resolve(isSuccess);
     })
     .catch(err => {
       console.error(err);

@@ -1,4 +1,4 @@
-import { getOrderAction, getTeampreviewAction, getEnrollsAction, orderSaveAction } from './api'
+import { getOrderAction, getTeampreviewAction, getEnrollsAction, checkOrderhasCollection } from './api'
 
 const ProcessManageMixin= {
   
@@ -19,6 +19,9 @@ const ProcessManageMixin= {
       {
         enrollsDetailStr: '', // 订单详情,
         guestTotal: 0,  // 总报名数
+      },
+      {
+        disperseOrderDisabled: false, // 直客订单如果存在收款申请或收款通过，则不允许更改
       }
     )
   },
@@ -39,7 +42,11 @@ const ProcessManageMixin= {
       processManage(orderId){
         getOrderAction(orderId)
         .then(orderDetail => {
-          let { planID, guests, favourable, contact }= orderDetail;
+          let { planID, guests, favourable, contact, priceType }= orderDetail;
+
+          // 直客订单如果存在收款申请或收款通过，则不允许更改
+          priceType== 1 && checkOrderhasCollection(orderId).then(bol => this.disperseOrderDisabled= !bol)
+
           Promise.all([
             getEnrollsAction(planID), 
             getTeampreviewAction(planID)
@@ -336,7 +343,6 @@ const ProcessManageMixin= {
         let count= 0;
         let price= 0;
         this.salePrice.forEach(el => {
-          console.log(el.length)
           let { enrollName, price_01, price_02 }= el.enroll;
           singlePrice= this.propPriceType=== 1? price_01: price_02;
           str+= el.length? `[ ${enrollName} ${this.toDecimal2(singlePrice)} ] x ${el.length}\n`: '';
