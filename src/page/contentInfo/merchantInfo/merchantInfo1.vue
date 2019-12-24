@@ -2264,7 +2264,6 @@ export default {
           }
         })
         .catch(obj => {
-          console.log(obj,"err")
           this.$message({
             message: "添加失败",
             type: "error"

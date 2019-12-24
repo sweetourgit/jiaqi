@@ -308,6 +308,7 @@
         :close-on-click-modal="false"
         width="780px"
         @open="getActiceNote"
+        @close="closeActiceNote"
       >
         <div class="adviceNote">
           <span>出团通知书 :</span>
@@ -1047,7 +1048,6 @@ export default {
     },
     // 出团通知书获取
     getActiceNote() {
-      console.log("zouemizou");
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/get", {
           id: this.planID
@@ -1062,6 +1062,10 @@ export default {
           }
         })
         .catch(err => {});
+    },
+    // 关闭出团通知书的弹窗
+    closeActiceNote () {
+      this.fileList = []
     },
 
     // 出发日期转换格式显示
