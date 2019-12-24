@@ -1,8 +1,8 @@
 <template>
   <div class="vivo" style="position:relative" id="collectionDetail">
-    <el-dialog title="审批" :visible="dialogFormVisible" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
+    <el-dialog title="审批" :visible="dialogFormVisible" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
       <div class="buttonDv">
-        <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
+        <el-button type="primary" @click="closeAdd('cancal')" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="approvalPass" :disabled="passDisabled">通过</el-button>
         <el-button type="primary" @click="approvalReject">驳回</el-button>
@@ -23,7 +23,6 @@
         <p class="inputLabel" v-if="info.collectionType != 5"><span>开发票：</span>{{baseInfo.invoice}}</p>
         <p class="inputLabel" v-if="info.collectionType == 5"><span>收款时间：</span>{{baseInfo.collectionTime}}</p>
         <p class="inputLabel" v-if="info.collectionType == 5"><span>款项说明：</span>{{baseInfo.moneyExplain}}</p>
-
 
         <div class="inputLabel">
           <span>凭证：</span>
@@ -259,7 +258,25 @@
         }
       },
       // 关闭弹窗
-      closeAdd(){
+      closeAdd(str){
+        if(str === 'cancal'){
+          const that = this;
+          this.tableAssociated.forEach(function(item, index, arr){
+            if(item.checkType == 3){
+              that.$http.post(that.GLOBAL.serverSrc + "/finance/CollectionBank/api/delete", {
+                "id": item.id
+              },).then(function(response) {
+                console.log('删除',response);
+                if (response.data.isSuccess) {
+                  console.log('成功。。。');
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+            }
+          })
+          
+        }
         this.baseInfo = {
           id: '',
           createUser: '',
@@ -307,6 +324,8 @@
             // that.$message.success("审批提交成功~");
             if(that.approval_status == '1'){
               that.insert();
+            }else if(that.approval_status == '2'){
+              that.closeAdd('cancal');
             }
             that.dialogVisibleApproval = false;
             that.approval_status = '';
@@ -358,7 +377,7 @@
           if (response.data.isSuccess) {
             const hasInvoice = response.data.object.invoice == 1 ? '有':'无';
             that.baseInfo = {
-              id: response.data.object.id,
+              id: response.data.object.id, 
               createUser: response.data.object.createUser,
               createTime: response.data.object.createTime.split("T")[0] +' '+ response.data.object.createTime.split("T")[1].split(".")[0],
               collectionType: response.data.object.collectionType,

@@ -73,7 +73,7 @@
         <template slot-scope="scope">
           <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">查看订单</el-button>
           <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信支付宝明细</el-button>
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
@@ -261,6 +261,7 @@ export default {
           "id": row.id,
         }).then(function(response) {
           if (response.data.isSuccess) {
+            that.pageCurrent = 1;
             that.loadData();
             that.$message({
               type: 'info',

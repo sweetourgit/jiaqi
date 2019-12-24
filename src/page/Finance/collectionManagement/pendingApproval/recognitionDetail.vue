@@ -68,8 +68,8 @@
           </el-table-column> -->
           <!-- <el-table-column prop="account_balance" label="剩余金额" align="center">
           </el-table-column> -->
-          <el-table-column prop="purpose_fee" label="手续费" align="center">
-          </el-table-column>
+          <!-- <el-table-column prop="purpose_fee" label="手续费" align="center">
+          </el-table-column> -->
           <el-table-column prop="bank_serial_number" label="银行流水号" align="center">
           </el-table-column>
           <el-table-column prop="reference" label="摘要" align="center">

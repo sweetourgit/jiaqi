@@ -297,7 +297,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/delete", {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/delete", {
           "id": row.id,
         }).then(function(response) {
           if (response.data.isSuccess) {

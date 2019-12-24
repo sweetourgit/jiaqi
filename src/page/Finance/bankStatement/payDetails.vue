@@ -14,6 +14,9 @@
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="transaction_time" label="交易时间" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
+        </template>
       </el-table-column>
       <el-table-column prop="transaction_amount" label="交易金额" align="center">
       </el-table-column>
