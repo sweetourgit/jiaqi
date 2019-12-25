@@ -1,8 +1,8 @@
 <template>
   <div class="visalist">
-    <div v-show="basisShow">
+    <!-- <div v-show="basisShow">
       <div class="button">
-        <el-button>取消</el-button>
+        <el-button @click="cancel()">取消</el-button>
         <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
       </div>
       <div class="bother">
@@ -131,7 +131,7 @@
           </el-form>
         </div>
       </div>
-    </div>
+    </div> -->
     <visa-message :teamID="teamID" :variable="variable"></visa-message>
   </div>
 </template>

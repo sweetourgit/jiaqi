@@ -38,7 +38,7 @@
       <el-button type="primary" @click="addProducts">添加</el-button>
       <el-button :disabled="forbidden">编辑</el-button>
       <el-button :disabled="forbidden">预订</el-button>
-      <el-button :disabled="forbidden">库存</el-button>
+      <el-button :disabled="forbidden" @click="visaInventory()">库存</el-button>
       <el-button :disabled="forbidden">更改状态</el-button>
       <el-button :disabled="forbidden">复制</el-button>
       <el-button :disabled="forbidden">退改政策</el-button>
@@ -119,6 +119,7 @@ export default {
       current:1,
       multipleSelection: [], //选中的list
       forbidden:true, 
+      pid:"",
     };
 
   },
@@ -162,6 +163,7 @@ export default {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
+      this.pid = row["productID"];
     },
     rowClass({row, rowIndex}){  //选中行样式改变
      for(var i=0;i<this.multipleSelection.length;i++){
@@ -184,6 +186,9 @@ export default {
     },
     addProducts(){
       this.$router.push({ path: "/visaProducts" });
+    },
+    visaInventory(){ // 团期库存
+      this.$router.push({ path: "/visaInventory?id="+this.pid });
     },
   }
 };
