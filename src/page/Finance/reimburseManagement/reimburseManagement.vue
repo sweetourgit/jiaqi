@@ -488,6 +488,7 @@ export default {
           content:{
               createUser:"",
               createTime: "",
+              count:0,
               id:"",
               groupCode: "",
               productName: "",
@@ -575,6 +576,7 @@ export default {
                           content:{
                               createUser:"",
                               createTime: "",
+                              count:0,
                               id:"",
                               groupCode: "",
                               productName: "",
@@ -613,6 +615,7 @@ export default {
                           content:{
                               createUser:"",
                               createTime: "",
+                              count:0,
                               id:"",
                               groupCode: "",
                               productName: "",
@@ -643,12 +646,16 @@ export default {
              
         },
         addplan(editableTabsValue) {//确定1
-           this. subscript()
+           this. subscript();
+          //  console.log(editableTabsValue,80);
            if(this.plans.planNum !== "" || this.plans.planName !== ""){
                   this.s_content.groupCode = this.plans.planNum;
                   this.s_content.productName = this.plans.planName;
                   this.s_content.id = this.plans.pid;
                   this.dialogFormVisible2 = false;
+                  this.T_update_btn();
+                  this.s_content.payments=[]; 
+                  
            }else{
                   this.dialogFormVisible2 = true;
                   this.$message({ message:'请选择团期计划',
@@ -680,6 +687,7 @@ export default {
                       if(object[i].orgName==null){
                           object[i].orgName="无";
                         }
+                          object[i].peopleCount = this.s_content.count
                           if(object[i].peopleCount == 0){
                                    object[i].peopleCount = 1
                                 }
@@ -700,7 +708,7 @@ export default {
                           wcount: object[i].price - object[i].expensePrice
                           //  wcount :object[i].price - object[i].expensePrice
                       });
-                       //this.joinData =this.s_content.joinData;
+                       this.joinData =this.s_content.joinData;
                       // console.log(this.joinData,'802')
                     }
                     
@@ -717,7 +725,7 @@ export default {
           this.plans.planNum = row.groupCode;
           this.plans.pid = row.planID;
           this.subscript();
-          this.s_content.payments=[];
+        
         },
       
         clickBanle(row) {  // 报销人选中行
@@ -726,6 +734,7 @@ export default {
           this.people.tt = row.orgName;
         },
         searchHand4(val) { //团期计划搜索
+         this.subscript();
           this.$http
             .post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist", {
               pageIndex: val,
@@ -739,6 +748,7 @@ export default {
             })
             .then(res => {
               this.planData = res.data.objects;
+              this.s_content.count =  res.data.objects[0].count
             })
             .catch(err => {
               console.log(err);
@@ -813,6 +823,7 @@ export default {
                                   content:{
                                       createUser:"",
                                       createTime: "",
+                                      count:0,
                                       id:"",
                                       groupCode: "",
                                       productName: "",
@@ -895,7 +906,7 @@ export default {
                }
                 this.s_content.payments.push(joinData);
                 this.alljoinData.push(joinData);
-               // console.log(this.alljoinData,"新增的")
+               console.log(this.alljoinData,"新增的")
                 this.t_price_box.push(joinData.price);
                 this.t_price_sum()
                 this.dialogFormVisible3 = false;
@@ -936,7 +947,7 @@ export default {
                             for(let y in this.alljoinData ){
                                   if(this.alljoinData[y].paymentID === paymentID){
                                       this.alljoinData.splice(j, 1);
-                                      //console.log(this.alljoinData,"删除的")
+                                      console.log(this.alljoinData,"删除的")
                                     }
                                  }
                            
@@ -1184,6 +1195,7 @@ export default {
                       content:{
                           createUser:"",
                           createTime: "",
+                          count:0,
                           id:"",
                           groupCode: "",
                           productName: "",
@@ -1399,7 +1411,10 @@ export default {
                   }).then(res => {
                     if (res.data.isSuccess == true) {
                           this.s_content.productName = res.data.objects[0].title
+                          this.s_content.count =  res.data.objects[0].count
                           this.plans.pid  = res.data.objects[0].planID
+                          console.log(res.data.objects[0].count);
+                     console.log(this.s_content.count);
                       }
                   }).catch(err => {
                     console.log(err)
@@ -1441,6 +1456,7 @@ export default {
                                   content:{
                                       createUser:"",
                                       createTime: "",
+                                      count:0,
                                       id:"",
                                       groupCode: "",
                                       productName: "",
@@ -1459,6 +1475,7 @@ export default {
                                 }
                               ]
                               };
+                        this.alljoinData=[];
                         this.beginWokeing(res.data.object);
                           
                         }else{
@@ -1471,6 +1488,7 @@ export default {
                                     content:{
                                         createUser:"",
                                         createTime: "",
+                                        count:0,
                                         id:"",
                                         groupCode: "",
                                         productName: "",
@@ -1489,6 +1507,7 @@ export default {
                                   }
                                 ]
                                 };
+                            this.alljoinData=[];
                             this.$message({
                             type: "error",
                             message: "创建失败!"
@@ -1544,6 +1563,7 @@ export default {
                                               return;
                                         }
                                 }
+                                console.log(this.alljoinData)
                                 for(var i=0; i<this.alljoinData.length; i++){
                                   for(var j=i+1; j<this.alljoinData.length; j++){
                                     if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
