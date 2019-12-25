@@ -1,6 +1,10 @@
 <template>
-  <div>
-     签证库存
+  <div class="demo-input-suffix">
+     <el-button type="primary">添加</el-button>
+
+
+
+
   </div>
 </template>
 
@@ -25,5 +29,5 @@ export default {
 </script>
 
 <style scoped>
-
+.demo-input-suffix{width: 1150px}
 </style>
