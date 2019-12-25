@@ -161,7 +161,7 @@
               v-for="(item,index) in breadCrumbs"
               :key="index"
               class="breadCrumbPointer"
-              @click.native="operation(item,2)"
+              @click.native="operation(item,index)"
             >{{item}}</el-breadcrumb-item>
           </el-breadcrumb>
           <!-- 操作菜单end -->
@@ -197,11 +197,18 @@
       :total="total"
     ></el-pagination>
     <!-- 分页end -->
+    
   </div>
 </template>
 
 <script>
+import boatRemarksInfor from "./common/boatRemarksInfor";
+import boatReceipt from "./common/boatReceipt";
+import boatDivideRoomInfo from "./common/boatDivideRoomInfo";
+import boatProcessManage from "./common/boatProcessManage";
+
 export default {
+  components: { divideRoomInfo, processManage, receipt, remarksInfor },
   data() {
     return {
       arrDemo: [1, 2],
@@ -230,7 +237,6 @@ export default {
   },
   created() {},
   methods: {
-    
     //   点击订单状态筛选
     statusTab(item, index) {
       this.orderNum = index;
@@ -258,7 +264,7 @@ export default {
 
     // 重置按钮
     handleReset() {
-      this.isShowContent = null
+      this.isShowContent = null;
     }
   }
 };
@@ -405,10 +411,10 @@ export default {
 }
 // 列表end
 
-// 分页
+// 分页begin
 .pagination {
   text-align: center;
   margin: 50px 0;
 }
-
+// 分页end
 </style>

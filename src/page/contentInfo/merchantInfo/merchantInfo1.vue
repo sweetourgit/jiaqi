@@ -777,23 +777,16 @@
       </el-form>
     </el-dialog>
 
-    <!-- <el-dialog
-      title="选择人员"
-      :visible.sync="isChooseAccount"
-      :show-close="false"
-      class="addAccount"
-      :close-on-click-modal="false"
-      width="500px"
-    >-->
-    <childAccount :isChooseAccount="isChooseAccount"></childAccount>
-    <!-- </el-dialog> -->
+    
+    <!-- <childAccount :isChooseAccount="isChooseAccount"></childAccount> -->
+
     <!--end-->
   </div>
 </template>
 
 <script>
 import state from "../../../store/state";
-import childAccount from "./comps/chooseAccount";
+// import childAccount from "./comps/chooseAccount";
 import moment from "moment";
 
 export default {
@@ -1138,7 +1131,7 @@ export default {
     };
   },
   components: {
-    childAccount: childAccount
+    // childAccount: childAccount
   },
   methods: {
     moment,
