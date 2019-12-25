@@ -42,10 +42,10 @@ const ProcessManageMixin= {
       processManage(orderId){
         getOrderAction(orderId)
         .then(orderDetail => {
-          let { planID, guests, favourable, contact, priceType }= orderDetail;
+          let { planID, guests, favourable, contact, priceType, orderCode }= orderDetail;
 
           // 直客订单如果存在收款申请或收款通过，则不允许更改
-          priceType== 1 && checkOrderhasCollection(orderId).then(bol => this.disperseOrderDisabled= !bol)
+          priceType== 1 && checkOrderhasCollection(orderCode).then(bol => this.disperseOrderDisabled= !bol)
 
           Promise.all([
             getEnrollsAction(planID), 

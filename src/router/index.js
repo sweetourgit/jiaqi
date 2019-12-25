@@ -688,8 +688,17 @@ export default new Router({
       children: [
         {
           path: 'around',
-          component: () => import('@/page/Finance/checkSheet/around/checkSheet1'),
+          component: () => import('@/page/Finance/checkSheet/around/around'),
           name: '报账单-周边游',
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'team',
+          component: () => import('@/page/Finance/checkSheet/team/team'),
+          name: '报账单-跟团游',
           meta: {
             keepAlive: true,
             auth: true
@@ -703,7 +712,18 @@ export default new Router({
       meta: {
         keepAlive: true,
         auth: true
-      }
+      },
+      children: [
+        {
+          path: 'team',
+          component: () => import('@/page/Finance/checkSheetDetail/subs/team/team'),
+          name: '报账单详情-跟团游',
+          meta: {
+            keepAlive: true,
+            auth: true,
+          },
+        }
+      ]
     }, {
       path: '/addCheckSheet',
       component: () => import('@/page/Finance/checkSheetDetail/checkSheetDetail'),

@@ -14,11 +14,14 @@ export default {
       activeName: '1',
     };
   },
+  mounted(){
+    this.handleClick({ name: 'team' })
+  },
   methods: {
     handleClick(tab, event) {
       let { name }= tab;
-      console.log(name)
-      this.$router.push({ path: `/checkSheet/${name}` });
+      let { query }= this.$route;
+      this.$router.replace({ path: `/checkSheet/${name}`, query });
     },
     getTabNameFromPath(path){
       return path.substring(12);
