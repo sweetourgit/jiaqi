@@ -3,7 +3,7 @@
     <!--备注信息弹窗-->
     <el-dialog
       title="备注"
-      :visible.sync="dialogFormMark"
+      :visible.sync="isDialogFormMark"
       :close-on-click-modal="false"
       class
       width="780px"
@@ -51,9 +51,18 @@
 <script>
 export default {
   name: "boatRemarksInfor",
-  props: {},
+  props: {
+    propsObj:Object
+  },
   data() {
-    return {};
+    return {
+      isDialogFormMark: false,//备注dialog是否显示
+    };
+  },
+  watch:{
+    // propsObj.dialogType: () {
+    //   if (this.propsObj.dialogType == 0) this.isDialogFormMark = true
+    // }
   },
   created() {},
   methods: {},

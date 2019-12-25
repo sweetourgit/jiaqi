@@ -777,7 +777,6 @@
       </el-form>
     </el-dialog>
 
-    
     <!-- <childAccount :isChooseAccount="isChooseAccount"></childAccount> -->
 
     <!--end-->
@@ -1952,10 +1951,30 @@ export default {
             );
           });
           this.page_order_total = obj.data.total;
+          this.getDebitTablePrice(id,this.glTotal)
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    // 关联欠款的表格的总价计算
+    getDebitTablePrice(id, total) {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
+          pageIndex: 1,
+          pageSize: total,
+          total: total, //总条数
+          object: {
+            // isDeleted: 0 //是否删除
+            orgID: id
+          }
+        })
+        .then(obj => {
+          obj.data.objects.forEach(item => {
+            this.arrears += item.qk_price
+          })
+        })
+        .catch(err => {});
     },
     // 关联欠款表格的分页
     handleGlSizeChange(val) {
@@ -2774,9 +2793,9 @@ export default {
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
           // 关联欠表的欠款总计计算
-          if (this.btnindex == 1) {
-            this.arrears = this.toDecimal2(object.arrears);
-          }
+          // if (this.btnindex == 1) {
+          //   this.arrears = this.toDecimal2(object.arrears);
+          // }
         })
         .catch(obj => {
           console.log(obj);

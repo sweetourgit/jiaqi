@@ -197,15 +197,24 @@
       :total="total"
     ></el-pagination>
     <!-- 分页end -->
-    
+
+    <!-- 备注 -->
+    <boatRemarksInfor :propsObj="propsObj"></boatRemarksInfor>
+    <!-- 收款 -->
+    <boatReceipt></boatReceipt>
+    <!-- 流程管理 -->
+    <boatProcessManage></boatProcessManage>
+    <!-- 分房信息 -->
+    <boatDivideRoomInfo></boatDivideRoomInfo>
+
   </div>
 </template>
 
 <script>
 import boatRemarksInfor from "./common/boatRemarksInfor";
 import boatReceipt from "./common/boatReceipt";
-import boatDivideRoomInfo from "./common/boatDivideRoomInfo";
 import boatProcessManage from "./common/boatProcessManage";
+import boatDivideRoomInfo from "./common/boatDivideRoomInfo";
 
 export default {
   components: { divideRoomInfo, processManage, receipt, remarksInfor },
@@ -217,6 +226,7 @@ export default {
       pageSize: 0, //分页每页显示的条数
       pageIndex: 1, //当前分页是第几页
       total: 0, //分页的总条数
+      propsObj: {},//传给组件的值
       orderStatusSearch: [
         { status: 0, name: "全部", type: 1 },
         { status: 7, name: "未确认", type: 1 },
@@ -260,6 +270,11 @@ export default {
       this.isShowContent == index
         ? (this.isShowContent = -1)
         : (this.isShowContent = index);
+    },
+
+    // 操作
+    operation (val,index) {
+      this.propsObj.dialogType = index
     },
 
     // 重置按钮
