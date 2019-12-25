@@ -302,6 +302,14 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
+    },{
+      path: '/visaInventory',
+      component: () => import('@/page/productManagement/visa/visaInventory/visaInventory'),
+      name: '团期/签证库存',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
     }, {
       path: '/travelTemplate',
       component: () => import('@/page/productManagement/travelTemplate/travelTemplate'),

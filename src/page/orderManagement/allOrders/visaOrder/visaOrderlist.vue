@@ -1,6 +1,6 @@
 <template>
   <div>
-     <div class="demo-input-suffix" v-if="false">
+     <div class="demo-input-suffix" v-if="true">
           <!--搜索-->
           <span class="search-title">订单ID</span>
           <el-input v-model="orderCode" class="input"></el-input>
