@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :visible.sync="dialogForm">
   123
   </div>
 </template>
@@ -13,8 +13,13 @@ export default {
   },
   data() {
     return {
-      
+      dialogForm:false,
     };
+  },
+  watch: {
+    variable:function(){        
+      this.dialogForm=true; 
+   }
   },
   created() {
   },

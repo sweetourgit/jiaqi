@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="visalist">
+  <div class="visalist">
     <div class="button">
       <el-button>取消</el-button>
       <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
@@ -50,13 +50,14 @@
             <div class="img_upload">
               <template v-for="(item, index) in ruleForm.avatarImages">
                 <img class="img_list" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
-                <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
+                <!-- <div class="img_div" :key="index" @click="imgDelete(item)">x</div> -->
               </template>
             </div>
             <div class="figure" @click="addFigure()">
               <span>+</span>
               <div>上传</div>
             </div>
+            <!-- <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span> -->
           </el-form-item>
           <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
             <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
@@ -130,19 +131,19 @@
       </div>
     </div>
     <visa-message :teamID="teamID" :variable="variable"></visa-message>
-  </div> -->
+  </div>
 </template>
   
 <script>
 import {VueEditor} from 'vue2-editor' // 引用富文本编辑器组件
 import MaterialList from '@/common/Image' // 图片库组件
-import visaMessage from './visaMessage/visaMessage' // 签证信息组件
+import visaMessage from './visaMessage' // 签证信息组件
 export default {
   name: "visaProducts",
     components: {
       VueEditor, // 富文本编辑器
       MaterialList, // 图片库
-      visaMessage, // 签证信息组件
+      "visa-message":visaMessage, // 签证信息组件
     },
   data() {
     return {
@@ -251,7 +252,6 @@ export default {
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
       this.variable++;
-
       // this.$refs[formName].validate((valid) => {
         
       // });
