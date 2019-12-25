@@ -223,8 +223,8 @@ export default {
         { status: 1, name: "退款中", type: 2 },
         { status: 6, name: "完成退款", type: 2 },
         { status: 2, name: "拒绝退款", type: 2 }
-      ], //搜索的订单状态集合
-      breadCrumbs: ["联系客人", "备注", "收款", "流程管理", "分房信息"], //折叠列表里面的操作集合
+      ], //搜索的订单状态集合  联系客人先不做
+      breadCrumbs: ["备注", "收款", "流程管理", "分房信息"], //折叠列表里面的操作集合
       isShowContent: null //折叠列表是否显示
     };
   },
@@ -403,6 +403,7 @@ export default {
     }
   }
 }
+// 列表end
 
 // 分页
 .pagination {
@@ -410,5 +411,4 @@ export default {
   margin: 50px 0;
 }
 
-// 列表end
 </style>

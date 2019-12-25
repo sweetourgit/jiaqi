@@ -939,9 +939,9 @@ export default {
       pageIndex: 1, //每页
       total: 1, //总条数
       currentPage4: 1, //当前页数
-      glPageSize: 10,//详情页关联欠款表格的条数显示
-      glPageIndex: 1,//详情页关联欠款表格的条数显示
-      glTotal:0, //关联欠款表格的总条数
+      glPageSize: 10, //详情页关联欠款表格的条数显示
+      glPageIndex: 1, //详情页关联欠款表格的条数显示
+      glTotal: 0, //关联欠款表格的总条数
       // editAccouontScopeid: null, //账户信息修改时需要的scopeid
       accountForm: {
         name: "", //账户信息名字
@@ -1949,7 +1949,7 @@ export default {
           }
         })
         .then(obj => {
-          this.glTotal = obj.data.total
+          this.glTotal = obj.data.total;
           this.tableRelevanceDeptInfo = obj.data.objects;
           this.tableRelevanceDeptInfo.forEach((item, index, arr) => {
             item.cF_Date = moment(item.cF_Date.toString()).format("YYYY-MM-DD");
@@ -1957,7 +1957,6 @@ export default {
             item.repaymentDate = moment(item.repaymentDate).format(
               "YYYY-MM-DD"
             );
-            this.arrears += item.qk_price;
           });
           this.page_order_total = obj.data.total;
         })
@@ -1966,17 +1965,17 @@ export default {
         });
     },
     // 关联欠款表格的分页
-    handleGlSizeChange (val) {
-      console.log(val,1)
+    handleGlSizeChange(val) {
+      console.log(val, 1);
       this.glPageSize = val;
       this.glPageIndex = 1;
-      this.getDebitTable(this.tid)
+      this.getDebitTable(this.tid);
     },
-    handleGlCurrentChange (val) {
-      console.log(val,2)
+    handleGlCurrentChange(val) {
+      console.log(val, 2);
       this.glPageSize = 10;
       this.glPageIndex = val;
-      this.getDebitTable(this.tid)
+      this.getDebitTable(this.tid);
     },
     //提交
     submitForm(ruleForm) {
@@ -2781,9 +2780,10 @@ export default {
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
-          // 欠款总计计算
-
-          // this.arrears = this.toDecimal2(object.arrears);
+          // 关联欠表的欠款总计计算
+          if (this.btnindex == 1) {
+            this.arrears = this.toDecimal2(object.arrears);
+          }
         })
         .catch(obj => {
           console.log(obj);
