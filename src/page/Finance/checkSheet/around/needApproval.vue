@@ -71,7 +71,7 @@
 </template>
 
 <script>
-  import checkSheetPreview from '@/page/Finance/checkSheet/checkSheetPreview';
+  import checkSheetPreview from './checkSheetPreview';
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "needApproval",

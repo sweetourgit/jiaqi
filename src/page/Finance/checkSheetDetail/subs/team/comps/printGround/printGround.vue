@@ -39,7 +39,7 @@
 </style>
 
 <template>
-  <div class="print-ground">
+  <div class="print-ground" v-if="inited">
     <!-- <div style="white-space:pre-wrap" v-html="printData"></div> -->
     <header>
       <div class="title">沈阳甜程国际旅行社有限公司旅游团队报账单</div>
@@ -71,9 +71,9 @@
         <div class="base label">减免人数</div>
         <div class="base content"></div>
         <div class="base label">出发日期</div>
-        <div class="base content"> {{ pd.date }} </div>
+        <div class="base content"> {{ pd.date | dateFilter }} </div>
         <div class="base label">返回日期</div>
-        <div class="base content"> {{ pd.returnDate }} </div>
+        <div class="base content"> {{ pd.returnDate | dateFilter }} </div>
         <div class="base label">全程天数</div>
         <div class="base content"> {{ pd.day }} </div>
       </div>
@@ -107,16 +107,18 @@
         <div class="base label">备注</div>
       </div>
       <!-- v-for -->
-      <div class="row">
+      <div class="row"
+        v-for="(item, i) in incomes"
+        :key="i">
+        <div class="base content">{{ i + 1 }}</div>
+        <div class="base content" style="width: 25%;">{{ item.orderSource }}</div>
+        <div class="base content" style="width: 25%;">{{ item.joinPeople }}</div>
+        <div class="base content">{{ item.peopleCount }}</div>
+        <div class="base content">{{ item.incomePrice }}</div>
         <div class="base content"></div>
-        <div class="base content" style="width: 25%;"></div>
-        <div class="base content" style="width: 25%;"></div>
-        <div class="base content"></div>
-        <div class="base content"></div>
-        <div class="base content"></div>
-        <div class="base content"></div>
+        <div class="base content">{{ item.mark }}</div>
       </div>
-      <!-- v-for -->
+
       <div class="row">
         <div class="base label" style="width: 60%;">合计：</div>
         <div class="base content"></div>
@@ -180,24 +182,45 @@
 <script>
 export default {
 
-  data(){
-    return {
-      pd: {},  // printData缩写
+  filters: {
+    dateFilter(val){
+      let year, month, day;
+      year= ~~ (val / 10000);
+      month= ~~ ((val - year * 10000) / 100);
+      day= val - year * 10000 - month * 100;
+      // return `${year}年${month}月${day}日`
+      return `${year}/${month}/${day}`
     }
+  },
+
+  data(){
+    return Object.assign(
+      {
+        inited: false,
+      },
+      {
+        pd: {},  // printData缩写
+        incomes: [],
+        expenses: []
+      }
+    )
   },
 
   methods: {
     init(printData){
-      this.pd= printData;
-      this.$forceUpdate();
+      let { incomes, expenses, ...pdData }= printData;
+      this.pd= pdData;
+      this.incomes= incomes;
+      this.expenses= expenses;
+      this.inited= true;
     },
 
     dateFormator(time){
-      let date= new Date(time);
-      console.log(date)
-      let year= date.getFullYear();
-      let month= date.getMonth()+ 1;
-      let day= date.getDate();
+      let date, year, month, day;
+      date= new Date(time);
+      year= date.getFullYear();
+      month= date.getMonth()+ 1;
+      day= date.getDate();
       return `${year}年${month< 10?'0': ''}${month}月${day}日`
     }
   }

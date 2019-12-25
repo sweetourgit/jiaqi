@@ -1,7 +1,3 @@
-<style lang="scss" scoped>
-
-</style>
-
 <template>
   <div class="check-sheet">
     <el-tabs 
@@ -47,10 +43,11 @@ export default {
     {
       // 考虑了路由后退还原的情况
       init(){
+        let { path }= this.$route;
         let query;
         if('tab' in this.$route.query){
           query= this.reappearConditions();
-          this.$router.replace('/checkSheet');
+          this.$router.replace({ path });
         }
         let { tab, conditions, pageInfo }= query || {};
         if(tab) this.currentTab= tab;

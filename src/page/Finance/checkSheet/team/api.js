@@ -16,9 +16,7 @@ export const getCheckSheetList= function(conditions){
 // 这个接口不知道是干啥用的，获取工作流？
 export const getFlowName= function(){
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.serverSrc + "/universal/supplier/api/dictionaryget", {
-      enumname: 'FlowModel'
-    })
+    $http.post(GLOBAL.serverSrc + `/universal/supplier/api/dictionaryget?enumname=FlowModel`)
     .then(res => {
       let { isSuccess, objects, result }= res.data;
       if(!isSuccess) return reject(result.message || '获取工作流失败');
