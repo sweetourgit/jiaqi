@@ -29,5 +29,5 @@ export default {
 </script>
 
 <style scoped>
-.demo-input-suffix{width: 1150px}
+ .demo-input-suffix{width: 1150px}
 </style>

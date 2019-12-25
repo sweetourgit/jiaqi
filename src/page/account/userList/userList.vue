@@ -289,11 +289,12 @@
       menuChanged(index){
         if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
             var actArray = this.authData[index].act.length;          
-            if(actArray>0){            
-                for(let i = 0,len = this.authData[index].act.length;i<len;i++){
-                    this.authData[index].act[i].isJur = false;
-                    this.authData[index].dataJurisdiction[i].isJur = false;      
-                }
+            var datajurArray = this.authData[index].dataJurisdiction.length;                          
+            for(let i = 0;i<actArray;i++){
+                this.authData[index].act[i].isJur = false;
+            }
+            for(let i = 0;i<datajurArray;i++){
+                this.authData[index].dataJurisdiction[i].isJur = false;      
             }
         }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
             var actArray = this.authData[index].act.length;
