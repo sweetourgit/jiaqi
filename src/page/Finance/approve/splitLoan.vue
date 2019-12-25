@@ -1,11 +1,9 @@
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
-      <el-col :span="6" :offset="18">
+      <el-col :span="3" :offset="21">
+        <el-button type="danger" @click="handleKeep">保存</el-button>
         <el-button type="warning" @click="handleCancel">取消</el-button>
-        <el-button type="danger" @click="handleRevoke">撤销</el-button>
-        <el-button type="success" @click="handlePass">通过</el-button>
-        <el-button type="danger" @click="handleReject">驳回</el-button>
       </el-col>
     </el-row>
     <!-- 报销信息 -->
@@ -171,13 +169,51 @@
     methods: {
       // 弹窗内的拆分和还款单选框切换时触发
       handleChangeSplitLoan(val){
-        if(val == 2) {
+        if(val == 1) {
           this.isDisabledKeepBtn = false
           this.isShowAcountTable = false
         }else {
           this.isDisabledKeepBtn = true
           this.isShowAcountTable = true
         }
+      },
+      // 保存时校验下是否完成了所有款项的拆分，完成则返回详情页，并把通过按钮取消置灰状态
+      handleKeep(){
+        // 进行验证，如果每一个报销都进行了拆分则可以向下自行
+        let paymentsArr = this.keepBackContent.map((item) => {
+          return item.payments
+        })
+
+        // 拉平数组
+        let flatPaymentsArr = paymentsArr.flat()
+
+        // 先找出需要拆分/还款的项的数组，然后在判断 非0 为已经进行过拆分/还款的处理了
+        // 报销类型--默认0-无，1-拆分，2-还款
+        let priceDiff = []
+        flatPaymentsArr.forEach((item) => {
+          if(item.paymentPrice != item.price){
+            priceDiff.push(item)
+          }
+        })
+
+        // 如果每一项都进行了拆分借款则返回true
+        let hasExpenseType = priceDiff.every((item) => {
+          return item.expenseType != 0;
+        })
+
+        console.log(priceDiff)
+
+        if(!hasExpenseType){
+          this.$notify({
+            title: '提示',
+            message: '还存在待拆分的报销单',
+            type: 'warning',
+            // position: 'bottom-right',
+            showClose: false,
+            duration: 2000
+          });
+        }
+        console.log(hasExpenseType)
       },
       // 获取详情
       getApproveDetail(guidParams){
@@ -208,6 +244,7 @@
           if (valid) {
             this.keepWhichRow.expenseType = this.ruleFormSplitLoan.formItemSplitLoan
             this.isShowTableDialog = false
+            console.log(this.keepWhichRow.expenseType)
           } else {
             console.log('error submit!!');
             return false;
@@ -232,7 +269,7 @@
           this.bankAccountData = obj.data.objects
           this.isShowLookOfSlit = false
           this.isShowTableDialog = true
-          this.ruleFormSplitLoan.formItemSplitLoan = '1'
+          this.ruleFormSplitLoan.formItemSplitLoan = '2'
         }).catch( err => {
           console.log(err)
         })
@@ -245,53 +282,6 @@
       // 取消
       handleCancel(){
         this.$router.push({ path: "/approve/approveDetail", query: { queryApproveExpenseID: this.tabShowWhich, approveListGuid: this.getApproveListGuid } })
-      },
-      // 撤销
-      handleRevoke(){
-
-      },
-      // 通过
-      handlePass(){
-        // 进行验证，如果每一个报销都进行了拆分则可以向下自行
-        let paymentsArr = this.keepBackContent.map((item) => {
-          return item.payments
-        })
-        // 拉平数组
-        let flatPaymentsArr = paymentsArr.flat()
-        console.log(flatPaymentsArr)
-        // 如果每一项都进行了拆分借款则返回true
-        let hasExpenseType = flatPaymentsArr.every((item) => {
-          return item.expenseType != 0;
-        })
-
-        if(!hasExpenseType){
-          this.$notify({
-            title: '提示',
-            message: '还存在待拆分的报销单',
-            type: 'warning',
-            // position: 'bottom-right',
-            showClose: false,
-            duration: 2000
-          });
-        }
-        console.log(hasExpenseType)
-
-        // 先提交拆分、还款记录，成功之后在调用工作流接口
-        /*this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
-          "object": [{
-            'id': this.pamentsOnlyId,
-            'expenseType': this.ruleFormSplitLoan.formItemSplitLoan,
-            'accountID': this.getAcountId
-          }]
-        }).then( obj =>  {
-
-        }).catch( err => {
-          console.log(err)
-        })*/
-      },
-      // 驳回
-      handleReject(){
-
       },
       handleClick(){},
       // 表格表头颜色

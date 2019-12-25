@@ -2,11 +2,11 @@
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
-      <el-col :span="6" :offset="18">
+      <el-col :span="6" :offset="18" style="text-align:center;">
         <el-button type="warning" @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleSplitRepaymentJump">拆分/还款</el-button>
-        <el-button type="success" @click="handlePass">通过</el-button>
-        <el-button type="danger" @click="handleReject">驳回</el-button>
+        <el-button type="primary" @click="handleSplitRepaymentJump" v-show="ifShowOperateBtn">拆分/还款</el-button>
+        <el-button type="success" @click="handlePassBtn" :disabled="ifShowPassBtn">通过</el-button>
+        <el-button type="danger" @click="handleRejectBtn">驳回</el-button>
       </el-col>
     </el-row>
     <!-- 报销信息 -->
@@ -98,6 +98,16 @@
       </el-table>
     </el-row>
     <!-- 审核结果 END -->
+    <!-- 通过、驳回弹框 -->
+    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close="false">
+      <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
+      <el-row>
+        <el-col :span="2" :offset="21">
+          <el-button @click="handlePassConfirm" type="primary">确定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <!-- 通过、驳回弹框 END -->
   </div>
 </template>
 
@@ -106,20 +116,48 @@
     name: "approveDetail",
     data(){
       return {
+        ifShowPassBtn: false, // 先从接口获取数据判断下是否有未拆分的数据，没有显示通过按钮
+        ifShowOperateBtn: false, // 若所有项的借款金额 = 报销金额 则隐藏拆分还款按钮
         tabShowWhich: null, // 显示哪个tab
         examineData: [], // 审核
         getApproveListGuid: null, // 获取列表页的的guid
         dialogVisible: false,
-        keepBackContent: null // 保存详情内容
+        keepBackContent: null, // 保存详情内容
+        workItemIDArr: null, // 保存匹配的WorkItemID 数组
+        commentText:'', // 驳回通过内容
+        transitShow: false, // 通过驳回弹窗
+        title: '', // 通过驳回弹窗标题切换
+        getParamsWorkItemId: null, // 工作流接口参数
       }
     },
     created(){
       this.getApproveListGuid = this.$route.query.approveListGuid
+      this.workItemIDArr = this.$route.query.queryWorkItemID
       this.getApproveDetail(this.getApproveListGuid)
       this.tabShowWhich = String(this.$route.query.queryApproveExpenseID)
       this.auditResult(this.getApproveListGuid)
+      this.workItemIDArr.forEach((item) => {
+        if (this.getApproveListGuid == item.jq_ID){
+          this.getParamsWorkItemId = item.workItemID
+        }
+      })
     },
     methods: {
+      // 验证是否存在未拆的款项
+      checkNoSplit(){
+        // 进行验证，如果每一个报销都进行了拆分则可以向下自行
+        let paymentsArr = this.keepBackContent.map((item) => {
+          return item.payments
+        })
+        // 拉平数组
+        let flatPaymentsArr = paymentsArr.flat()
+        // 如果每一项都进行了拆分借款则返回true
+        let hasExpenseType = flatPaymentsArr.every((item) => {
+          return item.paymentPrice == item.price;
+        })
+        this.ifShowPassBtn = !hasExpenseType
+        this.ifShowOperateBtn = !hasExpenseType
+      },
       // 获取审核结果
       auditResult(paramsGuid) {
         var that =this
@@ -141,89 +179,84 @@
         .then(obj => {
           let keepData = obj.data.objects
           this.keepBackContent = keepData
+          this.checkNoSplit()
         }).catch(err => {
           console.log(err)
         })
       },
-      // 通过
-      handlePass(formName){
-        var that = this;
-        // this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
-        let getWorkflowCode
-        if(this.presentRouter == '无收入借款管理') {
-          // getWorkflowCode = 'loan_noIncome2'
-          getWorkflowCode = 1
-        } else if(this.presentRouter == '预付款管理') {
-          // getWorkflowCode = 'borrow_Moneys2'
-          getWorkflowCode = 2
-        }else {}
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',
-          {
-            "jQ_ID":that.guid,
-            "jQ_Type": getWorkflowCode,
-            "userCode":sessionStorage.getItem('tel'),
-            "workItemID": that.getWorkItemId,
-            "commentText": that.commentText
-          }).then(res =>{
-          that.transitShow = false;
-          that.detailstShow = false;
-          that.pageList();
-          //that.repeal();
+      // 通过审批/驳回，弹窗确定按钮
+      handlePassConfirm(){
+        if(this.title == "审批通过"){
+          this.handlePassFn();
+        }else{
+          this.handleRejectFn();
+        }
+      },
+      // 审批通过弹窗-确定
+      handlePassFn(){
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',{
+          "jQ_ID":this.getApproveListGuid,
+          "jQ_Type": 3,
+          "userCode":sessionStorage.getItem('tel'),
+          "workItemID": this.getParamsWorkItemId,
+          "commentText": this.commentText
+        }).then(res =>{
+          this.transitShow = false;
         })
       },
-      // 驳回
-      handleReject(formName){
-        var that = this;
-        let getWorkflowCode
-        if(this.presentRouter == '无收入借款管理') {
-          getWorkflowCode = 1
-        } else if(this.presentRouter == '预付款管理') {
-          getWorkflowCode = 2
-        }else {}
-        // this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',
-          {
-            "jQ_ID": that.guid,
-            "jQ_Type": getWorkflowCode,
-            "userCode":sessionStorage.getItem('tel'),
-            "workItemID": that.getWorkItemId,
-            "commentText": that.commentText
-          }).then(res =>{
-          that.transitShow = false;
-          that.detailstShow = false;
-          that.rejectedSuccess();
-          //that.repeal();
-          let getWorkflowCode
-          if(this.presentRouter == '无收入借款管理') {
-            getWorkflowCode = 1
-          } else if(this.presentRouter == '预付款管理') {
-            getWorkflowCode = 2
-          }else {}
+      // 驳回之后走工作流
+      handleRejectFn(){
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',{
+          "jQ_ID": this.getApproveListGuid,
+          "jQ_Type": 3,
+          "userCode":sessionStorage.getItem('tel'),
+          "workItemID": this.getParamsWorkItemId,
+          "commentText": this.commentText
+        }).then(res =>{
+          this.rejectedSuccess();
           // 结束工作流
           this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
-            "jq_id":this.guid,
-            "jQ_Type": getWorkflowCode
+            "jq_id":this.getApproveListGuid,
+            "jQ_Type": 3
           }).then(res => {
-            that.pageList();
-            that.$store.commit('changeAparoveState')
+            this.transitShow = false;
           })
         })
       },
-      // 弹窗保存
-      handleDialogKeep(){
+      // 通过
+      handlePassBtn(){
+        this.title="审批通过";
+        this.transitShow = true;
+        // 先提交拆分、还款记录，成功之后在调用工作流接口
+        /*this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
+          "object": [{
+            'id': this.pamentsOnlyId,
+            'expenseType': this.ruleFormSplitLoan.formItemSplitLoan,
+            'accountID': this.getAcountId
+          }]
+        }).then( obj =>  {
 
+        }).catch( err => {
+          console.log(err)
+        })*/
+      },
+      // 驳回成功通过guid将checktype修改成2
+      rejectedSuccess(){
+        this.$http.post(this.GLOBAL.serverSrc + 'finance/expense/api/savechecktype',{
+          "object": {
+            "guid": this.getApproveListGuid,
+            "checkType": 2
+          }
+        })
+      },
+      // 驳回
+      handleRejectBtn(){
+        this.title="审批驳回";
+        this.transitShow = true;
       },
       // 取消
       handleCancel(){
         this.$router.push({ path: "/approve/approveList" })
-      },
-      // 通过
-      handlePass(){
-
-      },
-      // 驳回
-      handleReject(){
-
       },
       // 拆分/还款
       handleSplitRepaymentJump(){

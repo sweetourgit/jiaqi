@@ -61,6 +61,7 @@
     name: "approveList",
     data(){
       return {
+        keepWorkItemID: [], // 保存workItemid
         ruleFormSeach: {
           planTime_01:'',
           planData_01:'', //借款表格
@@ -89,8 +90,9 @@
       //  详情跳转
       handleJumpDetail(index, row){
         let getCurrentGuid = row.guid // 获取当前行的 guid
+        let getWorkItemID = this.keepWorkItemID
         let getCurrentExpenseID = row.expenseID // 获取当前行的 guid
-        this.$router.push({ path: "/approve/approveDetail", query: { approveListGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID } })
+        this.$router.push({ path: "/approve/approveDetail", query: { approveListGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
       },
       // 请求工作流接口获取未完成的任务
       approveTableList(){
@@ -119,7 +121,7 @@
               obj.data.forEach(v=>{
                 arr.push(v.jq_ID)
                 // that.arr1.push(v.workItemID)
-                // that.arr2.push(v)
+                that.keepWorkItemID.push(v)
               })
               this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/listforguid', { // 通过GUID查找无收入/预付款列表
                 "guid": arr

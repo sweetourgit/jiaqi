@@ -449,14 +449,14 @@ import moment from 'moment'
       },
       // 驳回成功通过guid将checktype修改成2
       rejectedSuccess(){
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
-        /*"guid": this.guid,
-        "checkType": 2*/
-       "object": {
-          "guid": this.guid,
-          "checkType": 2
-        }
-      })
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
+          /*"guid": this.guid,
+          "checkType": 2*/
+         "object": {
+            "guid": this.guid,
+            "checkType": 2
+          }
+        })
       },
       // 详情弹窗()
       checkIncome(index, row){
