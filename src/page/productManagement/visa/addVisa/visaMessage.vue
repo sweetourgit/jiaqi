@@ -1,5 +1,5 @@
 <template>
-  <div :visible.sync="dialogForm">
+  <div v-show="dialogForm">
   123
   </div>
 </template>

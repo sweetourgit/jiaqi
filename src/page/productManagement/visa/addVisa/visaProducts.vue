@@ -1,133 +1,135 @@
 <template>
   <div class="visalist">
-    <div class="button">
-      <el-button>取消</el-button>
-      <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
-    </div>
-    <div class="bother">
-      <div class="left">
-        <div class="one">
-          <div class="border">1</div>
-          <div class="fl">基础信息</div>
-        </div>
-        <div class="line"></div>
-        <div class="one">
-          <div class="border">2</div>
-          <div class="fl">签证信息</div>
-        </div>
-        <div class="line"></div>
-        <div class="one">
-          <div class="border">3</div>
-          <div class="fl">重要提示</div>
-        </div>
+    <div v-show="basisShow">
+      <div class="button">
+        <el-button>取消</el-button>
+        <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
       </div>
-      <div class="right">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-          <el-form-item label="产品名称" prop="name">
-            <el-input v-model="ruleForm.name" class="messagename" placeholder="请输入产品名称"></el-input>
-            <span class="Numbers">{{ruleForm.name.length}}/30字</span>
-          </el-form-item>
-          <el-form-item label="亮点词" prop="highlightWords">
-            <el-input v-model="ruleForm.highlightWords" class="Words" placeholder="请输入产品亮点词"></el-input>
-            <span class="Numbers">{{ruleForm.highlightWords.length}}/8字</span>
-          </el-form-item>
-          <el-form-item prop="highlightWords1" class="Words1">
-            <el-input v-model="ruleForm.highlightWords1" class="Words" placeholder="请输入产品亮点词"></el-input>
-            <span class="Numbers">{{ruleForm.highlightWords1.length}}/8字</span>
-          </el-form-item>
-          <el-form-item prop="highlightWords2" class="Words2">
-            <el-input v-model="ruleForm.highlightWords2" class="Words" placeholder="请输入产品亮点词"></el-input>
-            <span class="Numbers">{{ruleForm.highlightWords2.length}}/8字</span>
-          </el-form-item>
-          <el-form-item prop="highlightWords3" class="Words3">
-            <el-input v-model="ruleForm.highlightWords3" class="Words" placeholder="请输入产品亮点词"></el-input>
-            <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
-          </el-form-item>
-          <el-form-item label="签证国家地区" prop="region" class="mt80">
-            <el-input v-model="ruleForm.region" class="messagename" placeholder="请输入签证国家地区"></el-input>
-          </el-form-item>
-          <el-form-item label="头图" prop="avatarImages">
-            <div class="img_upload">
-              <template v-for="(item, index) in ruleForm.avatarImages">
-                <img class="img_list" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
-                <!-- <div class="img_div" :key="index" @click="imgDelete(item)">x</div> -->
-              </template>
-            </div>
-            <div class="figure" @click="addFigure()">
-              <span>+</span>
-              <div>上传</div>
-            </div>
-            <!-- <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span> -->
-          </el-form-item>
-          <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
-            <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
-          </el-dialog>
-          <el-form-item label="轮播图" prop="shuffling">
-            <div class="figure">
-              <span>+</span>
-              <div>上传</div>
-            </div>
-          </el-form-item>
-          <el-form-item label="送签地" prop="sendVisa">
-            <el-radio-group v-model="ruleForm.sendVisa">
-              <el-radio label="1">北京</el-radio>
-              <el-radio label="2">沈阳</el-radio>
-              <el-radio label="3">上海</el-radio>
-              <el-radio label="4">广州</el-radio>
-              <el-radio label="5">青岛</el-radio>
-              <el-radio label="6">成都</el-radio>
-              <el-radio label="7">武汉</el-radio>
-              <el-radio label="8">大连</el-radio>
-              <el-radio label="9">西安</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="签证受理地区" prop="visaRegion">
-            <el-checkbox-group v-model="ruleForm.visaRegion">
-              <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-              <el-checkbox label="地推活动" name="type"></el-checkbox>
-              <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-              <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="签证类型" prop="visaType">
-            <el-radio-group v-model="ruleForm.visaType">
-              <el-radio label="1">单次旅游签</el-radio>
-              <el-radio label="2">5年旅游签</el-radio>
-              <el-radio label="3">10年多次旅游签</el-radio>
-              <el-radio label="4">探亲访友签</el-radio>
-              <el-radio label="5">商务签证</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="签证流程类型" prop="visaProcessType">
-            <el-radio-group v-model="ruleForm.visaProcessType">
-              <el-radio label="1">贴纸签</el-radio>
-              <el-radio label="2">电子签</el-radio>
-              <el-radio label="3">另纸签</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="是否面试" prop="interview">
-            <el-radio-group v-model="ruleForm.interview">
-              <el-radio label="1">否</el-radio>
-              <el-radio label="2">是</el-radio>
-              <el-radio label="3">使馆签证面试</el-radio>
-              <el-radio label="4">录指纹</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="签证有效期" prop="visaDate">
-            <el-input v-model="ruleForm.visaDate" class="messagename" placeholder="请输入签证有效期"></el-input>
-          </el-form-item>
-          <el-form-item label="入境次数" prop="entryNumber">
-            <el-input v-model="ruleForm.entryNumber" class="messagename" placeholder="请输入入境次数"></el-input>
-          </el-form-item>
-          <el-form-item label="停留天数" prop="stayDays">
-            <el-input v-model="ruleForm.stayDays" class="messagename" placeholder="请输入停留次数"></el-input>
-          </el-form-item>
-          <el-form-item label="产品概括" prop="content">
-            <div class="cost_content">
-              <vue-editor v-model="ruleForm.content"></vue-editor>
-            </div>
-          </el-form-item>
-        </el-form>
+      <div class="bother">
+        <div class="left">
+          <div class="one">
+            <div class="border">1</div>
+            <div class="fl">基础信息</div>
+          </div>
+          <div class="line"></div>
+          <div class="one">
+            <div class="border">2</div>
+            <div class="fl">签证信息</div>
+          </div>
+          <div class="line"></div>
+          <div class="one">
+            <div class="border">3</div>
+            <div class="fl">重要提示</div>
+          </div>
+        </div>
+        <div class="right">
+          <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+            <el-form-item label="产品名称" prop="name">
+              <el-input v-model="ruleForm.name" class="messagename" placeholder="请输入产品名称"></el-input>
+              <span class="Numbers">{{ruleForm.name.length}}/30字</span>
+            </el-form-item>
+            <el-form-item label="亮点词" prop="highlightWords">
+              <el-input v-model="ruleForm.highlightWords" class="Words" placeholder="请输入产品亮点词"></el-input>
+              <span class="Numbers">{{ruleForm.highlightWords.length}}/8字</span>
+            </el-form-item>
+            <el-form-item prop="highlightWords1" class="Words1">
+              <el-input v-model="ruleForm.highlightWords1" class="Words" placeholder="请输入产品亮点词"></el-input>
+              <span class="Numbers">{{ruleForm.highlightWords1.length}}/8字</span>
+            </el-form-item>
+            <el-form-item prop="highlightWords2" class="Words2">
+              <el-input v-model="ruleForm.highlightWords2" class="Words" placeholder="请输入产品亮点词"></el-input>
+              <span class="Numbers">{{ruleForm.highlightWords2.length}}/8字</span>
+            </el-form-item>
+            <el-form-item prop="highlightWords3" class="Words3">
+              <el-input v-model="ruleForm.highlightWords3" class="Words" placeholder="请输入产品亮点词"></el-input>
+              <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
+            </el-form-item>
+            <el-form-item label="签证国家地区" prop="region" class="mt80">
+              <el-input v-model="ruleForm.region" class="messagename" placeholder="请输入签证国家地区"></el-input>
+            </el-form-item>
+            <el-form-item label="头图" prop="avatarImages">
+              <div class="img_upload">
+                <template v-for="(item, index) in ruleForm.avatarImages">
+                  <img class="img_list" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+                  <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
+                </template>
+              </div>
+              <div class="figure" @click="addFigure()">
+                <span>+</span>
+                <div>上传</div>
+              </div>
+              <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span>
+            </el-form-item>
+            <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
+              <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
+            </el-dialog>
+            <el-form-item label="轮播图" prop="shuffling">
+              <div class="figure">
+                <span>+</span>
+                <div>上传</div>
+              </div>
+            </el-form-item>
+            <el-form-item label="送签地" prop="sendVisa">
+              <el-radio-group v-model="ruleForm.sendVisa">
+                <el-radio label="1">北京</el-radio>
+                <el-radio label="2">沈阳</el-radio>
+                <el-radio label="3">上海</el-radio>
+                <el-radio label="4">广州</el-radio>
+                <el-radio label="5">青岛</el-radio>
+                <el-radio label="6">成都</el-radio>
+                <el-radio label="7">武汉</el-radio>
+                <el-radio label="8">大连</el-radio>
+                <el-radio label="9">西安</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="签证受理地区" prop="visaRegion">
+              <el-checkbox-group v-model="ruleForm.visaRegion">
+                <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+                <el-checkbox label="地推活动" name="type"></el-checkbox>
+                <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+                <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+            <el-form-item label="签证类型" prop="visaType">
+              <el-radio-group v-model="ruleForm.visaType">
+                <el-radio label="1">单次旅游签</el-radio>
+                <el-radio label="2">5年旅游签</el-radio>
+                <el-radio label="3">10年多次旅游签</el-radio>
+                <el-radio label="4">探亲访友签</el-radio>
+                <el-radio label="5">商务签证</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="签证流程类型" prop="visaProcessType">
+              <el-radio-group v-model="ruleForm.visaProcessType">
+                <el-radio label="1">贴纸签</el-radio>
+                <el-radio label="2">电子签</el-radio>
+                <el-radio label="3">另纸签</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="是否面试" prop="interview">
+              <el-radio-group v-model="ruleForm.interview">
+                <el-radio label="1">否</el-radio>
+                <el-radio label="2">是</el-radio>
+                <el-radio label="3">使馆签证面试</el-radio>
+                <el-radio label="4">录指纹</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="签证有效期" prop="visaDate">
+              <el-input v-model="ruleForm.visaDate" class="messagename" placeholder="请输入签证有效期"></el-input>
+            </el-form-item>
+            <el-form-item label="入境次数" prop="entryNumber">
+              <el-input v-model="ruleForm.entryNumber" class="messagename" placeholder="请输入入境次数"></el-input>
+            </el-form-item>
+            <el-form-item label="停留天数" prop="stayDays">
+              <el-input v-model="ruleForm.stayDays" class="messagename" placeholder="请输入停留次数"></el-input>
+            </el-form-item>
+            <el-form-item label="产品概括" prop="content">
+              <div class="cost_content">
+                <vue-editor v-model="ruleForm.content"></vue-editor>
+              </div>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
     </div>
     <visa-message :teamID="teamID" :variable="variable"></visa-message>
@@ -147,6 +149,7 @@ export default {
     },
   data() {
     return {
+      basisShow:true, // 父组件  点击下一步显示子组件，隐藏父组件
       ruleForm: {
         name: '',//产品名称
         highlightWords:'',//亮点词
@@ -252,6 +255,7 @@ export default {
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
       this.variable++;
+      this.basisShow = false;
       // this.$refs[formName].validate((valid) => {
         
       // });
