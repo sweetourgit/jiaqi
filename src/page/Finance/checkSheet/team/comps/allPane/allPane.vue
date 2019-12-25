@@ -1,5 +1,5 @@
 <style lang="scss" scoped>
-.mine-pane{
+.all-pane{
   &>header{
     padding: 10px 0;
   }
@@ -7,9 +7,12 @@
 </style>
 
 <template>
-  <div class="mine-pane">
+  <div class="all-pane">
     <header>
-      <mine-pane-conditions></mine-pane-conditions>
+      <all-pane-conditions 
+        ref="allPaneConditionsRef"
+        @reset-pageinfo="resetPageInfo">
+      </all-pane-conditions>
     </header>
     <main>
       <el-table style="width: 100%" border
@@ -44,22 +47,47 @@
         </el-table-column>
       </el-table>
     </main>
+    <footer>
+      <div style="display: flex; justify-content: center; padding-top: 20px;">
+        <el-pagination background
+          :current-page.sync="pageInfo.pageNo"
+          :page-sizes="[2, 4, 8, 10]"
+          :page-size="pageInfo.pageSize"
+          :total="pageInfo.total"
+          @current-change="pageActionHandler"
+          @prev-click="pageActionHandler"
+          @next-click="pageActionHandler"
+          @size-change="sizeChangeFunc"
+          layout="total, sizes, prev, pager, next, jumper"
+        ></el-pagination>
+      </div>
+    </footer>  
   </div>
 </template>
 
 <script>
-import { getFlowName, getFlowList, getMineCheckSheetList } from '../../api'
-import minePaneConditions from './comps/minePaneConditions'
+import allPaneConditions from './comps/allPaneConditions'
+import { getCheckSheetList } from '../../api'
 
+const getPageInfo= function(total){
+  return {
+    pageIndex: 1,
+    pageSize: 10,
+    total: total || 0
+  }
+}
 export default {
-  components: { minePaneConditions },
+  components: { allPaneConditions },
 
   data(){
     return Object.assign(
+      // 分页信息
+      {
+        pageInfo: getPageInfo(),
+      },
       // 数据
       {
         tableData: [],
-        workflowCode: null
       }
     )
   },
@@ -69,7 +97,7 @@ export default {
     {
       init(payload){
         payload && this.reappearConditions(payload);
-        this.getMineCheckSheetListAction()
+        this.getCheckSheetListAction()
       },
 
       // 重现条件和页数
@@ -82,11 +110,18 @@ export default {
       // 获取getCheckSheetListAction用到的参数
       getCheckSheetListData(){
         let object= this.$refs.allPaneConditionsRef.getConditions();
-        let result= { startIndex: -1, endIndex: -1, workflowCode: this.workflowCode }
-        // getFlowList的起始时间字段是startTime
-        if(object.beginTime) result.startTime= object.beginTime;
-        if(object.endTime) result.endTime= object.endTime;
-        return result;
+        return { object, ...this.pageInfo }
+      },
+
+      sizeChangeFunc(num){
+        this.pageInfo.pageSize= num;
+        this.pageActionHandler();
+      },
+
+      pageActionHandler(){
+        this.$nextTick(() => {
+          this.getCheckSheetListAction()
+        })
       },
 
       // 表格头部背景颜色
@@ -99,30 +134,25 @@ export default {
       },
     },
 
+    // 子组件emit触发
+    {
+      resetPageInfo(){
+        this.pageInfo= getPageInfo();
+        this.getCheckSheetListAction();
+      }
+    },
+
     // actions
     {
       // 获取列表
-      getMineCheckSheetListAction(){
-        this.getFlowNameAction()
-        .then(workflowCode => {
-
-          this.workflowCode= workflowCode;
-          let payload= this.getCheckSheetListData();
-          getFlowList(payload)
-          .then(guid => {
-
-            getMineCheckSheetList(guid)
-            .then(res => {
-
-            })
-          })
+      getCheckSheetListAction(){
+        let { object, pageIndex, pageSize, total }= this.getCheckSheetListData();
+        console.log(object, pageIndex, pageSize, total)
+        getCheckSheetList({ object, pageIndex, pageSize, total })
+        .then(res => {
+          
         })
       },
-
-      getFlowNameAction(){
-        if(this.workflowCode) return Promise.resolve(this.workflowCode);
-        return getFlowName()
-      }
     }
   )
 }

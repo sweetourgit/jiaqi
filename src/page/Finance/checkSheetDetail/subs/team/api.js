@@ -16,6 +16,7 @@ export const getPreCheckSheetByPlanID= function(id){
   })
 }
 
+// 获取已报账的报账单
 export const getCheckSheetByPlanID= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/getforplan", { id })

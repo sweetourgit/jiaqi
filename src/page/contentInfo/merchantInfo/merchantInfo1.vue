@@ -643,6 +643,19 @@
               <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
               <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
             </el-table>
+            <!-- 关联欠款分页begin -->
+            <el-pagination
+              class="pagination"
+              @size-change="handleGlSizeChange"
+              background
+              @current-change="handleGlCurrentChange"
+              :current-page="1"
+              :page-sizes="[10, 30, 50, 100]"
+              :page-size="10"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="glTotal"
+            ></el-pagination>
+            <!-- 关联欠款分页end -->
           </div>
           <!-- 点击详情欠款信息end -->
 
@@ -764,23 +777,15 @@
       </el-form>
     </el-dialog>
 
-    <!-- <el-dialog
-      title="选择人员"
-      :visible.sync="isChooseAccount"
-      :show-close="false"
-      class="addAccount"
-      :close-on-click-modal="false"
-      width="500px"
-    > -->
-      <childAccount :isChooseAccount="isChooseAccount"></childAccount>
-    <!-- </el-dialog> -->
+    <!-- <childAccount :isChooseAccount="isChooseAccount"></childAccount> -->
+
     <!--end-->
   </div>
 </template>
 
 <script>
 import state from "../../../store/state";
-import childAccount from "./comps/chooseAccount";
+// import childAccount from "./comps/chooseAccount";
 import moment from "moment";
 
 export default {
@@ -926,6 +931,9 @@ export default {
       pageIndex: 1, //每页
       total: 1, //总条数
       currentPage4: 1, //当前页数
+      glPageSize: 10, //详情页关联欠款表格的条数显示
+      glPageIndex: 1, //详情页关联欠款表格的条数显示
+      glTotal: 0, //关联欠款表格的总条数
       // editAccouontScopeid: null, //账户信息修改时需要的scopeid
       accountForm: {
         name: "", //账户信息名字
@@ -1122,7 +1130,7 @@ export default {
     };
   },
   components: {
-    childAccount: childAccount
+    // childAccount: childAccount
   },
   methods: {
     moment,
@@ -1816,7 +1824,9 @@ export default {
       this.btnindex = 0;
       this.arrears = 0;
       this.sonList = [];
-      this.parentSettlementType = null
+      this.parentSettlementType = null;
+      this.glPageIndex = 1;
+      this.glPageSize = 10;
     },
     // 重置
     handleReset() {
@@ -1922,8 +1932,8 @@ export default {
     getDebitTable(id) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
-          pageIndex: 1,
-          pageSize: this.pageSize,
+          pageIndex: this.glPageIndex,
+          pageSize: this.glPageSize,
           // total: 1, //总条数
           object: {
             // isDeleted: 0 //是否删除
@@ -1931,6 +1941,7 @@ export default {
           }
         })
         .then(obj => {
+          this.glTotal = obj.data.total;
           this.tableRelevanceDeptInfo = obj.data.objects;
           this.tableRelevanceDeptInfo.forEach((item, index, arr) => {
             item.cF_Date = moment(item.cF_Date.toString()).format("YYYY-MM-DD");
@@ -1938,13 +1949,45 @@ export default {
             item.repaymentDate = moment(item.repaymentDate).format(
               "YYYY-MM-DD"
             );
-            this.arrears += item.qk_price;
           });
           this.page_order_total = obj.data.total;
+          this.getDebitTablePrice(id,this.glTotal)
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    // 关联欠款的表格的总价计算
+    getDebitTablePrice(id, total) {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
+          pageIndex: 1,
+          pageSize: total,
+          total: total, //总条数
+          object: {
+            // isDeleted: 0 //是否删除
+            orgID: id
+          }
+        })
+        .then(obj => {
+          obj.data.objects.forEach(item => {
+            this.arrears += item.qk_price
+          })
+        })
+        .catch(err => {});
+    },
+    // 关联欠款表格的分页
+    handleGlSizeChange(val) {
+      console.log(val, 1);
+      this.glPageSize = val;
+      this.glPageIndex = 1;
+      this.getDebitTable(this.tid);
+    },
+    handleGlCurrentChange(val) {
+      console.log(val, 2);
+      this.glPageSize = 10;
+      this.glPageIndex = val;
+      this.getDebitTable(this.tid);
     },
     //提交
     submitForm(ruleForm) {
@@ -2749,9 +2792,10 @@ export default {
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
-          // 欠款总计计算
-
-          // this.arrears = this.toDecimal2(object.arrears);
+          // 关联欠表的欠款总计计算
+          // if (this.btnindex == 1) {
+          //   this.arrears = this.toDecimal2(object.arrears);
+          // }
         })
         .catch(obj => {
           console.log(obj);
@@ -3070,145 +3114,13 @@ export default {
 .dialogTableTr {
   line-height: 40px;
 }
+/* 详情页关联欠款表格的分页 */
+.pagination {
+  margin-top: 40px;
+  text-align: right;
+}
 /* .dialogTableTd {
   width: 33.33%;
   height: auto;
 } */
-</style>
-
-.el-pagination {
-  margin-right: 300px !important;
-}
-.addAccountBtn {
-  margin-top: -44px;
-}
-
-.el-dialog .el-input,
-.el-select {
-  width: 250px !important;
-}
-.fr {
-  float: right;
-}
-.addAccount {
-  padding-bottom: 30px;
-  padding-left: 20px;
-  box-sizing: border-box;
-}
-.addAccount h3 {
-  margin-left: 22px;
-  margin-top: -5px;
-  margin-bottom: 30px;
-  color: #f5a142;
-}
-.relevanceDept {
-  width: 98%;
-}
-.relevanceDeptWarn {
-  background-color: #e6f3fc;
-  padding-left: 16px;
-  border-radius: 5px;
-}
-.el-icon-warning:before {
-  color: #108ee9;
-  font-size: 18px;
-  margin-right: 10px;
-}
-.el-upload-list__item {
-  width: 130px !important;
-}
-/* .upload-demo .el-upload-list,.el-form-item__content{
-  width: 250px!important;
-} */
-.el-input__inner::-webkit-input-placeholder {
-  color: #333 !important;
-}
-.tag {
-  word-wrap: break-word;
-  word-break: break-all;
-  overflow: hidden;
-  display: block;
-  margin-bottom: 10px;
-  width: 250px;
-}
-.el-tag {
-  white-space: normal !important;
-  height: auto;
-}
-.fl {
-  float: left;
-}
-.accountInfo {
-  width: 100%;
-  margin-top: 30px;
-}
-.dialog {
-  height: 600px;
-  min-width: 934px;
-  overflow-y: scroll;
-}
-.dialog::-webkit-scrollbar {
-  width: 0px;
-  background-color: #808080;
-}
-.clearfix:after,
-.clearfix:before {
-  content: "";
-  display: table;
-}
-.clearfix:after {
-  clear: both;
-}
-.clearfix {
-  *zoom: 1;
-}
-.btn {
-  position: absolute;
-  right: -85px;
-  bottom: -60px;
-}
-.el-dialog__wrapper .el-dialog {
-  top: -7vh !important;
-}
-.rrr .el-form-item {
-  margin-bottom: 32px !important;
-}
-.search {
-  display: flex;
-  padding-left: 5px;
-  box-sizing: border-box;
-}
-.search_input {
-  width: 217px;
-  margin-left: 20px;
-}
-.button_style {
-  margin-top: 65px;
-}
-.info_table {
-  margin-top: 20px;
-}
-.ButtonCls {
-  position: absolute;
-  right: 30px;
-  top: 16px;
-}
-.el-checkbox + .el-checkbox {
-  margin-right: 10px;
-}
-.block {
-  float: right;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  height: 100px;
-}
-.dialogTableTr {
-  line-height: 40px;
-}
-.dialogTableTd {
-  width: 33.33%;
-  height: auto;
-}
 </style>
