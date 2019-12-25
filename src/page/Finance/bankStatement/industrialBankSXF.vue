@@ -250,7 +250,7 @@ export default {
       console.log(response);
       if(response == true){
         this.$message.success("兴业银行流水单上传成功！");
-        this.pageIndex = 1;
+        this.pageCurrent = 1;
         this.loadData();
       }else{
         this.$message.warning("兴业银行流水单上传失败！");
@@ -273,7 +273,7 @@ export default {
       console.log(response);
       if(response == true){
         this.$message.success("微信支付宝明细上传成功！");
-        this.pageIndex = 1;
+        this.pageCurrent = 1;
         this.loadData();
       }else{
         this.$message.warning("微信支付宝明细上传失败！");
@@ -301,6 +301,7 @@ export default {
           "id": row.id,
         }).then(function(response) {
           if (response.data.isSuccess) {
+            that.pageCurrent = 1;
             that.loadData();
             that.$message({
               type: 'info',
@@ -327,12 +328,12 @@ export default {
 
     // 搜索 重置
     searchHandInside(){
-      this.pageIndex = 1;
+      this.pageCurrent = 1;
       this.loadData();
     },
     emptyButtonInside(){
       this.$refs['ruleForm'].resetFields();
-      this.pageIndex = 1;
+      this.pageCurrent = 1;
       this.loadData();
     },
     // 加载数据

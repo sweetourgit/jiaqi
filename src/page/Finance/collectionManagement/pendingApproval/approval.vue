@@ -376,10 +376,17 @@
           // console.log('审批详情',response);
           if (response.data.isSuccess) {
             const hasInvoice = response.data.object.invoice == 1 ? '有':'无';
+            let createTimeStr = '';
+            if(response.data.object.createTime){
+              createTimeStr = response.data.object.createTime.split("T")[0];
+              if(response.data.object.createTime.split("T")[1]){
+                createTimeStr +=' '+ response.data.object.createTime.split("T")[1].split(".")[0];
+              }
+            }
             that.baseInfo = {
-              id: response.data.object.id, 
+              id: response.data.object.id,
               createUser: response.data.object.createUser,
-              createTime: response.data.object.createTime.split("T")[0] +' '+ response.data.object.createTime.split("T")[1].split(".")[0],
+              createTime: createTimeStr ? createTimeStr : response.data.object.createTime,
               collectionType: response.data.object.collectionType,
               distributor: response.data.object.distributor,
               orderNumber: response.data.object.serialNumber,

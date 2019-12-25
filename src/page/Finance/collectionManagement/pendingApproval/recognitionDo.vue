@@ -44,7 +44,7 @@
               <el-table :data="tableDataZH" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
-                    <el-button @click="chooseRecognition(scope.row, 0)" type="text" size="small" class="table_details">选择</el-button>
+                    <el-button @click="chooseRecognition(scope.row, 0)" type="text" size="small" class="table_details" :disabled="canClick">选择</el-button>
                     <!-- <el-button type="text" size="small" class="table_details" disabled>已选</el-button> -->
                   </template>
                 </el-table-column>
@@ -102,7 +102,7 @@
               <el-table :data="tableDataXY" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
                 <el-table-column label="操作" width="140" align="center" fixed>
                   <template slot-scope="scope">
-                    <el-button @click="chooseRecognition(scope.row, 1)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">选择</el-button>
+                    <el-button @click="chooseRecognition(scope.row, 1)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'" :disabled="canClick">选择</el-button>
                     <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信支付宝明细</el-button>
                     <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" disabled>已选</el-button> -->
                   </template>
@@ -159,7 +159,7 @@
               <el-table :data="tableDataMX" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
-                    <el-button @click="chooseRecognition(scope.row, 2)" type="text" size="small" class="table_details">选择</el-button>
+                    <el-button @click="chooseRecognition(scope.row, 2)" type="text" size="small" class="table_details" :disabled="canClick">选择</el-button>
                     <!-- <el-button type="text" size="small" class="table_details" disabled>已选</el-button> -->
                   </template>
                 </el-table-column>
@@ -243,6 +243,7 @@
     },
     data() {
       return {
+        canClick: false,
         baseInfo: {}, // 基础信息
         fileList: [], // 基础信息，凭证信息
 
@@ -274,7 +275,7 @@
     watch: {
       dialogFormVisible2: {
         handler: function () {
-          
+          console.log(this.msg);
           if(this.msg == ''){
             this.closeAdd();
           }else{
@@ -287,6 +288,7 @@
             this.loadDataZH();
             this.loadDataXY();
             this.isShow = false;
+            this.canClick = false;
             this.activeName = 'bankZH';
           }
 
@@ -314,7 +316,8 @@
 
       // 选择，提交认款
       chooseRecognition(row, type){
-        console.log(row);
+        // console.log(row);
+        this.canClick = true;
         const that = this;
         if(row.surplus_Amount < this.tableDataOrder[0].matchingPrice){
           that.$message.warning("能进行选择，剩余金额不足~");
