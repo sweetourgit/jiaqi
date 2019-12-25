@@ -83,7 +83,7 @@ const ProcessManageMixin= {
        */
       sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect;
-
+        
         this.salePrice.splice(0);
         this.salePrice.push(
           ...enrolls.map((enroll, index) => {
