@@ -510,21 +510,27 @@ export default {
       })
     },
     uploadPicture(){
-      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/insert",{
-        "object":{
-          "id": 0,
-          "createTime": "2019-12-24T05:35:43.775Z",
-          "code": "string",
-          "url": this.img_Url,
-          "planID": this.planId,
-          "name": this.img_Name
-        }
-      }).then(res =>{
-        if(res.data.isSuccess == true){
-         this.$message.success("上传成功");
-         this.departure = false;
-        }
-      })
+      console.log(this.img_Url == '')
+      if(this.img_Url == ''){
+        this.departure = false;
+      }else{
+        this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/insert",{
+          "object":{
+            "id": 0,
+            "createTime": "2019-12-24T05:35:43.775Z",
+            "code": "string",
+            "url": this.img_Url,
+            "planID": this.planId,
+            "name": this.img_Name
+          }
+        }).then(res =>{
+          if(res.data.isSuccess == true){
+           this.$message.success("上传成功");
+           this.departure = false;
+          }
+        })
+      }
+      
     },
     clearDeparture(){ // 取消关闭出团通知书弹窗
       this.departure = false;
@@ -546,20 +552,7 @@ export default {
       this.$message.warning(`出团通知书只能上传 1 个文件`);
     },
     beforeRemove(file, fileList) {
-      // let  ifDel = this.$confirm(`确定移除 ${ file.name }？`); 
-      // if(ifDel==true){
-      //   let uid = file.id
-      //   this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/delete",{
-      //     "id": uid,
-      //   }).then(res =>{
-      //     if(res.data.isSuccess == true){
-      //       this.$message.success("删除成功");
-      //       this.departure = false;
-      //     }
-      //   })
-      // }
-      // return ifDel;
-      return this.$confirm("是否删除 ${ file.name } ?", "提示", {
+      return this.$confirm(`是否删除 ${ file.name } ?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -575,7 +568,6 @@ export default {
           }
         })
       })
-      //return this.$confirm(`确定移除 ${ file.name }？`);
     }
   }
 };
