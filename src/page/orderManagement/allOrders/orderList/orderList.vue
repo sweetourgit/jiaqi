@@ -467,17 +467,20 @@ export default {
   methods: {
     moment,
     adviceNoteDown() {
-      // console.log("下载图片");
-      // var a = document.createElement("a");
-      // a.download = this.fileList[0].name || "pic"; // 设置图片地址
-      // a.href = this.fileList[0].url;
-      // a.click();
+      console.log("下载图片");
+      var a = document.createElement("a");
+      a.download = this.fileList[0].name || "pic"; // 设置图片地址
+      a.href = this.fileList[0].url;
+      document.body.append(a);
+      this.$nextTick(() => {
+        a.click();
+      });
     },
 
-    adviceNoteDown() {
-      let url = this.fileList[0].url;
-      window.open(url);
-    },
+    // adviceNoteDown() {
+    //   let url = this.fileList[0].url;
+    //   window.open(url);
+    // },
     // 出团通知书的发送
     adviceNoteSend() {},
     handleRemove(file, fileList) {},
