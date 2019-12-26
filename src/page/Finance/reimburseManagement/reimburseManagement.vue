@@ -576,6 +576,7 @@ export default {
                   this.radio= "1";
                   this.dialogFormVisible = false;
                   this.alljoinData = [];
+                  this.tableCourse = [];
                   this.ruleForm= {
                       editableTabsValue: "1",
                       editableTabs: [
@@ -618,6 +619,7 @@ export default {
                   this.state = 1;
                   this.dialogFormVisible = false;
                   this.alljoinData = [];
+                  this.tableCourse = [];
                   this.ruleForm= {
                       editableTabsValue: "1",
                       editableTabs: [
@@ -841,6 +843,7 @@ export default {
                             message: "撤销成功!"
                           });
                            this.alljoinData=[];
+                           this.tableCourse = [];
                            this.ruleForm= {
                               editableTabsValue: "1",
                               editableTabs: [
@@ -1028,6 +1031,7 @@ export default {
           this.change = true;
           this.dialogFormVisible = true;
           this.ruleForm.editableTabs=[];
+          this.tableCourse = [];
           this.$http
                 .post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
                   object:{
@@ -1224,6 +1228,7 @@ export default {
                   })
                 .then(() => {
                   targetName = "1"
+                  this.tableCourse = [];
                   this.ruleForm= {
                           editableTabsValue: "1",
                           editableTabs: [
@@ -1486,6 +1491,7 @@ export default {
                           this.tabIndex = 1;
                           this.dialogFormVisible = false;
                           this.alljoinData= [];
+                          this.tableCourse = [];
                          if (res.data.isSuccess == true) {
                            this.$message({
                             type: "success",
@@ -1524,6 +1530,7 @@ export default {
                           
                         }else{
                           this.alljoinData= [];
+                          this.tableCourse = [];
                           this.ruleForm= {
                                 editableTabsValue: "1",
                                 editableTabs: [
@@ -1676,18 +1683,18 @@ export default {
         .catch(obj => {})
       },
        // 获取审核内容结果
-      auditResult2(paramsGuid) {
-        console.log(paramsGuid);
-        var that =this
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-          jQ_ID: paramsGuid,
-          jQ_Type: 3,
-        }).then(obj => {
-          console.log(obj,'8041');
-          that.examineData = []
-          that.examineData = obj.data.extend.instanceLogInfo;
-        }).catch(obj => {})
-      },
+      // auditResult2(paramsGuid) {
+      //   console.log(paramsGuid);
+      //   var that =this
+      //   this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+      //     jQ_ID: paramsGuid,
+      //     jQ_Type: 3,
+      //   }).then(obj => {
+      //     console.log(obj,'8041');
+      //     that.examineData = []
+      //     that.examineData = obj.data.extend.instanceLogInfo;
+      //   }).catch(obj => {})
+      // },
           
      
      
@@ -1696,7 +1703,7 @@ export default {
       created() {
         this.pageList();
         this.getApproveListGuid = this.$route.query.approveListGuid
-        this.auditResult2(this.getApproveListGuid)
+        //this.auditResult2(this.getApproveListGuid)
         if (sessionStorage.getItem('hasCashierInfo')) {
           this.ifAccountBtn = true
         } else {
