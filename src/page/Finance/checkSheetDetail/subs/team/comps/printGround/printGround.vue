@@ -1,40 +1,47 @@
-<style lang="scss" scoped>
+<style scoped>
+/* 这个样式要给打印用，所以不使用scss了 */
+*{
+  font-weight: normal;
+  box-sizing: border-box;
+}
+table{
+  width: 100%;
+}
 .print-ground{
   font-size: 14px;
   line-height: normal;
   text-align: center;
-  &>header{
-    .title{
-      font-size: 18px;
-    }
-    .time{
-      line-height: 2.5;
-      text-align: right;
-    }
-  }
-  &>main{
-    line-height: 36px;
-    .row{
-      display: flex;
-      height: 36px;
-      .base{
-        width: 10%;
-        border-top: 1px solid #000;
-        border-left: 1px solid #000;
-        &:last-child{
-          border-right: 1px solid #000;
-        }
-      }
-      .label{
-        background-color: #ccc;
-        color: #000;
-        box-sizing: border-box;
-      }
-      .content{
-        box-sizing: border-box;
-      }
-    }
-  }  
+  font-weight: normal;
+}
+.print-ground>header .title{
+    font-size: 18px;
+}
+.print-ground>header .time{
+  line-height: 2.5;
+  text-align: right;
+}
+.cell{
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-all;
+  line-height: 23px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+.base{
+  width: 10%;
+  padding: 5px 0;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+}
+.label{
+  background-color: #ccc;
+  color: #000;
+}
+.base:last-child{
+  border-right: 1px solid #000;
 }
 </style>
 
@@ -45,142 +52,239 @@
       <div class="title">沈阳甜程国际旅行社有限公司旅游团队报账单</div>
       <div class="time">报账时间：{{ dateFormator(pd.checkTime) }}</div>
     </header>
-    <main style="border-collapse:collapse;">
+    <main>
 
-      <div class="row">
-        <div class="base label">部门</div>
-        <div class="base content"> {{ pd.orgName }} </div>
-        <div class="base label">操作人</div>
-        <div class="base content"> {{ pd.createUser }} </div>
-        <div class="base label">导陪</div>
-        <div class="base content"> {{ pd.guideName }} </div>
-        <div class="base label">接团社</div>
-        <div class="base content" style="width: 30%;"> {{ pd.localName }} </div>
-      </div>
+      <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td class="base label">
+            <div class="cell">部门</div>
+          </td>
+          <td class="base">
+            <div class="cell"> {{ pd.orgName }} </div>
+          </td>
+          <td class="base label">
+            <div class="cell">操作人</div>
+          </td>
+          <td class="base">
+            <div class="cell"> {{ pd.createUser }} </div>
+          </td>
+          <td class="base label">
+            <div class="cell">导陪</div>
+          </td>
+          <td class="base">
+            <div class="cell"> {{ pd.guideName }} </div>
+          </td>
+          <td class="base label">
+            <div class="cell">接团社</div>
+          </td>
+          <td class="base" colspan="4">
+            <div class="cell"> {{ pd.localName }} </div>
+          </td>
+        </tr>
 
-      <div class="row">
-        <div class="base label">团号</div>
-        <div class="base content" style="width: 30%;"> {{ pd.groupCode }} </div>
-        <div class="base label">产品名称</div>
-        <div class="base content" style="width: 50%;"> {{ pd.teamProTitle }} </div>
-      </div>
+        <tr>
+          <td class="base label">
+            <div class="cell">团号</div>
+          </td>
+          <td class="base"  colspan="3">
+            <div class="cell"> {{ pd.groupCode }} </div>
+          </td>
+          <td class="base label">
+            <div class="cell">产品名称</div>
+          </td>
+          <td class="base" colspan="6">
+            <div class="cell"> {{ pd.teamProTitle }} </div>
+          </td>
+        </tr>
 
-      <div class="row">
-        <div class="base label">团队人数</div>
-        <div class="base content"></div>
-        <div class="base label">减免人数</div>
-        <div class="base content"></div>
-        <div class="base label">出发日期</div>
-        <div class="base content"> {{ pd.date | dateFilter }} </div>
-        <div class="base label">返回日期</div>
-        <div class="base content"> {{ pd.returnDate | dateFilter }} </div>
-        <div class="base label">全程天数</div>
-        <div class="base content"> {{ pd.day }} </div>
-      </div>
+        <tr>
+          <td class="base label">
+            <div class="cell">团队人数</div>
+          </td>
+          <td class="base">
+            <div class="cell"></div>
+          </td>
+          <td class="base label">
+            <div class="cell">减免人数</div>
+          </td>
+          <td class="base" colspan="1">
+            <div class="cell"></div>
+          </td>
+          <td class="base label" colspan="1">
+            <div class="cell">出发日期</div>
+          </td>
+          <td class="base" colspan="1">
+            <div class="cell"> {{ pd.date | dateFilter }} </div>
+          </td>
+          <td class="base label" colspan="1">
+            <div class="cell">返回日期</div>
+          </td>
+          <td class="base" colspan="1">
+            <div class="cell"> {{ pd.returnDate | dateFilter }} </div>
+          </td>
+          <td class="base label" colspan="1">
+            <div class="cell">全程天数</div>
+          </td>
+          <td class="base" colspan="1">
+            <div class="cell"> {{ pd.day }} </div>
+          </td>
+        </tr>
 
-      <div class="row">
-        <div class="base label" style="width: 100%;">团队收入成本结算</div>
-      </div>
+        <tr>
+          <td class="base label" colspan="10">
+            <div class="cell">团队收入成本结算</div>
+          </td>
+        </tr>
 
-      <div class="row">
-        <div class="base label">总收入</div>
-        <div class="base content"> {{ pd.sumIncome }} </div>
-        <div class="base label">总支出</div>
-        <div class="base content"> {{ pd.sumExpense }} </div>
-        <div class="base label">毛利额</div>
-        <div class="base content"></div>
-        <div class="base label">毛利率</div>
-        <div class="base content" style="width: 30%;"></div>
-      </div>
+        <tr>
+          <td class="base label">
+            <div class="cell">总收入</div>
+          </td>
+          <td class="base">
+            <div class="cell"></div>
+          </td>
+          <td class="base label">
+            <div class="cell">总支出</div>
+          </td>
+          <td class="base">
+            <div class="cell"></div>
+          </td>
+          <td class="base label">
+            <div class="cell">毛利额</div>
+          </td>
+          <td class="base">
+            <div class="cell"></div>
+          </td>
+          <td class="base label">
+            <div class="cell">毛利率</div>
+          </td>
+          <td class="base" colspan="3">
+            <div class="cell"></div>
+          </td>
+        </tr>
+      </table>
 
-      <div class="row">
-        <div class="base content" style="width: 100%;"></div>
-      </div>
+      <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td class="base label" style="width:5%;">
+            <div class="cell">序号</div>
+          </td>
+          <td class="base label">
+            <div class="cell">订单号</div>
+          </td>
+          <td class="base label">
+            <div class="cell">来源</div>
+          </td>
+          <td class="base label" style="width:5%;">
+            <div class="cell">类型</div>
+          </td>
+          <td class="base label">
+            <div class="cell">联团人</div>
+          </td>
+          <td class="base label" style="width:5%;">
+            <div class="cell">人数</div>
+          </td>
+          <td class="base label" style="width:5%;">
+            <div class="cell">订单收入</div>
+          </td>
+          <td class="base label" style="width:5%;">
+            <div class="cell">已收款</div>
+          </td>
+          <td class="base label" style="width:5%;">
+            <div class="cell">欠款</div>
+          </td>
+          <td class="base label">
+            <div class="cell">订单毛利</div>
+          </td>
+          <td class="base label">
+            <div class="cell">收款单号</div>
+          </td>
+          <td class="base label">
+            <div class="cell">发票号码</div>
+          </td>
+          <td class="base label">
+            <div class="cell">备注</div>
+          </td>
+        </tr>
 
-      <div class="row">
-        <div class="base label">序号</div>
-        <div class="base label" style="width: 25%;">收入来源</div>
-        <div class="base label" style="width: 25%;">经手人</div>
-        <div class="base label">人数</div>
-        <div class="base label">实收款</div>
-        <div class="base label">发票号码</div>
-        <div class="base label">备注</div>
-      </div>
-      <!-- v-for -->
-      <div class="row"
-        v-for="(item, i) in incomes"
-        :key="i">
-        <div class="base content">{{ i + 1 }}</div>
-        <div class="base content" style="width: 25%;">{{ item.orderSource }}</div>
-        <div class="base content" style="width: 25%;">{{ item.joinPeople }}</div>
-        <div class="base content">{{ item.peopleCount }}</div>
-        <div class="base content">{{ item.incomePrice }}</div>
-        <div class="base content"></div>
-        <div class="base content">{{ item.mark }}</div>
-      </div>
+        <income-bar
+          v-for="(item, i) in incomes"
+          :key="i"
+          :proto="item"
+          :rank="i">
+        </income-bar>
 
-      <div class="row">
-        <div class="base label" style="width: 60%;">合计：</div>
-        <div class="base content"></div>
-        <div class="base content"></div>
-        <div class="base content"></div>
-        <div class="base content"></div>
-      </div>
+        <tr>
+          <td class="base label" colspan="5">
+            <div class="cell">合计</div>
+          </td>
+          <td class="base" style="width:5%;">
+            <div class="cell"></div>
+          </td>
+          <td class="base" style="width:5%;">
+            <div class="cell"></div>
+          </td>
+          <td class="base" colspan="6">
+            <div class="cell"></div>
+          </td>
+        </tr>
+      </table>
 
-      <div class="row">
-        <div class="base label" style="width: 100%;">团队成本明细</div>
-      </div>
-      <div class="row">
-        <div class="base label">序号</div>
-        <div class="base label">成本项目</div>
-        <div class="base label" style="width: 20%;">供应商</div>
-        <div class="base label">人数</div>
-        <div class="base label" style="width: 15%;">成本合计</div>
-        <div class="base label" style="width: 15%;">已支付</div>
-        <div class="base label">挂账</div>
-        <div class="base label">备注</div>
-      </div>
-      <!-- v-for -->
-      <div class="row">
-        <div class="base content"></div>
-        <div class="base content"></div>
-        <div class="base content" style="width: 20%;"></div>
-        <div class="base content"></div>
-        <div class="base content" style="width: 15%;"></div>
-        <div class="base content" style="width: 15%;"></div>
-        <div class="base content"></div>
-        <div class="base content"></div>
-      </div>
+      <other-ground ref="otherGround">
+      </other-ground>
 
-      <div class="row">
-        <div class="base label">合计：</div>
-        <div class="base content" style="width: 30%;"></div>
-        <div class="base content"></div>
-        <div class="base content" style="width: 15%;"></div>
-        <div class="base content" style="width: 15%;"></div>
-        <div class="base content" style="width: 20%;"></div>
-      </div>
+      <expense-ground ref="expenseGround">
+      </expense-ground>
 
-      <div class="row" style="height: 72px; line-height: 72px; border-bottom: 1px solid #000;">
-        <div class="base label" style="width: 12%;">
-          审批人签字
-        </div>
-        <div class="base label">计调</div>
-        <div class="base content" style="width: 12%;"></div>
-        <div class="base label">部门经理</div>
-        <div class="base content" style="width: 12%;"></div>
-        <div class="base label">财务部</div>
-        <div class="base content" style="width: 12%;"></div>
-        <div class="base label">总经理</div>
-        <div class="base content" style="width: 12%;"></div>
-      </div>
-      
+      <table cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #000;">
+        <tr>
+          <td class="base label" style="width:15%;">
+            <div class="cell">审批人</div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">计调</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">部门经理</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">财务部</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">总经理</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="base label" style="width:15%;border-right:none;">
+            <div class="cell">签字</div>
+          </td>
+        </tr>
+      </table>
+
     </main>
-  </div>
+  </div>  
 </template>
 
 <script>
+import incomeBar from './subs/incomeBar'
+import otherGround from './subs/otherGround'
+import expenseGround from './subs/expenseGround'
+
 export default {
+
+  components: { incomeBar, otherGround, expenseGround },
 
   filters: {
     dateFilter(val){
@@ -189,7 +293,9 @@ export default {
       month= ~~ ((val - year * 10000) / 100);
       day= val - year * 10000 - month * 100;
       // return `${year}年${month}月${day}日`
-      return `${year}/${month}/${day}`
+      if(month< 10) month= '0' + month;
+      if(day< 10) day= '0' + day;
+      return `${year}.${month}.${day}`
     }
   },
 
@@ -197,21 +303,28 @@ export default {
     return Object.assign(
       {
         inited: false,
+        incomeSum: 0, // 总收入
+        otherSum: 0, // 其他收入
+        expenseSum: 0, // 总支出
+        profitSum: 0, // 毛利额
+        profitRate: 0, // 毛利率
       },
       {
         pd: {},  // printData缩写
-        incomes: [],
-        expenses: []
+        incomes: []
       }
     )
   },
 
   methods: {
     init(printData){
-      let { incomes, expenses, ...pdData }= printData;
+      let { incomes, expenses, otherIncomes, ...pdData }= printData;
       this.pd= pdData;
       this.incomes= incomes;
-      this.expenses= expenses;
+      console.log(this.$refs.otherGround)
+      
+      // this.$refs.otherGround.init(otherIncomes);
+      // this.$refs.expenseGround.init(expenses)
       this.inited= true;
     },
 
