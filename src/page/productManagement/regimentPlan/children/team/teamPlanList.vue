@@ -214,6 +214,7 @@ export default {
       img_Url:"",
       img_Name:'',
       uid:'',
+      type:'',
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -510,18 +511,10 @@ export default {
       })
     },
     uploadPicture(){
-      if(this.img_Url == ''){
-        this.departure = false;
-        let uid = file.id
-        this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/delete",{
-          "id": uid,
-        }).then(res =>{
-          if(res.data.isSuccess == true){
-            this.$message.success("删除成功");
-            this.departure = false;
-          }
-        })
-      }else{
+      this.departure = false;
+      if(this.type == 'del'){
+        this.deleteFile();
+      }else if(this.img_Url !== ''&& this.img_Name !== ''){
         this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/insert",{
           "object":{
             "id": 0,
@@ -534,11 +527,10 @@ export default {
         }).then(res =>{
           if(res.data.isSuccess == true){
            this.$message.success("上传成功");
-           this.departure = false;
+           
           }
         })
       }
-      
     },
     clearDeparture(){ // 取消关闭出团通知书弹窗
       this.departure = false;
@@ -555,29 +547,33 @@ export default {
     },
     handleError(err, file) {
       this.fileList = []
+      console.log(file.id)
     },
     handleExceed(files, fileList) {
       this.$message.warning(`出团通知书只能上传 1 个文件`);
     },
     beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
-      // return this.$confirm(`是否删除 ${ file.name } ?`, "提示", {
-      //   confirmButtonText: "确定",
-      //   cancelButtonText: "取消",
-      //   type: "warning"
-      // })
-      // .then(res => {
-      //   let uid = file.id
-      //   this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/delete",{
-      //     "id": uid,
-      //   }).then(res =>{
-      //     if(res.data.isSuccess == true){
-      //       this.$message.success("删除成功");
-      //       this.departure = false;
-      //     }
-      //   })
-      // })
-    }
+      return this.$confirm(`是否删除 ${ file.name } ?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+      .then(res => {
+        this.uid = file.id;
+        this.type = "del";
+      })
+    },
+    deleteFile(){
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/delete",{
+        "id": this.uid,
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+          this.type = '';
+          this.$message.success("删除成功");
+          this.departure = false;
+        }
+      })
+    },
   }
 };
 </script>
