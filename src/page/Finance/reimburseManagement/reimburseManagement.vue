@@ -309,7 +309,7 @@
             </div>
             
         </div>
-      </el-dialog>
+      </el-dialog>0
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
       <el-dialog
@@ -321,7 +321,7 @@
       >
         <div class="indialog">
           <div style=" position: absolute;right: 67px;top: 22px;">
-            <el-button @click="dialogFormVisible2 = false">取 消</el-button>
+            <el-button  @click="showplan()">取 消</el-button>
             <el-button type="primary" @click="addplan(ruleForm.editableTabsValue)">确 定1</el-button>
           </div>
           <div class="indialog_search">
@@ -573,6 +573,7 @@ export default {
                   this.tabIndex = 1;
                   this.radio= "1";
                   this.dialogFormVisible = false;
+                  this.alljoinData = [];
                   this.ruleForm= {
                       editableTabsValue: "1",
                       editableTabs: [
@@ -611,7 +612,10 @@ export default {
           }else if(this.find == 1){
                   this.tabIndex = 1;
                   this.radio= "1";
+                  this.find = 0 ;
+                  this.state = 1;
                   this.dialogFormVisible = false;
+                  this.alljoinData = [];
                   this.ruleForm= {
                       editableTabsValue: "1",
                       editableTabs: [
@@ -650,6 +654,10 @@ export default {
                 }
               }
              
+        },
+        showplan(){//取消1
+            this.dialogFormVisible2 = false;
+            this.T_update_btn(); 
         },
         addplan(editableTabsValue) {//确定1
            this. subscript();
@@ -1455,6 +1463,7 @@ export default {
                           this.radio= "1";
                           this.tabIndex = 1;
                           this.dialogFormVisible = false;
+                          this.alljoinData= [];
                          if (res.data.isSuccess == true) {
                            this.$message({
                             type: "success",
@@ -1488,10 +1497,11 @@ export default {
                                 }
                               ]
                               };
-                        this.alljoinData=[];
+                       
                         this.beginWokeing(res.data.object);
                           
                         }else{
+                          this.alljoinData= [];
                           this.ruleForm= {
                                 editableTabsValue: "1",
                                 editableTabs: [
@@ -1520,7 +1530,7 @@ export default {
                                   }
                                 ]
                                 };
-                            this.alljoinData=[];
+                          
                             this.$message({
                             type: "error",
                             message: "创建失败!"
