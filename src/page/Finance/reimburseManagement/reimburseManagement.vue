@@ -1656,7 +1656,7 @@ export default {
           },
         //方法结尾
      
-        // 获取审核结果
+        // 获取审核列表结果
       auditResult(paramsGuid) {
         var that =this
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
@@ -1675,6 +1675,19 @@ export default {
          })
         .catch(obj => {})
       },
+       // 获取审核内容结果
+      auditResult2(paramsGuid) {
+        console.log(paramsGuid);
+        var that =this
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+          jQ_ID: paramsGuid,
+          jQ_Type: 3,
+        }).then(obj => {
+          console.log(obj,'8041');
+          that.examineData = []
+          that.examineData = obj.data.extend.instanceLogInfo;
+        }).catch(obj => {})
+      },
           
      
      
@@ -1682,6 +1695,8 @@ export default {
 
       created() {
         this.pageList();
+        this.getApproveListGuid = this.$route.query.approveListGuid
+        this.auditResult2(this.getApproveListGuid)
         if (sessionStorage.getItem('hasCashierInfo')) {
           this.ifAccountBtn = true
         } else {

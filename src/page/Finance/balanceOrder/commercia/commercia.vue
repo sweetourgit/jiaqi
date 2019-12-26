@@ -97,10 +97,10 @@ export default {
           value:  -1,
           label: '全部'
          },{
-          value:  0,
+          value:  1,
           label: '无逾期'
          }, {
-          value:  1,
+          value:  0,
           label: '有逾期'
          }],
         tableData:[],//列表数据
