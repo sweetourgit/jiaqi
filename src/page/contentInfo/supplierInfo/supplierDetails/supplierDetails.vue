@@ -311,6 +311,7 @@ export default {
     downloadPicByUrl(url, name){
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
+      xhr.setRequestHeader('Sec-Fetch-Mode', 'cors')
       xhr.responseType = 'blob';
       xhr.onload = () => {
         if (xhr.status === 200) {
