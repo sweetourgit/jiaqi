@@ -185,7 +185,7 @@
     </el-dialog>
     <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormAuth" width="1000px" class="abow_dialog" @close="cenclePer">
       <div :style="authDiocss">
-        <el-form ref="form" :model="form">           
+        <el-form ref="form" :model="form" class="bottom">           
              <div v-for="(menuList,index) in authData">
                <el-checkbox v-model="menuList.isJur" :label="menuList.id" :key="menuList.id" @change="menuChanged(index)">{{menuList.name}}</el-checkbox>
                <div class="check-list">
@@ -196,9 +196,11 @@
                </div>
              </div>
         </el-form>
+        <div class="footer">
         <div slot="footer" class="dialog-footer" style="text-align: center">
           <el-button @click="cenclePer">取消</el-button>
           <el-button type="primary" @click="perSubmit">确 定</el-button>
+        </div>
         </div>
       </div> 
     </el-dialog>
@@ -767,6 +769,18 @@
     left: 242px;
     top: 2px;
   }
-
+  .footer{
+    position: absolute;
+    z-index: 10000;
+    bottom: 30px;
+    width: 900px;
+    background-color: #fff;
+  }
+  .authDiocss{
+    position: relative;
+  }
+  .bottom{
+    margin-bottom: 80px;    
+  }
 </style>
 
