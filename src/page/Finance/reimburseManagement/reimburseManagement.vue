@@ -281,15 +281,16 @@
                 </div> -->
               </el-tab-pane>
             </el-tabs>
-
-            <div v-if="this.find == 1" class="re_style" style="margin-top: 20px">
-              <el-table :data="reimData" border style="width: 100%">
-                <el-table-column prop="reier" label="审批人" width="180"></el-table-column>
-                <el-table-column prop="reisult" label="审批结果" width="180"></el-table-column>
-                <el-table-column prop="info" label="审批意见"></el-table-column>
-                <el-table-column prop="time" label="审批时间"></el-table-column>
+              <!-- 审核结果 -->
+              <el-divider content-position="left"  v-if="this.find == 1" class="re_style" style="margin-top: 20px">审核结果</el-divider>
+              <el-table :data="tableCourse" border :header-cell-style="getRowClass">
+                <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
+                <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+                <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+                <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+              
               </el-table>
-            </div>
+              <!-- 审核结果 END -->
           </div>
           <!--多报销end-->
         </el-form>
@@ -445,6 +446,7 @@ export default {
 
     return {
       uploadUrl: this.GLOBAL.serverSrc + '/upload/obs/api/picture/', // 上传凭证
+      tableCourse:[], // 查看无收入借款审批过程
       image: 0,//验证上传图片没
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
       hand: [],
@@ -647,6 +649,14 @@ export default {
             }
          
         },
+          // 表格表头颜色
+        getRowClass({ row, column, rowIndex, columnIndex }) {
+          if (rowIndex == 0) {
+            return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
+          } else {
+            return ''
+          }
+        },
         subscript(){ //判断当前tab页
              for(let j in this.ruleForm.editableTabs){
               if(this.ruleForm.editableTabs[j].name == this.ruleForm.editableTabsValue){
@@ -820,6 +830,8 @@ export default {
                       .then(res => {
                           this.tabIndex = 1;
                           this.pageIndex = 1;
+                          this.state = 1;
+                          this.find = 0 ;
                           this.currentPage4 = 1;
                           this.pageList(1, this.pageSize);
                           this.dialogFormVisible = false;
@@ -828,6 +840,7 @@ export default {
                             type: "success",
                             message: "撤销成功!"
                           });
+                           this.alljoinData=[];
                            this.ruleForm= {
                               editableTabsValue: "1",
                               editableTabs: [
@@ -1081,6 +1094,7 @@ export default {
                         }
                                 
                       }
+                       this.auditResult(d_objects[0].guid);
                         
                       
                   }
@@ -1210,30 +1224,38 @@ export default {
                   })
                 .then(() => {
                   targetName = "1"
-                  this.ruleForm.editableTabs=[{
-                      title: "报销"+ targetName,
-                      name: targetName,
-                      content:{
-                          createUser:"",
-                          createTime: "",
-                          count:0,
-                          id:"",
-                          groupCode: "",
-                          productName: "",
-                          mark: "",
-                          t_sum:0,//一共多少项
-                          t_price:0,//一共多少钱
-                          files:[],
-                          payments:[],
-                          joinData:[],
-                          plan: {
-                            planId: "",
-                            planName: ""
-                          },
-                        }
-                    }];
+                  this.ruleForm= {
+                          editableTabsValue: "1",
+                          editableTabs: [
+                            {
+                              title: "报销1",
+                              name: "1",
+                              content:{
+                                  createUser:"",
+                                  createTime: "",
+                                  count:0,
+                                  id:"",
+                                  groupCode: "",
+                                  productName: "",
+                                  mark: "",
+                                  t_sum:0,//一共多少项
+                                  t_price:0,//一共多少钱
+                                  files:[],
+                                  payments:[],
+                                  joinData:[],
+                                  plan: {
+                                    planId: "",
+                                    planName: ""
+                                  },
+                                
+                              }
+                            }
+                          ]
+                          };
                     this.tabIndex = 1;
                     this.radio= "1";
+                    this.find = 0;
+                    this.state = 1;
                     this.dialogFormVisible = false;
                       
                   })
@@ -1570,9 +1592,16 @@ export default {
                                 //     });
                                 //   }; 
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
-                                   if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
+                                if(submitForm_list.payments[n].price == "0" || submitForm_list.payments[n].price == ""){
+                                   this.$message({
+                                                message:'请填写本次报销金额',
+                                                type: 'warning' 
+                                              });
+                                              verify = 0
+                                              return;
+                                }else if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
                                             this.$message({
-                                                message:'报销金额不得大于未报销金额',
+                                                message:'本次报销金额不得大于借款金额',
                                                 type: 'warning' 
                                               });
                                               verify = 0
@@ -1626,6 +1655,29 @@ export default {
               }
           },
         //方法结尾
+     
+        // 获取审核结果
+      auditResult(paramsGuid) {
+        var that =this
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+          jQ_ID: paramsGuid,
+          jQ_Type: 3,
+        }).then(obj => {
+          console.log(obj.data.extend.instanceLogInfo,'809');
+           that.tableCourse = []
+           that.tableCourse = obj.data.extend.instanceLogInfo;
+            if(that.tableCourse.length > 0 ) {
+              that.printAuditingContent = '<b>开始</b> -> '
+              that.tableCourse.forEach(function (item) {
+                that.printAuditingContent += item.participantName + '( <b>' + item.approvalName + '</b> )'  + ' -> ';
+              })
+              }
+         })
+        .catch(obj => {})
+      },
+          
+     
+     
      },
 
       created() {

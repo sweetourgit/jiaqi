@@ -92,8 +92,11 @@ export default {
         ordertitle:'',//商户名称
         startDate:"", // 开始时间
         endDate:"", // 结束时间
-        typeColl:'', //欠款逾期
+        typeColl:-1, //欠款逾期
         settlement:[{
+          value:  -1,
+          label: '全部'
+         },{
           value:  0,
           label: '无逾期'
          }, {
@@ -188,7 +191,7 @@ export default {
       this.ordertitle ='',
       this.startDate = '';
       this.endDate = '';
-      this.typeColl = '';
+      this.typeColl = -1;
       this.currentPage4 = 1;
       this.pageList(1, this.pageSize);
     },
