@@ -297,12 +297,17 @@
           <el-button @click="chanceSubmit(ruleForm)">取 消</el-button>
           <el-button v-if="this.find == 0" type="primary" @click="submitForm(ruleForm)">确 定3</el-button>
           <el-button
-            v-if="this.find == 1"
+            v-if="this.state == 0"
             type="danger"
             @click="chanelSubmit(ruleForm)"
             plain
           >撤销申请</el-button>
-          <div v-if="this.find == 1" class="sh_style">审核中</div>
+            <div v-if="this.find == 1">
+                <div v-if="this.state == 0" class="sh_style">审核中</div>
+                <div v-if="this.state == 1" class="tg_style">通过</div>
+                <div v-if="this.state == 2" class="bh_style">驳回</div>
+            </div>
+            
         </div>
       </el-dialog>
       <!--报销弹窗end-->
@@ -460,6 +465,7 @@ export default {
       pageCount: 100,
       change: false,
       find: 0, //分辨查看
+      state:3,//审核中
       radio: "1",  // 单选
       dialogFormVisible2: false, //团期计划弹窗
       dialogFormVisible3: false,  //添加报销
@@ -1013,6 +1019,13 @@ export default {
                     let d_objects_content =[];
                     // let wcount_s = 0;
                     for(let i in d_objects){
+                        if(d_objects[i].checkType == 0){
+                          this.state = 0;
+                        }else if(d_objects[i].checkType == 1){
+                          this.state = 1;
+                        }else if(d_objects[i].checkType == 2){
+                          this,state = 2;
+                        }
                             let t_sum = d_objects[i].payments.length;//多少项 
                             let qian = 0;
                             let d_price_box =[];
@@ -1693,16 +1706,41 @@ export default {
   margin-right: 40px;
   overflow:hidden;
 }
+ 
 .sh_style {
-  background: rgb(234, 234, 234);
-  position: absolute;
+    position: absolute;
   width: 66px;
   height: 35px;
   text-align: center;
   line-height: 35px;
   top: -4px;
   left: -1019px;
+  background: rgb(234, 234, 234);
+ color: #000
 }
+.tg_style{
+    position: absolute;
+  width: 66px;
+  height: 35px;
+  text-align: center;
+  line-height: 35px;
+  top: -4px;
+  left: -1136px;
+  background: rgb(234, 234, 234);
+  color: rgb(151, 226, 37);
+}
+.bh_style{
+    position: absolute;
+  width: 66px;
+  height: 35px;
+  text-align: center;
+  line-height: 35px;
+  top: -4px;
+  left: -1136;
+  background: rgb(234, 234, 234);
+  color: red;
+}
+
 .upload-demo  .el-upload-list__item {
   width: 30%;
 }
