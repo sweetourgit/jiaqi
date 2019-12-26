@@ -3,7 +3,7 @@
        <!-- 用户授权 -->
         <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormAuth" width="1000px" class="abow_dialog" @close="cenclePer">
         <div :style="authDiocss">
-          <el-form>           
+          <el-form class="bottom">           
                <div v-for="(menuList,index) in authData">
                  <el-checkbox v-model="menuList.isJur" :label="menuList.id" :key="menuList.id" @change="menuChanged(index)">{{menuList.name}}</el-checkbox>
                  <div class="check-list">
@@ -14,9 +14,11 @@
                  </div>
                </div>
           </el-form>
-          <div slot="footer" class="dialog-footer" style="text-align: center">
-            <el-button @click="cenclePer">取消</el-button>
-            <el-button type="primary" @click="perSubmit">确 定</el-button>
+          <div class="footer">
+              <div slot="footer" class="dialog-footer" style="text-align: center">
+                <el-button @click="cenclePer">取消</el-button>
+                <el-button type="primary" @click="perSubmit">确 定</el-button>
+              </div>
           </div>
         </div> 
       </el-dialog>
@@ -57,11 +59,12 @@ export default {
       menuChanged(index){
         if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
             var actArray = this.authData[index].act.length;          
-            if(actArray>0){            
-                for(let i = 0,len = this.authData[index].act.length;i<len;i++){
-                    this.authData[index].act[i].isJur = false;
-                    this.authData[index].dataJurisdiction[i].isJur = false;      
-                }
+            var datajurArray = this.authData[index].dataJurisdiction.length;                          
+            for(let i = 0;i<actArray;i++){
+                this.authData[index].act[i].isJur = false;
+            }
+            for(let i = 0;i<datajurArray;i++){
+                this.authData[index].dataJurisdiction[i].isJur = false;      
             }
         }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
             var actArray = this.authData[index].act.length;
@@ -127,4 +130,7 @@ export default {
      .data-check{color: #d67121;display: inline-block;border-radius: 5px;padding: 0 5px}
      .abow_dialog {margin:-100px 0 0 0}
      .check-list{margin:10px 0 15px 25px}
+     .footer{position: absolute;z-index: 10000;bottom: 30px;width: 900px;background-color: #fff;}
+     .authDiocss{position: relative;}
+     .bottom{margin-bottom: 80px;}
 </style>
