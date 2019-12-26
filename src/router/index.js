@@ -239,6 +239,38 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/cruiseShip',
+      component: () => import('@/page/contentInfo/cruiseShip/cruiseShip.vue'),
+      name: '邮轮管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/cruiseShip/cruiseShipDetail',
+      component: () => import('@/page/contentInfo/cruiseShip/cruiseShipDetail.vue'),
+      name: '邮轮管理/详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/cruiseShip/shipDetailAdd',
+      component: () => import('@/page/contentInfo/cruiseShip/shipDetailAdd.vue'),
+      name: '邮轮管理/详情/添加游轮',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/curiseShipCabin',
+      component: () => import('@/page/contentInfo/cruiseShipCabin/curiseShipCabin.vue'),
+      name: '游轮舱房管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/productList',
       component: () => import('@/page/productManagement/productList/productList'),
       name: '产品列表',
