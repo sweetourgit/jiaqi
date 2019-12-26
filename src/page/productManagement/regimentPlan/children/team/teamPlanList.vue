@@ -511,25 +511,14 @@ export default {
       })
     },
     uploadPicture(){
-      this.departure = false;
+      this.clearDeparture();
       if(this.type == 'del'){
         this.deleteFile();
       }else if(this.img_Url !== ''&& this.img_Name !== ''){
-        this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/insert",{
-          "object":{
-            "id": 0,
-            "createTime": "2019-12-24T05:35:43.775Z",
-            "code": "string",
-            "url": this.img_Url,
-            "planID": this.planId,
-            "name": this.img_Name
-          }
-        }).then(res =>{
-          if(res.data.isSuccess == true){
-           this.$message.success("上传成功");
-           
-          }
-        })
+        if(this.fileList.length != 0){
+          this.deleteFile();
+        }
+        this.addFile();
       }
     },
     clearDeparture(){ // 取消关闭出团通知书弹窗
@@ -543,6 +532,7 @@ export default {
         paths = JSON.parse(fileList[i].response).paths[0];
         this.img_Url = this.$set(this.fileList[i], "url", paths.Url);
         this.img_Name = this.$set(this.fileList[i], "name", paths.Name);
+        this.type = '';
       }
     },
     handleError(err, file) {
@@ -561,6 +551,8 @@ export default {
       .then(res => {
         this.uid = file.id;
         this.type = "del";
+        this.img_Url = '';
+        this.img_Name = '';
       })
     },
     deleteFile(){
@@ -574,6 +566,23 @@ export default {
         }
       })
     },
+    addFile(){
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/insert",{
+        "object":{
+          "id": 0,
+          "createTime": "2019-12-24T05:35:43.775Z",
+          "code": "string",
+          "url": this.img_Url,
+          "planID": this.planId,
+          "name": this.img_Name
+        }
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+         this.$message.success("上传成功");
+         
+        }
+      })
+    }
   }
 };
 </script>
