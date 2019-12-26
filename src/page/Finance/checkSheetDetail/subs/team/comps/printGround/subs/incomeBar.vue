@@ -1,5 +1,5 @@
 <style>
-  @import "~@/page/Finance/checkSheetDetail/subs/team/comps/printGround/print.css";
+  @import "@/page/Finance/checkSheetDetail/subs/team/comps/printGround/print.css";
 </style>
 <template>
   <tr>
