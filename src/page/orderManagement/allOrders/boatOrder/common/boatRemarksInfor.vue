@@ -3,10 +3,11 @@
     <!--备注信息弹窗-->
     <el-dialog
       title="备注"
-      :visible.sync="isDialogFormMark"
+      :visible.sync="propsObj.dialogType === 0"
       :close-on-click-modal="false"
       class
       width="780px"
+      @close="btRemarkDialogClose"
     >
       <el-form
         :model="markFormAdd"
@@ -37,11 +38,11 @@
             v-model="markFormAdd.Mark"
           ></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item align="right">
           <el-button type="info" size="medium" class="submitMark">提交备注</el-button>
         </el-form-item>
-        <el-form-item>
-          <el-button class="colse">关闭</el-button>
+        <el-form-item align="center">
+          <el-button class="colse" @click="btRemarkDialogClose">关闭</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -52,20 +53,36 @@
 export default {
   name: "boatRemarksInfor",
   props: {
-    propsObj:Object
+    propsObj: { type: Object }
   },
   data() {
     return {
-      isDialogFormMark: false,//备注dialog是否显示
+      // name: localStorage.getItem("name"),
+      markFormAdd: {
+        orderCode: "",
+        Mark: "",
+        CreateTime: ""
+      },
+      markForms: [],
+      orderget: {},
+      rules: {
+        Mark: [{ required: true, message: "请填写备注信息", trigger: "blur" }]
+      }
     };
   },
-  watch:{
-    // propsObj.dialogType: () {
-    //   if (this.propsObj.dialogType == 0) this.isDialogFormMark = true
-    // }
-  },
+
+  watch: {},
   created() {},
-  methods: {},
+  methods: {
+    // 关闭弹窗事件
+    btRemarkDialogClose() {
+      this.$emit(
+        "update:this.propsObj.dialogType",
+        (this.propsObj.dialogType = -1)
+      );
+      this.markFormAdd.Mark = ""
+    }
+  },
   mounted() {}
 };
 </script>

@@ -163,6 +163,10 @@
               class="breadCrumbPointer"
               @click.native="operation(item,index)"
             >{{item}}</el-breadcrumb-item>
+            <el-breadcrumb-item
+              class="breadCrumbPointer"
+              @click.native="operation(item,index)"
+            >流程管理</el-breadcrumb-item>
           </el-breadcrumb>
           <!-- 操作菜单end -->
 
@@ -199,25 +203,29 @@
     <!-- 分页end -->
 
     <!-- 备注 -->
-    <boatRemarksInfor :propsObj="propsObj"></boatRemarksInfor>
+    <boatRemarksInfor :propsObj.sync="propsObj"></boatRemarksInfor>
     <!-- 收款 -->
-    <boatReceipt></boatReceipt>
-    <!-- 流程管理 -->
-    <boatProcessManage></boatProcessManage>
+    <boatReceipt :propsObj.sync="propsObj"></boatReceipt>
+    <!-- 流程管理
+    <boatProcessManage :propsObj.sync="propsObj"></boatProcessManage> -->
     <!-- 分房信息 -->
-    <boatDivideRoomInfo></boatDivideRoomInfo>
-
+    <boatDivideRoomInfo :propsObj.sync="propsObj"></boatDivideRoomInfo>
   </div>
 </template>
 
 <script>
 import boatRemarksInfor from "./common/boatRemarksInfor";
 import boatReceipt from "./common/boatReceipt";
-import boatProcessManage from "./common/boatProcessManage";
 import boatDivideRoomInfo from "./common/boatDivideRoomInfo";
+// import boatProcessManage from "./common/boatProcessManage";
 
 export default {
-  components: { divideRoomInfo, processManage, receipt, remarksInfor },
+  components: {
+    boatRemarksInfor,
+    boatReceipt,
+    // boatProcessManage,
+    boatDivideRoomInfo
+  },
   data() {
     return {
       arrDemo: [1, 2],
@@ -226,7 +234,7 @@ export default {
       pageSize: 0, //分页每页显示的条数
       pageIndex: 1, //当前分页是第几页
       total: 0, //分页的总条数
-      propsObj: {},//传给组件的值
+      propsObj: { dialogType: -1 }, //传给组件的值
       orderStatusSearch: [
         { status: 0, name: "全部", type: 1 },
         { status: 7, name: "未确认", type: 1 },
@@ -241,7 +249,7 @@ export default {
         { status: 6, name: "完成退款", type: 2 },
         { status: 2, name: "拒绝退款", type: 2 }
       ], //搜索的订单状态集合  联系客人先不做
-      breadCrumbs: ["备注", "收款", "流程管理", "分房信息"], //折叠列表里面的操作集合
+      breadCrumbs: ["备注", "收款", "换舱","退款", "出团通知书", "分房信息"], //折叠列表里面的操作集合
       isShowContent: null //折叠列表是否显示
     };
   },
@@ -253,16 +261,16 @@ export default {
     },
 
     // 分页 条数显示变动
-    handleSizeChange(val) {
-      this.pageSize = val;
+    handleSizeChange(size) {
+      this.pageSize = size;
       this.pageIndex = 1;
-      this.orderPage(1, val);
+      this.orderPage(1, size);
     },
 
     //分页 页数显示变动
-    handleCurrentChange(val) {
-      this.orderPage(val, this.pageSize);
-      this.pageIndex = val;
+    handleCurrentChange(index) {
+      this.orderPage(index, this.pageSize);
+      this.pageIndex = index;
     },
 
     // 折叠表格显示
@@ -273,8 +281,10 @@ export default {
     },
 
     // 操作
-    operation (val,index) {
-      this.propsObj.dialogType = index
+    operation(val, index) {
+      this.propsObj = {
+        dialogType: index
+      };
     },
 
     // 重置按钮

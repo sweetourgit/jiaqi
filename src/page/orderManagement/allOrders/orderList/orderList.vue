@@ -311,16 +311,17 @@
         @close="closeActiceNote"
       >
         <div class="adviceNote">
-          <span>出团通知书 :</span>
           <el-upload
-            class="upload-demo"
+            class="uploadDemo"
             action
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             multiple
             :disabled="true"
             :file-list="fileList"
-          ></el-upload>
+          >
+            <span>出团通知书 :</span>
+          </el-upload>
           <div class="adviceNoteBtn">
             <el-button type="info" @click="dialogAdviceNote = false">取消</el-button>
             <el-button type="primary" @click="adviceNoteDown">下载</el-button>
@@ -1053,19 +1054,19 @@ export default {
           id: this.planID
         })
         .then(res => {
-          if(res.data.isSuccess == true) {
-            let obj = {}
-            let {name,url} = res.data.object
-            obj.name = name
-            obj.url = url
-            this.fileList.push(obj)
+          if (res.data.isSuccess == true) {
+            let obj = {};
+            let { name, url } = res.data.object;
+            obj.name = name;
+            obj.url = url;
+            this.fileList.push(obj);
           }
         })
         .catch(err => {});
     },
     // 关闭出团通知书的弹窗
-    closeActiceNote () {
-      this.fileList = []
+    closeActiceNote() {
+      this.fileList = [];
     },
 
     // 出发日期转换格式显示
@@ -1257,5 +1258,17 @@ export default {
   position: absolute;
   right: 20px;
   bottom: 10px;
+}
+
+.uploadDemo {
+  position: relative;
+  margin-top: -10px;
+  margin-left: 100px;
+}
+
+.uploadDemo span {
+  position: absolute;
+  top: 30px;
+  left: -80px;
 }
 </style>
