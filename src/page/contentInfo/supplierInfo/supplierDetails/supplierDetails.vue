@@ -177,7 +177,7 @@
                     <div class="file-outer" 
                       v-for="(file, i) in submitForm.files" 
                       :key="i"
-                      @click="openWindow(file.url)">
+                      @click="downloadPicByUrl(file.url, file.name)">
                       {{ file.name }}
                     </div>
                   </div>
@@ -306,6 +306,27 @@ export default {
 
     openWindow(url){
       window.open(url);
+    },
+
+    downloadPicByUrl(url, name){
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'blob';
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          var urlObject = window.URL || window.webkitURL || window;
+          var export_blob = new Blob([xhr.response]);
+          var save_link = document.createElement('a')
+          save_link.href = urlObject.createObjectURL(export_blob);
+          save_link.download = name;
+          document.body.appendChild(save_link);
+          this.$nextTick(() => { 
+            save_link.click();
+            document.body.removeChild(a);
+          });
+        }
+      };
+      xhr.send();
     },
 
     typesAdaptor(types){

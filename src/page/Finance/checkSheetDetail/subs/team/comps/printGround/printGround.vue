@@ -60,47 +60,43 @@ table{
             <div class="cell">部门</div>
           </td>
           <td class="base">
-            <div class="cell"></div>
+            <div class="cell"> {{ pd.orgName }} </div>
           </td>
           <td class="base label">
             <div class="cell">操作人</div>
           </td>
           <td class="base">
-            <div class="cell"></div>
+            <div class="cell"> {{ pd.createUser }} </div>
           </td>
           <td class="base label">
             <div class="cell">导陪</div>
           </td>
           <td class="base">
-            <div class="cell"></div>
+            <div class="cell"> {{ pd.guideName }} </div>
           </td>
           <td class="base label">
             <div class="cell">接团社</div>
           </td>
-          <td class="base" style="width: 30%;">
-            <div class="cell"></div>
+          <td class="base" colspan="4">
+            <div class="cell"> {{ pd.localName }} </div>
           </td>
         </tr>
-      </table>
 
-      <table cellspacing="0" cellpadding="0" border="0">
         <tr>
           <td class="base label">
             <div class="cell">团号</div>
           </td>
-          <td class="base" style="width:30%;">
-            <div class="cell"></div>
+          <td class="base"  colspan="3">
+            <div class="cell"> {{ pd.groupCode }} </div>
           </td>
           <td class="base label">
             <div class="cell">产品名称</div>
           </td>
-          <td class="base" style="width:50%;">
-            <div class="cell"></div>
+          <td class="base" colspan="6">
+            <div class="cell"> {{ pd.teamProTitle }} </div>
           </td>
         </tr>
-      </table>
 
-      <table cellspacing="0" cellpadding="0" border="0">
         <tr>
           <td class="base label">
             <div class="cell">团队人数</div>
@@ -111,37 +107,35 @@ table{
           <td class="base label">
             <div class="cell">减免人数</div>
           </td>
-          <td class="base">
+          <td class="base" colspan="1">
             <div class="cell"></div>
           </td>
-          <td class="base label">
+          <td class="base label" colspan="1">
             <div class="cell">出发日期</div>
           </td>
-          <td class="base">
-            <div class="cell"></div>
+          <td class="base" colspan="1">
+            <div class="cell"> {{ pd.date | dateFilter }} </div>
           </td>
-          <td class="base label">
+          <td class="base label" colspan="1">
             <div class="cell">返回日期</div>
           </td>
-          <td class="base">
-            <div class="cell"></div>
+          <td class="base" colspan="1">
+            <div class="cell"> {{ pd.returnDate | dateFilter }} </div>
           </td>
-          <td class="base label">
+          <td class="base label" colspan="1">
             <div class="cell">全程天数</div>
           </td>
-          <td class="base">
-            <div class="cell"></div>
+          <td class="base" colspan="1">
+            <div class="cell"> {{ pd.day }} </div>
           </td>
         </tr>
-      </table>
 
-      <table cellspacing="0" cellpadding="0" border="0">
-        <td class="base label">
-          <div class="cell">团队收入成本结算</div>
-        </td>
-      </table>
+        <tr>
+          <td class="base label" colspan="10">
+            <div class="cell">团队收入成本结算</div>
+          </td>
+        </tr>
 
-      <table cellspacing="0" cellpadding="0" border="0">
         <tr>
           <td class="base label">
             <div class="cell">总收入</div>
@@ -164,7 +158,7 @@ table{
           <td class="base label">
             <div class="cell">毛利率</div>
           </td>
-          <td class="base" style="width: 30%;">
+          <td class="base" colspan="3">
             <div class="cell"></div>
           </td>
         </tr>
@@ -214,11 +208,69 @@ table{
         </tr>
 
         <income-bar
-         v-for="(item, i) in incomes"
-         :key="i"
-         :proto="item"
-         :rank="i">
+          v-for="(item, i) in incomes"
+          :key="i"
+          :proto="item"
+          :rank="i">
         </income-bar>
+
+        <tr>
+          <td class="base label" colspan="5">
+            <div class="cell">合计</div>
+          </td>
+          <td class="base" style="width:5%;">
+            <div class="cell"></div>
+          </td>
+          <td class="base" style="width:5%;">
+            <div class="cell"></div>
+          </td>
+          <td class="base" colspan="6">
+            <div class="cell"></div>
+          </td>
+        </tr>
+      </table>
+
+      <other-ground ref="otherGround">
+      </other-ground>
+
+      <expense-ground ref="expenseGround">
+      </expense-ground>
+
+      <table cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #000;">
+        <tr>
+          <td class="base label" style="width:15%;">
+            <div class="cell">审批人</div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">计调</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">部门经理</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">财务部</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+          <td class="base label" rowspan="2">
+            <div class="cell">总经理</div>
+          </td>
+          <td class="base" rowspan="2">
+            <div class="cell"></div>
+          </td>
+        </tr>
+        <tr>
+          <td class="base label" style="width:15%;border-right:none;">
+            <div class="cell">签字</div>
+          </td>
+        </tr>
       </table>
 
     </main>
@@ -227,10 +279,12 @@ table{
 
 <script>
 import incomeBar from './subs/incomeBar'
+import otherGround from './subs/otherGround'
+import expenseGround from './subs/expenseGround'
 
 export default {
 
-  components: { incomeBar },
+  components: { incomeBar, otherGround, expenseGround },
 
   filters: {
     dateFilter(val){
@@ -239,7 +293,9 @@ export default {
       month= ~~ ((val - year * 10000) / 100);
       day= val - year * 10000 - month * 100;
       // return `${year}年${month}月${day}日`
-      return `${year}/${month}/${day}`
+      if(month< 10) month= '0' + month;
+      if(day< 10) day= '0' + day;
+      return `${year}.${month}.${day}`
     }
   },
 
@@ -247,21 +303,28 @@ export default {
     return Object.assign(
       {
         inited: false,
+        incomeSum: 0, // 总收入
+        otherSum: 0, // 其他收入
+        expenseSum: 0, // 总支出
+        profitSum: 0, // 毛利额
+        profitRate: 0, // 毛利率
       },
       {
         pd: {},  // printData缩写
-        incomes: [],
-        expenses: []
+        incomes: []
       }
     )
   },
 
   methods: {
     init(printData){
-      let { incomes, expenses, ...pdData }= printData;
+      let { incomes, expenses, otherIncomes, ...pdData }= printData;
       this.pd= pdData;
       this.incomes= incomes;
-      this.expenses= expenses;
+      console.log(this.$refs.otherGround)
+      
+      // this.$refs.otherGround.init(otherIncomes);
+      // this.$refs.expenseGround.init(expenses)
       this.inited= true;
     },
 
