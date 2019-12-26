@@ -374,6 +374,18 @@
             <el-table-column prop="name" label="产品录入人"></el-table-column>
           </el-table>
          </div>
+         <!-- <div class="block">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page.sync="currentPage4"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="pageCount"
+              background
+            ></el-pagination>
+          </div> -->
       </el-dialog>
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
@@ -1682,28 +1694,10 @@ export default {
          })
         .catch(obj => {})
       },
-       // 获取审核内容结果
-      // auditResult2(paramsGuid) {
-      //   console.log(paramsGuid);
-      //   var that =this
-      //   this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-      //     jQ_ID: paramsGuid,
-      //     jQ_Type: 3,
-      //   }).then(obj => {
-      //     console.log(obj,'8041');
-      //     that.examineData = []
-      //     that.examineData = obj.data.extend.instanceLogInfo;
-      //   }).catch(obj => {})
-      // },
-          
-     
-     
      },
 
       created() {
         this.pageList();
-        this.getApproveListGuid = this.$route.query.approveListGuid
-        //this.auditResult2(this.getApproveListGuid)
         if (sessionStorage.getItem('hasCashierInfo')) {
           this.ifAccountBtn = true
         } else {
