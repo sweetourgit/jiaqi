@@ -78,7 +78,7 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">订单ID:</div>
-                <div class="fl ml13">{{refundList.id}}</div>
+                <div class="fl ml13 cursor" @click="orderDetails(1)">{{0}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">订单金额:</div>
@@ -123,13 +123,19 @@
           <el-table-column prop="" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
+      <order-information :refundID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
     </el-dialog>
   </div> 
 </template>
 
 <script>
 import moment from "moment";
+import orderInformation from "./orderInformation/orderInformation";
 export default {
+  name: "refundDetails",
+  components: {
+    orderInformation
+  },
   props: {
     refundID:0,
     variable: 0,
@@ -137,6 +143,9 @@ export default {
   },
   data() {
     return {
+      orderID:0,
+      orderVariable:0,
+      orderDialogType:0,
       dialogFormOrder:false,// 详情弹窗
       title:"",//退款记录和审批标题
       refundList:{},// 基本信息数组
@@ -222,7 +231,11 @@ export default {
         }
       });
     },
-
+    orderDetails(i){ // 点击订单ID出现弹窗
+      this.orderVariable++;
+      this.orderDialogType = i;
+      this.dialogFormOrder = false;
+    },
   }
 };
 </script>
@@ -249,4 +262,5 @@ export default {
 .aggregate span{ margin: 0 0 0 15px;}
 .w150{width: 150px;}
 .validation{color: red;width: 150px;line-height: 30px;}
+.cursor {cursor: pointer;}
 </style>
