@@ -105,6 +105,7 @@ Vue.prototype.$picDownloader= function(url, name){
   .then(res => {
     let type = 'application/octet-stream';
     let URL = window.URL || window.webkitURL;
+    console.log(URL,"ahhah")
     let blob = new Blob([ res.data ], { type });
     let src = URL.createObjectURL(blob);
     let element = document.createElement('a');

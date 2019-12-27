@@ -324,7 +324,7 @@
           </el-upload>
           <div class="adviceNoteBtn">
             <el-button type="info" @click="dialogAdviceNote = false">取消</el-button>
-            <el-button type="primary" @click="adviceNoteDown">下载</el-button>
+            <el-button type="primary" @click="$picDownloader(fileList[0].url,fileList[0].name)">下载</el-button>
             <!-- <el-button type="primary" @click="adviceNoteSend">发送</el-button> -->
           </div>
         </div>
@@ -466,16 +466,16 @@ export default {
   },
   methods: {
     moment,
-    adviceNoteDown() {
-      console.log("下载图片");
-      var a = document.createElement("a");
-      a.download = this.fileList[0].name || "pic"; // 设置图片地址
-      a.href = this.fileList[0].url;
-      document.body.append(a);
-      this.$nextTick(() => {
-        a.click();
-      });
-    },
+    // adviceNoteDown() {
+    //   let a = document.createElement("a");
+    //   a.download = this.fileList[0].name || "pic"; // 设置图片地址
+    //   a.href = this.fileList[0].url;
+    //   document.body.append(a);
+    //   this.$nextTick(() => {
+    //     a.click();
+    //   });
+    // },
+   
 
     // adviceNoteDown() {
     //   let url = this.fileList[0].url;

@@ -1959,6 +1959,7 @@ export default {
     },
     // 关联欠款的表格的总价计算
     getDebitTablePrice(id, total) {
+      this.arrears = 0
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: 1,

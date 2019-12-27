@@ -374,7 +374,7 @@
               <el-table-column prop="name" label="产品录入人"></el-table-column>
             </el-table>
           </div>
-           <div class="block">
+           <div class="block_s">
               <el-pagination
                   @size-change="t_handleSizeChange"
                   @current-change="t_handleCurrentChange"
@@ -729,15 +729,10 @@ export default {
                   
                   var object = res.data.objects;
                   var wcount; //未报销金额
-                    for (let i = 0; i < object.length; i++) {
-                      if(object[i].orgName==null){
-                          object[i].orgName="无";
-                        }
-                          object[i].peopleCount = this.s_content.count
-                          if(object[i].peopleCount == 0){
-                                   object[i].peopleCount = 1
-                                }
-                      this.joinData.push({
+                    for (let i in object) {
+                     
+                       object[i].peopleCount = this.s_content.count
+                       this.joinData.push({
                           paymentID:  object[i].paymentID,
                           supplierTypeEX:object[i].supplierTypeEX,
                           groupCode:object[i].groupCode,
@@ -752,13 +747,12 @@ export default {
                           peopleCount:object[i].peopleCount,
                           orgName:object[i].orgName,
                           wcount: object[i].price - object[i].expensePrice
-                          //  wcount :object[i].price - object[i].expensePrice
+                           
                       });
-                       this.joinData =this.s_content.joinData;
-                      // console.log(this.joinData,'802')
-                    }
-                    
                       
+                     
+                    }
+                      this.s_content.joinData = this.joinData;
                 })
                 .catch(err => {
                   console.log(err);
@@ -953,7 +947,7 @@ export default {
                     message: "请选择关联单据"
                     }); 
                     return;
-        }else{
+         }else{
              if(payments.length != 0){
                       for(let i in payments){
                         if( payments[i].paymentID === joinDataid ){
@@ -969,11 +963,11 @@ export default {
                }
                 this.s_content.payments.push(joinData);
                 this.alljoinData.push(joinData);
-               console.log(this.alljoinData,"新增的")
+              // console.log(this.alljoinData,"新增的")
                 this.t_price_box.push(joinData.price);
                 this.t_price_sum()
                 this.dialogFormVisible3 = false;
-                joinData=[];
+                this.joinData=[];
   
          }
             
@@ -981,8 +975,9 @@ export default {
        
         t_text_del(){//确认取消
          this.subscript();
+         this.joinData=[];
          this.dialogFormVisible3 = false;
-         this.s_content.joinData=[];
+        
         },
         t_delete(paymentID){// 添加数据删除
           this.subscript();
@@ -1148,7 +1143,7 @@ export default {
                   type: 'warning'
                 });
             }else{
-                this.Associated( this.plans.pid);
+                this.Associated(this.plans.pid);
                 this.dialogFormVisible3 = true;
             }
         },
@@ -1494,9 +1489,10 @@ export default {
                     if (res.data.isSuccess == true) {
                           this.s_content.productName = res.data.objects[0].title
                           this.s_content.count =  res.data.objects[0].count
+                          this.s_content.id =  res.data.objects[0].planID
                           this.plans.pid  = res.data.objects[0].planID
-                          console.log(res.data.objects[0].count);
-                     console.log(this.s_content.count);
+                          // console.log(res.data.objects[0].count);
+                          // console.log(this.s_content.count);
                       }
                   }).catch(err => {
                     console.log(err)
@@ -1698,23 +1694,23 @@ export default {
         //方法结尾
      
         // 获取审核列表结果
-      auditResult(paramsGuid) {
-        var that =this
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
-          jQ_ID: paramsGuid,
-          jQ_Type: 3,
-        }).then(obj => {
-          console.log(obj.data.extend.instanceLogInfo,'809');
-           that.tableCourse = []
-           that.tableCourse = obj.data.extend.instanceLogInfo;
-            if(that.tableCourse.length > 0 ) {
-              that.printAuditingContent = '<b>开始</b> -> '
-              that.tableCourse.forEach(function (item) {
-                that.printAuditingContent += item.participantName + '( <b>' + item.approvalName + '</b> )'  + ' -> ';
-              })
-              }
-         })
-        .catch(obj => {})
+        auditResult(paramsGuid) {
+          var that =this
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+            jQ_ID: paramsGuid,
+            jQ_Type: 3,
+          }).then(obj => {
+            console.log(obj.data.extend.instanceLogInfo,'809');
+            that.tableCourse = []
+            that.tableCourse = obj.data.extend.instanceLogInfo;
+              if(that.tableCourse.length > 0 ) {
+                that.printAuditingContent = '<b>开始</b> -> '
+                that.tableCourse.forEach(function (item) {
+                  that.printAuditingContent += item.participantName + '( <b>' + item.approvalName + '</b> )'  + ' -> ';
+                })
+                }
+          })
+          .catch(obj => {})
       },
      },
 
@@ -1783,8 +1779,14 @@ export default {
 .block {
   float: left;
   margin-left: 600px;
-  margin-top: -15px;
+  margin-top: 30px;
   margin-bottom: 60px;
+}
+.block_s {
+  float: left;
+  margin-left: 600px;
+  margin-top: -30px;
+  margin-bottom: 85px;
 }
 .reimbursementer {
   float: left;

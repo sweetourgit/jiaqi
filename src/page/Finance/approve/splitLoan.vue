@@ -63,7 +63,7 @@
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg reimbursement-mt" justify="space-between">
-              <el-table :data="tabItem.payments" border :header-cell-style="getRowClass">
+              <el-table :data="tabItem.payments" border :header-cell-style="getRowClass" v-loading="listLoading">
                 <el-table-column prop="paymentID" label="无收入借款或预付款ID" align="center"></el-table-column>
                 <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
                 <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
@@ -141,6 +141,7 @@
     name: "splitLoan",
     data(){
       return {
+        listLoading: false,
         pamentsOnlyId: null, // 无收入预付款表格的id
         keepWhichRow: null, // 保存当前点击的拆分借款按钮是那一行的（实现设置 ‘拆分/还款’ 列的值）
         isShowAcountTable: true, // 是否显示表格
@@ -224,11 +225,12 @@
           console.log(priceDiff)
           console.log(paramsSplitArr)
           Vue.ls.set('lsParamsSplitArr', paramsSplitArr);
-          this.$router.push({ name: '审批详情', params: { source: 'splitLoan', approveListGuid: this.getApproveListGuid, queryApproveExpenseID: this.getApproveList } })
+          this.$router.push({ path: '/approve/approveDetail', query: { source: 'splitLoan', queryApproveExpenseID: this.getApproveList, approveDetailGuid: this.getApproveListGuid } })
         }
       },
       // 获取详情
       getApproveDetail(guidParams){
+        this.listLoading = true
         this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
           "object": {
             guid: guidParams
@@ -237,6 +239,7 @@
         .then(obj => {
           let keepData = obj.data.objects
           this.keepBackContent = keepData
+          this.listLoading = false
         }).catch(err => {
           console.log(err)
         })
@@ -256,7 +259,6 @@
           if (valid) {
             this.keepWhichRow.expenseType = this.ruleFormSplitLoan.formItemSplitLoan
             this.isShowTableDialog = false
-            console.log(this.keepWhichRow.expenseType)
           } else {
             console.log('error submit!!');
             return false;
@@ -293,7 +295,7 @@
       },
       // 取消
       handleCancel(){
-        this.$router.push({ path: "/approve/approveDetail", query: { queryApproveExpenseID: this.tabShowWhich, approveListGuid: this.getApproveListGuid } })
+        this.$router.push({ path: "/approve/approveDetail", query: { source: 'splitLoan', queryApproveExpenseID: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid } })
       },
       handleClick(){},
       // 表格表头颜色
