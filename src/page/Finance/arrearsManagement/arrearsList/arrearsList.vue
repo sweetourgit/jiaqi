@@ -13,7 +13,7 @@
       <!--出行日期-->
       <span class="search-title">起始时间</span>
       <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
-                      align="right" class="group-no" style="width:260px;"></el-date-picker>
+                      align="right" class="group-no" style="width:300px;"></el-date-picker>
       <br />
       <!--搜索-->
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
