@@ -215,6 +215,7 @@ export default {
       img_Name:'',
       uid:'',
       type:'',
+      fileLength:0,
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -234,7 +235,6 @@ export default {
       }else{
         this.show2 = true;
       }
-      
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -515,7 +515,7 @@ export default {
       if(this.type == 'del'){
         this.deleteFile();
       }else if(this.img_Url !== ''&& this.img_Name !== ''){
-        if(this.fileList.length != 0){
+        if(this.fileLength != 0){
           this.deleteFile();
         }
         this.addFile();
@@ -529,6 +529,7 @@ export default {
       var paths = [];
       this.fileList = fileList;
       for (var i = 0; i < fileList.length; i++) {
+        this.fileLength = fileList.length;
         paths = JSON.parse(fileList[i].response).paths[0];
         this.img_Url = this.$set(this.fileList[i], "url", paths.Url);
         this.img_Name = this.$set(this.fileList[i], "name", paths.Name);
