@@ -8,7 +8,7 @@
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
           <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.surplus_Amount == scope.row.transaction_amount">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">

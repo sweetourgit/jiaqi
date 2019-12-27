@@ -315,7 +315,7 @@ export default {
           "seachType": 0
         }
       }).then(function (obj) {
-        // console.log('中国银行',obj);
+        // console.log('兴业银行',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
