@@ -4,7 +4,6 @@
       @close="cancelOrder()">
       <div class="controlButton">
         <el-button class="ml13" @click="cancelOrder()">取 消</el-button>
-        <el-button class="ml13" type="primary">撤 销</el-button>
       </div>
 
     </el-dialog>
@@ -44,7 +43,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.controlButton{position: absolute; top: 8px; right: 10px;}
+.ml13{margin: 0 0 0 13px;}
 </style>
 
 

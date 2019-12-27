@@ -213,6 +213,7 @@ export default {
       s_content:[],
       img_Url:"",
       img_Name:'',
+      name_Suffix:'',
       uid:'',
       type:'',
       fileLength:0,
@@ -533,6 +534,8 @@ export default {
         paths = JSON.parse(fileList[i].response).paths[0];
         this.img_Url = this.$set(this.fileList[i], "url", paths.Url);
         this.img_Name = this.$set(this.fileList[i], "name", paths.Name);
+        this.name_Suffix = file.raw.name; // 这个变量是取的后缀名
+        console.log(this.name_Suffix)
         this.type = '';
       }
     },

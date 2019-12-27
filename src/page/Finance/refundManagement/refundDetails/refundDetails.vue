@@ -123,11 +123,10 @@
           <el-table-column prop="" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
-      <order-information :refundID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
     </el-dialog>
+    <order-information :refundID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
   </div> 
 </template>
-
 <script>
 import moment from "moment";
 import orderInformation from "./orderInformation/orderInformation";
