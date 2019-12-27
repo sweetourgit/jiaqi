@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     cancelOrder(){
-
+      this.dialogOrder = false;
     },
   }
 };
