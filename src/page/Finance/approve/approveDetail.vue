@@ -67,7 +67,7 @@
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg reimbursement-mt" justify="space-between">
-              <el-table :data="tabItem.payments" border :header-cell-style="getRowClass">
+              <el-table :data="tabItem.payments" border :header-cell-style="getRowClass" v-loading="listLoading">
                 <el-table-column prop="paymentID" label="无收入借款或预付款ID" align="center"></el-table-column>
                 <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
                 <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
@@ -91,7 +91,7 @@
     <!-- 审核结果 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <el-row type="flex" class="row-bg row-content" justify="space-between">
-      <el-table :data="examineData" border :header-cell-style="getRowClass">
+      <el-table :data="examineData" border :header-cell-style="getRowClass" v-loading="listLoading">
         <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
         <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
         <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
@@ -120,6 +120,7 @@
     name: "approveDetail",
     data(){
       return {
+        listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
         ifShowPassBtn: false, // 先从接口获取数据判断下是否有未拆分的数据，没有显示通过按钮
         ifShowOperateBtn: false, // 若所有项的借款金额 = 报销金额 则隐藏拆分还款按钮
@@ -144,12 +145,11 @@
     },
     created(){
       let getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
-      console.log(getLsParamsSplitArr)
-      this.getApproveListGuid = this.$route.params.approveListGuid
-      this.getApproveSource = this.$route.params.source
-      this.workItemIDArr = this.$route.params.queryWorkItemID
+      this.getApproveListGuid = this.$route.query.approveDetailGuid
+      this.getApproveSource = this.$route.query.source
+      this.workItemIDArr = this.$route.query.queryWorkItemID
       this.getApproveDetail(this.getApproveListGuid)
-      this.tabShowWhich = String(this.$route.params.queryApproveExpenseID)
+      this.tabShowWhich = String(this.$route.query.queryApproveExpenseID)
       this.auditResult(this.getApproveListGuid)
       if(this.workItemIDArr){
         this.workItemIDArr.forEach((item) => {
@@ -191,6 +191,7 @@
       },
       // 获取审核结果
       auditResult(paramsGuid) {
+        this.listLoading = true
         var that =this
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: paramsGuid,
@@ -198,10 +199,12 @@
         }).then(obj => {
           that.examineData = []
           that.examineData = obj.data.extend.instanceLogInfo;
+          this.listLoading = false
         }).catch(obj => {})
       },
       // 获取详情
       getApproveDetail(guidParams){
+        this.listLoading = true
         this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
           "object": {
             guid: guidParams
@@ -211,6 +214,7 @@
           let keepData = obj.data.objects
           this.keepBackContent = keepData
           this.checkNoSplit()
+          this.listLoading = false
         }).catch(err => {
           console.log(err)
         })
@@ -308,7 +312,6 @@
       },
       // 拆分/还款
       handleSplitRepaymentJump(){
-
         this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich } })
       },
       handleClick(){},
