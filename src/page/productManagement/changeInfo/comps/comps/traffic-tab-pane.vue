@@ -58,8 +58,7 @@
       <div v-if="vm.descriptionState=== 'easy'" class="easy-ground">
         <el-col :span="18">
           <vue-editor 
-            v-model="vm.content"
-            :editorToolbar='$defaultToolbar'>
+            v-model="vm.content">
           </vue-editor>
         </el-col>
       </div>
