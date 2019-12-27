@@ -374,7 +374,7 @@
               <el-table-column prop="name" label="产品录入人"></el-table-column>
             </el-table>
           </div>
-           <div class="block">
+           <div class="block_s">
               <el-pagination
                   @size-change="t_handleSizeChange"
                   @current-change="t_handleCurrentChange"
@@ -1777,6 +1777,12 @@ export default {
   float: left;
 }
 .block {
+  float: left;
+  margin-left: 600px;
+  margin-top: 30px;
+  margin-bottom: 60px;
+}
+.block_s {
   float: left;
   margin-left: 600px;
   margin-top: -30px;
