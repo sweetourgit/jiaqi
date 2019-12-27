@@ -37,7 +37,7 @@
         <!-- 需要审批表格 -->
         <el-table :data="approveTableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content">
           <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
-          <el-table-column prop="beginTime":formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
+          <el-table-column prop="beginTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
@@ -75,6 +75,14 @@
     },
     methods: {
       moment,
+      // 起始时间格式转换
+      dateFormat: function(row, column) {
+        let date = row[column.property];
+        if(date == undefined) {
+          return '';
+        }
+        return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      },
       // tab切换
       handleClick(tab, event) {
         console.log(tab, event);
@@ -92,7 +100,7 @@
         let getCurrentGuid = row.guid // 获取当前行的 guid
         let getWorkItemID = this.keepWorkItemID
         let getCurrentExpenseID = row.expenseID // 获取当前行的 guid
-        this.$router.push({ path: "/approve/approveDetail", query: { approveListGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
+        this.$router.push({ name: "审批详情", params: { approveListGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
       },
       // 请求工作流接口获取未完成的任务
       approveTableList(){

@@ -5,7 +5,7 @@
       <el-col :span="6" :offset="18" style="text-align:center;">
         <el-button type="warning" @click="handleCancel">取消</el-button>
         <el-button type="primary" @click="handleSplitRepaymentJump" v-show="ifShowOperateBtn">拆分/还款</el-button>
-        <el-button type="success" @click="handlePassBtn" :disabled="ifShowPassBtn">通过</el-button>
+        <el-button type="success" @click="handlePassBtn" :disabled="ShowPassBtn">通过</el-button>
         <el-button type="danger" @click="handleRejectBtn">驳回</el-button>
       </el-col>
     </el-row>
@@ -23,7 +23,7 @@
             <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="6">
                 <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
-                <el-col :span="17"><div class="grid-del">{{ tabItem.planID }}</div></el-col>
+                <el-col :span="17"><div class="grid-del">{{ tabItem.id }}</div></el-col>
               </el-col>
               <el-col :span="6">
                 <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
@@ -31,7 +31,7 @@
               </el-col>
               <el-col :span="6">
                 <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-                <el-col :span="15"><div class="grid-del">{{ tabItem.createTime }}</div></el-col>
+                <el-col :span="15"><div class="grid-del">{{ tabItem.createTime | formatDate }}</div></el-col>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
@@ -50,18 +50,19 @@
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="14">
+
                 <el-col :span="6"><div class="grid-del label-color print-hidden">附件:</div></el-col>
                 <el-col :span="18">
-                  <!--<el-upload
-                    class="upload-demo print-hidden"
+                  <el-upload
+                    class="upload-demo"
                     name="files"
-                    :file-list="fundamental.files"
+                    :file-list="tabItem.files"
                     :show-file-list=true
                     action="test"
                     :disabled=true
                     :on-preview="handlePreview"
                   >
-                  </el-upload>-->
+                  </el-upload>
                 </el-col>
               </el-col>
             </el-row>
@@ -73,11 +74,11 @@
                 <!--<el-table-column prop=" " label="申请人" align="center"></el-table-column>-->
                 <el-table-column prop="paymentMark" label="摘要" align="center"></el-table-column>
                 <el-table-column prop="paymentPrice" label="借款金额" align="center"></el-table-column>
-                <el-table-column prop="noPrice" label="未报销金额" align="center">
+                <!--<el-table-column prop="noPrice" label="未报销金额" align="center">
                   <template slot-scope="scope">
                     <div>{{ scope.row.paymentPrice - scope.row.price }}</div>
                   </template>
-                </el-table-column>
+                </el-table-column>-->
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
               </el-table>
@@ -103,7 +104,7 @@
       <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
       <el-row>
         <el-col :span="2" :offset="21">
-          <el-button @click="handlePassConfirm" type="primary">确定</el-button>
+          <el-button @click="handlePassConfirm" type="primary" :loading="loadingBtn">确定</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -112,10 +113,14 @@
 </template>
 
 <script>
+  import Vue from 'vue'
+  import moment from 'moment'
+
   export default {
     name: "approveDetail",
     data(){
       return {
+        loadingBtn: false, // 审批、驳回，请求数据接口
         ifShowPassBtn: false, // 先从接口获取数据判断下是否有未拆分的数据，没有显示通过按钮
         ifShowOperateBtn: false, // 若所有项的借款金额 = 报销金额 则隐藏拆分还款按钮
         tabShowWhich: null, // 显示哪个tab
@@ -128,21 +133,47 @@
         transitShow: false, // 通过驳回弹窗
         title: '', // 通过驳回弹窗标题切换
         getParamsWorkItemId: null, // 工作流接口参数
+        getApproveSource: null //   如果路由是从拆分借款页跳过来的会有个来源参数。当拆分借款保存之后，详情页通过可以取消置灰状态
+      }
+    },
+    // 关于时间的过滤
+    filters: {
+      formatDate: function (value) {
+        return moment(value).format('YYYY-MM-DD HH:mm:ss')
       }
     },
     created(){
-      this.getApproveListGuid = this.$route.query.approveListGuid
-      this.workItemIDArr = this.$route.query.queryWorkItemID
+      let getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
+      console.log(getLsParamsSplitArr)
+      this.getApproveListGuid = this.$route.params.approveListGuid
+      this.getApproveSource = this.$route.params.source
+      this.workItemIDArr = this.$route.params.queryWorkItemID
       this.getApproveDetail(this.getApproveListGuid)
-      this.tabShowWhich = String(this.$route.query.queryApproveExpenseID)
+      this.tabShowWhich = String(this.$route.params.queryApproveExpenseID)
       this.auditResult(this.getApproveListGuid)
-      this.workItemIDArr.forEach((item) => {
-        if (this.getApproveListGuid == item.jq_ID){
-          this.getParamsWorkItemId = item.workItemID
+      if(this.workItemIDArr){
+        this.workItemIDArr.forEach((item) => {
+          if (this.getApproveListGuid == item.jq_ID){
+            this.getParamsWorkItemId = item.workItemID
+          }
+        })
+      }
+    },
+    computed:{
+      ShowPassBtn(){
+        if(this.getApproveSource == 'splitLoan'){
+          return false
+        } else {
+          return this.ifShowPassBtn
         }
-      })
+      }
     },
     methods: {
+      // 点击图片钩子
+      handlePreview(file) {
+        window.open(file.url);
+      },
+      moment,
       // 验证是否存在未拆的款项
       checkNoSplit(){
         // 进行验证，如果每一个报销都进行了拆分则可以向下自行
@@ -186,6 +217,7 @@
       },
       // 通过审批/驳回，弹窗确定按钮
       handlePassConfirm(){
+        this.loadingBtn = true
         if(this.title == "审批通过"){
           this.handlePassFn();
         }else{
@@ -201,7 +233,13 @@
           "workItemID": this.getParamsWorkItemId,
           "commentText": this.commentText
         }).then(res =>{
+          this.$message({
+            message: '审批通过已完成',
+            type: 'success'
+          });
+          this.loadingBtn = false
           this.transitShow = false;
+          this.backListPage()
         })
       },
       // 驳回之后走工作流
@@ -219,7 +257,13 @@
             "jq_id":this.getApproveListGuid,
             "jQ_Type": 3
           }).then(res => {
+            this.$message({
+              message: '审批驳回已完成',
+              type: 'success'
+            });
+            this.loadingBtn = false
             this.transitShow = false;
+            this.backListPage()
           })
         })
       },
@@ -256,11 +300,16 @@
       },
       // 取消
       handleCancel(){
+        this.backListPage()
+      },
+      // 返回到列表页
+      backListPage(){
         this.$router.push({ path: "/approve/approveList" })
       },
       // 拆分/还款
       handleSplitRepaymentJump(){
-        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid} })
+
+        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich } })
       },
       handleClick(){},
       // 表格表头颜色
