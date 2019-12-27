@@ -69,11 +69,11 @@
                 <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
                 <el-table-column prop="paymentMark" label="摘要" align="center"></el-table-column>
                 <el-table-column prop="paymentPrice" label="借款金额" align="center"></el-table-column>
-                <el-table-column prop="noPrice" label="未报销金额" align="center">
+                <!--<el-table-column prop="noPrice" label="未报销金额" align="center">
                   <template slot-scope="scope">
                     <div>{{ scope.row.paymentPrice - scope.row.price }}</div>
                   </template>
-                </el-table-column>
+                </el-table-column>-->
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
                 <el-table-column prop="expenseType" label="还款/拆分" align="center"><!-- 报销类型--默认0-无，1-拆分，2-还款 -->
@@ -86,8 +86,8 @@
                 </el-table-column>
                 <el-table-column prop="peopleCount" label="操作" align="center" width="200">
                   <template slot-scope="scope">
-                    <el-button type="success" plain size="small" plain v-if="scope.row.expenseType != '' || scope.row.expenseType == null" @click="handleTableLook">查看</el-button>
-                    <el-button type="primary" plain size="small" plain v-if="scope.row.price - (scope.row.paymentPrice - scope.row.price) != 0" @click="handleTableSplitLoan(scope.$index, scope.row)">拆分/还款</el-button>
+                    <el-button type="primary" plain size="small" plain v-if="scope.row.price != scope.row.paymentPrice" @click="handleTableSplitLoan(scope.$index, scope.row)">拆分/还款</el-button>
+                    <el-button type="success" plain size="small" plain v-else @click="handleTableLook">查看</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -136,6 +136,7 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   export default {
     name: "splitLoan",
     data(){
@@ -163,6 +164,7 @@
     },
     created(){
       this.getApproveListGuid = this.$route.query.approveDetailGuid
+      this.getApproveList = this.$route.query.approveList
       this.getApproveDetail(this.getApproveListGuid)
       this.tabShowWhich = String(this.$route.query.approveDetailTab)
     },
@@ -201,8 +203,6 @@
           return item.expenseType != 0;
         })
 
-        console.log(priceDiff)
-
         if(!hasExpenseType){
           this.$notify({
             title: '提示',
@@ -212,8 +212,20 @@
             showClose: false,
             duration: 2000
           });
+        } else {
+          let paramsSplitArr = []
+          priceDiff.forEach( (item => {
+            paramsSplitArr.push({
+              'id': item.id,
+              'expenseType': item.expenseType,
+              'accountID': item.accountID
+            })
+          }) )
+          console.log(priceDiff)
+          console.log(paramsSplitArr)
+          Vue.ls.set('lsParamsSplitArr', paramsSplitArr);
+          this.$router.push({ name: '审批详情', params: { source: 'splitLoan', approveListGuid: this.getApproveListGuid, queryApproveExpenseID: this.getApproveList } })
         }
-        console.log(hasExpenseType)
       },
       // 获取详情
       getApproveDetail(guidParams){

@@ -212,7 +212,8 @@
                    <div class="re_style">
                     <el-table :data="item.content.payments" border style="width: 100%; margin-top: 30px"> 
                       
-                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="180" align="center"></el-table-column>
+                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="180" align="center" v-if="find==1"></el-table-column>
+                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="80" align="center" v-if="find==0"></el-table-column>
                       <el-table-column prop="supplierTypeEX" label="借款类型" width="130" align="center"></el-table-column>
                       <el-table-column prop="supplierName" label="供应商" width="180" align="center"></el-table-column>
                       <el-table-column prop="createUser" label="申请人" width="125" align="center"></el-table-column>
@@ -224,12 +225,12 @@
                           <el-input @input='addressChange(scope.row.price)' v-model="scope.row.price" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="peopleCount" label="人数" width="140"  v-if="find==0"   align="center">
+                      <el-table-column prop="peopleCount" label="人数" width="130"  v-if="find==0"   align="center">
                         <template slot-scope="scope">
                           <el-input v-model="scope.row.peopleCount" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="paymentID" label="操作" width="120"  v-if="find==0" align="center">
+                      <el-table-column prop="paymentID" label="操作" width="114"  v-if="find==0" align="center">
                           <template slot-scope="scope">
                           <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</div>
                          </template>
@@ -237,7 +238,7 @@
                     
                       <!-- 不能改的 -->
                        <el-table-column prop="price" label="本次报销金额" width="140" align="center" v-if="find==1">  </el-table-column>
-                       <el-table-column prop="peopleCount" label="人数" width="140" align="center"  v-if="find==1"> </el-table-column>
+                       <el-table-column prop="peopleCount" label="人数" width="144" align="center"  v-if="find==1"> </el-table-column>
                        
                     </el-table>
                   </div>
@@ -283,12 +284,11 @@
             </el-tabs>
               <!-- 审核结果 -->
               <el-divider content-position="left"  v-if="this.find == 1" class="re_style" style="margin-top: 20px">审核结果</el-divider>
-              <el-table :data="tableCourse" border :header-cell-style="getRowClass">
+              <el-table :data="tableCourse" border :header-cell-style="getRowClass"  v-if="this.find == 1" >
                 <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
                 <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
                 <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
                 <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
-              
               </el-table>
               <!-- 审核结果 END -->
           </div>
@@ -310,7 +310,7 @@
             </div>
             
         </div>
-      </el-dialog>0
+      </el-dialog>
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
       <el-dialog
@@ -320,72 +320,73 @@
         append-to-body
         :show-close="false"
       >
-        <div class="indialog">
-          <div style=" position: absolute;right: 67px;top: 22px;">
-            <el-button  @click="showplan()">取 消</el-button>
-            <el-button type="primary" @click="addplan(ruleForm.editableTabsValue)">确 定1</el-button>
-          </div>
-          <div class="indialog_search">
-            <span class="search_style">团期单号：</span>
-            <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">产品名称：</span>
-            <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
-            <span class="search_style">出行日期：</span>
-            <el-date-picker
-              v-model="startTime2"
-              type="date"
-              placeholder="开始日期"
-              style="float: left;width: 140px;"
-            ></el-date-picker>
-            <el-date-picker
-              v-model="endTime2"
-              type="date"
-              placeholder="终止日期"
-              style="float: left;width: 140px;"
-            ></el-date-picker>
-            <el-button
+          <div class="indialog">
+            <div style=" position: absolute;right: 67px;top: 22px;">
+              <el-button  @click="showplan()">取 消</el-button>
+              <el-button type="primary" @click="addplan(ruleForm.editableTabsValue)">确 定1</el-button>
+            </div>
+            <div class="indialog_search">
+              <span class="search_style">团期单号：</span>
+              <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"></el-input>
+              <span class="search_style">产品名称：</span>
+              <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
+              <span class="search_style">出行日期：</span>
+              <el-date-picker
+                v-model="startTime2"
+                type="date"
+                placeholder="开始日期"
+                style="float: left;width: 140px;"
+              ></el-date-picker>
+              <el-date-picker
+                v-model="endTime2"
+                type="date"
+                placeholder="终止日期"
+                style="float: left;width: 140px;"
+              ></el-date-picker>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="searchHand4()"
+                round
+                style="margin-top: 5px; margin-left: 10px"
+              >搜索</el-button>
+              <el-button 
+              @click="T_update_btn" 
               type="primary"
               size="mini"
-              @click="searchHand4(1)"
               round
               style="margin-top: 5px; margin-left: 10px"
-            >搜索</el-button>
-            <el-button 
-            @click="T_update_btn" 
-            type="primary"
-            size="mini"
-            round
-            style="margin-top: 5px; margin-left: 10px"
-            >重置</el-button>
-            
+              >重置</el-button>
+              
+            </div>
+            <el-table
+              :data="planData"
+              border
+              :highlight-current-row="true"
+              @row-click="planChange"
+              style="width: 100%; margin:30px 0 80px 0"
+            >
+              <el-table-column prop="groupCode" label="团期计划ID"></el-table-column>
+              <el-table-column prop="title" label="产品名称"></el-table-column>
+              <el-table-column prop="destination" label="目的地"></el-table-column>
+              <el-table-column prop="date" label="出行日期"></el-table-column>
+              <el-table-column prop="orgName" label="部门"></el-table-column>
+              <el-table-column prop="name" label="产品录入人"></el-table-column>
+            </el-table>
           </div>
-          <el-table
-            :data="planData"
-            border
-            :highlight-current-row="true"
-            @row-click="planChange"
-            style="width: 100%; margin-top: 30px"
-          >
-            <el-table-column prop="groupCode" label="团期计划ID"></el-table-column>
-            <el-table-column prop="title" label="产品名称"></el-table-column>
-            <el-table-column prop="destination" label="目的地"></el-table-column>
-            <el-table-column prop="date" label="出行日期"></el-table-column>
-            <el-table-column prop="orgName" label="部门"></el-table-column>
-            <el-table-column prop="name" label="产品录入人"></el-table-column>
-          </el-table>
-         </div>
-         <!-- <div class="block">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page.sync="currentPage4"
-              :page-sizes="[10, 20, 50, 100]"
-              :page-size="pageSize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="pageCount"
-              background
-            ></el-pagination>
-          </div> -->
+           <div class="block">
+              <el-pagination
+                  @size-change="t_handleSizeChange"
+                  @current-change="t_handleCurrentChange"
+                  :current-page.sync="currentPage5"
+                  :page-sizes="[10, 20, 50, 100]"
+                  :page-size="t_pageSize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="t_pageCount"
+                  background
+              ></el-pagination>
+            </div>
+          
       </el-dialog>
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
@@ -404,12 +405,12 @@
         style="width: 100%; margin-top: 30px">
           <el-table-column prop="paymentID" label="预付款和无收入结款ID" width="170" align="center"></el-table-column>
          
-          <el-table-column prop="supplierName" label="供应商" width="220" align="center"></el-table-column>
+          <el-table-column prop="supplierName" label="供应商" width="230" align="center"></el-table-column>
           <el-table-column prop="supplierTypeEX" label="借款类型" width="160" align="center"></el-table-column>
           <!-- <el-table-column prop="orgName" label="部门" width="140"  align="center"></el-table-column> -->
           <el-table-column prop="price" label="金额" width="150" align="center"></el-table-column>
           <!-- <el-table-column prop="wcount" label="未报销金额" width="150" align="center"></el-table-column> -->
-          <el-table-column prop="paymentMark" label="摘要" width="220" align="center"></el-table-column>
+          <el-table-column prop="paymentMark" label="摘要" width="230" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" width="160" align="center"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
@@ -476,7 +477,9 @@ export default {
       startTime2: "",   // supplier:0,//供应商没有的时候显示这个
       endTime2: "",
       pageSize: 10,//每页偏移量
+      t_pageSize:10,
       pageCount: 100,
+      t_pageCount:100,
       change: false,
       find: 0, //分辨查看
       state:3,//审核中
@@ -551,6 +554,7 @@ export default {
         }],
       formLabelWidth: "120px",
       currentPage4: 1,
+      currentPage5: 1,
       activeName: "first",
       expenseID: "",
       groupCode: "",
@@ -680,6 +684,8 @@ export default {
              
         },
         showplan(){//取消1
+            this.t_pageSize = 10;
+            this.currentPage5 = 1;
             this.dialogFormVisible2 = false;
             this.T_update_btn(); 
         },
@@ -690,6 +696,8 @@ export default {
                   this.s_content.groupCode = this.plans.planNum;
                   this.s_content.productName = this.plans.planName;
                   this.s_content.id = this.plans.pid;
+                  this.t_pageSize = 10;
+                  this.currentPage5 = 1;
                   this.dialogFormVisible2 = false;
                   this.T_update_btn();
                   this.s_content.payments=[]; 
@@ -771,12 +779,21 @@ export default {
           this.people.peo = row.name;
           this.people.tt = row.orgName;
         },
+        t_handleSizeChange(val) {
+          this.t_pageSize = val;
+          this.currentPage5 = 1;
+          this.searchHand4(1,this.t_pageSize);
+        },
+        t_handleCurrentChange(val) {
+          this.currentPage5 = val;
+          this.searchHand4(1);
+        },
         searchHand4(val) { //团期计划搜索
          this.subscript();
           this.$http
-            .post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancelist", {
-              pageIndex: val,
-              pageSize: this.userSize,
+            .post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancepage", {
+              pageIndex: this.currentPage5,
+              pageSize: this.t_pageSize,
               object: {
                 groupCode: this.tour_name, //团号
                 title: this.product_name, //产品名称
@@ -785,6 +802,7 @@ export default {
               }
             })
             .then(res => {
+              this.t_pageCount = res.data.total;
               this.planData = res.data.objects;
               this.s_content.count =  res.data.objects[0].count
             })
@@ -797,7 +815,9 @@ export default {
             this.product_name="" //产品名称
             this.startTime2="" ;//搜索用开始日期
             this.endTime2 ="";//搜索用结束日期
-            this.searchHand4(1)
+            this.t_pageSize = 10;
+            this.currentPage5 = 1;
+            this.searchHand4()
         },
        
         addDomain() {  //添加
@@ -847,6 +867,7 @@ export default {
                           this.state = 1;
                           this.find = 0 ;
                           this.currentPage4 = 1;
+                          this.currentPage5 = 1;
                           this.pageList(1, this.pageSize);
                           this.dialogFormVisible = false;
                         if(res.data.isSuccess == true){
@@ -1158,7 +1179,7 @@ export default {
        
         planDialog() {  //团期计划弹窗
           this.dialogFormVisible2 = true;
-          this.searchHand4(1);
+          this.searchHand4();
         },
         handleClick(tab, event) {
           console.log(tab, event);
@@ -1168,6 +1189,7 @@ export default {
           this.currentPage4 = 1;
           this.pageList();
         },
+        
         handleCurrentChange(val) {
           this.currentPage4 = val;
           this.pageList();
@@ -1761,7 +1783,7 @@ export default {
 .block {
   float: left;
   margin-left: 600px;
-  margin-top: 70px;
+  margin-top: -15px;
   margin-bottom: 60px;
 }
 .reimbursementer {
