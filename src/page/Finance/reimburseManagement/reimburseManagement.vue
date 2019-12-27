@@ -1779,7 +1779,7 @@ export default {
 .block {
   float: left;
   margin-left: 600px;
-  margin-top: 30px;
+  margin-top: -30px;
   margin-bottom: 85px;
 }
 .reimbursementer {
