@@ -35,7 +35,7 @@
         </div>
         <!-- 检索 END -->
         <!-- 需要审批表格 -->
-        <el-table :data="approveTableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content">
+        <el-table :data="approveTableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content" v-loading="listLoading">
           <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
           <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -61,6 +61,7 @@
     name: "approveList",
     data(){
       return {
+        listLoading: false, // 表格加载等待状态
         keepWorkItemID: [], // 保存workItemid
         ruleFormSeach: {
           planTime_01:'',
@@ -100,12 +101,13 @@
         let getCurrentGuid = row.guid // 获取当前行的 guid
         let getWorkItemID = this.keepWorkItemID
         let getCurrentExpenseID = row.expenseID // 获取当前行的 guid
-        this.$router.push({ name: "审批详情", params: { approveListGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
+        this.$router.push({ path: "/approve/approveDetail", query: { approveDetailGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
       },
       // 请求工作流接口获取未完成的任务
       approveTableList(){
         let that = this
         let arr = []
+        this.listLoading = true
         that.approveTableData  = []
         this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
           .then(obj => {
@@ -135,6 +137,7 @@
                 "guid": arr
               }).then(obj =>{
                 that.approveTableData = obj.data.objects;
+                this.listLoading = false
               })
             })
           })

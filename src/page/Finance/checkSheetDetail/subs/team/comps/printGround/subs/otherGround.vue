@@ -20,15 +20,30 @@
             <div class="cell">票号</div>
           </td>
         </tr>
-        <tr>
+        <!-- 占位 -->
+        <tr v-show="others.length=== 0">
           <td class="base">
-            <div class="cell">123</div>
+            <div class="cell"></div>
           </td>
           <td class="base">
             <div class="cell"></div>
           </td>
           <td class="base">
-            <div class="cell"> </div>
+            <div class="cell"></div>
+          </td>
+        </tr>
+
+        <tr 
+          v-for="(other, i) in others"
+          :key="i">
+          <td class="base">
+            <div class="cell">{{ other.title }}</div>
+          </td>
+          <td class="base">
+            <div class="cell">{{ other.price | priceFilter }}</div>
+          </td>
+          <td class="base">
+            <div class="cell">{{ other.ticket }}</div>
           </td>
         </tr>
       </table>
@@ -37,5 +52,28 @@
 <script>
 export default {
 
+  data(){
+    return {
+      others: [],
+    }
+  },
+
+  filters: {
+    priceFilter(val){
+      if(!val) return 0;
+      return val.toFixed(2);
+    }
+  },
+
+  methods: {
+    init(others){
+      this.others= others;
+    },
+    getData(){
+      let total= 0;
+      this.others.forEach(other => total+= other.price);
+      return total;
+    }
+  }
 }
 </script>
