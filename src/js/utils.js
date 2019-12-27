@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from 'axios'
 
 /**
  * @description: 简易版深拷贝，不可拷贝循环引用结构
@@ -91,40 +92,27 @@ Vue.prototype.$checkLooseEqual= function (a, b) {
   }
 }
 
-/**
- * @description: 富文本编辑器统一的工具栏
- */
-Vue.prototype.$defaultToolbar= [
-  // 字体
-  // [{ font: [] }],
-
-  [{ header: [false, 1, 2, 3, 4, 5, 6] }],
-
-  // [{ size: ["small", false, "large", "huge"] }],
-
-  ["bold", "italic", "underline", "strike"],
-
-  [
-    { align: "" },
-    { align: "center" },
-    { align: "right" },
-    { align: "justify" }
-  ],
-
-  // [{ header: 1 }, { header: 2 }],
-
-  // ["blockquote", "code-block"],
-
-  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-
-  [{ script: "sub" }, { script: "super" }],
-
-  [{ indent: "-1" }, { indent: "+1" }],
-
-  [{ color: [] }, { background: [] }],
-
-  // ["link", "image", "video", "formula"],
-
-  // [{ direction: "rtl" }],
-  // ["clean"]
-];
+Vue.prototype.$picDownloader= function(url, name){
+  if(!url || !name) return console.error('param url and name is required');
+  this.$message.info('文件下载中...');
+  axios({
+    method: 'post',
+    url: 'http://118.25.222.233:9001/download',
+    // url: 'http://127.0.0.1:9001/download',
+    data: { url },
+    responseType: 'blob'
+  })
+  .then(res => {
+    let type = 'application/octet-stream';
+    let URL = window.URL || window.webkitURL;
+    let blob = new Blob([ res.data ], { type });
+    let src = URL.createObjectURL(blob);
+    let element = document.createElement('a');
+    element.href = src;
+    element.download = name;
+    document.body.appendChild(element)
+    element.click()
+    element.remove();
+    this.$message.success('文件下载完成');
+  })
+}
