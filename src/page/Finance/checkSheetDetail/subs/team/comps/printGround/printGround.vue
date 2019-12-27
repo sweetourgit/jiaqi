@@ -46,10 +46,10 @@ table{
 </style>
 
 <template>
-  <div class="print-ground" v-if="inited">
+  <div class="print-ground">
     <!-- <div style="white-space:pre-wrap" v-html="printData"></div> -->
     <header>
-      <div class="title">沈阳甜程国际旅行社有限公司旅游团队报账单</div>
+      <div class="title">{{ pd.topOrgName }}旅游团队报账单</div>
       <div class="time">报账时间：{{ dateFormator(pd.checkTime) }}</div>
     </header>
     <main>
@@ -219,10 +219,10 @@ table{
             <div class="cell">合计</div>
           </td>
           <td class="base" style="width:5%;">
-            <div class="cell"></div>
+            <div class="cell">{{ incomesJoin.people }}</div>
           </td>
           <td class="base" style="width:5%;">
-            <div class="cell"></div>
+            <div class="cell">{{ incomesJoin.price | priceFilter }}</div>
           </td>
           <td class="base" colspan="6">
             <div class="cell"></div>
@@ -230,11 +230,13 @@ table{
         </tr>
       </table>
 
-      <other-ground ref="otherGround">
-      </other-ground>
+      <otherGround ref="otherGround"
+        @change="changeHandler">
+      </otherGround>
 
-      <expense-ground ref="expenseGround">
-      </expense-ground>
+      <expenseGround ref="expenseGround"
+        @change="changeHandler">
+      </expenseGround>
 
       <table cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #000;">
         <tr>
@@ -284,6 +286,11 @@ import expenseGround from './subs/expenseGround'
 
 export default {
 
+  mounted(){
+    console.log('printGround mounted')
+    console.log(this.$refs.otherGround)
+  },
+
   components: { incomeBar, otherGround, expenseGround },
 
   filters: {
@@ -296,15 +303,30 @@ export default {
       if(month< 10) month= '0' + month;
       if(day< 10) day= '0' + day;
       return `${year}.${month}.${day}`
+    },
+    priceFilter(val){
+      if(!val) return 0;
+      return val.toFixed(2);
+    }
+  },
+
+  computed: {
+    // incomes统计信息对象
+    incomesJoin(){
+      let people= 0;
+      let price= 0;
+      this.incomes.forEach(income => {
+        people+= income.peopleCount;
+        price+= income.orderPrice;
+      })
+      return { people, price };
     }
   },
 
   data(){
     return Object.assign(
       {
-        inited: false,
         incomeSum: 0, // 总收入
-        otherSum: 0, // 其他收入
         expenseSum: 0, // 总支出
         profitSum: 0, // 毛利额
         profitRate: 0, // 毛利率
@@ -321,11 +343,8 @@ export default {
       let { incomes, expenses, otherIncomes, ...pdData }= printData;
       this.pd= pdData;
       this.incomes= incomes;
-      console.log(this.$refs.otherGround)
-      
-      // this.$refs.otherGround.init(otherIncomes);
-      // this.$refs.expenseGround.init(expenses)
-      this.inited= true;
+      this.$refs.otherGround.init(otherIncomes);
+      this.$refs.expenseGround.init(expenses)
     },
 
     dateFormator(time){
@@ -335,6 +354,10 @@ export default {
       month= date.getMonth()+ 1;
       day= date.getDate();
       return `${year}年${month< 10?'0': ''}${month}月${day}日`
+    },
+
+    changeHandler(){
+      
     }
   }
 }

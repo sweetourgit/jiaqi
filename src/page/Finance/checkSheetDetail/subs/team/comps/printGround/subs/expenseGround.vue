@@ -34,7 +34,7 @@
         <div class="cell">备注</div>
       </td>
     </tr>
-    <tr>
+    <tr v-show="expenses.length=== 0">
       <td class="base">
         <div class="cell">123</div>
       </td>
@@ -60,6 +60,34 @@
         <div class="cell"></div>
       </td>
     </tr>
+    <tr 
+      v-for="(expense, i) in expenses"
+      :key="i">
+      <td class="base">
+        <div class="cell">{{ i + 1 }}</div>
+      </td>
+      <td class="base">
+        <div class="cell">{{ expense.title }}</div>
+      </td>
+      <td class="base">
+        <div class="cell">{{ expense.supplier }}</div>
+      </td>
+      <td class="base">
+        <div class="cell">{{ expense.peopleCount }}</div>
+      </td>
+      <td class="base">
+        <div class="cell"></div>
+      </td>
+      <td class="base">
+        <div class="cell"></div>
+      </td>
+      <td class="base">
+        <div class="cell"></div>
+      </td>
+      <td class="base">
+        <div class="cell"></div>
+      </td>
+    </tr>
     <tr>
       <td class="base label">
         <div class="cell">合计</div>
@@ -68,7 +96,7 @@
         <div class="cell"></div>
       </td>
       <td class="base">
-        <div class="cell"></div>
+        <div class="cell">{{ total | priceFilter }}</div>
       </td>
       <td class="base" colspan="3">
         <div class="cell"></div>
@@ -79,6 +107,34 @@
 
 <script>
 export default {
+
+  data(){
+    return {
+      expenses: [],
+      total: 0
+    }
+  },
+
+  filters: {
+    priceFilter(val){
+      if(!val) return 0;
+      return val.toFixed(2);
+    }
+  },
+
+  methods: {
+    init(expenses){
+      this.expenses= expenses;
+      this.getData();
+    },
+
+    getData(){
+      let total= 0;
+      this.expenses.forEach(expense => total+= expense.price);
+      this.total= total;
+      return total;
+    }
+  },
 
 }
 </script>
