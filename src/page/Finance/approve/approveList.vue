@@ -37,7 +37,7 @@
         <!-- 需要审批表格 -->
         <el-table :data="approveTableData" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content">
           <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
-          <el-table-column prop="beginTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
+          <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
@@ -81,7 +81,7 @@
         if(date == undefined) {
           return '';
         }
-        return moment(date).format('YYYY-MM-DD HH:mm:ss')
+        return moment(date).format('YYYY-MM-DD')
       },
       // tab切换
       handleClick(tab, event) {
@@ -146,15 +146,7 @@
         } else {
           return ''
         }
-      },
-      // 起始时间格式转换
-      dateFormat: function(row, column) {
-        let date = row[column.property];
-        if(date == undefined) {
-          return '';
-        }
-        return moment(date).format('YYYY-MM-DD HH:mm:ss')
-      },
+      }
     }
   }
 </script>
