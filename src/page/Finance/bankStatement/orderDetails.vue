@@ -5,7 +5,7 @@
       <div class="totalMoney"><i class="el-icon-info"></i>总收款金额：{{totalMoney}}元 </div>
       <div class="table_trip">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
-          <el-table-column prop="orderID" label="订单ID" align="center">
+          <el-table-column prop="orderCode" label="订单ID" align="center">
           </el-table-column>
           <el-table-column prop="proName" label="产品名称" align="center">
           </el-table-column>
