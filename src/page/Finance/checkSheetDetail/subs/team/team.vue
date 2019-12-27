@@ -1,12 +1,11 @@
 <style lang="scss" scoped>
 .check-sheet-detail{
-  width: 1124px;
+  width: 1120px;
+  padding-bottom: 80px;
   &>header{
+    display: flex;
+    justify-content: space-between;
     width: 100%;
-    .button-ground{
-      display: flex;
-      justify-content: flex-end;
-    }
   }
 }
 </style>
@@ -14,20 +13,25 @@
 <template>
   <div class="check-sheet-detail">
     <header>
+      <div 
+        v-show="type=== 'add'">
+        <el-button type="primary" size="small">提交</el-button>
+        <el-button type="primary" size="small">打印</el-button>
+      </div>
       <div class="button-ground" 
-        v-if="type=== 'add'">
+        v-show="type=== 'add'">
         <el-button type="primary" size="small">提交</el-button>
         <el-button type="primary" size="small">打印</el-button>
         <el-button type="info" size="small">取消</el-button>
       </div>
       <div class="button-ground" 
-        v-if="type=== 'normal'">
+        v-show="type=== 'normal'">
         <el-button type="primary" size="small">提交</el-button>
         <el-button type="primary" size="small">打印</el-button>
         <el-button type="info" size="small">取消</el-button>
       </div>
       <div class="button-ground" 
-        v-if="type=== 'mine'">
+        v-show="type=== 'mine'">
         <el-button type="danger" size="small">驳回</el-button>
         <el-button type="primary" size="small">通过</el-button>
         <el-button type="primary" size="small">打印</el-button>
@@ -57,9 +61,6 @@ export default {
 
   // 创建和唤醒都要从新执行init
   mounted(){
-    this.init();
-  },
-  activated(){
     this.init();
   },
 

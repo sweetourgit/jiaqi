@@ -374,6 +374,18 @@
             <el-table-column prop="name" label="产品录入人"></el-table-column>
           </el-table>
          </div>
+         <!-- <div class="block">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page.sync="currentPage4"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="pageCount"
+              background
+            ></el-pagination>
+          </div> -->
       </el-dialog>
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
@@ -576,6 +588,7 @@ export default {
                   this.radio= "1";
                   this.dialogFormVisible = false;
                   this.alljoinData = [];
+                  this.tableCourse = [];
                   this.ruleForm= {
                       editableTabsValue: "1",
                       editableTabs: [
@@ -618,6 +631,7 @@ export default {
                   this.state = 1;
                   this.dialogFormVisible = false;
                   this.alljoinData = [];
+                  this.tableCourse = [];
                   this.ruleForm= {
                       editableTabsValue: "1",
                       editableTabs: [
@@ -841,6 +855,7 @@ export default {
                             message: "撤销成功!"
                           });
                            this.alljoinData=[];
+                           this.tableCourse = [];
                            this.ruleForm= {
                               editableTabsValue: "1",
                               editableTabs: [
@@ -1028,6 +1043,7 @@ export default {
           this.change = true;
           this.dialogFormVisible = true;
           this.ruleForm.editableTabs=[];
+          this.tableCourse = [];
           this.$http
                 .post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
                   object:{
@@ -1224,6 +1240,7 @@ export default {
                   })
                 .then(() => {
                   targetName = "1"
+                  this.tableCourse = [];
                   this.ruleForm= {
                           editableTabsValue: "1",
                           editableTabs: [
@@ -1486,6 +1503,7 @@ export default {
                           this.tabIndex = 1;
                           this.dialogFormVisible = false;
                           this.alljoinData= [];
+                          this.tableCourse = [];
                          if (res.data.isSuccess == true) {
                            this.$message({
                             type: "success",
@@ -1524,6 +1542,7 @@ export default {
                           
                         }else{
                           this.alljoinData= [];
+                          this.tableCourse = [];
                           this.ruleForm= {
                                 editableTabsValue: "1",
                                 editableTabs: [
@@ -1656,7 +1675,7 @@ export default {
           },
         //方法结尾
      
-        // 获取审核结果
+        // 获取审核列表结果
       auditResult(paramsGuid) {
         var that =this
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
@@ -1675,9 +1694,6 @@ export default {
          })
         .catch(obj => {})
       },
-          
-     
-     
      },
 
       created() {
