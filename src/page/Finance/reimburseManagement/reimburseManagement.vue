@@ -728,16 +728,12 @@ export default {
                 .then(res => {
                   
                   var object = res.data.objects;
+                  console.log(object,'添加报销列表0000')
                   var wcount; //未报销金额
-                    for (let i = 0; i < object.length; i++) {
-                      if(object[i].orgName==null){
-                          object[i].orgName="无";
-                        }
-                          object[i].peopleCount = this.s_content.count
-                          if(object[i].peopleCount == 0){
-                                   object[i].peopleCount = 1
-                                }
-                      this.joinData.push({
+                    for (let i in object) {
+                      console.log(object[i],'802');
+                       object[i].peopleCount = this.s_content.count
+                       this.joinData.push({
                           paymentID:  object[i].paymentID,
                           supplierTypeEX:object[i].supplierTypeEX,
                           groupCode:object[i].groupCode,
@@ -752,11 +748,13 @@ export default {
                           peopleCount:object[i].peopleCount,
                           orgName:object[i].orgName,
                           wcount: object[i].price - object[i].expensePrice
-                          //  wcount :object[i].price - object[i].expensePrice
+                           
                       });
-                       this.joinData =this.s_content.joinData;
-                      // console.log(this.joinData,'802')
+                      
+                     
                     }
+                      this.s_content.joinData = this.joinData;
+                      console.log( this.s_content.joinData,'添加报销列表')
                     
                       
                 })
