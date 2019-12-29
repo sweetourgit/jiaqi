@@ -66,7 +66,7 @@ table{
             <div class="cell">操作人</div>
           </td>
           <td class="base">
-            <div class="cell"> {{ pd.createUser }} </div>
+            <div class="cell"> {{ pd.userName }} </div>
           </td>
           <td class="base label">
             <div class="cell">导陪</div>
@@ -96,7 +96,7 @@ table{
             <div class="cell"> {{ pd.teamProTitle }} </div>
           </td>
         </tr>
-
+  
         <tr>
           <td class="base label">
             <div class="cell">团队人数</div>
@@ -141,25 +141,25 @@ table{
             <div class="cell">总收入</div>
           </td>
           <td class="base">
-            <div class="cell"></div>
+            <div class="cell">{{ incomeSum }}</div>
           </td>
           <td class="base label">
             <div class="cell">总支出</div>
           </td>
           <td class="base">
-            <div class="cell"></div>
+            <div class="cell">{{ expenseSum }}</div>
           </td>
           <td class="base label">
             <div class="cell">毛利额</div>
           </td>
           <td class="base">
-            <div class="cell"></div>
+            <div class="cell">{{ profitSum }}</div>
           </td>
           <td class="base label">
             <div class="cell">毛利率</div>
           </td>
           <td class="base" colspan="3">
-            <div class="cell"></div>
+            <div class="cell">{{ profitRate }}</div>
           </td>
         </tr>
       </table>
@@ -276,6 +276,11 @@ table{
       </table>
 
     </main>
+    <footer>
+      <basic-form ref="basicForm"
+        @save-action="basicSaveAction">
+      </basic-form>
+    </footer>
   </div>  
 </template>
 
@@ -283,15 +288,11 @@ table{
 import incomeBar from './subs/incomeBar'
 import otherGround from './subs/otherGround'
 import expenseGround from './subs/expenseGround'
+import basicForm from './subs/basicForm'
 
 export default {
 
-  mounted(){
-    console.log('printGround mounted')
-    console.log(this.$refs.otherGround)
-  },
-
-  components: { incomeBar, otherGround, expenseGround },
+  components: { incomeBar, otherGround, expenseGround, basicForm },
 
   filters: {
     dateFilter(val){
@@ -343,8 +344,17 @@ export default {
       let { incomes, expenses, otherIncomes, ...pdData }= printData;
       this.pd= pdData;
       this.incomes= incomes;
+      this.otherIncomes= otherIncomes;
+      this.expenses= expenses;
       this.$refs.otherGround.init(otherIncomes);
-      this.$refs.expenseGround.init(expenses)
+      this.$refs.expenseGround.init(expenses);
+      this.changeHandler();
+    },
+
+    getData(){
+      let otherIncomes= this.otherIncomes;
+      let expenses= this.expenses;
+      return { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
     },
 
     dateFormator(time){
@@ -357,7 +367,30 @@ export default {
     },
 
     changeHandler(){
-      
+      let { price: incomesPrice } = this.incomesJoin;
+      let othersPrice = this.$refs.otherGround.getPrice();
+      let expensesPrice = this.$refs.expenseGround.getPrice();
+      this.incomeSum = incomesPrice + othersPrice;
+      this.expenseSum = expensesPrice;
+      this.profitSum = this.incomeSum - this.expenseSum;
+      this.profitRate = ((this.profitSum / this.incomeSum) * 100).toFixed(2) + '%';
+      this.incomeSum = this.incomeSum.toFixed(2);
+      this.expenseSum = this.expenseSum.toFixed(2);
+      this.profitSum = this.profitSum.toFixed(2);
+    },
+
+    awakeBasicForm(){
+      let { id, guideName, localName }= this.pd;
+      this.$refs.basicForm.awakeup({
+        sheetID: id, guideName, localName, otherIncomes: this.otherIncomes
+      })
+    },
+
+    basicSaveAction(payload){
+      let { guideName, localName, title, price, ticket }= payload;
+      this.pd.guideName= guideName;
+      this.pd.localName= localName;
+
     }
   }
 }

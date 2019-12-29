@@ -69,7 +69,8 @@ export default {
     init(others){
       this.others= others;
     },
-    getData(){
+
+    getPrice(){
       let total= 0;
       this.others.forEach(other => total+= other.price);
       return total;

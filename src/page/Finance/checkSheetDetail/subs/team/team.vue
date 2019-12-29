@@ -15,8 +15,11 @@
     <header>
       <div 
         v-show="type=== 'add'">
-        <el-button type="primary" size="small">提交</el-button>
-        <el-button type="primary" size="small">打印</el-button>
+        <el-button type="primary" size="small"
+          @click="awakeBasicForm">
+          编辑
+        </el-button>
+        <el-button type="primary" size="small">编辑挂账信息</el-button>
       </div>
       <div class="button-ground" 
         v-show="type=== 'add'">
@@ -39,9 +42,7 @@
       </div>
     </header>
     <main>
-      <print-ground ref="printGround"
-       :proto="printData">
-      </print-ground>
+      <print-ground ref="printGround"></print-ground>
     </main>
   </div>
 </template>
@@ -117,6 +118,10 @@ export default {
       // 如果[ isCheckSheet 不为 undefined ]或者[ tab 是 all ] 只能查看
       if(!this.$isNull(isCheckSheet) || tab=== 'all') return 'normal';
       return 'mine';
+    },
+
+    awakeBasicForm(){
+      this.$refs.printGround.awakeBasicForm()
     }
   }
 }

@@ -76,16 +76,16 @@
         <div class="cell">{{ expense.peopleCount }}</div>
       </td>
       <td class="base">
-        <div class="cell"></div>
+        <div class="cell">{{ expense.price | priceFilter }}</div>
       </td>
       <td class="base">
-        <div class="cell"></div>
+        <div class="cell">{{ expense.payPrice | priceFilter }}</div>
       </td>
       <td class="base">
-        <div class="cell"></div>
+        <div class="cell">{{ expense.arrearsPrice | priceFilter }}</div>
       </td>
       <td class="base">
-        <div class="cell"></div>
+        <div class="cell">{{ expense.mark }}</div>
       </td>
     </tr>
     <tr>
@@ -125,10 +125,10 @@ export default {
   methods: {
     init(expenses){
       this.expenses= expenses;
-      this.getData();
+      this.getPrice();
     },
 
-    getData(){
+    getPrice(){
       let total= 0;
       this.expenses.forEach(expense => total+= expense.price);
       this.total= total;
