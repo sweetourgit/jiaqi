@@ -30,7 +30,7 @@ import StraightGuestManagement from '@/page/Finance/collectionManagement/straigh
 import SameTradeManagement from '@/page/Finance/collectionManagement/sameTradeManagement'
 import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApproval/pendingApprovalManagement.vue'
 import externalOrder from '@/page/Finance/collectionManagement/externalOrder/externalOrderManagement.vue'
-import reimbursement from '@/page/Finance/collectionManagement/reimbursement/reimbursement.vue'
+import reimbursement from '@/page/Finance/collectionManagement/Reimbursement/reimbursement.vue'
 import distributorsInfo from '@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo.vue'
 import recognitionWait from '@/page/Finance/collectionManagement/recognitionWait/recognitionWait.vue'
 export default {
