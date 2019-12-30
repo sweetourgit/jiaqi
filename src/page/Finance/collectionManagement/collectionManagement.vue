@@ -16,6 +16,9 @@
       <el-tab-pane label="待认款收款" name="six">
         <recognitionWait></recognitionWait>
       </el-tab-pane>
+      <el-tab-pane label="报销还款" name="seven">
+        <reimbursement></reimbursement>
+      </el-tab-pane>
       <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third">
         <PendingApprovalManagement ref="PendingApprovalManagement"></PendingApprovalManagement>
       </el-tab-pane>
@@ -27,6 +30,7 @@ import StraightGuestManagement from '@/page/Finance/collectionManagement/straigh
 import SameTradeManagement from '@/page/Finance/collectionManagement/sameTradeManagement'
 import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApproval/pendingApprovalManagement.vue'
 import externalOrder from '@/page/Finance/collectionManagement/externalOrder/externalOrderManagement.vue'
+import reimbursement from '@/page/Finance/collectionManagement/reimbursement/reimbursement.vue'
 import distributorsInfo from '@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo.vue'
 import recognitionWait from '@/page/Finance/collectionManagement/recognitionWait/recognitionWait.vue'
 export default {
@@ -37,6 +41,7 @@ export default {
     PendingApprovalManagement, // 需要您审批
     externalOrder,
     distributorsInfo, // 内部收款
+    reimbursement,
     recognitionWait
   },
   data() {
