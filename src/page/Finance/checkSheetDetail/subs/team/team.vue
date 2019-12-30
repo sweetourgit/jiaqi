@@ -13,30 +13,37 @@
 <template>
   <div class="check-sheet-detail">
     <header>
-      <div 
-        v-show="type=== 'add'">
+      <div>
         <el-button type="primary" size="small"
+          v-show="type=== 'add'"
           @click="awakeBasicForm">
           编辑
         </el-button>
         <el-button type="primary" size="small"
+          v-show="type=== 'add'"
           @click="awakeExpenseForm">
           编辑挂账信息
         </el-button>
       </div>
+
       <div class="button-ground" 
         v-show="type=== 'add'">
         <el-button type="primary" size="small"
           @click="postCheckSheetAction">
           提交
         </el-button>
-        <el-button type="primary" size="small">打印</el-button>
+        <el-button type="primary" size="small"
+          @click="printHandler">
+          打印
+        </el-button>
         <el-button type="info" size="small">取消</el-button>
       </div>
       <div class="button-ground" 
         v-show="type=== 'normal'">
-        <el-button type="primary" size="small">提交</el-button>
-        <el-button type="primary" size="small">打印</el-button>
+        <el-button type="primary" size="small"
+          @click="printHandler">
+          打印
+        </el-button>
         <el-button type="info" size="small">取消</el-button>
       </div>
       <div class="button-ground" 
@@ -68,6 +75,7 @@ export default {
 
   // 创建和唤醒都要从新执行init
   mounted(){
+    window.vm= this;
     this.init();
   },
 
@@ -107,7 +115,7 @@ export default {
     // 普通
     normalInit(){
       let { id, planID }= this.$route.query;
-      new Pormise((resolve, reject) => {
+      new Promise((resolve, reject) => {
         if(id) return resolve(getCheckSheetByID(id));
         if(planID) return resolve(getCheckSheetByPlanID(planID));
       })
@@ -131,7 +139,10 @@ export default {
       this.createTimeMaker(object.expenses);
       postCheckSheet(object)
       .then(res => {
-        console.log(res)
+        let { path, query }= this.$route;
+        let { planID }= query;
+        this.$router.replace({ path, query: { planID, isCheckSheet: 1 } });
+        this.init();
       })
     },
 
@@ -149,6 +160,11 @@ export default {
 
     awakeExpenseForm(){
       this.$refs.printGround.awakeExpenseForm();
+    },
+
+    printHandler(){
+      let dom= this.$refs.printGround.$el;
+      this.$printDom(dom);
     }
   }
 }
