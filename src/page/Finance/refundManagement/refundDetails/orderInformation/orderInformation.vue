@@ -5,7 +5,9 @@
       <div class="controlButton">
         <el-button class="ml13" @click="cancelOrder()">取 消</el-button>
       </div>
-
+      <div class="border">
+        
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -45,6 +47,7 @@ export default {
 <style scoped lang="scss">
 .controlButton{position: absolute; top: 8px; right: 10px;}
 .ml13{margin: 0 0 0 13px;}
+.border{width:1160px; border:1px solid #e6e6e6;}
 </style>
 
 

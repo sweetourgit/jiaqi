@@ -578,7 +578,8 @@ export default {
           "code": "string",
           "url": this.img_Url,
           "planID": this.planId,
-          "name": this.img_Name
+          "name":this.name_Suffix,
+          //"name": this.img_Name
         }
       }).then(res =>{
         if(res.data.isSuccess == true){
