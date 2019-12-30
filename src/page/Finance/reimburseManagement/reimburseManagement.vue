@@ -89,7 +89,7 @@
       <!--报销end-->
       <!--报销弹窗-->
       <el-dialog title="报销申请" :visible.sync="dialogFormVisible" width="70%" :show-close="false">
-        <el-divider content-position="left"  v-if="this.find == 1" class="re_style" style="margin-top:10px">基本信息</el-divider>
+        <div v-if="this.find == 1" class="re_style" style="margin-top:-20px;" >基本信息</div>
         <div v-if="this.find == 1" class="style_box">
               <div v-if="this.state == 0" class="sh_style">审核中</div>
               <div v-if="this.state == 1" class="tg_style">通过</div>
@@ -289,7 +289,7 @@
               </el-tab-pane>
             </el-tabs>
               <!-- 审核结果 -->
-              <el-divider content-position="left"  v-if="this.find == 1" class="re_style" style="margin-top: 20px">审核结果</el-divider>
+              <div v-if="this.find == 1" class="re_style">审核结果</div>
               <el-table :data="tableCourse" border :header-cell-style="getRowClass"  v-if="this.find == 1" >
                 <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
                 <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
@@ -1803,7 +1803,8 @@ export default {
   clear: both;
 }
 .re_style {
-  margin-right: 40px;
+  margin:20px 30px;
+  font-size: 16px;
  }
  
 .sh_style {
