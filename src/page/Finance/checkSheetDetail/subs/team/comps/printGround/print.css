@@ -1,8 +1,8 @@
-.print-ground *{
+*{
   font-weight: normal;
   box-sizing: border-box;
 }
-.print-ground table{
+table{
   width: 100%;
 }
 .print-ground{
@@ -12,13 +12,14 @@
   font-weight: normal;
 }
 .print-ground>header .title{
-    font-size: 18px;
+  font-size: 18px;
 }
 .print-ground>header .time{
   line-height: 2.5;
   text-align: right;
 }
-.print-ground .cell{
+.cell{
+  text-align: center;
   box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -29,16 +30,17 @@
   padding-right: 5px;
   padding-left: 5px;
 }
-.print-ground .base{
+.base{
   width: 10%;
   padding: 5px 0;
   border-top: 1px solid #000;
   border-left: 1px solid #000;
+  vertical-align: middle;
 }
-.print-ground .label{
+.label{
   background-color: #ccc;
   color: #000;
 }
-.print-ground .base:last-child{
+.base:last-child{
   border-right: 1px solid #000;
 }

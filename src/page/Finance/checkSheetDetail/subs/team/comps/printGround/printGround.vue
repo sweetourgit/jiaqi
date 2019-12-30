@@ -14,13 +14,14 @@ table{
   font-weight: normal;
 }
 .print-ground>header .title{
-    font-size: 18px;
+  font-size: 18px;
 }
 .print-ground>header .time{
   line-height: 2.5;
   text-align: right;
 }
 .cell{
+  text-align: center;
   box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -35,6 +36,7 @@ table{
   padding: 5px 0;
   border-top: 1px solid #000;
   border-left: 1px solid #000;
+  vertical-align: middle;
 }
 .label{
   background-color: #ccc;
@@ -238,38 +240,38 @@ table{
         @change="changeHandler">
       </expenseGround>
 
-      <table cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #000;">
+      <table cellspacing="0" cellpadding="0" border="0">
         <tr>
           <td class="base label" style="width:15%;">
             <div class="cell">审批人</div>
           </td>
-          <td class="base label" rowspan="2">
+          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell">计调</div>
           </td>
-          <td class="base" rowspan="2">
+          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell"></div>
           </td>
-          <td class="base label" rowspan="2">
+          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell">部门经理</div>
           </td>
-          <td class="base" rowspan="2">
+          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell"></div>
           </td>
-          <td class="base label" rowspan="2">
+          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell">财务部</div>
           </td>
-          <td class="base" rowspan="2">
+          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell"></div>
           </td>
-          <td class="base label" rowspan="2">
+          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell">总经理</div>
           </td>
-          <td class="base" rowspan="2">
+          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
             <div class="cell"></div>
           </td>
         </tr>
         <tr>
-          <td class="base label" style="width:15%;border-right:none;">
+          <td class="base label" style="width:15%;border-right:none;border-bottom: 1px solid #000;">
             <div class="cell">签字</div>
           </td>
         </tr>

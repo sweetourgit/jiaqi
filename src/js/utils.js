@@ -105,7 +105,6 @@ Vue.prototype.$picDownloader= function(url, name){
   .then(res => {
     let type = 'application/octet-stream';
     let URL = window.URL || window.webkitURL;
-    console.log(URL,"ahhah")
     let blob = new Blob([ res.data ], { type });
     let src = URL.createObjectURL(blob);
     let element = document.createElement('a');
@@ -116,4 +115,72 @@ Vue.prototype.$picDownloader= function(url, name){
     element.remove();
     this.$message.success('文件下载完成');
   })
+}
+
+Vue.prototype.$printDom= function(dom){
+  let doc;
+  let iframe;
+  iframe = document.createElement('iframe');
+  iframe.setAttribute('style', 'position:absolute;width:0;height:0;top:-10px;left:-10px;');
+  document.body.appendChild(iframe)
+  doc = iframe.contentWindow.document;
+  doc.write(dom.outerHTML);
+  var styleStr = `
+  @media print {
+    @page {
+      size: 210mm 297mm;
+      size: 297mm 420mm;
+    }
+  }
+  *{
+    font-weight: normal;
+    box-sizing: border-box;
+  }
+  table{
+    width: 100%;
+  }
+  .print-ground{
+    font-size: 14px;
+    line-height: normal;
+    text-align: center;
+    font-weight: normal;
+  }
+  .print-ground>header .title{
+    font-size: 18px;
+  }
+  .print-ground>header .time{
+    line-height: 2.5;
+    text-align: right;
+  }
+  .cell{
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    min-height: 23px;
+    line-height: 23px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .base{
+    width: 10%;
+    padding: 5px 0;
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+  }
+  .label{
+    background-color: #ccc;
+    color: #000;
+  }
+  .base:last-child{
+    border-right: 1px solid #000;
+  }`
+  let style = document.createElement("style");
+  style.innerText = styleStr;
+  doc.getElementsByTagName("head")[0].appendChild(style)
+	doc.close();
+	iframe.contentWindow.focus();
+	iframe.contentWindow.print();
 }

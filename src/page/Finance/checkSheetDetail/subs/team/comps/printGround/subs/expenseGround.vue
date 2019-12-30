@@ -36,7 +36,7 @@
     </tr>
     <tr v-show="expenses.length=== 0">
       <td class="base">
-        <div class="cell">123</div>
+        <div class="cell"></div>
       </td>
       <td class="base">
         <div class="cell"></div>
