@@ -1798,16 +1798,13 @@ export default {
 .indialog {
   min-height: 300px;
 }
-/* .indialog_search {
-} */
+ 
 .all .el-upload-list__item {
   clear: both;
 }
 .re_style {
-  margin-left: 40px;
   margin-right: 40px;
-  overflow:hidden;
-}
+ }
  
 .sh_style {
   width: 48px;
