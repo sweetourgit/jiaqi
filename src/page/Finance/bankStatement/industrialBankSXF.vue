@@ -78,8 +78,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="状态" align="center">
-        <template>
-          <span>字段暂无</span>
+        <template slot-scope="scope">
+          <span v-if="scope.row.is_EBS == 0">未导入</span>
+          <span v-if="scope.row.is_EBS == 1">已导入</span>
         </template>
       </el-table-column>
       <el-table-column prop="purpose_fee" label="手续费" align="center">
@@ -188,26 +189,30 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(() => {
-        // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/delete", {
-        //   "id": row.id,
-        // }).then(function(response) {
-        //   if (response.data.isSuccess) {
-        //     that.loadData();
-        //     that.$message({
-        //       type: 'info',
-        //       message: '已删除'
-        //     });
-        //   } else {
-        //     if(response.data.message){
-        //       that.$message.warning(response.data.result.message);
-        //     }else{
-        //       that.$message.warning("删除失败~");
-        //     }
-        //   }
-        // }).catch(function(error) {
-        //   console.log(error);
-        //   that.$message.warning("删除失败~");
-        // });
+        let idArr = [];
+        this.multipleSelection.forEach(function(item, index, arr){
+          idArr.push(item.id);
+        })
+        // console.log(idArr);
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/ImportEBS", {
+          "ids": idArr,
+          "type": 1
+        }).then(function(response) {
+          // console.log(response)
+          if (response.status == 200) {
+            that.$message.success('导入成功！');
+            that.loadData();
+          } else {
+            if(response.statusText){
+              that.$message.warning(response.data.statusText);
+            }else{
+              that.$message.warning("导入失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+          that.$message.warning("导入失败~");
+        });
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -217,7 +222,7 @@ export default {
     },
 
     selectInit(row, index){
-      if(row.id == ''){
+      if(row.is_EBS == 1){
         return false  //不可勾选
       }else{
         return true  //可勾选
@@ -226,7 +231,7 @@ export default {
 
     // 整行点击
     handleRowClick(row, column, event){
-      if(row.id){
+      if(row.is_EBS == 0){
         this.$refs.multipleTable.toggleRowSelection(row);
       }
     },

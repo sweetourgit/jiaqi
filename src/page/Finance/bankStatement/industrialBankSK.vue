@@ -44,6 +44,7 @@
     </el-form>
     <!-- 搜索表单 END -->
     <div class="buttonsDv">
+      <el-button @click="setZCK" type="warning">设置暂存款</el-button>
       <el-upload
         class="upload-demo"
         :action="UploadUrl1()"
@@ -175,6 +176,15 @@ export default {
       } else {
         return ''
       }
+    },
+    setZCK(){
+      this.$router.push({
+        path: '/bankStatement/bankZCK',
+        name: '银行流水单管理  /设置暂存款',
+        query: {
+          "searchType": 'second'
+        }
+      });
     },
     UploadUrl1(){
       return this.GLOBAL.serverSrc + '/finance/industrialbank/api/ImportExcel';
