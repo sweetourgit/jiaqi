@@ -40,7 +40,7 @@
             <div class="cell">{{ other.title }}</div>
           </td>
           <td class="base">
-            <div class="cell">{{ other.price | priceFilter }}</div>
+            <div class="cell">{{ other.price }}</div>
           </td>
           <td class="base">
             <div class="cell">{{ other.ticket }}</div>

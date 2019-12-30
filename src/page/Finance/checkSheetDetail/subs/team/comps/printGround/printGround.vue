@@ -102,7 +102,7 @@ table{
             <div class="cell">团队人数</div>
           </td>
           <td class="base">
-            <div class="cell"></div>
+            <div class="cell">{{ incomesJoin.people }}</div>
           </td>
           <td class="base label">
             <div class="cell">减免人数</div>
@@ -278,8 +278,15 @@ table{
     </main>
     <footer>
       <basic-form ref="basicForm"
-        @save-action="basicSaveAction">
+        @save-action="basicSave">
       </basic-form>
+      <expense-form ref="expenseForm"
+        @wakeup-edit="awakeEditForm"
+        @remove="removeExpense">
+      </expense-form>
+      <expense-edit-form ref="expenseEditForm"
+        @save-action="expenseSave">
+      </expense-edit-form>
     </footer>
   </div>  
 </template>
@@ -289,10 +296,12 @@ import incomeBar from './subs/incomeBar'
 import otherGround from './subs/otherGround'
 import expenseGround from './subs/expenseGround'
 import basicForm from './subs/basicForm'
+import expenseForm from './subs/expenseForm'
+import expenseEditForm from './subs/expenseEditForm'
 
 export default {
 
-  components: { incomeBar, otherGround, expenseGround, basicForm },
+  components: { incomeBar, otherGround, expenseGround, basicForm, expenseForm, expenseEditForm },
 
   filters: {
     dateFilter(val){
@@ -381,16 +390,49 @@ export default {
 
     awakeBasicForm(){
       let { id, guideName, localName }= this.pd;
-      this.$refs.basicForm.awakeup({
-        sheetID: id, guideName, localName, otherIncomes: this.otherIncomes
+      this.$refs.basicForm.wakeup({
+        guideName, localName, ...this.otherIncomes[0]
       })
     },
 
-    basicSaveAction(payload){
+    basicSave(payload){
+      let { sheetID }= this.pd;
       let { guideName, localName, title, price, ticket }= payload;
+      let isSave= !!this.otherIncomes[0];
+      // 改成提交的时候统一加sheetID和createTime
+      // let assignObj= isSave? this.otherIncomes[0] : { sheetID, createTime: new Date().toISOString() };
+      let assignObj= isSave? this.otherIncomes[0] : { };
       this.pd.guideName= guideName;
       this.pd.localName= localName;
+      Object.assign(assignObj, { title, price, ticket });
+      !isSave && this.otherIncomes.push(assignObj);
+      this.changeHandler();
+    },
 
+    awakeExpenseForm(){
+      this.$refs.expenseForm.wakeup(this.expenses)
+    },
+
+    awakeEditForm(expense){
+      this.$refs.expenseEditForm.wakeup(expense);
+    },
+
+    expenseSave(payload){
+      let { isSave, expense }= payload;
+      if(isSave) return this.changeHandler();
+      this.expenses.push(expense);
+      this.changeHandler();
+    },
+
+    removeExpense(expense){
+      let result;
+      let index;
+      result= this.expenses.filter(item => item!== expense);
+      this.expenses.splice(0);
+      this.$nextTick(() => {
+        this.expenses.push(...result);
+        this.changeHandler();
+      })
     }
   }
 }

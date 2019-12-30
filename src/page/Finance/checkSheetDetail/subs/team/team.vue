@@ -19,11 +19,17 @@
           @click="awakeBasicForm">
           编辑
         </el-button>
-        <el-button type="primary" size="small">编辑挂账信息</el-button>
+        <el-button type="primary" size="small"
+          @click="awakeExpenseForm">
+          编辑挂账信息
+        </el-button>
       </div>
       <div class="button-ground" 
         v-show="type=== 'add'">
-        <el-button type="primary" size="small">提交</el-button>
+        <el-button type="primary" size="small"
+          @click="postCheckSheetAction">
+          提交
+        </el-button>
         <el-button type="primary" size="small">打印</el-button>
         <el-button type="info" size="small">取消</el-button>
       </div>
@@ -54,7 +60,7 @@
  * 2. 通过 /checkSheetDetail 进入，携带有财务报账单进入此页面时的tab和搜索条件等状态
  */
 
-import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID } from './api'
+import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet } from './api'
 import printGround from './comps/printGround/printGround'
 
 export default {
@@ -120,8 +126,29 @@ export default {
       return 'mine';
     },
 
+    postCheckSheetAction(){
+      let object= this.$refs.printGround.getData();
+      this.createTimeMaker(object.expenses);
+      postCheckSheet(object)
+      .then(res => {
+        console.log(res)
+      })
+    },
+
+    createTimeMaker(expenses){
+      let createTime= new Date().toISOString();
+      expenses.forEach(expense => {
+        if(!expense.createTime) expense.createTime= createTime;
+      })
+      return expenses;
+    },
+
     awakeBasicForm(){
-      this.$refs.printGround.awakeBasicForm()
+      this.$refs.printGround.awakeBasicForm();
+    },
+
+    awakeExpenseForm(){
+      this.$refs.printGround.awakeExpenseForm();
     }
   }
 }
