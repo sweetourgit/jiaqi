@@ -1951,7 +1951,7 @@ export default {
             );
           });
           this.page_order_total = obj.data.total;
-          this.getDebitTablePrice(id,this.glTotal)
+          this.getDebitTablePrice(id, this.glTotal);
         })
         .catch(err => {
           console.log(err);
@@ -1959,7 +1959,7 @@ export default {
     },
     // 关联欠款的表格的总价计算
     getDebitTablePrice(id, total) {
-      this.arrears = 0
+      this.arrears = 0;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: 1,
@@ -1972,8 +1972,8 @@ export default {
         })
         .then(obj => {
           obj.data.objects.forEach(item => {
-            this.arrears += item.qk_price
-          })
+            this.arrears += item.qk_price;
+          });
         })
         .catch(err => {});
     },
