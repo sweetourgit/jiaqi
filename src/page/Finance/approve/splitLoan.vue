@@ -87,7 +87,7 @@
                 <el-table-column prop="peopleCount" label="操作" align="center" width="200">
                   <template slot-scope="scope">
                     <el-button type="primary" plain size="small" plain v-if="scope.row.price != scope.row.paymentPrice" @click="handleTableSplitLoan(scope.$index, scope.row)">拆分/还款</el-button>
-                    <el-button type="success" plain size="small" plain v-else @click="handleTableLook">查看</el-button>
+                    <el-button type="success" plain size="small" plain v-if="scope.row.expenseType != 0" @click="handleTableLook">查看</el-button>
                   </template>
                 </el-table-column>
               </el-table>
