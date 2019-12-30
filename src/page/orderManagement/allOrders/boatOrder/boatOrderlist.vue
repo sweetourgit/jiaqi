@@ -163,10 +163,7 @@
               class="breadCrumbPointer"
               @click.native="operation(item,index)"
             >{{item}}</el-breadcrumb-item>
-            <el-breadcrumb-item
-              class="breadCrumbPointer"
-              @click.native="operation(item,index)"
-            >流程管理</el-breadcrumb-item>
+            <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item,index)">流程管理</el-breadcrumb-item>
           </el-breadcrumb>
           <!-- 操作菜单end -->
 
@@ -206,26 +203,39 @@
     <boatRemarksInfor :propsObj.sync="propsObj"></boatRemarksInfor>
     <!-- 收款 -->
     <boatReceipt :propsObj.sync="propsObj"></boatReceipt>
+    <!-- 换舱 -->
+    <boatExchangeShip :propsObj.sync="propsObj"></boatExchangeShip>
+    <!-- 退款 -->
+    <boatRefundMoney :propsObj.sync="propsObj"></boatRefundMoney>
+    <!-- 出团通知书 -->
+    <boatAppearBook :propsObj.sync="propsObj"></boatAppearBook>
+    <!-- 客人信息 -->
+    <boatGuestsInfo :propsObj.sync="propsObj"></boatGuestsInfo>
     <!-- 流程管理
-    <boatProcessManage :propsObj.sync="propsObj"></boatProcessManage> -->
-    <!-- 分房信息 -->
-    <boatDivideRoomInfo :propsObj.sync="propsObj"></boatDivideRoomInfo>
+    <boatProcessManage :propsObj.sync="propsObj"></boatProcessManage>-->
   </div>
 </template>
 
 <script>
 import boatRemarksInfor from "./common/boatRemarksInfor";
 import boatReceipt from "./common/boatReceipt";
-import boatDivideRoomInfo from "./common/boatDivideRoomInfo";
+import boatExchangeShip from "./common/boatExchangeShip";
+import boatRefundMoney from "./common/boatRefundMoney";
+import boatAppearBook from "./common/boatAppearBook";
+import boatGuestsInfo from "./common/boatGuestsInfo";
 // import boatProcessManage from "./common/boatProcessManage";
 
 export default {
   components: {
     boatRemarksInfor,
     boatReceipt,
+    boatExchangeShip,
+    boatRefundMoney,
+    boatAppearBook,
+    boatGuestsInfo
     // boatProcessManage,
-    boatDivideRoomInfo
   },
+
   data() {
     return {
       arrDemo: [1, 2],
@@ -249,11 +259,13 @@ export default {
         { status: 6, name: "完成退款", type: 2 },
         { status: 2, name: "拒绝退款", type: 2 }
       ], //搜索的订单状态集合  联系客人先不做
-      breadCrumbs: ["备注", "收款", "换舱","退款", "出团通知书", "分房信息"], //折叠列表里面的操作集合
+      breadCrumbs: ["备注", "收款", "换舱", "退款", "出团通知书", "客人信息"], //折叠列表里面的操作集合
       isShowContent: null //折叠列表是否显示
     };
   },
+
   created() {},
+
   methods: {
     //   点击订单状态筛选
     statusTab(item, index) {
@@ -285,6 +297,12 @@ export default {
       this.propsObj = {
         dialogType: index
       };
+    },
+
+    // 子组件关闭弹窗的时候重置propsObj.dialogType = -1
+    resetDialogType () {
+      this.propsObj.dialogType = -1
+      console.log(12121)
     },
 
     // 重置按钮

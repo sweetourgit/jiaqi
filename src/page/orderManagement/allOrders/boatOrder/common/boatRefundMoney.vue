@@ -1,8 +1,8 @@
 <template>
-  <!--收款信息弹窗-->
+  <!--退款信息弹窗-->
   <el-dialog
-    title="收款信息"
-    :visible.sync="propsObj.dialogType === 1"
+    title="退款信息"
+    :visible.sync="propsObj.dialogType === 3"
     :close-on-click-modal="false"
     class
     width="780px"
@@ -21,7 +21,7 @@ export default {
   },
   created() {},
   methods: {
-    // 收款信息弹窗关闭事件
+    // 退款信息弹窗关闭事件
     btReceiptDialogClose() {
       // this.$emit(
       //   "update:this.propsObj.dialogType",

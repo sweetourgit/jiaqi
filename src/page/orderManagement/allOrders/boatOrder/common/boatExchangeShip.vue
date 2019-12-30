@@ -1,7 +1,7 @@
 <template>
   <!--分房信息弹窗-->
   <el-dialog
-    title="分房信息"
+    title="换舱"
     :visible.sync="propsObj.dialogType === 2"
     :close-on-click-modal="false"
     class

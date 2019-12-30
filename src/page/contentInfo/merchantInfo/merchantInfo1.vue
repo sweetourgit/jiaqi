@@ -1960,6 +1960,7 @@ export default {
     // 关联欠款的表格的总价计算
     getDebitTablePrice(id, total) {
       this.arrears = 0;
+      console.log(this.arrears)
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: 1,
@@ -1979,13 +1980,11 @@ export default {
     },
     // 关联欠款表格的分页
     handleGlSizeChange(val) {
-      console.log(val, 1);
       this.glPageSize = val;
       this.glPageIndex = 1;
       this.getDebitTable(this.tid);
     },
     handleGlCurrentChange(val) {
-      console.log(val, 2);
       this.glPageSize = 10;
       this.glPageIndex = val;
       this.getDebitTable(this.tid);
