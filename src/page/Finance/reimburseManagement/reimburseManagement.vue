@@ -89,6 +89,12 @@
       <!--报销end-->
       <!--报销弹窗-->
       <el-dialog title="报销申请" :visible.sync="dialogFormVisible" width="70%" :show-close="false">
+        <el-divider content-position="left"  v-if="this.find == 1" class="re_style" style="margin-top:10px">基本信息</el-divider>
+        <div v-if="this.find == 1" class="style_box">
+              <div v-if="this.state == 0" class="sh_style">审核中</div>
+              <div v-if="this.state == 1" class="tg_style">通过</div>
+              <div v-if="this.state == 2" class="bh_style">驳回</div>
+        </div>
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -214,11 +220,11 @@
                       
                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="180" align="center" v-if="find==1"></el-table-column>
                        <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="80" align="center" v-if="find==0"></el-table-column>
-                      <el-table-column prop="supplierTypeEX" label="借款类型" width="130" align="center"></el-table-column>
-                      <el-table-column prop="supplierName" label="供应商" width="180" align="center"></el-table-column>
+                      <el-table-column prop="supplierTypeEX" label="借款类型" width="120" align="center"></el-table-column>
+                      <el-table-column prop="supplierName" label="供应商" width="120" align="center"></el-table-column>
                       <el-table-column prop="createUser" label="申请人" width="125" align="center"></el-table-column>
-                      <el-table-column prop="paymentMark" label="摘要" width="180" align="center"></el-table-column>
-                      <el-table-column prop="paymentPrice" label="借款金额" width="130" align="center"></el-table-column>
+                      <el-table-column prop="paymentMark" label="摘要" width="140" align="center"></el-table-column>
+                      <el-table-column prop="paymentPrice" label="借款金额" width="118" align="center"></el-table-column>
                       <!-- <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column> -->
                       <el-table-column prop="wcount" label="本次报销金额"   width="140"   align="center" v-if="find==0">
                         <template slot-scope="scope">
@@ -303,13 +309,7 @@
             @click="chanelSubmit(ruleForm)"
             plain
           >撤销申请</el-button>
-            <div v-if="this.find == 1">
-                <div v-if="this.state == 0" class="sh_style">审核中</div>
-                <div v-if="this.state == 1" class="tg_style">通过</div>
-                <div v-if="this.state == 2" class="bh_style">驳回</div>
-            </div>
-            
-        </div>
+          </div>
       </el-dialog>
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
@@ -1810,37 +1810,35 @@ export default {
 }
  
 .sh_style {
-    position: absolute;
-  width: 66px;
-  height: 35px;
+  width: 48px;
+  border-radius:10%;
+  font-size: 12px;
+  height: 26px;
+  margin:5px 0px 5px 40px;
   text-align: center;
-  line-height: 35px;
-  top: -4px;
-  left: -1019px;
-  background: rgb(234, 234, 234);
- color: #000
+  line-height: 26px;
+  background:#999;
+  color:#fff;
 }
 .tg_style{
-    position: absolute;
-  width: 66px;
-  height: 35px;
+  width: 48px;
+  height: 26px;
+  border-radius:10%;
+  margin:5px 0px 5px 40px;
   text-align: center;
-  line-height: 35px;
-  top: -4px;
-  left: -1136px;
-  background: rgb(234, 234, 234);
-  color: rgb(151, 226, 37);
+  line-height: 26px;
+  background:#229206;
+  color: rgb(234, 234, 234);
 }
 .bh_style{
-    position: absolute;
-  width: 66px;
-  height: 35px;
+  width: 48px;
+  height: 26px;
+  border-radius:10%;
+  margin:5px 0px 5px 40px;
   text-align: center;
-  line-height: 35px;
-  top: -4px;
-  left: -1136;
-  background: rgb(234, 234, 234);
-  color: red;
+  line-height: 26px;
+  background:red;
+  color:  rgb(234, 234, 234);
 }
 
 .upload-demo  .el-upload-list__item {
