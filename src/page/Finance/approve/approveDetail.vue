@@ -151,6 +151,7 @@
       this.getApproveDetail(this.getApproveListGuid)
       this.tabShowWhich = String(this.$route.query.queryApproveExpenseID)
       this.auditResult(this.getApproveListGuid)
+      console.log(this.workItemIDArr,'this.workItemIDArr')
       if(this.workItemIDArr){
         this.workItemIDArr.forEach((item) => {
           if (this.getApproveListGuid == item.jq_ID){
@@ -230,13 +231,14 @@
       },
       // 审批通过弹窗-确定
       handlePassFn(){
+        console.log(this.getParamsWorkItemId)
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',{
           "jQ_ID":this.getApproveListGuid,
           "jQ_Type": 3,
           "userCode":sessionStorage.getItem('tel'),
           "workItemID": this.getParamsWorkItemId,
           "commentText": this.commentText
-        }).then(res =>{
+        }).then((res) =>{
           this.$message({
             message: '审批通过已完成',
             type: 'success'
@@ -244,6 +246,9 @@
           this.loadingBtn = false
           this.transitShow = false;
           this.backListPage()
+        }).catch( (err) => {
+          this.$message.warning("审批通过失败 ");
+          this.loadingBtn = false
         })
       },
       // 驳回之后走工作流
@@ -312,7 +317,7 @@
       },
       // 拆分/还款
       handleSplitRepaymentJump(){
-        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich } })
+        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich, queryWorkItemID: this.workItemIDArr } })
       },
       handleClick(){},
       // 表格表头颜色

@@ -142,6 +142,7 @@
     data(){
       return {
         listLoading: false,
+        workItemIDArr: null,
         pamentsOnlyId: null, // 无收入预付款表格的id
         keepWhichRow: null, // 保存当前点击的拆分借款按钮是那一行的（实现设置 ‘拆分/还款’ 列的值）
         isShowAcountTable: true, // 是否显示表格
@@ -164,6 +165,7 @@
       }
     },
     created(){
+      this.workItemIDArr = this.$route.query.queryWorkItemID
       this.getApproveListGuid = this.$route.query.approveDetailGuid
       this.getApproveList = this.$route.query.approveList
       this.getApproveDetail(this.getApproveListGuid)
@@ -225,7 +227,7 @@
           console.log(priceDiff)
           console.log(paramsSplitArr)
           Vue.ls.set('lsParamsSplitArr', paramsSplitArr);
-          this.$router.push({ path: '/approve/approveDetail', query: { source: 'splitLoan', queryApproveExpenseID: this.getApproveList, approveDetailGuid: this.getApproveListGuid } })
+          this.$router.push({ path: '/approve/approveDetail', query: { source: 'splitLoan', queryApproveExpenseID: this.getApproveList, approveDetailGuid: this.getApproveListGuid, queryWorkItemID: this.workItemIDArr } })
         }
       },
       // 获取详情
