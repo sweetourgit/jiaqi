@@ -97,6 +97,7 @@ export default {
         if(!result) return;
         Object.keys(this.submitForm).forEach(attr => this.expenseCache[attr]= this.submitForm[attr]);
         this.expenseCache.arrearsPrice= parseFloat(this.expenseCache.arrearsPrice);
+        this.expenseCache.price= this.expenseCache.arrearsPrice;
         this.$emit('save-action', {
           expense: this.expenseCache,
           isSave: this.isSave

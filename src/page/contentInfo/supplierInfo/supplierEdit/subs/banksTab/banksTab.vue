@@ -82,10 +82,11 @@ export default {
       },
 
       validate(){
-        if(this.tableData.length=== 0){
-          this.$message.error('至少添加一条账户信息');
-          return false;
-        }
+        // @1242 19.12.31
+        // if(this.tableData.length=== 0){
+        //   this.$message.error('至少添加一条账户信息');
+        //   return false;
+        // }
         return true;
       },
 
