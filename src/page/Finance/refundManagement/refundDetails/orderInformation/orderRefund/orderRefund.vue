@@ -107,7 +107,7 @@ export default {
   },
   data() {
     return {
-      dialogOrderRefund:true,
+      dialogOrderRefund:false,
       refundList:{},
       ruleForm:{
         refundWay:'1',// 退款方式
