@@ -13,7 +13,8 @@
               <span class="search_style">申请人：</span>
               <el-input v-model="createUser" placeholder="请输入内容" class="search_input" :disabled="ifShowProposer"></el-input>
               <span class="search_style">发起时间：</span>
-              <div style="float: left">
+
+              <!-- <div style="float: left">
                 <el-date-picker 
                 v-model="beginDate" 
                 type="date" 
@@ -31,11 +32,23 @@
                 @change="endDateChange()" 
                 placeholder="结束时间"
                 ></el-date-picker>
-              </div>
+              </div> -->
+
+                <el-date-picker
+                class="search_input"
+                style="width:30%"
+                @change="endDateChange()" 
+                v-model="plan_data"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="请选择开始日期"
+                end-placeholder="请选择结束日期"
+                >
+                </el-date-picker>
             </div>
             <div class="reform">
-              <el-button type="primary"  @click="handleSearch">搜索1</el-button>
-              <el-button type="primary"  @click="handleReset">重置1</el-button>
+              <el-button type="primary"  @click="handleSearch">搜 索</el-button>
+              <el-button type="primary"  @click="handleReset">重 置</el-button>
             </div>
             <div class="reform">
               <el-button type="primary" plain @click="dialogchange">申请</el-button>
@@ -198,7 +211,7 @@
                   <!-- <el-radio v-model="radio" label="2">手添报销明细</el-radio> -->
                 </div>
                 <div v-if="radio==1" class="re_style" style="margin-top: 20px">
-                  <el-button @click="addbx(item.content)" v-if="find==0">增加1</el-button>
+                  <el-button @click="addbx(item.content)" v-if="find==0">增加</el-button>
                 </div>
                 <div  style="background: #E6F3FC; height: 33px;width: 1204px;margin-left: 40px;margin-top: 10px; ">
                   <i
@@ -302,7 +315,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
           <el-button @click="chanceSubmit(ruleForm)">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm(ruleForm)">确 定3</el-button>
+          <el-button v-if="this.find == 0" type="primary" @click="submitForm(ruleForm)">确 定</el-button>
           <el-button
             v-if="this.state == 0"
             type="danger"
@@ -323,7 +336,7 @@
           <div class="indialog">
             <div style=" position: absolute;right: 67px;top: 22px;">
               <el-button  @click="showplan()">取 消</el-button>
-              <el-button type="primary" @click="addplan(ruleForm.editableTabsValue)">确 定1</el-button>
+              <el-button type="primary" @click="addplan(ruleForm.editableTabsValue)">确 定</el-button>
             </div>
             <div class="indialog_search">
               <span class="search_style">团期单号：</span>
@@ -331,7 +344,7 @@
               <span class="search_style">产品名称：</span>
               <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
               <span class="search_style">出行日期：</span>
-              <el-date-picker
+              <!-- <el-date-picker
                 v-model="startTime2"
                 type="date"
                 placeholder="开始日期"
@@ -342,11 +355,23 @@
                 type="date"
                 placeholder="终止日期"
                 style="float: left;width: 140px;"
-              ></el-date-picker>
+              ></el-date-picker> -->
+
+               <el-date-picker
+                class="search_input"
+                style="width:28%"
+                v-model="plan_data2"
+                @change="endDateChange2()" 
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="终止日期"
+                >
+                </el-date-picker>
               <el-button
                 type="primary"
                 size="mini"
-                @click="searchHand4()"
+                @click="search_btn()"
                 round
                 style="margin-top: 5px; margin-left: 10px"
               >搜索</el-button>
@@ -394,8 +419,8 @@
          <span class="search_style">供应商：</span>
               <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
           <div class="reform_s">
-            <el-button @click="T_check" type="primary">搜索2</el-button>
-            <el-button @click="T_update" type="primary">重置2</el-button>
+            <el-button @click="T_check" type="primary">搜 索</el-button>
+            <el-button @click="T_update" type="primary">重 置</el-button>
           </div>
         <el-table 
          :data="joinData" 
@@ -415,7 +440,7 @@
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="t_text_del('joinData')">取 消</el-button>
-          <el-button type="primary" @click="t_text()">确 定2</el-button>
+          <el-button type="primary" @click="t_text()">确 定</el-button>
         </div>
       </el-dialog>
       <!--添加报销弹窗end-->
@@ -468,8 +493,10 @@ export default {
         planName: "",
         pid: ""
       },
-      beginDate: "",//报销开始时间+
-      endDate: "",//报销结束时间+
+      // beginDate: "",//报销开始时间+
+      // endDate: "",//报销结束时间+
+      plan_data:"",//选择时间
+      plan_data2:"",//选择时间
       uid: 0, // 上传图片缩略图选中项
       planTotal: 1,
       userSize: 10,
@@ -783,6 +810,10 @@ export default {
           this.currentPage5 = val;
           this.searchHand4();
         },
+        search_btn() {
+         this.currentPage5 = 1;
+         this.searchHand4();
+        },
         searchHand4() { //团期计划搜索
           this.$http
             .post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancepage", {
@@ -791,13 +822,16 @@ export default {
               object: {
                 groupCode: this.tour_name, //团号
                 title: this.product_name, //产品名称
-                beginDate: this.startTime2? formatDate(this.startTime2, "yyyyMMdd"): 0, //搜索用开始日期
-                endDate: this.endTime2 ? formatDate(this.endTime2, "yyyyMMdd") : 0 //搜索用结束日期
+                beginDate: this.plan_data2[0] ? formatDate(this.plan_data2[0],"yyyyMMdd") : 0, //搜索用开始日期
+                endDate: this.plan_data2[1] ? formatDate(this.plan_data2[1], "yyyyMMdd") : 0 //搜索用结束日期
+
+                // beginDate: this.startTime2? formatDate(this.startTime2, "yyyyMMdd"): 0, //搜索用开始日期
+                // endDate: this.endTime2 ? formatDate(this.endTime2, "yyyyMMdd") : 0 //搜索用结束日期
               }
             })
             .then(res => {
               this.subscript();
-              console.log(res.data.objects,'80523');
+              //console.log(res.data.objects,'80523');
               this.t_pageCount = res.data.total;
               this.planData = res.data.objects;
               this.s_content.count =  res.data.objects[0].count
@@ -806,11 +840,16 @@ export default {
               console.log(err);
             });
         },
+         endDateChange2() { //判断结束时间不能在开始时间之前
+         if (this.plan_data2 == null){
+              this.plan_data2 = ""
+              this.searchHand4();
+          }
+        },
         T_update_btn(){//团期计划重置
             this.tour_name=""; //团号
             this.product_name="" //产品名称
-            this.startTime2="" ;//搜索用开始日期
-            this.endTime2 ="";//搜索用结束日期
+            this.plan_data2 = ""
             this.t_pageSize = 10;
             this.currentPage5 = 1;
             this.searchHand4()
@@ -1370,13 +1409,13 @@ export default {
             this.joinData=[];
             this.Associated(this.plans.pid);
         },
-        beginDateBlur() {//开始时间
-            if (this.beginDate == "" && this.endDate == "") {
-              this.pageList(1, this.pageSize);
-            }
-          },
+        // beginDateBlur() {//开始时间
+        //     if (this.beginDate == "" && this.endDate == "") {
+        //       this.pageList(1, this.pageSize);
+        //     }
+        //   },
         endDateBlur() {//结束时间
-            if (this.beginDate == "" && this.endDate == "") {
+          if (this.beginDate == "" && this.endDate == "") {
               this.pageList(1, this.pageSize);
             }
           },
@@ -1392,8 +1431,9 @@ export default {
             this.expenseID = "";
             this.groupCode = "";
             this.createUser = "";
-            this.beginDate = "";
-            this.endDate = "";
+            this.plan_data = "";
+           // this.beginDate = "";
+            //this.endDate = "";
             this.pageList(1, this.pageSize);
          },
           //查询列表
@@ -1404,8 +1444,8 @@ export default {
             groupCode = this.groupCode,//计划
             productName = this.productName,
             createUser = this.createUser,//申请人
-            beginTime= this.beginDate,//开始时间
-            endTime = this.endDate,//结束时间
+            beginTime= this.plan_data[0],//开始时间
+            endTime = this.plan_data[1],//结束时间
         ){
             var that = this;
             let object = {};
@@ -1462,13 +1502,9 @@ export default {
               });
         },
         endDateChange() { //判断结束时间不能在开始时间之前
-          let beginTime = moment(this.beginDate).format("YYYYMMDD");
-          let entTime = moment(this.endDate).format("YYYYMMDD");
-          if (this.beginDate !== "") {
-            if (entTime < beginTime) {
-              this.$message.error("结束时间不能早于开始时间");
-              this.endDate = "";
-            }
+         if (this.plan_data == null){
+              this.plan_data = ""
+              this.pageList(1, this.pageSize);
           }
         },
         dateFormat: function(row, column) { // 起始时间格式转换
