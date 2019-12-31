@@ -480,6 +480,8 @@ export default {
       t_pageSize:10,
       pageCount: 100,
       t_pageCount:100,
+      currentPage4: 1,
+      currentPage5: 1,
       change: false,
       find: 0, //分辨查看
       state:3,//审核中
@@ -553,8 +555,7 @@ export default {
           time: ""
         }],
       formLabelWidth: "120px",
-      currentPage4: 1,
-      currentPage5: 1,
+    
       activeName: "first",
       expenseID: "",
       groupCode: "",
@@ -707,7 +708,7 @@ export default {
                   this.$message({ message:'请选择团期计划',
                                   type: 'warning' 
                                 });
-           }
+           } 
          
           
         },
@@ -776,14 +777,13 @@ export default {
         t_handleSizeChange(val) {
           this.t_pageSize = val;
           this.currentPage5 = 1;
-          this.searchHand4(1,this.t_pageSize);
+          this.searchHand4();
         },
         t_handleCurrentChange(val) {
           this.currentPage5 = val;
-          this.searchHand4(1);
+          this.searchHand4();
         },
-        searchHand4(val) { //团期计划搜索
-         this.subscript();
+        searchHand4() { //团期计划搜索
           this.$http
             .post(this.GLOBAL.serverSrc + "/teamquery/get/api/planfinancepage", {
               pageIndex: this.currentPage5,
@@ -796,6 +796,8 @@ export default {
               }
             })
             .then(res => {
+              this.subscript();
+              console.log(res.data.objects,'80523');
               this.t_pageCount = res.data.total;
               this.planData = res.data.objects;
               this.s_content.count =  res.data.objects[0].count
@@ -1784,7 +1786,7 @@ export default {
 }
 .block_s {
   float: left;
-  margin-left: 600px;
+  margin-left: 370px;
   margin-top: -30px;
   margin-bottom: 85px;
 }
