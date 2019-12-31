@@ -686,7 +686,8 @@
             that.dialogVisibleApproval = false;
             that.approval_status = '';
             that.approvalMark = '';
-            that.insert();
+            that.closeAdd();
+            // that.insert();
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
