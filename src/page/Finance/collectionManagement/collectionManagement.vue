@@ -17,7 +17,7 @@
         <recognitionWait></recognitionWait>
       </el-tab-pane>
       <el-tab-pane label="报销还款" name="seven">
-        <reimbursement></reimbursement>
+        <reimbursement ref="reimbursement"></reimbursement>
       </el-tab-pane>
       <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third">
         <PendingApprovalManagement ref="PendingApprovalManagement"></PendingApprovalManagement>
