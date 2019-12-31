@@ -746,7 +746,8 @@
           if (response.data.isSuccess) {
             // that.$message.success("审批提交成功~");
             if(that.approval_status == '1'){
-              that.insert();
+              // that.insert();
+              that.closeAdd();
             }else if(that.approval_status == '2'){
               that.closeAdd('cancal');
             }
