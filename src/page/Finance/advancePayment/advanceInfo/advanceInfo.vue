@@ -382,11 +382,11 @@ export default {
       ifAccountBtn: false, // 只有出纳的时候才显示付款账户
       listLoading: true,
       ruleFormSeach: {
-        groupCode_01:'', // 团号
-        createTime:'', // 创建时间
-        endTime:'', // 结束时间
-        checkType:'', // 状态
-        borrower: '', // 借款人
+        groupCode_01:'',
+        createTime:'',
+        endTime:'',
+        checkType:'',
+        borrower: '',
         page: 1,
         limit: 10,
       },
@@ -454,9 +454,9 @@ export default {
         cardNumber: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
         bankName: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
         cardName: [{ required: true, message: '开户名不能为空', trigger: 'blur' }],
-        pass: [
-          { required: true, trigger: 'change', validator: validateVoucher}
-        ],
+        // pass: [
+        //   { required: true, trigger: 'change', validator: validateVoucher}
+        // ],
         fiels:[{ required: true, message: '不能为空', trigger: 'blur' }],
       },
       activeName: 'first',
@@ -931,6 +931,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          if(this.supplier_id == 0 ){
+            this.$message.success("请选择供应商（***选择***）");
+            return
+          }
           this.inputVisible2 = true;
           let pictureList = [];
           this.fileList.forEach(function(item){

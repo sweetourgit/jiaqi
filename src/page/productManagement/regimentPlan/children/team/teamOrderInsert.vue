@@ -440,7 +440,7 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">毛利率:</div>
-              <div class="fl ml13">{{teampreviewData.rate}}%</div>
+              <div class="fl ml13">{{teampreviewData.rate | numFilter}}%</div>
             </td>
           </tr>
         </table>

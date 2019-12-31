@@ -493,7 +493,7 @@ export default {
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
         accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
         payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
+        // accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
       },
       fileList: [],
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
@@ -1043,6 +1043,10 @@ export default {
     ensureIncome(){
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
+          if(!this.supplier_id && typeof(this.supplier_id)!='undefined' && this.supplier_id!=0 ){
+            this.$message.success("请选择供应商（***选择***）");
+            return
+          }
           let pictureList = [];
 
           this.fileList.forEach(function(item){
