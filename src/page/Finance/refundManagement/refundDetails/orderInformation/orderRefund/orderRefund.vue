@@ -41,13 +41,14 @@
           </table>
         </div>
       </div>
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
-        <el-form-item label="退款方式" prop="refundWay">
-          <div @change="clickTab()">
+      <div class="way" @change="clickTab('ruleForm')">
+        <div style="float:left; width:100px; margin:0 0 0 30px;">退款方式</div>
+        <div style="float:left;margin:0 0 0 -30px;">
           <el-radio label="1" class="radiomar" v-model="ruleForm.refundWay">全退</el-radio>
           <el-radio label="2" class="radiomar" v-model="ruleForm.refundWay">部分退</el-radio>
-          </div>
-        </el-form-item>
+        </div>
+      </div>
+      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
         <el-form-item label="申请原由" v-if="ruleForm.refundWay == 1" prop="originally">
           <el-input v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由"></el-input>
           <span class="Numbers">{{ruleForm.originally.length}}/100字</span>
@@ -83,6 +84,15 @@
           <el-input v-model="ruleForm.partCardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
           <span class="Numbers">{{ruleForm.partCardPeople.length}}/40字</span>
         </el-form-item>
+        <el-table v-if="ruleForm.refundWay == 2" :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+          <el-table-column prop="" label="报名类型" align="center"></el-table-column>
+          <el-table-column prop="" label="价钱" align="center"></el-table-column>
+          <el-table-column prop="" label="姓名" align="center"></el-table-column>
+          <el-table-column prop="" label="电话" align="center"></el-table-column>
+          <el-table-column prop="" label="身份证" align="center"></el-table-column>
+          <el-table-column prop="" label="性别" align="center"></el-table-column>
+          <el-table-column prop="" label="选择退款客人信息" align="center"></el-table-column>
+        </el-table>
       </el-form>
     </el-dialog>
   </div>
@@ -143,6 +153,7 @@ export default {
           { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
         ],
       },
+      tableDate:[],
     };
   },
   watch: {
@@ -158,19 +169,18 @@ export default {
   created() {
   },
   methods: {
-    clickTab(){
-      if(this.ruleForm.refundWay == 1){
-        this.ruleForm.originally = '';
-        this.ruleForm.cardNumber = '';
-        this.ruleForm.cardBank = '';
-        this.ruleForm.cardPeople = '';
-      }else if(this.ruleForm.refundWay == 2){
-        this.ruleForm.needRefund = '';// 还需退款金额
-        this.ruleForm.partPriginally = ''; // 部分退款原由
-        this.ruleForm.partCardNumber = ''; // 部分退汇款卡号
-        this.ruleForm.partCardBank = ''; // 部分退汇款开户行
-        this.ruleForm.partCardPeople = ''; // 部分退汇款开户人
+    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+      if (rowIndex == 0) {
+        return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
+      } else {
+        return "";
       }
+    },
+    getCellClass() {
+      return "textAlign:center";
+    },
+    clickTab(formName){
+      this.$refs[formName].resetFields();
     },
     cancelOrder(){
       this.dialogOrderRefund = false;
@@ -184,9 +194,11 @@ export default {
 .border{border:1px solid #e6e6e6; border-radius:5px; overflow:hidden;line-height:40px; }
 .pa{position: absolute; top: 8px; right: 10px;}
 .title{line-height:40px; background:#f6f6f6;font-weight:bold;}
-.refund{margin:20px 0 0 0;}
+.refund{padding:20px 0 0 0;clear: both;}
 .Words{width:300px;}
 .Numbers{margin:0 0 0 10px;}
+.way{margin:20px 0 20px 0 ; font-size:14px;}
+.table{width:1100px;margin:0 0 0 10px;}
 </style>
 
 
