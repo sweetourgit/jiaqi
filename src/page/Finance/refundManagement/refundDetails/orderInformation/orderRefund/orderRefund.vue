@@ -43,8 +43,10 @@
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
         <el-form-item label="退款方式" prop="refundWay">
+          <div @change="clickTab()">
           <el-radio label="1" class="radiomar" v-model="ruleForm.refundWay">全退</el-radio>
           <el-radio label="2" class="radiomar" v-model="ruleForm.refundWay">部分退</el-radio>
+          </div>
         </el-form-item>
         <el-form-item label="申请原由" v-if="ruleForm.refundWay == 1" prop="originally">
           <el-input v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由"></el-input>
@@ -61,6 +63,25 @@
         <el-form-item label="汇款开户人" v-if="ruleForm.refundWay == 1" prop="cardPeople">
           <el-input v-model="ruleForm.cardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
           <span class="Numbers">{{ruleForm.cardPeople.length}}/40字</span>
+        </el-form-item>
+        <el-form-item label="还需退款" v-if="ruleForm.refundWay == 2" prop="needRefund">
+          <el-input v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
+        </el-form-item>
+        <el-form-item label="申请原由" v-if="ruleForm.refundWay == 2" prop="partPriginally">
+          <el-input v-model="ruleForm.partPriginally" class="Words" placeholder="请输入申请原由"></el-input>
+          <span class="Numbers">{{ruleForm.partPriginally.length}}/100字</span>
+        </el-form-item>
+        <el-form-item label="汇款卡号" v-if="ruleForm.refundWay == 2" prop="partCardNumber">
+          <el-input v-model="ruleForm.partCardNumber" class="Words" placeholder="请输入汇款卡号"></el-input>
+          <span class="Numbers">{{ruleForm.partCardNumber.length}}/80字</span>
+        </el-form-item>
+        <el-form-item label="汇款开户行" v-if="ruleForm.refundWay == 2" prop="partCardBank">
+          <el-input v-model="ruleForm.partCardBank" class="Words" placeholder="请输入汇款开户行"></el-input>
+          <span class="Numbers">{{ruleForm.partCardBank.length}}/40字</span>
+        </el-form-item>
+        <el-form-item label="汇款开户人" v-if="ruleForm.refundWay == 2" prop="partCardPeople">
+          <el-input v-model="ruleForm.partCardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
+          <span class="Numbers">{{ruleForm.partCardPeople.length}}/40字</span>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -80,10 +101,15 @@ export default {
       refundList:{},
       ruleForm:{
         refundWay:'1',// 退款方式
-        originally:'', // 原由
-        cardNumber:'', // 汇款卡号
-        cardBank:'', // 汇款开户行
-        cardPeople:'', // 汇款开户人
+        originally:'', // 全退原由
+        cardNumber:'', // 全退汇款卡号
+        cardBank:'', // 全退汇款开户行
+        cardPeople:'', // 全退汇款开户人
+        needRefund:'',// 还需退款金额
+        partPriginally:'', // 部分退款原由
+        partCardNumber:'', // 部分退汇款卡号
+        partCardBank:'', // 部分退汇款开户行
+        partCardPeople:'', // 部分退汇款开户人
       },
       rules:{
         refundWay: [
@@ -104,6 +130,18 @@ export default {
           { required: true, message: '请输入汇款开户人', trigger: 'change' },
           { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
         ],
+        partPriginally: [
+          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'change' }
+        ],
+        partCardNumber: [
+          { min: 1, max: 80, message: '长度在 1 到 80 个字符', trigger: 'change' }
+        ],
+        partCardBank: [
+          { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
+        ],
+        partCardPeople: [
+          { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
+        ],
       },
     };
   },
@@ -120,6 +158,20 @@ export default {
   created() {
   },
   methods: {
+    clickTab(){
+      if(this.ruleForm.refundWay == 1){
+        this.ruleForm.originally = '';
+        this.ruleForm.cardNumber = '';
+        this.ruleForm.cardBank = '';
+        this.ruleForm.cardPeople = '';
+      }else if(this.ruleForm.refundWay == 2){
+        this.ruleForm.needRefund = '';// 还需退款金额
+        this.ruleForm.partPriginally = ''; // 部分退款原由
+        this.ruleForm.partCardNumber = ''; // 部分退汇款卡号
+        this.ruleForm.partCardBank = ''; // 部分退汇款开户行
+        this.ruleForm.partCardPeople = ''; // 部分退汇款开户人
+      }
+    },
     cancelOrder(){
       this.dialogOrderRefund = false;
     },
