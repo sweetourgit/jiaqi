@@ -167,7 +167,22 @@ export default {
       return {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       }
+    },
+
+    countTest:function () {
+      return this.$store.state.bankDataUpdate
     }
+  },
+  watch: {
+    countTest:function(newV, oldV){
+      const that = this;
+      if(newV.indexOf("industrialBankSK") != -1 && newV != oldV){
+        setTimeout(function () {
+          // alert('数据改变，执行loadDataSXF~')
+          that.loadData()
+        },500)
+      }
+    },
   },
   methods: {
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -195,6 +210,7 @@ export default {
         this.$message.success("兴业银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
+        that.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
       }else{
         this.$message.warning("兴业银行流水单上传失败！");
       }
@@ -273,6 +289,7 @@ export default {
           if (response.data.isSuccess) {
             that.pageCurrent = 1;
             that.loadData();
+            that.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
             that.$message({
               type: 'info',
               message: '已删除'

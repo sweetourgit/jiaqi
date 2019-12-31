@@ -100,7 +100,7 @@
     </el-row>
     <!-- 审核结果 END -->
     <!-- 通过、驳回弹框 -->
-    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list" :show-close="false">
+    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list">
       <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
       <el-row>
         <el-col :span="2" :offset="21">
@@ -134,7 +134,8 @@
         transitShow: false, // 通过驳回弹窗
         title: '', // 通过驳回弹窗标题切换
         getParamsWorkItemId: null, // 工作流接口参数
-        getApproveSource: null //   如果路由是从拆分借款页跳过来的会有个来源参数。当拆分借款保存之后，详情页通过可以取消置灰状态
+        getApproveSource: null, //   如果路由是从拆分借款页跳过来的会有个来源参数。当拆分借款保存之后，详情页通过可以取消置灰状态
+        getKeepBtnStatus: false
       }
     },
     // 关于时间的过滤
@@ -146,12 +147,12 @@
     created(){
       let getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
       this.getApproveListGuid = this.$route.query.approveDetailGuid
+      this.getKeepBtnStatus = this.$route.query.ifClickKeepBtn ? this.$route.query.ifClickKeepBtn : false
       this.getApproveSource = this.$route.query.source
       this.workItemIDArr = this.$route.query.queryWorkItemID
       this.getApproveDetail(this.getApproveListGuid)
       this.tabShowWhich = String(this.$route.query.queryApproveExpenseID)
       this.auditResult(this.getApproveListGuid)
-      console.log(this.workItemIDArr,'this.workItemIDArr')
       if(this.workItemIDArr){
         this.workItemIDArr.forEach((item) => {
           if (this.getApproveListGuid == item.jq_ID){
@@ -162,7 +163,7 @@
     },
     computed:{
       ShowPassBtn(){
-        if(this.getApproveSource == 'splitLoan'){
+        if(this.getApproveSource == 'splitLoan' && this.getKeepBtnStatus){
           return false
         } else {
           return this.ifShowPassBtn
@@ -260,19 +261,25 @@
           "workItemID": this.getParamsWorkItemId,
           "commentText": this.commentText
         }).then(res =>{
-          this.rejectedSuccess();
           // 结束工作流
           this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
             "jq_id":this.getApproveListGuid,
             "jQ_Type": 3
           }).then(res => {
-            this.$message({
-              message: '审批驳回已完成',
-              type: 'success'
-            });
-            this.loadingBtn = false
-            this.transitShow = false;
-            this.backListPage()
+            this.$http.post(this.GLOBAL.serverSrc + 'finance/expense/api/savechecktype',{
+              "object": {
+                "guid": this.getApproveListGuid,
+                "checkType": 2
+              }
+            }).then( res => {
+              this.$message({
+                message: '审批驳回已完成',
+                type: 'success'
+              });
+              this.loadingBtn = false
+              this.transitShow = false;
+              this.backListPage()
+            })
           })
         })
       },

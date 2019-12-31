@@ -15,7 +15,7 @@
       </el-tab-pane>
       <el-tab-pane label="兴业银行" name="second">
         <!-- <industrialBankSK></industrialBankSK> -->
-        <el-tabs type="border-card">
+        <el-tabs type="border-card" @tab-click="handleClick">
           <el-tab-pane label="收款">
             <industrialBankSK></industrialBankSK>
           </el-tab-pane>

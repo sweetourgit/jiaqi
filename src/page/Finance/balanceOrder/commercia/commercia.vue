@@ -2,7 +2,7 @@
    <div  class="vivo" style="position:relative; width:100%;">
      <div label="商户欠款订单">
         <!--搜索框-->
-        <div style="width:1100px;">
+        <div>
           <div class="fl">
             <span class="emptyPlan">订单单号</span>
             <el-input v-model="orderid" class="empty"   placeholder="订单ID"></el-input>
@@ -13,9 +13,17 @@
           </div>
           <div class="fl">
             <span class="emptyPlan">欠款时间</span>
-            <el-date-picker v-model="startDate" type="date" class="planTime" placeholder="日期" @change="endDateChange()"></el-date-picker>
-            <span class="time">——</span>
-            <el-date-picker v-model="endDate" type="date" class="planTime" placeholder="日期" @change="endDateChange()"></el-date-picker>
+             <el-date-picker
+                class="planTime"
+                style="width:55%"
+                v-model="planTime"
+                @change="endDateChange()" 
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="终止日期"
+                >
+              </el-date-picker>
           </div>
         </div>
         <div style="width:1100px;clear:both; padding:0 0 50px 0;">
@@ -35,14 +43,14 @@
         <!--表格-->
          <el-table :data="tableData" class="labelTable" border style="width:100%">
             <el-table-column prop="ID" label="订单单号" width="200" align="center"></el-table-column>
-            <el-table-column prop="name" label="商户名称" width="140" align="center"></el-table-column>
-            <el-table-column prop="moneyType" label="结款方式" width="65" align="center"></el-table-column>
+            <el-table-column prop="name" label="商户名称" width="130" align="center"></el-table-column>
+            <el-table-column prop="moneyType" label="结款方式" width="72" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" width="160" align="center"></el-table-column>
-            <el-table-column prop="plan" label="团期计划" width="140" align="center"></el-table-column>
-            <el-table-column prop="order" label="订单金额" width="100" align="center"></el-table-column>
-            <el-table-column prop="arrears" label="欠款金额" width="100" align="center"></el-table-column>
-            <el-table-column prop="also" label="已还金额" width="100" align="center"></el-table-column>
-            <el-table-column prop="examine" label="待审批金额" width="100" align="center"></el-table-column>
+            <el-table-column prop="plan" label="团期计划" width="130" align="center"></el-table-column>
+            <el-table-column prop="order" label="订单金额" width="92" align="center"></el-table-column>
+            <el-table-column prop="arrears" label="欠款金额" width="92" align="center"></el-table-column>
+            <el-table-column prop="also" label="已还金额" width="92" align="center"></el-table-column>
+            <el-table-column prop="examine" label="待审批金额" width="92" align="center"></el-table-column>
             <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
             <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
          </el-table>
@@ -90,8 +98,7 @@ export default {
        //搜索栏
         orderid:"",//订单id
         ordertitle:'',//商户名称
-        startDate:"", // 开始时间
-        endDate:"", // 结束时间
+        planTime:"",//time
         typeColl:-1, //欠款逾期
         settlement:[{
           value:  -1,
@@ -129,18 +136,19 @@ export default {
             pageSize = this.pageSize,
             orderCode = this.orderid,//订单id
             localComp = this.ordertitle,//商户名称
-            startDate= this.startDate,//开始时间
-            endDate = this.endDate,//结束时间
+            startDate= this.planTime[0],//开始时间
+            endDate = this.planTime[1],//结束时间
             typeColl=this.typeColl//选择逾期
         ){
             var that = this;
             let object={};
-            if(endDate !== "" && startDate !== ""){
-              endDate = Date.parse(endDate);
-              startDate = Date.parse(startDate);
+            console.log(endDate);
+            if(endDate == undefined && startDate == undefined ){
+              endDate = 0
+              startDate = 0
             }else{
-              endDate = ""
-              startDate = ""
+               endDate = Date.parse(endDate);
+               startDate = Date.parse(startDate);
             }
               orderCode !== "" ? (object.orderCode = orderCode) : orderCode,
               localComp !== "" ? (object.localComp = localComp) : localComp,
@@ -189,24 +197,24 @@ export default {
     emptyButton(){
       this.orderid ='',
       this.ordertitle ='',
-      this.startDate = '';
-      this.endDate = '';
+      this.planTime = '';
       this.typeColl = -1;
       this.currentPage4 = 1;
       this.pageList(1, this.pageSize);
     },
     //判断结束时间不能在开始时间之前
     endDateChange() {
-      let startDate = moment(this.startDate).format("YYYY-MM-DD hh:mm:ss");
-      let endDate = moment(this.endDate).format("YYYY-MM-DD hh:mm:ss");
-      if (this.startDate !== "") {
-        if (endDate < startDate) {
-          this.$message.error("结束时间不能早于开始时间");
-          this.endDate = "";
-        }else if(endDate == startDate){
-          this.endDate = moment(this.endDate).format("YYYY-MM-DD 23:59:00");
-        }
-      }
+      console.log(this.planTime);
+      if (this.planTime == null){
+              this.planTime = "";
+              this.pageList();
+          }else{
+            let startDate = moment(this.planTime[0]).format("YYYY-MM-DD hh:mm:ss");
+            let endDate = moment(this.planTime[1]).format("YYYY-MM-DD hh:mm:ss");
+            if(endDate == startDate){
+                this.planTime[1] = moment(this.planTime[1]).format("YYYY-MM-DD 23:59:00");
+            }
+         }
     },
     handleSearch() {// 搜索
             this.pageIndex = 1;

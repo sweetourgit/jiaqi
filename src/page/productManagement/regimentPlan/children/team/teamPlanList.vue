@@ -74,7 +74,7 @@
             <span v-show="show1">
               <span class="cursor blue" @click="operation(2)">详情</span>
               <span class="em" v-if="scope.row.regimentType=='3'">|</span>
-              <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='3'" @click="reimbursement(scope.row.id)">报账单</span>
               <span class="em" v-if="scope.row.regimentType=='1'">|</span>
               <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
             </span>
@@ -148,6 +148,7 @@ export default {
       userCodeList: null, // 获取UserList列表
       pageshow: true,
       planId: 0,
+      isCheckSheet:0,
       variable: 0, //设置一个变量展示弹窗
       dialogType: 0, //弹窗类型  1：下单
       title: "", //产品名称
@@ -217,6 +218,7 @@ export default {
       uid:'',
       type:'',
       fileLength:0,
+      isCheckSheet:0,
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -256,6 +258,7 @@ export default {
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
       this.planId = this.multipleSelection[0].id;
+      this.isCheckSheet = this.multipleSelection[0].isCheckSheet;
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -587,7 +590,10 @@ export default {
          
         }
       })
-    }
+    },
+    reimbursement(status,isCheckSheet){ // 报账单
+      this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.isCheckSheet});
+    },
   }
 };
 </script>

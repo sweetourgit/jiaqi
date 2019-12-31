@@ -99,13 +99,13 @@
   </div>
 </template>
 <script type="text/javascript">
-   //import NewTour from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/newTour'
+  import NewTour from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/newTour'
  // import {formatDate} from '@/js/libs/publicMethod.js'
 
 export default {
   name: "visaOrderList",
   components: {
-    NewTour,
+    NewTour
   },
   data() {
     return {

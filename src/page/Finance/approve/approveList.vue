@@ -2,7 +2,8 @@
 <template>
   <div class="distributor-content">
     <el-tabs v-model="tabShowWhich" @tab-click="handleClick" style="width: 98%;margin: 20px auto;">
-      <el-tab-pane label="报销管理" name="reimburse">
+      <el-tab-pane :label="'报销管理(' + approveDataNum +')'" name="reimburse">
+
         <!-- 检索 -->
         <div class="plan">
           <el-row type="flex" class="row-bg">
@@ -39,7 +40,7 @@
           <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
           <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
+          <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
           <el-table-column label="审批" width="150" align="center">
             <template slot-scope="scope">
@@ -61,6 +62,7 @@
     name: "approveList",
     data(){
       return {
+        approveDataLength: null,
         listLoading: false, // 表格加载等待状态
         keepWorkItemID: [], // 保存workItemid
         ruleFormSeach: {
@@ -73,6 +75,11 @@
     },
     created(){
       this.approveTableList();
+    },
+    computed: {
+      approveDataNum:function () {
+        return this.approveDataLength > 0 ? this.approveDataLength : 0
+      }
     },
     methods: {
       moment,
@@ -138,6 +145,7 @@
               }).then(obj =>{
                 that.approveTableData = obj.data.objects;
                 this.listLoading = false
+                this.approveDataLength = that.approveTableData.length
               })
             })
           })

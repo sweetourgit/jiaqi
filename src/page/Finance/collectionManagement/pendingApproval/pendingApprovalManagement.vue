@@ -416,9 +416,9 @@ export default {
             localCompID: 0 // 直客0,同业变成同业社id
             //"localCompName":""
           }
-        })
-        .then(function(obj) {
-          if (obj.data.isSuccess) {
+        }).then(function(obj) {
+
+          if(obj.data.isSuccess){
             that.totalZK = obj.data.total;
             that.numZK = obj.data.total;
             that.tableDataZK = obj.data.objects;
