@@ -239,7 +239,6 @@
           "rece_code": this.orderNum
         }, ).then(function(response) {
           if (response.data.code == '200') {
-            console.log('手动列表',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {

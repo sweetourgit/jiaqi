@@ -274,7 +274,6 @@
           }
         ).then(function(obj) {
 
-          console.log('ZK',obj);
           if(obj.data.isSuccess){
             that.totalZK = obj.data.total;
             that.numZK = obj.data.total;
@@ -336,7 +335,6 @@
             }
           }
         ).then(function(obj) {
-          console.log('TY',obj);
           if(obj.data.isSuccess){
             that.totalTY = obj.data.total;
             that.numTY = obj.data.total;
@@ -391,7 +389,6 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token')
           }
         }).then(function (obj) {
-          console.log('NBSK',obj);
           if(obj.data.isSuccess){
             that.totalNBSK = obj.data.total;
             that.numNBSK = obj.data.total;
