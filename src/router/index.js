@@ -677,6 +677,14 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/bankStatement/bankZCK',
+      component: () => import('@/page/Finance/bankStatement/bankZCK.vue'),
+      name: '银行流水单管理  /设置暂存款',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '*',
       redirect: '/userList'
     }
