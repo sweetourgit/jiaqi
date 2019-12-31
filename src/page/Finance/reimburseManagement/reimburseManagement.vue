@@ -359,7 +359,7 @@
 
                <el-date-picker
                 class="search_input"
-                style="width:28%"
+                style="width:30%"
                 v-model="plan_data2"
                 @change="endDateChange2()" 
                 type="daterange"
@@ -373,14 +373,14 @@
                 size="mini"
                 @click="search_btn()"
                 round
-                style="margin-top: 5px; margin-left: 10px"
+                style="margin-top: 10px; margin-left: 20px"
               >搜索</el-button>
               <el-button 
               @click="T_update_btn" 
               type="primary"
               size="mini"
               round
-              style="margin-top: 5px; margin-left: 10px"
+              style="margin-top: 10px; margin-left: 10px"
               >重置</el-button>
               
             </div>
@@ -431,12 +431,12 @@
           <el-table-column prop="paymentID" label="预付款和无收入结款ID" width="170" align="center"></el-table-column>
          
           <el-table-column prop="supplierName" label="供应商" width="230" align="center"></el-table-column>
-          <el-table-column prop="supplierTypeEX" label="借款类型" width="160" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" width="140" align="center"></el-table-column>
           <!-- <el-table-column prop="orgName" label="部门" width="140"  align="center"></el-table-column> -->
-          <el-table-column prop="price" label="金额" width="150" align="center"></el-table-column>
+          <el-table-column prop="price" label="金额" width="120" align="center"></el-table-column>
           <!-- <el-table-column prop="wcount" label="未报销金额" width="150" align="center"></el-table-column> -->
-          <el-table-column prop="paymentMark" label="摘要" width="230" align="center"></el-table-column>
-          <el-table-column prop="createUser" label="申请人" width="160" align="center"></el-table-column>
+          <el-table-column prop="paymentMark" label="摘要" width="200" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" width="146" align="center"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="t_text_del('joinData')">取 消</el-button>

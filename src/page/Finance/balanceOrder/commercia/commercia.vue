@@ -13,9 +13,17 @@
           </div>
           <div class="fl">
             <span class="emptyPlan">欠款时间</span>
-            <el-date-picker v-model="startDate" type="date" class="planTime" placeholder="日期" @change="endDateChange()"></el-date-picker>
-            <span class="time">——</span>
-            <el-date-picker v-model="endDate" type="date" class="planTime" placeholder="日期" @change="endDateChange()"></el-date-picker>
+             <el-date-picker
+                class="planTime"
+                style="width:30%"
+                v-model="planTime"
+                @change="endDateChange()" 
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="终止日期"
+                >
+              </el-date-picker>
           </div>
         </div>
         <div style="width:1100px;clear:both; padding:0 0 50px 0;">
@@ -90,8 +98,7 @@ export default {
        //搜索栏
         orderid:"",//订单id
         ordertitle:'',//商户名称
-        startDate:"", // 开始时间
-        endDate:"", // 结束时间
+        planTime:"",//time
         typeColl:-1, //欠款逾期
         settlement:[{
           value:  -1,
@@ -189,24 +196,19 @@ export default {
     emptyButton(){
       this.orderid ='',
       this.ordertitle ='',
-      this.startDate = '';
-      this.endDate = '';
+      this.planTime = '';
       this.typeColl = -1;
       this.currentPage4 = 1;
       this.pageList(1, this.pageSize);
     },
     //判断结束时间不能在开始时间之前
     endDateChange() {
-      let startDate = moment(this.startDate).format("YYYY-MM-DD hh:mm:ss");
-      let endDate = moment(this.endDate).format("YYYY-MM-DD hh:mm:ss");
-      if (this.startDate !== "") {
-        if (endDate < startDate) {
-          this.$message.error("结束时间不能早于开始时间");
-          this.endDate = "";
-        }else if(endDate == startDate){
+      let startDate = moment(this.planTime[0]).format("YYYY-MM-DD hh:mm:ss");
+      let endDate = moment(this.planTime[1]).format("YYYY-MM-DD hh:mm:ss");
+      if(endDate == startDate){
           this.endDate = moment(this.endDate).format("YYYY-MM-DD 23:59:00");
         }
-      }
+      
     },
     handleSearch() {// 搜索
             this.pageIndex = 1;
