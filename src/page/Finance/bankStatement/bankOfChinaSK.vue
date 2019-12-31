@@ -44,7 +44,7 @@
     </el-form>
     <!-- 搜索表单 END -->
     <div class="buttonsDv">
-      <el-button @click="setZCK" type="warning" disabled="true">设置暂存款</el-button>
+      <el-button @click="setZCK" type="warning" :disabled="dis">设置暂存款</el-button>
       <el-upload
         class="upload-demo"
         :action="UploadUrl()"
@@ -129,6 +129,7 @@ export default {
   },
   data() {
     return {
+      dis: true, // 没这个功能，暂时禁用
       tableData: [], // 表格数据
       ruleForm: {
         matchType: '', // 匹配状态 
