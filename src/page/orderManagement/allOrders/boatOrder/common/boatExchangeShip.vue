@@ -23,10 +23,7 @@ export default {
   methods: {
     // 弹窗关闭事件
     btDivideDialogClose() {
-      this.$emit(
-        "update:this.propsObj.dialogType",
-        (this.propsObj.dialogType = -1)
-      );
+      this.$parent.resetDialogType();
     }
   },
   mounted() {}

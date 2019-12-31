@@ -23,10 +23,6 @@ export default {
   methods: {
     // 客人信息弹窗关闭事件
     btReceiptDialogClose() {
-      // this.$emit(
-      //   "update:this.propsObj.dialogType",
-      //   (this.propsObj.dialogType = -1)
-      // );
       this.$parent.resetDialogType()
     }
   },
