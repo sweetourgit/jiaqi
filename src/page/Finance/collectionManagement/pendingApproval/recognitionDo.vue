@@ -380,17 +380,19 @@ export default {
     // 选择，提交认款
     chooseRecognition(row, type) {
       // console.log(row);
-      this.canClick = true;
+      
       if (this.collectionType !== 6) {
         if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
-          that.$message.warning("不能进行选择，剩余金额不足~");
+          this.$message.warning("不能进行选择，剩余金额不足~");
         } else {
+          this.canClick = true;
           this.commitAxios(row, type);
         }
       } else  {
         if(row.surplus_Amount < this.baseInfo.price) {
-          that.$message.warning("不能进行选择，剩余金额不足~");
+          this.$message.warning("不能进行选择，剩余金额不足~");
         }  else {
+          this.canClick = true;
           this.commitAxios(row, type);
         }
       }
