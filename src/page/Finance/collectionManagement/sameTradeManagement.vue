@@ -193,7 +193,7 @@
                   <tbody>
                   <tr>
                     <td>{{item.payablePrice}}</td>
-                    <td>{{ fundamental.collectionNumber }}</td>
+                    <td>{{ typeof hasSubject == 'Number' ? fundamental.collectionNumber : '现金' }}</td>
                     <td>{{ item.matchingPrice }}</td>
                   </tr>
                   </tbody>
@@ -280,7 +280,7 @@
                   <tbody>
                     <tr>
                       <td>{{item.payablePrice}}</td>
-                      <td>{{ fundamental.collectionNumber }}</td>
+                      <td>{{ typeof hasSubject == 'Number' ? fundamental.collectionNumber : '现金' }}</td>
                       <td>{{ item.matchingPrice }}</td>
                     </tr>
                   </tbody>
@@ -545,6 +545,7 @@ export default {
       currentRowId: null, // 当前行id
       keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
       ifShowsearch: false,
+      hasSubject: null
     }
   },
   created(){
@@ -765,10 +766,11 @@ export default {
       }).then(res => {
         if(res.data.isSuccess == true){
           const resObj = res.data.object
-           this.fundamental=res.data.object;
+          this.fundamental=res.data.object;
           const keepDebtItem = resObj.arrears
           this.tableAudit = res.data.object.spw
-
+          let acountIdPrint = res.data.object.accountID
+          this.getPrivateAcount(acountIdPrint)
           if(res.data.object.spw.length > 0){
             this.printSureTime = res.data.object.spw[0].createTime
             this.printSureState = res.data.object.spw[res.data.object.spw.length - 1].spState
@@ -782,6 +784,13 @@ export default {
           })
         }
      })
+    },
+    getPrivateAcount(printAcountId){
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
+        "id":printAcountId
+      }).then(res => {
+        this.hasSubject = res.data.object.subject
+      })
     },
     // 添加申请同业收款
     addSameGathering () {

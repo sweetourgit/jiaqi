@@ -191,7 +191,7 @@
                 <tbody>
                 <tr>
                   <td>{{ printPayablePrice }}</td>
-                  <td>{{ fundamental.collectionNumber }}</td>
+                  <td>{{ typeof hasSubject == 'Number' ? fundamental.collectionNumber : '现金' }}</td>
                   <td>{{ printMatchingPrice }}</td>
                 </tr>
                 </tbody>
@@ -263,7 +263,7 @@
                 <tbody>
                 <tr>
                   <td>{{ printPayablePrice }}</td>
-                  <td>{{ fundamental.collectionNumber }}</td>
+                  <td>{{ typeof hasSubject == 'Number' ? fundamental.collectionNumber : '现金' }}</td>
                   <td>{{ printMatchingPrice }}</td>
                 </tr>
                 </tbody>
@@ -509,6 +509,7 @@ export default {
       tableDataBorrower:[],
       keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
       ifShowsearch: false,
+      hasSubject: null,
     }
   },
   computed: {
@@ -632,6 +633,14 @@ export default {
     },
     closeAdd() {
       this.dialogFormVisible = false;
+    },
+    getPrivateAcount(printAcountId){
+      console.log(printAcountId)
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
+        "id":printAcountId
+      }).then(res => {
+        this.hasSubject = res.data.object.subject
+      })
     },
     //查询详情
     dialogFind(row) {
@@ -796,7 +805,9 @@ export default {
            this.printPayablePrice = res.data.object.arrears[0].payablePrice
            this.printOrderCode = res.data.object.arrears[0].orderCode
            this.printGroupCode = res.data.object.arrears[0].groupCode
-
+           let acountIdPrint = res.data.object.accountID
+           console.log(acountIdPrint,'acountIdPrint')
+           this.getPrivateAcount(acountIdPrint)
            if(res.data.object.spw.length > 0){
              this.printSureTime = res.data.object.spw[0].createTime
              this.printSureState = res.data.object.spw[res.data.object.spw.length - 1].spState
