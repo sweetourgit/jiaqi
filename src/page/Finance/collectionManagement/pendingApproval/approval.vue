@@ -76,7 +76,7 @@
                     <tbody>
                     <tr>
                       <td>{{item.payablePrice}}</td>
-                      <td>{{ typeof hasSubjectStatus == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
+                      <td>{{ hasSubjectStatus.length != 0 ? baseInfo.collectionNumber : '现金' }}</td>
                       <td>{{ item.matchingPrice }}</td>
                     </tr>
                     </tbody>
@@ -163,7 +163,7 @@
                     <tbody>
                     <tr>
                       <td>{{item.payablePrice}}</td>
-                      <td>{{ typeof hasSubjectStatus == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
+                      <td>{{ hasSubjectStatus.length != 0 ? baseInfo.collectionNumber : '现金' }}</td>
                       <td>{{ item.matchingPrice }}</td>
                     </tr>
                     </tbody>
@@ -294,7 +294,7 @@
                   <tbody>
                   <tr>
                     <td>{{ printPayablePrice }}</td>
-                    <td>{{ typeof hasSubjectStatus == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
+                    <td>{{ hasSubjectStatus.length != 0 ? baseInfo.collectionNumber : '现金' }}</td>
                     <td>{{ printMatchingPrice }}</td>
                   </tr>
                   </tbody>
@@ -366,7 +366,7 @@
                   <tbody>
                   <tr>
                     <td>{{ printPayablePrice }}</td>
-                    <td>{{ typeof hasSubjectStatus == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
+                    <td>{{ hasSubjectStatus.length != 0 ? baseInfo.collectionNumber : '现金' }}</td>
                     <td>{{ printMatchingPrice }}</td>
                   </tr>
                   </tbody>
@@ -880,9 +880,11 @@
         }, ).then(function(response) {
           console.log(response);
           if (response.data.isSuccess) {
+            that.hasSubjectStatus = response.data.object.subject
+            console.log(that.hasSubjectStatus, 'that.hasSubjectStatus')
+            console.log(typeof hasSubjectStatus == 'Number')
             if(response.data.object.subject){
               that.hasSubject = true;
-              that.hasSubjectStatus = response.data.object.subject
             }
           } else {
             that.hasSubject = false;
