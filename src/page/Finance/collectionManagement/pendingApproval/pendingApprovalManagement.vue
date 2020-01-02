@@ -531,9 +531,9 @@ export default {
       this.endTimeZK = "";
       this.checkTypeStatusZK = "";
       this.collectionNumberZK = "";
-      this.statusChange("审批中")
-      this.loadingZK = true
-      this.loadDataZK()
+      this.statusChange("审批中");
+      this.loadingZK = true;
+      this.loadDataZK();
     },
 
     // 加载同业信息及处理分页
@@ -548,7 +548,6 @@ export default {
       this.loadDataTY();
     },
     loadDataTY() {
-      
       const that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collection/api/page", {
@@ -558,12 +557,14 @@ export default {
             id: 0,
             checkType: this.statusChange(this.checkTypeStatusTY),
             collectionTime: "2019-05-16",
-            startTime: this.startTimeTY !== ""
-              ? moment(this.startTimeTY).format("YYYY-MM-DD")
-              : "2000-05-16",
-            endTime: this.endTimeTY !== ""
-              ? moment(this.endTimeTY).format("YYYY-MM-DD")
-              : "2099-05-16",
+            startTime:
+              this.startTimeTY !== ""
+                ? moment(this.startTimeTY).format("YYYY-MM-DD")
+                : "2000-05-16",
+            endTime:
+              this.endTimeTY !== ""
+                ? moment(this.endTimeTY).format("YYYY-MM-DD")
+                : "2099-05-16",
             groupCode: this.groupCodeTY !== "" ? this.groupCodeTY : "",
             planID: 0,
             orderID: 0,
@@ -608,7 +609,6 @@ export default {
       this.loadDataTY();
     },
 
-
     // 同业重置
     handleResetBtnTY() {
       this.groupCodeTY = "";
@@ -617,9 +617,9 @@ export default {
       this.endTimeTY = "";
       this.checkTypeStatusTY = "";
       this.collectionNumberTY = "";
-      this.statusChange("审批中")
-      this.loadingTY = true
-      this.loadDataTY()
+      this.statusChange("审批中");
+      this.loadingTY = true;
+      this.loadDataTY();
     },
 
     // 起始时间格式转换
@@ -705,14 +705,38 @@ export default {
             pageIndex: this.currentPageBXHK,
             pageSize: this.pagesizeBXHK,
             object: {
-              startTime: this.startTime
-                ? formatDate(this.startTime, "YYYY-MM-DD HH:mm:ss")
-                : "2000-05-16",
-              endTime: this.endTime
-                ? formatDate(this.endTime, "YYYY-MM-DD HH:mm:ss")
-                : "2099-05-16",
-              collectionType: 6,
-              checkType: 0
+              // startTime: this.startTime
+              //   ? formatDate(this.startTime, "YYYY-MM-DD HH:mm:ss")
+              //   : "2000-05-16",
+              // endTime: this.endTime
+              //   ? formatDate(this.endTime, "YYYY-MM-DD HH:mm:ss")
+              //   : "2099-05-16",
+              // collectionType: 6,
+              // checkType: 0
+
+              // 仿直客请求begin
+              id: 0,
+              checkType: 0,
+              collectionTime: "2019-05-16",
+              startTime: "2000-05-16",
+              endTime: "2099-05-16",
+              groupCode: "",
+              planID: 0,
+              orderID: 0,
+              orderNumber: "",
+              collectionNumber: "",
+              price: 0,
+              dept: 0,
+              createUser: "",
+              createTime: "2019-05-16 01:02:40",
+              code: "",
+              serialNumber: "",
+              abstract: "",
+              isDeleted: 0,
+              collectionType: 6, // 直客1.同业2
+              localCompID: this.sid // 直客0,同业变成同业社id
+              //"localCompName":""
+              // 仿直客请求end
             }
           },
           {
@@ -722,6 +746,7 @@ export default {
           }
         )
         .then(function(obj) {
+          console.log(obj,1111)
           if (obj.data.isSuccess) {
             that.totalBXHK = obj.data.total;
             that.numBXHK = obj.data.total;
@@ -756,7 +781,6 @@ export default {
         });
     },
 
-    
     //判断搜索输入框的结束时间不能在开始时间之前
     endDateChange(beginDate, endDate) {
       let beginTime = moment(beginDate).format("YYYYMMDD");
@@ -771,13 +795,13 @@ export default {
 
     // 直客同业搜索  状态输入框的转换
     statusChange(checkType) {
-      if ((checkType == "审批中")) {
+      if (checkType == "审批中") {
         checkType = 0;
-      } else if ((checkType == "通过")) {
+      } else if (checkType == "通过") {
         checkType = 1;
-      } else if ((checkType == "驳回")) {
+      } else if (checkType == "驳回") {
         checkType = 2;
-      } else  {
+      } else {
         checkType = 0;
       }
       return checkType;
