@@ -550,7 +550,7 @@
         </el-dialog>
       </div>
       <!--审批结束-->
-      
+
       <recognitionDo :dialogFormVisible2="dialogFormVisible2" :msg="msg" @close="recognitionClose"></recognitionDo>
       <recognitionDetail :dialogFormVisible3="dialogFormVisible3" :msg="msg" @close="recognitionClose"></recognitionDetail>
     </el-dialog>
@@ -701,7 +701,7 @@
               });
             }
           })
-          
+
         }
         this.baseInfo = {
           id: '',
@@ -846,20 +846,20 @@
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            if(!that.hasSubject){
-              that.tableAssociated.forEach( item => {
-                that.getCollectionPriceTotal += item.matchingPrice;
-              });
-            }else{
-              that.tableAssociated.forEach( item => {
-              that.getCollectionPriceTotal += item.matchingPrice;
+            // if(!that.hasSubject){
+            //   that.tableAssociated.forEach( item => {
+            //     that.getCollectionPriceTotal += item.matchingPrice;
+            //   });
+            // }else{
+            //   that.tableAssociated.forEach( item => {
+            //     that.getCollectionPriceTotal += item.matchingPrice;
+            //
+            //     if(item.checkType != 3){
+            //       that.passDisabled = true;
+            //     }
+            //   });
+            // }
 
-              if(item.checkType != 3){
-                that.passDisabled = true;
-              }
-            });
-            }
-            
             // 凭证
             that.fileList = response.data.object.files;
           } else {
@@ -884,6 +884,22 @@
             }
           } else {
             that.hasSubject = false;
+          }
+
+          if (!that.hasSubject) {
+            // alert("没有科目值");
+            that.tableAssociated.forEach(item => {
+              that.getCollectionPriceTotal += item.matchingPrice;
+            });
+          } else {
+            // alert("有科目值");
+            that.tableAssociated.forEach(item => {
+              that.getCollectionPriceTotal += item.matchingPrice;
+
+              if (item.checkType != 3) {
+                that.passDisabled = true;
+              }
+            });
           }
         }).catch(function(error) {
           console.log(error);
