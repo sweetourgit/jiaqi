@@ -1016,7 +1016,7 @@ export default {
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            if (!hasSubject) {
+            if (!that.hasSubject) {
               that.tableAssociated.forEach(item => {
                 that.getCollectionPriceTotal += item.matchingPrice;
               });
