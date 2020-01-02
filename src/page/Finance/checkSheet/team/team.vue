@@ -10,7 +10,8 @@
       </el-tab-pane>
       <el-tab-pane :label="'需要您审批（'+ mineCount +'）'" name="mine">
         <mine-pane 
-          ref="minePaneRef">
+          ref="minePaneRef"
+          @mine-count="mineCount= $event">
         </mine-pane>
       </el-tab-pane>
     </el-tabs>
@@ -52,7 +53,7 @@ export default {
         let { tab, conditions }= query || {};
         if(tab) this.currentTab= tab;
         this.$refs.allPaneRef.init(tab=== 'all' && conditions );
-        this.$refs.minePaneRef.init(tab=== 'mine' && conditions );
+        this.$refs.minePaneRef.init();
       },
 
       // 分流query

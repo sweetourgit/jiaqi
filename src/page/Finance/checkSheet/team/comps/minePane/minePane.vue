@@ -18,19 +18,9 @@
         :header-cell-style="getRowClass">
         <el-table-column align="center" prop="groupCode" label="团期计划" ></el-table-column>
 
-        <el-table-column align="center" label="状态">
-          <template slot-scope="scope">
-            <el-button type="text"
-              v-if="scope.row.isLeaf == 2"
-              @click="$emit('node-click', scope.row)" 
-            >{{ scope.row.areaName }}</el-button>
-            <span type="text"
-              v-else
-            >{{ scope.row.areaName }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column align="center" prop="checkTypeEX" label="状态"></el-table-column>
 
-        <el-table-column prop="groupCode" align="center" label="产品名称"></el-table-column>
+        <el-table-column prop="teamProTitle" align="center" label="产品名称"></el-table-column>
 
         <el-table-column prop="userName" label="申请人" align="center"></el-table-column>
 
@@ -38,8 +28,7 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button size="small" type="primary" @click="wakeupEditForm(scope.row)">编辑</el-button>
-            <el-button size="small" type="danger">删除</el-button>
+            <el-button size="small" type="primary" @click="toDetailPage(scope.row)">审批</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -82,11 +71,19 @@ export default {
       // 获取getCheckSheetListAction用到的参数
       getCheckSheetListData(){
         let object= this.$refs.minePaneConditions.getConditions();
-        let result= { startIndex: -1, endIndex: -1, workflowCode: this.workflowCode }
+        let result= { startIndex: -1, endIndex: -1, workflowCode: this.workflowCode, userCode: sessionStorage.getItem('tel') }
         // getFlowList的起始时间字段是startTime
-        if(object.beginTime) result.startTime= object.beginTime;
-        if(object.endTime) result.endTime= object.endTime;
+        result.startTime= object.beginTime? object.beginTime.toISOString(): "1970-01-01T00:00:00.000Z";
+        result.endTime= object.endTime? object.endTime.toISOString(): new Date().toISOString();
         return result;
+      },
+
+      toDetailPage(row){
+        let tab= 'mine';
+        let { id, workItemID }= row;
+        this.$router.push({ path: '/checkSheetDetail/team', query: {
+          id, workItemID, tab
+        }})
       },
 
       // 表格头部背景颜色
@@ -105,15 +102,15 @@ export default {
       getMineCheckSheetListAction(){
         this.getFlowNameAction()
         .then(workflowCode => {
-
           this.workflowCode= workflowCode;
           let payload= this.getCheckSheetListData();
           getFlowList(payload)
-          .then(guid => {
-
+          .then(jqList => {
+            let guid= jqList.map(el => el.jq_ID);
             getMineCheckSheetList(guid)
             .then(res => {
-
+              this.tableData= this.link(res, jqList);
+              this.$emit('mine-count', (res && res.length || 0));
             })
           })
         })

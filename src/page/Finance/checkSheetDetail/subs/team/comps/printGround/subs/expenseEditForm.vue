@@ -118,7 +118,7 @@ export default {
         supplier: null,
         peopleCount: null,
         price: null,
-        payPrice: null,
+        payPrice: 0,
         arrearsPrice: null,
         mark: null,
         expenseType: 1

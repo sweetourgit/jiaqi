@@ -47,7 +47,7 @@ export const getFlowList= function(payload){
     })
     .then(res => {
       if(!$isArray(res.data)) return reject('获取工作流中未完成的任务失败');
-      resolve(res.data.map(el => el.jq_ID));
+      resolve(res.data);
     })
     .catch(err => {
       if(typeof err=== 'string') return $message.error(err);

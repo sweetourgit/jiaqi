@@ -54,8 +54,14 @@
       </div>
       <div class="button-ground" 
         v-show="type=== 'mine'">
-        <el-button type="danger" size="small">驳回</el-button>
-        <el-button type="primary" size="small">通过</el-button>
+        <el-button type="danger" size="small"
+          @click="approvalHandler()">
+          驳回
+        </el-button>
+        <el-button type="primary" size="small"
+          @click="approvalHandler(true)">
+          通过
+        </el-button>
         <el-button type="primary" size="small">打印</el-button>
         <el-button type="info" size="small"
           @click="backPage">
@@ -66,6 +72,12 @@
     <main>
       <print-ground ref="printGround"></print-ground>
     </main>
+    <footer>
+      <approval-form
+        ref="approvalForm"
+        @save-action="approvalSaveHandler">
+      </approval-form>
+    </footer>
   </div>
 </template>
 
@@ -76,11 +88,12 @@
  * 2. 通过 /checkSheetDetail 进入，携带有财务报账单进入此页面时的tab和搜索条件等状态
  */
 
-import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet } from './api'
+import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ } from './api'
 import printGround from './comps/printGround/printGround'
+import approvalForm from './comps/approvalForm'
 
 export default {
-  components: { printGround },
+  components: { printGround, approvalForm },
 
   // 创建和唤醒都要从新执行init
   mounted(){
@@ -189,6 +202,17 @@ export default {
         this.$router.replace({ path: '/checkSheet/team', query: { tab, conditions: this.cacheConditions }})
           : this.$router.replace({ path: '/regimentPlan/teamPlanList' });  
     },
+
+    approvalHandler(isAgree){
+      this.$refs.approvalForm.wakeup({ isAgree });
+    },
+
+    approvalSaveHandler(payload){
+      let { commentText }= payload;
+      let workItemID= this.$route.query.workItemID;
+      let userCode= sessionStorage.getItem('tel');
+      this.isAgree? agreeForJQ({commentText, workItemID, userCode}): rejectForJQ({commentText, workItemID, userCode})
+    }
   }
 }
 </script>
