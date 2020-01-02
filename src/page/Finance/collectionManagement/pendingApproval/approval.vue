@@ -986,13 +986,13 @@ export default {
             that.getAccount(response.data.object.accountID);
 
             // 如果是报销还款进来的并且获取的accountID 为现金 则可以直接通过 此时没有去认款的按钮
-            // if (that.baseInfo.collectionType == 6) {
+            if (that.info.collectionType == 6) {
               if (response.data.object.accountID == 13) {
                 that.passDisabled = false;
               } else {
                 that.passDisabled = true;
               }
-            // }
+            }
 
             that.printMatchingPrice =
               response.data.object.arrears[0].matchingPrice;
@@ -1016,19 +1016,7 @@ export default {
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            if (!that.hasSubject) {
-              that.tableAssociated.forEach(item => {
-                that.getCollectionPriceTotal += item.matchingPrice;
-              });
-            } else {
-              that.tableAssociated.forEach(item => {
-                that.getCollectionPriceTotal += item.matchingPrice;
-
-                if (item.checkType != 3) {
-                  that.passDisabled = true;
-                }
-              });
-            }
+            
 
             // 凭证
             that.fileList = response.data.object.files;
@@ -1070,6 +1058,21 @@ export default {
           }
         } else {
           that.hasSubject = false;
+        }
+        if (!that.hasSubject) {
+          // alert("没有科目值");
+          that.tableAssociated.forEach(item => {
+            that.getCollectionPriceTotal += item.matchingPrice;
+          });
+        } else {
+          // alert("有科目值");
+          that.tableAssociated.forEach(item => {
+            that.getCollectionPriceTotal += item.matchingPrice;
+
+            if (item.checkType != 3) {
+              that.passDisabled = true;
+            }
+          });
         }
       }).catch(function(error) {
         console.log(error);
