@@ -317,11 +317,12 @@
       // 选择，提交认款
       chooseRecognition(row, type){
         // console.log(row);
-        this.canClick = true;
+        
         const that = this;
         if(row.surplus_Amount < this.tableDataOrder[0].matchingPrice){
           that.$message.warning("能进行选择，剩余金额不足~");
         }else{
+          this.canClick = true;
           this.$http.post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
             "object": {
               "arrID": that.tableDataOrder[0].id,

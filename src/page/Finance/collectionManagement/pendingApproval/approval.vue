@@ -507,7 +507,7 @@
             <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
             <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
             <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-            <el-table-column prop="prop" label="操作" align="center" v-if="baseInfo.collectionNumber != '现金'">
+            <el-table-column prop="prop" label="操作" align="center" v-if="hasSubject">
               <template slot-scope="scope">
                 <el-button v-if="scope.row.checkType != 3" type="text" @click="recognitionDo(scope.row)">去认款</el-button>
                 <el-button v-else type="text" @click="recognitionDetail(scope.row)">查看认款详情</el-button>
@@ -600,6 +600,8 @@
           collectionNumber: ''
         },
 
+        hasSubject: false, // 此收款是否有科目值
+
         // 基础信息凭证
         fileList: [],
         // 审核结果，table数据
@@ -634,6 +636,7 @@
         handler:function(){
           if(this.info != '' && this.dialogFormVisible){
             this.passDisabled = false;
+            this.hasSubject = false;
             this.loadData();
             this.getMoment();
           }
@@ -797,7 +800,7 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/coll", {
           "id": this.info.id
         }, ).then(function(response) {
-          // console.log('审批详情',response);
+          console.log('审批详情',response);
           if (response.data.isSuccess) {
             const hasInvoice = response.data.object.invoice == 1 ? '有':'无';
             let createTimeStr = '';
@@ -823,6 +826,8 @@
               localCompName: response.data.object.localCompName
             };
 
+            that.getAccount(response.data.object.accountID); // 获取科目值
+
             that.printMatchingPrice = response.data.object.arrears[0].matchingPrice
             that.printPayablePrice = response.data.object.arrears[0].payablePrice
             that.printOrderCode = response.data.object.arrears[0].orderCode
@@ -840,7 +845,7 @@
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            if(response.data.object.collectionNumber === '现金'){
+            if(!that.hasSubject){
               that.tableAssociated.forEach( item => {
                 that.getCollectionPriceTotal += item.matchingPrice;
               });
@@ -863,6 +868,25 @@
           console.log(error);
         });
 
+      },
+
+      // 根据id获取科目值
+      getAccount(id){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
+          "id": id
+        }, ).then(function(response) {
+          console.log(response);
+          if (response.data.isSuccess) {
+            if(response.data.object.subject){
+              that.hasSubject = true;
+            }
+          } else {
+            that.hasSubject = false;
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       },
 
       getMoment(){
