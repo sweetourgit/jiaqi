@@ -320,7 +320,7 @@
         
         const that = this;
         if(row.surplus_Amount < this.tableDataOrder[0].matchingPrice){
-          that.$message.warning("能进行选择，剩余金额不足~");
+          that.$message.warning("不能进行选择，剩余金额不足~");
         }else{
           this.canClick = true;
           this.$http.post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
