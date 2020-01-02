@@ -106,8 +106,8 @@
     >
       <!-- 查看 -->
       <div v-show="isShowLookOfSlit">
-        <p><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
-        <p style="margin-top: 10px;"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+        <p v-show="this.keepWhichRow.expenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+        <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
       </div>
       <!-- 查看 END -->
       <!-- 还款/拆分表单 -->
