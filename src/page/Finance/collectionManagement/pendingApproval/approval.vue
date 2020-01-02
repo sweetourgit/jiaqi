@@ -620,7 +620,7 @@
                 prop="prop"
                 label="操作"
                 align="center"
-                v-if="baseInfo.collectionNumber != '现金'"
+                v-if="hasSubject"
               >
                 <template slot-scope="scope">
                   <el-button
@@ -735,6 +735,8 @@ export default {
         moneyExplain: "",
         collectionNumber: ""
       },
+
+      hasSubject: false,
 
       // 基础信息凭证
       fileList: [],
@@ -944,7 +946,7 @@ export default {
           id: this.info.id
         })
         .then(function(response) {
-          // console.log('审批详情',response);
+          console.log('审批详情',response);
           if (response.data.isSuccess) {
             const hasInvoice = response.data.object.invoice == 1 ? "有" : "无";
             let createTimeStr = "";
@@ -974,11 +976,13 @@ export default {
               localCompName: response.data.object.localCompName,
               reimbursement: response.data.object.localCompName,
               loan: response.data.object.loan,
-              accountID:
-                response.data.object.accountID == 13
-                  ? (response.data.object.accountID = "现金")
-                  : (response.data.object.accountID = "汇款")
+              // accountID:
+              //   response.data.object.accountID == 13
+              //     ? (response.data.object.accountID = "现金")
+              //     : (response.data.object.accountID = "汇款")
             };
+
+            that.getAccount(response.data.object.accountID);
 
             // 如果是报销还款进来的并且获取的accountID 为现金 则可以直接通过 此时没有去认款的按钮
             if (that.baseInfo.collectionType == 6) {
@@ -1051,6 +1055,24 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
+    },
+
+    getAccount(id){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
+        "id": id
+      }, ).then(function(response) {
+        console.log(response);
+        if (response.data.isSuccess) {
+          if(response.data.object.subject){
+            that.hasSubject = true;
+          }
+        } else {
+          that.hasSubject = false;
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     },
 
     getMoment() {

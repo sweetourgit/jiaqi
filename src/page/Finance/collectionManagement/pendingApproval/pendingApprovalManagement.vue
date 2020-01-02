@@ -752,7 +752,7 @@ export default {
             that.numBXHK = obj.data.total;
             that.tableDataBXHK = obj.data.objects;
             that.tableDataBXHK.forEach(function(item, index, arr) {
-              item.createTime = that.formatDate(item.createTime);
+              item.createTime = moment(item.createTime).format("YYYY-MM-DD HH:mm:ss")
             });
             that.loadingBXHK = false;
           } else {
