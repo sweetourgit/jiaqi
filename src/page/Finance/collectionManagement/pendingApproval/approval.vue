@@ -76,7 +76,7 @@
                     <tbody>
                     <tr>
                       <td>{{item.payablePrice}}</td>
-                      <td>{{ baseInfo.collectionNumber }}</td>
+                      <td>{{ typeof hasSubject == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
                       <td>{{ item.matchingPrice }}</td>
                     </tr>
                     </tbody>
@@ -163,7 +163,7 @@
                     <tbody>
                     <tr>
                       <td>{{item.payablePrice}}</td>
-                      <td>{{ baseInfo.collectionNumber }}</td>
+                      <td>{{ typeof hasSubject == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
                       <td>{{ item.matchingPrice }}</td>
                     </tr>
                     </tbody>
@@ -294,7 +294,7 @@
                   <tbody>
                   <tr>
                     <td>{{ printPayablePrice }}</td>
-                    <td>{{ baseInfo.collectionNumber }}</td>
+                    <td>{{ typeof hasSubject == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
                     <td>{{ printMatchingPrice }}</td>
                   </tr>
                   </tbody>
@@ -366,7 +366,7 @@
                   <tbody>
                   <tr>
                     <td>{{ printPayablePrice }}</td>
-                    <td>{{ baseInfo.collectionNumber }}</td>
+                    <td>{{ typeof hasSubject == 'Number' ? baseInfo.collectionNumber : '现金' }}</td>
                     <td>{{ printMatchingPrice }}</td>
                   </tr>
                   </tbody>
@@ -572,6 +572,7 @@
     },
     data() {
       return {
+        hasSubject: null,
         printMatchingPrice: null,
         getOrgID: null, // 财务id
         printSureTime: null, // 打印用 - 确认时间
@@ -881,18 +882,19 @@
           if (response.data.isSuccess) {
             if(response.data.object.subject){
               that.hasSubject = true;
+              that.hasSubject = response.data.object.subject
             }
           } else {
             that.hasSubject = false;
           }
 
           if (!that.hasSubject) {
-            // alert("没有科目值");
+             alert("没有科目值");
             that.tableAssociated.forEach(item => {
               that.getCollectionPriceTotal += item.matchingPrice;
             });
           } else {
-            // alert("有科目值");
+             alert("有科目值");
             that.tableAssociated.forEach(item => {
               that.getCollectionPriceTotal += item.matchingPrice;
 
