@@ -393,19 +393,25 @@ export default {
     numZK: {
       handler: function() {
         this.$parent.$parent.$parent.totalNum =
-          this.numZK + this.numTY + this.numNBSK;
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     },
     numTY: {
       handler: function() {
         this.$parent.$parent.$parent.totalNum =
-          this.numZK + this.numTY + this.numNBSK;
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     },
     numNBSK: {
       handler: function() {
         this.$parent.$parent.$parent.totalNum =
-          this.numZK + this.numTY + this.numNBSK;
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
+      }
+    },
+    numBXHK: {
+      handler: function() {
+        this.$parent.$parent.$parent.totalNum =
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     }
   },
@@ -758,24 +764,24 @@ export default {
           } else {
             that.totalBXHK = 0;
             that.numBXHK = 0;
-            // that.tableDataBXHK = [];
-            that.tableDataBXHK = [
-              {
-                id: 1314,
-                checkType: 0,
-                reimbursement: 0,
-                loan: 0,
-                price: 1,
-                createTime: "2019-12-22T10:48:39.893",
-                dept: "大客户销售部",
-                createUser: "自己造的"
-              }
-            ];
-            that.tableDataBXHK.forEach(function(item, index, arr) {
-              item.createTime = moment(item.createTime).format(
-                "YYYY-MM-DD HH:mm:ss"
-              );
-            });
+            that.tableDataBXHK = [];
+            // that.tableDataBXHK = [
+            //   {
+            //     id: 1314,
+            //     checkType: 0,
+            //     reimbursement: 0,
+            //     loan: 0,
+            //     price: 1,
+            //     createTime: "2019-12-22T10:48:39.893",
+            //     dept: "大客户销售部",
+            //     createUser: "自己造的"
+            //   }
+            // ];
+            // that.tableDataBXHK.forEach(function(item, index, arr) {
+            //   item.createTime = moment(item.createTime).format(
+            //     "YYYY-MM-DD HH:mm:ss"
+            //   );
+            // });
             that.loadingBXHK = false;
           }
         });
