@@ -1118,7 +1118,7 @@ export default {
                         }else if(d_objects[i].checkType == 1){
                           this.state = 1;
                         }else if(d_objects[i].checkType == 2){
-                          this,state = 2;
+                          this.state = 2;
                         }
                             let t_sum = d_objects[i].payments.length;//多少项 
                             let qian = 0;
