@@ -96,12 +96,12 @@
         console.log(tab, event);
       },
       // 重置
-      HandleResetApprove (){
-
+      HandleResetApprove (paramsFrom){
+        this.$refs[paramsFrom].resetFields()
       },
       // 搜索
       HandleSearchApprove () {
-
+        this.approveTableList()
       },
       //  详情跳转
       handleJumpDetail(index, row){

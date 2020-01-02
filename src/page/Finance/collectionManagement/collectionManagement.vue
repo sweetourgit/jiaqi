@@ -19,7 +19,7 @@
       <el-tab-pane label="报销还款" name="seven">
         <reimbursement ref="reimbursement"></reimbursement>
       </el-tab-pane>
-      <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third">
+      <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third" v-if="showApproval">
         <PendingApprovalManagement ref="PendingApprovalManagement"></PendingApprovalManagement>
       </el-tab-pane>
     </el-tabs>
@@ -48,11 +48,15 @@ export default {
     return {
       activeName: 'first', // 当前tab选项卡默认状态
       clickTab:'', // 点击切换获取当前值
-      totalNum: 0
+      totalNum: 0,
+      showApproval: false
     }
   },
   computed: {},
   methods: {
+    appr(){
+      alert("审批按钮！");
+    },
     // 获取当前项的标题
     handleClick(tab, event) {// 点击切换获取当前值
       if(tab.label == "直客"){
@@ -136,6 +140,16 @@ export default {
     if(this.$route.params.tabStatus){
       this.activeName = this.$route.params.tabStatus
     }
+
+    const buttonperms = JSON.parse(sessionStorage.getItem('butPermission'));
+    // console.log(buttonperms)
+    for (let i = 0; i < buttonperms.length; i++){
+      if (buttonperms[i] == 'needyourapproval') {
+        this.showApproval = true;
+        break;
+      }
+    }
+    // console.log(this.showApproval)
   },
   mounted(){
 //    console.log(this.$refs.PendingApprovalManagement);

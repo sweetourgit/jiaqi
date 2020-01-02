@@ -380,36 +380,52 @@ export default {
     // 选择，提交认款
     chooseRecognition(row, type) {
       // console.log(row);
-      this.canClick = true;
-      const that = this;
-      if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
-        that.$message.warning("能进行选择，剩余金额不足~");
-      } else {
-        this.$http
-          .post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
-            object: {
-              arrID: that.tableDataOrder[0].id,
-              price: that.tableDataOrder[0].matchingPrice,
-              bangID: row.id,
-              type: type
-            }
-          })
-          .then(function(response) {
-            console.log(response);
-            if (response.data.isSuccess) {
-              that.getColl();
-            } else {
-              if (response.data.message) {
-                that.$message.warning(response.result.message);
-              } else {
-                that.$message.warning("认款提交失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+      
+      if (this.collectionType !== 6) {
+        if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
+          this.$message.warning("不能进行选择，剩余金额不足~");
+        } else {
+          this.canClick = true;
+          this.commitAxios(row, type);
+        }
+      } else  {
+        if(row.surplus_Amount < this.baseInfo.price) {
+          this.$message.warning("不能进行选择，剩余金额不足~");
+        }  else {
+          this.canClick = true;
+          this.commitAxios(row, type);
+        }
       }
+    },
+
+    // 提交认款的请求
+    commitAxios(row, type) {
+      console.log(this.tableDataOrder,"提交请求")
+      const that = this;
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
+          object: {
+            arrID: that.tableDataOrder[0].id,
+            price: that.tableDataOrder[0].matchingPrice,
+            bangID: row.id,
+            type: type
+          }
+        })
+        .then(function(response) {
+          console.log(response);
+          if (response.data.isSuccess) {
+            that.getColl();
+          } else {
+            if (response.data.message) {
+              that.$message.warning(response.result.message);
+            } else {
+              that.$message.warning("认款提交失败~");
+            }
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
 
     //

@@ -135,7 +135,8 @@
         title: '', // 通过驳回弹窗标题切换
         getParamsWorkItemId: null, // 工作流接口参数
         getApproveSource: null, //   如果路由是从拆分借款页跳过来的会有个来源参数。当拆分借款保存之后，详情页通过可以取消置灰状态
-        getKeepBtnStatus: false
+        getKeepBtnStatus: false,
+        getLsParamsSplitArr: null
       }
     },
     // 关于时间的过滤
@@ -145,7 +146,8 @@
       }
     },
     created(){
-      let getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
+      this.getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
+      console.log(this.getLsParamsSplitArr, '传过来的参数set')
       this.getApproveListGuid = this.$route.query.approveDetailGuid
       this.getKeepBtnStatus = this.$route.query.ifClickKeepBtn ? this.$route.query.ifClickKeepBtn : false
       this.getApproveSource = this.$route.query.source
@@ -230,9 +232,8 @@
           this.handleRejectFn();
         }
       },
-      // 审批通过弹窗-确定
-      handlePassFn(){
-        console.log(this.getParamsWorkItemId)
+      // 工作流通过方法
+      handlePassApi(){
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',{
           "jQ_ID":this.getApproveListGuid,
           "jQ_Type": 3,
@@ -252,6 +253,24 @@
           this.loadingBtn = false
         })
       },
+      // 审批通过弹窗-确定
+      handlePassFn(){
+        if(this.ifShowOperateBtn){
+          // 先提交拆分、还款记录，成功之后在调用工作流接口
+          console.log(this.getLsParamsSplitArr)
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
+            "object": this.getLsParamsSplitArr
+          }).then( obj =>  {
+            console.log(obj, '提交申请返回来的参数')
+            this.handlePassApi()
+          }).catch( err => {
+            console.log(err)
+          })
+        } else {
+          this.handlePassApi()
+        }
+
+      },
       // 驳回之后走工作流
       handleRejectFn(){
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',{
@@ -266,7 +285,7 @@
             "jq_id":this.getApproveListGuid,
             "jQ_Type": 3
           }).then(res => {
-            this.$http.post(this.GLOBAL.serverSrc + 'finance/expense/api/savechecktype',{
+            this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/savechecktype',{
               "object": {
                 "guid": this.getApproveListGuid,
                 "checkType": 2
@@ -279,7 +298,12 @@
               this.loadingBtn = false
               this.transitShow = false;
               this.backListPage()
+            }).catch(err => {
+              this.loadingBtn = false
+              console.log(err)
             })
+          }).catch(err => {
+            console.log(err)
           })
         })
       },
@@ -287,18 +311,6 @@
       handlePassBtn(){
         this.title="审批通过";
         this.transitShow = true;
-        // 先提交拆分、还款记录，成功之后在调用工作流接口
-        /*this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
-          "object": [{
-            'id': this.pamentsOnlyId,
-            'expenseType': this.ruleFormSplitLoan.formItemSplitLoan,
-            'accountID': this.getAcountId
-          }]
-        }).then( obj =>  {
-
-        }).catch( err => {
-          console.log(err)
-        })*/
       },
       // 驳回成功通过guid将checktype修改成2
       rejectedSuccess(){

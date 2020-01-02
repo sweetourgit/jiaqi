@@ -4,6 +4,38 @@
       <!-- 直客模块 -->
       <el-tab-pane :label="'直客(' + numZK + ')'" name="first">
         <!-- 直客表格 -->
+        <!-- 直客搜索begin -->
+        <div class="search">
+          <span class="searchName">团期计划</span>
+          <el-input v-model="groupCodeZK" class="searchInput"></el-input>
+          <span class="searchName">申请人</span>
+          <el-input v-model="createUserZK" class="searchInput"></el-input>
+          <span class="searchName">收款时间</span>
+          <el-date-picker
+            v-model="startTimeZK"
+            type="date"
+            placeholder="开始日期"
+            class="startTime"
+            @change="endDateChange(startTimeZK,endTimeZK)"
+          ></el-date-picker>
+          <div class="dateLine"></div>
+          <el-date-picker
+            v-model="endTimeZK"
+            type="date"
+            placeholder="终止日期"
+            class="startTime"
+            @change="endDateChange(startTimeZK,endTimeZK,)"
+          ></el-date-picker>
+          <br />
+          <span class="searchName">状态</span>
+          <el-input v-model="checkTypeStatusZK" class="searchInput"></el-input>
+          <span class="searchName">收款账户</span>
+          <el-input v-model="collectionNumberZK" class="searchInput"></el-input>
+          <el-button type="primary" class="searchBtn" @click="handleSearchBtnZK">搜索</el-button>
+          <el-button type="primary" class="searchBtn" @click="handleResetBtnZK">重置</el-button>
+        </div>
+        <!-- 直客搜索end -->
+
         <el-table
           :data="tableDataZK"
           border
@@ -76,7 +108,39 @@
       </el-tab-pane>
       <!-- 直客模块 END -->
       <!-- 同业模块 -->
+
       <el-tab-pane :label="'同业(' + numTY + ')'" name="second">
+        <!-- 同业搜索begin -->
+        <div class="search">
+          <span class="searchName">团期计划</span>
+          <el-input v-model="groupCodeTY" class="searchInput"></el-input>
+          <span class="searchName">申请人</span>
+          <el-input v-model="createUserTY" class="searchInput"></el-input>
+          <span class="searchName">收款时间</span>
+          <el-date-picker
+            v-model="startTimeTY"
+            type="date"
+            placeholder="开始日期"
+            class="startTime"
+            @change="endDateChange(startTimeTY,endTimeTY)"
+          ></el-date-picker>
+          <div class="dateLine"></div>
+          <el-date-picker
+            v-model="endTimeTY"
+            type="date"
+            placeholder="终止日期"
+            class="startTime"
+            @change="endDateChange(startTimeTY,endTimeTY)"
+          ></el-date-picker>
+          <br />
+          <span class="searchName">状态</span>
+          <el-input v-model="checkTypeStatusTY" class="searchInput"></el-input>
+          <span class="searchName">收款账户</span>
+          <el-input v-model="collectionNumberTY" class="searchInput"></el-input>
+          <el-button type="primary" class="searchBtn" @click="handleSearchBtnTY">搜索</el-button>
+          <el-button type="primary" class="searchBtn" @click="handleResetBtnTY">重置</el-button>
+        </div>
+        <!-- 同业搜索end -->
         <!-- 同业表格 -->
         <el-table
           :data="tableDataTY"
@@ -301,7 +365,23 @@ export default {
       loadingBXHK: true, // 内部收款列表loading
       pagesizeBXHK: 10, // 分页，每页条数
       currentPageBXHK: 1, // 分页，当前页数
-      totalBXHK: 0 // 分页，总条数
+      totalBXHK: 0, // 分页，总条数
+
+      // 直客搜索
+      groupCodeZK: "", //团期计划
+      createUserZK: "", //申请人
+      startTimeZK: "", //开始时间
+      endTimeZK: "", //结束时间
+      checkTypeStatusZK: "", //状态
+      collectionNumberZK: "", //收款账户
+
+      // 同业搜索
+      groupCodeTY: "", //团期计划
+      createUserTY: "", //申请人
+      startTimeTY: "", //开始时间
+      endTimeTY: "", //结束时间
+      checkTypeStatusTY: "", //状态
+      collectionNumberTY: "" //收款账户
     };
   },
   filters: {
@@ -313,19 +393,25 @@ export default {
     numZK: {
       handler: function() {
         this.$parent.$parent.$parent.totalNum =
-          this.numZK + this.numTY + this.numNBSK;
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     },
     numTY: {
       handler: function() {
         this.$parent.$parent.$parent.totalNum =
-          this.numZK + this.numTY + this.numNBSK;
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     },
     numNBSK: {
       handler: function() {
         this.$parent.$parent.$parent.totalNum =
-          this.numZK + this.numTY + this.numNBSK;
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
+      }
+    },
+    numBXHK: {
+      handler: function() {
+        this.$parent.$parent.$parent.totalNum =
+          this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     }
   },
@@ -391,22 +477,22 @@ export default {
           pageSize: this.pagesizeZK,
           object: {
             id: 0,
-            checkType: 0,
+            checkType: this.statusChange(this.checkTypeStatusZK),
             collectionTime: "2019-05-16",
-            startTime: this.startTime
-              ? formatDate(this.startTime, "YYYY-MM-DD HH:mm:ss")
+            startTime: this.startTimeZK
+              ? moment(this.startTimeZK).format("YYYY-MM-DD")
               : "2000-05-16",
-            endTime: this.endTime
-              ? formatDate(this.endTime, "YYYY-MM-DD HH:mm:ss")
+            endTime: this.endTimeZK
+              ? moment(this.endTimeZK).format("YYYY-MM-DD")
               : "2099-05-16",
-            groupCode: "",
+            groupCode: this.groupCodeZK !== "" ? this.groupCodeZK : "",
             planID: 0,
             orderID: 0,
             orderNumber: "",
             collectionNumber: "",
             price: 0,
             dept: 0,
-            createUser: "",
+            createUser: this.createUserZK !== "" ? this.createUserZK : "",
             createTime: "2019-05-16 01:02:40",
             code: "",
             serialNumber: "",
@@ -416,9 +502,9 @@ export default {
             localCompID: 0 // 直客0,同业变成同业社id
             //"localCompName":""
           }
-        }).then(function(obj) {
-
-          if(obj.data.isSuccess){
+        })
+        .then(function(obj) {
+          if (obj.data.isSuccess) {
             that.totalZK = obj.data.total;
             that.numZK = obj.data.total;
             that.tableDataZK = obj.data.objects;
@@ -434,6 +520,26 @@ export default {
           }
         })
         .catch(function(obj) {});
+    },
+
+    // 直客搜索
+    handleSearchBtnZK() {
+      this.currentPageZK = 1;
+      this.loadingZK = true;
+      this.loadDataZK();
+    },
+
+    // 直客重置
+    handleResetBtnZK() {
+      this.groupCodeZK = "";
+      this.createUserZK = "";
+      this.startTimeZK = "";
+      this.endTimeZK = "";
+      this.checkTypeStatusZK = "";
+      this.collectionNumberZK = "";
+      this.statusChange("审批中");
+      this.loadingZK = true;
+      this.loadDataZK();
     },
 
     // 加载同业信息及处理分页
@@ -455,22 +561,24 @@ export default {
           pageSize: this.pagesizeTY,
           object: {
             id: 0,
-            checkType: 0,
+            checkType: this.statusChange(this.checkTypeStatusTY),
             collectionTime: "2019-05-16",
-            startTime: this.startTime
-              ? formatDate(this.startTime, "YYYY-MM-DD HH:mm:ss")
-              : "2000-05-16",
-            endTime: this.endTime
-              ? formatDate(this.endTime, "YYYY-MM-DD HH:mm:ss")
-              : "2099-05-16",
-            groupCode: this.plan ? this.plan : "",
+            startTime:
+              this.startTimeTY !== ""
+                ? moment(this.startTimeTY).format("YYYY-MM-DD")
+                : "2000-05-16",
+            endTime:
+              this.endTimeTY !== ""
+                ? moment(this.endTimeTY).format("YYYY-MM-DD")
+                : "2099-05-16",
+            groupCode: this.groupCodeTY !== "" ? this.groupCodeTY : "",
             planID: 0,
             orderID: 0,
             orderNumber: "",
             collectionNumber: "",
             price: 0,
             dept: 0,
-            createUser: "",
+            createUser: this.createUserTY !== "" ? this.createUserTY : "",
             createTime: "2019-05-16 01:02:40",
             code: "",
             serialNumber: "",
@@ -499,6 +607,27 @@ export default {
         })
         .catch(function(obj) {});
     },
+
+    // 同业搜索
+    handleSearchBtnTY() {
+      this.currentPageTY = 1;
+      this.loadingTY = true;
+      this.loadDataTY();
+    },
+
+    // 同业重置
+    handleResetBtnTY() {
+      this.groupCodeTY = "";
+      this.createUserTY = "";
+      this.startTimeTY = "";
+      this.endTimeTY = "";
+      this.checkTypeStatusTY = "";
+      this.collectionNumberTY = "";
+      this.statusChange("审批中");
+      this.loadingTY = true;
+      this.loadDataTY();
+    },
+
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
@@ -582,14 +711,38 @@ export default {
             pageIndex: this.currentPageBXHK,
             pageSize: this.pagesizeBXHK,
             object: {
-              startTime: this.startTime
-                ? formatDate(this.startTime, "YYYY-MM-DD HH:mm:ss")
-                : "2000-05-16",
-              endTime: this.endTime
-                ? formatDate(this.endTime, "YYYY-MM-DD HH:mm:ss")
-                : "2099-05-16",
-              collectionType: 6,
-              checkType: 0
+              // startTime: this.startTime
+              //   ? formatDate(this.startTime, "YYYY-MM-DD HH:mm:ss")
+              //   : "2000-05-16",
+              // endTime: this.endTime
+              //   ? formatDate(this.endTime, "YYYY-MM-DD HH:mm:ss")
+              //   : "2099-05-16",
+              // collectionType: 6,
+              // checkType: 0
+
+              // 仿直客请求begin
+              id: 0,
+              checkType: 0,
+              collectionTime: "2019-05-16",
+              startTime: "2000-05-16",
+              endTime: "2099-05-16",
+              groupCode: "",
+              planID: 0,
+              orderID: 0,
+              orderNumber: "",
+              collectionNumber: "",
+              price: 0,
+              dept: 0,
+              createUser: "",
+              createTime: "2019-05-16 01:02:40",
+              code: "",
+              serialNumber: "",
+              abstract: "",
+              isDeleted: 0,
+              collectionType: 6, // 直客1.同业2
+              localCompID: this.sid // 直客0,同业变成同业社id
+              //"localCompName":""
+              // 仿直客请求end
             }
           },
           {
@@ -599,38 +752,68 @@ export default {
           }
         )
         .then(function(obj) {
+          console.log(obj,1111)
           if (obj.data.isSuccess) {
             that.totalBXHK = obj.data.total;
             that.numBXHK = obj.data.total;
             that.tableDataBXHK = obj.data.objects;
             that.tableDataBXHK.forEach(function(item, index, arr) {
-              item.createTime = that.formatDate(item.createTime);
+              item.createTime = moment(item.createTime).format("YYYY-MM-DD HH:mm:ss")
             });
             that.loadingBXHK = false;
           } else {
             that.totalBXHK = 0;
             that.numBXHK = 0;
-            // that.tableDataBXHK = [];
-            that.tableDataBXHK = [
-              {
-                id: 1314,
-                checkType: 0,
-                reimbursement: 0,
-                loan: 0,
-                price: 1,
-                createTime: "2019-12-22T10:48:39.893",
-                dept: "大客户销售部",
-                createUser: "自己造的"
-              }
-            ];
-            that.tableDataBXHK.forEach(function(item, index, arr) {
-              item.createTime = moment(item.createTime).format("YYYY-MM-DD HH:mm:ss");
-            });
+            that.tableDataBXHK = [];
+            // that.tableDataBXHK = [
+            //   {
+            //     id: 1314,
+            //     checkType: 0,
+            //     reimbursement: 0,
+            //     loan: 0,
+            //     price: 1,
+            //     createTime: "2019-12-22T10:48:39.893",
+            //     dept: "大客户销售部",
+            //     createUser: "自己造的"
+            //   }
+            // ];
+            // that.tableDataBXHK.forEach(function(item, index, arr) {
+            //   item.createTime = moment(item.createTime).format(
+            //     "YYYY-MM-DD HH:mm:ss"
+            //   );
+            // });
             that.loadingBXHK = false;
           }
         });
+    },
+
+    //判断搜索输入框的结束时间不能在开始时间之前
+    endDateChange(beginDate, endDate) {
+      let beginTime = moment(beginDate).format("YYYYMMDD");
+      let entTime = moment(endDate).format("YYYYMMDD");
+      if (this.beginDate !== "") {
+        if (entTime < beginTime) {
+          this.$message.error("结束时间不能早于开始时间");
+          this.endDate = "";
+        }
+      }
+    },
+
+    // 直客同业搜索  状态输入框的转换
+    statusChange(checkType) {
+      if (checkType == "审批中") {
+        checkType = 0;
+      } else if (checkType == "通过") {
+        checkType = 1;
+      } else if (checkType == "驳回") {
+        checkType = 2;
+      } else {
+        checkType = 0;
+      }
+      return checkType;
     }
   },
+
   created() {
     this.loadDataZK();
     this.loadDataTY();
@@ -732,5 +915,37 @@ export default {
 .associatedMoney {
   float: left;
   margin: 0 0 0 30px;
+}
+
+// 搜索begin
+.search {
+  .searchName {
+    font-size: 14px;
+    margin-left: 5px;
+    display: inline-block;
+    width: 75px;
+    text-align: center;
+  }
+
+  .searchInput {
+    margin: 10px 5px;
+    width: 145px;
+  }
+
+  .startTime {
+    margin-left: 10px;
+    width: 135px !important;
+  }
+
+  .dateLine {
+    width: 15px;
+    border-bottom: 1px solid #e6e6e6;
+    display: inline-block;
+    margin: 0 -10px 3px 0;
+  }
+
+  .searchBtn {
+    margin: 20px 0 15px 10px;
+  }
 }
 </style>

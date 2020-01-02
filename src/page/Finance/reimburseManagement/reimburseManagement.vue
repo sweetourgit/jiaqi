@@ -169,7 +169,7 @@
                   :disabled="change"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="附件" label-width="75px" required   v-if="find==0">
+              <el-form-item label="附件" label-width="100px"     v-if="find==0">
                   <el-upload 
                   ref="image" 
                   prop="image"
@@ -315,7 +315,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
           <el-button @click="chanceSubmit(ruleForm)">取 消</el-button>
-          <el-button v-if="this.find == 0" type="primary" @click="submitForm(ruleForm)">确 定</el-button>
+          <el-button v-if="this.find == 0" type="primary" @click="submitForm(ruleForm)" :disabled="submitformBtn">确 定</el-button>
           <el-button
             v-if="this.state == 0"
             type="danger"
@@ -487,6 +487,7 @@ export default {
       tableCourse:[], // 查看无收入借款审批过程
       image: 0,//验证上传图片没
       ifShowProposer: false, // 当职位为收纳额时候禁止使用申请人检索
+      submitformBtn: false,//防止多次点击
       hand: [],
       plans: {
         planNum: "",
@@ -1118,7 +1119,7 @@ export default {
                         }else if(d_objects[i].checkType == 1){
                           this.state = 1;
                         }else if(d_objects[i].checkType == 2){
-                          this,state = 2;
+                          this.state = 2;
                         }
                             let t_sum = d_objects[i].payments.length;//多少项 
                             let qian = 0;
@@ -1176,9 +1177,9 @@ export default {
                   console.log(err);
                 });
         },
-        addbx(item) { //添加报销 
+        addbx(item) { //添加报销 || this.image === 0 
           this.plans.pid = item.id;
-          if(item.groupCode === "" || item.mark === "" || item.productName === "" || this.image === 0 ){
+          if(item.groupCode === "" || item.mark === "" || item.productName === "" ){
                 this.$message({
                   message: '请检查必填项',
                   type: 'warning'
@@ -1558,6 +1559,7 @@ export default {
                           this.radio= "1";
                           this.tabIndex = 1;
                           this.dialogFormVisible = false;
+                          this.submitformBtn=false;
                           this.alljoinData= [];
                           this.tableCourse = [];
                          if (res.data.isSuccess == true) {
@@ -1627,7 +1629,7 @@ export default {
                                   }
                                 ]
                                 };
-                          
+                            this.submitformBtn=false;
                             this.$message({
                             type: "error",
                             message: "创建失败!"
@@ -1647,7 +1649,7 @@ export default {
             var editableTabs = ruleForm.editableTabs;
             var verify = 0;
             this.object_lisr=[];
-                console.log(editableTabs,"801");
+            this.submitformBtn=true;
             for(var j in editableTabs){
                 let submitForm_list = editableTabs[j].content;
                           if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
@@ -1658,14 +1660,7 @@ export default {
                                     verify = 0
                                     return;
                                   }    
-                                  //console.log(submitForm_list.files.length);
-                          if(submitForm_list.groupCode !=="" && submitForm_list.mark !== "" && submitForm_list.files.length !== 0 && submitForm_list.payments.length !== 0){ // 判断必填内容
-                                // for (var i in submitForm_list.files) {//重塑图片上传数组
-                                //     files_s.push({
-                                //       name:submitForm_list.files[i].name,
-                                //       url:submitForm_list.files[i].url,
-                                //     });
-                                //   }; 
+                           if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
                                 if(submitForm_list.payments[n].price == "0" || submitForm_list.payments[n].price == ""){
                                    this.$message({
@@ -1709,7 +1704,7 @@ export default {
                                           planID:submitForm_list.id,//团期计划id
                                           price:submitForm_list.t_price,//总价
                                           mark:submitForm_list.mark,
-                                          files: submitForm_list.files , //关联数据
+                                          files: submitForm_list.files , //图片
                                           payments: submitForm_list.payments, //关联付款单据报销明细
                                           checkType:0,//审批状态 
                                         })
