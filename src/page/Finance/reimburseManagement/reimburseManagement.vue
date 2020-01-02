@@ -1177,9 +1177,9 @@ export default {
                   console.log(err);
                 });
         },
-        addbx(item) { //添加报销 
+        addbx(item) { //添加报销 || this.image === 0 
           this.plans.pid = item.id;
-          if(item.groupCode === "" || item.mark === "" || item.productName === "" || this.image === 0 ){
+          if(item.groupCode === "" || item.mark === "" || item.productName === "" ){
                 this.$message({
                   message: '请检查必填项',
                   type: 'warning'
@@ -1660,13 +1660,7 @@ export default {
                                     verify = 0
                                     return;
                                   }    
-                           if(submitForm_list.groupCode !=="" && submitForm_list.mark !== "" && submitForm_list.files.length !== 0 && submitForm_list.payments.length !== 0){ // 判断必填内容
-                                // for (var i in submitForm_list.files) {//重塑图片上传数组
-                                //     files_s.push({
-                                //       name:submitForm_list.files[i].name,
-                                //       url:submitForm_list.files[i].url,
-                                //     });
-                                //   }; 
+                           if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
                                 if(submitForm_list.payments[n].price == "0" || submitForm_list.payments[n].price == ""){
                                    this.$message({
@@ -1710,7 +1704,7 @@ export default {
                                           planID:submitForm_list.id,//团期计划id
                                           price:submitForm_list.t_price,//总价
                                           mark:submitForm_list.mark,
-                                          files: submitForm_list.files , //关联数据
+                                          files: submitForm_list.files , //图片
                                           payments: submitForm_list.payments, //关联付款单据报销明细
                                           checkType:0,//审批状态 
                                         })
