@@ -226,6 +226,7 @@ import boatGuestsInfo from "./common/boatGuestsInfo";
 // import boatProcessManage from "./common/boatProcessManage";
 
 export default {
+  
   components: {
     boatRemarksInfor,
     boatReceipt,
@@ -300,9 +301,8 @@ export default {
     },
 
     // 子组件关闭弹窗的时候重置propsObj.dialogType = -1
-    resetDialogType () {
-      this.propsObj.dialogType = -1
-      console.log(12121)
+    resetDialogType() {
+      this.propsObj.dialogType = -1;
     },
 
     // 重置按钮

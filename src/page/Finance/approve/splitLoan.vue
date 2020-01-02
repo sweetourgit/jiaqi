@@ -224,10 +224,8 @@
               'accountID': item.accountID
             })
           }) )
-          console.log(priceDiff)
-          console.log(paramsSplitArr)
           Vue.ls.set('lsParamsSplitArr', paramsSplitArr);
-          this.$router.push({ path: '/approve/approveDetail', query: { source: 'splitLoan', queryApproveExpenseID: this.getApproveList, approveDetailGuid: this.getApproveListGuid, queryWorkItemID: this.workItemIDArr } })
+          this.$router.push({ path: '/approve/approveDetail', query: { source: 'splitLoan', queryApproveExpenseID: this.getApproveList, approveDetailGuid: this.getApproveListGuid, queryWorkItemID: this.workItemIDArr, ifClickKeepBtn: true } })
         }
       },
       // 获取详情
@@ -297,7 +295,7 @@
       },
       // 取消
       handleCancel(){
-        this.$router.push({ path: "/approve/approveDetail", query: { source: 'splitLoan', queryApproveExpenseID: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid } })
+        this.$router.push({ path: "/approve/approveDetail", query: { source: 'splitLoan', queryApproveExpenseID: this.tabShowWhich, queryWorkItemID: this.workItemIDArr, approveDetailGuid: this.getApproveListGuid } })
       },
       handleClick(){},
       // 表格表头颜色

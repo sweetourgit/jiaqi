@@ -159,7 +159,22 @@ export default {
       return {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       }
+    },
+
+    countTest:function () {
+      return this.$store.state.bankDataUpdate
     }
+  },
+  watch: {
+    countTest:function(newV, oldV){
+      const that = this;
+      if(newV.indexOf("bankOfChinaSXF") != -1 && newV != oldV){
+        setTimeout(function () {
+          // alert('数据改变，执行loadDataSXF~')
+          that.loadData()
+        },500)
+      }
+    },
   },
   created () {
     this.loadData()
@@ -249,6 +264,7 @@ export default {
         this.$message.success("中国银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
+        this.$store.commit('changeBankData', 'bankOfChinaSK' + Math.random());
       }else{
         this.$message.warning("中国银行流水单上传失败！");
       }
@@ -277,6 +293,7 @@ export default {
           if (response.data.isSuccess) {
             that.pageCurrent = 1;
             that.loadData();
+            that.$store.commit('changeBankData', 'bankOfChinaSK' + Math.random());
             that.$message({
               type: 'info',
               message: '已删除'

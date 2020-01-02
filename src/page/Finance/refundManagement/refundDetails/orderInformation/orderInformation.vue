@@ -131,7 +131,7 @@
             <span class="fl ml5">|</span>
             <span class="fl cursor">流程管理</span>
             <span class="fl ml5">|</span>
-            <span class="fl cursor">退款</span>
+            <span class="fl cursor" @click="refund(1)">退款</span>
             <span class="fl ml5">|</span>
             <span class="fl cursor">更多</span>
           </div>
@@ -145,11 +145,17 @@
         <el-table-column prop="" label="性别" align="center"></el-table-column>
       </el-table>
     </el-dialog>
+    <order-refund :orderRefundID="orderRefundID" :orderRefund="orderRefund" :orderRefundDialog="orderRefundDialog"></order-refund>
   </div>
 </template>
 
 <script>
+import orderRefund from "./orderRefund/orderRefund";
 export default {
+  name: "orderInformation",
+  components: {
+    orderRefund
+  },
   props: {
     orderID:0,
     orderVariable: 0,
@@ -160,6 +166,9 @@ export default {
       dialogOrder:false,// 订单详情弹窗
       refundList:{},
       tableDate:[],
+      orderRefundID:0,
+      orderRefund:0,
+      orderRefundDialog:0,
     };
   },
   watch: {
@@ -190,6 +199,12 @@ export default {
     },
     getOrder(ID){
 
+    },
+    refund(i){ // 点击退款出现退款流程弹窗
+      console.log(1)
+      this.orderRefund++;
+      this.orderRefundDialog = i;
+      this.dialogOrder = false;
     },
   }
 };

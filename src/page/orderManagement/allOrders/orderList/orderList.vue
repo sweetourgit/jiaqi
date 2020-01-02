@@ -1066,10 +1066,11 @@ export default {
         })
         .then(res => {
           if (res.data.isSuccess == true) {
-            let obj = {};
             let { name, url } = res.data.object;
-            obj.name = name;
-            obj.url = url;
+            let obj = {
+              name,
+              url
+            }
             this.fileList.push(obj);
           }
         })

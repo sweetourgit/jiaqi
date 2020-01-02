@@ -224,7 +224,7 @@
         keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
         ifShowsearch: false,
         tableData: [
-          {
+          /*{
             id: 22223434, // 收款单号
             checkType: 2, // 状态
             reimbursement: 21, // 报销单号
@@ -233,7 +233,7 @@
             collectionTime: 2019, // 收款时间
             dept: '日韩', // 收款部门
             createUser: '洋洋', // 申请人
-          }
+          }*/
         ],
         recognitionData: [],
         listLoading: false,
@@ -253,7 +253,7 @@
       }
     },
     created(){
-      //this.getList()
+      this.getList()
       // this.getOrgID = sessionStorage.getItem('orgID')
       // this.getUserName = sessionStorage.getItem('name')
     },
@@ -357,6 +357,7 @@
             }
           }
         ).then(function(obj) {
+          console.log(obj, '报销还款')
           _this.total = obj.data.total;
           _this.tableData = obj.data.objects;
           _this.listLoading = false
