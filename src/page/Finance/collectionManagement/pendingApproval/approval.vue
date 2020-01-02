@@ -16,7 +16,7 @@
         <el-button
           type="primary"
           v-if="info.collectionType == 6 && baseInfo.accountID !== 13"
-          @click="recognitionDo()"
+          @click="recognitionDo(tableAssociated[0])"
         >去认款</el-button>
         <!-- 报销还款审批页的去认款按钮显示end -->
         <el-button type="success" @click="touchPrint" plain v-if="getOrgID == 491">打印本页详情</el-button>
@@ -985,15 +985,6 @@ export default {
 
             that.getAccount(response.data.object.accountID);
 
-            // 如果是报销还款进来的并且获取的accountID 为现金 则可以直接通过 此时没有去认款的按钮
-            if (that.info.collectionType == 6) {
-              if (response.data.object.accountID == 13) {
-                that.passDisabled = false;
-              } else {
-                that.passDisabled = true;
-              }
-            }
-
             that.printMatchingPrice =
               response.data.object.arrears[0].matchingPrice;
             that.printPayablePrice =
@@ -1016,6 +1007,20 @@ export default {
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
+
+            // 如果是报销还款进来的并且获取的accountID 为现金 则可以直接通过 此时没有去认款的按钮
+            
+            if (that.info.collectionType == 6) {
+              if(that.tableAssociated[0].checkType !== 3) {
+                if (response.data.object.accountID == 13) {
+                that.passDisabled = false;
+              } else {
+                that.passDisabled = true;
+              }
+              } else {
+                that.passDisabled = false;
+              }
+            }
             
 
             // 凭证
