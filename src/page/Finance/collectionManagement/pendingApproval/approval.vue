@@ -772,6 +772,7 @@ export default {
       handler: function() {
         if (this.info != "" && this.dialogFormVisible) {
           this.passDisabled = false;
+          this.hasSubject = false;
           this.loadData();
           this.getMoment();
         }
@@ -1015,7 +1016,7 @@ export default {
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            if (response.data.object.collectionNumber === "现金") {
+            if (!hasSubject) {
               that.tableAssociated.forEach(item => {
                 that.getCollectionPriceTotal += item.matchingPrice;
               });
