@@ -49,22 +49,16 @@ export default {
           query= this.reappearConditions();
           this.$router.replace({ path });
         }
-        let { tab, conditions, pageInfo }= query || {};
+        let { tab, conditions }= query || {};
         if(tab) this.currentTab= tab;
-        this.$refs.allPaneRef.init(tab=== 'all' && { conditions, pageInfo });
-        this.$refs.minePaneRef.init(tab=== 'mine' && { conditions, pageInfo });
+        this.$refs.allPaneRef.init(tab=== 'all' && conditions );
+        this.$refs.minePaneRef.init(tab=== 'mine' && conditions );
       },
 
       // 分流query
       reappearConditions(){
-        let { tab, groupCode, userName, teamProTitle, beginTime, endTime, pageIndex, pageSize, total }= this.$route.query;
-        let conditions= {
-          groupCode, userName, teamProTitle, beginTime, endTime
-        }
-        let pageInfo= {
-          pageIndex, pageSize, total
-        }
-        return { tab, conditions, pageInfo }
+        let { tab, conditions }= this.$route.query;
+        return { tab, conditions: JSON.parse(conditions) }
       },
 
       tabClickHandler(tab){

@@ -36,7 +36,10 @@
           @click="printHandler">
           打印
         </el-button>
-        <el-button type="info" size="small">取消</el-button>
+        <el-button type="info" size="small"
+          @click="backPage">
+          取消
+        </el-button>
       </div>
       <div class="button-ground" 
         v-show="type=== 'normal'">
@@ -44,14 +47,20 @@
           @click="printHandler">
           打印
         </el-button>
-        <el-button type="info" size="small">取消</el-button>
+        <el-button type="info" size="small"
+          @click="backPage">
+          取消
+        </el-button>
       </div>
       <div class="button-ground" 
         v-show="type=== 'mine'">
         <el-button type="danger" size="small">驳回</el-button>
         <el-button type="primary" size="small">通过</el-button>
         <el-button type="primary" size="small">打印</el-button>
-        <el-button type="info" size="small">取消</el-button>
+        <el-button type="info" size="small"
+          @click="backPage">
+          取消
+        </el-button>
       </div>
     </header>
     <main>
@@ -75,7 +84,6 @@ export default {
 
   // 创建和唤醒都要从新执行init
   mounted(){
-    window.vm= this;
     this.init();
   },
 
@@ -83,11 +91,15 @@ export default {
     return Object.assign(
       // 状态
       {
-        type: null, // 类型 add, mine, normal 
+        type: null, // 类型 add, mine, normal
+        isFromCheckSheet: false,  // 是否来自报账单 
       },
       // 数据
       {
         printData: null,
+      },
+      {
+        cacheConditions: null,  // 用来还原上个页面的条件
       }
     )
   },
@@ -127,7 +139,11 @@ export default {
      * @type2 : 来自报账单，会携带 id:报账单id / tab:来自报账单的all还是mine / conditions:报账单的搜索条件
      */
     choosePageType(){
-      let { id, planID, isCheckSheet, tab, conditions }= this.$route.query;
+      let { path, query }= this.$route;
+      let { id, planID, isCheckSheet, tab, conditions }= query;
+      this.cacheConditions= conditions;
+      this.isFromCheckSheet= tab? true: false;
+      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab } });
       if(isCheckSheet=== '0') return 'add';
       // 如果[ isCheckSheet 不为 undefined ]或者[ tab 是 all ] 只能查看
       if(!this.$isNull(isCheckSheet) || tab=== 'all') return 'normal';
@@ -165,7 +181,14 @@ export default {
     printHandler(){
       let dom= this.$refs.printGround.$el;
       this.$printDom(dom);
-    }
+    },
+
+    backPage(){
+      let { tab }= this.$route.query;
+      this.isFromCheckSheet?
+        this.$router.replace({ path: '/checkSheet/team', query: { tab, conditions: this.cacheConditions }})
+          : this.$router.replace({ path: '/regimentPlan/teamPlanList' });  
+    },
   }
 }
 </script>

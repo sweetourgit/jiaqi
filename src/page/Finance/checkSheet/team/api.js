@@ -5,10 +5,16 @@ export const getCheckSheetList= function(conditions){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/page", conditions)
     .then(res => {
-      console.log(res)
+      let { isSuccess, objects, total, result }= res.data;
+      if(!isSuccess) {
+        reject();
+        throw ('获取报账单列表失败'+ (result.message || '') );
+      }
+      resolve({ objects, total });
     })
     .catch(err => {
-      if(typeof err=== 'string') return $message.error(err);
+      console.error(err);
+      err && $message.error(err.toString());
     })
   })
 }
