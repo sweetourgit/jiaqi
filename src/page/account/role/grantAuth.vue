@@ -78,14 +78,10 @@ export default {
       actChanged(index){
         var childrenArray = this.authData[index].act;
         var tickCount = 0,
-            unTickCount = 0,
             len = childrenArray.length
         for(var i = 0; i < len; i++) {
             if(childrenArray[i].isJur == true){
                 tickCount++;
-            }
-            if(childrenArray[i].isJur == false){
-                unTickCount++;
             }
         }
         if(tickCount == len){ //二级全勾选  一级勾选            
