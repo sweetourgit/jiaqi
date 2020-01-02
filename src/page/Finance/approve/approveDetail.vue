@@ -135,7 +135,8 @@
         title: '', // 通过驳回弹窗标题切换
         getParamsWorkItemId: null, // 工作流接口参数
         getApproveSource: null, //   如果路由是从拆分借款页跳过来的会有个来源参数。当拆分借款保存之后，详情页通过可以取消置灰状态
-        getKeepBtnStatus: false
+        getKeepBtnStatus: false,
+        getLsParamsSplitArr: null
       }
     },
     // 关于时间的过滤
@@ -145,8 +146,8 @@
       }
     },
     created(){
-      let getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
-      console.log(getLsParamsSplitArr, '传过来的参数set')
+      this.getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
+      console.log(this.getLsParamsSplitArr, '传过来的参数set')
       this.getApproveListGuid = this.$route.query.approveDetailGuid
       this.getKeepBtnStatus = this.$route.query.ifClickKeepBtn ? this.$route.query.ifClickKeepBtn : false
       this.getApproveSource = this.$route.query.source
@@ -254,16 +255,21 @@
       },
       // 审批通过弹窗-确定
       handlePassFn(){
-        // 先提交拆分、还款记录，成功之后在调用工作流接口
-        console.log(this.getLsParamsSplitArr)
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
-          "object": this.getLsParamsSplitArr
-        }).then( obj =>  {
-          console.log(obj, '提交申请返回来的参数')
+        if(this.ifShowOperateBtn){
+          // 先提交拆分、还款记录，成功之后在调用工作流接口
+          console.log(this.getLsParamsSplitArr)
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
+            "object": this.getLsParamsSplitArr
+          }).then( obj =>  {
+            console.log(obj, '提交申请返回来的参数')
+            this.handlePassApi()
+          }).catch( err => {
+            console.log(err)
+          })
+        } else {
           this.handlePassApi()
-        }).catch( err => {
-          console.log(err)
-        })
+        }
+
       },
       // 驳回之后走工作流
       handleRejectFn(){

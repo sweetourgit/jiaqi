@@ -96,8 +96,8 @@
         console.log(tab, event);
       },
       // 重置
-      HandleResetApprove (){
-
+      HandleResetApprove (paramsFrom){
+        this.$refs[paramsFrom].resetFields()
       },
       // 搜索
       HandleSearchApprove () {
