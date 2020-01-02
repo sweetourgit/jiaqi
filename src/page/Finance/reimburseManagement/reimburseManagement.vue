@@ -169,7 +169,7 @@
                   :disabled="change"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="附件" label-width="75px" required   v-if="find==0">
+              <el-form-item label="附件" label-width="100px"     v-if="find==0">
                   <el-upload 
                   ref="image" 
                   prop="image"
