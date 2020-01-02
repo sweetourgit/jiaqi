@@ -19,6 +19,26 @@
             </template>
        </el-table-column>
      </el-table>
+     <!--添加SKU-->
+     <el-dialog title="添加SKU" :visible.sync="dialogForm" class="city_list" width="780px" @close="close">
+          <el-form :model="skuForm" :rules="rules" ref="skuForm" label-width="80px" class="demo-ruleForm">
+               
+
+               <div slot="footer" class="dialog-footer cb">
+                  <el-button @click="close">取 消</el-button>
+                  <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
+                </div>
+          </el-form>
+     </el-dialog>
+
+
+
+
+
+
+
+
+
   </div>
 </template>
 
@@ -27,7 +47,9 @@ export default {
   data() {
     return {
       dataList:[],
-
+      dialogForm:false,
+      skuForm:{},
+      rules:{},
 
 
 
@@ -92,7 +114,10 @@ export default {
         });
     },
     add(){
-        
+      this.dialogForm=true;
+    },
+    close(){
+      this.dialogForm=false;
     }
 
 
@@ -110,4 +135,5 @@ export default {
  .table{border:1px solid #e6e6e6;width:1200px;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin-top:20px}
  .breadCrumbPointer{cursor: pointer;color: #2e94f9}
  .breadCrumb{margin-left: 24px}
+ .demo-ruleForm{margin-top: 20px}
 </style>
