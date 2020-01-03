@@ -556,6 +556,15 @@ export default new Router({
       }
     },
     {
+      path: '/relationSplitMap',
+      component: () => import('@/page/Finance/relationSplitMap/relationSplitMap'),
+      name: '拆分关系表',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/advancePayment',
       component: () => import('@/page/Finance/advancePayment/advancePayment'),
       name: '预付款管理',
