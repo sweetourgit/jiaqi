@@ -86,6 +86,16 @@ export default {
         }})
       },
 
+      mixHandler(checkList, jqList){
+        if(checkList.length!== jqList.length) console.error('checkList, jqList长度不匹配');
+        let hit;
+        checkList.forEach(el => {
+          hit= jqList.find(jqEl => jqEl.jq_ID=== el.guid);
+          Object.assign(el, hit);
+        })
+        return checkList;
+      },
+
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -109,7 +119,7 @@ export default {
             let guid= jqList.map(el => el.jq_ID);
             getMineCheckSheetList(guid)
             .then(res => {
-              this.tableData= this.link(res, jqList);
+              this.tableData= this.mixHandler(res, jqList);
               this.$emit('mine-count', (res && res.length || 0));
             })
           })

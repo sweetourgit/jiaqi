@@ -59,7 +59,7 @@ export default {
       // 分流query
       reappearConditions(){
         let { tab, conditions }= this.$route.query;
-        return { tab, conditions: JSON.parse(conditions) }
+        return { tab, conditions: conditions && JSON.parse(conditions) }
       },
 
       tabClickHandler(tab){

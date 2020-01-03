@@ -153,10 +153,10 @@ export default {
      */
     choosePageType(){
       let { path, query }= this.$route;
-      let { id, planID, isCheckSheet, tab, conditions }= query;
+      let { id, planID, isCheckSheet, tab, conditions, workItemID }= query;
       this.cacheConditions= conditions;
       this.isFromCheckSheet= tab? true: false;
-      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab } });
+      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID } });
       if(isCheckSheet=== '0') return 'add';
       // 如果[ isCheckSheet 不为 undefined ]或者[ tab 是 all ] 只能查看
       if(!this.$isNull(isCheckSheet) || tab=== 'all') return 'normal';
@@ -211,7 +211,9 @@ export default {
       let { commentText }= payload;
       let workItemID= this.$route.query.workItemID;
       let userCode= sessionStorage.getItem('tel');
-      this.isAgree? agreeForJQ({commentText, workItemID, userCode}): rejectForJQ({commentText, workItemID, userCode})
+      if(this.isAgree) 
+        return agreeForJQ({commentText, workItemID, userCode}).then(() => { this.$message.success('审批成功') });
+      rejectForJQ({commentText, workItemID, userCode}).then(() => { this.$message.success('审批成功') });
     }
   }
 }

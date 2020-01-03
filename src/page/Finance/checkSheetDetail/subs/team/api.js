@@ -83,8 +83,8 @@ export const agreeForJQ= function(object){
     $http.post(GLOBAL.jqUrl+ '/JQ/SubmitWorkAssignmentsForJQ',
       { ...object }
     ).then((res) => {
-      let { isSuccess }= res.data;
-      if(!isSuccess) throw '通过审批失败';
+      let { code }= JSON.parse(res.data);
+      if(code!== 0) throw '通过审批失败';
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -97,8 +97,8 @@ export const rejectForJQ= function(object){
     $http.post(GLOBAL.jqUrl+ '/JQ/RejectionOfWorkTasksForJQ',
       { ...object }
     ).then((res) => {
-      let { isSuccess }= res.data;
-      if(!isSuccess) throw '驳回审批失败';
+      let { code }= JSON.parse(res.data);
+      if(code!== 0) throw '驳回审批失败';
       return resolve();
     }).catch((err) => {
       reject(err);
