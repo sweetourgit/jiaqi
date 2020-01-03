@@ -4,11 +4,16 @@
     <el-dialog :title="title" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
       @close="cancelInfoOrder()">
       <div class="controlButton">
-        <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
-        <el-button class="ml13" type="primary" v-if="title == '详情'">撤 销</el-button>
-        <el-button class="ml13" type="primary" v-if="title == '审批'">支付账户</el-button>
-        <el-button class="ml13" type="primary" v-if="title == '审批'">通 过</el-button>
-        <el-button class="ml13" type="primary" v-if="title == '审批'">驳 回</el-button>
+  	    <div class="fl">
+  	      <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
+  	      <el-button class="ml13" type="primary" v-if="title == '详情'">撤 销</el-button>
+  	    </div>
+        <div class="fl" v-if="title == '审批'">
+    	    <el-button class="ml13" type="primary" @click="payAccount()">支付账户</el-button>
+          <el-button class="ml13" type="primary">转 办</el-button>
+          <el-button class="ml13" type="primary" @click="through()">通 过</el-button>
+          <el-button class="ml13" type="primary" @click="rejected()">驳 回</el-button>
+        </div>
       </div>
       <div class="planBorder">
         <div class="order-title"><span>基本信息</span></div>
@@ -34,7 +39,7 @@
               </td>
             </tr>
             <tr>
-              <td width="33%">18581094581
+              <td width="33%">
                 <div width="80" class="fl fb">退款方式:</div>
                 <div class="fl ml13">{{refundList.invoiceHeader}}</div>
               </td>
@@ -78,7 +83,7 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">订单ID:</div>
-                <div class="fl ml13 cursor" @click="orderDetails(1)">{{0}}</div>
+                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{0}}</u></div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">订单金额:</div>
@@ -125,6 +130,41 @@
       </div>
     </el-dialog>
     <order-information :refundID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
+    <!--支付账户弹窗-->
+    <el-dialog title="选择账户" :visible.sync="dialogAccount" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1000px"
+      @close="cancelAccount()">
+      <div class="controlButton">
+        <el-button class="ml13" @click="cancelAccount()">取 消</el-button>
+        <el-button class="ml13" type="primary">确 认</el-button>
+      </div>
+      <el-table :data="tableAccount" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+        <el-table-column label="类型" prop="cardType" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.cardType===1">收款</span>
+            <span v-if="scope.row.cardType===2">付款</span>
+            <span v-if="scope.row.cardType===3">应收</span>
+            <span v-if="scope.row.cardType===4">应付</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+      </el-table>
+    </el-dialog>
+    <!--通过、驳回弹窗-->
+    <el-dialog :title="approval" :visible.sync="dialogApproval" custom-class="city_list" style="margin-top:-100px;" width="800px"
+      @close="cancelApproval()">
+      <div class="controlButton">
+        <el-button class="ml13" @click="cancelApproval()">取 消</el-button>
+        <el-button class="ml13" type="primary">确 认</el-button>
+      </div>
+      <div class="oh">
+        <div class="fl" v-if="approval === '审批通过'">通过说明:</div>
+        <div class="fl" v-if="approval === '审批驳回'">驳回意见:</div>
+        <el-input class="opinions" type="textarea" :rows="5" placeholder="请输入内容" v-model="opinion"> </el-input>
+      </div>
+    </el-dialog>
   </div> 
 </template>
 <script>
@@ -150,6 +190,11 @@ export default {
       refundList:{},// 基本信息数组
       tableDate:[],// 详情弹窗部分退信息表格
       tableAudit:[],// 详情页面审核结果表格
+      dialogAccount:false, // 支付账户弹窗
+      tableAccount:[], // 支付账户表格
+      dialogApproval:false, // 通过驳回弹窗
+      approval:"",// 通过驳回标题
+      opinion:'', // 通过驳回输入框
     };
 
   },
@@ -235,6 +280,45 @@ export default {
       this.orderDialogType = i;
       this.dialogFormOrder = false;
     },
+    cancelAccount(){ // 支付账户点击取消弹窗隐藏
+      this.dialogAccount = false;
+      this.tableAccount = [];
+      this.dialogFormOrder = true;
+    },
+    payAccount(){ // 支付账户点击支付账户弹窗显示
+      this.dialogAccount = true;
+      this.dialogFormOrder = false;
+      this.accountList();
+    },
+    accountList() { // 点击支付账户查询列表
+      var that = this
+      this.$http.post(
+        this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
+        {
+          "object": {
+            "isDeleted": 0
+          },
+        },)
+        .then(function (obj) {
+          that.tableAccount = obj.data.objects
+        })
+        .catch(function (obj) {
+          console.log(obj)
+        })
+    },
+    cancelApproval(){ // 通过、驳回弹窗取消
+      this.dialogApproval = false ;
+      this.opinion = '';
+    },
+    through(){ // 点击通过显示弹窗
+      this.dialogApproval = true ;
+      this.approval = '审批通过';
+    },
+    rejected(){ // 点击驳回显示弹窗
+      this.dialogApproval = true ;
+      this.approval = '审批驳回';
+    },
+
   }
 };
 </script>
@@ -262,4 +346,6 @@ export default {
 .w150{width: 150px;}
 .validation{color: red;width: 150px;line-height: 30px;}
 .cursor {cursor: pointer;}
+.oh{overflow: hidden;}
+.opinions{float: left;margin: 0 0 0 13px; width: 500px;}
 </style>
