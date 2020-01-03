@@ -55,23 +55,23 @@
     <tr 
       v-for="(item, i) in subs"
       :key="i">
-      <td class="base" colspan="6">
-        <div class="cell">123</div>
+      <td class="base" colspan="7">
+        <div class="cell"></div>
       </td>
       <td class="base" style="width:5%;">
-        <div class="cell"></div>
+        <div class="cell">{{ item.price | priceFilter(true) }}</div>
       </td>
-      <td class="base" colspan="3">
-        <div class="cell"></div>
-      </td>
-      <td class="base">
+      <td class="base" colspan="2">
         <div class="cell"></div>
       </td>
       <td class="base">
-        <div class="cell"></div>
+        <div class="cell">{{ item.collectionNumber }}</div>
       </td>
       <td class="base">
-        <div class="cell"></div>
+        <div class="cell">{{ item.ticketNumber }}</div>
+      </td>
+      <td class="base">
+        <div class="cell">{{ item.mark }}</div>
       </td>
     </tr>
   </tbody>
@@ -86,8 +86,8 @@ export default {
   },
 
   filters: {
-    priceFilter(val){
-      if(!val) return 0;
+    priceFilter(val, noZero){
+      if(!val) return noZero? ' ': 0;
       return val.toFixed(2);
     }
   },
@@ -110,24 +110,37 @@ export default {
 
   methods: {
     init(income){
-      let { collectionNumber, ticketNumber, ...order }= income;
+      let { collectionNumber, ticketNumber, mark, ...order }= income;
       this.order= order;
-      this.subsMaker(collectionNumber, ticketNumber);
+      this.subsMaker(collectionNumber, ticketNumber, mark);
     },
 
-    subsMaker(collection, ticket){
-      let result= [];
+    subsMaker(collection, ticket, mark){
+      let result= this.subs;
       let length;
       collection= JSON.parse(collection);
       ticket= JSON.parse(ticket);
+      mark= this.markMaker(mark);
       length= collection.length > ticket.length? collection.length: ticket.length;
+      length= length > mark.length? length: mark.length;
+      result.splice(0);
       for(let i= 0; i< length; i++){
         result.push({
-          price: collection[i] && collection[i].Price,
-          collectionNumber: collection[i] && collection[i].CollectionID,
-          ticketNumber: ticket[i] && ticket[i].TicketNumber
+          price: collection[i] && collection[i].MatchingPrice,
+          collectionNumber: collection[i] && collection[i].ID,
+          ticketNumber: ticket[i] && ticket[i].InvoicePrice,
+          mark: mark[i] && mark.Mark
         })
       }
+    },
+
+    /**
+     * @description: mark里默认会有一个空注释
+     */
+    markMaker(mark){
+      mark= JSON.parse(mark);
+      if(mark.length=== 1 && !mark.Mark) return []; 
+      return mark
     }
   }
 }

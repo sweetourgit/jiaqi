@@ -400,6 +400,7 @@ export default {
 
     // 提交认款的请求
     commitAxios(row, type) {
+      console.log(this.tableDataOrder,"提交请求")
       const that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {

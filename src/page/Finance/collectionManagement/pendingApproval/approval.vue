@@ -15,8 +15,8 @@
         <!-- 报销还款审批页的去认款按钮显示begin -->
         <el-button
           type="primary"
-          v-if="info.collectionType == 6 && baseInfo.accountID =='汇款'"
-          @click="recognitionDo()"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13"
+          @click="recognitionDo(tableAssociated[0])"
         >去认款</el-button>
         <!-- 报销还款审批页的去认款按钮显示end -->
         <el-button type="success" @click="touchPrint" plain v-if="getOrgID == 491">打印本页详情</el-button>
@@ -475,7 +475,7 @@
         </p>
         <p class="detailName">
           <span>汇款/现金：</span>
-          {{baseInfo.accountID}}
+          {{baseInfo.accountID == 13  ? "现金" : "汇款"}}
         </p>
         <p class="detailName">
           <span>收款账户：</span>
@@ -772,6 +772,7 @@ export default {
       handler: function() {
         if (this.info != "" && this.dialogFormVisible) {
           this.passDisabled = false;
+          this.hasSubject = false;
           this.loadData();
           this.getMoment();
         }
@@ -974,24 +975,15 @@ export default {
               collectionTime: response.data.object.collectionTime,
               moneyExplain: response.data.object.moneyExplain,
               localCompName: response.data.object.localCompName,
-              reimbursement: response.data.object.localCompName,
+              reimbursement: response.data.object.reimbursement,
               loan: response.data.object.loan,
-              // accountID:
+              accountID: response.data.object.accountID
               //   response.data.object.accountID == 13
               //     ? (response.data.object.accountID = "现金")
               //     : (response.data.object.accountID = "汇款")
             };
 
             that.getAccount(response.data.object.accountID);
-
-            // 如果是报销还款进来的并且获取的accountID 为现金 则可以直接通过 此时没有去认款的按钮
-            if (that.baseInfo.collectionType == 6) {
-              if (response.data.object.accountID == 13) {
-                that.passDisabled = false;
-              } else {
-                that.passDisabled = true;
-              }
-            }
 
             that.printMatchingPrice =
               response.data.object.arrears[0].matchingPrice;
@@ -1015,41 +1007,43 @@ export default {
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-            if (response.data.object.collectionNumber === "现金") {
-              that.tableAssociated.forEach(item => {
-                that.getCollectionPriceTotal += item.matchingPrice;
-              });
-            } else {
-              that.tableAssociated.forEach(item => {
-                that.getCollectionPriceTotal += item.matchingPrice;
 
-                if (item.checkType != 3) {
-                  that.passDisabled = true;
-                }
-              });
-            }
-
-            // 凭证
-            that.fileList = response.data.object.files;
-          } else {
-            that.baseInfo = {
-              id: 1235,
-              createUser: "自己造假",
-              createTime: "2012-12-12",
-              collectionNumber: "收款账户",
-              price: 250,
-              reimbursement: 1236547896,
-              loan: 1111111111,
-              accountID: "汇款"
-            };
+            // 如果是报销还款进来的并且获取的accountID 为现金 则可以直接通过 此时没有去认款的按钮
+            
             if (that.info.collectionType == 6) {
-              if (that.baseInfo.accountID == "现金") {
+              if(that.tableAssociated[0].checkType !== 3) {
+                if (response.data.object.accountID == 13) {
                 that.passDisabled = false;
               } else {
                 that.passDisabled = true;
               }
+              } else {
+                that.passDisabled = false;
+              }
             }
-            // that.$message.warning("加载数据失败~");
+            
+
+            // 凭证
+            that.fileList = response.data.object.files;
+          } else {
+            // that.baseInfo = {
+            //   id: 1235,
+            //   createUser: "自己造假",
+            //   createTime: "2012-12-12",
+            //   collectionNumber: "收款账户",
+            //   price: 250,
+            //   reimbursement: 1236547896,
+            //   loan: 1111111111,
+            //   accountID: "汇款"
+            // };
+            // if (that.info.collectionType == 6) {
+            //   if (that.baseInfo.accountID == "现金") {
+            //     that.passDisabled = false;
+            //   } else {
+            //     that.passDisabled = true;
+            //   }
+            // }
+            that.$message.warning("加载数据失败~");
           }
         })
         .catch(function(error) {
@@ -1069,6 +1063,21 @@ export default {
           }
         } else {
           that.hasSubject = false;
+        }
+        if (!that.hasSubject) {
+          // alert("没有科目值");
+          that.tableAssociated.forEach(item => {
+            that.getCollectionPriceTotal += item.matchingPrice;
+          });
+        } else {
+          // alert("有科目值");
+          that.tableAssociated.forEach(item => {
+            that.getCollectionPriceTotal += item.matchingPrice;
+
+            if (item.checkType != 3) {
+              that.passDisabled = true;
+            }
+          });
         }
       }).catch(function(error) {
         console.log(error);

@@ -78,3 +78,30 @@ export const getSupplierlist= function(object){
   })
 }
 
+export const agreeForJQ= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.jqUrl+ '/JQ/SubmitWorkAssignmentsForJQ',
+      { ...object }
+    ).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) throw '通过审批失败';
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+export const rejectForJQ= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.jqUrl+ '/JQ/RejectionOfWorkTasksForJQ',
+      { ...object }
+    ).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) throw '驳回审批失败';
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}

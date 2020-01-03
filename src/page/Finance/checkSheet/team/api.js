@@ -5,10 +5,16 @@ export const getCheckSheetList= function(conditions){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/page", conditions)
     .then(res => {
-      console.log(res)
+      let { isSuccess, objects, total, result }= res.data;
+      if(!isSuccess) {
+        reject();
+        throw ('获取报账单列表失败'+ (result.message || '') );
+      }
+      resolve({ objects, total });
     })
     .catch(err => {
-      if(typeof err=== 'string') return $message.error(err);
+      console.error(err);
+      err && $message.error(err.toString());
     })
   })
 }
@@ -41,7 +47,7 @@ export const getFlowList= function(payload){
     })
     .then(res => {
       if(!$isArray(res.data)) return reject('获取工作流中未完成的任务失败');
-      resolve(res.data.map(el => el.jq_ID));
+      resolve(res.data);
     })
     .catch(err => {
       if(typeof err=== 'string') return $message.error(err);
