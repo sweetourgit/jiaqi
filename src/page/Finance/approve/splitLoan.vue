@@ -49,16 +49,16 @@
               <el-col :span="14">
                 <el-col :span="6"><div class="grid-del label-color print-hidden">附件:</div></el-col>
                 <el-col :span="18">
-                  <!--<el-upload
-                    class="upload-demo print-hidden"
+                  <el-upload
+                    class="upload-demo"
                     name="files"
-                    :file-list="fundamental.files"
+                    :file-list="tabItem.files"
                     :show-file-list=true
                     action="test"
                     :disabled=true
                     :on-preview="handlePreview"
                   >
-                  </el-upload>-->
+                  </el-upload>
                 </el-col>
               </el-col>
             </el-row>
@@ -172,6 +172,10 @@
       this.tabShowWhich = String(this.$route.query.approveDetailTab)
     },
     methods: {
+      // 点击图片钩子
+      handlePreview(file) {
+        window.open(file.url);
+      },
       // 弹窗内的拆分和还款单选框切换时触发
       handleChangeSplitLoan(val){
         if(val == 1) {
