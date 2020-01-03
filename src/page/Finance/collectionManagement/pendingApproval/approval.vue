@@ -15,9 +15,14 @@
         <!-- 报销还款审批页的去认款按钮显示begin -->
         <el-button
           type="primary"
-          v-if="info.collectionType == 6 && baseInfo.accountID !== 13"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn !== 3"
           @click="recognitionDo(tableAssociated[0])"
         >去认款</el-button>
+        <el-button
+          type="primary"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn == 3"
+          @click="recognitionDetail(tableAssociated[0])"
+        >查看</el-button>
         <!-- 报销还款审批页的去认款按钮显示end -->
         <el-button type="success" @click="touchPrint" plain v-if="getOrgID == 491">打印本页详情</el-button>
       </div>
@@ -737,6 +742,7 @@ export default {
       },
 
       hasSubject: false,
+      isLookBtn: false,
 
       // 基础信息凭证
       fileList: [],
@@ -813,7 +819,6 @@ export default {
       this.dialogFormVisible2 = false;
       this.dialogFormVisible3 = false;
       this.msg = "";
-      // console.log(str);
       if (str == "success") {
         this.passDisabled = false;
         this.loadData();
@@ -833,9 +838,9 @@ export default {
                 }
               )
               .then(function(response) {
-                console.log("删除", response);
+                // console.log("删除", response);
                 if (response.data.isSuccess) {
-                  console.log("成功。。。");
+                  // console.log("成功。。。");
                 }
               })
               .catch(function(error) {
@@ -921,7 +926,7 @@ export default {
           }
         })
         .then(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.data.isSuccess) {
             that.$message.success("审批提交成功~");
             that.closeAdd();
@@ -947,7 +952,7 @@ export default {
           id: this.info.id
         })
         .then(function(response) {
-          console.log('审批详情',response);
+          // console.log('审批详情',response);
           if (response.data.isSuccess) {
             const hasInvoice = response.data.object.invoice == 1 ? "有" : "无";
             let createTimeStr = "";
@@ -1007,15 +1012,18 @@ export default {
 
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
-
-            // 如果是报销还款进来的并且获取的accountID 为现金 则可以直接通过 此时没有去认款的按钮
-            
+            // console.log(2,that.passDisabled)
+            // 如果是报销还款进来的并且获取的accountID 13为现金 则可以直接通过 此时没有去认款的按钮 不等于13都是汇款 
+            // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮  that.tableAssociated[0].checkType = 3 代表没认过款的
+            // 查看按钮的显示与隐藏的判断
+            that.isLookBtn = that.tableAssociated[0].checkType
             if (that.info.collectionType == 6) {
-              if(that.tableAssociated[0].checkType !== 3) {
+              // console.log(3,that.passDisabled)
+              if(that.isLookBtn !== 3) {
                 if (response.data.object.accountID == 13) {
                 that.passDisabled = false;
               } else {
-                that.passDisabled = true;
+                that.hasSubject ? that.passDisabled = true : that.passDisabled = false
               }
               } else {
                 that.passDisabled = false;
@@ -1056,14 +1064,15 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
         "id": id
       }, ).then(function(response) {
-        console.log(response);
+        // console.log(response);
         if (response.data.isSuccess) {
           if(response.data.object.subject){
-            that.hasSubject = true;
+            that.hasSubject = true; //有科目值 对公的
           }
         } else {
           that.hasSubject = false;
         }
+        // console.log(1,that.hasSubject)
         if (!that.hasSubject) {
           // alert("没有科目值");
           that.tableAssociated.forEach(item => {

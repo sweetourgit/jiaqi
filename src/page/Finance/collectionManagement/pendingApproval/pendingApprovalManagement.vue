@@ -752,7 +752,7 @@ export default {
           }
         )
         .then(function(obj) {
-          console.log(obj,1111)
+          // console.log(obj,1111)
           if (obj.data.isSuccess) {
             that.totalBXHK = obj.data.total;
             that.numBXHK = obj.data.total;
