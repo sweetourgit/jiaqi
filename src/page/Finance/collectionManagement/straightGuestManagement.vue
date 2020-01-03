@@ -191,7 +191,7 @@
                 <tbody>
                 <tr>
                   <td>{{ printPayablePrice }}</td>
-                  <td>{{ typeof hasSubject == 'Number' ? fundamental.collectionNumber : '现金' }}</td>
+                  <td>{{ hasSubjectStatus.length != 0 ? fundamental.collectionNumber : '现金' }}</td>
                   <td>{{ printMatchingPrice }}</td>
                 </tr>
                 </tbody>
@@ -263,7 +263,7 @@
                 <tbody>
                 <tr>
                   <td>{{ printPayablePrice }}</td>
-                  <td>{{ typeof hasSubject == 'Number' ? fundamental.collectionNumber : '现金' }}</td>
+                  <td>{{ hasSubjectStatus.length != 0 ? fundamental.collectionNumber : '现金' }}</td>
                   <td>{{ printMatchingPrice }}</td>
                 </tr>
                 </tbody>
@@ -509,7 +509,7 @@ export default {
       tableDataBorrower:[],
       keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
       ifShowsearch: false,
-      hasSubject: null,
+      hasSubjectStatus: '',
     }
   },
   computed: {
@@ -635,11 +635,10 @@ export default {
       this.dialogFormVisible = false;
     },
     getPrivateAcount(printAcountId){
-      console.log(printAcountId)
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
         "id":printAcountId
       }).then(res => {
-        this.hasSubject = res.data.object.subject
+        this.hasSubjectStatus = res.data.object.subject
       })
     },
     //查询详情
