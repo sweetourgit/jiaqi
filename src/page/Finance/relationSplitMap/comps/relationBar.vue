@@ -37,7 +37,7 @@ $ruler: 16px;
 </style>
 <template>
   <div class="relation-bar"
-    v-if="expended">
+    v-if="state">
     <header>
       <div class="icon-outer"
         @click.exact="awakeChild"
@@ -59,23 +59,31 @@ export default {
 
   name: 'RelationBar',
 
+  props: {
+    isRoot: Boolean,  // 是否是根节点
+  },
+
   data(){
     return Object.assign(
       {
+        state: this.isRoot,
         expended: false,
       }
     )
   },
 
   methods: {
-    expend(){
-      this.expended= true;
+    setState(state){
+      this.state= state;
+      if(!state) this.expended= false;
     },
     awakeChild(){
       console.log('awakeChild');
+      let bol= this.expended;
       this.$nextTick(() => {
-        this.$refs.relationBar.expend();
+        this.$refs.relationBar.setState(!bol);
       })
+      this.expended= !this.expended;
     },
     awakeChildDeeply(){
       console.log('awakeChildDeeply')

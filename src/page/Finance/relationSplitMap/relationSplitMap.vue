@@ -11,7 +11,7 @@
 
 <template>
   <div class="relation-split">
-    <header @click="test">
+    <header>
       <el-button size="small" type="info"
         @click="$router.go(-1)">
         取消
@@ -19,7 +19,8 @@
     </header>
     <main>
       <relation-bar
-        ref="relationBarRef">
+        ref="relationBarRef"
+        :is-root="true">
       </relation-bar>
     </main>
   </div>
@@ -32,9 +33,7 @@ export default {
   components: { relationBar },
 
   methods: {
-    test(){
-      this.$refs.relationBarRef.expended= true;
-    }
+    
   }
 
 }
