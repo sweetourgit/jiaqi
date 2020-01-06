@@ -10,6 +10,7 @@ $ruler: 16px;
     height: 1.5* $ruler;
     width: 1.5* $ruler;
     padding: 0.25* $ruler;
+    cursor: pointer;
   }
   .label{
     display: inline-block;
@@ -23,30 +24,20 @@ $ruler: 16px;
   &>main{
     position: relative;
     padding-left:1.5* $ruler; 
-    .dashed-line{
-      position: relative;
-      height: 100%;
-      width: 1.5* $ruler;
-    }
-    .dashed-line:before{
-      position: absolute;
-      height: 100%;
-      border-left: 1px dashed #000;
-    }
   }
   &>main:before{
     content: ' ';
     position: absolute;
     height: 100%;
     width: 1.5* $ruler;
-    border-left: 1px dashed #000;
-    transform: translateX(-50%);
+    border-right: 1px dashed #000;
+    transform: translateX(-150%);
   }
 }
 </style>
 <template>
   <div class="relation-bar"
-    v-if="expended">
+    v-if="state">
     <header>
       <div class="icon-outer"
         @click.exact="awakeChild"
@@ -68,23 +59,31 @@ export default {
 
   name: 'RelationBar',
 
+  props: {
+    isRoot: Boolean,  // 是否是根节点
+  },
+
   data(){
     return Object.assign(
       {
+        state: this.isRoot,
         expended: false,
       }
     )
   },
 
   methods: {
-    expend(){
-      this.expended= true;
+    setState(state){
+      this.state= state;
+      if(!state) this.expended= false;
     },
     awakeChild(){
       console.log('awakeChild');
+      let bol= this.expended;
       this.$nextTick(() => {
-        this.$refs.relationBar.expend();
+        this.$refs.relationBar.setState(!bol);
       })
+      this.expended= !this.expended;
     },
     awakeChildDeeply(){
       console.log('awakeChildDeeply')
