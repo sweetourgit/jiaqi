@@ -10,6 +10,7 @@ $ruler: 16px;
     height: 1.5* $ruler;
     width: 1.5* $ruler;
     padding: 0.25* $ruler;
+    cursor: pointer;
   }
   .label{
     display: inline-block;
@@ -23,24 +24,14 @@ $ruler: 16px;
   &>main{
     position: relative;
     padding-left:1.5* $ruler; 
-    .dashed-line{
-      position: relative;
-      height: 100%;
-      width: 1.5* $ruler;
-    }
-    .dashed-line:before{
-      position: absolute;
-      height: 100%;
-      border-left: 1px dashed #000;
-    }
   }
   &>main:before{
     content: ' ';
     position: absolute;
     height: 100%;
     width: 1.5* $ruler;
-    border-left: 1px dashed #000;
-    transform: translateX(-50%);
+    border-right: 1px dashed #000;
+    transform: translateX(-150%);
   }
 }
 </style>
