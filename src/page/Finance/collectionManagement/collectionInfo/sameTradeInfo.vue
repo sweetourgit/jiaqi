@@ -711,7 +711,8 @@ export default {
       this.sameTradeData = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
-          name: queryString3
+          name: queryString3,
+          State:2,
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
