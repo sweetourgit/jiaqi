@@ -664,7 +664,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
           name: queryString3,
-          UserState:-1,
+          UserState:1,
           SupplierType:-1,
         }
       }).then(res => {
