@@ -1317,7 +1317,8 @@
                             isDeleted: 0,
                             code: "",
                             orderCode: "",
-                            proID: this.teampreviewData.teamID,
+                            //proID: this.teampreviewData.teamID,
+                            teamID: this.teampreviewData.teamID,
                             planID: this.planId,
                             orderStatus: 0, //订单状态  7未确认
                             refundStatus: 0, //退款状态
@@ -1423,7 +1424,8 @@
                                   isDeleted: 0,
                                   code: "",
                                   orderCode: "",
-                                  proID: this.teampreviewData.teamID,
+                                  //proID: this.teampreviewData.teamID,
+                                  teamID: this.teampreviewData.teamID,
                                   planID: this.planId,
                                   orderStatus: 0, //订单状态  7未确认
                                   refundStatus: 0, //退款状态

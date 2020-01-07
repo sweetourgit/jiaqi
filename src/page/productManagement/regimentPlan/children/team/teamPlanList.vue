@@ -353,14 +353,14 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i,index) {
-      if(i === 1){
-        console.log(new Date().getTime())
-        console.log(new Date(this.teamqueryList[index].dateFormat).getTime())
-        if(new Date().getTime() > new Date(this.teamqueryList[index].dateFormat).getTime()+24*24*60*1000*2){
-          this.$message.error('该团期出行日期已过,不能再进行下单');
-          return;
-        }
-      }
+      // if(i === 1){
+      //   console.log(new Date().getTime())
+      //   console.log(new Date(this.teamqueryList[index].dateFormat).getTime())
+      //   if(new Date().getTime() > new Date(this.teamqueryList[index].dateFormat).getTime()+24*24*60*1000*2){
+      //     this.$message.error('该团期出行日期已过,不能再进行下单');
+      //     return;
+      //   }
+      // }
       this.variable++;
       this.dialogType = i;
     },
