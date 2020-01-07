@@ -27,13 +27,23 @@
 </template>
 
 <script>
+import { getRoot } from './api'
 import relationBar from './comps/relationBar'
 
 export default {
+
   components: { relationBar },
 
+  mounted(){
+    this.init();
+  },
+
   methods: {
-    
+    init(){
+      getRoot().then(res => {
+        console.log(res)
+      })
+    }
   }
 
 }

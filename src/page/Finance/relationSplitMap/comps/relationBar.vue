@@ -17,6 +17,11 @@ $ruler: 16px;
     padding: 0 5px;
     font-size: $ruler;
     line-height: 1.5* $ruler;
+    cursor: pointer;
+  }
+  .hoverd{
+    color: #d3d3d3;
+    background-color: #000;
   }
   &>header{
     
@@ -25,7 +30,7 @@ $ruler: 16px;
     position: relative;
     padding-left:1.5* $ruler; 
   }
-  &>main:before{
+  &>main::before{
     content: ' ';
     position: absolute;
     height: 100%;
@@ -38,19 +43,37 @@ $ruler: 16px;
 <template>
   <div class="relation-bar"
     v-if="state">
-    <header>
+    <header
+      @mouseover="hoverd=true"
+      @mouseout="hoverd=false">
       <div class="icon-outer"
         @click.exact="awakeChild"
         @click.ctrl.exact="awakeChildDeeply">
         <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
       </div>
-      <div class="label">[预]123</div>
+      <div 
+        :class="['label', hoverd && 'hoverd']">
+        [预]123
+      </div>
     </header>
     <main>
       <relation-bar 
         ref="relationBar">
       </relation-bar>
     </main>
+    <footer
+      @mouseover="hoverd=true"
+      @mouseout="hoverd=false">
+      <div class="icon-outer"
+        @click.exact="awakeChild"
+        @click.ctrl.exact="awakeChildDeeply">
+        <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
+      </div>
+      <div 
+        :class="['label', hoverd && 'hoverd']">
+        [预]123
+      </div>
+    </footer>
   </div>  
 </template>
 
@@ -66,8 +89,9 @@ export default {
   data(){
     return Object.assign(
       {
-        state: this.isRoot,
-        expended: false,
+        state: this.isRoot, // 根节点默认显示,非根节点默认隐藏
+        expended: false,  // 是否是展开状态
+        hoverd: false, // 是否是悬停状态
       }
     )
   },
