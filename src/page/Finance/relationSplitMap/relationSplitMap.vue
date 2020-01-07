@@ -20,7 +20,9 @@
     <main>
       <relation-bar
         ref="relationBarRef"
-        :is-root="true">
+        v-if="relations"
+        :proto="relations"
+        v-bind.sync="relations">
       </relation-bar>
     </main>
   </div>
@@ -28,6 +30,7 @@
 
 <script>
 import { getRoot } from './api'
+import { RelationBar } from './dictionary'
 import relationBar from './comps/relationBar'
 
 export default {
@@ -38,10 +41,17 @@ export default {
     this.init();
   },
 
+  data(){
+    return {
+      relations: null,
+    }
+  },
+
   methods: {
     init(){
       getRoot().then(res => {
-        console.log(res)
+        this.relations= new RelationBar({ isRoot: true });
+        RelationBar.root= this.relations;
       })
     }
   }

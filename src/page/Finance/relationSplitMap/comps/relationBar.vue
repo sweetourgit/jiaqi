@@ -2,7 +2,8 @@
 $ruler: 16px;
 
 .relation-bar{
-  *{
+  user-select: none;
+  * {
     box-sizing: border-box;
   }
   .icon-outer{
@@ -17,9 +18,14 @@ $ruler: 16px;
     padding: 0 5px;
     font-size: $ruler;
     line-height: 1.5* $ruler;
+    box-sizing: border-box;
     cursor: pointer;
   }
   .hoverd{
+    color: #d3d3d3;
+    background-color: #000;
+  }
+  .selected{
     color: #d3d3d3;
     background-color: #000;
   }
@@ -44,33 +50,38 @@ $ruler: 16px;
   <div class="relation-bar"
     v-if="state">
     <header
-      @mouseover="hoverd=true"
-      @mouseout="hoverd=false">
+      @mouseover="$emit('update:hoverd', true)"
+      @mouseout="$emit('update:hoverd', false)">
       <div class="icon-outer"
         @click.exact="awakeChild"
         @click.ctrl.exact="awakeChildDeeply">
         <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
       </div>
       <div 
-        :class="['label', hoverd && 'hoverd']">
+        :class="['label', hoverd && 'hoverd', selected && 'selected']"
+        @click="selectHandler">
         [预]123
       </div>
     </header>
     <main>
-      <relation-bar 
-        ref="relationBar">
+      <relation-bar
+        ref="relationBarRef"
+        v-if="child"
+        v-bind.sync="child"
+        :proto="child">
       </relation-bar>
     </main>
     <footer
-      @mouseover="hoverd=true"
-      @mouseout="hoverd=false">
+      @mouseover="$emit('update:hoverd', true)"
+      @mouseout="$emit('update:hoverd', false)">
       <div class="icon-outer"
         @click.exact="awakeChild"
         @click.ctrl.exact="awakeChildDeeply">
         <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
       </div>
       <div 
-        :class="['label', hoverd && 'hoverd']">
+        :class="['label', hoverd && 'hoverd', selected && 'selected']"
+        @click="selectHandler">
         [预]123
       </div>
     </footer>
@@ -78,39 +89,58 @@ $ruler: 16px;
 </template>
 
 <script>
+import { getRoot } from '../api'
+import { RelationBar } from '../dictionary'
+
 export default {
 
   name: 'RelationBar',
 
   props: {
     isRoot: Boolean,  // 是否是根节点
+    proto: Object,
+    state: Boolean,
+    expended: Boolean,
+    hoverd: Boolean,
+    selected: Boolean,
+    // data: Object,
+    child: Object,
   },
 
   data(){
-    return Object.assign(
-      {
-        state: this.isRoot, // 根节点默认显示,非根节点默认隐藏
-        expended: false,  // 是否是展开状态
-        hoverd: false, // 是否是悬停状态
-      }
-    )
+    return {
+
+    }
   },
 
   methods: {
-    setState(state){
-      this.state= state;
-      if(!state) this.expended= false;
-    },
     awakeChild(){
-      console.log('awakeChild');
-      let bol= this.expended;
-      this.$nextTick(() => {
-        this.$refs.relationBar.setState(!bol);
+      let child;
+      if(this.child){
+        this.child.state= !this.child.state;
+        return this.$emit('update:expended', this.child.state);
+      }
+      getRoot()
+      .then(res => {
+        child= new RelationBar();
+        child.state= true;
+        this.$emit('update:expended', true);
+        this.$emit('update:child', child);
       })
-      this.expended= !this.expended;
     },
+
     awakeChildDeeply(){
       console.log('awakeChildDeeply')
+    },
+
+    selectHandler(){
+      let bol= this.selected;
+      // 如果当前项为选中项
+      if(bol) return this.$emit('update:selected', false);
+      // 如果当前项不是选中项, 先重置当前选中项
+      if(RelationBar.currentSelect)RelationBar.currentSelect.selected= false;
+      RelationBar.currentSelect= this.proto;
+      this.$emit('update:selected', true);
     }
   }
 
