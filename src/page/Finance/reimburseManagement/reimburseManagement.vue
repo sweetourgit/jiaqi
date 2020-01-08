@@ -169,7 +169,7 @@
                   :disabled="change"
                 ></el-input>
               </el-form-item>
-              <el-form-item label="附件" label-width="100px"     v-if="find==0">
+              <el-form-item label="附件" label-width="75px"  v-if="find==0">
                   <el-upload 
                   ref="image" 
                   prop="image"
@@ -340,9 +340,9 @@
             </div>
             <div class="indialog_search">
               <span class="search_style">团期单号：</span>
-              <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"></el-input>
+              <el-input v-model="tour_name" placeholder="请输入内容" class="search_input"  style="width:20%"></el-input>
               <span class="search_style">产品名称：</span>
-              <el-input v-model="product_name" placeholder="请输入内容" class="search_input"></el-input>
+              <el-input v-model="product_name" placeholder="请输入内容" class="search_input"  style="width:20%"></el-input>
               <span class="search_style">出行日期：</span>
               <!-- <el-date-picker
                 v-model="startTime2"
@@ -373,14 +373,14 @@
                 size="mini"
                 @click="search_btn()"
                 round
-                style="margin-top: 10px; margin-left: 20px"
+                style="margin-top: 10px; margin-left: 20px; float:left;"
               >搜索</el-button>
               <el-button 
               @click="T_update_btn" 
               type="primary"
               size="mini"
               round
-              style="margin-top: 10px; margin-left: 10px"
+              style="margin-top: 10px; margin-left: 10px;float:left;"
               >重置</el-button>
               
             </div>
@@ -1657,6 +1657,7 @@ export default {
                                         message:'摘要字数不能超过80字',
                                         type: 'warning' 
                                     });
+                                    this.submitformBtn=false;
                                     verify = 0
                                     return;
                                   }    
@@ -1667,6 +1668,7 @@ export default {
                                                 message:'请填写本次报销金额',
                                                 type: 'warning' 
                                               });
+                                              this.submitformBtn=false;
                                               verify = 0
                                               return;
                                 }else if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
@@ -1674,6 +1676,7 @@ export default {
                                                 message:'本次报销金额不得大于借款金额',
                                                 type: 'warning' 
                                               });
+                                              this.submitformBtn=false;
                                               verify = 0
                                               return;
                                         }else if(submitForm_list.payments[n].peopleCount === 0 || submitForm_list.payments[n].peopleCount === ""){
@@ -1681,6 +1684,7 @@ export default {
                                                 message:'人数不能为空',
                                                 type: 'warning' 
                                               });
+                                              this.submitformBtn=false;
                                               verify = 0
                                               return;
                                         }
@@ -1693,6 +1697,7 @@ export default {
                                                 message:'关联单据重复，请重新选择',
                                                 type: 'warning' 
                                               });
+                                              this.submitformBtn=false;
                                               verify = 0
                                               return;
                                         }
@@ -1722,6 +1727,7 @@ export default {
              
               if(verify !== 0){
                  this.add_form(this.object_lisr)//调用提交接口
+               
               }
           },
         //方法结尾

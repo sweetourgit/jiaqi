@@ -9,7 +9,13 @@
           <span class="searchName">团期计划</span>
           <el-input v-model="groupCodeZK" class="searchInput"></el-input>
           <span class="searchName">申请人</span>
-          <el-input v-model="createUserZK" class="searchInput"></el-input>
+          <!-- <el-input v-model="createUserZK" class="searchInput"></el-input> -->
+          <el-autocomplete
+            v-model="createUserZK"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入内容"
+            @select="handleSelect"
+          ></el-autocomplete>
           <span class="searchName">收款时间</span>
           <el-date-picker
             v-model="startTimeZK"
@@ -115,7 +121,12 @@
           <span class="searchName">团期计划</span>
           <el-input v-model="groupCodeTY" class="searchInput"></el-input>
           <span class="searchName">申请人</span>
-          <el-input v-model="createUserTY" class="searchInput"></el-input>
+          <el-autocomplete
+            v-model="createUserTY"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入内容"
+            @select="handleSelect"
+          ></el-autocomplete>
           <span class="searchName">收款时间</span>
           <el-date-picker
             v-model="startTimeTY"
@@ -328,6 +339,8 @@ export default {
   },
   data() {
     return {
+      applyPeopleIpt: [], //申请人搜索下拉的集合
+      applyPeopleChoose: {}, //选择搜索的申请人
       tabPosition: "left", // 左侧导航
       activeName: "first", // 当前tab项
       // 审批页面显示隐藏
@@ -492,14 +505,14 @@ export default {
             collectionNumber: "",
             price: 0,
             dept: 0,
-            createUser: this.createUserZK !== "" ? this.createUserZK : "",
+            createUser: this.applyPeopleChoose.userCode !== "" ? this.applyPeopleChoose.userCode : "",
             createTime: "2019-05-16 01:02:40",
             code: "",
             serialNumber: "",
             abstract: "",
             isDeleted: 0,
             collectionType: 1, // 直客1.同业2
-            localCompID: 0 // 直客0,同业变成同业社id
+            localCompID: 0, // 直客0,同业变成同业社id
             //"localCompName":""
           }
         })
@@ -539,6 +552,7 @@ export default {
       this.collectionNumberZK = "";
       this.statusChange("审批中");
       this.loadingZK = true;
+      this.applyPeopleChoose = []
       this.loadDataZK();
     },
 
@@ -578,14 +592,14 @@ export default {
             collectionNumber: "",
             price: 0,
             dept: 0,
-            createUser: this.createUserTY !== "" ? this.createUserTY : "",
+            createUser: this.applyPeopleChoose.userCode !== "" ? this.applyPeopleChoose.userCode : "",
             createTime: "2019-05-16 01:02:40",
             code: "",
             serialNumber: "",
             abstract: "",
             isDeleted: 0,
             collectionType: 2, // 直客1.同业2
-            localCompID: this.sid // 直客0,同业变成同业社id
+            localCompID: this.sid, // 直客0,同业变成同业社id
             //"localCompName":""
           }
         })
@@ -625,6 +639,7 @@ export default {
       this.collectionNumberTY = "";
       this.statusChange("审批中");
       this.loadingTY = true;
+      this.applyPeopleChoose = []
       this.loadDataTY();
     },
 
@@ -752,13 +767,15 @@ export default {
           }
         )
         .then(function(obj) {
-          console.log(obj,1111)
+          // console.log(obj,1111)
           if (obj.data.isSuccess) {
             that.totalBXHK = obj.data.total;
             that.numBXHK = obj.data.total;
             that.tableDataBXHK = obj.data.objects;
             that.tableDataBXHK.forEach(function(item, index, arr) {
-              item.createTime = moment(item.createTime).format("YYYY-MM-DD HH:mm:ss")
+              item.createTime = moment(item.createTime).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
             });
             that.loadingBXHK = false;
           } else {
@@ -811,6 +828,43 @@ export default {
         checkType = 0;
       }
       return checkType;
+    },
+
+    // 直客同业的搜索框  申请人的搜索请求数据
+    querySearchAsync(queryString, cb) {
+      this.applyPeopleIpt = []
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+          object: {
+            name: queryString
+          }
+        })
+        .then(res => {
+          console.log(res)
+          let {objects} = res.data;
+          for(let i = 0; i < objects.length; i++) {
+            this.applyPeopleIpt.push({
+              value: objects[i].name,
+              userCode: objects[i].userCode
+            })
+          }
+          let results = queryString
+            ? this.applyPeopleIpt.filter(this.createStateFilter(queryString))
+            : [];
+            cb(results);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    createStateFilter(queryString) {
+      return state => {
+        return (state.value) //后台已做筛选  无需再过滤
+      };
+    },
+    handleSelect(item) {
+      console.log(item);
+      this.applyPeopleChoose = item;
     }
   },
 

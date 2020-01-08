@@ -343,7 +343,7 @@ export default {
   watch: {
     dialogFormVisible2: {
       handler: function() {
-        console.log(this.msg);
+        // console.log(this.msg);
         if (this.msg == "") {
           this.closeAdd();
         } else {
@@ -404,7 +404,7 @@ export default {
 
     // 提交认款的请求
     commitAxios(row, type) {
-      console.log(this.tableDataOrder, "提交请求");
+      // console.log(this.tableDataOrder, "提交请求");
       const that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
@@ -416,7 +416,7 @@ export default {
           }
         })
         .then(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.data.isSuccess) {
             that.getColl();
           } else {
@@ -553,7 +553,7 @@ export default {
           }
         })
         .then(function(obj) {
-          console.log("微信支付宝明细", obj);
+          // console.log("微信支付宝明细", obj);
           if (obj.data.isSuccess) {
             that.totalMX = obj.data.total;
             that.tableDataMX = obj.data.objects;

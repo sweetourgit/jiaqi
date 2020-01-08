@@ -118,6 +118,7 @@
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
         <div style="position:absolute; top:8px; right:10px;">
           <el-button @click="CloseCheckIncomeShow()">取消</el-button>
+          <el-button @click="splitRelTable()">拆分关系表</el-button>
           <el-button @click="repeal()" type="danger" plain v-if="getRowCheckType == 0">撤销</el-button>
           <el-button
             type="success"
@@ -488,7 +489,10 @@ export default {
     },
     CloseCheckIncomeShow() {
       this.checkIncomeShow = false;
-    }
+    },
+    splitRelTable(){
+      this.$router.push({ path: "/relationSplitMap", query: { id: this.paymentID } })
+    },
   }
 }
 

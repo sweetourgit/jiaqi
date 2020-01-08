@@ -440,7 +440,7 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">毛利率:</div>
-              <div class="fl ml13">{{teampreviewData.rate | numFilter}}%</div>
+              <div class="fl ml13">{{rate | numFilter}}%</div>
             </td>
           </tr>
         </table>
@@ -840,6 +840,7 @@
         enrollDetail: "", //订单需要
         newEnrollDetail: "", //传给后台用的
         tradeID:0,//获取同业销售ID
+        rate:'', // 获取毛利率
       };
     },
     filters: {
@@ -964,6 +965,7 @@
           .then(res => {
             if (res.data.isSuccess == true) {
               this.teampreviewData = res.data.object;
+              this.rate = res.data.object.rate *100 ; 
               this.getBorrowing(this.planId);
               this.teamEnrolls(this.planId);
             }
@@ -1317,7 +1319,8 @@
                             isDeleted: 0,
                             code: "",
                             orderCode: "",
-                            proID: this.teampreviewData.teamID,
+                            //proID: this.teampreviewData.teamID,
+                            teamID: this.teampreviewData.teamID,
                             planID: this.planId,
                             orderStatus: 0, //订单状态  7未确认
                             refundStatus: 0, //退款状态
@@ -1423,7 +1426,8 @@
                                   isDeleted: 0,
                                   code: "",
                                   orderCode: "",
-                                  proID: this.teampreviewData.teamID,
+                                  //proID: this.teampreviewData.teamID,
+                                  teamID: this.teampreviewData.teamID,
                                   planID: this.planId,
                                   orderStatus: 0, //订单状态  7未确认
                                   refundStatus: 0, //退款状态
