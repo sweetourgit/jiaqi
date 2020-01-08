@@ -758,7 +758,7 @@
         }, ).then(function(response) {
           // console.log('审批详情',response);
           if (response.data.isSuccess) {
-            return response.data
+            return response.data.object;
           } else {
             this.$message.warning("获取收款信息审批状态失败~");
           }
