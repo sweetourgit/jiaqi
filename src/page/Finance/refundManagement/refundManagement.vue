@@ -1,11 +1,9 @@
 <template>
   <div>
-  
   </div>
 </template>
 
 <script>
-
 export default {
   data() {
     return {
@@ -15,7 +13,7 @@ export default {
   created() {
   },
   methods: {
-     
+    
   }
 };
 </script>
