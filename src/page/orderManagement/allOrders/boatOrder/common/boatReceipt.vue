@@ -9,7 +9,7 @@
       width="1100px"
       @close="btReceiptDialogClose"
     >
-      <el-form ref="form" :model="form" :rules="rules" label-width="90px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label align="right">
           <el-button type="primary" @click="handleCancel('form')">取消</el-button>
           <el-button type="primary" @click="handleApply('form')">申请</el-button>
@@ -17,16 +17,25 @@
         <el-form-item label="收款时间" prop="date">
           <el-date-picker v-model="form.date" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
+        <!-- 同业收款显示begin -->
         <el-form-item label="同业社名称" prop="name">
           <el-input v-model="form.name" class="ipt" disabled></el-input>
         </el-form-item>
+        <!-- 同业收款显示end -->
+        <!-- 直客收款显示begin -->
+        <el-form-item label="交易流水号" prop="name">
+          <el-input v-model="form.number" class="ipt"></el-input>
+        </el-form-item>
+        <!-- 直客收款显示end -->
         <el-form-item label="收款账户" prop="account">
           <el-input v-model="form.account" class="ipt"></el-input>&nbsp;&nbsp;
           <el-button type="primary" @click="handleChooseAccountBtn">选择</el-button>
         </el-form-item>
+        <!-- 同业收款显示begin -->
         <el-form-item label="收款金额" prop="price">
           <el-input v-model="form.price" class="ipt"></el-input>
         </el-form-item>
+        <!-- 同业收款显示end -->
         <el-form-item label="摘要" prop="digest">
           <el-input v-model="form.digest" class="ipt"></el-input>
         </el-form-item>
@@ -56,7 +65,7 @@
             <el-table-column prop="date" label="发票类型" align="center"></el-table-column>
             <el-table-column prop="name" label="个人/单位" align="center"></el-table-column>
             <el-table-column prop="address" label="纳税人识别号" align="center"></el-table-column>
-            <el-table-column prop="address" label="发票抬头/手机号" align="center"></el-table-column>
+            <el-table-column prop="taitou" label="发票抬头" align="center"></el-table-column>
             <el-table-column prop="address" label="发票项目" align="center"></el-table-column>
             <el-table-column prop="address" label="金额" align="center"></el-table-column>
             <el-table-column prop="address" label="账号" align="center"></el-table-column>
@@ -81,8 +90,14 @@
             <el-table-column prop="address" label="团期计划" align="center"></el-table-column>
             <el-table-column prop="address" label="出发日期" align="center"></el-table-column>
             <el-table-column prop="address" label="订单金额" align="center"></el-table-column>
+            <!-- 同业显示begin -->
+            <el-table-column prop="address" label="欠款金额" align="center"></el-table-column>
+            <el-table-column prop="address" label="已还金额" align="center"></el-table-column>
+            <!-- 同业显示end -->
+            <!-- 直客收款显示begin -->
             <el-table-column prop="address" label="未收金额" align="center"></el-table-column>
             <el-table-column prop="address" label="已收金额" align="center"></el-table-column>
+            <!-- 直客收款显示end -->
             <el-table-column prop="address" label="待审核金额" align="center"></el-table-column>
             <el-table-column prop="address" label="匹配收款金额" align="center"></el-table-column>
           </el-table>
@@ -194,15 +209,17 @@ export default {
       isAddInvoiceDialog: false, //控制添加开发票弹窗的显示隐藏
       form: {
         date: "", //收款时间
-        name: "", //同业社名称
+        name: "", //同业社名称  同业的显示
+        number: "", //交易流水号  直客的显示
         account: "", //收款账户
-        price: "", //收款金额
+        price: "", //收款金额 同业的显示
         digest: "", //摘要
         fileList: [], //凭证上传
         invoice: "否" //开发票
       },
       rules: {
         date: [{ required: true, message: "请选择收款时间", trigger: "blur" }],
+        name: [{ required: true }],
         account: [
           { required: true, message: "请选择收款账户", trigger: "blur" }
         ],
@@ -262,7 +279,7 @@ export default {
         ]
       }, //ruleForm的验证
       tableDataInvoice: [
-        { data: "2012.02.12", name: "sansan", address: "shlj" }
+        { data: "2012.02.12", name: "sansan", address: "shlj", taitou: "1" }
       ], //开发票的表格的集合
       tableDataDebt: [], //关联欠款的表格集合
       tableDataAccount: [
@@ -306,7 +323,9 @@ export default {
     handleAddInvoiceAdd(ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
-          alert("submit!");
+          this.tableDataInvoice.push(Object.assign({}, this.ruleForm));
+          this.isAddInvoiceDialog = false;
+          this.$refs[ruleForm].resetFields();
         } else {
           console.log("error submit!!");
           return false;
@@ -315,7 +334,9 @@ export default {
     },
 
     // 开发票表格中的删除按钮
-    handleDelete(row, index) {},
+    handleDelete(row, index) {
+      this.tableDataInvoice.splice(index, 1);
+    },
 
     // 取消申请同业或直客收款的弹窗
     handleCancel(rules) {
@@ -327,7 +348,7 @@ export default {
     handleApply(rules) {
       this.$refs[rules].validate(valid => {
         if (valid) {
-          alert("submit!");
+          // alert("submit!");
         } else {
           console.log("error submit!!");
           return false;
