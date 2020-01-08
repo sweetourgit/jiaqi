@@ -658,32 +658,43 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() => {this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/delete',{
-        "id":this.currentRowId
-      }).then(res => {
-        if(res.data.isSuccess == true){
-          this.$message.success("撤销成功")
-          this.tableData=res.data.object;
-          this.detailstShow = false;
-          this.getStraightGuestManagement()
-          if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
-            this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll',{
+          "id":this.currentRowId
+        }).then(res => {
+          console.log(res.data.object.checkType)
+          // 除审批中均可撤销
+          if(res.data.object.checkType != 0){
+            this.$message.warning("财务已经通过/驳回收款，无法撤销")
+            return
           }
-          // 撤销通过同时工作流通过
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
-            "datetime": moment(new Date().getTime()).format('YYYYMMDD'),
-            "spname": sessionStorage.getItem('name'),
-            "spstate": "通过",
-            "spcontent": "",
-            'checktype': 2,
-            "id": this.pid
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/delete',{
+            "id":this.currentRowId
           }).then(res => {
-            console.log(res,'通过res')
-          }).catch(err => {
-            console.log(err)
+            if(res.data.isSuccess == true){
+              this.$message.success("撤销成功")
+              this.tableData=res.data.object;
+              this.detailstShow = false;
+              this.getStraightGuestManagement()
+              if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+                this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
+              }
+              // 撤销通过同时工作流通过
+              this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
+                "datetime": moment(new Date().getTime()).format('YYYYMMDD'),
+                "spname": sessionStorage.getItem('name'),
+                "spstate": "通过",
+                "spcontent": "",
+                'checktype': 2,
+                "id": this.pid
+              }).then(res => {
+                console.log(res,'通过res')
+              }).catch(err => {
+                console.log(err)
+              })
+            }
           })
-        }
-      })
+        })
       }).catch(() => {
         this.$message({
           type: "info",
