@@ -31,7 +31,7 @@
 
 <script>
 import { getRoot } from './api'
-import { RelationBar } from './dictionary'
+import { RelationBar, relationBarMaker } from './dictionary'
 import relationBar from './comps/relationBar'
 
 export default {
@@ -50,8 +50,9 @@ export default {
 
   methods: {
     init(){
-      getRoot().then(res => {
-        this.relations= new RelationBar({ isRoot: true });
+      let { id }= this.$route.query;
+      getRoot(id).then(res => {
+        this.relations= relationBarMaker(res, true);
         RelationBar.root= this.relations;
       })
     }

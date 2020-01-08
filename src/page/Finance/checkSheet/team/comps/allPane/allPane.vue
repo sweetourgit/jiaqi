@@ -27,7 +27,11 @@
 
         <el-table-column prop="userName" label="申请人" align="center"></el-table-column>
 
-        <el-table-column prop="createTime" label="申请时间" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="申请时间" align="center">
+          <template slot-scope="scope">
+            {{ dateFormator(scope.row.createTime) }}
+          </template>
+        </el-table-column>
 
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
@@ -136,6 +140,10 @@ export default {
           return ''
         }
       },
+      
+      dateFormator(dateStr){
+        return this.$dateFormate(new Date(dateStr), 'yyyy-MM-dd hh:mm:ss')
+      }
     },
 
     // 子组件emit触发
