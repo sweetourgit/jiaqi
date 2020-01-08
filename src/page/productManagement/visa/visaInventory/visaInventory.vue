@@ -1,6 +1,6 @@
 <template>
   <div class="demo-input-suffix">
-     <el-button type="primary" @click="add">添加</el-button>
+     <el-button type="primary" @click="add(1)">添加</el-button>
      <el-table :data="dataList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border>
        <el-table-column  prop="id" label="ID" min-width="80" align="center"></el-table-column>   
        <el-table-column  prop="name" label="名称" width="220" align="center"></el-table-column>
@@ -11,7 +11,7 @@
        <el-table-column  label="操作" width="200" align="center">
             <template slot-scope="scope">
                <el-breadcrumb separator="|" class="breadCrumb">
-                  <el-breadcrumb-item><span class="breadCrumbPointer">修改</span></el-breadcrumb-item>
+                  <el-breadcrumb-item><span class="breadCrumbPointer" @click="add(2)">修改</span></el-breadcrumb-item>
                   <el-breadcrumb-item @click.native="online(scope.row.id)"><span class="breadCrumbPointer">上线</span></el-breadcrumb-item>
                   <el-breadcrumb-item @click.native="offline(scope.row.id)" v-if="false"><span class="breadCrumbPointer">上线</span></el-breadcrumb-item>
                   <el-breadcrumb-item @click.native="delInventory(scope.row.id)"><span class="breadCrumbPointer">删除</span></el-breadcrumb-item>
@@ -20,25 +20,38 @@
        </el-table-column>
      </el-table>
      <!--添加SKU-->
-     <el-dialog title="添加SKU" :visible.sync="dialogForm" class="city_list" width="780px" @close="close">
+     <el-dialog :title="title" :visible.sync="dialogForm" class="city_list" width="580px" @close="close">
           <el-form :model="skuForm" :rules="rules" ref="skuForm" label-width="80px" class="demo-ruleForm">
-               
-
-               <div slot="footer" class="dialog-footer cb">
-                  <el-button @click="close">取 消</el-button>
-                  <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
-                </div>
+               <el-form-item label="名称" prop="name">
+                  <el-input v-model="skuForm.name"></el-input>
+               </el-form-item>
+               <el-form-item label="计划编码" prop="name">
+                  <el-input v-model="skuForm.name"></el-input>
+               </el-form-item>
+               <el-form-item label="出行模板" prop="name">
+                  <el-select v-model="skuForm.name" placeholder="请选择">
+                     <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item.id"></el-option>
+                  </el-select>
+               </el-form-item>
+               <el-form-item label="库存" prop="name">
+                  <el-input v-model="skuForm.name"></el-input>
+                  <el-checkbox v-model="skuForm.unlimited" class="unlimited">无限库存</el-checkbox>
+               </el-form-item>
+               <el-form-item label="销售价" prop="name">
+                  <el-input v-model="skuForm.name"></el-input>
+               </el-form-item>
+               <el-form-item label="同业价" prop="name">
+                  <el-input v-model="skuForm.name"></el-input>
+               </el-form-item>
+               <el-form-item label="结算价" prop="name">
+                  <el-input v-model="skuForm.name"></el-input>
+               </el-form-item>    
           </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="close">取 消</el-button>
+            <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
+          </div>
      </el-dialog>
-
-
-
-
-
-
-
-
-
   </div>
 </template>
 
@@ -48,11 +61,19 @@ export default {
     return {
       dataList:[],
       dialogForm:false,
-      skuForm:{},
-      rules:{},
+      title:"",
+      skuForm:{
+        name:'',
+        unlimited:false,
+      },
+      options:[
+        {label:"a",id:1},
+        {label:"b",id:2},
+      ],
+      rules:{
+        name:[{ required: true, message: '名称不能为空', trigger: 'blur' }],
 
-
-
+      },
     }
   },
   mounted(){
@@ -113,11 +134,24 @@ export default {
           });
         });
     },
-    add(){
+    add(index){
       this.dialogForm=true;
+      if(index==1){
+        this.title = "添加SKU"
+      }else{
+        this.title = "修改SKU"
+      }
+
+
+
+
+
+
+
     },
     close(){
       this.dialogForm=false;
+      this.$refs["skuForm"].resetFields();
     }
 
 
@@ -135,5 +169,8 @@ export default {
  .table{border:1px solid #e6e6e6;width:1200px;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin-top:20px}
  .breadCrumbPointer{cursor: pointer;color: #2e94f9}
  .breadCrumb{margin-left: 24px}
- .demo-ruleForm{margin-top: 20px}
+ .dialog-footer{text-align: center}
+ .demo-ruleForm .el-input{width:350px}
+ .demo-ruleForm .el-select{width:350px}
+ .unlimited{margin-left: 20px}
 </style>
