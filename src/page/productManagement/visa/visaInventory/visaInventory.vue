@@ -1,5 +1,5 @@
 <template>
-  <div class="demo-input-suffix">
+  <div class="demo-input-suffix" v-if="false">
      <el-button type="primary" @click="add(1)">添加</el-button>
      <el-table :data="dataList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border>
        <el-table-column  prop="id" label="ID" min-width="80" align="center"></el-table-column>   
