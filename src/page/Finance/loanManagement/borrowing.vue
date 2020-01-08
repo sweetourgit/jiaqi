@@ -377,7 +377,7 @@
           打印本页详情信息
         </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo" ref="printHandle" v-if="checkIncomeShow"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo" ref="printHandle" v-if="checkIncomeShow" :alreadyAcount="alreadyAcount"></checkLoanManagement>
     </el-dialog>
     <!-- 查看无收入借款申请详情弹窗 END -->
   </div>
@@ -404,6 +404,7 @@ export default {
       }
     };
     return {
+      alreadyAcount: '',
       creatUserOrgID: null, // 用来判断付款账户是否显示
       presentRouter: null, // 当前路由
       ifDY100009: false,

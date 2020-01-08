@@ -272,11 +272,6 @@ export default {
     this.presentRouter = this.$route.name
     this.getTopName = sessionStorage.getItem('topName')
   },
-  computed: {
-    getAlreadyAcount(){
-      return this.alreadyAcount
-    }
-  },
   methods: {
     // 打印详情
     printDetails(){

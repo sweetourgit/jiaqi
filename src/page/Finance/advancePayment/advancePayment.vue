@@ -129,7 +129,7 @@
           </el-button>
         </div>
       <!-- 好像是和无收入借款共用一个 -->
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" ref="printHandle" v-if="checkIncomeShow"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" ref="printHandle" v-if="checkIncomeShow" :alreadyAcount="alreadyAcount"></checkLoanManagement>
     </el-dialog>
     <!-- 付款账户弹窗 -->
     <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
@@ -166,6 +166,7 @@ export default {
   },
   data() {
     return {
+      alreadyAcount: '',
       creatUserOrgID: null, // 用来判断付款账户是否显示
       presentRouter: null, // 当前路由
       ifDY100009: false,
