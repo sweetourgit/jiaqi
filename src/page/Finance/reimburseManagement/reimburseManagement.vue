@@ -359,7 +359,7 @@
 
                <el-date-picker
                 class="search_input"
-                style="width:30%"
+                style="width:32%"
                 v-model="plan_data2"
                 @change="endDateChange2()" 
                 type="daterange"
@@ -373,14 +373,14 @@
                 size="mini"
                 @click="search_btn()"
                 round
-                style="margin-top: 10px; margin-left: 20px; float:left;"
+                style="margin-top: 10px;margin-bottom: 10px; margin-left: 20px; float:left;"
               >搜索</el-button>
               <el-button 
               @click="T_update_btn" 
               type="primary"
               size="mini"
               round
-              style="margin-top: 10px; margin-left: 10px;float:left;"
+              style="margin-top: 10px;margin-bottom: 10px; margin-left: 10px;float:left;"
               >重置</el-button>
               
             </div>
