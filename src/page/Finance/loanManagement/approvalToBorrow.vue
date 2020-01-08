@@ -92,7 +92,7 @@
           打印本页详情
         </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow" ref="printHandle"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow" ref="printHandle" :alreadyAcount="alreadyAcount"></checkLoanManagement>
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
@@ -159,6 +159,7 @@ import moment from 'moment'
       },
       paymentID:0,
       groupCode:'', //表头切换
+      alreadyAcount: '',
       empty_01:'',
       people_01:'',
       tableData:[], // 需要审批表格数据
@@ -235,19 +236,20 @@ import moment from 'moment'
       },
       // 选择账户弹窗，选择对应的选项事件
       addAccount(index, row){
-      var that = this
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
-        "paymentID": this.paymentID,
-        "accountID": row.id
-      }).then(function (obj) {
-        if(obj.data.isSuccess == true) {
-          that.ifClick = true
-          that.ifPassClick = false
-        }
-        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
-        // that.getList()
-      }).catch(function (obj) {})
-      this.SelectAccount = false
+        var that = this
+        this.alreadyAcount = row.title
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
+          "paymentID": this.paymentID,
+          "accountID": row.id
+        }).then(function (obj) {
+          if(obj.data.isSuccess == true) {
+            that.ifClick = true
+            that.ifPassClick = false
+          }
+          // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+          // that.getList()
+        }).catch(function (obj) {})
+          this.SelectAccount = false
       },
       // 选择账户弹窗
       bankAccount(){

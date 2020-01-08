@@ -112,21 +112,21 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="纳税人识别号" align="center">
+            <el-table-column label="纳税人识别号" align="center" width="200">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.taxesNumber" required placeholder="纳税人识别号"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="发票抬头" align="center">
+            <el-table-column label="发票抬头" align="center" width="200">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceTable.' + scope.$index + '.titleOrMobile'" :rules="rules.titleOrMobile">
                   <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="发票项目" width="120" align="center">
+            <el-table-column label="发票项目" width="150" align="center">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceTable.' + scope.$index + '.invoiceItem'" :rules="rules.invoiceItem">
                   <el-select v-model="scope.row.invoiceItem" placeholder="发票项目">
@@ -135,42 +135,42 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="金额" align="center">
+            <el-table-column label="金额" align="center" width="120">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceTable.' + scope.$index + '.invoicemoney'" :rules="rules.invoicemoney">
                   <el-input v-model="scope.row.invoicemoney" placeholder="金额" :disabled="change"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="帐号" align="center">
+            <el-table-column label="帐号" align="center" width="220">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.account" placeholder="帐号" :disabled="change"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="开户行" align="center">
+            <el-table-column label="开户行" align="center" width="220">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.bank" placeholder="开户行" :disabled="change"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="地址" align="center">
+            <el-table-column label="地址" align="center" width="220">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.address" placeholder="地址" :disabled="change"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="电话" align="center">
+            <el-table-column label="电话" align="center" width="150">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceTable.' + scope.$index + '.mobile'" :rules="rules.mobile">
                   <el-input v-model="scope.row.mobile" placeholder="电话" :disabled="change"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="70" align="center">
+            <el-table-column label="操作" width="80" align="center" fixed="right">
               <template slot-scope="scope">
                 <el-button size="mini" type="danger" v-if="scope.row.isUpdate!='1'" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 <br />

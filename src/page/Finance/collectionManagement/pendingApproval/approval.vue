@@ -721,17 +721,50 @@
         this.$emit('close', false);
       },
 
-      // 通过按钮事件
+      // 通过按钮事件
       approvalPass(){
-        this.dialogVisibleApproval = true;
-        this.approvalTitle = '审批通过';
-        this.approval_status = '1';
+        this.getStatus().then((res) => {
+          console.log(res);
+          if(res.checkType == 0){
+            this.dialogVisibleApproval = true;
+            this.approvalTitle = '审批通过';
+            this.approval_status = '1';
+          }else{
+            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+          }
+        })
+
       },
-      // 驳回按钮事件
+      // 驳回按钮事件
       approvalReject(){
-        this.dialogVisibleApproval = true;
-        this.approvalTitle = '审批驳回';
-        this.approval_status = '2';
+        this.getStatus().then((res) => {
+          console.log(res);
+          if(res.checkType == 0){
+            this.dialogVisibleApproval = true;
+            this.approvalTitle = '审批驳回';
+            this.approval_status = '2';
+          }else{
+            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+          }
+        })
+
+      },
+
+      getStatus(){
+        const that = this;
+        // 获取基本信息
+        return this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/coll", {
+          "id": this.info.id
+        }, ).then(function(response) {
+          // console.log('审批详情',response);
+          if (response.data.isSuccess) {
+            return response.data
+          } else {
+            this.$message.warning("获取收款信息审批状态失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       },
 
       // 审批提交事件
