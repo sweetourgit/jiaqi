@@ -60,7 +60,7 @@ $ruler: 16px;
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
         @click="selectHandler">
-        [预]123
+        {{ labelMaker() }}
       </div>
     </header>
     <main>
@@ -83,15 +83,15 @@ $ruler: 16px;
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
         @click="selectHandler">
-        [预]123
+        {{ labelMaker() }}
       </div>
     </footer>
   </div>  
 </template>
 
 <script>
-import { getRoot } from '../api'
-import { RelationBar } from '../dictionary'
+import { getNode } from '../api'
+import { RelationBar, relationBarMaker } from '../dictionary'
 
 export default {
 
@@ -104,7 +104,7 @@ export default {
     expended: Boolean,
     hoverd: Boolean,
     selected: Boolean,
-    // data: Object,
+    info: Object,
     child: Object,
   },
 
@@ -117,13 +117,20 @@ export default {
   methods: {
     awakeChild(){
       let child;
+      let { id }= this.info;
       if(this.child){
+        console.log('child exsit')
         this.child.state= !this.child.state;
         return this.$emit('update:expended', this.child.state);
       }
-      getRoot()
+      getNode(id)
       .then(res => {
-        child= new RelationBar();
+        let { trees, ...info }= res;
+        child= relationBarMaker(trees[0]);
+        if(!child){
+          this.$emit('update:expended', true);
+          this.$message.info('no split');
+        }
         child.state= true;
         this.$emit('update:expended', true);
         this.$emit('update:child', child);
@@ -142,6 +149,11 @@ export default {
       if(RelationBar.currentSelect)RelationBar.currentSelect.selected= false;
       RelationBar.currentSelect= this.proto;
       this.$emit('update:selected', true);
+    },
+
+    labelMaker(){
+      let { paymentType, price }= this.info
+      return paymentType=== 1? `[无] ${price}`: `[预] ${price}`;
     }
   }
 

@@ -506,7 +506,7 @@ export default {
       },
 
       expireTimeAdaptor(data){
-        data.expireTime= new Date(new Date(data.expireTime)+ 8* 3600* 1000).toISOString();
+        data.expireTime= new Date(new Date(data.expireTime).getTime()+ 8* 3600* 1000).toISOString();
       },
 
       fileAdaptor(file){

@@ -100,7 +100,8 @@ export default {
     },
 
     adaptor(){
-      this.submitForm.price= parseFloat(this.submitForm.price);
+      if(!this.$isNull(this.submitForm.price))
+        this.submitForm.price= parseFloat(this.submitForm.price);
     }
   }
 }
