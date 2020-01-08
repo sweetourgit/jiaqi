@@ -141,21 +141,11 @@ export default {
       }else{
         this.title = "修改SKU"
       }
-
-
-
-
-
-
-
     },
     close(){
       this.dialogForm=false;
       this.$refs["skuForm"].resetFields();
     }
-
-
-
 
 
 
