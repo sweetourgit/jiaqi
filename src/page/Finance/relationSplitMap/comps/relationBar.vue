@@ -129,7 +129,7 @@ export default {
         child= relationBarMaker(trees[0]);
         if(!child){
           this.$emit('update:expended', true);
-          this.$message.info('no split');
+          return this.$message.info('no split');
         }
         child.state= true;
         this.$emit('update:expended', true);
