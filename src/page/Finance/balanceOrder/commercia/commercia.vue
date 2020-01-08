@@ -15,7 +15,7 @@
             <span class="emptyPlan">欠款时间</span>
              <el-date-picker
                 class="planTime"
-                style="width:55%"
+                style="width:60%"
                 v-model="planTime"
                 @change="endDateChange()" 
                 type="daterange"

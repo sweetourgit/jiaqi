@@ -998,7 +998,7 @@ export default {
                               this.$message({
                                     type: "warning",
                                     message: "请重新选择关联单据"
-                                    }); 
+                                    });  
                                     return;
                                 } 
                              }
@@ -1348,7 +1348,7 @@ export default {
               type: "warning"
             })
             .then(() => {
-            
+                  this.alljoinData=[];
                   let tabs = this.ruleForm.editableTabs;
                   let activeName = this.ruleForm.editableTabsValue;
 
@@ -1362,10 +1362,14 @@ export default {
                       }
                     });
                   }
+                  
 
                   this.ruleForm.editableTabsValue = activeName;
                   this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
-              })
+                  this.subscript(); 
+                  let joinData = this.s_content.joinData;
+                  this.alljoinData.push(joinData);
+               })
               
           .catch(() => {
             console.log(7);
@@ -1646,10 +1650,11 @@ export default {
         submitForm(ruleForm) { // 报销申请提交
             var joinData_sn=[];
             var files_s=[];
-            var editableTabs = ruleForm.editableTabs;
+            var editableTabs = this.ruleForm.editableTabs;
             var verify = 0;
             this.object_lisr=[];
             this.submitformBtn=true;
+            console.log(editableTabs,'8563210')
             for(var j in editableTabs){
                 let submitForm_list = editableTabs[j].content;
                           if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
