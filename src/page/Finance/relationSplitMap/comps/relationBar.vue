@@ -72,6 +72,7 @@ $ruler: 16px;
       </relation-bar>
     </main>
     <footer
+      v-if="!isRoot"
       @mouseover="$emit('update:hoverd', true)"
       @mouseout="$emit('update:hoverd', false)">
       <div class="icon-outer"

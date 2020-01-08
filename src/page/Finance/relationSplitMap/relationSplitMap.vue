@@ -21,8 +21,9 @@
       <relation-bar
         ref="relationBarRef"
         v-if="relations"
-        :proto="relations"
-        v-bind.sync="relations">
+        v-bind.sync="relations"
+        :is-root="true"
+        :proto="relations">
       </relation-bar>
     </main>
   </div>
