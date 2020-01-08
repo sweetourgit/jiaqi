@@ -34,7 +34,11 @@
           ></el-date-picker>
           <br />
           <span class="searchName">状态</span>
-          <el-input v-model="checkTypeStatusZK" class="searchInput"></el-input>
+          <el-select v-model="checkTypeStatusZK" placeholder="请选择" style="width: 150px;">
+            <el-option
+              label="审批中" value="0"
+            ></el-option>
+          </el-select>
           <span class="searchName">收款账户</span>
           <el-input v-model="collectionNumberZK" class="searchInput"></el-input>
           <el-button type="primary" class="searchBtn" @click="handleSearchBtnZK">搜索</el-button>
@@ -145,7 +149,11 @@
           ></el-date-picker>
           <br />
           <span class="searchName">状态</span>
-          <el-input v-model="checkTypeStatusTY" class="searchInput"></el-input>
+          <el-select v-model="checkTypeStatusTY" placeholder="请选择" style="width: 150px;">
+            <el-option
+              label="审批中" value="0"
+            ></el-option>
+          </el-select>
           <span class="searchName">收款账户</span>
           <el-input v-model="collectionNumberTY" class="searchInput"></el-input>
           <el-button type="primary" class="searchBtn" @click="handleSearchBtnTY">搜索</el-button>
@@ -490,7 +498,7 @@ export default {
           pageSize: this.pagesizeZK,
           object: {
             id: 0,
-            checkType: this.statusChange(this.checkTypeStatusZK),
+            checkType: 0,
             collectionTime: "2019-05-16",
             startTime: this.startTimeZK
               ? moment(this.startTimeZK).format("YYYY-MM-DD")
@@ -505,14 +513,17 @@ export default {
             collectionNumber: "",
             price: 0,
             dept: 0,
-            createUser: this.applyPeopleChoose.userCode !== "" ? this.applyPeopleChoose.userCode : "",
+            createUser:
+              this.applyPeopleChoose.userCode !== ""
+                ? this.applyPeopleChoose.userCode
+                : "",
             createTime: "2019-05-16 01:02:40",
             code: "",
             serialNumber: "",
             abstract: "",
             isDeleted: 0,
             collectionType: 1, // 直客1.同业2
-            localCompID: 0, // 直客0,同业变成同业社id
+            localCompID: 0 // 直客0,同业变成同业社id
             //"localCompName":""
           }
         })
@@ -550,9 +561,9 @@ export default {
       this.endTimeZK = "";
       this.checkTypeStatusZK = "";
       this.collectionNumberZK = "";
-      this.statusChange("审批中");
+      // this.statusChange("审批中");
       this.loadingZK = true;
-      this.applyPeopleChoose = []
+      this.applyPeopleChoose = [];
       this.loadDataZK();
     },
 
@@ -575,7 +586,7 @@ export default {
           pageSize: this.pagesizeTY,
           object: {
             id: 0,
-            checkType: this.statusChange(this.checkTypeStatusTY),
+            checkType: 0,
             collectionTime: "2019-05-16",
             startTime:
               this.startTimeTY !== ""
@@ -592,14 +603,17 @@ export default {
             collectionNumber: "",
             price: 0,
             dept: 0,
-            createUser: this.applyPeopleChoose.userCode !== "" ? this.applyPeopleChoose.userCode : "",
+            createUser:
+              this.applyPeopleChoose.userCode !== ""
+                ? this.applyPeopleChoose.userCode
+                : "",
             createTime: "2019-05-16 01:02:40",
             code: "",
             serialNumber: "",
             abstract: "",
             isDeleted: 0,
             collectionType: 2, // 直客1.同业2
-            localCompID: this.sid, // 直客0,同业变成同业社id
+            localCompID: this.sid // 直客0,同业变成同业社id
             //"localCompName":""
           }
         })
@@ -637,9 +651,9 @@ export default {
       this.endTimeTY = "";
       this.checkTypeStatusTY = "";
       this.collectionNumberTY = "";
-      this.statusChange("审批中");
+      // this.statusChange("审批中");
       this.loadingTY = true;
-      this.applyPeopleChoose = []
+      this.applyPeopleChoose = [];
       this.loadDataTY();
     },
 
@@ -817,22 +831,22 @@ export default {
     },
 
     // 直客同业搜索  状态输入框的转换
-    statusChange(checkType) {
-      if (checkType == "审批中") {
-        checkType = 0;
-      } else if (checkType == "通过") {
-        checkType = 1;
-      } else if (checkType == "驳回") {
-        checkType = 2;
-      } else {
-        checkType = 0;
-      }
-      return checkType;
-    },
+    // statusChange(checkType) {
+    //   if (checkType == "审批中") {
+    //     checkType = 0;
+    //   } else if (checkType == "通过") {
+    //     checkType = 1;
+    //   } else if (checkType == "驳回") {
+    //     checkType = 2;
+    //   } else {
+    //     checkType = 0;
+    //   }
+    //   return checkType;
+    // },
 
     // 直客同业的搜索框  申请人的搜索请求数据
     querySearchAsync(queryString, cb) {
-      this.applyPeopleIpt = []
+      this.applyPeopleIpt = [];
       this.$http
         .post(this.GLOBAL.serverSrc + "/org/api/userlist", {
           object: {
@@ -840,18 +854,17 @@ export default {
           }
         })
         .then(res => {
-          console.log(res)
-          let {objects} = res.data;
-          for(let i = 0; i < objects.length; i++) {
+          let { objects } = res.data;
+          for (let i = 0; i < objects.length; i++) {
             this.applyPeopleIpt.push({
               value: objects[i].name,
               userCode: objects[i].userCode
-            })
+            });
           }
           let results = queryString
             ? this.applyPeopleIpt.filter(this.createStateFilter(queryString))
             : [];
-            cb(results);
+          cb(results);
         })
         .catch(err => {
           console.log(err);
@@ -859,11 +872,10 @@ export default {
     },
     createStateFilter(queryString) {
       return state => {
-        return (state.value) //后台已做筛选  无需再过滤
+        return state.value; //后台已做筛选  无需再过滤
       };
     },
     handleSelect(item) {
-      console.log(item);
       this.applyPeopleChoose = item;
     }
   },
