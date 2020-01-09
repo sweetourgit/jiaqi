@@ -44,6 +44,7 @@
             <el-form-item label="发起时间：" prop="beginTime">
               <el-date-picker size="small" type="date" style="width: 200px;"
                 v-model="submitForm.beginTime"
+                @change="beginTimeValidate"
                 placeholder="起始时间">
               </el-date-picker>
             </el-form-item>
@@ -52,6 +53,7 @@
             <el-form-item label="截止时间：" prop="endTime">
               <el-date-picker size="small" type="date" style="width: 200px;"
                 v-model="submitForm.endTime"
+                @change="endTimeValidate"
                 placeholder="截止时间">
               </el-date-picker>
             </el-form-item>
@@ -114,6 +116,22 @@ export default {
     reset(){
       this.$refs.submitForm.resetFields();
       this.$emit('reset-pageinfo');
+    },
+
+    beginTimeValidate(beginTime){
+      let endTime= this.submitForm.endTime;
+      if(!endTime) return;
+      if(endTime > beginTime) return;
+      this.$message.error('发起时间应小于截止时间');
+      return this.submitForm.beginTime= null;
+    },
+
+    endTimeValidate(endTime){
+      let beginTime= this.submitForm.beginTime;
+      if(!beginTime) return;
+      if(endTime > beginTime) return;
+      this.$message.error('截止时间应大于发起时间');
+      return this.submitForm.endTime= null;
     }
   }
 }
