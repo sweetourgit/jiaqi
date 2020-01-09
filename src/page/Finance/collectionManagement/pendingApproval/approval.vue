@@ -926,7 +926,6 @@ export default {
             that.$message.success("审批提交成功~");
             that.closeAdd();
           } else {
-            console.log("response.data.message",response.data.message)
             if (response.data.message) {
               that.$message.warning(response.result.message);
             } else {
@@ -1010,23 +1009,23 @@ export default {
             that.getCollectionPriceTotal = 0;
             // console.log(2,that.passDisabled)
             // 如果是报销还款进来的并且获取的accountID 13为现金 则可以直接通过 此时没有去认款的按钮 不等于13都是汇款
-            // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮  that.tableAssociated[0].checkType != 3 代表没认过款的  hasSubject为true则有科目zhi对公
+            // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮 hasSubject为true则有科目值对公  that.tableAssociated[0].checkType != 3 代表没认过款的  
             // 查看按钮的显示与隐藏的判断
             that.isLookBtn = that.tableAssociated[0].checkType;
             if (that.info.collectionType == 6) {
-              // if(that.isLookBtn !== 3) {
+              // console.log(109);
+              // if (that.isLookBtn !== 3) {
               //   if (response.data.object.accountID == 13) {
-              //   that.passDisabled = false;
-              //   console.log(that.passDisabled,"that.passDisabled")
+              //     that.passDisabled = false;
+              //   } else {
+              //     that.hasSubject
+              //       ? (that.passDisabled = true)
+              //       : (that.passDisabled = false);
+              //   }
               // } else {
-              //   that.hasSubject ? that.passDisabled = true : that.passDisabled = false
-              //   console.log(that.passDisabled,222)
-              // }
-              // } else {
               //   that.passDisabled = false;
-              //   console.log(that.passDisabled,333)
               // }
-              console.log("that.hasSubject",that.hasSubject)
+
               if (response.data.object.accountID == 13) {
                 that.passDisabled = false;
               } else {
