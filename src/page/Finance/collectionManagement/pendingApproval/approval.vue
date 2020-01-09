@@ -983,7 +983,7 @@ export default {
               //     : (response.data.object.accountID = "汇款")
             };
 
-            that.getAccount(response.data.object.accountID);
+            that.getAccount(response.data.object.accountID)
 
             that.printMatchingPrice =
               response.data.object.arrears[0].matchingPrice;
@@ -1009,52 +1009,38 @@ export default {
             that.getCollectionPriceTotal = 0;
             // console.log(2,that.passDisabled)
             // 如果是报销还款进来的并且获取的accountID 13为现金 则可以直接通过 此时没有去认款的按钮 不等于13都是汇款
-            // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮 hasSubject为true则有科目值对公  that.tableAssociated[0].checkType != 3 代表没认过款的  
+            // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮 hasSubject为true则有科目值对公  that.tableAssociated[0].checkType != 3 代表没认过款的
             // 查看按钮的显示与隐藏的判断
             that.isLookBtn = that.tableAssociated[0].checkType;
+            // that.$nextTick(() => {
+            //   console.log("that.hasSubject为true则对公", that.hasSubject);
+            // });
             if (that.info.collectionType == 6) {
               // console.log(109);
-              // if (that.isLookBtn !== 3) {
-              //   if (response.data.object.accountID == 13) {
-              //     that.passDisabled = false;
-              //   } else {
-              //     that.hasSubject
-              //       ? (that.passDisabled = true)
-              //       : (that.passDisabled = false);
-              //   }
-              // } else {
-              //   that.passDisabled = false;
-              // }
-
-              if (response.data.object.accountID == 13) {
-                that.passDisabled = false;
+              if (that.isLookBtn !== 3) {
+                if (response.data.object.accountID == 13) {
+                  that.passDisabled = false;
+                } else {
+                  that.hasSubject
+                    ? (that.passDisabled = true)
+                    : (that.passDisabled = false);
+                }
               } else {
-                that.hasSubject
-                  ? (that.passDisabled = true)
-                  : (that.passDisabled = false);
+                that.passDisabled = false;
               }
+
+              // if (response.data.object.accountID == 13) {
+              //   that.passDisabled = false;
+              // } else {
+              //   that.hasSubject
+              //     ? (that.passDisabled = true)
+              //     : (that.passDisabled = false);
+              // }
             }
 
             // 凭证
             that.fileList = response.data.object.files;
           } else {
-            // that.baseInfo = {
-            //   id: 1235,
-            //   createUser: "自己造假",
-            //   createTime: "2012-12-12",
-            //   collectionNumber: "收款账户",
-            //   price: 250,
-            //   reimbursement: 1236547896,
-            //   loan: 1111111111,
-            //   accountID: "汇款"
-            // };
-            // if (that.info.collectionType == 6) {
-            //   if (that.baseInfo.accountID == "现金") {
-            //     that.passDisabled = false;
-            //   } else {
-            //     that.passDisabled = true;
-            //   }
-            // }
             that.$message.warning("加载数据失败~");
           }
         })
@@ -1095,6 +1081,7 @@ export default {
               }
             });
           }
+          console.log("get", that.hasSubject);
         })
         .catch(function(error) {
           console.log(error);
