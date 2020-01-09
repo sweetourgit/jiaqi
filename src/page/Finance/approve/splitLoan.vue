@@ -87,7 +87,7 @@
                 <el-table-column prop="peopleCount" label="操作" align="center" width="200">
                   <template slot-scope="scope">
                     <el-button type="primary" plain size="small" plain v-if="scope.row.price != scope.row.paymentPrice" @click="handleTableSplitLoan(scope.$index, scope.row)">拆分/还款</el-button>
-                    <el-button type="success" plain size="small" plain v-if="scope.row.expenseType != 0" @click="handleTableLook">查看</el-button>
+                    <el-button type="success" plain size="small" plain v-if="scope.row.expenseType != 0" @click="handleTableLook(scope.$index, scope.row)">查看</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -108,7 +108,7 @@
       <div v-if="isShowLookOfSlit">
         <p v-show="this.keepWhichRow.expenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
         <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
-        <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ remitOfCash }}</strong ></span></p>
+        <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showRemitOfCash }}</strong ></span></p>
       </div>
       <!-- 查看 END -->
       <!-- 还款/拆分表单 -->
@@ -142,7 +142,8 @@
     name: "splitLoan",
     data(){
       return {
-        remitOfCash: null,
+        remitOfCash: '',
+        showRemitOfCash: '',
         keepAcountIdArr: {}, // 保存所有已经拆分还款之后的 银行账号 accountId
         listLoading: false,
         workItemIDArr: null,
@@ -287,7 +288,7 @@
       // 点击银行账户的行时触发
       handleAcountRow(row, event, column){
         this.isDisabledKeepBtn = false
-        this.remitOfCash = row.title
+        this.keepWhichRow.remitOfCash = row.title
         this.getAcountId = row.id
       },
       // 表格内的 ’拆分/还款’ 按钮
@@ -309,7 +310,8 @@
         })
       },
       // 表格内的 ‘查看’ 按钮
-      handleTableLook(){
+      handleTableLook(index, row){
+        this.showRemitOfCash = row.remitOfCash
         this.isShowLookOfSlit = true
         this.isShowTableDialog = true
       },
