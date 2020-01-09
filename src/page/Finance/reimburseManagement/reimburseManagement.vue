@@ -359,7 +359,7 @@
 
                <el-date-picker
                 class="search_input"
-                style="width:34%"
+                style="width:33%"
                 v-model="plan_data2"
                 @change="endDateChange2()" 
                 type="daterange"
@@ -718,13 +718,14 @@ export default {
             this.dialogFormVisible2 = false;
             this.T_update_btn(); 
         },
-        addplan(editableTabsValue) {//确定1
+        addplan(editableTabsValue) {//选择团期计划的确定按钮
            this. subscript();
           //  console.log(editableTabsValue,80);
            if(this.plans.planNum !== "" || this.plans.planName !== ""){
                   this.s_content.groupCode = this.plans.planNum;
                   this.s_content.productName = this.plans.planName;
                   this.s_content.id = this.plans.pid;
+                  this.s_content.count =this.plans.count;
                   this.t_pageSize = 10;
                   this.currentPage5 = 1;
                   this.dialogFormVisible2 = false;
@@ -760,7 +761,7 @@ export default {
                   var wcount; //未报销金额
                     for (let i in object) {
                      
-                       object[i].peopleCount = this.s_content.count
+                      // object[i].peopleCount = this.s_content.count
                        this.joinData.push({
                           paymentID:  object[i].paymentID,
                           supplierTypeEX:object[i].supplierTypeEX,
@@ -773,7 +774,7 @@ export default {
                           bcount:0,
                           createTime:object[i].createTime,
                           supplierName:object[i].supplierName,
-                          peopleCount:object[i].peopleCount,
+                          peopleCount:this.s_content.count,
                           orgName:object[i].orgName,
                           wcount: object[i].price - object[i].expensePrice
                            
@@ -782,7 +783,7 @@ export default {
                      
                     }
                       this.s_content.joinData = this.joinData;
-                })
+                 })
                 .catch(err => {
                   console.log(err);
                 });
@@ -793,6 +794,7 @@ export default {
           this.plans.planName = row.title;
           this.plans.planNum = row.groupCode;
           this.plans.pid = row.planID;
+          this.plans.count = row.count;
           this.subscript();
         
         },
@@ -835,7 +837,7 @@ export default {
               //console.log(res.data.objects,'80523');
               this.t_pageCount = res.data.total;
               this.planData = res.data.objects;
-              this.s_content.count =  res.data.objects[0].count
+              //this.s_content.count =  res.data.objects[0].count
             })
             .catch(err => {
               console.log(err);
@@ -974,7 +976,7 @@ export default {
          let joinData = this.s_content.joinData;
          let joinDataid = this.s_content.joinData.paymentID;
          let payments = this.s_content.payments;
-         this.t_price_box= [];
+         //this.t_price_box= [];
          if(joinData.length == 0){
             this.$message({
                 type: "warning",
@@ -1005,9 +1007,8 @@ export default {
                }
                 this.s_content.payments.push(joinData);
                 this.alljoinData.push(joinData);
-              // console.log(this.alljoinData,"新增的")
                 this.t_price_box.push(joinData.price);
-                this.t_price_sum()
+                this.t_price_sum();
                 this.dialogFormVisible3 = false;
                 this.joinData=[];
   
@@ -1031,28 +1032,29 @@ export default {
           })
           .then(() => {
             this.s_content.t_price = 0
-            this.t_price_box = [];
-            this.s_content.payments=[];
+          
               for(let j in payments_box){
                 if(payments_box[j].paymentID === paymentID){
                           payments_box.splice(j, 1);
-                          if(payments_box.length == 0){
+                          console.log(payments_box,'删除后');
+                          if(payments_box.length == 0){//删除后没数据了
                            this.s_content.payments=[];
                            this.t_price_box=[];
-                          } else{
-                           this.s_content.payments.push(payments_box[j]);
-                           this.t_price_box.push(payments_box[j].price);
-                          }
-                           this.t_price_sum();
-                            for(let y in this.alljoinData ){
-                                  if(this.alljoinData[y].paymentID === paymentID){
-                                      this.alljoinData.splice(j, 1);
-                                      console.log(this.alljoinData,"删除的")
-                                    }
-                                 }
+                           this.s_content.payments.length = 0;
+                          } else{//删除后还有数据
+                           this.s_content.payments.length = payments_box.length;
+                           this.t_price_box.splice(j, 1);
                            
-                     
-                      this.$message.success('删除成功');
+                          }
+
+                            for(let y in this.alljoinData ){
+                                    if(this.alljoinData[y].paymentID === paymentID){
+                                        this.alljoinData.splice(y, 1);
+                                        console.log(this.alljoinData,"删除的")
+                                      }
+                                  }
+                         this.t_price_sum()
+                         this.$message.success('删除成功');
                             
                      }
                     
@@ -1070,6 +1072,7 @@ export default {
          
         t_price_sum(){//多少项总价多少
           this.subscript();
+           console.log(this.t_price_box,"钱盒子2")
           let t_price_box = this.t_price_box;
           let sss = 0 ;
             for(let i=0;i < t_price_box.length;i++){
