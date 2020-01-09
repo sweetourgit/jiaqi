@@ -108,6 +108,7 @@
       <div v-if="isShowLookOfSlit">
         <p v-show="this.keepWhichRow.expenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
         <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
+        <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ remitOfCash }}</strong ></span></p>
       </div>
       <!-- 查看 END -->
       <!-- 还款/拆分表单 -->
@@ -141,6 +142,7 @@
     name: "splitLoan",
     data(){
       return {
+        remitOfCash: null,
         keepAcountIdArr: {}, // 保存所有已经拆分还款之后的 银行账号 accountId
         listLoading: false,
         workItemIDArr: null,
@@ -261,8 +263,13 @@
       },
       // 拆分/还款弹窗，保存按钮
       handleTableDialogKeep(formName){
+         // !isShowLookOfSlit( false ) && isShowAcountTable( false )
+        // console.log(this.isShowLookOfSlit,this.isShowAcountTable)
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            // 重新这是按钮的状态
+            this.isShowAcountTable = true
+            this.isDisabledKeepBtn = true
             // 如果是还款的时候存入银行ID
             if(this.ruleFormSplitLoan.formItemSplitLoan == 2) {
               this.keepAcountIdArr[this.pamentsOnlyId] = this.getAcountId
@@ -280,6 +287,7 @@
       // 点击银行账户的行时触发
       handleAcountRow(row, event, column){
         this.isDisabledKeepBtn = false
+        this.remitOfCash = row.title
         this.getAcountId = row.id
       },
       // 表格内的 ’拆分/还款’ 按钮

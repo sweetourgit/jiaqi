@@ -50,7 +50,6 @@
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="14">
-
                 <el-col :span="6"><div class="grid-del label-color print-hidden">附件:</div></el-col>
                 <el-col :span="18">
                   <el-upload
