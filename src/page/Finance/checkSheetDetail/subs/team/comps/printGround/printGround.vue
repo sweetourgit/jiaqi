@@ -328,8 +328,10 @@ export default {
       let people= 0;
       let price= 0;
       this.incomes.forEach(income => {
-        people+= income.peopleCount;
-        price+= income.orderPrice;
+        let { settlementType, peopleCount, incomePrice, arrearsPrice }= income;
+        people+= peopleCount;
+        // 总收入等于 st非1的incomePrice与st为1的arrearsPrice之和
+        price+= settlementType=== 1? arrearsPrice: incomePrice;
       })
       return { people, price };
     }
