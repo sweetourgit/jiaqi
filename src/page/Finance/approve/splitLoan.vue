@@ -106,9 +106,12 @@
     >
       <!-- 查看 -->
       <div v-if="isShowLookOfSlit">
-        <p v-show="this.keepWhichRow.expenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+        <!--<p v-show="this.keepWhichRow.expenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
         <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
-        <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showRemitOfCash }}</strong ></span></p>
+        <p style="margin-top: 10px;" v-show="this.keepWhichRow.expenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showRemitOfCash }}</strong ></span></p>-->
+        <p v-show="this.showExpenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+        <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
+        <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showRemitOfCash }}</strong ></span></p>
       </div>
       <!-- 查看 END -->
       <!-- 还款/拆分表单 -->
@@ -142,13 +145,14 @@
     name: "splitLoan",
     data(){
       return {
+        showExpenseType: null,
         remitOfCash: '',
         showRemitOfCash: '',
         keepAcountIdArr: {}, // 保存所有已经拆分还款之后的 银行账号 accountId
         listLoading: false,
         workItemIDArr: null,
         pamentsOnlyId: null, // 无收入预付款表格的id
-        keepWhichRow: null, // 保存当前点击的拆分借款按钮是那一行的（实现设置 ‘拆分/还款’ 列的值）
+        keepWhichRow: null, // 保存当前点击的拆分借款按钮是那一行的（实现设置 ‘拆分/还款’ 列的值）   ----   目前应该没啥用了
         isShowAcountTable: true, // 是否显示表格
         isDisabledKeepBtn: true, // 拆分借款弹窗保存按钮没选银行账户之前是禁止点击的
         getAcountId: null, // 银行账户id
@@ -312,6 +316,7 @@
       // 表格内的 ‘查看’ 按钮
       handleTableLook(index, row){
         this.showRemitOfCash = row.remitOfCash
+        this.showExpenseType = row.expenseType
         this.isShowLookOfSlit = true
         this.isShowTableDialog = true
       },
