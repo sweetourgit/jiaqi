@@ -461,9 +461,9 @@ export default {
         cardNumber: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
         bankName: [{ required: true, message: '开户行不能为空', trigger: 'blur' }],
         cardName: [{ required: true, message: '开户名不能为空', trigger: 'blur' }],
-        pass: [
+/*        pass: [
           { required: true, trigger: 'change', validator: validateVoucher}
-        ],
+        ],*/
         fiels:[{ required: true, message: '不能为空', trigger: 'blur' }],
       },
       activeName: 'first',

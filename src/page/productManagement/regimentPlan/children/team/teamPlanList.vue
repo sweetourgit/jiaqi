@@ -218,7 +218,7 @@ export default {
       uid:'',
       type:'',
       fileLength:0,
-      isCheckSheet:0,
+      checkSheet:0,
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -258,7 +258,7 @@ export default {
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
       this.planId = this.multipleSelection[0].id;
-      this.isCheckSheet = this.multipleSelection[0].isCheckSheet;
+      this.checkSheet = this.multipleSelection[0].isCheckSheet;
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -279,7 +279,12 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
-      this.teamQueryList(val,this.pageSize);
+      if(this.op == ""){
+        this.teamQueryList(val,this.pageSize);
+      }else{
+        this.getUserCode();
+      }
+      //this.teamQueryList(val,this.pageSize);
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID) {
@@ -370,6 +375,7 @@ export default {
         this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
       } else {
         this.current = 1;
+        this.pageIndex = 1;
         this.getUserCode();
       }
       
@@ -410,7 +416,7 @@ export default {
             if (res.data.objects.length !=0) {
               var getUserCode='';
               getUserCode = res.data.objects[0].userCode;
-              this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode,this.teamID);
+              this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode,this.teamID);
             } else {
               that.teamqueryList = [];
             }
@@ -591,8 +597,10 @@ export default {
         }
       })
     },
-    reimbursement(status,isCheckSheet){ // 报账单
-      this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.isCheckSheet});
+    reimbursement(status,checkSheet){ // 报账单
+      setTimeout(() => {
+        this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.checkSheet});
+      },200);
     },
   }
 };

@@ -1340,7 +1340,8 @@ export default {
             obj.payable= this.totalPrice+ this.changedPrice;
 
             obj.guests = guest;
-            
+            obj.teamID = this.orderget.teamID
+            obj.planID = this.orderget.planID
             this.$http
               .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                 object: obj

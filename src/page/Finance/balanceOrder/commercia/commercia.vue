@@ -15,7 +15,7 @@
             <span class="emptyPlan">欠款时间</span>
              <el-date-picker
                 class="planTime"
-                style="width:60%"
+                style="width:70%"
                 v-model="planTime"
                 @change="endDateChange()" 
                 type="daterange"
@@ -33,7 +33,7 @@
                      <el-option :label="item.label" :value="item.value" v-for="item in settlement" :key="item.value" /> 
                    </el-select>
           </div>
-          <div style="float:right; margin: 0 10px 0 0;">
+          <div style="float:right; margin: 0 -50px 0 0;">
             <el-button type="primary" @click="handleSearch()">搜索</el-button>
             <el-button type="primary" @click="emptyButton()" >重置</el-button>
           </div>
