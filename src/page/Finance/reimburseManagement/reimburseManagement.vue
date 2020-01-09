@@ -327,7 +327,7 @@
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
       <el-dialog
-        width="60%"
+        width="66%"
         title="获取团期计划"
         :visible.sync="dialogFormVisible2"
         append-to-body
@@ -359,7 +359,7 @@
 
                <el-date-picker
                 class="search_input"
-                style="width:32%"
+                style="width:34%"
                 v-model="plan_data2"
                 @change="endDateChange2()" 
                 type="daterange"
