@@ -66,7 +66,9 @@ export default {
     saveAction(){
       this.$refs.submitForm.validate(result => {
         if(!result) return;
-        this.$emit('save-action', this.submitForm);
+        let { commentText }= this.submitForm;
+        let isAgree= this.isAgree;
+        this.$emit('save-action', { commentText, isAgree });
         this.handleClose();
       })
     }

@@ -127,8 +127,8 @@ export default {
       for(let i= 0; i< length; i++){
         result.push({
           price: collection[i] && collection[i].MatchingPrice,
-          collectionNumber: collection[i] && collection[i].ID,
-          ticketNumber: ticket[i] && ticket[i].InvoicePrice,
+          collectionNumber: collection[i] && collection[i].CollectionID,
+          ticketNumber: ticket[i] && ticket[i].InvoiceNumber,
           mark: mark[i] && mark.Mark
         })
       }

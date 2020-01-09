@@ -208,12 +208,18 @@ export default {
     },
 
     approvalSaveHandler(payload){
-      let { commentText }= payload;
+      let { commentText, isAgree }= payload;
       let workItemID= this.$route.query.workItemID;
       let userCode= sessionStorage.getItem('tel');
-      if(this.isAgree) 
-        return agreeForJQ({commentText, workItemID, userCode}).then(() => { this.$message.success('审批成功') });
-      rejectForJQ({commentText, workItemID, userCode}).then(() => { this.$message.success('审批成功') });
+      let action;
+      action= isAgree? agreeForJQ: rejectForJQ;
+      action({commentText, workItemID, userCode})
+      .then(() => {
+        // 重置页面按钮 防止点击
+        this.type= 'normal';
+        this.$message.success(isAgree? '审批完成': '驳回完成');
+        this.backPage();
+      })
     }
   }
 }

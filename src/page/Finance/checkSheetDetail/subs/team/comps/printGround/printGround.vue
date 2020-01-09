@@ -331,7 +331,7 @@ export default {
         let { settlementType, peopleCount, incomePrice, arrearsPrice }= income;
         people+= peopleCount;
         // 总收入等于 st非1的incomePrice与st为1的arrearsPrice之和
-        price+= settlementType=== 1? arrearsPrice: incomePrice;
+        price+= settlementType=== 1? (incomePrice+ arrearsPrice): incomePrice;
       })
       return { people, price };
     }
@@ -386,7 +386,7 @@ export default {
       this.incomeSum = incomesPrice + othersPrice;
       this.expenseSum = expensesPrice;
       this.profitSum = this.incomeSum - this.expenseSum;
-      this.profitRate = ((this.profitSum / this.incomeSum) * 100).toFixed(2) + '%';
+      this.profitRate = this.incomeSum===0? 0: ((this.profitSum / this.incomeSum) * 100).toFixed(2) + '%';
       this.incomeSum = this.incomeSum.toFixed(2);
       this.expenseSum = this.expenseSum.toFixed(2);
       this.profitSum = this.profitSum.toFixed(2);
