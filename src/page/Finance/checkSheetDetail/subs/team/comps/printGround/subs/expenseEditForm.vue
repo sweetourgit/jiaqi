@@ -64,7 +64,7 @@ export default {
         supplierSelected: false,
       },
       {
-        type: '地接',
+        type: '地接款',
         submitForm: {
           supplier: null,
           arrearsPrice: null,
@@ -115,13 +115,15 @@ export default {
     getExpenseDTO(){
       return {
         title: '地接款',
+        supplierType: 1,
+
         supplier: null,
         peopleCount: null,
         price: null,
         payPrice: 0,
         arrearsPrice: null,
         mark: null,
-        expenseType: 1
+        expenseType: 1,
       }
     },
 
