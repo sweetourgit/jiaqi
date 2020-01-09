@@ -218,7 +218,7 @@ export default {
       uid:'',
       type:'',
       fileLength:0,
-      isCheckSheet:0,
+      checkSheet:0,
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -258,7 +258,7 @@ export default {
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
       this.planId = this.multipleSelection[0].id;
-      this.isCheckSheet = this.multipleSelection[0].isCheckSheet;
+      this.checkSheet = this.multipleSelection[0].isCheckSheet;
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -597,8 +597,10 @@ export default {
         }
       })
     },
-    reimbursement(status,isCheckSheet){ // 报账单
-      this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.isCheckSheet});
+    reimbursement(status,checkSheet){ // 报账单
+      setTimeout(() => {
+        this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.checkSheet});
+      },200);
     },
   }
 };
