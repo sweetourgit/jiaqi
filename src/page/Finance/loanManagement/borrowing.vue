@@ -505,7 +505,7 @@ export default {
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
         accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
         payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
+        /*accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],*/
       },
       fileList: [],
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
