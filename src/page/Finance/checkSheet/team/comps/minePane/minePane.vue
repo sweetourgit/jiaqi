@@ -9,7 +9,10 @@
 <template>
   <div class="mine-pane">
     <header>
-      <mine-pane-conditions ref="minePaneConditions"></mine-pane-conditions>
+      <mine-pane-conditions 
+        ref="minePaneConditions"
+        @reset-pageinfo="resetPageInfo">
+      </mine-pane-conditions>
     </header>
     <main>
       <el-table style="width: 100%" border
@@ -44,6 +47,13 @@
 import { getFlowName, getFlowList, getMineCheckSheetList } from '../../api'
 import minePaneConditions from './comps/minePaneConditions'
 
+const getPageInfo= function(total){
+  return {
+    pageIndex: 1,
+    pageSize: 10,
+    total: total || 0
+  }
+}
 export default {
   components: { minePaneConditions },
 
@@ -53,7 +63,11 @@ export default {
       {
         tableData: [],
         workflowCode: null
-      }
+      },
+      // 分页信息
+      {
+        pageInfo: getPageInfo(),
+      },
     )
   },
 
@@ -114,6 +128,14 @@ export default {
       }
     },
 
+    // 子组件emit触发
+    {
+      resetPageInfo(){
+        this.pageInfo= getPageInfo();
+        this.getMineCheckSheetListAction();
+      }
+    },
+
     // actions
     {
       // 获取列表
@@ -129,6 +151,10 @@ export default {
             .then(res => {
               this.tableData= this.mixHandler(res, jqList);
               this.$emit('mine-count', (res && res.length || 0));
+            })
+            .catch(err => {
+              this.tableData= [];
+              this.$emit('mine-count', 0);
             })
           })
         })

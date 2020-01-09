@@ -130,7 +130,7 @@ export default {
 
     getPrice(){
       let total= 0;
-      this.expenses.forEach(expense => total+= expense.price);
+      this.expenses.forEach(expense => total+= (expense.price || 0));
       this.total= total;
       return total;
     }

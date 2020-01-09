@@ -72,7 +72,7 @@ export default {
 
     getPrice(){
       let total= 0;
-      this.others.forEach(other => total+= other.price);
+      this.others.forEach(other => total+= (other.price || 0));
       return total;
     }
   }
