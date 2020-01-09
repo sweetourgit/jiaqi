@@ -15,7 +15,7 @@
         <!-- 报销还款审批页的去认款按钮显示begin -->
         <el-button
           type="primary"
-          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn !== 3"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn !== 3 && hasSubject === 'true'"
           @click="recognitionDo(tableAssociated[0])"
         >去认款</el-button>
         <el-button
@@ -480,7 +480,7 @@
         </p>
         <p class="detailName">
           <span>汇款/现金：</span>
-          {{baseInfo.accountID == 13  ? "现金" : "汇款"}}
+          {{baseInfo.accountID == 13 ? "现金" : "汇款"}}
         </p>
         <p class="detailName">
           <span>收款账户：</span>
@@ -621,12 +621,7 @@
               <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
               <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
               <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-              <el-table-column
-                prop="prop"
-                label="操作"
-                align="center"
-                v-if="hasSubject"
-              >
+              <el-table-column prop="prop" label="操作" align="center" v-if="hasSubject">
                 <template slot-scope="scope">
                   <el-button
                     v-if="scope.row.checkType != 3"
@@ -931,6 +926,7 @@ export default {
             that.$message.success("审批提交成功~");
             that.closeAdd();
           } else {
+            console.log("response.data.message",response.data.message)
             if (response.data.message) {
               that.$message.warning(response.result.message);
             } else {
@@ -1013,23 +1009,32 @@ export default {
             that.tableManyRow = that.tableAssociated.length;
             that.getCollectionPriceTotal = 0;
             // console.log(2,that.passDisabled)
-            // 如果是报销还款进来的并且获取的accountID 13为现金 则可以直接通过 此时没有去认款的按钮 不等于13都是汇款 
-            // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮  that.tableAssociated[0].checkType = 3 代表没认过款的
+            // 如果是报销还款进来的并且获取的accountID 13为现金 则可以直接通过 此时没有去认款的按钮 不等于13都是汇款
+            // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮  that.tableAssociated[0].checkType != 3 代表没认过款的  hasSubject为true则有科目zhi对公
             // 查看按钮的显示与隐藏的判断
-            that.isLookBtn = that.tableAssociated[0].checkType
+            that.isLookBtn = that.tableAssociated[0].checkType;
             if (that.info.collectionType == 6) {
-              // console.log(3,that.passDisabled)
-              if(that.isLookBtn !== 3) {
-                if (response.data.object.accountID == 13) {
+              // if(that.isLookBtn !== 3) {
+              //   if (response.data.object.accountID == 13) {
+              //   that.passDisabled = false;
+              //   console.log(that.passDisabled,"that.passDisabled")
+              // } else {
+              //   that.hasSubject ? that.passDisabled = true : that.passDisabled = false
+              //   console.log(that.passDisabled,222)
+              // }
+              // } else {
+              //   that.passDisabled = false;
+              //   console.log(that.passDisabled,333)
+              // }
+              console.log("that.hasSubject",that.hasSubject)
+              if (response.data.object.accountID == 13) {
                 that.passDisabled = false;
               } else {
-                that.hasSubject ? that.passDisabled = true : that.passDisabled = false
-              }
-              } else {
-                that.passDisabled = false;
+                that.hasSubject
+                  ? (that.passDisabled = true)
+                  : (that.passDisabled = false);
               }
             }
-            
 
             // 凭证
             that.fileList = response.data.object.files;
@@ -1059,38 +1064,42 @@ export default {
         });
     },
 
-    getAccount(id){
+    getAccount(id) {
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
-        "id": id
-      }, ).then(function(response) {
-        // console.log(response);
-        if (response.data.isSuccess) {
-          if(response.data.object.subject){
-            that.hasSubject = true; //有科目值 对公的
-          }
-        } else {
-          that.hasSubject = false;
-        }
-        // console.log(1,that.hasSubject)
-        if (!that.hasSubject) {
-          // alert("没有科目值");
-          that.tableAssociated.forEach(item => {
-            that.getCollectionPriceTotal += item.matchingPrice;
-          });
-        } else {
-          // alert("有科目值");
-          that.tableAssociated.forEach(item => {
-            that.getCollectionPriceTotal += item.matchingPrice;
-
-            if (item.checkType != 3) {
-              that.passDisabled = true;
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
+          id: id
+        })
+        .then(function(response) {
+          // console.log(response);
+          if (response.data.isSuccess) {
+            if (response.data.object.subject) {
+              that.hasSubject = true; //有科目值 对公的
             }
-          });
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
+          } else {
+            that.hasSubject = false;
+          }
+          // console.log(1,that.hasSubject)
+          if (!that.hasSubject) {
+            // alert("没有科目值");
+            that.tableAssociated.forEach(item => {
+              that.getCollectionPriceTotal += item.matchingPrice;
+            });
+          } else {
+            // alert("有科目值");
+            that.tableAssociated.forEach(item => {
+              that.getCollectionPriceTotal += item.matchingPrice;
+              if (that.info.collectionType !== 6) {
+                if (item.checkType != 3) {
+                  that.passDisabled = true;
+                }
+              }
+            });
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
 
     getMoment() {

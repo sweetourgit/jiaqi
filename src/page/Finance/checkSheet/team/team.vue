@@ -63,7 +63,7 @@ export default {
       },
 
       tabClickHandler(tab){
-        console.log(tab.name, this)
+        // console.log(tab.name, this)
       }  
     }
   )

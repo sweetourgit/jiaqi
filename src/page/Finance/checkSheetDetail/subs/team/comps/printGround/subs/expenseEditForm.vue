@@ -134,12 +134,15 @@ export default {
       }
       getSupplierlist(payload)
       .then(suppliers => {
-        cb(suppliers.map(supplier => {
-          return { 
-            id:supplier.id, 
-            value: supplier.name 
-          }
-        }));
+        cb(
+          suppliers.filter(supplier => supplier.userState=== 1)
+          .map(supplier => {
+            return { 
+              id:supplier.id, 
+              value: supplier.name 
+            }
+          })
+        )
       })
       .catch(err => {
         console.log(err);
@@ -152,7 +155,7 @@ export default {
     },
 
     supplierValidator(rule, value, cb){
-      if(this.supplierSelected) return cb();
+      if(this.supplierSelected && this.submitForm.supplier) return cb();
       cb(new Error(rule.message));
     },
   }

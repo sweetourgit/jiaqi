@@ -11,8 +11,7 @@
       <el-col :span="12">
         <el-form-item label="供应商名称：" prop="name">
           <el-input size="small" placeholder="供应商名称" style="width: 100%;" maxlength="40" show-word-limit
-            v-model="submitForm.name"
-            :disabled="isSave">
+            v-model="submitForm.name">
           </el-input>
         </el-form-item>
       </el-col>
@@ -506,7 +505,7 @@ export default {
       },
 
       expireTimeAdaptor(data){
-        data.expireTime= new Date(new Date(data.expireTime)+ 8* 3600* 1000).toISOString();
+        data.expireTime= new Date(new Date(data.expireTime).getTime()+ 8* 3600* 1000).toISOString();
       },
 
       fileAdaptor(file){

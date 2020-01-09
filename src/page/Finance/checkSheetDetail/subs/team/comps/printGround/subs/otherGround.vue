@@ -40,7 +40,7 @@
             <div class="cell">{{ other.title }}</div>
           </td>
           <td class="base">
-            <div class="cell">{{ other.price }}</div>
+            <div class="cell">{{ other.price | priceFilter(true) }}</div>
           </td>
           <td class="base">
             <div class="cell">{{ other.ticket }}</div>
@@ -59,8 +59,8 @@ export default {
   },
 
   filters: {
-    priceFilter(val){
-      if(!val) return 0;
+    priceFilter(val, noZero){
+      if(!val) return noZero? ' ': 0;
       return val.toFixed(2);
     }
   },
