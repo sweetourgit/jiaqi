@@ -147,7 +147,6 @@
     },
     created(){
       this.getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
-      console.log(this.getLsParamsSplitArr, '传过来的参数set')
       this.getApproveListGuid = this.$route.query.approveDetailGuid
       this.getKeepBtnStatus = this.$route.query.ifClickKeepBtn ? this.$route.query.ifClickKeepBtn : false
       this.getApproveSource = this.$route.query.source

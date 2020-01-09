@@ -318,7 +318,7 @@ export default {
         mobile: [{ required: true, message: '请填写联系电话', trigger: 'blur' }],
         invoiceItem: [{ required: true, message: '请选择发票项目', trigger: 'blur' }],
         invoice: [{ required: true, message: '是否开发票不能为空', trigger: 'blur' }],
-        voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
+        // voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         collectionNumber: [{ required: true, message: '收款账户不能为空', trigger: 'change' }],
         // invoiceID: [{ required: true, message: '收款账户不能为空', trigger: 'blur' }],
