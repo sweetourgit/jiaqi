@@ -53,7 +53,6 @@ export default {
       let { id }= this.$route.query;
       getRoot(id).then(res => {
         this.relations= relationBarMaker(res, true);
-        RelationBar.root= this.relations;
       })
     }
   }

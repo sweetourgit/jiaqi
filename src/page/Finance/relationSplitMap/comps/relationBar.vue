@@ -72,7 +72,7 @@ $ruler: 16px;
       </relation-bar>
     </main>
     <footer
-      v-if="!isRoot"
+      v-if="!subChild"
       @mouseover="$emit('update:hoverd', true)"
       @mouseout="$emit('update:hoverd', false)">
       <div class="icon-outer"
@@ -83,7 +83,7 @@ $ruler: 16px;
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
         @click="selectHandler">
-        {{ labelMaker() }}
+        {{ labelMaker(subChild) }}
       </div>
     </footer>
   </div>  
@@ -106,6 +106,7 @@ export default {
     selected: Boolean,
     info: Object,
     child: Object,
+    subChild: Object
   },
 
   data(){
@@ -142,13 +143,7 @@ export default {
     },
 
     selectHandler(){
-      let bol= this.selected;
-      // 如果当前项为选中项
-      if(bol) return this.$emit('update:selected', false);
-      // 如果当前项不是选中项, 先重置当前选中项
-      if(RelationBar.currentSelect)RelationBar.currentSelect.selected= false;
-      RelationBar.currentSelect= this.proto;
-      this.$emit('update:selected', true);
+      this.proto.select();
     },
 
     labelMaker(){
