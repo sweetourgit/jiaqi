@@ -141,6 +141,7 @@
     name: "splitLoan",
     data(){
       return {
+        keepAcountIdArr: {}, // 保存所有已经拆分还款之后的 银行账号 accountId
         listLoading: false,
         workItemIDArr: null,
         pamentsOnlyId: null, // 无收入预付款表格的id
@@ -225,9 +226,10 @@
             paramsSplitArr.push({
               'id': item.id,
               'expenseType': item.expenseType,
-              'accountID': item.accountID
+              'accountID': this.keepAcountIdArr[item.id]
             })
           }) )
+          console.log(paramsSplitArr, 'paramsSplitArr')
           Vue.ls.set('lsParamsSplitArr', paramsSplitArr);
           this.$router.push({ path: '/approve/approveDetail', query: { source: 'splitLoan', queryApproveExpenseID: this.getApproveList, approveDetailGuid: this.getApproveListGuid, queryWorkItemID: this.workItemIDArr, ifClickKeepBtn: true } })
         }
@@ -261,6 +263,12 @@
       handleTableDialogKeep(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            // 如果是还款的时候存入银行ID
+            if(this.ruleFormSplitLoan.formItemSplitLoan == 2) {
+              this.keepAcountIdArr[this.pamentsOnlyId] = this.getAcountId
+            } else {
+              this.keepAcountIdArr[this.pamentsOnlyId] = 0
+            }
             this.keepWhichRow.expenseType = this.ruleFormSplitLoan.formItemSplitLoan
             this.isShowTableDialog = false
           } else {
