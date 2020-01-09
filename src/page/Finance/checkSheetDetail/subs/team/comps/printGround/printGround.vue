@@ -224,7 +224,7 @@ table{
             <div class="cell">{{ incomesJoin.people }}</div>
           </td>
           <td class="base" style="width:5%;">
-            <div class="cell">{{ incomesJoin.price | priceFilter }}</div>
+            <div class="cell">{{ incomesJoin.totalPrice | priceFilter }}</div>
           </td>
           <td class="base" colspan="6">
             <div class="cell"></div>
@@ -327,13 +327,15 @@ export default {
     incomesJoin(){
       let people= 0;
       let price= 0;
+      let totalPrice= 0;
       this.incomes.forEach(income => {
-        let { settlementType, peopleCount, incomePrice, arrearsPrice }= income;
+        let { settlementType, peopleCount, incomePrice, arrearsPrice, orderPrice }= income;
         people+= peopleCount;
         // 总收入等于 st非1的incomePrice与st为1的arrearsPrice之和
         price+= settlementType=== 1? (incomePrice+ arrearsPrice): incomePrice;
+        totalPrice+= orderPrice;
       })
-      return { people, price };
+      return { people, price, totalPrice };
     }
   },
 
