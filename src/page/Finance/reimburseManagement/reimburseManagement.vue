@@ -888,77 +888,98 @@ export default {
           },
       
         chanelSubmit(ruleForm) {   //撤销申请
-          console.log(ruleForm.editableTabs[0].content.guid);
+         let chanel_guid = ruleForm.editableTabs[0].content.guid;
             this.$confirm("是否需要撤销该笔报销", "提示", {
               confirmButtonText: "确定",
               cancelButtonText: "取消",
               type: "warning"
             })
               .then(() => {
-              this.$http
-                    .post(this.GLOBAL.serverSrc + "/finance/expense/api/delete", {
-                        guid:ruleForm.editableTabs[0].content.guid
-                      })
-                      .then(res => {
-                          this.tabIndex = 1;
-                          this.pageIndex = 1;
-                          this.state = 1;
-                          this.find = 0 ;
-                          this.currentPage4 = 1;
-                          this.currentPage5 = 1;
-                          this.pageList(1, this.pageSize);
+                this.$http
+                .post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
+                  object:{
+                    guid:chanel_guid,
+                  }
+                })
+               .then(res => {
+                   if (res.data.isSuccess == true) {
+                    var d_objects = res.data.objects; 
+                    for(let i in d_objects){
+                          if(d_objects[i].checkType == 0){
+                            this.$http
+                                .post(this.GLOBAL.serverSrc + "/finance/expense/api/delete", {
+                                    guid:ruleForm.editableTabs[0].content.guid
+                                  })
+                                  .then(res => {
+                                      this.tabIndex = 1;
+                                      this.pageIndex = 1;
+                                      this.state = 1;
+                                      this.find = 0 ;
+                                      this.currentPage4 = 1;
+                                      this.currentPage5 = 1;
+                                      this.pageList(1, this.pageSize);
+                                      this.dialogFormVisible = false;
+                                    if(res.data.isSuccess == true){
+                                        this.$message({
+                                        type: "success",
+                                        message: "撤销成功!"
+                                      });
+                                      this.alljoinData=[];
+                                      this.tableCourse = [];
+                                      this.ruleForm= {
+                                          editableTabsValue: "1",
+                                          editableTabs: [
+                                            {
+                                              title: "报销1",
+                                              name: "1",
+                                              content:{
+                                                  createUser:"",
+                                                  createTime: "",
+                                                  count:0,
+                                                  id:"",
+                                                  groupCode: "",
+                                                  productName: "",
+                                                  mark: "",
+                                                  t_sum:0,//一共多少项
+                                                  t_price:0,//一共多少钱
+                                                  files:[],
+                                                  payments:[],
+                                                  joinData:[],
+                                                  plan: {
+                                                    planId: "",
+                                                    planName: ""
+                                                  },
+                                                
+                                              }
+                                            }
+                                          ]
+                                          };
+                                      let text = res.config.data
+                                      this.beginWokeing(text);
+                                    }else{
+                                      this.$message({
+                                          type: "info",
+                                          message: "已取消撤销"
+                                        });
+                                      this.dialogFormVisible = false;
+                                    }
+                                    })
+                                  .catch(err => {
+                                    console.log(err);
+                                  });
+                          }else{
+                           this.$message({
+                                type: "info",
+                                message: "订单已审核，刷新看状态"
+                              });
                           this.dialogFormVisible = false;
-                        if(res.data.isSuccess == true){
-                            this.$message({
-                            type: "success",
-                            message: "撤销成功!"
-                          });
-                           this.alljoinData=[];
-                           this.tableCourse = [];
-                           this.ruleForm= {
-                              editableTabsValue: "1",
-                              editableTabs: [
-                                {
-                                  title: "报销1",
-                                  name: "1",
-                                  content:{
-                                      createUser:"",
-                                      createTime: "",
-                                      count:0,
-                                      id:"",
-                                      groupCode: "",
-                                      productName: "",
-                                      mark: "",
-                                      t_sum:0,//一共多少项
-                                      t_price:0,//一共多少钱
-                                      files:[],
-                                      payments:[],
-                                      joinData:[],
-                                      plan: {
-                                        planId: "",
-                                        planName: ""
-                                      },
-                                    
-                                  }
-                                }
-                              ]
-                              };
-                           let text = res.config.data
-                           this.beginWokeing(text);
-                        }else{
-                          this.$message({
-                              type: "info",
-                              message: "已取消撤销"
-                            });
-                          this.dialogFormVisible = false;
+                          }
                         }
-                        })
-                      .catch(err => {
-                        console.log(err);
-                      });
-                 
-                
-              
+                   }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
               })
               .catch(() => {
                 this.$message({
