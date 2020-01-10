@@ -1375,7 +1375,7 @@ export default {
               that.getCollectionPriceTotal += item.matchingPrice;
               console.log("submitData", localStorage.getItem(item.id));
               if (localStorage.getItem(item.id) == null) {
-                alert('true');
+                // alert('true');
                 // item.hasSubmitData = true;
                 that.$set(item, "hasSubmitData", true);
               } else {
