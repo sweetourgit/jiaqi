@@ -3,16 +3,15 @@
        <!--流程管理弹窗-->
        <el-dialog title="流程管理" :visible.sync="dialogFormProcess" class="city_list" width="850px" style="margin-top:-50px" @close="cancle">
           <div class="main-left">
-             <div>
-               <el-button type="primary" circle size="medium">&nbsp;1&nbsp;</el-button>
-               <span class="sta-title">下单成功</span>
-             </div>
-             <div class="line">
-                 <div></div>
-             </div>
-             <div>
-               <el-button type="primary" plain icon="el-icon-check" circle size="medium"></el-button>
-               <span class="sta-title">下单成功</span>
+             <div v-for="(item,index) in orderStatusInfo"> 
+               <div>
+                 <el-button type="primary" plain circle size="medium" v-if="index!==orderStatusInfo.length-1"><span v-if="index<9">&nbsp;</span>{{index+1}}<span v-if="index<9">&nbsp;</span></el-button>
+                 <el-button type="primary" icon="el-icon-check" circle size="medium" v-if="index===orderStatusInfo.length-1"></el-button>
+                 <span class="sta-title">{{item.name}}</span>
+               </div>
+               <div class="line" v-bind:class="{line1:index!==orderStatusInfo.length-1}">
+                   <div v-for="list in item.lists">{{list.title}}:{{list.content}}</div>
+               </div>
              </div>
              
 
@@ -43,29 +42,51 @@ export default {
        //流程管理弹窗
        dialogFormProcess:true,
        orderget:{},//保存单个订单信息
-       orderStatus:[
+       orderStatus:11,
+       orderStatusInfo:[
          {name:"下单成功"},
          {name:"收到材料"},
-         {name:"材料审核",list:
-          [{title:"1",content:"2019-09-21"},
-          {title:"1",content:"3天"},
-          {title:"1",content:"缺少材料"}]
+         {name:"材料审核",lists:
+          [{title:"开始审核日期",content:"2019-09-21"},
+          {title:"预计审核时长",content:"3天"},
+          {title:"审核问题",content:"缺少材料"}]
          },
-         {name:"材料补交中",list:
-          [{title:"1",content:"2019-09-21"},
-          {title:"1",content:"3天"},
-          {title:"1",content:"缺少材料"}]
+         {name:"材料补交中",lists:
+          [{title:"需补交材料",content:"身份证复印件"}]
          },
-         {name:"材料制作中",date:"2019-09-21",time:"3天",problem:"缺少材料"},
-         {name:"成功预约时间",attention:"2019-09-21"},
-         {name:"送签",issuedate:"2019-09-21"},
+         {name:"材料制作中",lists:
+          [{title:"开始制作日期",content:"2019-09-21"},
+          {title:"预计制作时长",content:"3天"},
+          {title:"制作中发现问题",content:"缺少材料"}]
+         },
+         {name:"成功预约时间",lists:
+          [{title:"注意事项",content:"身份证复印件"}]
+         },
+         {name:"送签",lists:
+          [{title:"预计出签日期",content:"2019-09-21"}]
+         },
          {name:"面签"},
-         {name:"使馆审核中"},
+         {name:"使馆审核中",lists:
+          [{title:"预计出签日期",content:"2019-09-21"}]
+         },
+         {name:"使馆审理完毕"},
+         {name:"过签"},
+         {name:"邮寄中",lists:
+          [{title:"快递公司",content:"中通"},
+          {title:"快递单号",content:"12345467"}]
+         },
+         {name:"待评价",lists:
+          [{title:"评价",content:"非常好"}]
+         },
+         {name:"订单完成"}
        ],
        rules:{      
 
        }
     }
+  },
+  mounted(){
+
   },
   watch: {
       variable:function(){      
@@ -101,5 +122,7 @@ export default {
   .footer{clear:both;padding-top:20px}
   .main-left{float:left;width:250px}
   .main-right{float:left}
-  .line{display: inline-block;margin: 5px 0 5px 17px;min-height:25px;border-left:2px solid #eee}
+  .sta-title{color:#191818}
+  .line{display: inline-block;margin: 5px 0 5px 17px;padding:3px 0 3px 23px;min-height:18px;line-height: 20px}
+  .line1{border-left:3px solid #eee}
 </style>
