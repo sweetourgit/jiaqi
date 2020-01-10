@@ -478,7 +478,7 @@ export default {
     chooseRecognition(row, type) {
       // console.log(row);
 
-      if (this.collectionType !== 6) {
+      // if (this.collectionType !== 6) {
         if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
           if(type == 2){
             this.$message.warning("不能进行选择，剩余金额不足~");
@@ -495,14 +495,14 @@ export default {
           localStorage.setItem(this.tableDataOrder[0].id, dateStr);
           this.closeAdd("success");
         }
-      } else {
-        if (row.surplus_Amount < this.baseInfo.price) {
-          this.$message.warning("不能进行选择，剩余金额不足~");
-        } else {
-          this.canClick = true;
-          this.commitAxios(row, type);
-        }
-      }
+      // } else {
+      //   if (row.surplus_Amount < this.baseInfo.price) {
+      //     this.$message.warning("不能进行选择，剩余金额不足~");
+      //   } else {
+      //     this.canClick = true;
+      //     // this.commitAxios(row, type);
+      //   }
+      // }
     },
 
     // 提交认款的请求
