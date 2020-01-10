@@ -55,7 +55,13 @@ $ruler: 16px;
       <div class="icon-outer"
         @click.exact="awakeChild"
         @click.ctrl.exact="awakeChildDeeply">
-        <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
+        <i 
+          v-show="!isLoading"
+          :class="[expended? 'el-icon-minus': 'el-icon-plus']">
+        </i>
+        <i class="el-icon-loading"
+          v-show="isLoading">
+        </i>
       </div>
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
@@ -68,22 +74,29 @@ $ruler: 16px;
         ref="relationBarRef"
         v-if="child"
         v-bind.sync="child"
-        :proto="child">
+        :proto="child"
+        :brother="subChild">
       </relation-bar>
     </main>
     <footer
-      v-if="!subChild"
+      v-if="brother"
       @mouseover="$emit('update:hoverd', true)"
       @mouseout="$emit('update:hoverd', false)">
       <div class="icon-outer"
         @click.exact="awakeChild"
         @click.ctrl.exact="awakeChildDeeply">
-        <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
+        <i 
+          v-show="!isLoading"
+          :class="[expended? 'el-icon-minus': 'el-icon-plus']">
+        </i>
+        <i class="el-icon-loading"
+          v-show="isLoading">
+        </i>
       </div>
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
         @click="selectHandler">
-        {{ labelMaker(subChild) }}
+        {{ labelMaker(brother) }}
       </div>
     </footer>
   </div>  
@@ -97,16 +110,21 @@ export default {
 
   name: 'RelationBar',
 
-  props: {
-    isRoot: Boolean,  // 是否是根节点
-    proto: Object,
-    state: Boolean,
-    expended: Boolean,
-    hoverd: Boolean,
-    selected: Boolean,
-    info: Object,
-    child: Object,
-    subChild: Object
+  props: Object.assign(
+    // 值传
+    {
+      isRoot: Boolean,  // 是否是根节点
+      proto: Object,
+      brother: Object
+    },
+    // .sync中拆分出来的
+    {
+      ...new RelationBar()
+    }
+  ),
+
+  created(){
+    if(this.isRoot) this.proto.mountVm(this);
   },
 
   data(){
@@ -117,25 +135,7 @@ export default {
 
   methods: {
     awakeChild(){
-      let child;
-      let { id }= this.info;
-      if(this.child){
-        console.log('child exsit')
-        this.child.state= !this.child.state;
-        return this.$emit('update:expended', this.child.state);
-      }
-      getNode(id)
-      .then(res => {
-        let { trees, ...info }= res;
-        child= relationBarMaker(trees[0]);
-        if(!child){
-          this.$emit('update:expended', true);
-          return this.$message.info('no split');
-        }
-        child.state= true;
-        this.$emit('update:expended', true);
-        this.$emit('update:child', child);
-      })
+      this.proto.awakeChild();
     },
 
     awakeChildDeeply(){
@@ -143,11 +143,12 @@ export default {
     },
 
     selectHandler(){
-      this.proto.select();
+      let result= this.proto.select();
     },
 
-    labelMaker(){
-      let { paymentType, price }= this.info
+    labelMaker(info){
+      let source= info || this.info;
+      let { paymentType, price }= source;
       return paymentType=== 1? `[无] ${price}`: `[预] ${price}`;
     }
   }

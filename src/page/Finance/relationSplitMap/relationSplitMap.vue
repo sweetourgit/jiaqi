@@ -6,6 +6,20 @@
       justify-content: flex-end;
       padding: 0 0 20px 0;
     }
+    &>.main{
+      display: flex;
+      height: 500px;
+      width: 100%;
+      &>aside{
+        padding: 0 10px;
+        width: 360px;
+      }
+      &>main{
+        flex-grow: 1;
+        padding: 0 10px;
+        border-left: 1px solid #d3d3d3;
+      }
+    }
   }
 </style>
 
@@ -17,26 +31,33 @@
         取消
       </el-button>
     </header>
-    <main>
-      <relation-bar
-        ref="relationBarRef"
-        v-if="relations"
-        v-bind.sync="relations"
-        :is-root="true"
-        :proto="relations">
-      </relation-bar>
-    </main>
+    <div class="main">
+      <aside>
+        <relation-bar
+          ref="relationBarRef"
+          v-if="relations"
+          v-bind.sync="relations"
+          :is-root="true"
+          :proto="relations"
+          @wake-up="wakeUpDisplay">
+        </relation-bar>
+      </aside>
+      <main>
+        <display-bar ref="displayBar"></display-bar>
+      </main>
+    </div>
   </div>
 </template>
 
 <script>
 import { getRoot } from './api'
-import { RelationBar, relationBarMaker } from './dictionary'
+import { relationBarMaker } from './dictionary'
 import relationBar from './comps/relationBar'
+import displayBar from './comps/displayBar'
 
 export default {
 
-  components: { relationBar },
+  components: { relationBar, displayBar },
 
   mounted(){
     this.init();
@@ -54,6 +75,12 @@ export default {
       getRoot(id).then(res => {
         this.relations= relationBarMaker(res, true);
       })
+    },
+
+    wakeUpDisplay(payload){
+      if(!payload) this.$refs.displayBar.wakeup();
+      let { info, child }= payload;
+      this.$refs.displayBar.wakeup({ borrow: info, lend: child && child.info });
     }
   }
 
