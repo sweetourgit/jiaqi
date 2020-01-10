@@ -918,24 +918,29 @@ export default {
     // 审批提交事件
     approvalSubmit() {
       const that = this;
-      if (this.hasSubject) {
-        this.tableAssociated.forEach(function(item, index, arr) {
-          const dataLocal = JSON.parse(localStorage.getItem(item.id));
-          // console.log(dataLocal);
-          if (dataLocal.hasCharge) {
-            that.chargeSubmit(
-              item,
-              dataLocal.row,
-              dataLocal.type,
-              dataLocal.charge
-            );
-          } else {
-            that.commitAxios(item, dataLocal.row, dataLocal.type);
-          }
-        });
-      } else {
+      if(this.approval_status == "1"){
+        if (this.hasSubject) {
+          this.tableAssociated.forEach(function(item, index, arr) {
+            const dataLocal = JSON.parse(localStorage.getItem(item.id));
+            // console.log(dataLocal);
+            if (dataLocal.hasCharge) {
+              that.chargeSubmit(
+                item,
+                dataLocal.row,
+                dataLocal.type,
+                dataLocal.charge
+              );
+            } else {
+              that.commitAxios(item, dataLocal.row, dataLocal.type);
+            }
+          });
+        } else {
+          that.axiosSubmit();
+        }
+      }else if(this.approval_status == "2"){
         that.axiosSubmit();
       }
+      
     },
 
     axiosSubmit() {
@@ -954,10 +959,11 @@ export default {
         .then(function(response) {
           // console.log('审批操作',response);
           if (response.data.isSuccess) {
-            // that.$message.success("审批提交成功~");
+            // 
             if (that.approval_status == "1") {
               that.insert();
             } else if (that.approval_status == "2") {
+              that.$message.success("审批提交成功~");
               that.closeAdd("cancal");
             }
             that.dialogVisibleApproval = false;
@@ -1018,11 +1024,58 @@ export default {
               transaction_Time: row.transaction_Time,
               transaction_DateTime: row.transaction_DateTime,
               trade_Currency: row.trade_Currency,
-              trade_Amount: row.trade_Amount,
+              trade_Amount: 0 - parseFloat(charge),
               value_Date: row.value_Date,
               exchange_rate: row.exchange_rate,
               transaction_reference_number:
                 row.transaction_reference_number + "_" + new Date().getTime(),
+              record_ID: row.record_ID,
+              reference: row.reference,
+              purpose: row.purpose,
+              remark: row.remark,
+              transaction_Type: row.transaction_Type,
+              business_type: row.business_type,
+              account_holding_bank_number_of_payer:
+                row.account_holding_bank_number_of_payer,
+              payer_account_bank: row.payer_account_bank,
+              debit_Account_No: row.debit_Account_No,
+              payer_s_Name: row.payer_s_Name,
+              account_holding_bank_number_of_beneficiary:
+                row.account_holding_bank_number_of_beneficiary,
+              beneficiary_account_bank: row.beneficiary_account_bank,
+              payee_s_Account_Number: row.payee_s_Account_Number,
+              payee_s_Name: row.payee_s_Name,
+              surplus_Amount: row.surplus_Amount,
+              createTime: row.createTime,
+              isDeleted: 0,
+              is_ZCK: 0,
+              is_EBS: 0,
+              purpose_fee: charge
+            }
+          })
+          .then(function(obj) {
+            // console.log('中国银行',obj);
+            if (obj.data.isSuccess) {
+              that.$message.success("添加手续费成功！");
+              that.dialogVisibleSXF = false;
+              that.canClick = true;
+              that.commitAxios(item, row, type);
+            } else {
+              that.tableDataZH = [];
+            }
+          });
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/save", {
+            object: {
+              id: row.id,
+              transaction_Date: row.transaction_Date,
+              transaction_Time: row.transaction_Time,
+              transaction_DateTime: row.transaction_DateTime,
+              trade_Currency: row.trade_Currency,
+              trade_Amount: row.trade_Amount,
+              value_Date: row.value_Date,
+              exchange_rate: row.exchange_rate,
+              transaction_reference_number:row.transaction_reference_number, // + "_" + new Date().getTime()
               record_ID: row.record_ID,
               reference: row.reference,
               purpose: row.purpose,
@@ -1083,7 +1136,51 @@ export default {
               remark: this.rowMsg.remark,
               purpose_Date: this.rowMsg.purpose_Date,
               purpose_Merchant_code: this.rowMsg.purpose_Merchant_code,
-              purpose_fee: this.service_charge,
+              purpose_fee: charge,
+              createTime: this.rowMsg.createTime,
+              isDeleted: 0,
+              surplus_Amount: this.rowMsg.surplus_Amount,
+              is_ZCK: 0,
+              is_EBS: 0
+            }
+          })
+          .then(function(obj) {
+            // console.log('兴业银行',obj);
+            if (obj.data.isSuccess) {
+              that.$message.success("添加手续费成功！");
+              that.dialogVisibleSXF = false;
+              that.canClick = true;
+              that.commitAxios(that.rowMsg, that.rowType);
+            } else {
+              that.tableDataZH = [];
+            }
+          });
+
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/save", {
+            object: {
+              id: this.rowMsg.id,
+              bank_serial_number:
+                this.rowMsg.bank_serial_number, //  + "_" + new Date().getTime()
+              account_number: this.rowMsg.account_number,
+              account_name: this.rowMsg.account_name,
+              certificate_code: this.rowMsg.certificate_code,
+              currency: this.rowMsg.currency,
+              cash_or_transfer: this.rowMsg.cash_or_transfer,
+              debit_amount: charge,
+              credit_amount: 0,
+              account_balance: this.rowMsg.account_balance,
+              reference: this.rowMsg.reference,
+              account_number_other: this.rowMsg.account_number_other,
+              account_name_other: this.rowMsg.account_name_other,
+              bank_other: this.rowMsg.bank_other,
+              bank_Code_other: this.rowMsg.bank_Code_other,
+              transaction_Date: this.rowMsg.transaction_Date,
+              purpose: this.rowMsg.purpose,
+              remark: this.rowMsg.remark,
+              purpose_Date: this.rowMsg.purpose_Date,
+              purpose_Merchant_code: this.rowMsg.purpose_Merchant_code,
+              purpose_fee: charge,
               createTime: this.rowMsg.createTime,
               isDeleted: 0,
               surplus_Amount: this.rowMsg.surplus_Amount,
@@ -1233,7 +1330,7 @@ export default {
             that.tableDataResult = response.data.object.spw;
 
             that.tableManyRow = that.tableAssociated.length;
-            that.getCollectionPriceTotal = 0;
+            // that.getCollectionPriceTotal = 0;
 
             // 凭证
             that.fileList = response.data.object.files;
@@ -1262,6 +1359,7 @@ export default {
             that.hasSubject = false;
           }
           // console.log(1,that.hasSubject)
+          that.getCollectionPriceTotal = 0;
           if (!that.hasSubject) {
             // alert("没有科目值");
             that.tableAssociated.forEach(item => {
@@ -1275,11 +1373,14 @@ export default {
             // alert("有科目值");
             that.tableAssociated.forEach(item => {
               that.getCollectionPriceTotal += item.matchingPrice;
-              // console.log("submitData", localStorage.getItem(item.id));
+              console.log("submitData", localStorage.getItem(item.id));
               if (localStorage.getItem(item.id) == null) {
-                item.hasSubmitData = true;
+                alert('true');
+                // item.hasSubmitData = true;
+                that.$set(item, "hasSubmitData", true);
               } else {
-                item.hasSubmitData = false;
+                // item.hasSubmitData = false;
+                that.$set(item, "hasSubmitData", false);
               }
               if (that.info.collectionType !== 6) {
                 if (localStorage.getItem(item.id) == null) {
