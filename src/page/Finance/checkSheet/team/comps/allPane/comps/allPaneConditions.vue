@@ -121,7 +121,7 @@ export default {
     beginTimeValidate(beginTime){
       let endTime= this.submitForm.endTime;
       if(!endTime) return;
-      if(endTime > beginTime) return;
+      if(endTime >= beginTime) return;
       this.$message.error('发起时间应小于截止时间');
       return this.submitForm.beginTime= null;
     },
@@ -129,7 +129,7 @@ export default {
     endTimeValidate(endTime){
       let beginTime= this.submitForm.beginTime;
       if(!beginTime) return;
-      if(endTime > beginTime) return;
+      if(endTime >= beginTime) return;
       this.$message.error('截止时间应大于发起时间');
       return this.submitForm.endTime= null;
     }
