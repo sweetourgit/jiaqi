@@ -15,11 +15,11 @@
 // import refundRecord from '@/page/Finance/refundManagement/refundRecord'
 // import refundApproval from '@/page/Finance/refundManagement/refundApproval'
 export default {
-  name:"refundManagement",
-  components:{
-    refundRecord,
-    refundApproval
-  },
+  // name:"refundManagement",
+  // components:{
+  //   refundRecord,
+  //   refundApproval
+  // },
   data() {
     return {
       activeName: 'first'
