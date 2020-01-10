@@ -415,7 +415,7 @@ export default {
       this.pd.guideName= guideName;
       this.pd.localName= localName;
       Object.assign(assignObj, { title, price, ticket });
-      !isSave && this.otherIncomes.push(assignObj);
+      !isSave && title && this.otherIncomes.push(assignObj);
       this.changeHandler();
     },
 

@@ -166,7 +166,6 @@ export default {
     postCheckSheetAction(){
       let object= this.$refs.printGround.getData();
       this.createTimeMaker(object.expenses);
-      return console.log(object)
       postCheckSheet(object)
       .then(res => {
         let { path, query }= this.$route;
