@@ -220,6 +220,9 @@ export default {
         this.$message.success(isAgree? '审批完成': '驳回完成');
         this.backPage();
       })
+      .catch(err => {
+        this.$message.error(isAgree? '审批通过失败': '驳回失败');
+      })
     }
   }
 }
