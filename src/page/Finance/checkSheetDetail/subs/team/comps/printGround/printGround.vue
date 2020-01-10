@@ -15,6 +15,7 @@ table{
 }
 .print-ground>header .title{
   font-size: 18px;
+  line-height: 36px;
 }
 .print-ground>header .time{
   line-height: 2.5;
@@ -52,7 +53,10 @@ table{
     <!-- <div style="white-space:pre-wrap" v-html="printData"></div> -->
     <header>
       <div class="title">{{ pd.topOrgName }}旅游团队报账单</div>
-      <div class="time">报账时间：{{ dateFormator(pd.checkTime) }}</div>
+      <div class="time"
+        v-if="pd.checkTime=== pd.createTime">
+        报账时间：{{ dateFormator(pd.checkTime) }}
+      </div>
     </header>
     <main>
 

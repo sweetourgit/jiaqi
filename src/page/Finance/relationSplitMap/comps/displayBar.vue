@@ -33,7 +33,7 @@
           <el-col :span="12">
             <el-form-item label="借款单号：">
               <span class="content">
-                {{ borrow.expenseID }}
+                {{ borrow.id }}
               </span>
             </el-form-item>
           </el-col>
@@ -59,7 +59,7 @@
           <el-col :span="12">
             <el-form-item label="报销单号：">
               <span class="content">
-                {{ lend.expenseID }}
+                {{ borrow.expenseID }}
               </span>
             </el-form-item>
           </el-col>
