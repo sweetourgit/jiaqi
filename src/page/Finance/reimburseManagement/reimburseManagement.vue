@@ -1604,7 +1604,7 @@ export default {
                               };
                        
                         this.beginWokeing(res.data.object);
-                          
+                        return;
                         }else{
                           this.alljoinData= [];
                           this.tableCourse = [];
@@ -1657,7 +1657,7 @@ export default {
             var verify = 0;
             this.object_lisr=[];
             this.submitformBtn=true;
-            console.log(editableTabs,'8563210')
+            console.log('乖乖打豆豆');
             for(var j in editableTabs){
                 let submitForm_list = editableTabs[j].content;
                           if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
@@ -1665,7 +1665,7 @@ export default {
                                         message:'摘要字数不能超过80字',
                                         type: 'warning' 
                                     });
-                                    this.submitformBtn=false;
+                                   this.submitformBtn=false;
                                     verify = 0
                                     return;
                                   }    
@@ -1705,7 +1705,7 @@ export default {
                                                 message:'关联单据重复，请重新选择',
                                                 type: 'warning' 
                                               });
-                                              this.submitformBtn=false;
+                                             this.submitformBtn=false;
                                               verify = 0
                                               return;
                                         }
@@ -1723,11 +1723,13 @@ export default {
                                         })
                                         verify = 1
                           }else{
+
                               verify = 0
                               this.$message({
                                   message: '请检查必填项',
                                   type: 'warning' 
                               });
+                              this.submitformBtn=false;
                               return;
                     }
               }
@@ -1842,9 +1844,9 @@ export default {
   min-height: 40px;
   border: 1px solid #dcdfe6;
 }
-.indialog {
+/* .indialog {
   min-height: 300px;
-}
+} */
  
 .all .el-upload-list__item {
   clear: both;
