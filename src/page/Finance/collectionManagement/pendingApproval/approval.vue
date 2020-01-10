@@ -933,6 +933,8 @@ export default {
             that.commitAxios(item, dataLocal.row, dataLocal.type);
           }
         });
+      }else{
+        that.axiosSubmit();
       }
     },
 
