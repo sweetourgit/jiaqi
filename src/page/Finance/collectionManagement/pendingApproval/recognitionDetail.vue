@@ -248,7 +248,7 @@
         }else if(data.type === 2){
           that.tableDataMX[0] = data.row;
           that.isShowMX = true;
-        }
+        } 
 
         // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindFlow", {
         //   "id": this.msg.id

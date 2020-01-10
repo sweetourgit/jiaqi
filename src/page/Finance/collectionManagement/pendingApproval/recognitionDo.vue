@@ -78,7 +78,8 @@
             :data="tableDataOrder"
             border
             style="width: 100%;"
-            :header-cell-style="getRowClass">
+            :header-cell-style="getRowClass"
+          >
             <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
             <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
@@ -92,11 +93,21 @@
         <div class="recognition">
           <el-tabs :tab-position="tabPosition" v-model="activeName">
             <el-tab-pane label="中国银行" name="bankZH">
-              <el-form :model="ruleFormZH" ref="ruleFormZH" label-width="110px" class="form-content">
+              <el-form
+                :model="ruleFormZH"
+                ref="ruleFormZH"
+                label-width="110px"
+                class="form-content"
+              >
                 <el-row type="flex" class="row-bg">
                   <el-col :span="7">
                     <el-form-item prop="dateStart" label="起息日期：">
-                      <el-date-picker type="date" placeholder="选择日期" v-model="ruleFormZH.dateStart" style="width: 100%;"></el-date-picker>
+                      <el-date-picker
+                        type="date"
+                        placeholder="选择日期"
+                        v-model="ruleFormZH.dateStart"
+                        style="width: 100%;"
+                      ></el-date-picker>
                     </el-form-item>
                   </el-col>
                   <el-col :span="7">
@@ -132,7 +143,8 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content">
+                id="table-content"
+              >
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
                     <el-button
@@ -189,7 +201,12 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="兴业银行" name="bankXY">
-              <el-form :model="ruleFormZH" ref="ruleFormXY" label-width="110px" class="form-content">
+              <el-form
+                :model="ruleFormZH"
+                ref="ruleFormXY"
+                label-width="110px"
+                class="form-content"
+              >
                 <el-row type="flex" class="row-bg">
                   <el-col :span="10">
                     <el-form-item label="贷方金额：" prop="money">
@@ -217,7 +234,8 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content">
+                id="table-content"
+              >
                 <el-table-column label="操作" width="140" align="center" fixed>
                   <template slot-scope="scope">
                     <el-button
@@ -285,7 +303,8 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content">
+                id="table-content"
+              >
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
                     <el-button
@@ -370,12 +389,11 @@
         </el-dialog>
       </div>
       <!--手续费结束-->
-
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
-import moment from 'moment'
+import moment from "moment";
 export default {
   name: "recognitionDo",
   components: {},
@@ -399,11 +417,12 @@ export default {
       pageSizeZH: 10,
       totalZH: 0,
 
-      ruleFormZH: { // 中行搜索项
-        dateStart: '',
-        name: '',
-        moneyMin: '',
-        moneyMax: ''
+      ruleFormZH: {
+        // 中行搜索项
+        dateStart: "",
+        name: "",
+        moneyMin: "",
+        moneyMax: ""
       },
 
       tableDataXY: [], // 兴业银行table(当前页数，每页条数，总条数)
@@ -411,9 +430,10 @@ export default {
       pageSizeXY: 10,
       totalXY: 0,
 
-      ruleFormXY: { // 兴业银行搜索项
-        moneyMin: '',
-        moneyMax: ''
+      ruleFormXY: {
+        // 兴业银行搜索项
+        moneyMin: "",
+        moneyMax: ""
       },
 
       tableDataMX: [], // 微信支付宝明细table(当前页数，每页条数，总条数)
@@ -424,9 +444,9 @@ export default {
 
       // 设置手续费弹框
       dialogVisibleSXF: false,
-      service_charge: '',
+      service_charge: "",
       rowMsg: [],
-      rowType: '',
+      rowType: "",
       noEdit: true
     };
   },
@@ -477,24 +497,34 @@ export default {
     // 选择，提交认款
     chooseRecognition(row, type) {
       // console.log(row);
-
+      console.log(this.tableDataOrder, "出来没有");
       // if (this.collectionType !== 6) {
-        if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
-          if(type == 2){
+      if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
+        if (this.collectionType !== 6) {
+          if (type == 2) {
             this.$message.warning("不能进行选择，剩余金额不足~");
-          }else{
+          } else {
             this.dialogVisibleSXF = true;
             this.rowMsg = row;
             this.rowType = type;
-            this.service_charge = Math.abs(this.tableDataOrder[0].matchingPrice - row.surplus_Amount);
+            this.service_charge = Math.abs(
+              this.tableDataOrder[0].matchingPrice - row.surplus_Amount
+            );
           }
         } else {
-          this.canClick = true;
-          // this.commitAxios(row, type);
-          const dateStr = JSON.stringify({row: row, type: type, hasCharge: false});
-          localStorage.setItem(this.tableDataOrder[0].id, dateStr);
-          this.closeAdd("success");
+          this.$message.warning("不能进行选择，剩余金额不足~");
         }
+      } else {
+        this.canClick = true;
+        // this.commitAxios(row, type);
+        const dateStr = JSON.stringify({
+          row: row,
+          type: type,
+          hasCharge: false
+        });
+        localStorage.setItem(this.tableDataOrder[0].id, dateStr);
+        this.closeAdd("success");
+      }
       // } else {
       //   if (row.surplus_Amount < this.baseInfo.price) {
       //     this.$message.warning("不能进行选择，剩余金额不足~");
@@ -566,8 +596,13 @@ export default {
     },
 
     // 插入一条手续费
-    chargeSubmit(){
-      const dataStr = JSON.stringify({row: this.rowMsg, type: this.rowType, hasCharge: true, charge: this.service_charge});
+    chargeSubmit() {
+      const dataStr = JSON.stringify({
+        row: this.rowMsg,
+        type: this.rowType,
+        hasCharge: true,
+        charge: this.service_charge
+      });
       localStorage.setItem(this.tableDataOrder[0].id, dataStr);
       this.dialogVisibleSXF = false;
       this.closeAdd("success");
@@ -676,17 +711,17 @@ export default {
       this.loadDataZH();
     },
     // 搜索
-    searchHandInsideZH(){
+    searchHandInsideZH() {
       this.pageCurrentZH = 1;
       this.loadDataZH();
     },
     // 重置
-    emptyButtonInsideZH(){
+    emptyButtonInsideZH() {
       this.ruleFormZH = {
-        dateStart: '',
-        name: '',
-        moneyMin: '',
-        moneyMax: ''
+        dateStart: "",
+        name: "",
+        moneyMin: "",
+        moneyMax: ""
       };
       this.pageCurrentZH = 1;
       this.loadDataZH();
@@ -694,8 +729,8 @@ export default {
     loadDataZH() {
       const that = this;
       let dateStart = 0;
-      if(this.ruleFormZH.dateStart){
-        dateStart = moment(this.ruleFormZH.dateStart).format('YYYYMMDD')
+      if (this.ruleFormZH.dateStart) {
+        dateStart = moment(this.ruleFormZH.dateStart).format("YYYYMMDD");
       }
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
@@ -710,8 +745,12 @@ export default {
             import_State: 0,
             value_Date: dateStart ? dateStart : 0,
             payer_s_Name: this.ruleFormZH.name,
-            trade_Amount1: this.ruleFormZH.moneyMin ? this.ruleFormZH.moneyMin : 0,
-            trade_Amount2: this.ruleFormZH.moneyMax ? this.ruleFormZH.moneyMax : 0
+            trade_Amount1: this.ruleFormZH.moneyMin
+              ? this.ruleFormZH.moneyMin
+              : 0,
+            trade_Amount2: this.ruleFormZH.moneyMax
+              ? this.ruleFormZH.moneyMax
+              : 0
           }
         })
         .then(function(obj) {
@@ -736,15 +775,15 @@ export default {
       this.loadDataXY();
     },
     // 搜索
-    searchHandInsideXY(){
+    searchHandInsideXY() {
       this.pageCurrentXY = 1;
       this.loadDataXY();
     },
     // 重置
-    emptyButtonInsideXY(){
+    emptyButtonInsideXY() {
       this.ruleFormXY = {
-        moneyMin: '',
-        moneyMax: ''
+        moneyMin: "",
+        moneyMax: ""
       };
       this.pageCurrentXY = 1;
       this.loadDataXY();
@@ -760,10 +799,14 @@ export default {
             transaction_reference_number: "",
             begin: "1970-01-11",
             end: "2099-05-16",
-            "seachType": 0,
-            "import_State": 0,
-            "credit_amount1": this.ruleFormXY.moneyMin ? this.ruleFormXY.moneyMin : 0,
-            "credit_amount2": this.ruleFormXY.moneyMax ? this.ruleFormXY.moneyMax : 0
+            seachType: 0,
+            import_State: 0,
+            credit_amount1: this.ruleFormXY.moneyMin
+              ? this.ruleFormXY.moneyMin
+              : 0,
+            credit_amount2: this.ruleFormXY.moneyMax
+              ? this.ruleFormXY.moneyMax
+              : 0
           }
         })
         .then(function(obj) {
@@ -859,14 +902,14 @@ export default {
     }
   }
 }
-.form-content{
+.form-content {
   background-color: #f7f7f7;
   padding: 20px 10px 0;
   margin-bottom: 10px;
-  .line{
+  .line {
     text-align: center;
   }
-  .buttonForm{
+  .buttonForm {
     text-align: right;
   }
 }
