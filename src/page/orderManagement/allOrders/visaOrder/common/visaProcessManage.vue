@@ -7,8 +7,14 @@
                <el-button type="primary" circle size="medium">&nbsp;1&nbsp;</el-button>
                <span class="sta-title">下单成功</span>
              </div>
+             <div class="line">
+                 <div></div>
+             </div>
+             <div>
+               <el-button type="primary" plain icon="el-icon-check" circle size="medium"></el-button>
+               <span class="sta-title">下单成功</span>
+             </div>
              
-             <el-button type="primary" plain icon="el-icon-check" circle size="medium"></el-button>
 
 
 
@@ -40,8 +46,16 @@ export default {
        orderStatus:[
          {name:"下单成功"},
          {name:"收到材料"},
-         {name:"材料审核",date:"2019-09-21",time:"3天",problem:"缺少材料"},
-         {name:"材料补交中",material:"身份证复印件"},
+         {name:"材料审核",list:
+          [{title:"1",content:"2019-09-21"},
+          {title:"1",content:"3天"},
+          {title:"1",content:"缺少材料"}]
+         },
+         {name:"材料补交中",list:
+          [{title:"1",content:"2019-09-21"},
+          {title:"1",content:"3天"},
+          {title:"1",content:"缺少材料"}]
+         },
          {name:"材料制作中",date:"2019-09-21",time:"3天",problem:"缺少材料"},
          {name:"成功预约时间",attention:"2019-09-21"},
          {name:"送签",issuedate:"2019-09-21"},
@@ -87,4 +101,5 @@ export default {
   .footer{clear:both;padding-top:20px}
   .main-left{float:left;width:250px}
   .main-right{float:left}
+  .line{display: inline-block;margin: 5px 0 5px 17px;min-height:25px;border-left:2px solid #eee}
 </style>
