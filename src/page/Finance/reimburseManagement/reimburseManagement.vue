@@ -622,34 +622,7 @@ export default {
                   this.dialogFormVisible = false;
                   this.alljoinData = [];
                   this.tableCourse = [];
-                  this.ruleForm= {
-                      editableTabsValue: "1",
-                      editableTabs: [
-                        {
-                          title: "报销1",
-                          name: "1",
-                          content:{
-                              createUser:"",
-                              createTime: "",
-                              count:0,
-                              id:"",
-                              groupCode: "",
-                              productName: "",
-                              mark: "",
-                              t_sum:0,//一共多少项
-                              t_price:0,//一共多少钱
-                              files:[],
-                              payments:[],
-                              joinData:[],
-                              plan: {
-                                planId: "",
-                                planName: ""
-                              },
-                            
-                          }
-                        }
-                      ]
-                      };
+                  this.ruleNull()
             })
               .catch(() => {
                 this.$message({
@@ -665,34 +638,7 @@ export default {
                   this.dialogFormVisible = false;
                   this.alljoinData = [];
                   this.tableCourse = [];
-                  this.ruleForm= {
-                      editableTabsValue: "1",
-                      editableTabs: [
-                        {
-                          title: "报销1",
-                          name: "1",
-                          content:{
-                              createUser:"",
-                              createTime: "",
-                              count:0,
-                              id:"",
-                              groupCode: "",
-                              productName: "",
-                              mark: "",
-                              t_sum:0,//一共多少项
-                              t_price:0,//一共多少钱
-                              files:[],
-                              payments:[],
-                              joinData:[],
-                              plan: {
-                                planId: "",
-                                planName: ""
-                              },
-                            
-                          }
-                        }
-                      ]
-                      };
+                  this.ruleNull()
             }
          
         },
@@ -711,6 +657,36 @@ export default {
                 }
               }
              
+        },
+        ruleNull(){ // 清空内容
+            this.ruleForm= {
+                      editableTabsValue: "1",
+                      editableTabs: [
+                        {
+                          title: "报销1",
+                          name: "1",
+                          content:{
+                              createUser:"",
+                              createTime: "",
+                              count:0,
+                              id:"",
+                              groupCode: "",
+                              productName: "",
+                              mark: "",
+                              t_sum:0,//一共多少项
+                              t_price:0,//一共多少钱
+                              files:[],
+                              payments:[],
+                              joinData:[],
+                              plan: {
+                                planId: "",
+                                planName: ""
+                              },
+                            
+                          }
+                        }
+                      ]
+                      };
         },
         showplan(){//取消1
             this.t_pageSize = 10;
@@ -926,34 +902,7 @@ export default {
                                       });
                                       this.alljoinData=[];
                                       this.tableCourse = [];
-                                      this.ruleForm= {
-                                          editableTabsValue: "1",
-                                          editableTabs: [
-                                            {
-                                              title: "报销1",
-                                              name: "1",
-                                              content:{
-                                                  createUser:"",
-                                                  createTime: "",
-                                                  count:0,
-                                                  id:"",
-                                                  groupCode: "",
-                                                  productName: "",
-                                                  mark: "",
-                                                  t_sum:0,//一共多少项
-                                                  t_price:0,//一共多少钱
-                                                  files:[],
-                                                  payments:[],
-                                                  joinData:[],
-                                                  plan: {
-                                                    planId: "",
-                                                    planName: ""
-                                                  },
-                                                
-                                              }
-                                            }
-                                          ]
-                                          };
+                                      this.ruleNull()
                                       let text = res.config.data
                                       this.beginWokeing(text);
                                     }else{
@@ -972,6 +921,9 @@ export default {
                                 type: "info",
                                 message: "订单已审核，刷新看状态"
                               });
+                                     this.alljoinData=[];
+                                      this.tableCourse = [];
+                                      this.ruleNull()
                           this.dialogFormVisible = false;
                           }
                         }
@@ -1324,34 +1276,7 @@ export default {
                 .then(() => {
                   targetName = "1"
                   this.tableCourse = [];
-                  this.ruleForm= {
-                          editableTabsValue: "1",
-                          editableTabs: [
-                            {
-                              title: "报销1",
-                              name: "1",
-                              content:{
-                                  createUser:"",
-                                  createTime: "",
-                                  count:0,
-                                  id:"",
-                                  groupCode: "",
-                                  productName: "",
-                                  mark: "",
-                                  t_sum:0,//一共多少项
-                                  t_price:0,//一共多少钱
-                                  files:[],
-                                  payments:[],
-                                  joinData:[],
-                                  plan: {
-                                    planId: "",
-                                    planName: ""
-                                  },
-                                
-                              }
-                            }
-                          ]
-                          };
+                  this.ruleNull()
                     this.tabIndex = 1;
                     this.radio= "1";
                     this.find = 0;
@@ -1595,68 +1520,14 @@ export default {
                             type: "success",
                             message: "创建成功!"
                           });
-                         this.ruleForm= {
-                              editableTabsValue: "1",
-                              editableTabs: [
-                                {
-                                  title: "报销1",
-                                  name: "1",
-                                  content:{
-                                      createUser:"",
-                                      createTime: "",
-                                      count:0,
-                                      id:"",
-                                      groupCode: "",
-                                      productName: "",
-                                      mark: "",
-                                      t_sum:0,//一共多少项
-                                      t_price:0,//一共多少钱
-                                      files:[],
-                                      payments:[],
-                                      joinData:[],
-                                      plan: {
-                                        planId: "",
-                                        planName: ""
-                                      },
-                                    
-                                  }
-                                }
-                              ]
-                              };
+                          this.ruleNull()
                        
                         this.beginWokeing(res.data.object);
                         return;
                         }else{
                           this.alljoinData= [];
                           this.tableCourse = [];
-                          this.ruleForm= {
-                                editableTabsValue: "1",
-                                editableTabs: [
-                                  {
-                                    title: "报销1",
-                                    name: "1",
-                                    content:{
-                                        createUser:"",
-                                        createTime: "",
-                                        count:0,
-                                        id:"",
-                                        groupCode: "",
-                                        productName: "",
-                                        mark: "",
-                                        t_sum:0,//一共多少项
-                                        t_price:0,//一共多少钱
-                                        files:[],
-                                        payments:[],
-                                        joinData:[],
-                                        plan: {
-                                          planId: "",
-                                          planName: ""
-                                        },
-                                      
-                                    }
-                                  }
-                                ]
-                                };
+                          this.ruleNull()
                             this.submitformBtn=false;
                             this.$message({
                             type: "error",
