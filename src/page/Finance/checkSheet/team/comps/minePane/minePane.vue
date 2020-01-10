@@ -98,9 +98,9 @@ export default {
 
       toDetailPage(row){
         let tab= 'mine';
-        let { id, workItemID }= row;
+        let { id, workItemID, guid }= row;
         this.$router.push({ path: '/checkSheetDetail/team', query: {
-          id, workItemID, tab
+          id, workItemID, guid, tab
         }})
       },
 

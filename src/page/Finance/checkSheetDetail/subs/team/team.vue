@@ -153,10 +153,10 @@ export default {
      */
     choosePageType(){
       let { path, query }= this.$route;
-      let { id, planID, isCheckSheet, tab, conditions, workItemID }= query;
+      let { id, planID, isCheckSheet, tab, conditions, workItemID, guid }= query;
       this.cacheConditions= conditions;
       this.isFromCheckSheet= tab? true: false;
-      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID } });
+      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID, guid } });
       if(isCheckSheet=== '0') return 'add';
       // 如果[ isCheckSheet 不为 undefined ]或者[ tab 是 all ] 只能查看
       if(!this.$isNull(isCheckSheet) || tab=== 'all') return 'normal';
@@ -209,12 +209,12 @@ export default {
 
     approvalSaveHandler(payload){
       let { commentText, isAgree }= payload;
-      let workItemID= this.$route.query.workItemID;
+      let { guid, workItemID }= this.$route.query;
       let userCode= sessionStorage.getItem('tel');
       let action;
-      action= isAgree? agreeForJQ: rejectForJQ;
-      action({commentText, workItemID, userCode})
-      .then(() => {
+      action= isAgree? 
+        agreeForJQ({commentText, workItemID, userCode}): rejectForJQ({commentText, workItemID, userCode}, { guid, checkType: 2 });
+      action.then(() => {
         // 重置页面按钮 防止点击
         this.type= 'normal';
         this.$message.success(isAgree? '审批完成': '驳回完成');

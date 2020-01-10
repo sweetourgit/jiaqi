@@ -92,10 +92,24 @@ export const agreeForJQ= function(object){
   })
 }
 
-export const rejectForJQ= function(object){
+export const rejectForJQ= function(object, object2){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.jqUrl+ '/JQ/RejectionOfWorkTasksForJQ',
       { ...object }
+    ).then((res) => {
+      let { code }= JSON.parse(res.data);
+      if(code!== 0) throw '驳回审批失败';
+      return saveChcektype(object2);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+export const saveChcektype= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc+ '/finance/checksheet/api/savechecktype',
+      { object }
     ).then((res) => {
       let { code }= JSON.parse(res.data);
       if(code!== 0) throw '驳回审批失败';
