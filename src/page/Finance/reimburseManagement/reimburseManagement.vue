@@ -389,7 +389,7 @@
               border
               :highlight-current-row="true"
               @row-click="planChange"
-              style="width: 100%; margin:30px 0 80px 0"
+              style="width: 100%; margin:30px 0 100px 0"
             >
               <el-table-column prop="groupCode" label="团期计划ID"></el-table-column>
               <el-table-column prop="title" label="产品名称"></el-table-column>
@@ -1832,7 +1832,7 @@ export default {
 .block_s {
   float: left;
   margin-left: 370px;
-  margin-top: -30px;
+  margin-top: -20px;
   margin-bottom: 85px;
 }
 .reimbursementer {
