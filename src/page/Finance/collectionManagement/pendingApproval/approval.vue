@@ -15,12 +15,12 @@
         <!-- 报销还款审批页的去认款按钮显示begin -->
         <el-button
           type="primary"
-          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn !== 3 && hasSubject"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn == false && hasSubject"
           @click="recognitionDo(tableAssociated[0])"
         >去认款</el-button>
         <el-button
           type="primary"
-          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn == 3"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn == true "
           @click="recognitionDetail(tableAssociated[0])"
         >查看</el-button>
         <!-- 报销还款审批页的去认款按钮显示end -->
@@ -933,7 +933,7 @@ export default {
             that.commitAxios(item, dataLocal.row, dataLocal.type);
           }
         });
-      }else{
+      } else {
         that.axiosSubmit();
       }
     },
@@ -1210,7 +1210,7 @@ export default {
               //     : (response.data.object.accountID = "汇款")
             };
 
-            that.getAccount(response.data.object.accountID);
+            that.getAccount(response.data.object.accountID,response.data.object.arrears[0].id);
 
             that.printMatchingPrice =
               response.data.object.arrears[0].matchingPrice;
@@ -1246,7 +1246,7 @@ export default {
         });
     },
 
-    getAccount(id) {
+    getAccount(id,arrearsID) {
       const that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
@@ -1292,31 +1292,25 @@ export default {
           // 如果是报销还款进来的并且获取的accountID 13为现金 则可以直接通过 此时没有去认款的按钮 不等于13都是汇款
           // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮 hasSubject为true则有科目值对公  that.tableAssociated[0].checkType != 3 代表没认过款的
           // 查看按钮的显示与隐藏的判断
-          that.isLookBtn = that.tableAssociated[0].checkType;
-
+          // that.isLookBtn = that.tableAssociated[0].checkType;
+          console.log("hasSubject",that.hasSubject)
+          that.isLookBtn = localStorage.getItem(arrearsID) ? true : false;
           if (that.info.collectionType == 6) {
-            if (that.isLookBtn !== 3) {
-              if (id == 13) {
-                that.passDisabled = false;
-              } else {
-                that.hasSubject
-                  ? (that.passDisabled = true)
-                  : (that.passDisabled = false);
-              }
+            if (id == 13) {
+              that.passDisabled = false;
             } else {
+              that.hasSubject
+                ? (that.passDisabled = true)
+                : (that.passDisabled = false);
+            }
+            
+            if(that.isLookBtn == true) {
               that.passDisabled = false;
             }
-            // if (response.data.object.accountID == 13) {
-            //   that.passDisabled = false;
-            // } else {
-            //   that.hasSubject
-            //     ? (that.passDisabled = true)
-            //     : (that.passDisabled = false);
-            // }
           }
           // 豆包加end
 
-          // console.log("get", that.hasSubject);
+          console.log("get", that.passDisabled);
         })
         .catch(function(error) {
           console.log(error);
