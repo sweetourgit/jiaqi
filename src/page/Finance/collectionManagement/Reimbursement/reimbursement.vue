@@ -152,49 +152,28 @@
         <!-- 第三行 END -->
         <!-- 基本信息 -->
       </div>
-      <el-table :data="recognitionData" border :highlight-current-row="true"  :header-cell-style="getRowClass" id="table-content" v-loading="listLoading" >
-        <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
-        </el-table-column>
-        <el-table-column prop="transaction_Date" label="交易日期" align="center">
-        </el-table-column>
-        <el-table-column prop="transaction_Time" label="交易时间" align="center">
-        </el-table-column>
-        <el-table-column prop="trade_Currency" label="交易货币" align="center">
-        </el-table-column>
-        <el-table-column prop="trade_Amount" label="交易金额" align="center">
-        </el-table-column>
-        <el-table-column prop="value_Date" label="起息日期" align="center">
-        </el-table-column>
-        <el-table-column prop="exchange_rate" label="汇率" align="center">
-        </el-table-column>
-        <el-table-column prop="record_ID" label="记录标识号" align="center">
-        </el-table-column>
-        <el-table-column prop="reference" label="摘要" align="center">
-        </el-table-column>
-        <el-table-column prop="purpose" label="用途" align="center">
-        </el-table-column>
-        <el-table-column prop="remark" label="交易附言" align="center">
-        </el-table-column>
-        <el-table-column prop="transaction_Type" label="交易类型" align="center">
-        </el-table-column>
-        <el-table-column prop="business_type" label="业务类型" align="center">
-        </el-table-column>
-        <el-table-column prop="account_holding_bank_number_of_payer" label="付款人开户行号" align="center">
-        </el-table-column>
-        <el-table-column prop="payer_account_bank" label="付款人开户行名" align="center">
-        </el-table-column>
-        <el-table-column prop="debit_Account_No" label="付款人账号" align="center">
-        </el-table-column>
-        <el-table-column prop="payer_s_Name" label="付款人姓名" align="center">
-        </el-table-column>
-        <el-table-column prop="account_holding_bank_number_of_beneficiary" label="收款人开户行号" align="center">
-        </el-table-column>
-        <el-table-column prop="beneficiary_account_bank" label="收款人开户行名" align="center">
-        </el-table-column>
-        <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center">
-        </el-table-column>
-        <el-table-column prop="payee_s_Name" label="收款人姓名" align="center">
-        </el-table-column>
+      <el-table :data="recognitionData" border :highlight-current-row="true"  :header-cell-style="getRowClass" id="table-content" v-loading="listLoading" style="width: 100%" v-if="isShowFlow">
+        <el-table-column prop="transaction_reference_number" label="交易流水号" align="center" fixed="left" width="180"></el-table-column>
+        <el-table-column prop="transaction_Date" label="交易日期" align="center" width="100"></el-table-column>
+        <el-table-column prop="transaction_Time" label="交易时间" align="center" width="100"></el-table-column>
+        <el-table-column prop="trade_Currency" label="交易货币" align="center" width="80"></el-table-column>
+        <el-table-column prop="trade_Amount" label="交易金额" align="center" width="100"></el-table-column>
+        <el-table-column prop="value_Date" label="起息日期" align="center" width="100"></el-table-column>
+        <el-table-column prop="exchange_rate" label="汇率" align="center" width="80"></el-table-column>
+        <el-table-column prop="record_ID" label="记录标识号" align="center" width="200"></el-table-column>
+        <el-table-column prop="reference" label="摘要" align="center" width="200"></el-table-column>
+        <el-table-column prop="purpose" label="用途" align="center" width="200"></el-table-column>
+        <el-table-column prop="remark" label="交易附言" align="center" width="90"></el-table-column>
+        <el-table-column prop="transaction_Type" label="交易类型" align="center" width="90"></el-table-column>
+        <el-table-column prop="business_type" label="业务类型" align="center" width="90"></el-table-column>
+        <el-table-column prop="account_holding_bank_number_of_payer" label="付款人开户行号" align="center" width="200"></el-table-column>
+        <el-table-column prop="payer_account_bank" label="付款人开户行名" align="center" width="200"></el-table-column>
+        <el-table-column prop="debit_Account_No" label="付款人账号" align="center" width="200"></el-table-column>
+        <el-table-column prop="payer_s_Name" label="付款人姓名" align="center" width="180"></el-table-column>
+        <el-table-column prop="account_holding_bank_number_of_beneficiary" label="收款人开户行号" align="center" width="200"></el-table-column>
+        <el-table-column prop="beneficiary_account_bank" label="收款人开户行名" align="center" width="200"></el-table-column>
+        <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center" width="200"></el-table-column>
+        <el-table-column prop="payee_s_Name" label="收款人姓名" align="center" fixed="right" width="200"></el-table-column>
       </el-table>
     </el-dialog>
   </div>
@@ -210,6 +189,7 @@
     },
     data() {
       return {
+        isShowFlow: true,
         ruleForm: {
           proposer: '', // 申请人
           order: '', // 订单
@@ -317,10 +297,12 @@
           this.$http.post(this.GLOBAL.serverSrc + '/finance/bankofchina/api/FindFlow',{
             "id":_this.tableAssociatedId
           }).then(res => {
-            this.recognitionData = res.data
+            this.recognitionData.length = 0
+            this.recognitionData.push(res.data.object.data)
             this.listLoading = false
           }).catch( err => {
-            _this.recognitionData = []
+            _this.isShowFlow = false
+            _this.recognitionData.push({})
             _this.listLoading = false
           })
         })
