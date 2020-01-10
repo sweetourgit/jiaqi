@@ -55,7 +55,13 @@ $ruler: 16px;
       <div class="icon-outer"
         @click.exact="awakeChild"
         @click.ctrl.exact="awakeChildDeeply">
-        <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
+        <i 
+          v-show="!isLoading"
+          :class="[expended? 'el-icon-minus': 'el-icon-plus']">
+        </i>
+        <i class="el-icon-loading"
+          v-show="isLoading">
+        </i>
       </div>
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
@@ -79,7 +85,13 @@ $ruler: 16px;
       <div class="icon-outer"
         @click.exact="awakeChild"
         @click.ctrl.exact="awakeChildDeeply">
-        <i :class="[expended? 'el-icon-minus': 'el-icon-plus']"></i>
+        <i 
+          v-show="!isLoading"
+          :class="[expended? 'el-icon-minus': 'el-icon-plus']">
+        </i>
+        <i class="el-icon-loading"
+          v-show="isLoading">
+        </i>
       </div>
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
@@ -107,15 +119,13 @@ export default {
     },
     // .sync中拆分出来的
     {
-      state: Boolean,
-      expended: Boolean,
-      hoverd: Boolean,
-      selected: Boolean,
-      info: Object,
-      child: Object,
-      subChild: Object,
+      ...new RelationBar()
     }
   ),
+
+  created(){
+    if(this.isRoot) this.proto.mountVm(this);
+  },
 
   data(){
     return {
@@ -125,25 +135,7 @@ export default {
 
   methods: {
     awakeChild(){
-      let child;
-      let { id }= this.info;
-      if(this.child){
-        console.log('child exsit')
-        this.child.state= !this.child.state;
-        return this.$emit('update:expended', this.child.state);
-      }
-      getNode(id)
-      .then(res => {
-        let { trees, ...info }= res;
-        child= relationBarMaker(trees[0]);
-        if(!child){
-          this.$emit('update:expended', true);
-          return this.$message.info('no split');
-        }
-        child.state= true;
-        this.$emit('update:expended', true);
-        this.$emit('update:child', child);
-      })
+      this.proto.awakeChild();
     },
 
     awakeChildDeeply(){
@@ -151,7 +143,7 @@ export default {
     },
 
     selectHandler(){
-      this.proto.select();
+      let result= this.proto.select();
     },
 
     labelMaker(info){
