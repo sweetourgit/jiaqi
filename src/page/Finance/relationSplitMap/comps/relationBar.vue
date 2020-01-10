@@ -68,11 +68,12 @@ $ruler: 16px;
         ref="relationBarRef"
         v-if="child"
         v-bind.sync="child"
-        :proto="child">
+        :proto="child"
+        :brother="subChild">
       </relation-bar>
     </main>
     <footer
-      v-if="!subChild"
+      v-if="brother"
       @mouseover="$emit('update:hoverd', true)"
       @mouseout="$emit('update:hoverd', false)">
       <div class="icon-outer"
@@ -83,7 +84,7 @@ $ruler: 16px;
       <div 
         :class="['label', hoverd && 'hoverd', selected && 'selected']"
         @click="selectHandler">
-        {{ labelMaker(subChild) }}
+        {{ labelMaker(brother) }}
       </div>
     </footer>
   </div>  
@@ -97,17 +98,24 @@ export default {
 
   name: 'RelationBar',
 
-  props: {
-    isRoot: Boolean,  // 是否是根节点
-    proto: Object,
-    state: Boolean,
-    expended: Boolean,
-    hoverd: Boolean,
-    selected: Boolean,
-    info: Object,
-    child: Object,
-    subChild: Object
-  },
+  props: Object.assign(
+    // 值传
+    {
+      isRoot: Boolean,  // 是否是根节点
+      proto: Object,
+      brother: Object
+    },
+    // .sync中拆分出来的
+    {
+      state: Boolean,
+      expended: Boolean,
+      hoverd: Boolean,
+      selected: Boolean,
+      info: Object,
+      child: Object,
+      subChild: Object,
+    }
+  ),
 
   data(){
     return {
@@ -146,8 +154,9 @@ export default {
       this.proto.select();
     },
 
-    labelMaker(){
-      let { paymentType, price }= this.info
+    labelMaker(info){
+      let source= info || this.info;
+      let { paymentType, price }= source;
       return paymentType=== 1? `[无] ${price}`: `[预] ${price}`;
     }
   }
