@@ -435,6 +435,7 @@ export default {
           this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     }
+
   },
   methods: {
     moment,

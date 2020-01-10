@@ -237,32 +237,44 @@
       loadData(){
         const that = this;
         console.log(this.msg.id);
+        const data = JSON.parse(localStorage.getItem(this.msg.id));
+        console.log(data);
+        if(data.type === 0){
+          that.tableDataZH[0] = data.row;
+          that.isShowZH = true;
+        }else if(data.type === 1){
+          that.tableDataXY[0] = data.row;
+          that.isShowXY = true;
+        }else if(data.type === 2){
+          that.tableDataMX[0] = data.row;
+          that.isShowMX = true;
+        }
 
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindFlow", {
-          "id": this.msg.id
-        }, ).then(function(response) {
-          console.log(response.data);
-          if (response.data.isSuccess) {
-            if(response.data.object.type === 0){
-              that.tableDataZH[0] = response.data.object.data;
-              that.isShowZH = true;
-            }else if(response.data.object.type === 1){
-              that.tableDataXY[0] = response.data.object.data;
-              that.isShowXY = true;
-            }else if(response.data.object.type === 2){
-              that.tableDataMX[0] = response.data.object.data;
-              that.isShowMX = true;
-            }
-          } else {
-            if(response.data.message){
-              that.$message.warning(response.data.message);
-            }else{
-              that.$message.warning("认款提交失败~");
-            }
-          }
-        }).catch(function(error) {
-          console.log(error);
-        });
+        // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindFlow", {
+        //   "id": this.msg.id
+        // }, ).then(function(response) {
+        //   console.log(response.data);
+        //   if (response.data.isSuccess) {
+        //     if(response.data.object.type === 0){
+        //       that.tableDataZH[0] = response.data.object.data;
+        //       that.isShowZH = true;
+        //     }else if(response.data.object.type === 1){
+        //       that.tableDataXY[0] = response.data.object.data;
+        //       that.isShowXY = true;
+        //     }else if(response.data.object.type === 2){
+        //       that.tableDataMX[0] = response.data.object.data;
+        //       that.isShowMX = true;
+        //     }
+        //   } else {
+        //     if(response.data.message){
+        //       that.$message.warning(response.data.message);
+        //     }else{
+        //       that.$message.warning("认款提交失败~");
+        //     }
+        //   }
+        // }).catch(function(error) {
+        //   console.log(error);
+        // });
       }
     },
     created(){

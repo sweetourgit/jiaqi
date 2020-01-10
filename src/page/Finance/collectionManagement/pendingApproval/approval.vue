@@ -624,7 +624,7 @@
               <el-table-column prop="prop" label="操作" align="center" v-if="hasSubject">
                 <template slot-scope="scope">
                   <el-button
-                    v-if="scope.row.checkType != 3"
+                    v-if="scope.row.hasSubmitData"
                     type="text"
                     @click="recognitionDo(scope.row)"
                   >去认款</el-button>
@@ -771,12 +771,20 @@ export default {
   watch: {
     dialogFormVisible: {
       handler: function() {
+        const reg=/^\d{1,}$/;
+        const pattern=new RegExp(reg);
+        for(let i = 0; i < localStorage.length; i++){
+          if(pattern.test(localStorage.key(i))){
+            localStorage.removeItem(localStorage.key(i));
+          }
+        }
         if (this.info != "" && this.dialogFormVisible) {
           this.passDisabled = false;
           this.hasSubject = false;
           this.loadData();
           this.getMoment();
         }
+        
       }
     }
   },
@@ -821,29 +829,29 @@ export default {
     },
     // 关闭弹窗
     closeAdd(str) {
-      if (str === "cancal") {
-        const that = this;
-        this.tableAssociated.forEach(function(item, index, arr) {
-          if (item.checkType == 3) {
-            that.$http
-              .post(
-                that.GLOBAL.serverSrc + "/finance/CollectionBank/api/delete",
-                {
-                  id: item.id
-                }
-              )
-              .then(function(response) {
-                // console.log("删除", response);
-                if (response.data.isSuccess) {
-                  // console.log("成功。。。");
-                }
-              })
-              .catch(function(error) {
-                console.log(error);
-              });
-          }
-        });
-      }
+      // if (str === "cancal") {
+      //   const that = this;
+      //   this.tableAssociated.forEach(function(item, index, arr) {
+      //     if (item.checkType == 3) {
+      //       that.$http
+      //         .post(
+      //           that.GLOBAL.serverSrc + "/finance/CollectionBank/api/delete",
+      //           {
+      //             id: item.id
+      //           }
+      //         )
+      //         .then(function(response) {
+      //           // console.log("删除", response);
+      //           if (response.data.isSuccess) {
+      //             // console.log("成功。。。");
+      //           }
+      //         })
+      //         .catch(function(error) {
+      //           console.log(error);
+      //         });
+      //     }
+      //   });
+      // }
       this.baseInfo = {
         id: "",
         createUser: "",
@@ -858,26 +866,76 @@ export default {
         collectionNumber: ""
       };
 
+
       this.$emit("close", false);
     },
 
-    // 通过按钮事件
-    approvalPass() {
-      this.dialogVisibleApproval = true;
-      this.approvalTitle = "审批通过";
-      this.approval_status = "1";
-    },
-    // 驳回按钮事件
-    approvalReject() {
-      this.dialogVisibleApproval = true;
-      this.approvalTitle = "审批驳回";
-      this.approval_status = "2";
-    },
+    // 通过按钮事件
+      approvalPass(){
+        this.getStatus().then((res) => {
+          console.log(res);
+          if(res.checkType == 0){
+            this.dialogVisibleApproval = true;
+            this.approvalTitle = '审批通过';
+            this.approval_status = '1';
+          }else{
+            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+          }
+        })
+
+      },
+      // 驳回按钮事件
+      approvalReject(){
+        this.getStatus().then((res) => {
+          console.log(res);
+          if(res.checkType == 0){
+            this.dialogVisibleApproval = true;
+            this.approvalTitle = '审批驳回';
+            this.approval_status = '2';
+          }else{
+            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+          }
+        })
+
+      },
+
+      getStatus(){
+        const that = this;
+        // 获取基本信息
+        return this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/coll", {
+          "id": this.info.id
+        }, ).then(function(response) {
+          // console.log('审批详情',response);
+          if (response.data.isSuccess) {
+            return response.data.object;
+          } else {
+            this.$message.warning("获取收款信息审批状态失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
 
     // 审批提交事件
     approvalSubmit() {
       const that = this;
+      if(this.hasSubject){
+        this.tableAssociated.forEach(function(item, index, arr){
+          const dataLocal = JSON.parse(localStorage.getItem(item.id));
+          // console.log(dataLocal);
+          if(dataLocal.hasCharge){
+            that.chargeSubmit(item, dataLocal.row, dataLocal.type, dataLocal.charge)
+          }else{
+            that.commitAxios(item, dataLocal.row, dataLocal.type)
+          }
+        })
+      }
+    },
+
+    axiosSubmit(){
+      const that = this;
       const date = this.getMoment();
+
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
           datetime: date,
@@ -909,8 +967,9 @@ export default {
         })
         .catch(function(error) {
           console.log(error);
-        });
+        }); 
     },
+
     insert() {
       // alert('insert');
       const that = this;
@@ -930,6 +989,162 @@ export default {
               that.$message.warning(response.result.message);
             } else {
               that.$message.warning("insert失败~");
+            }
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    // 插入一条手续费
+    chargeSubmit(item, row, type, charge){
+      const that = this;
+      // console.log(row);
+      // console.log(type);
+
+      if(type == 0) {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/insert", {
+          "object": {
+            "id": row.id,
+            "transaction_Date": row.transaction_Date,
+            "transaction_Time": row.transaction_Time,
+            "transaction_DateTime": row.transaction_DateTime,
+            "trade_Currency": row.trade_Currency,
+            "trade_Amount": row.trade_Amount,
+            "value_Date": row.value_Date,
+            "exchange_rate": row.exchange_rate,
+            "transaction_reference_number": row.transaction_reference_number + '_' + new Date().getTime(),
+            "record_ID": row.record_ID,
+            "reference": row.reference,
+            "purpose": row.purpose,
+            "remark": row.remark,
+            "transaction_Type": row.transaction_Type,
+            "business_type": row.business_type,
+            "account_holding_bank_number_of_payer": row.account_holding_bank_number_of_payer,
+            "payer_account_bank": row.payer_account_bank,
+            "debit_Account_No": row.debit_Account_No,
+            "payer_s_Name": row.payer_s_Name,
+            "account_holding_bank_number_of_beneficiary": row.account_holding_bank_number_of_beneficiary,
+            "beneficiary_account_bank": row.beneficiary_account_bank,
+            "payee_s_Account_Number": row.payee_s_Account_Number,
+            "payee_s_Name": row.payee_s_Name,
+            "surplus_Amount": row.surplus_Amount,
+            "createTime": row.createTime,
+            "isDeleted": 0,
+            "is_ZCK": 0,
+            "is_EBS": 0,
+            "purpose_fee": charge
+          }
+        })
+        .then(function(obj) {
+          // console.log('中国银行',obj);
+          if (obj.data.isSuccess) {
+            that.$message.success("添加手续费成功！");
+            that.dialogVisibleSXF = false;
+            that.canClick = true;
+            that.commitAxios(item, row, type);
+          } else {
+            that.tableDataZH = [];
+          }
+        });
+      } else if(type == 1) {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/insert", {
+          "object": {
+            "id": this.rowMsg.id,
+            "bank_serial_number": this.rowMsg.bank_serial_number + '_' + new Date().getTime(),
+            "account_number": this.rowMsg.account_number,
+            "account_name": this.rowMsg.account_name,
+            "certificate_code": this.rowMsg.certificate_code,
+            "currency": this.rowMsg.currency,
+            "cash_or_transfer": this.rowMsg.cash_or_transfer,
+            "debit_amount": this.rowMsg.debit_amount,
+            "credit_amount": this.rowMsg.credit_amount,
+            "account_balance": this.rowMsg.account_balance,
+            "reference": this.rowMsg.reference,
+            "account_number_other": this.rowMsg.account_number_other,
+            "account_name_other": this.rowMsg.account_name_other,
+            "bank_other": this.rowMsg.bank_other,
+            "bank_Code_other": this.rowMsg.bank_Code_other,
+            "transaction_Date": this.rowMsg.transaction_Date,
+            "purpose": this.rowMsg.purpose,
+            "remark": this.rowMsg.remark,
+            "purpose_Date": this.rowMsg.purpose_Date,
+            "purpose_Merchant_code": this.rowMsg.purpose_Merchant_code,
+            "purpose_fee": this.service_charge,
+            "createTime": this.rowMsg.createTime,
+            "isDeleted": 0,
+            "surplus_Amount": this.rowMsg.surplus_Amount,
+            "is_ZCK": 0,
+            "is_EBS": 0
+          }
+        })
+        .then(function(obj) {
+          // console.log('兴业银行',obj);
+          if (obj.data.isSuccess) {
+            that.$message.success("添加手续费成功！");
+            that.dialogVisibleSXF = false;
+            that.canClick = true;
+            that.commitAxios(that.rowMsg, that.rowType);
+          } else {
+            that.tableDataZH = [];
+          }
+        });
+      }
+    },
+
+    // 提交认款的请求
+    commitAxios(item, row, type) {
+      // console.log(this.tableDataOrder, "提交请求");
+      const that = this;
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
+          object: {
+            arrID: item.id,
+            price: item.matchingPrice,
+            bangID: row.id,
+            type: type
+          }
+        })
+        .then(function(response) {
+          // console.log(response);
+          if (response.data.isSuccess) {
+            that.getColl(item);
+          } else {
+            if (response.data.message) {
+              that.$message.warning(response.result.message);
+            } else {
+              that.$message.warning("认款提交失败~");
+            }
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    // 认款接口 -- 将关联欠款的状态改成3(认款)
+    getColl(item) {
+      const that = this;
+      const date = this.getMoment();
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
+          datetime: date,
+          spname: sessionStorage.getItem("name"),
+          spstate: "认款",
+          spcontent: "",
+          checktype: 3,
+          id: item.id
+        })
+        .then(function(response) {
+          if (response.data.isSuccess) {
+            that.$message.success("认款提交成功~");
+            that.axiosSubmit();
+          } else {
+            if (response.data.message) {
+              that.$message.warning(response.data.message);
+            } else {
+              that.$message.warning("认款提交失败~");
             }
           }
         })
@@ -1039,13 +1254,23 @@ export default {
             // alert("没有科目值");
             that.tableAssociated.forEach(item => {
               that.getCollectionPriceTotal += item.matchingPrice;
+              // console.log('submitData',localStorage.getItem(item,id));
+              // if(localStorage.getItem(item,id)){
+              //   item.hasSubmitData = true;
+              // }
             });
           } else {
             // alert("有科目值");
             that.tableAssociated.forEach(item => {
               that.getCollectionPriceTotal += item.matchingPrice;
+              console.log('submitData',localStorage.getItem(item.id));
+              if(localStorage.getItem(item.id) == null){
+                item.hasSubmitData = true;
+              }else{
+                item.hasSubmitData = false;
+              }
               if (that.info.collectionType !== 6) {
-                if (item.checkType != 3) {
+                if (localStorage.getItem(item.id) == null) {
                   that.passDisabled = true;
                 }
               }

@@ -78,8 +78,7 @@
             :data="tableDataOrder"
             border
             style="width: 100%;"
-            :header-cell-style="getRowClass"
-          >
+            :header-cell-style="getRowClass">
             <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
             <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
@@ -93,6 +92,39 @@
         <div class="recognition">
           <el-tabs :tab-position="tabPosition" v-model="activeName">
             <el-tab-pane label="中国银行" name="bankZH">
+              <el-form :model="ruleFormZH" ref="ruleFormZH" label-width="110px" class="form-content">
+                <el-row type="flex" class="row-bg">
+                  <el-col :span="7">
+                    <el-form-item prop="dateStart" label="起息日期：">
+                      <el-date-picker type="date" placeholder="选择日期" v-model="ruleFormZH.dateStart" style="width: 100%;"></el-date-picker>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="7">
+                    <el-form-item label="付款人姓名：" prop="code">
+                      <el-input v-model="ruleFormZH.name" placeholder="请输入"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-form-item label="交易金额：" prop="money">
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormZH.moneyMin" placeholder="请输入"></el-input>
+                      </el-col>
+                      <el-col class="line" :span="2">-</el-col>
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormZH.moneyMax" placeholder="请输入"></el-input>
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row type="flex">
+                  <el-col :span="8" :offset="16">
+                    <el-form-item class="buttonForm">
+                      <el-button @click="searchHandInsideZH()" type="primary">搜索</el-button>
+                      <el-button @click="emptyButtonInsideZH()" type="primary" plain>重置</el-button>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
               <el-table
                 :data="tableDataZH"
                 border
@@ -100,8 +132,7 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content"
-              >
+                id="table-content">
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
                     <el-button
@@ -158,6 +189,27 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="兴业银行" name="bankXY">
+              <el-form :model="ruleFormZH" ref="ruleFormXY" label-width="110px" class="form-content">
+                <el-row type="flex" class="row-bg">
+                  <el-col :span="10">
+                    <el-form-item label="贷方金额：" prop="money">
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormXY.moneyMin" placeholder="请输入"></el-input>
+                      </el-col>
+                      <el-col class="line" :span="2">-</el-col>
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormXY.moneyMax" placeholder="请输入"></el-input>
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="7" :offset="7">
+                    <el-form-item class="buttonForm">
+                      <el-button @click="searchHandInsideXY()" type="primary">搜索</el-button>
+                      <el-button @click="emptyButtonInsideXY()" type="primary" plain>重置</el-button>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
               <el-table
                 :data="tableDataXY"
                 border
@@ -165,8 +217,7 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content"
-              >
+                id="table-content">
                 <el-table-column label="操作" width="140" align="center" fixed>
                   <template slot-scope="scope">
                     <el-button
@@ -234,8 +285,7 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content"
-              >
+                id="table-content">
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
                     <el-button
@@ -298,10 +348,34 @@
         <!-- <el-button class="el-button" type="primary" @click="submitFun">确 定</el-button> -->
         <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
       </div>
+
+      <!--手续费弹窗-->
+      <div>
+        <el-dialog
+          style="text-align: left;"
+          title="手续费"
+          :visible.sync="dialogVisibleSXF"
+          width="30%"
+          top="20vh"
+          append-to-body
+        >
+          <div>
+            <p class="areaP">手续费：</p>
+            <el-input class="areaIn" v-model="service_charge" :disabled="noEdit"></el-input>
+          </div>
+          <div slot="footer" style="overflow: hidden;">
+            <el-button @click="dialogVisibleSXF = false">取 消</el-button>
+            <el-button type="primary" @click="chargeSubmit()">确 定</el-button>
+          </div>
+        </el-dialog>
+      </div>
+      <!--手续费结束-->
+
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
+import moment from 'moment'
 export default {
   name: "recognitionDo",
   components: {},
@@ -325,16 +399,35 @@ export default {
       pageSizeZH: 10,
       totalZH: 0,
 
+      ruleFormZH: { // 中行搜索项
+        dateStart: '',
+        name: '',
+        moneyMin: '',
+        moneyMax: ''
+      },
+
       tableDataXY: [], // 兴业银行table(当前页数，每页条数，总条数)
       pageCurrentXY: 1,
       pageSizeXY: 10,
       totalXY: 0,
 
+      ruleFormXY: { // 兴业银行搜索项
+        moneyMin: '',
+        moneyMax: ''
+      },
+
       tableDataMX: [], // 微信支付宝明细table(当前页数，每页条数，总条数)
       pageCurrentMX: 1,
       pageSizeMX: 10,
       totalMX: 0,
-      isShow: false // 微信支付宝明细显示隐藏
+      isShow: false, // 微信支付宝明细显示隐藏
+
+      // 设置手续费弹框
+      dialogVisibleSXF: false,
+      service_charge: '',
+      rowMsg: [],
+      rowType: '',
+      noEdit: true
     };
   },
   computed: {
@@ -387,10 +480,20 @@ export default {
 
       if (this.collectionType !== 6) {
         if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
-          this.$message.warning("不能进行选择，剩余金额不足~");
+          if(type == 2){
+            this.$message.warning("不能进行选择，剩余金额不足~");
+          }else{
+            this.dialogVisibleSXF = true;
+            this.rowMsg = row;
+            this.rowType = type;
+            this.service_charge = Math.abs(this.tableDataOrder[0].matchingPrice - row.surplus_Amount);
+          }
         } else {
           this.canClick = true;
-          this.commitAxios(row, type);
+          // this.commitAxios(row, type);
+          const dateStr = JSON.stringify({row: row, type: type, hasCharge: false});
+          localStorage.setItem(this.tableDataOrder[0].id, dateStr);
+          this.closeAdd("success");
         }
       } else {
         if (row.surplus_Amount < this.baseInfo.price) {
@@ -432,7 +535,7 @@ export default {
         });
     },
 
-    //
+    // 认款接口 -- 将关联欠款的状态改成3(认款)
     getColl() {
       const that = this;
       const date = this.getMoment();
@@ -462,6 +565,106 @@ export default {
         });
     },
 
+    // 插入一条手续费
+    chargeSubmit(){
+      const dataStr = JSON.stringify({row: this.rowMsg, type: this.rowType, hasCharge: true, charge: this.service_charge});
+      localStorage.setItem(this.tableDataOrder[0].id, dataStr);
+      this.dialogVisibleSXF = false;
+      this.closeAdd("success");
+      // const that = this;
+      // console.log(this.rowMsg);
+      // console.log(this.rowType);
+
+      // if(this.rowType == 0) {
+      //   this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/insert", {
+      //     "object": {
+      //       "id": this.rowMsg.id,
+      //       "transaction_Date": this.rowMsg.transaction_Date,
+      //       "transaction_Time": this.rowMsg.transaction_Time,
+      //       "transaction_DateTime": this.rowMsg.transaction_DateTime,
+      //       "trade_Currency": this.rowMsg.trade_Currency,
+      //       "trade_Amount": this.rowMsg.trade_Amount,
+      //       "value_Date": this.rowMsg.value_Date,
+      //       "exchange_rate": this.rowMsg.exchange_rate,
+      //       "transaction_reference_number": this.rowMsg.transaction_reference_number + '_' + new Date().getTime(),
+      //       "record_ID": this.rowMsg.record_ID,
+      //       "reference": this.rowMsg.reference,
+      //       "purpose": this.rowMsg.purpose,
+      //       "remark": this.rowMsg.remark,
+      //       "transaction_Type": this.rowMsg.transaction_Type,
+      //       "business_type": this.rowMsg.business_type,
+      //       "account_holding_bank_number_of_payer": this.rowMsg.account_holding_bank_number_of_payer,
+      //       "payer_account_bank": this.rowMsg.payer_account_bank,
+      //       "debit_Account_No": this.rowMsg.debit_Account_No,
+      //       "payer_s_Name": this.rowMsg.payer_s_Name,
+      //       "account_holding_bank_number_of_beneficiary": this.rowMsg.account_holding_bank_number_of_beneficiary,
+      //       "beneficiary_account_bank": this.rowMsg.beneficiary_account_bank,
+      //       "payee_s_Account_Number": this.rowMsg.payee_s_Account_Number,
+      //       "payee_s_Name": this.rowMsg.payee_s_Name,
+      //       "surplus_Amount": this.rowMsg.surplus_Amount,
+      //       "createTime": this.rowMsg.createTime,
+      //       "isDeleted": 0,
+      //       "is_ZCK": 0,
+      //       "is_EBS": 0,
+      //       "purpose_fee": this.service_charge
+      //     }
+      //   })
+      //   .then(function(obj) {
+      //     console.log('中国银行',obj);
+      //     if (obj.data.isSuccess) {
+      //       that.$message.success("添加手续费成功！");
+      //       that.dialogVisibleSXF = false;
+      //       that.canClick = true;
+      //       that.commitAxios(that.rowMsg, that.rowType);
+      //     } else {
+      //       that.tableDataZH = [];
+      //     }
+      //   });
+      // } else if(this.rowType == 1) {
+      //   this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/insert", {
+      //     "object": {
+      //       "id": this.rowMsg.id,
+      //       "bank_serial_number": this.rowMsg.bank_serial_number + '_' + new Date().getTime(),
+      //       "account_number": this.rowMsg.account_number,
+      //       "account_name": this.rowMsg.account_name,
+      //       "certificate_code": this.rowMsg.certificate_code,
+      //       "currency": this.rowMsg.currency,
+      //       "cash_or_transfer": this.rowMsg.cash_or_transfer,
+      //       "debit_amount": this.rowMsg.debit_amount,
+      //       "credit_amount": this.rowMsg.credit_amount,
+      //       "account_balance": this.rowMsg.account_balance,
+      //       "reference": this.rowMsg.reference,
+      //       "account_number_other": this.rowMsg.account_number_other,
+      //       "account_name_other": this.rowMsg.account_name_other,
+      //       "bank_other": this.rowMsg.bank_other,
+      //       "bank_Code_other": this.rowMsg.bank_Code_other,
+      //       "transaction_Date": this.rowMsg.transaction_Date,
+      //       "purpose": this.rowMsg.purpose,
+      //       "remark": this.rowMsg.remark,
+      //       "purpose_Date": this.rowMsg.purpose_Date,
+      //       "purpose_Merchant_code": this.rowMsg.purpose_Merchant_code,
+      //       "purpose_fee": this.service_charge,
+      //       "createTime": this.rowMsg.createTime,
+      //       "isDeleted": 0,
+      //       "surplus_Amount": this.rowMsg.surplus_Amount,
+      //       "is_ZCK": 0,
+      //       "is_EBS": 0
+      //     }
+      //   })
+      //   .then(function(obj) {
+      //     console.log('兴业银行',obj);
+      //     if (obj.data.isSuccess) {
+      //       that.$message.success("添加手续费成功！");
+      //       that.dialogVisibleSXF = false;
+      //       that.canClick = true;
+      //       that.commitAxios(that.rowMsg, that.rowType);
+      //     } else {
+      //       that.tableDataZH = [];
+      //     }
+      //   });
+      // }
+    },
+
     // 加载认款数据(中国银行) -- 当前页数减一查询，后台分页从零开始
     handleSizeChangeZH(val) {
       this.pageSizeZH = val;
@@ -472,8 +675,28 @@ export default {
       this.pageCurrentZH = val;
       this.loadDataZH();
     },
+    // 搜索
+    searchHandInsideZH(){
+      this.pageCurrentZH = 1;
+      this.loadDataZH();
+    },
+    // 重置
+    emptyButtonInsideZH(){
+      this.ruleFormZH = {
+        dateStart: '',
+        name: '',
+        moneyMin: '',
+        moneyMax: ''
+      };
+      this.pageCurrentZH = 1;
+      this.loadDataZH();
+    },
     loadDataZH() {
       const that = this;
+      let dateStart = 0;
+      if(this.ruleFormZH.dateStart){
+        dateStart = moment(this.ruleFormZH.dateStart).format('YYYYMMDD')
+      }
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
           pageIndex: this.pageCurrentZH - 1,
@@ -481,8 +704,14 @@ export default {
           object: {
             matching_State: 2,
             transaction_reference_number: "",
-            begin: "2000-05-16",
-            end: "2099-05-16"
+            begin: "1970-05-16",
+            end: "2099-05-16",
+            seachType: 0,
+            import_State: 0,
+            value_Date: dateStart ? dateStart : 0,
+            payer_s_Name: this.ruleFormZH.name,
+            trade_Amount1: this.ruleFormZH.moneyMin ? this.ruleFormZH.moneyMin : 0,
+            trade_Amount2: this.ruleFormZH.moneyMax ? this.ruleFormZH.moneyMax : 0
           }
         })
         .then(function(obj) {
@@ -506,6 +735,20 @@ export default {
       this.pageCurrentXY = val;
       this.loadDataXY();
     },
+    // 搜索
+    searchHandInsideXY(){
+      this.pageCurrentXY = 1;
+      this.loadDataXY();
+    },
+    // 重置
+    emptyButtonInsideXY(){
+      this.ruleFormXY = {
+        moneyMin: '',
+        moneyMax: ''
+      };
+      this.pageCurrentXY = 1;
+      this.loadDataXY();
+    },
     loadDataXY() {
       const that = this;
       this.$http
@@ -515,8 +758,12 @@ export default {
           object: {
             matching_State: 2,
             transaction_reference_number: "",
-            begin: "2000-05-16",
-            end: "2099-05-16"
+            begin: "1970-01-11",
+            end: "2099-05-16",
+            "seachType": 0,
+            "import_State": 0,
+            "credit_amount1": this.ruleFormXY.moneyMin ? this.ruleFormXY.moneyMin : 0,
+            "credit_amount2": this.ruleFormXY.moneyMax ? this.ruleFormXY.moneyMax : 0
           }
         })
         .then(function(obj) {
@@ -610,6 +857,17 @@ export default {
       text-align: center;
       margin: 10px auto;
     }
+  }
+}
+.form-content{
+  background-color: #f7f7f7;
+  padding: 20px 10px 0;
+  margin-bottom: 10px;
+  .line{
+    text-align: center;
+  }
+  .buttonForm{
+    text-align: right;
   }
 }
 .footer {
