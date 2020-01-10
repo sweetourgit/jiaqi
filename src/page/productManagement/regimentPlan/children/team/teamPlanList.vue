@@ -239,7 +239,11 @@ export default {
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
-      this.teamQueryList(val,this.pageSize);
+      if(this.op == ""){
+        this.teamQueryList(val,this.pageSize);
+      }else{
+        this.getUserCode();
+      }
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID) {
@@ -313,14 +317,14 @@ export default {
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i,index) {
-      if(i === 1){
-        console.log(new Date().getTime())
-        console.log(new Date(this.teamqueryList[index].dateFormat).getTime())
-        if(new Date().getTime() > new Date(this.teamqueryList[index].dateFormat).getTime()+24*24*60*1000*2){
-          this.$message.error('该团期出行日期已过,不能再进行下单');
-          return;
-        }
-      }
+      // if(i === 1){
+      //   console.log(new Date().getTime())
+      //   console.log(new Date(this.teamqueryList[index].dateFormat).getTime())
+      //   if(new Date().getTime() > new Date(this.teamqueryList[index].dateFormat).getTime()+24*24*60*1000*2){
+      //     this.$message.error('该团期出行日期已过,不能再进行下单');
+      //     return;
+      //   }
+      // }
       this.variable++;
       this.dialogType = i;
     },
@@ -330,6 +334,7 @@ export default {
         this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
       } else {
         this.current = 1;
+        this.pageIndex = 1;
         this.getUserCode();
       }
       
@@ -370,7 +375,7 @@ export default {
             if (res.data.objects.length !=0) {
               var getUserCode='';
               getUserCode = res.data.objects[0].userCode;
-              this.teamQueryList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode,this.teamID);
+              this.teamQueryList(this.pageIndex,this.pageSize,this.title,this.groupCode,this.date == null ? 0 : this.date[0],this.date == null ? 0 : this.date[1],getUserCode,this.teamID);
             } else {
               that.teamqueryList = [];
             }
