@@ -43,9 +43,10 @@
         </el-table-column>
         <el-table-column prop="title" label="产品名称" min-width="200"></el-table-column>
         <el-table-column prop="dateFormat" label="出行日期" width="100"></el-table-column>
-        <el-table-column prop="accountStatus" label="报账状态" width="100">
+        <el-table-column prop="isCheckSheet" label="报账状态" width="100">
           <template slot-scope="scope">
-            <div>报账中</div>
+            <div v-if="scope.row.isCheckSheet=='0'">未提交报账</div>
+            <div v-if="scope.row.isCheckSheet=='1'">已提交报账</div>
           </template>
         </el-table-column>
         <el-table-column prop="count" label="计划位" width="70"></el-table-column>

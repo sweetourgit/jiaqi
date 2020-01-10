@@ -363,10 +363,9 @@
       </div>
       <div class="detailsTitle">基本信息</div>
       <div>
-        <div class="checkType" style="background: #ffa200">报账中</div>
-         <!-- <div class="checkType" v-if="teampreviewData.checkType=='0'" style="background: #ffa200" >正常</div>
-         <div class="checkType" v-if="teampreviewData.checkType=='2'" style="background: #ff0000" >驳回</div>
-        <div class="checkType" v-if="teampreviewData.checkType=='1'" style="background: #007500">通过</div> -->
+        <!-- <div class="checkType" style="background: #ffa200">报账中</div> -->
+         <div class="checkType" v-if="teampreviewData.isCheckSheet=='0'" style="background: #ffa200" >未提交报账</div>
+         <div class="checkType" v-if="teampreviewData.isCheckSheet=='1'" style="background: #007500">已提交报账</div>
       </div>
       <div class="pro-info">
         <table width="100%">
