@@ -993,7 +993,7 @@ export default {
             if (that.approval_status == "1") {
               that.insert();
             } else if (that.approval_status == "2") {
-              that.$message.success("审批提交成功~");
+              that.$message.success("已驳回~");
               that.closeAdd("cancal");
             }
             that.dialogVisibleApproval = false;
