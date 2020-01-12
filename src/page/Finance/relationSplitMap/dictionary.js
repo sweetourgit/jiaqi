@@ -52,7 +52,7 @@ export class RelationBar {
     let vm= RelationBar.root.vm;
     let isShowAll= RelationBar.root=== this || sign=== 'up';
     let data= isShowAll? this.info: this.brother;
-    vm.$emit('wake-up', { data, isShowAll });
+    vm.$emit('wake-up', { data: bol && data, isShowAll });
   }
 
   awakeChild(){
