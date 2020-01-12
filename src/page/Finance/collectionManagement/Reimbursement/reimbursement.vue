@@ -176,7 +176,7 @@
         <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center" width="200"></el-table-column>
         <el-table-column prop="payee_s_Name" label="收款人姓名" align="center" fixed="right" width="200"></el-table-column>
       </el-table>
-      <el-table v-if="isShowXY" :data="tableDataXY" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content2">
+      <el-table v-if="isShowXY" :data="tableDataXY" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content2">
         <el-table-column prop="bank_serial_number" label="银行流水号" align="center">
         </el-table-column>
         <el-table-column prop="reference" label="摘要" align="center">
@@ -217,7 +217,7 @@
         </el-table-column>
       </el-table>
       <!-- 微信支付宝明细认款信息 -->
-      <el-table v-if="isShowMX" :data="tableDataMX" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content3">
+      <el-table v-if="isShowMX" :data="tableDataMX" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content3">
         <el-table-column prop="transaction_time" label="交易时间" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
@@ -408,10 +408,12 @@
                 this.tableDataZH.push(res.data.object.data);
                 this.isShowZH = true;
               }else if(res.data.object.type === 1){
-                this.tableDataXY[0] = res.data.object.data;
+                this.tableDataXY.length = 0
+                this.tableDataXY.push(res.data.object.data);
                 this.isShowXY = true;
               }else if(res.data.object.type === 2){
-                this.tableDataMX[0] = res.data.object.data;
+                this.tableDataMX.length = 0
+                this.tableDataMX.push(res.data.object.data);
                 this.isShowMX = true;
               }
             }
