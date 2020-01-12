@@ -530,7 +530,7 @@ export default {
         tt: "大运通-日本",
         peo: "qq"
       },
-      t_price_box:[],//所有价格数组
+      //t_price_box:[],//所有价格数组
       alljoinData:[],//所有关联数据
       ruleForm: {  //报销表单
       editableTabsValue: "1",
@@ -546,6 +546,7 @@ export default {
               groupCode: "",
               productName: "",
               mark: "",
+              t_price_box:[],
               t_sum:0,//一共多少项
               t_price:0,//一共多少钱
               files:[],
@@ -673,6 +674,7 @@ export default {
                               groupCode: "",
                               productName: "",
                               mark: "",
+                              t_price_box:[],
                               t_sum:0,//一共多少项
                               t_price:0,//一共多少钱
                               files:[],
@@ -810,7 +812,6 @@ export default {
             })
             .then(res => {
               this.subscript();
-              //console.log(res.data.objects,'80523');
               this.t_pageCount = res.data.total;
               this.planData = res.data.objects;
               //this.s_content.count =  res.data.objects[0].count
@@ -896,7 +897,7 @@ export default {
                                       this.pageList(1, this.pageSize);
                                       this.dialogFormVisible = false;
                                     if(res.data.isSuccess == true){
-                                        this.$message({
+                                      this.$message({
                                         type: "success",
                                         message: "撤销成功!"
                                       });
@@ -905,13 +906,7 @@ export default {
                                       this.ruleNull()
                                       let text = res.config.data
                                       this.beginWokeing(text);
-                                    }else{
-                                      this.$message({
-                                          type: "info",
-                                          message: "已取消撤销"
-                                        });
-                                      this.dialogFormVisible = false;
-                                    }
+                                     } 
                                     })
                                   .catch(err => {
                                     console.log(err);
@@ -931,11 +926,13 @@ export default {
                             
                          }
                         }
+                        return;
                    }
                 })
                 .catch(err => {
                   console.log(err);
                 });
+                
               })
               .catch(() => {
                 this.$message({
@@ -953,7 +950,7 @@ export default {
          let joinData = this.s_content.joinData;
          let joinDataid = this.s_content.joinData.paymentID;
          let payments = this.s_content.payments;
-         //this.t_price_box= [];
+        // this.t_price_box= [];
          if(joinData.length == 0){
             this.$message({
                 type: "warning",
@@ -984,7 +981,7 @@ export default {
                }
                 this.s_content.payments.push(joinData);
                 this.alljoinData.push(joinData);
-                this.t_price_box.push(joinData.price);
+                this.s_content.t_price_box.push(joinData.price);
                 this.t_price_sum();
                 this.dialogFormVisible3 = false;
                 this.joinData=[];
@@ -1009,26 +1006,23 @@ export default {
           })
           .then(() => {
             this.s_content.t_price = 0
-          
-              for(let j in payments_box){
+            for(let j in payments_box){
                 if(payments_box[j].paymentID === paymentID){
                           payments_box.splice(j, 1);
-                          console.log(payments_box,'删除后');
                           if(payments_box.length == 0){//删除后没数据了
                            this.s_content.payments=[];
-                           this.t_price_box=[];
+                           
                            this.s_content.payments.length = 0;
                           } else{//删除后还有数据
                            this.s_content.payments.length = payments_box.length;
-                           this.t_price_box.splice(j, 1);
+                           this.s_content.t_price_box.splice(j, 1);
                            
                           }
 
                             for(let y in this.alljoinData ){
                                     if(this.alljoinData[y].paymentID === paymentID){
                                         this.alljoinData.splice(y, 1);
-                                        console.log(this.alljoinData,"删除的")
-                                      }
+                                     }
                                   }
                          this.t_price_sum()
                          this.$message.success('删除成功');
@@ -1049,8 +1043,7 @@ export default {
          
         t_price_sum(){//多少项总价多少
           this.subscript();
-           console.log(this.t_price_box,"钱盒子2")
-          let t_price_box = this.t_price_box;
+          let t_price_box = this.s_content.t_price_box;
           let sss = 0 ;
             for(let i=0;i < t_price_box.length;i++){
                   sss = Number(t_price_box[i]) + sss  
@@ -1059,11 +1052,12 @@ export default {
          this.s_content.t_price= sss //多少钱
         },
         addressChange() {
-            this.t_price_box=[];
+          
             this.subscript();
+            this.s_content.t_price_box=[];
             let payments_change = this.s_content.payments;
             for(var t in payments_change){
-                   this.t_price_box.push(payments_change[t].price);
+                   this.s_content.t_price_box.push(payments_change[t].price);
                 }
                 
           this.t_price_sum();
@@ -1232,7 +1226,6 @@ export default {
             this.$set(this.s_content.files[i], "name", paths.Name);
           }
           this.image = 1;
-          // console.log(files);
           this.uid = files[0].uid;
         }, 
         handleRemove(file, files) {//图片删除
@@ -1266,11 +1259,7 @@ export default {
             this.ruleForm.editableTabsValue = newTabName;
           }
           if (action === "remove") {
-          //  if (this.ruleForm.editableTabs.length == 1) {
-          //     console.log(123);
-          //   } else {
-          //     console.log(567);
-          //   }
+         
             if(this.ruleForm.editableTabs.length == 1){
                  this.$confirm("是否取消本次报销申请", "提示", {
                     confirmButtonText: "确定",
@@ -1349,6 +1338,7 @@ export default {
               files:[],
               joinData:[],
               payments:[],
+              t_price_box:[],//钱盒子
               t_sum:0,//一共多少项
               t_price:0,//一共多少钱
               plan: {
@@ -1487,9 +1477,7 @@ export default {
                           this.s_content.count =  res.data.objects[0].count
                           this.s_content.id =  res.data.objects[0].planID
                           this.plans.pid  = res.data.objects[0].planID
-                          // console.log(res.data.objects[0].count);
-                          // console.log(this.s_content.count);
-                      }
+                     }
                   }).catch(err => {
                     console.log(err)
                   })
@@ -1593,8 +1581,7 @@ export default {
                                               return;
                                         }
                                 }
-                                console.log(this.alljoinData)
-                                for(var i=0; i<this.alljoinData.length; i++){
+                              for(var i=0; i<this.alljoinData.length; i++){
                                   for(var j=i+1; j<this.alljoinData.length; j++){
                                     if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
                                         this.$message({
@@ -1629,9 +1616,7 @@ export default {
                               return;
                     }
               }
-                console.log(this.object_lisr,'87077')
-             
-              if(verify !== 0){
+             if(verify !== 0){
                  this.add_form(this.object_lisr)//调用提交接口
                
               }
@@ -1645,7 +1630,6 @@ export default {
             jQ_ID: paramsGuid,
             jQ_Type: 3,
           }).then(obj => {
-            console.log(obj.data.extend.instanceLogInfo,'809');
             that.tableCourse = []
             that.tableCourse = obj.data.extend.instanceLogInfo;
               if(that.tableCourse.length > 0 ) {
