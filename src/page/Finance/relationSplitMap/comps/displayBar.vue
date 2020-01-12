@@ -132,7 +132,7 @@ export default {
       let { borrow, isShowAll }= payload;
       this.state= !!borrow;
       this.borrow= borrow || {};
-      this.isShowAll= isShowAll;
+      this.isShowAll= true;
     }
   }
 
