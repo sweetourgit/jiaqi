@@ -256,20 +256,33 @@
       // 审批通过弹窗-确定
       handlePassFn(){
         if(this.ifShowOperateBtn){
-          // 先提交拆分、还款记录，成功之后在调用工作流接口
-          this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
-            "object": this.getLsParamsSplitArr
-          }).then( obj =>  {
-            console.log(obj, '提交申请返回来的参数')
-            this.handlePassApi()
-          }).catch( err => {
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+            "object": {
+              guid: this.getApproveListGuid
+            }
+          })
+            .then(obj => {
+              let keepData = obj.data.objects
+              if(keepData !== null ){
+                // 先提交拆分、还款记录，成功之后在调用工作流接口
+                this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
+                  "object": this.getLsParamsSplitArr
+                }).then( obj =>  {
+                  console.log(obj, '提交申请返回来的参数')
+                  this.handlePassApi()
+                }).catch( err => {
+                  console.log(err)
+                })
+              } else {
+                this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+              }
+              this.listLoading = false
+            }).catch(err => {
             console.log(err)
           })
-
         } else {
           this.handlePassApi()
         }
-
       },
       // 驳回之后走工作流
       handleRejectFn(){
