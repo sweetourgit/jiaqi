@@ -373,7 +373,9 @@ export default {
     getData(){
       let otherIncomes= this.otherIncomes;
       let expenses= this.expenses;
-      return { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
+      let data= { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
+      if(this.$isNull(data.guideName) || this.$isNull(data.localName)) return this.$message.error('导游与接团社不能为空');
+      return data;
     },
 
     dateFormator(time){
