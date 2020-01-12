@@ -918,28 +918,58 @@ export default {
     // 审批提交事件
     approvalSubmit() {
       const that = this;
-      if(this.approval_status == "1"){
-        if (this.hasSubject) {
-          this.tableAssociated.forEach(function(item, index, arr) {
-            const dataLocal = JSON.parse(localStorage.getItem(item.id));
-            // console.log(dataLocal);
-            if (dataLocal.hasCharge) {
-              that.chargeSubmit(
-                item,
-                dataLocal.row,
-                dataLocal.type,
-                dataLocal.charge
-              );
+      if(that.info.collectionType == 6){// 报销还款
+        if(this.approval_status == "1"){
+          if(that.baseInfo.accountID != 13){
+            if (this.hasSubject) {
+              this.tableAssociated.forEach(function(item, index, arr) {
+                const dataLocal = JSON.parse(localStorage.getItem(item.id));
+                // console.log(dataLocal);
+                if (dataLocal.hasCharge) {
+                  that.chargeSubmit(
+                    item,
+                    dataLocal.row,
+                    dataLocal.type,
+                    dataLocal.charge
+                  );
+                } else {
+                  that.commitAxios(item, dataLocal.row, dataLocal.type);
+                }
+              });
             } else {
-              that.commitAxios(item, dataLocal.row, dataLocal.type);
+              that.axiosSubmit();
             }
-          });
-        } else {
+          }else{
+            that.axiosSubmit();
+          }
+        }else if(this.approval_status == "2"){
           that.axiosSubmit();
         }
-      }else if(this.approval_status == "2"){
-        that.axiosSubmit();
+      }else{// 其他
+        if(this.approval_status == "1"){
+          if (this.hasSubject) {
+            this.tableAssociated.forEach(function(item, index, arr) {
+              const dataLocal = JSON.parse(localStorage.getItem(item.id));
+              // console.log(dataLocal);
+              if (dataLocal.hasCharge) {
+                that.chargeSubmit(
+                  item,
+                  dataLocal.row,
+                  dataLocal.type,
+                  dataLocal.charge
+                );
+              } else {
+                that.commitAxios(item, dataLocal.row, dataLocal.type);
+              }
+            });
+          } else {
+            that.axiosSubmit();
+          }
+        }else if(this.approval_status == "2"){
+          that.axiosSubmit();
+        }
       }
+      
       
     },
 
