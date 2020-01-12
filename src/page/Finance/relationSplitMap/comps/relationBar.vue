@@ -64,8 +64,8 @@ $ruler: 16px;
         </i>
       </div>
       <div 
-        :class="['label', hoverd && 'hoverd', selected && 'selected']"
-        @click="selectHandler">
+        :class="['label', hoverd && 'hoverd', selected.up && 'selected']"
+        @click="selectHandler('up')">
         {{ labelMaker() }}
       </div>
     </header>
@@ -94,8 +94,8 @@ $ruler: 16px;
         </i>
       </div>
       <div 
-        :class="['label', hoverd && 'hoverd', selected && 'selected']"
-        @click="selectHandler">
+        :class="['label', hoverd && 'hoverd', selected.down && 'selected']"
+        @click="selectHandler('down')">
         {{ labelMaker(brother) }}
       </div>
     </footer>
@@ -142,8 +142,11 @@ export default {
       console.log('awakeChildDeeply')
     },
 
-    selectHandler(){
-      let result= this.proto.select();
+    selectHandler(sign){
+      // 取消选择
+      if(this.selected[sign]) return this.proto.unselect(sign);
+      // 选择
+      this.proto.select(sign);
     },
 
     labelMaker(info){

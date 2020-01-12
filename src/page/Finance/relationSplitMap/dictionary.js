@@ -5,28 +5,54 @@ export class RelationBar {
   static root= null;
   static currentSelect= null;
   
-  constructor({ isRoot, info= {}, child, subChild }= {}){
+  constructor({ isRoot, info= {}, child, brother, subChild }= {}){
     this.state= !!isRoot;
     this.expended= false;
     this.hoverd= false;
-    this.selected= false;
+    this.selected= {
+      up: false,
+      down: false
+    };
     this.isLoading= false;
 
     this.info= info;
     this.child= child;
+    this.brother= brother;
     this.subChild= subChild;
     this.vm= null;
 
     if(isRoot) RelationBar.root= this;
   }
 
-  select(){
-    let bol= this.selected;
-    if(bol) return this.setSelected(false);
-    if(RelationBar.currentSelect && RelationBar.currentSelect!== this) 
-      RelationBar.currentSelect.setSelected(false);
-    this.setSelected(true);
+  unselect(sign){
+    this.setSelected(sign, false);
+    RelationBar.currentSelect= null;
+  }
+
+  select(sign){
+    RelationBar.currentSelect && RelationBar.currentSelect.resetSelected();
+    this.setSelected(sign, true);
     RelationBar.currentSelect= this;
+  }
+
+  resetSelected(){
+    this.selected.up= false;
+    this.selected.down= false;
+  }
+
+  setSelected(sign, bol){
+    this.selected[sign]= bol;
+    this.wakeUpDisplay(sign, bol);
+  }
+
+  /**
+   * @description: 根节点和上节点点击会都显示,下节点只显示借款信息
+   */
+  wakeUpDisplay(sign, bol){
+    let vm= RelationBar.root.vm;
+    let isShowAll= RelationBar.root=== this || sign=== 'up';
+    let data= isShowAll? this.info: this.brother;
+    vm.$emit('wake-up', { data, isShowAll });
   }
 
   awakeChild(){
@@ -41,7 +67,7 @@ export class RelationBar {
     getNode(id)
     .then(res => {
       let { trees }= res;
-      child= relationBarMaker(trees[0]);
+      child= relationBarMaker(trees[0], trees[1]);
       if(!child){
         this.isLoading= false;
         return this.expended= !this.expended;
@@ -61,25 +87,16 @@ export class RelationBar {
   mountVm(vm){
     this.vm= vm;
   }
-
-  setSelected(bol){
-    this.selected= bol;
-    this.wakeUpDisplay(bol);
-  }
-
-  wakeUpDisplay(bol){
-    let vm= RelationBar.root.vm;
-    vm.$emit('wake-up', bol && this);
-  }
 }
 
-export const relationBarMaker= function(source, isRoot){
-  if(!source) return null;
-  let { trees, ...info }= source;
+export const relationBarMaker= function(self, brother, isRoot){
+  if(!self) return null;
+  let { trees, ...info }= self;
   return new RelationBar({
     isRoot,
     info,
-    child: relationBarMaker(trees[0]),
+    child: relationBarMaker(trees[0], trees[1]),
+    brother,
     subChild: trees[1]
   })
 }
