@@ -8,6 +8,7 @@ export const getRoot= function(id){
     ).then((res) => {
       let { isSuccess, object }= res.data;
       if(!isSuccess) return reject();
+      object.trees && object.trees.sort((a, b) => a.paymentType- b.paymentType);
       resolve(object);
     }).catch((err) => {
       reject(err);
@@ -22,6 +23,8 @@ export const getNode= function(id){
     ).then((res) => {
       let { isSuccess, object }= res.data;
       if(!isSuccess) return reject();
+      console.log(object)
+      object.trees && object.trees.sort((a, b) => a.paymentType- b.paymentType);
       resolve(object);
     }).catch((err) => {
       reject(err);
