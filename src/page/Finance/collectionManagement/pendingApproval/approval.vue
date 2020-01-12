@@ -1373,7 +1373,7 @@ export default {
             // alert("有科目值");
             that.tableAssociated.forEach(item => {
               that.getCollectionPriceTotal += item.matchingPrice;
-              console.log("submitData", localStorage.getItem(item.id));
+              // console.log("submitData", localStorage.getItem(item.id));
               if (localStorage.getItem(item.id) == null) {
                 // alert('true');
                 // item.hasSubmitData = true;
@@ -1394,7 +1394,7 @@ export default {
           // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮 hasSubject为true则有科目值对公  that.tableAssociated[0].checkType != 3 代表没认过款的
           // 查看按钮的显示与隐藏的判断
           // that.isLookBtn = that.tableAssociated[0].checkType;
-          console.log("hasSubject",that.hasSubject)
+          // console.log("hasSubject",that.hasSubject)
           that.isLookBtn = localStorage.getItem(arrearsID) ? true : false;
           if (that.info.collectionType == 6) {
             if (id == 13) {
@@ -1411,7 +1411,7 @@ export default {
           }
           // 豆包加end
 
-          console.log("get", that.passDisabled);
+          // console.log("get", that.passDisabled);
         })
         .catch(function(error) {
           console.log(error);
