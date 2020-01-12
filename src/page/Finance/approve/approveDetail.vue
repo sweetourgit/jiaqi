@@ -256,22 +256,15 @@
       // 审批通过弹窗-确定
       handlePassFn(){
         if(this.ifShowOperateBtn){
-          this.getApproveDetail(this.getApproveListGuid)
-          console.log(this.keepStatus, 'this.keepStatus')
-          if(this.keepStatus != 0){
-            // 先提交拆分、还款记录，成功之后在调用工作流接口
-            this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
-              "object": this.getLsParamsSplitArr
-            }).then( obj =>  {
-              console.log(obj, '提交申请返回来的参数')
-              this.handlePassApi()
-            }).catch( err => {
-              console.log(err)
-            })
-          } else {
-            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
-          }
-
+          // 先提交拆分、还款记录，成功之后在调用工作流接口
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
+            "object": this.getLsParamsSplitArr
+          }).then( obj =>  {
+            console.log(obj, '提交申请返回来的参数')
+            this.handlePassApi()
+          }).catch( err => {
+            console.log(err)
+          })
 
         } else {
           this.handlePassApi()
@@ -343,7 +336,22 @@
       },
       // 拆分/还款
       handleSplitRepaymentJump(){
-        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich, queryWorkItemID: this.workItemIDArr } })
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+          "object": {
+            guid: this.getApproveListGuid
+          }
+        })
+        .then(obj => {
+          let keepData = obj.data.objects
+          if(keepData !== null ){
+            this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich, queryWorkItemID: this.workItemIDArr } })
+          } else {
+            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+          }
+          this.listLoading = false
+        }).catch(err => {
+        console.log(err)
+        })
       },
       handleClick(){},
       // 表格表头颜色
