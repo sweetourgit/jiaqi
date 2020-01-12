@@ -97,7 +97,7 @@
           <el-col :span="12">
             <el-form-item label="报销金额：">
               <span class="content">
-                {{ lend.price }}
+                {{ borrow.expensePrice }}
               </span>
             </el-form-item>
           </el-col>
