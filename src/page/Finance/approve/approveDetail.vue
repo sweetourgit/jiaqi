@@ -277,7 +277,7 @@
               this.handlePassApi()
             }
           } else {
-            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+            this.$message.warning("此报销不是待审批状态，无法进行审批操作");
           }
           this.listLoading = false
         }).catch(err => {
@@ -359,7 +359,7 @@
           if(keepData !== null ){
             this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich, queryWorkItemID: this.workItemIDArr } })
           } else {
-            this.$message.warning("此收款不是待审批状态，无法进行审批操作");
+            this.$message.warning("此报销不是待审批状态，无法进行审批操作");
           }
           this.listLoading = false
         }).catch(err => {
