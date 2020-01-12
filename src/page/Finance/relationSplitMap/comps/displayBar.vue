@@ -21,10 +21,10 @@
 }
 </style>
 <template>
-  <div class="display-bar">
+  <div class="display-bar"
+    v-show="state">
 
-    <div class="borrow-ground"
-      v-show="state">
+    <div class="borrow-ground">
       <div class="title">
         借款信息
       </div>
