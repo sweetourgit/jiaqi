@@ -44,7 +44,7 @@
     </el-form>
     <!-- 搜索表单 END -->
     <div class="buttonsDv">
-      <el-button @click="setZCK" type="warning" :disabled="dis">设置暂存款</el-button>
+      <el-button @click="setZCK" type="warning">设置暂存款</el-button>
       <el-upload
         class="upload-demo"
         :action="UploadUrl()"
@@ -66,6 +66,14 @@
         </template>
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+      </el-table-column>
+      <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.is_ZCK == 0">未设置</span>
+          <span v-if="scope.row.is_ZCK == 1">已设置</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="purpose_fee" label="手续费" align="center">
       </el-table-column>
       <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
       </el-table-column>
@@ -129,7 +137,6 @@ export default {
   },
   data() {
     return {
-      dis: true, // 没这个功能，暂时禁用
       tableData: [], // 表格数据
       ruleForm: {
         matchType: '', // 匹配状态 
@@ -375,9 +382,6 @@ export default {
     .buttonsDv{
       width: 98%;
       margin: 5px auto;
-      .el-button{
-        margin-right: 10px;
-      }
     }
     #table-content{
       width: 98%;
@@ -391,11 +395,8 @@ export default {
       text-align: center;
       margin: 30px auto;
     }
-    .upload-demo{
-      display: inline-block!important;
-      .el-upload-list{
-        display: none!important;
-      }
+    .el-upload-list{
+      display: none!important;
     }
   }
 

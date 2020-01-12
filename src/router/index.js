@@ -438,9 +438,27 @@ export default new Router({
       }
     },
     {
-      path: '/approve',
+      path: '/approve/approveList',
       component: () => import('@/page/Finance/approve/approveList'),
       name: '需要您审批',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/approve/approveDetail',
+      component: () => import('@/page/Finance/approve/approveDetail'),
+      name: '审批详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/approve/splitLoan',
+      component: () => import('@/page/Finance/approve/splitLoan'),
+      name: '拆分借款单',
       meta: {
         keepAlive: true,
         auth: true
