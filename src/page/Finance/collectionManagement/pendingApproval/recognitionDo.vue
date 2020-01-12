@@ -510,6 +510,7 @@ export default {
             this.service_charge = Math.abs(
               this.tableDataOrder[0].matchingPrice - row.surplus_Amount
             );
+            this.service_charge = this.service_charge.toFixed(2);
           }
         } else {
           this.$message.warning("不能进行选择，剩余金额不足~");

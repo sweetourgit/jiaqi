@@ -1136,7 +1136,7 @@ export default {
               that.$message.success("添加手续费成功！");
               that.dialogVisibleSXF = false;
               that.canClick = true;
-              that.commitAxios(item, row, type);
+              // that.commitAxios(item, row, type);
             } else {
               that.tableDataZH = [];
             }
@@ -1145,31 +1145,31 @@ export default {
         this.$http
           .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/insert", {
             object: {
-              id: this.rowMsg.id,
+              id: row.id,
               bank_serial_number:
-                this.rowMsg.bank_serial_number + "_" + new Date().getTime(),
-              account_number: this.rowMsg.account_number,
-              account_name: this.rowMsg.account_name,
-              certificate_code: this.rowMsg.certificate_code,
-              currency: this.rowMsg.currency,
-              cash_or_transfer: this.rowMsg.cash_or_transfer,
-              debit_amount: this.rowMsg.debit_amount,
-              credit_amount: this.rowMsg.credit_amount,
-              account_balance: this.rowMsg.account_balance,
-              reference: this.rowMsg.reference,
-              account_number_other: this.rowMsg.account_number_other,
-              account_name_other: this.rowMsg.account_name_other,
-              bank_other: this.rowMsg.bank_other,
-              bank_Code_other: this.rowMsg.bank_Code_other,
-              transaction_Date: this.rowMsg.transaction_Date,
-              purpose: this.rowMsg.purpose,
-              remark: this.rowMsg.remark,
-              purpose_Date: this.rowMsg.purpose_Date,
-              purpose_Merchant_code: this.rowMsg.purpose_Merchant_code,
+                row.bank_serial_number + "_" + new Date().getTime(),
+              account_number: row.account_number,
+              account_name: row.account_name,
+              certificate_code: row.certificate_code,
+              currency: row.currency,
+              cash_or_transfer: row.cash_or_transfer,
+              debit_amount: row.debit_amount,
+              credit_amount: row.credit_amount,
+              account_balance: row.account_balance,
+              reference: row.reference,
+              account_number_other: row.account_number_other,
+              account_name_other: row.account_name_other,
+              bank_other: row.bank_other,
+              bank_Code_other: row.bank_Code_other,
+              transaction_Date: row.transaction_Date,
+              purpose: row.purpose,
+              remark: row.remark,
+              purpose_Date: row.purpose_Date,
+              purpose_Merchant_code: row.purpose_Merchant_code,
               purpose_fee: charge,
-              createTime: this.rowMsg.createTime,
+              createTime: row.createTime,
               isDeleted: 0,
-              surplus_Amount: this.rowMsg.surplus_Amount,
+              surplus_Amount: row.surplus_Amount,
               is_ZCK: 0,
               is_EBS: 0
             }
@@ -1180,7 +1180,7 @@ export default {
               that.$message.success("添加手续费成功！");
               that.dialogVisibleSXF = false;
               that.canClick = true;
-              that.commitAxios(that.rowMsg, that.rowType);
+              that.commitAxios(item, row, type);
             } else {
               that.tableDataZH = [];
             }
@@ -1189,31 +1189,31 @@ export default {
         this.$http
           .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/save", {
             object: {
-              id: this.rowMsg.id,
+              id: row.id,
               bank_serial_number:
-                this.rowMsg.bank_serial_number, //  + "_" + new Date().getTime()
-              account_number: this.rowMsg.account_number,
-              account_name: this.rowMsg.account_name,
-              certificate_code: this.rowMsg.certificate_code,
-              currency: this.rowMsg.currency,
-              cash_or_transfer: this.rowMsg.cash_or_transfer,
+                row.bank_serial_number, //  + "_" + new Date().getTime()
+              account_number: row.account_number,
+              account_name: row.account_name,
+              certificate_code: row.certificate_code,
+              currency: row.currency,
+              cash_or_transfer: row.cash_or_transfer,
               debit_amount: charge,
               credit_amount: 0,
-              account_balance: this.rowMsg.account_balance,
-              reference: this.rowMsg.reference,
-              account_number_other: this.rowMsg.account_number_other,
-              account_name_other: this.rowMsg.account_name_other,
-              bank_other: this.rowMsg.bank_other,
-              bank_Code_other: this.rowMsg.bank_Code_other,
-              transaction_Date: this.rowMsg.transaction_Date,
-              purpose: this.rowMsg.purpose,
-              remark: this.rowMsg.remark,
-              purpose_Date: this.rowMsg.purpose_Date,
-              purpose_Merchant_code: this.rowMsg.purpose_Merchant_code,
+              account_balance: row.account_balance,
+              reference: row.reference,
+              account_number_other: row.account_number_other,
+              account_name_other: row.account_name_other,
+              bank_other: row.bank_other,
+              bank_Code_other: row.bank_Code_other,
+              transaction_Date: row.transaction_Date,
+              purpose: row.purpose,
+              remark: row.remark,
+              purpose_Date: row.purpose_Date,
+              purpose_Merchant_code: row.purpose_Merchant_code,
               purpose_fee: charge,
-              createTime: this.rowMsg.createTime,
+              createTime: row.createTime,
               isDeleted: 0,
-              surplus_Amount: this.rowMsg.surplus_Amount,
+              surplus_Amount: row.surplus_Amount,
               is_ZCK: 0,
               is_EBS: 0
             }
@@ -1224,7 +1224,7 @@ export default {
               that.$message.success("添加手续费成功！");
               that.dialogVisibleSXF = false;
               that.canClick = true;
-              that.commitAxios(that.rowMsg, that.rowType);
+              // that.commitAxios(item, row, type);
             } else {
               that.tableDataZH = [];
             }
