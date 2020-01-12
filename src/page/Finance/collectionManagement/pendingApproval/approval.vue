@@ -1102,7 +1102,7 @@ export default {
               transaction_Time: row.transaction_Time,
               transaction_DateTime: row.transaction_DateTime,
               trade_Currency: row.trade_Currency,
-              trade_Amount: row.trade_Amount,
+              trade_Amount: 0 - parseFloat(charge),
               value_Date: row.value_Date,
               exchange_rate: row.exchange_rate,
               transaction_reference_number:row.transaction_reference_number, // + "_" + new Date().getTime()
@@ -1133,7 +1133,7 @@ export default {
           .then(function(obj) {
             // console.log('中国银行',obj);
             if (obj.data.isSuccess) {
-              that.$message.success("添加手续费成功！");
+              that.$message.success("更新手续费成功！");
               that.dialogVisibleSXF = false;
               that.canClick = true;
               // that.commitAxios(item, row, type);
@@ -1153,8 +1153,8 @@ export default {
               certificate_code: row.certificate_code,
               currency: row.currency,
               cash_or_transfer: row.cash_or_transfer,
-              debit_amount: row.debit_amount,
-              credit_amount: row.credit_amount,
+              debit_amount: charge,
+              credit_amount: 0,
               account_balance: row.account_balance,
               reference: row.reference,
               account_number_other: row.account_number_other,
@@ -1221,7 +1221,7 @@ export default {
           .then(function(obj) {
             // console.log('兴业银行',obj);
             if (obj.data.isSuccess) {
-              that.$message.success("添加手续费成功！");
+              that.$message.success("更新手续费成功！");
               that.dialogVisibleSXF = false;
               that.canClick = true;
               // that.commitAxios(item, row, type);
