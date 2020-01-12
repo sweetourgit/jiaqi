@@ -110,6 +110,8 @@ export default {
       Object.keys(this.submitForm).forEach(attr => {
         if(this.submitForm[attr]) conditions[attr]= this.submitForm[attr];
       })
+      if(conditions.beginTime) conditions.beginTime= new Date(new Date(conditions.beginTime).getTime()+ 28800000);
+      if(conditions.endTime) conditions.endTime= new Date(new Date(conditions.endTime).getTime()+ 28800000);
       return conditions;
     },
 

@@ -3,7 +3,7 @@
     <!--申请预付款-->
     <el-dialog title="查看订单" :visible="dialogFormVisible" width=70% @close="closeAdd">
       <div class="totalMoney"><i class="el-icon-info"></i>总收款金额：{{totalMoney}}元 </div>
-      <div class="table_trip">
+      <div class="table_trip" v-if="tableData.length == 0">
         <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
           <el-table-column prop="orderCode" label="订单ID" align="center">
           </el-table-column>
@@ -20,6 +20,60 @@
           <el-table-column prop="createTime_dt" label="下单时间" align="center">
           </el-table-column>
           <el-table-column prop="price" label="收款金额" align="center">
+          </el-table-column>
+          <!-- 解绑暂时不需要做 -->
+          <!-- <el-table-column prop="guestInformation" label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button @click="unbind(scope.row)" type="text">解绑</el-button>
+            </template>
+          </el-table-column> -->
+        </el-table>
+        <div class="block">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+          </el-pagination>
+        </div>
+      </div>
+      <div class="table_trip" v-if="tableData.length > 0 && tableData[0].collectionType != 6">
+        <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
+          <el-table-column prop="orderCode" label="订单ID" align="center">
+          </el-table-column>
+          <el-table-column prop="proName" label="产品名称" align="center">
+          </el-table-column>
+          <el-table-column prop="number" label="数量" align="center">
+          </el-table-column>
+          <el-table-column prop="payable" label="订单总额" align="center">
+          </el-table-column>
+          <el-table-column prop="contactName" label="联系人" align="center">
+          </el-table-column>
+          <el-table-column prop="contactTel" label="电话" align="center">
+          </el-table-column>
+          <el-table-column prop="createTime_dt" label="下单时间" align="center">
+          </el-table-column>
+          <el-table-column prop="price" label="收款金额" align="center">
+          </el-table-column>
+          <!-- 解绑暂时不需要做 -->
+          <!-- <el-table-column prop="guestInformation" label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button @click="unbind(scope.row)" type="text">解绑</el-button>
+            </template>
+          </el-table-column> -->
+        </el-table>
+        <div class="block">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+          </el-pagination>
+        </div>
+      </div>
+      <div class="table_trip" v-if="tableData.length > 0 && tableData[0].collectionType == 6">
+        <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
+          <el-table-column prop="sK_ID" label="收款单号" align="center">
+          </el-table-column>
+          <el-table-column prop="reimbursement" label="报销单号" align="center">
+          </el-table-column>
+          <el-table-column prop="loan" label="借款单号" align="center">
+          </el-table-column>
+          <el-table-column prop="sk_Price" label="收款金额" align="center">
+          </el-table-column>
+          <el-table-column prop="collectionNumber" label="收款账户" align="center">
           </el-table-column>
           <!-- 解绑暂时不需要做 -->
           <!-- <el-table-column prop="guestInformation" label="操作" align="center">
@@ -55,7 +109,7 @@ export default {
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
-      tableData: [],
+      tableData: []
     }
   },
   computed: {
