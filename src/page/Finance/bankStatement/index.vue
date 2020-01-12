@@ -2,8 +2,8 @@
   <div class="bankStatement">
     <el-tabs v-model="activeName" @tab-click="handleClick">
      <el-tab-pane label="中国银行" name="first">
-        <bankOfChinaSK></bankOfChinaSK>
-        <!-- <el-tabs type="border-card">
+        <!-- <bankOfChinaSK></bankOfChinaSK> -->
+        <el-tabs type="border-card">
           <el-tab-pane label="收款">
             <bankOfChinaSK></bankOfChinaSK>
           </el-tab-pane>
@@ -11,11 +11,11 @@
             <bankOfChinaSXF></bankOfChinaSXF>
           </el-tab-pane>
           <el-tab-pane label="付款">暂时不写</el-tab-pane>
-        </el-tabs> -->
+        </el-tabs>
       </el-tab-pane>
       <el-tab-pane label="兴业银行" name="second">
-        <industrialBankSK></industrialBankSK>
-        <!-- <el-tabs type="border-card" @tab-click="handleClick">
+        <!-- <industrialBankSK></industrialBankSK> -->
+        <el-tabs type="border-card" @tab-click="handleClick">
           <el-tab-pane label="收款">
             <industrialBankSK></industrialBankSK>
           </el-tab-pane>
@@ -23,7 +23,7 @@
             <industrialBankSXF></industrialBankSXF>
           </el-tab-pane>
           <el-tab-pane label="付款">暂时不写</el-tab-pane>
-        </el-tabs> -->
+        </el-tabs>
       </el-tab-pane>
     </el-tabs>
   </div>

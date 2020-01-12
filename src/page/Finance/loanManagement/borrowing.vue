@@ -367,6 +367,7 @@
     <el-dialog title="借款申请详情" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="CloseCheckIncomeShow()">取消</el-button>
+        <el-button type="success" @click="splitRelTable()">拆分关系表</el-button>
         <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button>
         <el-button
           type="success"
@@ -1027,6 +1028,9 @@ export default {
           this.creatUserOrgID = res.data.object.creatUserOrgID
         }
       })
+    },
+    splitRelTable(){
+      this.$router.push({ path: "/relationSplitMap", query: { id: this.paymentID } })
     },
     // 关闭弹窗
     CloseCheckIncomeShow(){

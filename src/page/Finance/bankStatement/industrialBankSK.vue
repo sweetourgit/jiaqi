@@ -44,7 +44,7 @@
     </el-form>
     <!-- 搜索表单 END -->
     <div class="buttonsDv">
-      <el-button @click="setZCK" type="warning" :disabled="dis">设置暂存款</el-button>
+      <el-button @click="setZCK" type="warning">设置暂存款</el-button>
       <el-upload
         class="upload-demo"
         :action="UploadUrl1()"
@@ -78,6 +78,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+      </el-table-column>
+      <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.is_ZCK == 0">未设置</span>
+          <span v-if="scope.row.is_ZCK == 1">已设置</span>
+        </template>
       </el-table-column>
       <el-table-column prop="purpose_fee" label="手续费" align="center">
       </el-table-column>
@@ -139,7 +145,6 @@ export default {
   },
   data() {
     return {
-      dis: true, // 没这个功能，暂时禁用
       tableData: [], // 表格数据
       ruleForm: {
         matchType: '', // 匹配状态
@@ -211,7 +216,7 @@ export default {
         this.$message.success("兴业银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        that.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
+        this.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
       }else{
         this.$message.warning("兴业银行流水单上传失败！");
       }

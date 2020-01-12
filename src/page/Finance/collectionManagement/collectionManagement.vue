@@ -16,7 +16,10 @@
       <el-tab-pane label="待认款收款" name="six">
         <recognitionWait></recognitionWait>
       </el-tab-pane>
-      <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third">
+      <el-tab-pane label="报销还款" name="seven">
+        <reimbursement ref="reimbursement"></reimbursement>
+      </el-tab-pane>
+      <el-tab-pane :label="'需要您审批('+ totalNum +')'" name="third" v-if="showApproval">
         <PendingApprovalManagement ref="PendingApprovalManagement"></PendingApprovalManagement>
       </el-tab-pane>
     </el-tabs>
@@ -27,6 +30,7 @@ import StraightGuestManagement from '@/page/Finance/collectionManagement/straigh
 import SameTradeManagement from '@/page/Finance/collectionManagement/sameTradeManagement'
 import PendingApprovalManagement from '@/page/Finance/collectionManagement/pendingApproval/pendingApprovalManagement.vue'
 import externalOrder from '@/page/Finance/collectionManagement/externalOrder/externalOrderManagement.vue'
+import reimbursement from '@/page/Finance/collectionManagement/Reimbursement/reimbursement.vue'
 import distributorsInfo from '@/page/Finance/collectionManagement/distributorsInfo/distributorsInfo.vue'
 import recognitionWait from '@/page/Finance/collectionManagement/recognitionWait/recognitionWait.vue'
 export default {
@@ -37,10 +41,12 @@ export default {
     PendingApprovalManagement, // 需要您审批
     externalOrder,
     distributorsInfo, // 内部收款
+    reimbursement,
     recognitionWait
   },
   data() {
     return {
+      showApproval: false,
       activeName: 'first', // 当前tab选项卡默认状态
       clickTab:'', // 点击切换获取当前值
       totalNum: 0
@@ -130,6 +136,14 @@ export default {
     this.pageList();
     if(this.$route.params.tabStatus){
       this.activeName = this.$route.params.tabStatus
+    }
+    const buttonperms = JSON.parse(sessionStorage.getItem('butPermission'));
+    // console.log(buttonperms)
+    for (let i = 0; i < buttonperms.length; i++){
+      if (buttonperms[i] == 'needyourapproval') {
+        this.showApproval = true;
+        break;
+      }
     }
   },
   mounted(){
