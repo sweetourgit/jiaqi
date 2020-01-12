@@ -85,7 +85,7 @@
           <el-col :span="12">
             <el-form-item label="摘要：">
               <span class="content">
-                {{ lend.expenseMark }}
+                {{ borrow.expenseMark }}
               </span>
             </el-form-item>
           </el-col>
