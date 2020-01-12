@@ -101,7 +101,7 @@
       </el-tab-pane>
       <!--报销end-->
       <!--报销弹窗-->
-      <el-dialog title="报销申请" :visible.sync="dialogFormVisible" width="70%" :show-close="false">
+      <el-dialog title="报销申请" :visible.sync="dialogFormVisible" width="70%" :show-close="false" :close-on-click-modal="false">
         <div v-if="this.find == 1" class="re_style" style="margin-top:-20px;" >基本信息</div>
         <div v-if="this.find == 1" class="style_box">
               <div v-if="this.state == 0" class="sh_style">审核中</div>
@@ -917,15 +917,19 @@ export default {
                                     console.log(err);
                                   });
                           }else{
-                           this.$message({
-                                type: "info",
-                                message: "订单已审核，刷新看状态"
-                              });
-                                     this.alljoinData=[];
-                                      this.tableCourse = [];
-                                      this.ruleNull()
-                          this.dialogFormVisible = false;
-                          }
+                            this.tabIndex = 1;
+                            this.radio= "1";
+                            this.dialogFormVisible = false;
+                            this.alljoinData = [];
+                            this.tableCourse = [];
+                            this.ruleNull()
+                            this.$message({
+                                  type: "info",
+                                  message: "订单已审核，刷新看状态"
+                                });
+
+                            
+                         }
                         }
                    }
                 })
@@ -1520,8 +1524,9 @@ export default {
                             type: "success",
                             message: "创建成功!"
                           });
-                          this.ruleNull()
-                       
+                        
+                        this.ruleNull()
+                        this.T_update_btn(); 
                         this.beginWokeing(res.data.object);
                         return;
                         }else{
@@ -1549,7 +1554,6 @@ export default {
             var verify = 0;
             this.object_lisr=[];
             this.submitformBtn=true;
-            console.log('乖乖打豆豆');
             for(var j in editableTabs){
                 let submitForm_list = editableTabs[j].content;
                           if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
