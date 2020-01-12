@@ -1,80 +1,42 @@
-<style lang="scss" scoped>
-
-</style>
-
 <template>
-  <div class="check-sheet">
-    <el-tabs 
-      v-model="currentTab"
-      @tab-click="tabClickHandler">
-      <el-tab-pane label="报账单" name="all">
-        <all-pane 
-          ref="allPaneRef">
-        </all-pane>
-      </el-tab-pane>
-      <el-tab-pane :label="'需要您审批（'+ mineCount +'）'" name="mine">
-        <mine-pane 
-          ref="minePaneRef">
-        </mine-pane>
-      </el-tab-pane>
+  <div style="padding-bottom: 80px;">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="跟团游" name="team"></el-tab-pane>
+      <el-tab-pane label="周边游" name="around"></el-tab-pane>
     </el-tabs>
+    <router-view></router-view>
   </div>
 </template>
-
 <script>
-import { getCheckSheetList, getFlowModel } from './api'
-import allPane from './comps/allPane/allPane'
-import minePane from './comps/minePane/minePane'
-
 export default {
-  components: { allPane, minePane },
-
+  data() {
+    return {
+      activeName: '1',
+    };
+  },
   mounted(){
-    this.init();
+    this.handleClick({ name: 'team' })
   },
-
-  data(){
-    return Object.assign(
-      // 视图
-      {
-        currentTab: 'all',
-        mineCount: 0, // 需要审批数量
-      }
-    )
-  },
-
-  methods: Object.assign(
-    {
-      // 考虑了路由后退还原的情况
-      init(){
-        let query;
-        if('tab' in this.$route.query){
-          query= this.reappearConditions();
-          this.$router.replace('/checkSheet');
-        }
-        let { tab, conditions, pageInfo }= query || {};
-        if(tab) this.currentTab= tab;
-        this.$refs.allPaneRef.init(tab=== 'all' && { conditions, pageInfo });
-        this.$refs.minePaneRef.init(tab=== 'mine' && { conditions, pageInfo });
-      },
-
-      // 分流query
-      reappearConditions(){
-        let { tab, groupCode, userName, teamProTitle, beginTime, endTime, pageIndex, pageSize, total }= this.$route.query;
-        let conditions= {
-          groupCode, userName, teamProTitle, beginTime, endTime
-        }
-        let pageInfo= {
-          pageIndex, pageSize, total
-        }
-        return { tab, conditions, pageInfo }
-      },
-
-      tabClickHandler(tab){
-        console.log(tab.name, this)
-      }  
+  methods: {
+    handleClick(tab, event) {
+      let { name }= tab;
+      let { query }= this.$route;
+      this.$router.replace({ path: `/checkSheet/${name}`, query });
+    },
+    getTabNameFromPath(path){
+      return path.substring(12);
     }
-  )
+  },
+  watch: {
+    $route: {
+      handler: function(val, oldVal){
+        this.activeName= this.getTabNameFromPath(val.path);
+      },
+      // 深度观察监听
+      deep: true,
+      immediate: true
+    }
+  }
+};
 
-}
 </script>

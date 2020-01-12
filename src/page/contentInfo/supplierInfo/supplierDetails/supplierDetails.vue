@@ -18,7 +18,7 @@
       position: fixed;
     }
   }
-  & /deep/ .grey-null{
+  & >>> .grey-null{
     color: grey;
   }
 }
@@ -177,7 +177,7 @@
                     <div class="file-outer" 
                       v-for="(file, i) in submitForm.files" 
                       :key="i"
-                      @click="openWindow(file.url)">
+                      @click="$picDownloader(file.url, file.name)">
                       {{ file.name }}
                     </div>
                   </div>
@@ -227,6 +227,7 @@
 <script>
 import { getSupplierDTO } from '../dictionary'
 import { getSupplierById, getDicOptions } from '../api'
+import axios from 'axios'
 
 export default {
 

@@ -991,7 +991,9 @@ export default {
           if (response.data.isSuccess) {
             // 
             if (that.approval_status == "1") {
-              that.insert();
+              // that.insert();
+              that.$message.success("审批提交成功~");
+              that.closeAdd();
             } else if (that.approval_status == "2") {
               that.$message.success("已驳回~");
               that.closeAdd("cancal");
@@ -1058,7 +1060,7 @@ export default {
               value_Date: row.value_Date,
               exchange_rate: row.exchange_rate,
               transaction_reference_number:
-                row.transaction_reference_number + "_" + new Date().getTime(),
+                row.transaction_reference_number + "-" + new Date().getTime(),
               record_ID: row.record_ID,
               reference: row.reference,
               purpose: row.purpose,
@@ -1147,7 +1149,7 @@ export default {
             object: {
               id: row.id,
               bank_serial_number:
-                row.bank_serial_number + "_" + new Date().getTime(),
+                row.bank_serial_number + "-" + new Date().getTime(),
               account_number: row.account_number,
               account_name: row.account_name,
               certificate_code: row.certificate_code,

@@ -60,6 +60,10 @@ let needReset= function(){
 }
 export default {
 
+  props: {
+    tableData: Array
+  },
+
   data(){
     return Object.assign(
       // 需要重置
@@ -77,9 +81,12 @@ export default {
           createTime: null
         },
         rules: {
-          cardNumber: { required: true, message: '汇款户名不能为空', trigger: ['blur']},
+          cardNumber: [
+            { required: true, message: '账号不能为空', trigger: ['blur']},
+            { validator: this.cardNumberValidator, trigger: 'blur'},
+          ],
           bankName: { required: true, message: '开户行不能为空', trigger: ['blur']},
-          cardName: { required: true, message: '账号不能为空', trigger: ['blur']},
+          cardName: { required: true, message: '汇款户名不能为空', trigger: ['blur']},
           memo: { required: true, message: '备注不能为空', trigger: ['blur']},
         }
       }
@@ -117,6 +124,12 @@ export default {
       if(!bol) return;
       this.$emit('save-bank', { index: this.index, data: this.$deepCopy(this.submitForm) });
       this.handleClose();
+    },
+
+    cardNumberValidator(rule, value, cb){
+      console.log(123)
+      let find= this.tableData.find(el => el.cardNumber== value);
+      find? cb(new Error('账号已存在')): cb()
     }
   }
 }

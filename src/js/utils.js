@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from 'axios'
 
 /**
  * @description: 简易版深拷贝，不可拷贝循环引用结构
@@ -91,40 +92,119 @@ Vue.prototype.$checkLooseEqual= function (a, b) {
   }
 }
 
-/**
- * @description: 富文本编辑器统一的工具栏
- */
-Vue.prototype.$defaultToolbar= [
-  // 字体
-  // [{ font: [] }],
+Vue.prototype.$picDownloader= function(url, name){
+  if(!url || !name) return console.error('param url and name is required');
+  this.$message.info('文件下载中...');
+  axios({
+    method: 'post',
+    url: 'http://118.25.222.233:9001/download',
+    // url: 'http://127.0.0.1:9001/download',
+    data: { url },
+    responseType: 'blob'
+  })
+  .then(res => {
+    let type = 'application/octet-stream';
+    let URL = window.URL || window.webkitURL;
+    let blob = new Blob([ res.data ], { type });
+    let src = URL.createObjectURL(blob);
+    let element = document.createElement('a');
+    element.href = src;
+    element.download = name;
+    document.body.appendChild(element)
+    element.click()
+    element.remove();
+    this.$message.success('文件下载完成');
+  })
+}
 
-  [{ header: [false, 1, 2, 3, 4, 5, 6] }],
+Vue.prototype.$printDom= function(dom){
+  let doc;
+  let iframe;
+  iframe = document.createElement('iframe');
+  iframe.setAttribute('style', 'position:absolute;width:0;height:0;top:-10px;left:-10px;');
+  document.body.appendChild(iframe)
+  doc = iframe.contentWindow.document;
+  doc.write(dom.outerHTML);
+  var styleStr = `
+  @media print {
+    @page {
+      size: 210mm 297mm;
+      size: 297mm 420mm;
+    }
+  }
+  *{
+    font-weight: normal;
+    box-sizing: border-box;
+  }
+  table{
+    width: 100%;
+  }
+  .print-ground{
+    font-size: 14px;
+    line-height: normal;
+    text-align: center;
+    font-weight: normal;
+  }
+  .print-ground>header .title{
+    font-size: 18px;
+  }
+  .print-ground>header .time{
+    line-height: 2.5;
+    text-align: right;
+  }
+  .cell{
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    min-height: 23px;
+    line-height: 23px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .base{
+    width: 10%;
+    padding: 5px 0;
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+  }
+  .label{
+    background-color: #ccc;
+    color: #000;
+  }
+  .base:last-child{
+    border-right: 1px solid #000;
+  }`
+  let style = document.createElement("style");
+  style.innerText = styleStr;
+  doc.getElementsByTagName("head")[0].appendChild(style)
+	doc.close();
+	iframe.contentWindow.focus();
+	iframe.contentWindow.print();
+}
 
-  // [{ size: ["small", false, "large", "huge"] }],
+function padLeftZero (str) {
+  return ('00' + str).substr(str.length)
+}
 
-  ["bold", "italic", "underline", "strike"],
-
-  [
-    { align: "" },
-    { align: "center" },
-    { align: "right" },
-    { align: "justify" }
-  ],
-
-  // [{ header: 1 }, { header: 2 }],
-
-  // ["blockquote", "code-block"],
-
-  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-
-  [{ script: "sub" }, { script: "super" }],
-
-  [{ indent: "-1" }, { indent: "+1" }],
-
-  [{ color: [] }, { background: [] }],
-
-  // ["link", "image", "video", "formula"],
-
-  // [{ direction: "rtl" }],
-  // ["clean"]
-];
+Vue.prototype.$dateFormate= function (date, fmt) {
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+  let o = {
+    'M+': date.getMonth() + 1,
+    'd+': date.getDate(),
+    'h+': date.getHours(),
+    'm+': date.getMinutes(),
+    's+': date.getSeconds()
+  }
+  for (let k in o) {
+    if (new RegExp(`(${k})`).test(fmt)) {
+      let str = o[k] + ''
+      fmt = fmt.replace(RegExp.$1, RegExp.$1.length === 1 ? str : padLeftZero(str))
+    }
+  }
+  return fmt
+}

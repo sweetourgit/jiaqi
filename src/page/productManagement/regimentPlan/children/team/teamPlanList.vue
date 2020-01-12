@@ -43,9 +43,10 @@
         </el-table-column>
         <el-table-column prop="title" label="产品名称" min-width="200"></el-table-column>
         <el-table-column prop="dateFormat" label="出行日期" width="100"></el-table-column>
-        <el-table-column prop="accountStatus" label="报账状态" width="100">
+        <el-table-column prop="isCheckSheet" label="报账状态" width="100">
           <template slot-scope="scope">
-            <div>报账中</div>
+            <div v-if="scope.row.isCheckSheet=='0'">未提交报账</div>
+            <div v-if="scope.row.isCheckSheet=='1'">已提交报账</div>
           </template>
         </el-table-column>
         <el-table-column prop="count" label="计划位" width="70"></el-table-column>
@@ -61,7 +62,7 @@
         <el-table-column prop="shareCN" label="是否共享" width="85"></el-table-column> -->
         <el-table-column prop="op" label="操作人员" width="80"></el-table-column>
 
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="220">
           <template slot-scope="scope">
             <span v-show="show1">
               <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
@@ -74,10 +75,12 @@
             <span v-show="show1">
               <span class="cursor blue" @click="operation(2)">详情</span>
               <span class="em" v-if="scope.row.regimentType=='3'">|</span>
-              <span class="cursor blue" v-if="scope.row.regimentType=='3'">报账单</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='3'" @click="reimbursement(scope.row.id)">报账单</span>
               <span class="em" v-if="scope.row.regimentType=='1'">|</span>
               <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
             </span>
+            <span class="em">|</span>
+            <span class="cursor blue" @click="informDeparture(scope.row.id)">出团通知书</span>
           </template>
         </el-table-column>
       </el-table>
@@ -86,7 +89,7 @@
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <!--报账单弹窗-->
-      <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list" width="60%">
+      <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list_01" width="60%">
         <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass"
           :cell-style="getCellClass" @selection-change="changeFunCost" @row-click="clickRowCost">
           <el-table-column prop="id" label fixed type="selection"></el-table-column>
@@ -102,6 +105,32 @@
         </el-table>
       </el-dialog>
       <teamOrder-insert :planId="planId" :variable="variable" :dialogType="dialogType"></teamOrder-insert>
+      <!--出团通知书弹窗-->
+      <el-dialog title="出团通知书" :visible.sync="departure"class="city_list" width="60%" @close="clearDeparture()">
+        <el-form label-width="120px" class="demo-ruleForm">
+          <el-form-item label="出团通知书:">
+            <el-upload
+              class="upload-demo"
+              name="files"
+              ref="upload"
+              multiple
+              :limit="1"
+              :action="this.upload_url"
+              :file-list="fileList"
+              :on-error="handleError"
+              :on-success="handleSuccess"
+              :before-remove="beforeRemove"
+              :on-exceed="handleExceed"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+          </el-form-item>
+          <div style="position:absolute;top:8px; right:10px;">
+            <el-button @click="clearDeparture()">取 消</el-button>
+            <el-button @click="uploadPicture()" type="primary">确定</el-button>
+          </div>
+        </el-form>
+      </el-dialog>
     </div>
     <!-- </div> -->
   </div>
@@ -120,6 +149,7 @@ export default {
       userCodeList: null, // 获取UserList列表
       pageshow: true,
       planId: 0,
+      isCheckSheet:0,
       variable: 0, //设置一个变量展示弹窗
       dialogType: 0, //弹窗类型  1：下单
       title: "", //产品名称
@@ -179,6 +209,17 @@ export default {
       dialogCost: false, //成本弹窗
       show1:false,
       show2:false,
+      departure:false, // 出团通知书弹窗
+      fileList:[],
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
+      s_content:[],
+      img_Url:"",
+      img_Name:'',
+      name_Suffix:'',
+      uid:'',
+      type:'',
+      fileLength:0,
+      checkSheet:0,
       // costSelection: [], //选中的list
       // searchParams: 2 // 2 为翻页，控制名字转code
     };
@@ -198,7 +239,6 @@ export default {
       }else{
         this.show2 = true;
       }
-      
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -219,6 +259,7 @@ export default {
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
       this.planId = this.multipleSelection[0].id;
+      this.checkSheet = this.multipleSelection[0].isCheckSheet;
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -244,6 +285,7 @@ export default {
       }else{
         this.getUserCode();
       }
+      //this.teamQueryList(val,this.pageSize);
     },
     //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID) {
@@ -468,6 +510,99 @@ export default {
           });
         });
     },
+    // 出团通知书
+    informDeparture(status){ // 显示出团通知书弹窗
+      this.departure = true;
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/get",{
+        "id": status,
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+          this.fileList.push(res.data.object)
+        }
+      })
+    },
+    uploadPicture(){
+      this.clearDeparture();
+      if(this.type == 'del'){
+        this.deleteFile();
+      }else if(this.img_Url !== ''&& this.img_Name !== ''){
+        if(this.fileLength != 0){
+          this.deleteFile();
+        }
+        this.addFile();
+      }
+    },
+    clearDeparture(){ // 取消关闭出团通知书弹窗
+      this.departure = false;
+      this.fileList = [];
+    },
+    handleSuccess(res, file, fileList) {
+      var paths = [];
+      this.fileList = fileList;
+      for (var i = 0; i < fileList.length; i++) {
+        this.fileLength = fileList.length;
+        paths = JSON.parse(fileList[i].response).paths[0];
+        this.img_Url = this.$set(this.fileList[i], "url", paths.Url);
+        this.img_Name = this.$set(this.fileList[i], "name", paths.Name);
+        this.name_Suffix = file.raw.name; // 这个变量是取的后缀名
+        console.log(this.name_Suffix)
+        this.type = '';
+      }
+    },
+    handleError(err, file) {
+      this.fileList = []
+      console.log(file.id)
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`出团通知书只能上传 1 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`是否删除 ${ file.name } ?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+      .then(res => {
+        this.uid = file.id;
+        this.type = "del";
+        this.img_Url = '';
+        this.img_Name = '';
+      })
+    },
+    deleteFile(){
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/delete",{
+        "id": this.uid,
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+          this.type = '';
+          this.$message.success("删除成功");
+          this.departure = false;
+        }
+      })
+    },
+    addFile(){
+      this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/insert",{
+        "object":{
+          "id": 0,
+          "createTime": "2019-12-24T05:35:43.775Z",
+          "code": "string",
+          "url": this.img_Url,
+          "planID": this.planId,
+          "name":this.name_Suffix,
+          //"name": this.img_Name
+        }
+      }).then(res =>{
+        if(res.data.isSuccess == true){
+         this.$message.success("上传成功");
+         
+        }
+      })
+    },
+    reimbursement(status,checkSheet){ // 报账单
+      setTimeout(() => {
+        this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.checkSheet});
+      },200);
+    },
   }
 };
 </script>
@@ -541,7 +676,7 @@ export default {
 .el-table--enable-row-hover .el-table__body tr:hover > td {
   background-color: #f5f7fa !important;
 }
-.city_list {
+.city_list_01 {
   text-align: center;
 }
 .pagination {
@@ -558,4 +693,5 @@ export default {
 .cursor {
   cursor: pointer;
 }
+
 </style>
