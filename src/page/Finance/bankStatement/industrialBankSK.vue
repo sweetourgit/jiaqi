@@ -79,6 +79,12 @@
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
+      <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.is_ZCK == 0">未设置</span>
+          <span v-if="scope.row.is_ZCK == 1">已设置</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="purpose_fee" label="手续费" align="center">
       </el-table-column>
       <el-table-column prop="bank_serial_number" label="银行流水号" align="center">
@@ -210,7 +216,7 @@ export default {
         this.$message.success("兴业银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        that.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
+        this.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
       }else{
         this.$message.warning("兴业银行流水单上传失败！");
       }

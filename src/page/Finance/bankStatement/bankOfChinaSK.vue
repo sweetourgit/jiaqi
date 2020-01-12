@@ -67,6 +67,14 @@
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
+      <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.is_ZCK == 0">未设置</span>
+          <span v-if="scope.row.is_ZCK == 1">已设置</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="purpose_fee" label="手续费" align="center">
+      </el-table-column>
       <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
       </el-table-column>
       <el-table-column prop="transaction_Date" label="交易日期" align="center">
