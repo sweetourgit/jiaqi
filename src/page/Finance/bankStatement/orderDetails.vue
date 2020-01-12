@@ -79,12 +79,7 @@ export default {
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
-      tableData: [],
-
-      pageCurrent1: 1,
-      pageSize1: 10,
-      total1: 0,
-      tableData1: []
+      tableData: [{collectionType: 0}]
     }
   },
   computed: {
@@ -154,7 +149,7 @@ export default {
         }else{
           // that.loadingNBSK = false;
           that.total = 0;
-          that.tableData = [];
+          that.tableData = [{collectionType: 0}];
         }
       })
     }
