@@ -189,6 +189,7 @@
     },
     data() {
       return {
+        tableDataBorrower:[],
         isShowFlow: true,
         ruleForm: {
           proposer: '', // 申请人
@@ -299,6 +300,11 @@
           }).then(res => {
             this.recognitionData.length = 0
             this.recognitionData.push(res.data.object.data)
+            if(this.recognitionData[0] === null){
+              this.isShowFlow = false
+            } else {
+              this.isShowFlow = true
+            }
             this.listLoading = false
           }).catch( err => {
             _this.isShowFlow = false
@@ -406,6 +412,12 @@
           return '';
         }
         return moment(date).format('YYYY-MM-DD')
+      },
+      // 模糊查询返回下拉选中项 - 查询返回userCode的（借款人）
+      createFilteBorrowerr(queryString1){
+        return (restaurant) => {
+          return (restaurant.userCode);
+        }
       },
       getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
