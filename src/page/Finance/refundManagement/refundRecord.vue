@@ -94,7 +94,9 @@ export default {
         value:'4',
         label:'完成退款'
       }],
-      tableDate:[],//表格 
+      tableDate:[{
+        orderID:"1"
+      }],//表格 
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数

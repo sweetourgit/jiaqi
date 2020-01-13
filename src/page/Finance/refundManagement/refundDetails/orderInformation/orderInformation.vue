@@ -7,104 +7,104 @@
       </div>
       <div class="border">
         <div class="matter">
-          <div class="title"><u>新加坡斜坡滑车+空中吊椅索道滑车SkylineLuge景点门票（即定即用圣淘沙景点门票）</u></div>
+          <div class="title"><u>{{orderList.name}}</u></div>
           <div>
-            <span class="fl red">订单总额:111.00</span>
-            <span class="fl red ml30">已付金额:0.00</span>
+            <span class="fl red">订单总额:{{orderList.payable | numFilter}}</span>
+            <span class="fl red ml30">已付金额:{{orderList.paid | numFilter}}</span>
           </div>
           <div>
             <table width="100%">
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">订单ID:</div>
-                  <div class="fl ml13">{{refundList.id}}</div>
+                  <div class="fl ml13">{{orderList.orderCode}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">团期计划:</div>
-                  <div class="fl ml13">{{refundList.userName}}</div>
+                  <div class="fl ml13">{{orderList.groupCode}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">下单时间:</div>
-                  <div class="fl ml13">{{refundList.createTime}}</div>
+                  <div class="fl ml13">{{orderList.createTime}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">套餐:</div>
-                  <div class="fl ml13">{{refundList.invoiceHeader}}</div>
+                  <div class="fl ml13">{{orderList.package}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">出发地:</div>
-                  <div class="fl ml13">{{refundList.taxpayerIDNumber}}</div>
+                  <div class="fl ml13">{{orderList.pod}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">目的地:</div>
-                  <div class="fl ml13">{{refundList.tel}}</div>
+                  <div class="fl ml13">{{orderList.destination}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">出发日期:</div>
-                  <div class="fl ml13">{{refundList.tel}}</div>
+                  <div class="fl ml13">{{orderList.date}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">电话:</div>
-                  <div class="fl ml13">{{refundList.tel}}</div>
+                  <div class="fl ml13">{{orderList.contactTel}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">产品类型:</div>
-                  <div class="fl ml13">{{refundList.tel}}</div>
+                  <div class="fl ml13">{{orderList.productType}}</div>
                 </td>
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">联系人:</div>
-                  <div class="fl ml13">{{refundList.cardNumber}}</div>
+                  <div class="fl ml13">{{orderList.contactName}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">数量:</div>
-                  <div class="fl ml13">{{refundList.bankName}}</div>
+                  <div class="fl ml13">{{orderList.number}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">其他费用:</div>
-                  <div class="fl ml13">{{refundList.bankName}}</div>
+                  <div class="fl ml13">{{orderList.otherPrice}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">整体优惠:</div>
-                  <div class="fl ml13">{{refundList.cardNumber}}</div>
+                  <div class="fl ml13">{{orderList.entiretyFav}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">销售:</div>
-                  <div class="fl ml13">{{refundList.bankName}}</div>
+                  <div class="fl ml13">{{orderList.saler}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">订单来源:</div>
-                  <div class="fl ml13">{{refundList.bankName}}</div>
+                  <div class="fl ml13">{{orderList.orderChannel}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">优惠活动:</div>
-                  <div class="fl ml13">{{refundList.cardNumber}}</div>
+                  <div class="fl ml13">{{0}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">操作:</div>
-                  <div class="fl ml13">{{refundList.bankName}}</div>
+                  <div class="fl ml13">{{orderList.op}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">商户销售:</div>
-                  <div class="fl ml13">{{refundList.bankName}}</div>
+                  <div class="fl ml13">{{orderList.indirectSale}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">平台:</div>
-                  <div class="fl ml13">{{refundList.cardNumber}}</div>
+                  <div class="fl ml13">{{orderList.platform}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">支付方式:</div>
-                  <div class="fl ml13">{{refundList.bankName}}</div>
+                  <div class="fl ml13">{{0}}</div>
                 </td>
               </tr>
             </table>
@@ -114,7 +114,7 @@
         <div class="matter">
           <div class="fl">
             <span class="point"></span>
-            <span class="fl">预订不占</span>
+            <span class="fl">{{orderList.orderStatus}}</span>
           </div>
           <div class="fl ml30">
             <span class="fl">待确认剩余</span>
@@ -164,12 +164,19 @@ export default {
   data() {
     return {
       dialogOrder:false,// 订单详情弹窗
-      refundList:{},
+      orderList:{},
       tableDate:[],
       orderRefundID:0,
       orderRefund:0,
       orderRefundDialog:0,
     };
+  },
+  filters: {
+    numFilter (value) {
+      // 截取当前数据到小数点后两位
+      let realVal = parseFloat(value).toFixed(2)
+      return realVal
+    }
   },
   watch: {
     orderVariable: function() {
@@ -197,11 +204,17 @@ export default {
     cancelOrder(){
       this.dialogOrder = false;
     },
-    getOrder(ID){
-
+    getOrder(ID){ // 获取订单信息
+      this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
+        id: ID
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          this.orderList = res.data.object;
+          this.tableDate = res.data.object.guest; // 获取订单信息页面表格内容
+        }
+      });
     },
     refund(i){ // 点击退款出现退款流程弹窗
-      console.log(1)
       this.orderRefund++;
       this.orderRefundDialog = i;
       this.dialogOrder = false;

@@ -6,7 +6,7 @@
       <div class="controlButton">
   	    <div class="fl">
   	      <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
-  	      <el-button class="ml13" type="primary" v-if="title == '详情'">撤 销</el-button>
+  	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情'">撤 销</el-button>
   	    </div>
         <div class="fl" v-if="title == '审批'">
     	    <el-button class="ml13" type="primary" @click="payAccount()">支付账户</el-button>
@@ -264,6 +264,31 @@ export default {
       this.dialogFormOrder = false;
       this.tableDate = [];
       this.tableAudit = [];
+    },
+    undoRefund(){ // 撤销该条退款
+      this.$confirm("是否需要撤销该笔退款?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      }).then(() => {
+          // this.$http.post(this.GLOBAL.serverSrc + '/order/blacklist/api/delete',{
+          //   "id": this.multipleSelection[0].id
+          // })
+          // .then(res => {
+          //   if(res.data.isSuccess == true){
+          //      this.$message.success("撤销成功");
+          //      this.$parent.pageList(
+          //        this.pageIndex == 1 ? this.pageIndex : 1
+          //      );
+          //     }
+          //  })
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
