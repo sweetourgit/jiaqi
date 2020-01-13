@@ -205,7 +205,7 @@
     watch: {
       dialogFormVisible3: {
         handler: function () {
-          console.log('this.msg',this.msg);
+          // console.log('this.msg',this.msg);
           if(this.msg == ''){
             this.closeAdd();
           }else{
@@ -236,9 +236,9 @@
 
       loadData(){
         const that = this;
-        console.log(this.msg.id);
+        // console.log(this.msg.id);
         const data = JSON.parse(localStorage.getItem(this.msg.id));
-        console.log(data);
+        // console.log(data);
         if(data.type === 0){
           that.tableDataZH[0] = data.row;
           that.isShowZH = true;

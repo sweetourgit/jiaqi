@@ -21,10 +21,10 @@
 }
 </style>
 <template>
-  <div class="display-bar">
+  <div class="display-bar"
+    v-show="state">
 
-    <div class="borrow-ground"
-      v-show="borrowState">
+    <div class="borrow-ground">
       <div class="title">
         借款信息
       </div>
@@ -49,7 +49,7 @@
     </div>
 
     <div class="lend-ground"
-      v-show="lendState">
+      v-show="isShowAll">
       <div class="title">
         报销信息
       </div>
@@ -66,7 +66,7 @@
           <el-col :span="12">
             <el-form-item label="团期计划：">
               <span class="content">
-                {{ lend.groupCode }}
+                {{ borrow.groupCode }}
               </span>
             </el-form-item>
           </el-col>
@@ -78,7 +78,7 @@
           <el-col :span="12">
             <el-form-item label="产品名称：">
               <span class="content">
-                {{ lend.teamProName }}
+                {{ borrow.teamProName }}
               </span>
             </el-form-item>
           </el-col>
@@ -104,7 +104,7 @@
           <el-col :span="12">
             <el-form-item label="状态：">
               <span class="content">
-                {{ lend.checkTypeEX }}
+                {{ borrow.checkTypeEX }}
               </span>
             </el-form-item>
           </el-col>
@@ -120,23 +120,19 @@ export default {
   data(){
     return Object.assign(
       {
-        borrowState: false,
-        lendState: false,
-      },
-      {
         borrow: {},
-        lend: {},
+        state: false,
+        isShowAll: false,
       }
     )
   },
 
   methods: {
     wakeup(payload= {}){
-      let { borrow, lend }= payload;
-      this.borrowState= !!borrow;
-      this.lendState= !!lend;
-      if(borrow) this.borrow= borrow;
-      if(lend) this.lend= lend;
+      let { borrow, isShowAll }= payload;
+      this.state= !!borrow;
+      this.borrow= borrow || {};
+      this.isShowAll= true;
     }
   }
 

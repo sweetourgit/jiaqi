@@ -748,7 +748,6 @@ export default {
             'checktype': 2,
             "id": this.pid
           }).then(res => {
-            console.log(res,'通过res')
           }).catch(err => {
             console.log(err)
           })

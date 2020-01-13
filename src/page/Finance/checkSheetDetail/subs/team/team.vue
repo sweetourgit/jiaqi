@@ -62,7 +62,10 @@
           @click="approvalHandler(true)">
           通过
         </el-button>
-        <el-button type="primary" size="small">打印</el-button>
+        <el-button type="primary" size="small"
+          @click="printHandler">
+          打印
+        </el-button>
         <el-button type="info" size="small"
           @click="backPage">
           取消

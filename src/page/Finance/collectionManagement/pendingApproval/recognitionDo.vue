@@ -497,7 +497,7 @@ export default {
     // 选择，提交认款
     chooseRecognition(row, type) {
       // console.log(row);
-      console.log(this.tableDataOrder, "出来没有");
+      // console.log(this.tableDataOrder, "出来没有");
       // if (this.collectionType !== 6) {
       if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
         if (this.collectionType !== 6) {
@@ -510,6 +510,7 @@ export default {
             this.service_charge = Math.abs(
               this.tableDataOrder[0].matchingPrice - row.surplus_Amount
             );
+            this.service_charge = this.service_charge.toFixed(2);
           }
         } else {
           this.$message.warning("不能进行选择，剩余金额不足~");

@@ -350,7 +350,6 @@ export default {
     },
     // 无收入没有订单号根据登录人员查询无收入借款明细
     bbb(params){
-      console.log(params)
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
