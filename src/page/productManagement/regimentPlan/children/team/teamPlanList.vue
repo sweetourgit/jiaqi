@@ -161,16 +161,12 @@ export default {
       teamID:"",//产品ID
       financeType: [
         {
-          value: "0",
-          label: "全部"
-        },
-        {
           value: "1",
-          label: "未报账"
+          label: "已提交报账"
         },
         {
-          value: "2",
-          label: "已报账"
+          value: "0",
+          label: "未提交报账"
         }
       ],
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
@@ -288,7 +284,7 @@ export default {
       //this.teamQueryList(val,this.pageSize);
     },
     //计划list
-    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID) {
+    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID,financeState = this.isCheckSheet) {
       if (startDate) {
         let y = startDate.getFullYear();
         let m = startDate.getMonth() + 1 > 9 ? startDate.getMonth() + 1 : "0" + (startDate.getMonth() + 1);
@@ -315,6 +311,7 @@ export default {
           endDate: endDate,
           op: op,
           teamID: this.teamID == "" ? 0 : teamID,
+          isCheckSheet:this.financeState == "" ? -1 : this.financeState,
         }
       })
         .then(res => {

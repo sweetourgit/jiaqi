@@ -2,18 +2,18 @@
   <div>
   <el-tabs v-model="activeName" @tab-click="handleClick">
     <el-tab-pane label="退款记录" name="first">
-      <!-- <refundRecord></refundRecord> -->
+      <refundRecord></refundRecord>
     </el-tab-pane>
     <el-tab-pane label="需要您审批" name="second">
-      <!-- <refundApproval></refundApproval> -->
+      <refundApproval></refundApproval>
     </el-tab-pane>
   </el-tabs>
   </div>
 </template>
 
 <script>
-// import refundRecord from '@/page/Finance/refundManagement/refundRecord'
-// import refundApproval from '@/page/Finance/refundManagement/refundApproval'
+import refundRecord from '@/page/Finance/refundManagement/refundRecord'
+import refundApproval from '@/page/Finance/refundManagement/refundApproval'
 export default {
   name:"refundManagement",
   components:{
