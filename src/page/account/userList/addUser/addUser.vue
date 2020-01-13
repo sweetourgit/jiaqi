@@ -944,7 +944,9 @@ import Permission from '@/page/account/userList/addUser/permission'
           }
         )
           .then(function (obj) {
-
+            that.treeKey.push(obj.data.object.company);
+            that.company=obj.data.object.company;
+           // that.treeKey.push(obj.data.object.orgID);
             that.ruleForm.phone = obj.data.object.mobile
             that.ruleForm.name = obj.data.object.name
             that.ruleForm.mail = obj.data.object.email
