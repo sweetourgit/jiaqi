@@ -159,13 +159,20 @@
 
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
-        <el-form-item label="产品主要方向：" prop="productDirection">
-          <el-input size="small" placeholder="产品主要方向" style="width: 100%;" maxlength="80" show-word-limit
-            v-model="submitForm.productDirection">
-          </el-input>
+        <el-form-item label="使用部门：">
+          <el-cascader size="small" clearable style="width: 100%;"
+            v-model="test"
+            :options="options"
+            :props="props">
+          </el-cascader>
         </el-form-item>
       </el-col>
       <el-col :span="12">
+        <el-form-item label="产品主要方向：" prop="productDirection">
+          <el-input size="small" placeholder="产品主要方向" maxlength="80" show-word-limit style="width: 100%;"
+            v-model="submitForm.productDirection">
+          </el-input>
+        </el-form-item>
         <el-form-item label="供应商协议：" prop="isAgree">
           <el-select size="small" placeholder="供应商协议" style="width: 100%;"
             v-model="submitForm.isAgree">
@@ -239,6 +246,57 @@ export default {
 
   data(){
     return Object.assign(
+      {
+        test: null,
+        props: { multiple: true },
+        options: [{
+          value: 1,
+          label: '东南',
+          children: [{
+            value: 2,
+            label: '上海',
+            children: [
+              { value: 3, label: '普陀' },
+              { value: 4, label: '黄埔' },
+              { value: 5, label: '徐汇' }
+            ]
+          }, {
+            value: 7,
+            label: '江苏',
+            children: [
+              { value: 8, label: '南京' },
+              { value: 9, label: '苏州' },
+              { value: 10, label: '无锡' }
+            ]
+          }, {
+            value: 12,
+            label: '浙江',
+            children: [
+              { value: 13, label: '杭州' },
+              { value: 14, label: '宁波' },
+              { value: 15, label: '嘉兴' }
+            ]
+          }]
+        }, {
+          value: 17,
+          label: '西北',
+          children: [{
+            value: 18,
+            label: '陕西',
+            children: [
+              { value: 19, label: '西安' },
+              { value: 20, label: '延安' }
+            ]
+          }, {
+            value: 21,
+            label: '新疆维吾尔族自治区',
+            children: [
+              { value: 22, label: '乌鲁木齐' },
+              { value: 23, label: '克拉玛依' }
+            ]
+          }]
+        }]
+      },
       {
         isSave: false,
       },
