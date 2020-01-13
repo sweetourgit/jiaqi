@@ -991,9 +991,9 @@ export default {
           if (response.data.isSuccess) {
             // 
             if (that.approval_status == "1") {
-              // that.insert();
-              that.$message.success("审批提交成功~");
-              that.closeAdd();
+              that.insert();
+              // that.$message.success("审批提交成功~");
+              // that.closeAdd();
             } else if (that.approval_status == "2") {
               that.$message.success("已驳回~");
               that.closeAdd("cancal");
