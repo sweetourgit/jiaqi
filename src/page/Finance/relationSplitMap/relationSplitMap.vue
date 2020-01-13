@@ -73,14 +73,13 @@ export default {
     init(){
       let { id }= this.$route.query;
       getRoot(id).then(res => {
-        this.relations= relationBarMaker(res, true);
+        this.relations= relationBarMaker(res, null, true);
       })
     },
 
     wakeUpDisplay(payload){
-      if(!payload) this.$refs.displayBar.wakeup();
-      let { info, child }= payload;
-      this.$refs.displayBar.wakeup({ borrow: info, lend: child && child.info });
+      let { data, isShowAll }= payload;
+      this.$refs.displayBar.wakeup({ borrow: data, isShowAll });
     }
   }
 

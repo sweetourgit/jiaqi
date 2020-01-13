@@ -84,6 +84,8 @@ export default {
       Object.keys(this.submitForm).forEach(attr => {
         if(this.submitForm[attr]) conditions[attr]= this.submitForm[attr];
       })
+      if(conditions.beginTime) conditions.beginTime= new Date(new Date(conditions.beginTime).getTime()+ 28800000);
+      if(conditions.endTime) conditions.endTime= new Date(new Date(conditions.endTime).getTime()+ 28800000);
       return conditions;
     },
 
@@ -95,7 +97,7 @@ export default {
     beginTimeValidate(beginTime){
       let endTime= this.submitForm.endTime;
       if(!endTime) return;
-      if(endTime > beginTime) return;
+      if(endTime >= beginTime) return;
       this.$message.error('发起时间应小于截止时间');
       return this.submitForm.beginTime= null;
     },
@@ -103,7 +105,7 @@ export default {
     endTimeValidate(endTime){
       let beginTime= this.submitForm.beginTime;
       if(!beginTime) return;
-      if(endTime > beginTime) return;
+      if(endTime >= beginTime) return;
       this.$message.error('截止时间应大于发起时间');
       return this.submitForm.endTime= null;
     }

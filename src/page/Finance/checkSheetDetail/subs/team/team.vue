@@ -62,7 +62,10 @@
           @click="approvalHandler(true)">
           通过
         </el-button>
-        <el-button type="primary" size="small">打印</el-button>
+        <el-button type="primary" size="small"
+          @click="printHandler">
+          打印
+        </el-button>
         <el-button type="info" size="small"
           @click="backPage">
           取消
@@ -88,7 +91,7 @@
  * 2. 通过 /checkSheetDetail 进入，携带有财务报账单进入此页面时的tab和搜索条件等状态
  */
 
-import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ } from './api'
+import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ, endForJQ, saveChcektype } from './api'
 import printGround from './comps/printGround/printGround'
 import approvalForm from './comps/approvalForm'
 
@@ -153,10 +156,10 @@ export default {
      */
     choosePageType(){
       let { path, query }= this.$route;
-      let { id, planID, isCheckSheet, tab, conditions, workItemID }= query;
+      let { id, planID, isCheckSheet, tab, conditions, workItemID, guid }= query;
       this.cacheConditions= conditions;
       this.isFromCheckSheet= tab? true: false;
-      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID } });
+      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID, guid } });
       if(isCheckSheet=== '0') return 'add';
       // 如果[ isCheckSheet 不为 undefined ]或者[ tab 是 all ] 只能查看
       if(!this.$isNull(isCheckSheet) || tab=== 'all') return 'normal';
@@ -209,16 +212,26 @@ export default {
 
     approvalSaveHandler(payload){
       let { commentText, isAgree }= payload;
-      let workItemID= this.$route.query.workItemID;
+      let { guid, workItemID }= this.$route.query;
       let userCode= sessionStorage.getItem('tel');
       let action;
-      action= isAgree? agreeForJQ: rejectForJQ;
-      action({commentText, workItemID, userCode})
-      .then(() => {
+      action= isAgree? 
+        agreeForJQ({commentText, workItemID, userCode}): 
+        rejectForJQ({commentText, workItemID, userCode})
+        .then(() => {
+          return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
+        })
+        .then(() => {
+          return saveChcektype({ guid, checkType: 2 })
+        })
+      action.then(() => {
         // 重置页面按钮 防止点击
         this.type= 'normal';
         this.$message.success(isAgree? '审批完成': '驳回完成');
         this.backPage();
+      })
+      .catch(err => {
+        this.$message.error(isAgree? '审批通过失败': '驳回失败');
       })
     }
   }

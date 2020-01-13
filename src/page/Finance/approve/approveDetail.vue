@@ -135,7 +135,8 @@
         getParamsWorkItemId: null, // 工作流接口参数
         getApproveSource: null, //   如果路由是从拆分借款页跳过来的会有个来源参数。当拆分借款保存之后，详情页通过可以取消置灰状态
         getKeepBtnStatus: false,
-        getLsParamsSplitArr: null
+        getLsParamsSplitArr: null,
+        keepStatus: null,
       }
     },
     // 关于时间的过滤
@@ -215,6 +216,7 @@
         .then(obj => {
           let keepData = obj.data.objects
           this.keepBackContent = keepData
+          this.keepStatus = keepData[0].checkType
           this.checkNoSplit()
           this.listLoading = false
         }).catch(err => {
@@ -253,21 +255,34 @@
       },
       // 审批通过弹窗-确定
       handlePassFn(){
-        if(this.ifShowOperateBtn){
-          // 先提交拆分、还款记录，成功之后在调用工作流接口
-          console.log(this.getLsParamsSplitArr)
-          this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
-            "object": this.getLsParamsSplitArr
-          }).then( obj =>  {
-            console.log(obj, '提交申请返回来的参数')
-            this.handlePassApi()
-          }).catch( err => {
-            console.log(err)
-          })
-        } else {
-          this.handlePassApi()
-        }
-
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+          "object": {
+            guid: this.getApproveListGuid
+          }
+        })
+        .then(obj => {
+          let keepData = obj.data.objects
+          if(keepData !== null ){
+            if(this.ifShowOperateBtn){
+              // 先提交拆分、还款记录，成功之后在调用工作流接口
+              this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
+                "object": this.getLsParamsSplitArr
+              }).then( obj =>  {
+                console.log(obj, '提交申请返回来的参数')
+                this.handlePassApi()
+              }).catch( err => {
+                console.log(err)
+              })
+            } else {
+              this.handlePassApi()
+            }
+          } else {
+            this.$message.warning("此报销不是待审批状态，无法进行审批操作");
+          }
+          this.listLoading = false
+        }).catch(err => {
+          console.log(err)
+        })
       },
       // 驳回之后走工作流
       handleRejectFn(){
@@ -334,7 +349,22 @@
       },
       // 拆分/还款
       handleSplitRepaymentJump(){
-        this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich, queryWorkItemID: this.workItemIDArr } })
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+          "object": {
+            guid: this.getApproveListGuid
+          }
+        })
+        .then(obj => {
+          let keepData = obj.data.objects
+          if(keepData !== null ){
+            this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich, queryWorkItemID: this.workItemIDArr } })
+          } else {
+            this.$message.warning("此报销不是待审批状态，无法进行审批操作");
+          }
+          this.listLoading = false
+        }).catch(err => {
+        console.log(err)
+        })
       },
       handleClick(){},
       // 表格表头颜色

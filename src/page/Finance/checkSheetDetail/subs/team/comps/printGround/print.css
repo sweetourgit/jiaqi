@@ -13,6 +13,7 @@ table{
 }
 .print-ground>header .title{
   font-size: 18px;
+  line-height: 36px;
 }
 .print-ground>header .time{
   line-height: 2.5;

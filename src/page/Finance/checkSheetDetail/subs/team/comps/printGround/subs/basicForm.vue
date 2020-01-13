@@ -70,7 +70,12 @@ export default {
           ticket: null
         },
         rules: {
-          price: { pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/, message: '请输入正确的价格格式', trigger: 'blur' }
+          price: [
+            { pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/, message: '请输入正确的价格格式', trigger: 'blur' },
+            { validator: this.otherIncomeValidator, trigger: 'submit' }
+          ],
+          title: { validator: this.otherIncomeValidator, trigger: 'submit' },
+          ticket: { validator: this.otherIncomeValidator, trigger: 'submit' }
         }
       }
     )
@@ -102,6 +107,18 @@ export default {
     adaptor(){
       if(!this.$isNull(this.submitForm.price))
         this.submitForm.price= parseFloat(this.submitForm.price);
+    },
+
+    otherIncomeValidator(rule, value, cb){
+      let { ticket, title, price }= this.submitForm;
+      let error= new Error('不能单独填写票号;款项名称与金额不能单独填写');
+      // 三者都不填
+      if(!ticket && !title && !price) return cb();
+      // 只填写了票号
+      if(!(title && price) && ticket) return cb(error); 
+      // 价格title都填写了
+      if(price && title) return cb();
+      return cb(error);
     }
   }
 }

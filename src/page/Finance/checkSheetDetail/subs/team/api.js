@@ -105,3 +105,31 @@ export const rejectForJQ= function(object){
     })
   })
 }
+
+export const endForJQ= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.jqUrl+ '/JQ/EndProcess',
+      { ...object }
+    ).then((res) => {
+      let { code }= JSON.parse(res.data);
+      if(code!== 0) throw '驳回审批失败';
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+export const saveChcektype= function(object){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc+ '/finance/checksheet/api/savechecktype',
+      { object }
+    ).then((res) => {
+      let { isSuccess }= res.data;
+      if(!isSuccess) throw '驳回审批失败';
+      return resolve();
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}

@@ -15,12 +15,12 @@
         <!-- 报销还款审批页的去认款按钮显示begin -->
         <el-button
           type="primary"
-          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn !== 3 && hasSubject"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn == false && hasSubject"
           @click="recognitionDo(tableAssociated[0])"
         >去认款</el-button>
         <el-button
           type="primary"
-          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn == 3"
+          v-if="info.collectionType == 6 && baseInfo.accountID !== 13 && isLookBtn == true "
           @click="recognitionDetail(tableAssociated[0])"
         >查看</el-button>
         <!-- 报销还款审批页的去认款按钮显示end -->
@@ -918,24 +918,59 @@ export default {
     // 审批提交事件
     approvalSubmit() {
       const that = this;
-      if (this.hasSubject) {
-        this.tableAssociated.forEach(function(item, index, arr) {
-          const dataLocal = JSON.parse(localStorage.getItem(item.id));
-          // console.log(dataLocal);
-          if (dataLocal.hasCharge) {
-            that.chargeSubmit(
-              item,
-              dataLocal.row,
-              dataLocal.type,
-              dataLocal.charge
-            );
-          } else {
-            that.commitAxios(item, dataLocal.row, dataLocal.type);
+      if(that.info.collectionType == 6){// 报销还款
+        if(this.approval_status == "1"){
+          if(that.baseInfo.accountID != 13){
+            if (this.hasSubject) {
+              this.tableAssociated.forEach(function(item, index, arr) {
+                const dataLocal = JSON.parse(localStorage.getItem(item.id));
+                // console.log(dataLocal);
+                if (dataLocal.hasCharge) {
+                  that.chargeSubmit(
+                    item,
+                    dataLocal.row,
+                    dataLocal.type,
+                    dataLocal.charge
+                  );
+                } else {
+                  that.commitAxios(item, dataLocal.row, dataLocal.type);
+                }
+              });
+            } else {
+              that.axiosSubmit();
+            }
+          }else{
+            that.axiosSubmit();
           }
-        });
-      }else{
-        that.axiosSubmit();
+        }else if(this.approval_status == "2"){
+          that.axiosSubmit();
+        }
+      }else{// 其他
+        if(this.approval_status == "1"){
+          if (this.hasSubject) {
+            this.tableAssociated.forEach(function(item, index, arr) {
+              const dataLocal = JSON.parse(localStorage.getItem(item.id));
+              // console.log(dataLocal);
+              if (dataLocal.hasCharge) {
+                that.chargeSubmit(
+                  item,
+                  dataLocal.row,
+                  dataLocal.type,
+                  dataLocal.charge
+                );
+              } else {
+                that.commitAxios(item, dataLocal.row, dataLocal.type);
+              }
+            });
+          } else {
+            that.axiosSubmit();
+          }
+        }else if(this.approval_status == "2"){
+          that.axiosSubmit();
+        }
       }
+      
+      
     },
 
     axiosSubmit() {
@@ -954,10 +989,13 @@ export default {
         .then(function(response) {
           // console.log('审批操作',response);
           if (response.data.isSuccess) {
-            // that.$message.success("审批提交成功~");
+            // 
             if (that.approval_status == "1") {
-              that.insert();
+              // that.insert();
+              that.$message.success("审批提交成功~");
+              that.closeAdd();
             } else if (that.approval_status == "2") {
+              that.$message.success("已驳回~");
               that.closeAdd("cancal");
             }
             that.dialogVisibleApproval = false;
@@ -1018,11 +1056,11 @@ export default {
               transaction_Time: row.transaction_Time,
               transaction_DateTime: row.transaction_DateTime,
               trade_Currency: row.trade_Currency,
-              trade_Amount: row.trade_Amount,
+              trade_Amount: 0 - parseFloat(charge),
               value_Date: row.value_Date,
               exchange_rate: row.exchange_rate,
               transaction_reference_number:
-                row.transaction_reference_number + "_" + new Date().getTime(),
+                row.transaction_reference_number + "-" + new Date().getTime(),
               record_ID: row.record_ID,
               reference: row.reference,
               purpose: row.purpose,
@@ -1058,35 +1096,82 @@ export default {
               that.tableDataZH = [];
             }
           });
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/save", {
+            object: {
+              id: row.id,
+              transaction_Date: row.transaction_Date,
+              transaction_Time: row.transaction_Time,
+              transaction_DateTime: row.transaction_DateTime,
+              trade_Currency: row.trade_Currency,
+              trade_Amount: 0 - parseFloat(charge),
+              value_Date: row.value_Date,
+              exchange_rate: row.exchange_rate,
+              transaction_reference_number:row.transaction_reference_number, // + "_" + new Date().getTime()
+              record_ID: row.record_ID,
+              reference: row.reference,
+              purpose: row.purpose,
+              remark: row.remark,
+              transaction_Type: row.transaction_Type,
+              business_type: row.business_type,
+              account_holding_bank_number_of_payer:
+                row.account_holding_bank_number_of_payer,
+              payer_account_bank: row.payer_account_bank,
+              debit_Account_No: row.debit_Account_No,
+              payer_s_Name: row.payer_s_Name,
+              account_holding_bank_number_of_beneficiary:
+                row.account_holding_bank_number_of_beneficiary,
+              beneficiary_account_bank: row.beneficiary_account_bank,
+              payee_s_Account_Number: row.payee_s_Account_Number,
+              payee_s_Name: row.payee_s_Name,
+              surplus_Amount: row.surplus_Amount,
+              createTime: row.createTime,
+              isDeleted: 0,
+              is_ZCK: 0,
+              is_EBS: 0,
+              purpose_fee: charge
+            }
+          })
+          .then(function(obj) {
+            // console.log('中国银行',obj);
+            if (obj.data.isSuccess) {
+              that.$message.success("更新手续费成功！");
+              that.dialogVisibleSXF = false;
+              that.canClick = true;
+              // that.commitAxios(item, row, type);
+            } else {
+              that.tableDataZH = [];
+            }
+          });
       } else if (type == 1) {
         this.$http
           .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/insert", {
             object: {
-              id: this.rowMsg.id,
+              id: row.id,
               bank_serial_number:
-                this.rowMsg.bank_serial_number + "_" + new Date().getTime(),
-              account_number: this.rowMsg.account_number,
-              account_name: this.rowMsg.account_name,
-              certificate_code: this.rowMsg.certificate_code,
-              currency: this.rowMsg.currency,
-              cash_or_transfer: this.rowMsg.cash_or_transfer,
-              debit_amount: this.rowMsg.debit_amount,
-              credit_amount: this.rowMsg.credit_amount,
-              account_balance: this.rowMsg.account_balance,
-              reference: this.rowMsg.reference,
-              account_number_other: this.rowMsg.account_number_other,
-              account_name_other: this.rowMsg.account_name_other,
-              bank_other: this.rowMsg.bank_other,
-              bank_Code_other: this.rowMsg.bank_Code_other,
-              transaction_Date: this.rowMsg.transaction_Date,
-              purpose: this.rowMsg.purpose,
-              remark: this.rowMsg.remark,
-              purpose_Date: this.rowMsg.purpose_Date,
-              purpose_Merchant_code: this.rowMsg.purpose_Merchant_code,
-              purpose_fee: this.service_charge,
-              createTime: this.rowMsg.createTime,
+                row.bank_serial_number + "-" + new Date().getTime(),
+              account_number: row.account_number,
+              account_name: row.account_name,
+              certificate_code: row.certificate_code,
+              currency: row.currency,
+              cash_or_transfer: row.cash_or_transfer,
+              debit_amount: charge,
+              credit_amount: 0,
+              account_balance: row.account_balance,
+              reference: row.reference,
+              account_number_other: row.account_number_other,
+              account_name_other: row.account_name_other,
+              bank_other: row.bank_other,
+              bank_Code_other: row.bank_Code_other,
+              transaction_Date: row.transaction_Date,
+              purpose: row.purpose,
+              remark: row.remark,
+              purpose_Date: row.purpose_Date,
+              purpose_Merchant_code: row.purpose_Merchant_code,
+              purpose_fee: charge,
+              createTime: row.createTime,
               isDeleted: 0,
-              surplus_Amount: this.rowMsg.surplus_Amount,
+              surplus_Amount: row.surplus_Amount,
               is_ZCK: 0,
               is_EBS: 0
             }
@@ -1097,7 +1182,51 @@ export default {
               that.$message.success("添加手续费成功！");
               that.dialogVisibleSXF = false;
               that.canClick = true;
-              that.commitAxios(that.rowMsg, that.rowType);
+              that.commitAxios(item, row, type);
+            } else {
+              that.tableDataZH = [];
+            }
+          });
+
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/save", {
+            object: {
+              id: row.id,
+              bank_serial_number:
+                row.bank_serial_number, //  + "_" + new Date().getTime()
+              account_number: row.account_number,
+              account_name: row.account_name,
+              certificate_code: row.certificate_code,
+              currency: row.currency,
+              cash_or_transfer: row.cash_or_transfer,
+              debit_amount: charge,
+              credit_amount: 0,
+              account_balance: row.account_balance,
+              reference: row.reference,
+              account_number_other: row.account_number_other,
+              account_name_other: row.account_name_other,
+              bank_other: row.bank_other,
+              bank_Code_other: row.bank_Code_other,
+              transaction_Date: row.transaction_Date,
+              purpose: row.purpose,
+              remark: row.remark,
+              purpose_Date: row.purpose_Date,
+              purpose_Merchant_code: row.purpose_Merchant_code,
+              purpose_fee: charge,
+              createTime: row.createTime,
+              isDeleted: 0,
+              surplus_Amount: row.surplus_Amount,
+              is_ZCK: 0,
+              is_EBS: 0
+            }
+          })
+          .then(function(obj) {
+            // console.log('兴业银行',obj);
+            if (obj.data.isSuccess) {
+              that.$message.success("更新手续费成功！");
+              that.dialogVisibleSXF = false;
+              that.canClick = true;
+              // that.commitAxios(item, row, type);
             } else {
               that.tableDataZH = [];
             }
@@ -1210,7 +1339,7 @@ export default {
               //     : (response.data.object.accountID = "汇款")
             };
 
-            that.getAccount(response.data.object.accountID);
+            that.getAccount(response.data.object.accountID,response.data.object.arrears[0].id);
 
             that.printMatchingPrice =
               response.data.object.arrears[0].matchingPrice;
@@ -1233,7 +1362,7 @@ export default {
             that.tableDataResult = response.data.object.spw;
 
             that.tableManyRow = that.tableAssociated.length;
-            that.getCollectionPriceTotal = 0;
+            // that.getCollectionPriceTotal = 0;
 
             // 凭证
             that.fileList = response.data.object.files;
@@ -1246,7 +1375,7 @@ export default {
         });
     },
 
-    getAccount(id) {
+    getAccount(id,arrearsID) {
       const that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
@@ -1262,6 +1391,7 @@ export default {
             that.hasSubject = false;
           }
           // console.log(1,that.hasSubject)
+          that.getCollectionPriceTotal = 0;
           if (!that.hasSubject) {
             // alert("没有科目值");
             that.tableAssociated.forEach(item => {
@@ -1277,9 +1407,12 @@ export default {
               that.getCollectionPriceTotal += item.matchingPrice;
               // console.log("submitData", localStorage.getItem(item.id));
               if (localStorage.getItem(item.id) == null) {
-                item.hasSubmitData = true;
+                // alert('true');
+                // item.hasSubmitData = true;
+                that.$set(item, "hasSubmitData", true);
               } else {
-                item.hasSubmitData = false;
+                // item.hasSubmitData = false;
+                that.$set(item, "hasSubmitData", false);
               }
               if (that.info.collectionType !== 6) {
                 if (localStorage.getItem(item.id) == null) {
@@ -1292,31 +1425,25 @@ export default {
           // 如果是报销还款进来的并且获取的accountID 13为现金 则可以直接通过 此时没有去认款的按钮 不等于13都是汇款
           // 等于汇款 还分为对公账户和对私账户   对公账户才有去认款的按钮 hasSubject为true则有科目值对公  that.tableAssociated[0].checkType != 3 代表没认过款的
           // 查看按钮的显示与隐藏的判断
-          that.isLookBtn = that.tableAssociated[0].checkType;
-
+          // that.isLookBtn = that.tableAssociated[0].checkType;
+          // console.log("hasSubject",that.hasSubject)
+          that.isLookBtn = localStorage.getItem(arrearsID) ? true : false;
           if (that.info.collectionType == 6) {
-            if (that.isLookBtn !== 3) {
-              if (id == 13) {
-                that.passDisabled = false;
-              } else {
-                that.hasSubject
-                  ? (that.passDisabled = true)
-                  : (that.passDisabled = false);
-              }
+            if (id == 13) {
+              that.passDisabled = false;
             } else {
+              that.hasSubject
+                ? (that.passDisabled = true)
+                : (that.passDisabled = false);
+            }
+            
+            if(that.isLookBtn == true) {
               that.passDisabled = false;
             }
-            // if (response.data.object.accountID == 13) {
-            //   that.passDisabled = false;
-            // } else {
-            //   that.hasSubject
-            //     ? (that.passDisabled = true)
-            //     : (that.passDisabled = false);
-            // }
           }
           // 豆包加end
 
-          // console.log("get", that.hasSubject);
+          // console.log("get", that.passDisabled);
         })
         .catch(function(error) {
           console.log(error);

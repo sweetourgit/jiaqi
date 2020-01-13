@@ -309,7 +309,6 @@ import moment from 'moment'
       },
       // 请求工作流接口获取未完成的任务
       pageList(){
-        console.log('请求工作流接口获取未完成的任务')
         var that = this
         var arr = []
         that.tableData  = []

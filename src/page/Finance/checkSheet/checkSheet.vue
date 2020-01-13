@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 80px;">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="跟团游" name="team"></el-tab-pane>
       <el-tab-pane label="周边游" name="around"></el-tab-pane>

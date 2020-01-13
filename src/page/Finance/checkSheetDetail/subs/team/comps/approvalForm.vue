@@ -53,7 +53,7 @@ export default {
   },
 
   methods: {
-    wakeup(isAgree){
+    wakeup({ isAgree }){
       this.isAgree= isAgree;
       this.state= true;
     },
