@@ -28,9 +28,10 @@
 <script>
 export default {
   props:{
-    roleId:0,
+    id:0,
     variable:0,
-    dialogType:0
+    dialogType:0,
+    userType:0,
   },
   data() {
     return {
@@ -46,7 +47,7 @@ export default {
       variable:function(){        
         if(this.dialogType==1){
           this.getHeight();
-          this.getActs(this.roleId);   
+          this.getActs(this.id);   
           this.dialogFormAuth=true;    
         }
      }
@@ -100,15 +101,15 @@ export default {
       },
       getActs(){
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
-                "userID":this.roleId,
+                "userID":this.id,
               }).then(res => {              
                 this.authData=res.data.objects;           
           })
       },
       perSubmit(){
-        if(this.multipleSelection[0].id > 0){
+        if(this.userType==1){
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
-                 "userID": this.roleId,
+                 "userID": this.id,
                  "object": this.authData
               }).then(res => {         
                 if(res.data.isSuccess == true){

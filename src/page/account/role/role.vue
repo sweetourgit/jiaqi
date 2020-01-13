@@ -4,7 +4,7 @@
            <el-button @click="openRole(1,'新增')">新增</el-button>
            <el-button :disabled="forbidden" @click="delRole">删除</el-button>
            <el-button :disabled="forbidden" @click="openRole(2,'编辑')">编辑</el-button>
-           <el-button :disabled="forbidden" @click="operation(1)">授权</el-button>
+           <el-button :disabled="forbidden" @click="operation(1,2)">授权</el-button>
            <el-button :disabled="forbidden" @click="operation(2)">选择用户</el-button>
          </el-row>
         <!--list-->
@@ -38,8 +38,8 @@
             <el-button type="primary" @click="saveRole('rform')" class="confirm">确 定</el-button>
           </div>
       </el-dialog>
-      <grant-auth :roleId="roleId" :variable="variable" :dialogType="dialogType"></grant-auth>
-      <choose-user :roleId="roleId" :variable="variable" :dialogType="dialogType"></choose-user>
+      <grant-auth :id="id" :variable="variable" :dialogType="dialogType" :userType="userType"></grant-auth>
+      <choose-user :id="id" :variable="variable" :dialogType="dialogType"></choose-user>
   </div>
 </template>
 
@@ -60,7 +60,8 @@ export default {
         total: 0,
         variable:0,
         dialogType:0,
-        roleId:0,
+        userType:0,//用户1，角色2
+        id:0,
         multipleSelection: [],   //选中的list
         forbidden:true,         //按钮是否禁用
         title:"",
@@ -205,10 +206,11 @@ export default {
         this.dialogFormVisible = false;
         this.$refs["rform"].resetFields();
       },
-      operation(i){
-          this.roleId=this.multipleSelection[0].id;
+      operation(i,type){
+          this.id=this.multipleSelection[0].id;
           this.variable++;
-          this.dialogType = i;    
+          this.dialogType = i;
+          this.userType=type;
       },
   }
 }

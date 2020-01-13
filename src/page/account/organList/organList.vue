@@ -39,9 +39,9 @@
         <el-table-column prop="sex" label="性别" align="center" width="80%"></el-table-column>
         <el-table-column label="操作" align="center" width="320%">
           <template slot-scope="scope">
-            <el-button class="enter" plain size="small">权限</el-button>
-            <el-button type="primary" size="small" @click="editPosition(scope.$index, scope.row)">职位</el-button>
-            <el-button type="danger" size="small" @click="del(scope.$index, scope.row)">删除</el-button>
+            <el-button class="enter" plain size="small" @click="operation(1,1,scope.row.id)">权限</el-button>
+           <!-- <el-button type="primary" size="small" @click="editPosition(scope.$index, scope.row)">职位</el-button>
+            <el-button type="danger" size="small" @click="del(scope.$index, scope.row)">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -184,11 +184,16 @@
         <el-button class="oppp" type="primary" @click="setSave = false">保存</el-button>
       </div>
     </el-dialog>
+    <grant-auth :id="id" :variable="variable" :dialogType="dialogType" :userType="userType"></grant-auth>
   </div>
 </template>
 
 <script>
+import grantAuth from '../role/grantAuth'
 export default {
+  components:{
+    "grant-auth":grantAuth,
+  }, 
   data() {
     return {
       // 获取组织的ID
@@ -295,7 +300,11 @@ export default {
       },
       keyID: [],
       deleteNum: [],
-      dbSave: ''
+      dbSave: '',
+      variable:0,
+      dialogType:0,
+      userType:0,//用户1，角色2
+      id:0,
     };
   },
   created(){
@@ -870,7 +879,13 @@ export default {
       }).catch(function(err){
         console.log(err)
       })
-    }
+    },
+    operation(i,type,id){
+          this.id=id;
+          this.variable++;
+          this.dialogType = i;
+          this.userType=type;
+    },
   }
 };
 </script>
