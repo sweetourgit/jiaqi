@@ -164,7 +164,7 @@
                     </div>-->
                     <div class="left">
                       <div class="hh">
-                        <el-tree ref="oppo" @node-click="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey" highlight-current></el-tree>
+                        <el-tree ref="oppo" @node-click="treeClick" @node-expand="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey" highlight-current></el-tree>
                       </div>
                     </div>
                     <div style="position: absolute;top: 10px;right: 10px">
