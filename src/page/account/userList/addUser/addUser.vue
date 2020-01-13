@@ -178,9 +178,10 @@
 
 
           </el-tab-pane>
+         <!--
           <el-tab-pane label="权限配置" name="second">
             <Permission></Permission>
-          </el-tab-pane>
+          </el-tab-pane>-->
         </el-tabs>
       </div>
   </div>
@@ -236,6 +237,7 @@ import Permission from '@/page/account/userList/addUser/permission'
 
 
       return {
+        company:0,
         fID:'',
         dname:'',
         addInput: {
@@ -393,11 +395,13 @@ import Permission from '@/page/account/userList/addUser/permission'
         },
         // 单击tree节点
         treeClick(a, b, c) {
-
-          console.log(a.id)
-          console.log(a.label)
-          this.fID = a.id
-          this.dname = a.label
+          if(a.leaf==false){
+            this.company=a.id;
+          }
+          //console.log(this.company);
+         // console.log(a.label);
+          this.fID = a.id;
+          this.dname = a.label;
           this.data = [];
           this.org = a.id;
           this.tableData = [];
@@ -750,7 +754,7 @@ import Permission from '@/page/account/userList/addUser/permission'
             .then(function (obj) {
 
               that.orilist = obj.data.object.orgName
-
+              
 
 
             })
@@ -783,6 +787,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                     "userType": this.ruleForm.type,
                     "userState":2,
                     "orgID": this.ppid,
+                    "company":this.company
                   },
                   "id": 0
                 },{
@@ -841,6 +846,7 @@ import Permission from '@/page/account/userList/addUser/permission'
                     //"userState":this.ruleForm.state = 1 ? 2 : 3,
                     "userState":this.userState,
                     "orgID": this.ppid,
+                    "company":this.company
                   },
                 },{
                   headers:{
