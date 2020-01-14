@@ -16,6 +16,13 @@
               </template>
             </el-autocomplete>
           </el-form-item>
+          <el-form-item label="回冲供应商：" prop="supplier" label-width="140px">
+            <el-autocomplete class="inputWidth" v-model="ruleForm.supplierHC" :fetch-suggestions="querySearchHC" placeholder="请输入供应商" @select="handleSelectHC" @blur="blurHandHC">
+              <template slot-scope="{ item }">
+                <div>{{ item.valueName }}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
           <el-form-item label="借款类型：" prop="type" label-width="140px">
             <el-select v-model="ruleForm.type" placeholder="请选择" class="inputWidth">
               <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -129,9 +136,12 @@
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',// 选择的供应商
+          supplier: '',
           supplierName: '',
-          supplierID: '',// 选择的供应商ID
+          supplierID: '',
+          supplierHC: '',
+          supplierNameHC: '',
+          supplierIDHC: '',
           number: '',
           buy_type: '',
           account_type: '',
@@ -228,6 +238,9 @@
           supplier: '',// 选择的供应商
           supplierName: '',
           supplierID: '',// 选择的供应商ID
+          supplierHC: '',
+          supplierNameHC: '',
+          supplierIDHC: '',
           number: '',
           buy_type: '',
           account_type: '',
@@ -243,7 +256,7 @@
         this.tableDataXG = [];
         this.$emit('close', false);
       },
-      // 取消添加
+      // 取消
       cancalBtn(){
         if(this.ruleForm.collectionTime != '' || this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.ruleForm.money != '' || this.ruleForm.abstract != '' || this.fileList.length != 0){
           this.$confirm("是否取消本次添加?", "提示", {
@@ -292,11 +305,11 @@
               });
               return;
             }
-            // this.ruleForm.supplierID = 6;
-            // this.ruleForm.supplierName = 2;
+            console.log(this.ruleForm.supplierIDHC);
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
               "supplier_code": this.ruleForm.supplierID,
-              "supplier_name": this.ruleForm.supplierName,
+              "recoil_supplier_code": this.ruleForm.supplierIDHC,
+              "supplier_name": this.ruleForm.supplierNameHC,
               "periphery_type": 2,
               "loan_type": this.ruleForm.type,
               "loan_money": this.ruleForm.money,
@@ -348,7 +361,7 @@
         });
       },
 
-      // 选择账户function -- chooseFun 加载账户，打开弹窗；close 关闭弹框；chooseBtn 选择账户并关闭弹框
+      // 选择账户function
       chooseFun(){
         const that = this;
 
@@ -356,7 +369,6 @@
           this.$message.warning("请先选择供应商~");
         }else{
           this.dialogFormVisible1 = true;
-          // this.ruleForm.supplierID = 6;//暂时替代，获取全部的接口没出
           this.$http.post(this.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
             "id": this.ruleForm.supplierID
           },).then(function (obj) {
@@ -429,7 +441,7 @@
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
 
-      // 供应商选择
+      // 供应商
       querySearchD(queryString, cb){
         const supplierList = this.supplierList;
         var results = queryString ? supplierList.filter(this.createFilter1(queryString)) : supplierList;
@@ -458,14 +470,14 @@
         }
         // const name = 2;
         this.ruleForm.supplierName = nameStr;
-        this.loadRelatedData();
+        // this.loadRelatedData();
       },
       blurHand(){
         const that = this;
         let ida = '', namea = '';
         if(that.ruleForm.supplier == ''){
           that.ruleForm.supplierID = '';
-          that.tableDataXG = [];
+          // that.tableDataXG = [];
         }else{
           this.supplierList.forEach(function (item, index, arr) {
             if(that.ruleForm.supplier == item.value){
@@ -489,21 +501,87 @@
             }
             that.ruleForm.supplierName = nameStr;
             // const name = 2;
+            // this.loadRelatedData();
+          }else{
+            that.ruleForm.supplierID = '';
+            // that.tableDataXG = [];
+          }
+        }
+      },
+
+      querySearchHC(queryString, cb){
+        const supplierList = this.supplierList;
+        var results = queryString ? supplierList.filter(this.createFilterHC(queryString)) : supplierList;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilterHC(queryString) {
+        return (supplierList) => {
+          return (supplierList.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
+        };
+      },
+      handleSelectHC(item){
+        console.log(item);
+        this.ruleForm.supplierIDHC = item.id;
+        // this.getSupplierCode(item.id);
+        this.ruleForm.supplierHC = item.valueName;
+        let nameArr = item.value.split(',');
+        let nameStr = '';
+        nameArr.forEach(function (item, index, arr) {
+          if(index > 0){
+            nameStr += item + ',';
+          }
+        });
+        if(nameStr.substr(nameStr.length-1,1) === ','){
+          nameStr = nameStr.substr(0, nameStr.length - 1);
+        }
+        // const name = 2;
+        this.ruleForm.supplierNameHC = nameStr;
+        this.loadRelatedData();
+      },
+      blurHandHC(){
+        const that = this;
+        let ida = '', namea = '';
+        if(that.ruleForm.supplierHC == ''){
+          that.ruleForm.supplierIDHC = '';
+          that.tableDataXG = [];
+        }else{
+          this.supplierList.forEach(function (item, index, arr) {
+            if(that.ruleForm.supplierHC == item.value){
+              ida = item.id;
+              namea = item.value;
+              that.ruleForm.supplierHC = item.valueName;
+            }
+          });
+          if(ida){
+            that.ruleForm.supplierIDHC = ida;
+            // that.getSupplierCode(ida);
+            let nameArr = namea.split(',');
+            let nameStr = '';
+            nameArr.forEach(function (item, index, arr) {
+              if(index > 0){
+                nameStr += item + ',';
+              }
+            });
+            if(nameStr.substr(nameStr.length-1,1) === ','){
+              nameStr = nameStr.substr(0, nameStr.length - 1);
+            }
+            that.ruleForm.supplierNameHC = nameStr;
+            // const name = 2;
             this.loadRelatedData();
           }else{
-            that.ruleForm.dsupplierID = '';
+            that.ruleForm.supplierIDHC = '';
             that.tableDataXG = [];
           }
         }
       },
 
-      // 加载供应商编码
       getSupplierCode(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget",{
           id: id
         }).then(function(obj) {
-          console.log('获取供应商编码',obj);
+          // console.log('编码',obj);
           if(obj.data.isSuccess){
 
             if(obj.data.object.supplierCode && obj.data.object.supplierCode != '-1'){
@@ -520,11 +598,10 @@
         });
       },
 
-      // 加载供应商信息
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
-          console.log('获取供应商',obj);
+          // console.log('获取供应商',obj);
           if(obj.data.isSuccess){
             let supplierObj = [];
             obj.data.objects.forEach(function (item, index, arr) {
@@ -543,7 +620,7 @@
         });
       },
 
-      //加载相关信息
+      //相关信息
       loadRelatedData(){
         const that = this;
         this.loading = true;
@@ -552,15 +629,14 @@
           timeEnd: this.ruleForm.timeEnd,
           productName: this.ruleForm.productName
         }
-        // this.ruleForm.supplierName = 2;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/getorder", {
-          "supplier_name": this.ruleForm.supplierName,
+          "supplier_name": this.ruleForm.supplierNameHC,
           "buy_type": 2,
           "time_start": this.ruleForm.timeStart,
           "time_end": this.ruleForm.timeEnd,
           "product_name": this.ruleForm.productName
         }).then(function(res) {
-          console.log('获取相关信息',res);
+          // console.log('获取相关信息',res);
           if(res.data.code == 200){
             that.tableDataXG = res.data.data.list;
             let totalMoney = 0, totalNum = 0;
@@ -581,7 +657,7 @@
           that.loading = false;
         });
       },
-      // 加载相关信息--重置
+      // 重置
       emptyButtonInside(){
         const that = this;
         this.ruleForm.timeStart = '';
@@ -591,16 +667,14 @@
         this.loadRelatedData();
       },
 
-      // 开始工作流
+      // 工作流
       startWork(obj){
-          //        alert('执行工作流function！');
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + '/ZB/StartUpWorkFlowForZB_V2', {
           "jQ_ID": obj.id,
           "jQ_Type": obj.periphery_type,
           "workflowCode": obj.workflowCode,
           "userCode": sessionStorage.getItem('tel'),
-          //          "userCode": "zb1",// 测试
           "finishStart": "true",
           "paramValues": [{
             "itemName": "amount",
@@ -609,6 +683,9 @@
             "itemName": "supplierName",
             "itemValue": this.ruleForm.supplierName
           }, {
+            "itemName": "recoilsupplierName",
+            "itemValue": this.ruleForm.supplierNameHC
+          }, {
             "itemName": "loanId",
             "itemValue": obj.id
           }, {
@@ -616,8 +693,13 @@
             "itemValue": this.ruleForm.account_type
           }]
         }).then(res => {
-          //          console.log('工作流',res);
-          let result = JSON.parse(res.data);
+          console.log(res);
+          let result = '';
+          if(typeof res.data == 'string'){
+            result = JSON.parse(res.data);
+          }else{
+            result = res.data;
+          }
           if (result.code == '0') {
             console.log('启动工作流成功');
             that.closeAdd();
@@ -629,7 +711,7 @@
               that.$message.warning('启动工作流错误!');
             }
             that.cancalLoan(obj.id);
-            //            that.closeAdd();
+            // that.closeAdd();
             console.log(res.data);
           }
         }).catch(err => {
@@ -639,7 +721,6 @@
         })
       },
 
-      // 时间限制（开始时间小于结束时间）
       beginDate(){
         const that = this;
         return {
@@ -664,18 +745,13 @@
           }
         }
       },
-
-      // 工作流启动失败，需撤销借款申请
       cancalLoan(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {
           "id": id
         }, ).then(function(response) {
-          //            console.log('借款撤销操作',response);
           if (response.data.code == '200') {
-            //            that.$message.success("撤销成功~");
-            //            that.endWorking();
-            //            that.closeAdd();
+            // that.$message.success("撤销成功~");
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
