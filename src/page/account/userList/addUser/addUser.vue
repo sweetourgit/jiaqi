@@ -144,7 +144,7 @@ import '../../../../../static/ztree/jquery.ztree.core.js'
         setting: {
           async: {
               enable: true,
-              url: this.GLOBAL.serverSrc + "/org/api/ztree/deptlist",
+              url: this.GLOBAL.serverSrc + "/org/api/deptlist/ztree",
               autoParam: ["id"],
               type: 'get',
               checkable: true,
