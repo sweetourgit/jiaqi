@@ -55,20 +55,20 @@
     <tr 
       v-for="(item, i) in subs"
       :key="i">
-      <td class="base" colspan="7">
-        <div class="cell"></div>
-      </td>
-      <td class="base" style="width:5%;">
-        <div class="cell">{{ item.price | priceFilter(true) }}</div>
-      </td>
-      <td class="base" colspan="2">
+      <td class="base" colspan="10">
         <div class="cell"></div>
       </td>
       <td class="base">
-        <div class="cell">{{ item.collectionNumber }}</div>
+        <div class="cell">
+          <div class="label">{{ item.collectionNumber }}</div>
+          <div>{{ item.price | priceFilter(true) }}</div>
+        </div>
       </td>
       <td class="base">
-        <div class="cell">{{ item.ticketNumber }}</div>
+        <div class="cell">
+          <div class="label">{{ item.ticketNumber }}</div>
+          <div>{{ item.invoicePrice | priceFilter(true) }}</div>
+        </div>
       </td>
       <td class="base">
         <div class="cell">{{ item.mark }}</div>
@@ -129,6 +129,7 @@ export default {
           price: collection[i] && collection[i].MatchingPrice,
           collectionNumber: collection[i] && collection[i].CollectionID,
           ticketNumber: ticket[i] && ticket[i].InvoiceNumber,
+          invoicePrice: ticket[i] && ticket[i].InvoicePrice,
           mark: mark[i] && mark.Mark
         })
       }
@@ -138,9 +139,10 @@ export default {
      * @description: mark里默认会有一个空注释
      */
     markMaker(mark){
-      mark= JSON.parse(mark);
+      if(mark=== 'string') return [];
+      mark= JSON.parse(mark || "[]");
       if(mark.length=== 1 && !mark.Mark) return []; 
-      return mark
+      return mark;
     }
   }
 }

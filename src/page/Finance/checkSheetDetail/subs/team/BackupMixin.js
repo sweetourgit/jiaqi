@@ -9,12 +9,7 @@ class BackupStorage {
     this.POOL_SIZE= 5;
   }
 
-  /**
-   * @description: 
-   * @param { CheckSheet } checkSheet 
-   */
-  set(checkSheet, val, expire= '1M'){
-    let { planID }= checkSheet;
+  set(planID, val, expire= '1M'){
     let key= this.prefix+ planID;
     let cache= this.get(planID);
     // 有缓存则替换
@@ -49,7 +44,15 @@ const BackupMixin= function(){
   let storage= new BackupStorage();
   
   return {
-
+    methods: {
+      cacheCheckSheet(checkSheet){
+        let { planID, guideName, localName, otherIncomes }= checkSheet;
+        storage.set(planID, { guideName, localName, otherIncomes });
+      },
+      getCacheCheckSheet(){
+        
+      }
+    }
   }
 }
 
