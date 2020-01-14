@@ -94,8 +94,11 @@
 import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ, endForJQ, saveChcektype } from './api'
 import printGround from './comps/printGround/printGround'
 import approvalForm from './comps/approvalForm'
+import BackupMixin from './BackupMixin.js'
 
 export default {
+  mixins: [BackupMixin()],
+
   components: { printGround, approvalForm },
 
   // 创建和唤醒都要从新执行init
