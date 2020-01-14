@@ -288,7 +288,7 @@ export default {
       //this.teamQueryList(val,this.pageSize);
     },
     //计划list
-    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID) {
+    teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID,financeState = this.isCheckSheet) {
       if (startDate) {
         let y = startDate.getFullYear();
         let m = startDate.getMonth() + 1 > 9 ? startDate.getMonth() + 1 : "0" + (startDate.getMonth() + 1);
@@ -315,6 +315,7 @@ export default {
           endDate: endDate,
           op: op,
           teamID: this.teamID == "" ? 0 : teamID,
+          isCheckSheet:this.financeState == "" ? -1 : this.financeState,
         }
       })
         .then(res => {

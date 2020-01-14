@@ -363,10 +363,9 @@
       </div>
       <div class="detailsTitle">基本信息</div>
       <div>
-        <div class="checkType" style="background: #ffa200">报账中</div>
-        <!-- <div class="checkType" v-if="fundamental.checkType=='0'" style="background: #ffa200" >审批中</div>
-         <div class="checkType" v-if="fundamental.checkType=='2'" style="background: #ff0000" >驳回</div>
-        <div class="checkType" v-if="fundamental.checkType=='1'" style="background: #007500">通过</div>-->
+        <!-- <div class="checkType" style="background: #ffa200">报账中</div> -->
+        <div class="checkType" v-if="teampreviewData.isCheckSheet=='0'" style="background: #ffa200" >未提交报账</div>
+        <div class="checkType" v-if="teampreviewData.isCheckSheet=='1'" style="background: #007500">已提交报账</div>
       </div>
       <div class="pro-info">
         <table width="100%">
@@ -440,7 +439,7 @@
             </td>
             <td width="33%">
               <div width="80" class="fl">毛利率:</div>
-              <div class="fl ml13">{{teampreviewData.rate | numFilter}}%</div>
+              <div class="fl ml13">{{rate | numFilter}}%</div>
             </td>
           </tr>
         </table>
@@ -840,6 +839,7 @@ export default {
       enrollDetail: "", //订单需要
       newEnrollDetail: "", //传给后台用的
       tradeID:0,//获取同业销售ID
+      rate:'', // 获取毛利率
     };
   },
   filters: {
@@ -964,6 +964,7 @@ export default {
         .then(res => {
           if (res.data.isSuccess == true) {
             this.teampreviewData = res.data.object;
+            this.rate = res.data.object.rate *100 ; 
             this.getBorrowing(this.planId);
             this.teamEnrolls(this.planId);
           }
