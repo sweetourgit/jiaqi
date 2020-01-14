@@ -114,12 +114,22 @@
         <div class="matter">
           <div class="fl">
             <span class="point"></span>
-            <span class="fl">{{orderList.orderStatus}}</span>
+            <span v-if="orderList.orderStatus == 1">补充资料</span>
+            <span v-if="orderList.orderStatus == 2">电子合同</span>
+            <span v-if="orderList.orderStatus == 3">待出行</span>
+            <span v-if="orderList.orderStatus == 4">出行中</span>
+            <span v-if="orderList.orderStatus == 5">待评价</span>
+            <span v-if="orderList.orderStatus == 6">订单完成</span>
+            <span v-if="orderList.orderStatus == 7">未确认</span>
+            <span v-if="orderList.orderStatus == 8">签署合同</span>
+            <span v-if="orderList.orderStatus == 9">作废订单</span>
+            <span v-if="orderList.orderStatus == 10">确认订单</span>
+            <!-- <span class="fl">{{orderList.orderStatus}}</span> -->
           </div>
-          <div class="fl ml30">
+          <!-- <div class="fl ml30">
             <span class="fl">待确认剩余</span>
             <span class="fl red">23:00:00</span>
-          </div>
+          </div> -->
           <div class="fr">
             <span class="fl cursor">联系客人</span>
             <span class="fl ml5">|</span>
@@ -213,7 +223,7 @@ export default {
           this.tableDate = res.data.object.guest; // 获取订单信息页面表格内容
         }
       });
-    },
+    },                                                                                                                                                                          
     refund(i){ // 点击退款出现退款流程弹窗
       this.orderRefund++;
       this.orderRefundDialog = i;

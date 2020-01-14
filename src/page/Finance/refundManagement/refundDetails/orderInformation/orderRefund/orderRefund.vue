@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-dialog title="退款" :visible.sync="dialogOrderRefund" custom-class="city_list" style="margin-top:-100px;" width="1200px"
-      @close="cancelOrder()">
+      @close="cancelOrder('ruleForm')">
       <div class="pa">
-        <el-button class="ml13" @click="cancelOrder()">取 消</el-button>
+        <el-button class="ml13" @click="cancelOrder('ruleForm')">取 消</el-button>
         <el-button class="ml13" type="primary">申 请</el-button>
       </div>
       <div class="border">
@@ -13,29 +13,29 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">订单总额:</div>
-                <div class="fl ml13">{{refundList.id}}</div>
+                <div class="fl ml13">{{orderList.id}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">已付金额:</div>
-                <div class="fl ml13">{{refundList.userName}}</div>
+                <div class="fl ml13">{{orderList.userName}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">未付金额:</div>
-                <div class="fl ml13">{{refundList.createTime}}</div>
+                <div class="fl ml13">{{orderList.createTime}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">其他费用:</div>
-                <div class="fl ml13">{{refundList.id}}</div>
+                <div class="fl ml13">{{orderList.id}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">整体优惠:</div>
-                <div class="fl ml13">{{refundList.userName}}</div>
+                <div class="fl ml13">{{orderList.userName}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">退款金额:</div>
-                <div class="fl ml13">{{refundList.createTime}}</div>
+                <div class="fl ml13">{{orderList.createTime}}</div>
               </td>
             </tr>
           </table>
@@ -49,6 +49,7 @@
         </div>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
+        <!--全退-->
         <el-form-item label="申请原由" v-if="ruleForm.refundWay == 1" prop="originally">
           <el-input v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由"></el-input>
           <span class="Numbers">{{ruleForm.originally.length}}/100字</span>
@@ -65,6 +66,7 @@
           <el-input v-model="ruleForm.cardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
           <span class="Numbers">{{ruleForm.cardPeople.length}}/40字</span>
         </el-form-item>
+        <!--部分退-->
         <el-form-item label="还需退款" v-if="ruleForm.refundWay == 2" prop="needRefund">
           <el-input v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
         </el-form-item>
@@ -108,7 +110,7 @@ export default {
   data() {
     return {
       dialogOrderRefund:false,
-      refundList:{},
+      orderList:{},
       ruleForm:{
         refundWay:'1',// 退款方式
         originally:'', // 全退原由
@@ -179,11 +181,16 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    clickTab(formName){
+    clickTab(formName){ // 切换退款方式清空表单
       this.$refs[formName].resetFields();
     },
-    cancelOrder(){
+    cancelOrder(formName){ // 关闭退款弹窗
       this.dialogOrderRefund = false;
+      this.$refs[formName].resetFields();
+      this.tableDate = [];
+    },
+    getOrder(ID){ // 点击退款获取详情信息
+
     },
   }
 };
