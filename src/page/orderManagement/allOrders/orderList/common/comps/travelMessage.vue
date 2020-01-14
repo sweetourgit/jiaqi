@@ -60,7 +60,6 @@ ul {
           <el-button
             class="fl cursor"
             @click="$emit('edit-guest', guest)"
-            :disabled="disabled"
           >编辑</el-button>
           <span class="fl">|</span>
           <el-button

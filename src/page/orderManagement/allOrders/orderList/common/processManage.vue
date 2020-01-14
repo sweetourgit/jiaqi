@@ -157,16 +157,14 @@
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactName"
-            v-has="'others'"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
         <el-form-item label="联系电话" class="contact" prop="contactPhone">
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactPhone"
-            v-has="'others'"
-            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
+            :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
         <hr />
@@ -202,6 +200,7 @@
         <el-button
           class="fl"
           @click="dialogVisible = true"
+          :disabled="paid !== 0"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
         >取消订单</el-button>
         <!-- 修改订单状态按钮:disabled="isChangeNumber || isLowPrice"-->
