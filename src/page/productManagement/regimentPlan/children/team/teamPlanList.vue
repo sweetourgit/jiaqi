@@ -161,16 +161,12 @@ export default {
       teamID:"",//产品ID
       financeType: [
         {
-          value: "0",
-          label: "全部"
-        },
-        {
           value: "1",
-          label: "未报账"
+          label: "已提交报账"
         },
         {
-          value: "2",
-          label: "已报账"
+          value: "0",
+          label: "未提交报账"
         }
       ],
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
