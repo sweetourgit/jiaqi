@@ -13,7 +13,8 @@
   // const serverSrcZb="http://zb.dayuntong.com"
   // const jqUrlZB = 'http://49.4.28.5:3019/h3wf' // 周边工作流
   // 测试
-  const serverSrcZb="http://223.100.19.245:3017";
+  // const serverSrcZb="http://223.100.19.245:3017";
+  const serverSrcZb="http://192.168.2.81:3017";
   const jqUrlZB = 'http://192.168.2.81:3019/h3wf' // 周边工作流
 
   // const serverSrc= "http://web.17lvju.com/app/jialv"
