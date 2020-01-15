@@ -283,11 +283,11 @@
         if(jurisdiction[i].Uri == '/externalOrderList/canRecognition'){
           if(jurisdiction[i].Act.length > 0){
             for (let j = 0;j < jurisdiction[i].Act.length;j++){
-                if(jurisdiction[i].Act[j].Characteristic == 'extra_order_del'){
-                  this.show_extra_order_del = true;
-                }
+              if(jurisdiction[i].Act[j].Characteristic == 'extra_order_del'){
+                this.show_extra_order_del = true;
               }
             }
+          }
         }
       }
     },
