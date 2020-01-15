@@ -26,7 +26,7 @@
                 </el-col>
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="6"> 
                 <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
               </el-col>
@@ -90,9 +90,9 @@
             <!-- 第五行 -->
             <el-row type="flex" class="row-bg" justify="space-around" style="height:80px">
               <el-col :span="6">
-                <el-col :span="6"><div class="grid-del label-color">付款方式:</div></el-col>
+                <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
                 <el-col :span="12">
-                  <div class="grid-del">{{ fundamental.paywayEX }}</div>
+                  <div class="grid-del">{{ fundamental.accountsName }}</div>
                 </el-col>
               </el-col>
               <el-col :span="14">
