@@ -277,8 +277,9 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-          this.show1 = false ;
-          this.show2 = true ;
+        console.log(this.typeID)
+          // this.show1 = false ;
+          // this.show2 = true ;
         })
         .catch(res => {
           this.$message({
@@ -293,8 +294,8 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-          this.show1 = true ;
-          this.show2 = false ;
+          // this.show1 = true ;
+          // this.show2 = false ;
         })
         .catch(res => {
           this.$message({
