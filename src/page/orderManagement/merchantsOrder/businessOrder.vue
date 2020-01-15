@@ -296,7 +296,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       ></el-pagination>
-      <!-- <process-manage
+      <process-manage
         :orderId="orderId"
         :variable="variable"
         :dialogType="dialogType"
@@ -315,22 +315,22 @@
         :dialogType="dialogType"
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
-      <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer> -->
+      <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
     </div>
   </div>
 </template>
 
 <script>
-// import processManage from "./common/processManage";
-// import remarksInfor from "./common/remarksInfor";
-// import orderTransfer from "./common/orderTransfer";
+import processManage from "./common/processManage";
+import remarksInfor from "./common/remarksInfor";
+import orderTransfer from "./common/orderTransfer";
 import moment from "moment";
 export default {
-  // components: {
-  //   "process-manage": processManage,
-  //   "remarks-infor": remarksInfor,
-  //   "order-transfer": orderTransfer
-  // },
+  components: {
+    "process-manage": processManage,
+    "remarks-infor": remarksInfor,
+    "order-transfer": orderTransfer
+  },
   data() {
     return {
       defaultProps: {
