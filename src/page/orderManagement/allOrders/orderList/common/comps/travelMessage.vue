@@ -61,7 +61,7 @@ ul {
             class="fl cursor"
             @click="$emit('edit-guest', guest)"
             :disabled="editDisabled"
-          >编1辑</el-button>
+          >编辑</el-button>
           <span class="fl">|</span>
           <el-button
             class="fl cursor"
