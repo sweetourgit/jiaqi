@@ -1265,7 +1265,7 @@
               }
               //let price = this.toDecimal2(ele.price_01);
               if(this.enrolNum[idx]!==0){
-                enrollDetail += ` [${ele.enrollName}${price}]*${this.enrolNum[idx]},`;
+                enrollDetail += ` [${ele.enrollName}${price}]*${this.enrolNum[idx]}`;
               }
             });
             if (res.data.isSuccess == true) {
