@@ -201,7 +201,7 @@
         <el-button
           class="fl"
           @click="dialogVisible = true"
-          :disabled="paid !== 0"
+          :disabled="disperseOrderDisabled !== 0"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
         >取消订单</el-button>
         <!-- 修改订单状态按钮:disabled="isChangeNumber || isLowPrice"-->
