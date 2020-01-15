@@ -379,11 +379,19 @@ export default {
       this.changeHandler();
     },
 
+    /**
+     * @description: @1383 提交需要判断非月结和线下直客订单有欠款不能提交报账单
+     */
     getData(){
       let otherIncomes= this.otherIncomes;
       let expenses= this.expenses;
       let data= { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
       if(this.$isNull(data.guideName) || this.$isNull(data.localName)) return this.$message.error('导游与接团社不能为空');
+      // @1383
+      let incomeSum= this.incomeSum;
+      let { totalPrice }= this.incomesJoin;
+      let orderPrice= otherIncomes.length=== 0? 0: (+ !!otherIncomes[1].price);
+      if(incomeSum!== totalPrice+ orderPrice) return this.$message.error('有直客和非月结社订单存在欠款，不允许报账');
       return data;
     },
 
@@ -430,6 +438,7 @@ export default {
       this.pd.guideName= guideName;
       this.pd.localName= localName;
       Object.assign(assignObj, { title, price, ticket });
+      // 如果填写过信息才会向otherIncomes中推入信息
       !isSave && title && this.otherIncomes.push(assignObj);
       this.changeHandler();
     },

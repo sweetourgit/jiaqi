@@ -174,6 +174,7 @@ export default {
 
     postCheckSheetAction(){
       let object= this.$refs.printGround.getData();
+      return console.log(object)
       this.cacheCheckSheet(object);
       this.createTimeMaker(object.expenses);
       postCheckSheet(object)
