@@ -217,7 +217,9 @@ table{
           v-for="(item, i) in incomes"
           :key="i"
           :proto="item"
-          :rank="i">
+          :rank="i"
+          :page-type="pageType"
+          @wakeup-mark="wakeupMark">
         </income-bar>
 
         <tr>
@@ -283,9 +285,11 @@ table{
 
     </main>
     <footer>
+      <!-- 基本信息编辑 -->
       <basic-form ref="basicForm"
         @save-action="basicSave">
       </basic-form>
+      <!-- 挂账信息编辑 -->
       <expense-form ref="expenseForm"
         @wakeup-edit="awakeEditForm"
         @remove="removeExpense">
@@ -293,6 +297,9 @@ table{
       <expense-edit-form ref="expenseEditForm"
         @save-action="expenseSave">
       </expense-edit-form>
+      <!-- 注释编辑 -->
+      <mark-form ref="markForm">
+      </mark-form>
     </footer>
   </div>  
 </template>
@@ -304,10 +311,11 @@ import expenseGround from './subs/expenseGround'
 import basicForm from './subs/basicForm'
 import expenseForm from './subs/expenseForm'
 import expenseEditForm from './subs/expenseEditForm'
+import markForm from './subs/markForm'
 
 export default {
 
-  components: { incomeBar, otherGround, expenseGround, basicForm, expenseForm, expenseEditForm },
+  components: { incomeBar, otherGround, expenseGround, basicForm, expenseForm, expenseEditForm, markForm },
 
   filters: {
     dateFilter(val){
@@ -359,8 +367,9 @@ export default {
   },
 
   methods: {
-    init(printData){
+    init(printData, pageType){
       let { incomes, expenses, otherIncomes, ...pdData }= printData;
+      this.pageType= pageType;
       this.pd= pdData;
       this.incomes= incomes;
       this.otherIncomes= otherIncomes;
@@ -398,6 +407,10 @@ export default {
       this.incomeSum = this.incomeSum.toFixed(2);
       this.expenseSum = this.expenseSum.toFixed(2);
       this.profitSum = this.profitSum.toFixed(2);
+    },
+
+    wakeupMark(index){
+      this.$refs.markForm.wakeup(this.incomes[index]);
     },
 
     awakeBasicForm(){

@@ -47,7 +47,8 @@
       <td class="base">
         <div class="cell"></div>
       </td>
-      <td class="base">
+      <td class="base" style="cursor:pointer;"
+        @click="$emit('wakeup-mark', rank)">
         <div class="cell">{{ order.mark }}</div>
       </td>
     </tr>
@@ -83,6 +84,7 @@ export default {
   props: {
     rank: Number,
     proto: Object,
+    pageType: String, // add normal mine
   },
 
   filters: {
@@ -97,7 +99,8 @@ export default {
       handler(nval, oval){
         if(nval) this.init(nval);
       },
-      immediate: true
+      immediate: true,
+      deep: true
     }
   },
 
@@ -110,29 +113,26 @@ export default {
 
   methods: {
     init(income){
-      let { collectionNumber, ticketNumber, mark, ...order }= income;
+      let { collectionNumber, ticketNumber, ...order }= income;
       this.order= order;
-      this.subsMaker(collectionNumber, ticketNumber, mark);
+      this.subs= this.subsMaker(collectionNumber, ticketNumber);
     },
 
-    subsMaker(collection, ticket, mark){
-      let result= this.subs;
+    subsMaker(collection, ticket){
       let length;
+      let result= [];
       collection= JSON.parse(collection);
       ticket= JSON.parse(ticket);
-      mark= this.markMaker(mark);
       length= collection.length > ticket.length? collection.length: ticket.length;
-      length= length > mark.length? length: mark.length;
-      result.splice(0);
       for(let i= 0; i< length; i++){
         result.push({
           price: collection[i] && collection[i].MatchingPrice,
           collectionNumber: collection[i] && collection[i].CollectionID,
           ticketNumber: ticket[i] && ticket[i].InvoiceNumber,
-          invoicePrice: ticket[i] && ticket[i].InvoicePrice,
-          mark: mark[i] && mark.Mark
+          invoicePrice: ticket[i] && ticket[i].InvoicePrice
         })
       }
+      return result;
     },
 
     /**

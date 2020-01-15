@@ -110,7 +110,7 @@ export default {
     return Object.assign(
       // 状态
       {
-        type: null, // 类型 add, mine, normal
+        type: "", // 类型 add, mine, normal
         isFromCheckSheet: false,  // 是否来自报账单 
       },
       // 数据
@@ -135,7 +135,7 @@ export default {
       getPreCheckSheetByPlanID(planID)
       .then(res => {
         let cache= this.getCacheCheckSheet(planID);
-        this.$refs.printGround.init(Object.assign(res, cache));
+        this.$refs.printGround.init(Object.assign(res, cache), this.type);
       })
     },
 
@@ -143,7 +143,7 @@ export default {
     mineInit(){
       let { id }= this.$route.query;
       getCheckSheetByID(id)
-      .then(res => this.$refs.printGround.init(res))
+      .then(res => this.$refs.printGround.init(res, this.type))
     },
 
     // 普通
@@ -153,7 +153,7 @@ export default {
         if(id) return resolve(getCheckSheetByID(id));
         if(planID) return resolve(getCheckSheetByPlanID(planID));
       })
-      .then(res => this.$refs.printGround.init(res))
+      .then(res => this.$refs.printGround.init(res, this.type))
     },
 
     /**
