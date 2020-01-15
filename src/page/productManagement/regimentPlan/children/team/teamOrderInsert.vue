@@ -2423,7 +2423,7 @@ export default {
 }
 .checkType {
   padding: 0 5px;
-  width: 50px;
+  width: 100px;
   border-radius: 5px;
   color: #fff;
   line-height: 30px;

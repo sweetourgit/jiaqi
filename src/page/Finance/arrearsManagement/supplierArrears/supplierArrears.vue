@@ -7,11 +7,11 @@
       <!--搜索-->
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
       <el-button type="primary" plain @click="reset">重置</el-button>
-
+    
       </br></br>
-      <el-button type="primary" :disabled="forbidden">查看</el-button>
+      <el-button type="primary" :disabled="forbidden" @click="operation" v-show="false">查看</el-button>
       <!--list-->
-      <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
+      <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
           <el-table-column prop="name" label="供应商名称" min-width="140" header-align="center"></el-table-column>
           <el-table-column prop="price" label="欠款金额" min-width="60" header-align="center"></el-table-column>
       </el-table>
@@ -25,23 +25,29 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="total">
       </el-pagination>
+      <supplier-detail :supplierID="supplierID" :variable="variable"></supplier-detail>
     </div>
-  </div>
+  </div> 
 </template>
 
 <script>
+import supplierDetail from './comp/supplierDetail';
 export default{
+  components:{
+    "supplier-detail":supplierDetail
+  },
   data(){
     return {
       name:"",
       pageshow:true,
-      pageSize: 10,
+      pageSize: 10, 
       pageIndex: 1,
       total: 0,
       arrearsList: [],
       multipleSelection: [],
       forbidden:true,
-
+      supplierID:0,
+      variable:0,
 
 
 
@@ -71,7 +77,7 @@ export default{
     },
     clickRow(row){    //选中行复选框勾选
       this.$refs.multipleTable.clearSelection();
-      this.$refs.multipleTable.toggleRowSelection(row);
+      this.$refs.multipleTable.toggleRowSelection(row);        
     },
     rowClass({row, rowIndex}){  //选中行样式改变
      for(var i=0;i<this.multipleSelection.length;i++){
@@ -97,29 +103,33 @@ export default{
       })
     },
     reset(){
-
+      this.name="";
     },
     paymentpage(pageIndex=this.pageIndex,pageSize=this.pageSize,name=this.name){
         this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/supplierpage',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
-            "object":{
+            "object":{            
               "name":name,
              }
           }).then(res => {
             this.arrearsList=[];
             this.total=res.data.total;
             if(res.data.isSuccess == true){
-               this.arrearsList=res.data.objects;
+               this.arrearsList=res.data.objects;              
             }
           }).catch(err => {
             console.log(err)
           })
-    }
+    },
+    operation(){
+        this.supplierID = this.multipleSelection[0].id;
+        this.variable++;       
+    },
   }
 };
 </script>
-
+ 
 <style lang="scss" scoped>
 /*search*/
 .search{
