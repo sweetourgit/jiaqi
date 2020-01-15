@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <div class="demo-input-suffix ">
+    <div class="demo-input-suffix">
       <el-row>
         <el-col :span="7">
           <span class="search-title">产品名称:</span>
@@ -103,7 +103,7 @@
     </div>
     <div class="main">
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
-      <el-button type="primary" :disabled="reable" @click="delOrder" plain>删除订单</el-button>
+      <el-button type="primary" :disabled="reable" @click="delOrder" plain v-if='show_extra_order_del'>删除订单</el-button>
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
       <el-button type="primary" :disabled="reable" @click="recognition" plain>认收款</el-button>
     </div>
@@ -202,6 +202,7 @@
     },
     data() {
       return {
+        show_extra_order_del: false,
 
         showTotal: false,
         totalItem: 0,
@@ -276,6 +277,19 @@
     watch: {},
     created(){
       this.loadData();
+      // 删除权限
+      let jurisdiction = JSON.parse(sessionStorage.getItem('jurisdiction'));
+      for (let i = 0;i < jurisdiction.length;i++){
+        if(jurisdiction[i].Uri == '/externalOrderList/canRecognition'){
+          if(jurisdiction[i].Act.length > 0){
+            for (let j = 0;j < jurisdiction[i].Act.length;j++){
+                if(jurisdiction[i].Act[j].Characteristic == 'extra_order_del'){
+                  this.show_extra_order_del = true;
+                }
+              }
+            }
+        }
+      }
     },
     methods: {
       // 表格头部背景颜色
@@ -299,7 +313,7 @@
         this.loadData();
       },
       delOrder() {
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
         this.$confirm('是否删除此外部订单?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -324,9 +338,9 @@
             this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/del", {
               "order_sn": strD
             }, ).then(function(response) {
-              console.log('删除',response);
+              // console.log('删除',response);
               if (response.data.code == '200') {
-                console.log(response);
+                // console.log(response);
                 that.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -407,7 +421,7 @@
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/order/external-order/unbind', {
               "order_sn": order_sn
             }).then(res => {
-              console.log(res);
+              // console.log(res);
               if (res.data.code == 200) {
                 this.$message({
                   type: 'success',
@@ -494,7 +508,7 @@
           this.reable = true;
         }
         this.multipleSelection = val;
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
       },
       handleRowClick(row, column, event){
         if(row.accountingStatus != '已报账' && row.pay_type != 5){

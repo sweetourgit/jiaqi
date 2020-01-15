@@ -381,7 +381,7 @@
       },
       //关联
       relation() {
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
         let related = 0;
         let order = '';
         this.multipleSelection.forEach(function (item, index, arr) {
@@ -462,7 +462,7 @@
       },
       // 批量撤销认收款
       backout(){
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
         let num = 0;
         let orderS = '';
         this.multipleSelection.forEach(function (item, index, arr) {
@@ -489,7 +489,7 @@
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/order/external-order/batchrevokerec', {
               "order_sn": order_sn
             }).then(res => {
-              console.log(res);
+              // console.log(res);
               if (res.data.code == 200) {
                 this.$message({
                   type: 'success',
@@ -537,7 +537,7 @@
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/revokerec", {
             "order_sn": row.order_sn
           }, ).then(function(response) {
-            console.log('撤销',response);
+            // console.log('撤销',response);
             if (response.data.code == '200') {
               that.$message({
                 type: 'success',
@@ -614,7 +614,7 @@
         }
       },
       selectionChange(val) {
-        console.log(val);
+        // console.log(val);
         if(val.length > 0){
           this.reable = false;
         }else{
@@ -655,7 +655,7 @@
           "buy_type": this.activeForm.typeBuy,
           "distributor_remark": this.activeForm.distributorMarks
         }, ).then(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.data.code == '200') {
             // console.log(response);
             that.totalItem = response.data.data.total - 0;
@@ -682,7 +682,7 @@
         const that = this;
         return {
           disabledDate(time){
-            if (that.activeForm.endTime) {  //如果结束时间不为空，则小于结束时间
+            if (that.activeForm.endTime) { //如果结束时间不为空，则小于结束时间
               return new Date(that.activeForm.endTime).getTime() < time.getTime()
             } else {
               // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天

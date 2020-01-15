@@ -38,6 +38,7 @@
       }
     },
     created() {
+      
       if (this.$route.path == "/externalOrderList/noRecognition"){
         this.activeName = "noRecognition"
       }
