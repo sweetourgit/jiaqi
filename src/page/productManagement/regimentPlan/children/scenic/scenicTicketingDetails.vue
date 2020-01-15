@@ -106,7 +106,7 @@
       <div class="footer">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="订单" name="order">
-            <div class="table_trip" style="width: 88%;">
+            <div class="table_trip" style="width: 90%;">
               <el-table ref="singleTable" :data="tableData" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
                 <el-table-column prop="order_sn" label="订单ID" align="center">
                 </el-table-column>
@@ -147,7 +147,7 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="收款编码" name="code">
-            <div class="table_trip" style="width: 80%;">
+            <div class="table_trip" style="width: 90%;">
               <el-table ref="singleTable" :data="tableData2" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
                 <el-table-column prop="rec_sn" label="收款编码" align="center">
                 </el-table-column>
@@ -160,7 +160,7 @@
                 </el-table-column>
                 <el-table-column prop="approval_money" label="审批金额" align="center">
                 </el-table-column>
-                <el-table-column prop="option" label="操作" align="center" width="100">
+                <el-table-column prop="option" label="操作" align="center">
                   <template slot-scope="scope">
                     <el-button @click="getOrder(scope.row)" type="primary" size="small" class="table_details">查看订单</el-button>
                   </template>
@@ -169,7 +169,7 @@
             </div>
           </el-tab-pane>
           <el-tab-pane label="发票" name="invoice">
-            <div class="table_trip" style="width: 80%;">
+            <div class="table_trip" style="width: 90%;">
               <el-table ref="singleTable" :data="tableData3" border style="width: 100%" :highlight-current-row="currentRow" @row-click="clickBanle" :header-cell-style="getRowClass">
                 <el-table-column prop="rec_sn" label="发票" align="center">
                 </el-table-column>
@@ -198,7 +198,7 @@
                 </el-table-column>
                 <el-table-column prop="approval_money" label="审批金额" align="center">
                 </el-table-column>
-                <el-table-column prop="option" label="操作" align="center" width="100">
+                <el-table-column prop="option" label="操作" align="center">
                   <template slot-scope="scope">
                     <el-button @click="getOrder(scope.row)" type="primary" size="small" class="table_details">查看订单</el-button>
                   </template>

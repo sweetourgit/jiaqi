@@ -45,22 +45,22 @@ export default {
     // }
 
     // 页面初始加载请求的数据
-    deptlist() {
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
-          ParentID: 204
-        })
-        .then(res => {
-          console.log(res, "chooseAccount.vue");
-          this.data = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+    // deptlist() {
+    //   this.$http
+    //     .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
+    //       ParentID: 204
+    //     })
+    //     .then(res => {
+    //       console.log(res, "chooseAccount.vue");
+    //       this.data = res.data;
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // }
   },
   created() {
-    this.deptlist();
+    // this.deptlist();
   }
 };
 </script>

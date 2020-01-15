@@ -245,6 +245,7 @@ export default {
       this.getData();
     },
     searchButton() {
+      this.currentPage = 1
       this.getData();
     },
     // 账号列表

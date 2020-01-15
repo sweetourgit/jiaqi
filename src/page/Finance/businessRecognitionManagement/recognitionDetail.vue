@@ -516,7 +516,7 @@
 
             };
             // 获取订单信息
-            if(response.data.data.rec_mode === '1'){
+            if(response.data.data.rec_mode === '1' || response.data.data.rec_mode === '2'){
               that.getOrder();
             }else if(response.data.data.rec_mode === '3'){
               that.getReceive();

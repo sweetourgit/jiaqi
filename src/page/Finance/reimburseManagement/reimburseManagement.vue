@@ -812,7 +812,6 @@ export default {
             })
             .then(res => {
               this.subscript();
-              //console.log(res.data.objects,'80523');
               this.t_pageCount = res.data.total;
               this.planData = res.data.objects;
               //this.s_content.count =  res.data.objects[0].count
@@ -1010,7 +1009,6 @@ export default {
             for(let j in payments_box){
                 if(payments_box[j].paymentID === paymentID){
                           payments_box.splice(j, 1);
-                          //console.logconsole.log(payments_box,'删除后');
                           if(payments_box.length == 0){//删除后没数据了
                            this.s_content.payments=[];
                            
@@ -1024,8 +1022,7 @@ export default {
                             for(let y in this.alljoinData ){
                                     if(this.alljoinData[y].paymentID === paymentID){
                                         this.alljoinData.splice(y, 1);
-                                        //console.log(this.alljoinData,"删除的")
-                                      }
+                                     }
                                   }
                          this.t_price_sum()
                          this.$message.success('删除成功');
@@ -1046,7 +1043,6 @@ export default {
          
         t_price_sum(){//多少项总价多少
           this.subscript();
-           //console.log(this.s_content.t_price_box,"钱盒子2")
           let t_price_box = this.s_content.t_price_box;
           let sss = 0 ;
             for(let i=0;i < t_price_box.length;i++){
@@ -1230,7 +1226,6 @@ export default {
             this.$set(this.s_content.files[i], "name", paths.Name);
           }
           this.image = 1;
-          // console.log(files);
           this.uid = files[0].uid;
         }, 
         handleRemove(file, files) {//图片删除
@@ -1264,11 +1259,7 @@ export default {
             this.ruleForm.editableTabsValue = newTabName;
           }
           if (action === "remove") {
-          //  if (this.ruleForm.editableTabs.length == 1) {
-          //     console.log(123);
-          //   } else {
-          //     console.log(567);
-          //   }
+         
             if(this.ruleForm.editableTabs.length == 1){
                  this.$confirm("是否取消本次报销申请", "提示", {
                     confirmButtonText: "确定",
@@ -1486,9 +1477,7 @@ export default {
                           this.s_content.count =  res.data.objects[0].count
                           this.s_content.id =  res.data.objects[0].planID
                           this.plans.pid  = res.data.objects[0].planID
-                          // console.log(res.data.objects[0].count);
-                          // console.log(this.s_content.count);
-                      }
+                     }
                   }).catch(err => {
                     console.log(err)
                   })
@@ -1592,8 +1581,7 @@ export default {
                                               return;
                                         }
                                 }
-                                //console.logconsole.log(this.alljoinData)
-                                for(var i=0; i<this.alljoinData.length; i++){
+                              for(var i=0; i<this.alljoinData.length; i++){
                                   for(var j=i+1; j<this.alljoinData.length; j++){
                                     if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
                                         this.$message({
@@ -1628,9 +1616,7 @@ export default {
                               return;
                     }
               }
-               // console.log(this.object_lisr,'87077')
-             
-              if(verify !== 0){
+             if(verify !== 0){
                  this.add_form(this.object_lisr)//调用提交接口
                
               }
@@ -1644,7 +1630,6 @@ export default {
             jQ_ID: paramsGuid,
             jQ_Type: 3,
           }).then(obj => {
-            //console.log(obj.data.extend.instanceLogInfo,'809');
             that.tableCourse = []
             that.tableCourse = obj.data.extend.instanceLogInfo;
               if(that.tableCourse.length > 0 ) {

@@ -4,8 +4,9 @@
       <div class="buttonDv">
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
-        <el-button type="primary" @click="approvalPass">通过</el-button>
+        <el-button type="primary" @click="approvalPass" :disabled="passButtonDo">通过</el-button>
         <el-button type="primary" @click="approvalReject">驳回</el-button>
+        <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && passButtonDo">选择付款账户</el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -98,14 +99,17 @@
       </div>
       <!--审批结束-->
 
+      <chooseAccount :dialogFormVisible2="dialogFormVisible2" :info="info.id" @close="close"></chooseAccount>
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
+  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择付款账户
   export default {
     name: "collectionDetail",
     components: {
+      chooseAccount
     },
     props: {
       dialogFormVisible: false,
@@ -113,6 +117,7 @@
     },
     data() {
       return {
+        passButtonDo: false,
         // 基础信息
         baseInfo: {
           id: '',
@@ -146,7 +151,10 @@
         approvalTitle: '',
         dialogVisibleApproval: false,
         approval_status: '',
-        approvalMark: ''
+        approvalMark: '',
+
+        // 选择付款账户
+        dialogFormVisible2: false
       }
     },
     computed: {
@@ -155,8 +163,10 @@
     watch: {
       dialogFormVisible: {
         handler:function(){
-//          console.log(this.info);
           if(this.info != '' && this.dialogFormVisible){
+            if(sessionStorage.getItem('orgID') == '542' && sessionStorage.getItem('userCode') == 'TC900003'){
+              this.passButtonDo = true;
+            }
             this.loadData();
           }
         }
@@ -169,6 +179,16 @@
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
         } else {
           return ''
+        }
+      },
+      chooseAccount(){
+        this.dialogFormVisible2 = true;
+      },
+      close(str){
+        this.dialogFormVisible2 = false;
+        if(str == 'success'){
+          this.passButtonDo = false;
+          this.loadData();
         }
       },
       // 关闭弹窗
@@ -211,7 +231,6 @@
         if(this.approval_status == 2){// 驳回
           this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/RejectionOfWorkTasksForZB", {
             "userCode": sessionStorage.getItem('tel'),
-//            "userCode": "zb1",
             "workItemID": this.info.workItemID,
             "commentText": this.approvalMark
           }, ).then(function(response) {
@@ -241,7 +260,6 @@
         }else if(this.approval_status == 3){// 通过
           this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/SubmitWorkAssignmentsForZB", {
             "userCode": sessionStorage.getItem('tel'),
-//            "userCode": "zb1",
             "workItemID": this.info.workItemID,
             "commentText": this.approvalMark
           }, ).then(function(response) {
@@ -290,12 +308,11 @@
       // 加载数据
       loadData(){
         const that = this;
-//        const
         // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/info", {
           "id": this.info.id
         }, ).then(function(response) {
-          console.log('详情',response);
+          // console.log('详情',response);
           if (response.data.code == '200') {
             response.data.data.info.created_at = formatDate(new Date(response.data.data.info.created_at*1000));
 
@@ -308,40 +325,32 @@
               type: response.data.data.info.periphery_type,
               money: response.data.data.info.loan_money,
               remark: response.data.data.info.mark,
-              account: response.data.data.info.supplier_code,
+              accountCode: '',
+              account: response.data.data.info.remittance_account,
               accountBank: response.data.data.info.opening_bank,
               accountName: response.data.data.info.account_name,
-              accountCode: response.data.data.info.remittance_account,
               reimbursed_money: response.data.data.info.reimbursed_money,
               approval_status: response.data.data.info.approval_status
             };
 
+            if(response.data.data.info.periphery_type == 3){
+              that.passButtonDo = false;
+            }
+            if(response.data.data.info.pay_type){
+              const payType = JSON.parse(response.data.data.info.pay_type);
+              that.baseInfo.accountCode = payType.account;
+              that.passButtonDo = false;
+            }
+
             // 根据ID获取人名
             that.getName(response.data.data.info.create_uid).then(res => {
-              console.log(res);
               that.baseInfo.create_uid = res;
             });
             // 获取所属部门
             that.getOrgName(response.data.data.info.create_uid).then(res => {
-//              console.log(res);
+              // console.log('部门',res);
               that.baseInfo.orgName = res;
             });
-
-            // 根据分销商ID获取名称
-//            if(response.data.data.distributor_code){
-//              that.$http.post(that.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
-//                "id": response.data.data.distributor_code
-//              }).then(function(obj) {
-////              console.log('获取分销商',obj);
-//                if(obj.data.isSuccess){
-//                  that.baseInfo.distributor_code = obj.data.object.name;
-//                }else{
-//                  that.$message.warning("加载数据失败~");
-//                }
-//              }).catch(function(obj) {
-//                console.log(obj);
-//              });
-//            }
 
             // 获取供应商名称
             if(response.data.data.info.supplier_code){
@@ -353,7 +362,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   that.baseInfo.supplier = response.data.object.name
                 } else {
@@ -368,22 +377,6 @@
               });
             }
 
-            // 根据账户ID获取账户名称
-//            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
-//              {
-//                "id": response.data.data.account_id
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-//                }
-//              }).then(function (obj) {
-////              console.log('账户查询',obj);
-//              if(obj.data.isSuccess){
-//                that.baseInfo.account = obj.data.object.title;
-//              }
-//            }).catch(function (obj) {
-//              console.log(obj)
-//            });
             // 凭证
             that.fileList = JSON.parse(response.data.data.info.file);
             for(let i = 0; i < that.fileList.length; i++){
@@ -395,7 +388,6 @@
               that.tableDataResult.forEach(function (item, index, arr) {
                 item.approval_at = formatDate(new Date(item.approval_at*1000));
                 that.getName(item.approval_uid).then(res => {
-                  console.log(res);
                   item.approval_uid = res;
                 });
               })
@@ -424,7 +416,7 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(function(response) {
-          console.log('名字',response.data.object.name);
+          // console.log('名字',response.data.object.name);
           if (response.data.isSuccess) {
             return response.data.object.name;
           } else {
@@ -447,7 +439,7 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(function(response) {
-//        console.log(ID,'组织名称',response);
+          // console.log(ID,'组织名称',response);
           if (response.data.isSuccess) {
             return response.data.objects[0].name
           } else {
@@ -466,10 +458,10 @@
           "jq_id": this.info.id,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
-          console.log('获取审批节点', response);
-//          const result = JSON.parse(response.data);
+          // console.log('获取审批节点', response);
+          // const result = JSON.parse(response.data);
           if(response.status == 200){
-            console.log("成功");
+            // console.log("成功");
             response.data.extend.instanceLogInfo.forEach(function (item, index, arr) {
               if(item.finishedTime == '' && item.approvalName == '等待中'){
                 const dataSingle = {

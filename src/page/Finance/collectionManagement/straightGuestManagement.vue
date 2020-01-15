@@ -191,7 +191,7 @@
                 <tbody>
                 <tr>
                   <td>{{ printPayablePrice }}</td>
-                  <td>{{ hasSubjectStatus.length != 0 ? fundamental.collectionNumber : '现金' }}</td>
+                  <td>{{ fundamental.collectionNumber }}</td>
                   <td>{{ printMatchingPrice }}</td>
                 </tr>
                 </tbody>
@@ -263,7 +263,7 @@
                 <tbody>
                 <tr>
                   <td>{{ printPayablePrice }}</td>
-                  <td>{{ hasSubjectStatus.length != 0 ? fundamental.collectionNumber : '现金' }}</td>
+                  <td>{{ fundamental.collectionNumber }}</td>
                   <td>{{ printMatchingPrice }}</td>
                 </tr>
                 </tbody>
@@ -509,7 +509,6 @@ export default {
       tableDataBorrower:[],
       keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
       ifShowsearch: false,
-      hasSubjectStatus: '',
     }
   },
   computed: {
@@ -634,13 +633,6 @@ export default {
     closeAdd() {
       this.dialogFormVisible = false;
     },
-    getPrivateAcount(printAcountId){
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
-        "id":printAcountId
-      }).then(res => {
-        this.hasSubjectStatus = res.data.object.subject
-      })
-    },
     //查询详情
     dialogFind(row) {
       this.getRowCheckType = row.checkType
@@ -658,43 +650,32 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll',{
-          "id":this.currentRowId
-        }).then(res => {
-          console.log(res.data.object.checkType)
-          // 除审批中均可撤销
-          if(res.data.object.checkType != 0){
-            this.$message.warning("财务已经通过/驳回收款，无法撤销")
-            return
+      }).then(() => {this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/delete',{
+        "id":this.currentRowId
+      }).then(res => {
+        if(res.data.isSuccess == true){
+          this.$message.success("撤销成功")
+          this.tableData=res.data.object;
+          this.detailstShow = false;
+          this.getStraightGuestManagement()
+          if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+            this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
           }
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/delete',{
-            "id":this.currentRowId
+          // 撤销通过同时工作流通过
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
+            "datetime": moment(new Date().getTime()).format('YYYYMMDD'),
+            "spname": sessionStorage.getItem('name'),
+            "spstate": "通过",
+            "spcontent": "",
+            'checktype': 2,
+            "id": this.pid
           }).then(res => {
-            if(res.data.isSuccess == true){
-              this.$message.success("撤销成功")
-              this.tableData=res.data.object;
-              this.detailstShow = false;
-              this.getStraightGuestManagement()
-              if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
-                this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataZK();
-              }
-              // 撤销通过同时工作流通过
-              this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
-                "datetime": moment(new Date().getTime()).format('YYYYMMDD'),
-                "spname": sessionStorage.getItem('name'),
-                "spstate": "通过",
-                "spcontent": "",
-                'checktype': 2,
-                "id": this.pid
-              }).then(res => {
-                console.log(res,'通过res')
-              }).catch(err => {
-                console.log(err)
-              })
-            }
+            console.log(res,'通过res')
+          }).catch(err => {
+            console.log(err)
           })
-        })
+        }
+      })
       }).catch(() => {
         this.$message({
           type: "info",
@@ -815,9 +796,7 @@ export default {
            this.printPayablePrice = res.data.object.arrears[0].payablePrice
            this.printOrderCode = res.data.object.arrears[0].orderCode
            this.printGroupCode = res.data.object.arrears[0].groupCode
-           let acountIdPrint = res.data.object.accountID
-           console.log(acountIdPrint,'acountIdPrint')
-           this.getPrivateAcount(acountIdPrint)
+
            if(res.data.object.spw.length > 0){
              this.printSureTime = res.data.object.spw[0].createTime
              this.printSureState = res.data.object.spw[res.data.object.spw.length - 1].spState

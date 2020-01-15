@@ -191,11 +191,14 @@
         this.dialogFormVisible1 = true;
       },
       // 关闭弹窗
-      closeAdd() {
+      closeAdd(str) {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
         this.info = '';
-        this.loadData();
+        // this.loadData();
+        if(str !== 'detail'){
+          this.loadData();
+        }
         const that = this;
         const timer = setTimeout(function () {
           that.$parent.loadData('BalancePayment_ZB');

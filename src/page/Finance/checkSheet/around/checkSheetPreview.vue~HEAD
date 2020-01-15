@@ -432,7 +432,7 @@
   </div>
 </template>
 <script type="text/javascript">
-import GetOrder from '@/page/Finance/checkSheet/getOrder.vue'
+import GetOrder from './getOrder.vue'
 import {formatDate} from '@/js/libs/publicMethod.js'
 
 export default {

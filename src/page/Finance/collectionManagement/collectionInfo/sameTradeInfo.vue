@@ -87,21 +87,21 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="纳税人识别号" align="center" width="200">
+            <el-table-column label="纳税人识别号" align="center">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.taxesNumber" required placeholder="纳税人识别号"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="发票抬头" align="center" width="200">
+            <el-table-column label="发票抬头" align="center">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceList.' + scope.$index + '.titleOrMobile'" :rules="rules.titleOrMobile">
                   <el-input v-model="scope.row.titleOrMobile" placeholder="发票抬头"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="发票项目" width="150" align="center">
+            <el-table-column label="发票项目" width="120" align="center">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceList.' + scope.$index + '.invoiceItem'" :rules="rules.invoiceItem">
                   <el-select v-model="scope.row.invoiceItem" placeholder="发票项目">
@@ -110,42 +110,42 @@
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="金额" align="center" width="120">
+            <el-table-column label="金额" align="center">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceList.' + scope.$index + '.invoicemoney'" :rules="rules.invoicemoney">
                   <el-input  v-model="scope.row.invoicemoney" placeholder="金额"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="帐号" align="center" width="220">
+            <el-table-column label="帐号" align="center">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.account" placeholder="帐号"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="开户行" align="center" width="220">
+            <el-table-column label="开户行" align="center">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.bank" placeholder="开户行"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="地址" align="center" width="220">
+            <el-table-column label="地址" align="center">
               <template slot-scope="scope">
                 <el-form-item>
                   <el-input v-model="scope.row.address" placeholder="地址"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="电话" align="center" width="150">
+            <el-table-column label="电话" align="center">
               <template slot-scope="scope">
                 <el-form-item :prop="'invoiceList.' + scope.$index + '.mobile'" :rules="rules.mobile">
                   <el-input v-model="scope.row.mobile" placeholder="电话"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="80" align="center" fixed="right">
+            <el-table-column label="操作" width="70" align="center">
               <template slot-scope="scope">
                 <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 <br />
@@ -337,7 +337,7 @@ export default {
         invoicemoney: [{ required: true, message: '请填写发票金额', trigger: 'blur' }],
         mobile: [{ required: true, message: '请填写联系电话', trigger: 'blur' }],
         invoiceItem: [{ required: true, message: '请选择发票项目', trigger: 'blur' }],
-        voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
+        // voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         createTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
@@ -711,8 +711,7 @@ export default {
       this.sameTradeData = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
         "object": {
-          name: queryString3,
-          State:2,
+          name: queryString3
         }
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {

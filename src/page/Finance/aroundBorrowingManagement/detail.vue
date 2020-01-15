@@ -5,7 +5,8 @@
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.approval_status == 1 && showBack == true">撤销</el-button>
-        <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.approval_status == 3 && baseInfo.pay_type == null">选择付款账户</el-button>
+        <!-- 选择付款账户需求更改，改到审批时选择 -->
+        <!-- <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.pay_type == null">选择付款账户</el-button> -->
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -18,9 +19,9 @@
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
         <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
-        <p class="inputLabel" v-if="baseInfo.type != 1"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
-        <p class="inputLabel" v-if="baseInfo.type == 1"><span>借款金额：</span>{{baseInfo.money}}</p>
-        <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != '1'"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
+        <p class="inputLabel" v-if="baseInfo.type == '1'"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <!-- <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p> -->
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户行：</span>{{baseInfo.accountBank}}</p>
@@ -178,16 +179,16 @@
           pay_type: ''
         };
 
-        this.$emit('close', false);
+        this.$emit('close', 'detail');
       },
       // 选择付款账户
       chooseAccount(row){
-//        this.info = this.info;
         this.dialogFormVisible2 = true;
       },
 
       close(){
         this.dialogFormVisible2 = false;
+        this.closeAdd();
       },
 
       // 撤销操作
@@ -228,7 +229,7 @@
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
-          console.log('工作流结束进程', response);
+          // console.log('工作流结束进程', response);
 
         }).catch(function(error) {
           console.log(error);
@@ -242,7 +243,7 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/info", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('详情',response);
+          // console.log('详情',response);
           if (response.data.code == '200') {
             response.data.data.info.created_at = formatDate(new Date(response.data.data.info.created_at*1000));
 
@@ -297,7 +298,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   that.baseInfo.supplier = response.data.object.name
                 } else {
@@ -339,7 +340,7 @@
               that.tableDataResult.forEach(function (item, index, arr) {
                 item.approval_at = formatDate(new Date(item.approval_at*1000));
                 that.getName(item.approval_uid).then(res => {
-                  console.log(res);
+                  // console.log(res);
                   item.approval_uid = res;
                 });
               })
@@ -369,7 +370,7 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(function(response) {
-          console.log('名字',response.data.object.name);
+          // console.log('名字',response.data.object.name);
           if (response.data.isSuccess) {
             return response.data.object.name;
           } else {

@@ -121,7 +121,6 @@
                   v-model="ruleForm.name"
                   style="width: 250px;"
                   placeholder="请输入"
-                  :disabled="btnindex == 2"
                   :title="ruleForm.name"
                 ></el-input>
               </el-form-item>

@@ -109,6 +109,7 @@
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 100%;">
+        <div class="lineTitle" v-if="showTotal"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总成本：{{totalMoneyCost}}元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总收入：{{totalMoneyIncome}}元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量：{{totalNum}}</div>
         <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
@@ -201,6 +202,13 @@
     },
     data() {
       return {
+
+        showTotal: false,
+        totalItem: 0,
+        totalMoneyCost: 0,
+        totalMoneyIncome: 0,
+        totalNum: 0,
+
         activeName: 'one',
         activeForm: {
           title: '',
@@ -229,11 +237,11 @@
         dialogFormVisible: false,
         dialogFormVisible2: false,
 
-//      表格数据
+        // 表格数据
         total: 0, //总条数
         currentPage4: 1,
         pageIndex: 1, // 设定当前页数
-        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+        pageSize: 100, // 设定默认分页每页显示数 todo 具体看需求
         tableData: [],
         loading: true,
         multipleSelection: [],
@@ -281,7 +289,7 @@
       handleClick() {
         this.reable = true;
         this.transmit = !this.transmit;
-        this.pid = ''
+        this.pid = '';
       },
       importOrder() {
         this.dialogFormVisible2 = true
@@ -433,6 +441,7 @@
       // 搜索
       searchHand() {
         this.loading = true;
+        this.showTotal = true;
         this.loadData();
       },
       resetHand() {
@@ -457,6 +466,7 @@
           typeBuy: ''
         };
         this.loading = true;
+        this.showTotal = false;
         this.loadData();
       },
       handleSizeChange(val) {
@@ -520,15 +530,17 @@
           "buy_type": this.activeForm.typeBuy,
           "distributor_remark": this.activeForm.distributorMarks
         }, ).then(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.data.code == '200') {
-            console.log(response);
+            // console.log(response);
+            that.totalItem = response.data.data.total - 0;
+            that.totalMoneyCost = response.data.data.cost_all;
+            that.totalMoneyIncome = response.data.data.income_all;
+            that.totalNum = response.data.data.quantity_all;
             that.tableData = response.data.data.list;
             that.total = response.data.data.total - 0;
             that.loading = false;
             that.tableData.forEach(function (item, index, arr) {
-//            console.log(v,k,arr);
-//            console.log(item.sale_at);
               item.sale_at = formatDate(new Date(item.sale_at*1000));
               item.check_at = formatDate(new Date(item.check_at*1000));
               item.import_at = formatDate(new Date(item.import_at*1000));
@@ -543,7 +555,6 @@
 
       // 时间限制
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -556,7 +567,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -569,7 +579,6 @@
         }
       },
       beginDate1(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -582,7 +591,6 @@
         }
       },
       processDate1(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -595,7 +603,6 @@
         }
       },
       beginDate2(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -608,7 +615,6 @@
         }
       },
       processDate2(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -674,7 +680,17 @@
       }
 
     }
-
+    .lineTitle{
+      width: 100%;
+      /*margin: 10px auto;*/
+      background-color: #E6F3FC;
+      height: 40px;
+      line-height: 40px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      display: inline-block;
+      margin: 10px 10px 10px 0;
+    }
     .main {
       margin-top: 20px;
       margin-bottom: 20px;

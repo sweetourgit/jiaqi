@@ -212,10 +212,7 @@
         }).then(res => {
           let result = JSON.parse(res.data);
           if (result.code == '0') {
-            console.log('启动工作流成功');
           } else {
-            console.log('启动工作流错误!');
-            console.log(res.data);
           }
         }).catch(err => {
           console.log(err);

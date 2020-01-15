@@ -47,14 +47,6 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    }, {
-      path: '/addRole',
-      component: () => import('@/page/account/role/addRole'),
-      name: "添加角色权限模板",
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
     },
     /* {
        path: '/perList',
@@ -247,6 +239,38 @@ export default new Router({
         auth: true
       }
     }, {
+      path: '/cruiseShip',
+      component: () => import('@/page/contentInfo/cruiseShip/cruiseShip.vue'),
+      name: '邮轮管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/cruiseShip/cruiseShipDetail',
+      component: () => import('@/page/contentInfo/cruiseShip/cruiseShipDetail.vue'),
+      name: '邮轮管理/详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/cruiseShip/shipDetailAdd',
+      component: () => import('@/page/contentInfo/cruiseShip/shipDetailAdd.vue'),
+      name: '邮轮管理/详情/添加游轮',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
+      path: '/curiseShipCabin',
+      component: () => import('@/page/contentInfo/cruiseShipCabin/curiseShipCabin.vue'),
+      name: '游轮舱房管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }, {
       path: '/productList',
       component: () => import('@/page/productManagement/productList/productList'),
       name: '产品列表',
@@ -263,6 +287,15 @@ export default new Router({
           path: 'scenicOrTicketList',
           name: '景区/票务',
           component: () => import('@/page/productManagement/productList/tab/scenicOrTicketList'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'productVisa',
+          name: '签证',
+          component: () => import('@/page/productManagement/productList/tab/productVisa'),
           meta: {
             keepAlive: true,
             auth: true
@@ -289,6 +322,22 @@ export default new Router({
       path: '/listInfoEdit',
       component: () => import('@/page/productManagement/listInfoScenic/listInfoEdit'),
       name: '编辑景区/票务',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/visaProducts',
+      component: () => import('@/page/productManagement/visa/addVisa/visaProducts'),
+      name: '添加签证',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/visaInventory',
+      component: () => import('@/page/productManagement/visa/visaInventory/visaInventory'),
+      name: '团期/签证库存',
       meta: {
         keepAlive: true,
         auth: true
@@ -322,8 +371,49 @@ export default new Router({
             keepAlive: true,
             auth: true
           },
+        },
+        {
+          path: 'visaOrderList',
+          name: '签证',
+          component: () => import('@/page/productManagement/regimentPlan/children/visaOrder/visaOrderList'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
         }
 
+      ]
+    },{
+      path: '/orderManagement',
+      component: () => import('@/page/orderManagement/allOrders/orderManagement'),
+      name: '订单管理',
+      children: [{
+          path: 'orderList',
+          name: '订单管理-跟团游',
+          component: () => import('@/page/orderManagement/allOrders/orderList/orderList'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'visaOrderlist',
+          name: '订单管理-签证',
+          component: () => import('@/page/orderManagement/allOrders/visaOrder/visaOrderlist'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'boatOrderlist',
+          name: '订单管理-邮轮游',
+          component: () => import('@/page/orderManagement/allOrders/boatOrder/boatOrderlist'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
       ]
     },
     {
@@ -350,14 +440,6 @@ export default new Router({
         keepAlive: true,
         auth: true
       },
-    }, {
-      path: '/orderList',
-      component: () => import('@/page/orderManagement/orderList/orderList'),
-      name: '订单管理',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
     }, {
       path: '/externalOrderList',
       component: () => import('@/page/orderManagement/externalOrderList/externalOrderList'),
@@ -510,6 +592,15 @@ export default new Router({
       }
     },
     {
+      path: '/refundManagement',
+      component: () => import('@/page/Finance/refundManagement/refundManagement'),
+      name: '退款管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/collectionManagement',
       component: () => import('@/page/Finance/collectionManagement/collectionManagement'),
       name: '收款管理',
@@ -585,14 +676,49 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },{
+    },
+    // {
+    //   path: '/balanceOrder',
+    //   component: () => import('@/page/Finance/balanceOrder/balanceOrder'),
+    //   name: '欠款订单管理',
+    //   meta:{
+    //     keepAlive:true,
+    //     auth:true
+    //   }
+    // },
+    {
       path: '/balanceOrder',
       component: () => import('@/page/Finance/balanceOrder/balanceOrder'),
       name: '欠款订单管理',
-      meta:{
-        keepAlive:true,
-        auth:true
-      }
+      children: [{
+          path: 'commercia',
+          name: '商户欠款订单',
+          component: () => import('@/page/Finance/balanceOrder/commercia/commercia'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'distribution',
+          name: '分销商欠款订单',
+          component: () => import('@/page/Finance/balanceOrder/distribution/distribution'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'supplier',
+          name: '供应商欠款订单',
+          component: () => import('@/page/Finance/balanceOrder/supplier/supplier'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+
+      ]
     },
     {
       path: '/pledgingManagementApproval',
@@ -673,7 +799,7 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },{
+    }, {
       path: '/businessRecognitionManagement',
       component: () => import('@/page/Finance/businessRecognitionManagement/businessRecognitionManagement.vue'),
       name: '业务待认款管理',
