@@ -618,38 +618,6 @@
     </el-dialog>
     <!-- </div> -->
     <!-- </div> -->
-    <!--报账单弹窗-->
-    <el-dialog
-      title="报账单"
-      :visible.sync="checkSheetDialog"
-      custom-class="city_list dialogOrder"
-      style="margin-top:-100px"
-      width="1200px"
-      @close="closeCheckSheet()"
-    >
-      <div class="w1000 mau">
-        <div class="chesktltle">黑龙江大运嘉国际旅行社有限公司旅游团队报账单</div>
-        <div class="fr lh30">报账日期：2019年03月19日</div>
-        <table class="checksheet-table" border="1" cellspacing="0">
-          <tr>
-            <td class="w80 bc_cc">部门</td>
-            <td class="w100">1</td>
-            <td class="w80 bc_cc">操作人</td>
-            <td class="w100">2</td>
-            <td class="w80 bc_cc">导陪</td>
-            <td class="w100">3</td>
-            <td class="w80 bc_cc">地接社</td>
-            <td class="w320">4</td>
-          </tr>
-          <tr>
-            <td class="w80 bc_cc">团号</td>
-            <td colspan="3">1</td>
-            <td class="w80 bc_cc">产品名称</td>
-            <td colspan="3">2</td>
-          </tr>
-        </table>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -1422,7 +1390,7 @@
                               {
                                 object: {
                                   id: 0,
-                                  isDeleted: 0,
+                                  isDeleted: 0, 
                                   code: "",
                                   orderCode: "",
                                   //proID: this.teampreviewData.teamID,
@@ -2335,8 +2303,6 @@
             }
           });
       },
-      //报账单关闭弹窗
-      closeCheckSheet() {}
     }
   };
 </script>

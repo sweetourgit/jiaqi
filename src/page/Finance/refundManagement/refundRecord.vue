@@ -82,21 +82,16 @@ export default {
       states:'',// 状态
       orderID:'',// 订单ID
       statesType:[{ // 搜索框状态数据
-        value:'1',
-        label:'全部'
-      },{
-        value:'2',
+        value:'0',
         label:'申请退款'
       },{
-        value:'3',
-        label:'拒绝退款'
+        value:'1',
+        label:'退款成功'
       },{
-        value:'4',
-        label:'完成退款'
+        value:'2',
+        label:'拒绝退款'
       }],
-      tableDate:[{
-        orderID:"1"
-      }],//表格 
+      tableDate:[],//表格 
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
@@ -157,17 +152,36 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    pageList(){
+    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,refundNumber = this.refundNumber,applicant = this.applicant,startTime = this.applyForDate == null ? 0 : this.applyForDate[0],endTime = this.applyForDate == null ? 0 : this.applyForDate[1],states = this.states,orderID = this.orderID){
+      if (startTime) {
+        let y = startTime.getFullYear();
+        let m = startTime.getMonth() + 1 > 9 ? startTime.getMonth() + 1 : "0" + (startTime.getMonth() + 1);
+        let d = startTime.getDate() > 9 ? startTime.getDate() : "0" + startTime.getDate();
+        startTime = ''+ y +"-" + m + "-" + d;
+      } else {
+        startTime = "0001-01-01";
+      }
+      if (endTime) {
+        let y = endTime.getFullYear();
+        let m = endTime.getMonth() + 1 > 9 ? endTime.getMonth() + 1 : "0" + (endTime.getMonth() + 1);
+        let d = endTime.getDate() > 9 ? endTime.getDate() : "0" + endTime.getDate();
+        endTime = ''+ y +"-" + m + "-" + d;
+      } else {
+        endTime = "0001-01-01";
+      }
       var that = this
-        this.$http.post(
-          this.GLOBAL.serverSrc + "/finance/refund/api/page",
-          {
-            "object": {
-            },
-            "pageSize":this.pageSize,
-            "pageIndex":this.pageIndex,
-          },)
-          .then(function (obj) {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/page",{
+          "object": {
+             refundCode:refundNumber, // 退款单号
+             name:applicant, // 申请人
+             startTime:startTime, // 开始时间
+             endTime:endTime, // 结束时间
+             refundStateType:this.states == "" ? -1 : this.states, // 状态
+             orderID:this.orderID == "" ? 0 : orderID // 订单ID
+          },
+          "pageSize":this.pageSize,
+          "pageIndex":this.pageIndex,
+        },).then(function (obj) {
             that.total = obj.data.total
             that.tableDate = obj.data.objects
             that.tableDate.forEach(function (v,k,arr) {

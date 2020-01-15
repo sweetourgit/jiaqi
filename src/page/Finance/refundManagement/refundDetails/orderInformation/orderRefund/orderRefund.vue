@@ -4,7 +4,7 @@
       @close="cancelOrder('ruleForm')">
       <div class="pa">
         <el-button class="ml13" @click="cancelOrder('ruleForm')">取 消</el-button>
-        <el-button class="ml13" type="primary">申 请</el-button>
+        <el-button class="ml13" @click="applyRefund('ruleForm')" type="primary">申 请</el-button>
       </div>
       <div class="border">
         <div class="title"><span class="ml13">订单详情</span></div>
@@ -13,29 +13,29 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">订单总额:</div>
-                <div class="fl ml13">{{orderList.id}}</div>
+                <div class="fl ml13">{{orderList.payable}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">已付金额:</div>
-                <div class="fl ml13">{{orderList.userName}}</div>
+                <div class="fl ml13">{{orderList.paid}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">未付金额:</div>
-                <div class="fl ml13">{{orderList.createTime}}</div>
+                <div class="fl ml13">{{nonPayment}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">其他费用:</div>
-                <div class="fl ml13">{{orderList.id}}</div>
+                <div class="fl ml13">{{orderList.otherPrice}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">整体优惠:</div>
-                <div class="fl ml13">{{orderList.userName}}</div>
+                <div class="fl ml13">{{orderList.entiretyFav}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">退款金额:</div>
-                <div class="fl ml13">{{orderList.createTime}}</div>
+                <div class="fl ml13">{{orderList.allRefundPrice}}</div>
               </td>
             </tr>
           </table>
@@ -87,12 +87,12 @@
           <span class="Numbers">{{ruleForm.partCardPeople.length}}/40字</span>
         </el-form-item>
         <el-table v-if="ruleForm.refundWay == 2" :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-          <el-table-column prop="" label="报名类型" align="center"></el-table-column>
-          <el-table-column prop="" label="价钱" align="center"></el-table-column>
-          <el-table-column prop="" label="姓名" align="center"></el-table-column>
-          <el-table-column prop="" label="电话" align="center"></el-table-column>
-          <el-table-column prop="" label="身份证" align="center"></el-table-column>
-          <el-table-column prop="" label="性别" align="center"></el-table-column>
+          <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
+          <el-table-column prop="singlePrice" label="价钱" align="center"></el-table-column>
+          <el-table-column prop="cnName" label="姓名" align="center"></el-table-column>
+          <el-table-column prop="mobile" label="电话" align="center"></el-table-column>
+          <el-table-column prop="idCard" label="身份证" align="center"></el-table-column>
+          <el-table-column prop="sex" label="性别" align="center"></el-table-column>
           <el-table-column prop="" label="选择退款客人信息" align="center"></el-table-column>
         </el-table>
       </el-form>
@@ -156,6 +156,7 @@ export default {
         ],
       },
       tableDate:[],
+      nonPayment:"", //未支付金额
     };
   },
   watch: {
@@ -190,7 +191,61 @@ export default {
       this.tableDate = [];
     },
     getOrder(ID){ // 点击退款获取详情信息
-
+      this.$http.post(this.GLOBAL.serverSrc + "order/refund/api/get", {
+        id: ID
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          this.orderList = res.data.object;
+          this.tableDate = res.data.object.guests;
+          this.nonPayment = res.data.object.payable - res.data.object.paid;
+        }
+      });
+    },
+    applyRefund(formName){ // 申请退款
+      this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",
+              {
+                object: {
+                  "id": 0, // 退款单
+                  "refundCode": "string", // 退款单号
+                  "userID": sessionStorage.getItem("id"), // 申请人ID
+                  "name": sessionStorage.getItem("name"), // 申请人姓名
+                  "orgID": sessionStorage.getItem("orgID"), // 申请人部门ID
+                  "orgName": sessionStorage.getItem("orgName"), // 申请人部门名称
+                  "orderID": 0,  // 订单ID
+                  "orderCode": "string", // 订单号
+                  "refundType": this.ruleForm.refundWay == 1 ? 2 : 1, // 退款方式 1=部分退款 2=全部退款
+                  "reason": this.ruleForm.refundWay == 1 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
+                  "needRefundPrice": this.ruleForm.needRefund, // 还需退款
+                  "allRefundPrice": 0, // 总退款
+                  "realRefundPrice": 0, // 实际退款金额
+                  "payID": 0, // 支付账户
+                  "remittanceCode": this.ruleForm.refundWay == 1 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
+                  "remittanceBank": this.ruleForm.refundWay == 1 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
+                  "remittancePerson": this.ruleForm.refundWay == 1 ? this.ruleForm.cardPeople : this.ruleForm.partCardPeople, // 汇款开户人
+                  "isDeleted": 0,
+                  "payable": 0, // 订单金额
+                  "refundStateType": 0, // 退款状态 0 申请退款 ，1退款完成，2拒绝退款
+                  "createTime": "2020-01-14T05:53:42.552Z", // 申请时间
+                  "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
+                  "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
+                  "productType": 1 // 产品类型
+                }
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                   //this.pageList();
+                   this.dialogOrderRefund = false
+                   this.$refs[formName].resetFields();
+                }else{
+                   this.$message.success("申请失败");
+                }
+            })
+          } else {
+            return false;
+          }
+        });
     },
   }
 };
