@@ -48,7 +48,7 @@
         <div class="cell"></div>
       </td>
       <td class="base" style="cursor:pointer;"
-        @click="$emit('wakeup-mark', rank)">
+        @click="wakeupMark">
         <div class="cell">{{ order.mark }}</div>
       </td>
     </tr>
@@ -143,7 +143,11 @@ export default {
       mark= JSON.parse(mark || "[]");
       if(mark.length=== 1 && !mark.Mark) return []; 
       return mark;
-    }
+    },
+
+    wakeupMark(){
+      if(this.pageType=== 'add') this.$emit('wakeup-mark', this.rank);
+    },
   }
 }
 </script>
