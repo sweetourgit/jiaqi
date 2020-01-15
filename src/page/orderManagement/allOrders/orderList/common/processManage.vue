@@ -124,6 +124,7 @@
               v-model="item.mark"
               placeholder="请输入摘要"
               class="input1"
+              :title="item.mark"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
             ></el-input>
           </el-form-item>
@@ -134,6 +135,7 @@
               v-readonly="'others'"
               placeholder="请输入摘要"
               class="input1"
+              :title="item.mark"
               :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
             ></el-input>
           </el-form-item>
