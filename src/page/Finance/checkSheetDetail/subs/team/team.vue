@@ -133,7 +133,10 @@ export default {
     addInit(){
       let { planID }= this.$route.query;
       getPreCheckSheetByPlanID(planID)
-      .then(res => this.$refs.printGround.init(res))
+      .then(res => {
+        let cache= this.getCacheCheckSheet(planID);
+        this.$refs.printGround.init(Object.assign(res, cache));
+      })
     },
 
     // 需要我审批
@@ -171,7 +174,7 @@ export default {
 
     postCheckSheetAction(){
       let object= this.$refs.printGround.getData();
-      return this.cacheCheckSheet(object);
+      this.cacheCheckSheet(object);
       this.createTimeMaker(object.expenses);
       postCheckSheet(object)
       .then(res => {

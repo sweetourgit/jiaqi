@@ -9,18 +9,28 @@ class BackupStorage {
     this.POOL_SIZE= 5;
   }
 
-  set(planID, val, expire= '1M'){
+  preSet(planID){
     let key= this.prefix+ planID;
     let cache= this.get(planID);
+    let removed;
     // 有缓存则替换
     if(cache){
       this.refresh(key);
-      return this.storage.set(key, val, expire);
+      return key;
     }
     // 无缓存
-    if(this.pool.length>= this.POOL_SIZE) this.pool.pop();
+    if(this.pool.length>= this.POOL_SIZE){
+      removed= this.pool.pop();
+      this.storage.remove(removed);
+    }
+    return key;
+  }
+
+  set(planID, val, expire= '1M'){
+    let key= this.preSet(planID);
     this.pool.splice(0, 0, key);
     this.storage.set(key, val, expire);
+    this.setPool();
   }
 
   get(planID){
@@ -32,6 +42,11 @@ class BackupStorage {
     if(index=== -1 || index=== 0) return;
     this.pool.splice(index, 1);
     this.pool.splice(index, 0, key);
+    this.setPool();
+  }
+
+  setPool(){
+    this.storage.set(this.prefix+ 'Pool', this.pool, '1M');
   }
 }
 
@@ -41,17 +56,16 @@ class BackupStorage {
  * 2. 缓存有效期1个月, 最多存在3个缓存
  */
 const BackupMixin= function(){
-  let storage= new BackupStorage();
+
+  let backupStorage= new BackupStorage();
   
   return {
     methods: {
       cacheCheckSheet(checkSheet){
         let { planID, guideName, localName, otherIncomes }= checkSheet;
-        storage.set(planID, { guideName, localName, otherIncomes });
+        backupStorage.set(planID, { guideName, localName, otherIncomes });
       },
-      getCacheCheckSheet(){
-        
-      }
+      getCacheCheckSheet: backupStorage.get.bind(backupStorage)
     }
   }
 }
