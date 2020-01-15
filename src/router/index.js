@@ -585,14 +585,49 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },{
+    },
+    // {
+    //   path: '/balanceOrder',
+    //   component: () => import('@/page/Finance/balanceOrder/balanceOrder'),
+    //   name: '欠款订单管理',
+    //   meta:{
+    //     keepAlive:true,
+    //     auth:true
+    //   }
+    // },
+    {
       path: '/balanceOrder',
       component: () => import('@/page/Finance/balanceOrder/balanceOrder'),
       name: '欠款订单管理',
-      meta:{
-        keepAlive:true,
-        auth:true
-      }
+      children: [{
+          path: 'commercia',
+          name: '商户欠款订单',
+          component: () => import('@/page/Finance/balanceOrder/commercia/commercia'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'distribution',
+          name: '分销商欠款订单',
+          component: () => import('@/page/Finance/balanceOrder/distribution/distribution'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        },
+        {
+          path: 'supplier',
+          name: '供应商欠款订单',
+          component: () => import('@/page/Finance/balanceOrder/supplier/supplier'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
+        }
+
+      ]
     },
     {
       path: '/pledgingManagementApproval',
