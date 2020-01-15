@@ -189,6 +189,7 @@
         <travelMessage
           :proto="salePrice"
           :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
+          :editDisabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           @remove-guest="removeGuestEmit"
           @edit-guest="editGuestEmit">
         </travelMessage>
