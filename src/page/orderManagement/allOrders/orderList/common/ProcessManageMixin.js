@@ -44,8 +44,8 @@ const ProcessManageMixin= {
         .then(orderDetail => {
           let { planID, guests, favourable, contact, priceType, orderCode, orderChannel }= orderDetail;
 
-          // 直客订单orderChannel !== 1 &&如果存在收款申请或收款通过，则不允许更改 现在是直客同业都走这个方法
-          checkOrderhasCollection(orderCode).then(bol => this.disperseOrderDisabled= !bol)
+          // 直客订单 如果存在收款申请或收款通过，则不允许更改 
+          orderChannel !== 1 && checkOrderhasCollection(orderCode).then(bol => this.disperseOrderDisabled= !bol)
           Promise.all([
             getEnrollsAction(planID), 
             getTeampreviewAction(planID)

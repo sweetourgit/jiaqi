@@ -17,25 +17,24 @@
     <!-- tabs  end -->
 
     <!-- swiper begin  -->
-    <!-- <el-menu
-      :default-active="achooseSwiperIndex"
-      class="el-menu-demo swiper"
-      mode="horizontal"
-      @select="handleSelect"
-    >
-      <el-menu-item
-        v-for="(item,index) in swiperInfo"
-        :key="index"
-        :index="index+''"
-        class="swiperSon"
-      >{{item}}</el-menu-item>
-    </el-menu> -->
-
-    <!-- <ul class="swiper">
-      <li class="swiperSon" v-for="(item,index) in swiperInfo" :key="index">{{item}}</li>
-    </ul> -->
-
-    <div class="line"></div>
+    <div class="swiperBox">
+      <i class="el-icon-arrow-left iconLeft" @click="handleLeft()"></i>
+      <el-menu
+        :default-active="achooseSwiperIndex"
+        class="el-menu-demo swiper"
+        mode="horizontal"
+        @select="handleSelect"
+      >
+        <el-menu-item
+          v-for="(item,index) in swiperInfo"
+          :key="index"
+          :index="index+''"
+          class="swiperSon"
+        >{{item}}</el-menu-item>
+      </el-menu>
+      <i class="el-icon-arrow-right iconRight" @click="handleRight()"></i>
+      <div class="line"></div>
+    </div>
 
     <!-- swiper begin  -->
   </el-dialog>
@@ -52,22 +51,24 @@ export default {
       chooseTab: "", //tabs选中的
       chooseSwiper: "", //swiper选中的
       achooseSwiperIndex: "1", //当前swiper选中的index
-      // swiperInfo: [
-      //   "处理中心1",
-      //   "处理中心2",
-      //   "处理中心3",
-      //   "处理中心4",
-      //   "处理中心5",
-      //   "处理中心6",
-      //   "处理中心7",
-      //   "处理中心8"
-      // ] //swiper数据的集合
+      swiperInfo: [
+        "处理中心1",
+        "处理中心2",
+        "处理中心3",
+        "处理中心4",
+        "处理中心5",
+        "处理中心6",
+        "处理中11111心7",
+        "处理中心8"
+      ] //swiper数据的集合
     };
   },
   created() {},
   methods: {
-    // swiper 切换事件
-    handleSelect(key, keyPath) {},
+    // swiper 选中事件
+    handleSelect(key, keyPath) {
+      // console.log(key);
+    },
 
     // 客人信息弹窗关闭事件
     btReceiptDialogClose() {
@@ -79,22 +80,54 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .swiper {
-//   width: 700px;
-//   height: 80px;
-//   line-height: 80px;
-//   margin: 15px 0;
-//   overflow-y: hidden;
-//   overflow-x: scroll;
-//   white-space: nowrap;
-//   .swiperSon {
-//     margin-right: 40px;
-//     list-style: none;
-//     display: inline-block;
-//     text-align: center;
-//   }
-// }
-// ::-webkit-scrollbar {
-//     display: none;
-//   }
+// 轮播导航begin
+.swiperBox {
+  position: relative;
+
+  .swiper {
+    width: 700px;
+    margin: 15px 0 15px 20px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    display: flex;
+    justify-content: space-between;
+    white-space: nowrap;
+
+    .swiperSon {
+      margin: 0 17px;
+      list-style: none;
+      text-align: center;
+    }
+
+  }
+
+  .iconLeft {
+    position: absolute;
+    left: 0;
+    top: 15px;
+    padding: 10px;
+    cursor:pointer;
+  }
+
+  .iconRight {
+    position: absolute;
+    right: 0;
+    top: 15px;
+    padding: 10px;
+    cursor:pointer;
+  }
+
+  .iconLeft:hover,.iconRight:hover {
+    color: #409EFF;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+}
+// 轮播导航end
+
 </style>
