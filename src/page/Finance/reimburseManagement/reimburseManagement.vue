@@ -434,7 +434,8 @@
           :highlight-current-row="true"
           @row-click="joinData_btn"
           style="width: 100%; margin-top: 30px">
-          <el-table-column prop="paymentID" label="预付款和无收入结款ID" width="170" align="center"></el-table-column>
+          <el-table-column prop="paymentID" label="预付款借款ID" width="170" align="center" v-if="s_find==1"></el-table-column>
+          <el-table-column prop="paymentID" label="无收入借款ID" width="170" align="center" v-if="s_find==2"></el-table-column>
          
           <el-table-column prop="supplierName" label="供应商" width="230" align="center"></el-table-column>
           <el-table-column prop="supplierTypeEX" label="借款类型" width="140" align="center"></el-table-column>
@@ -518,6 +519,7 @@ export default {
       currentPage5: 1,
       change: false,
       find: 0, //分辨查看
+      s_find:1,//预付款借款id
       state:3,//审核中
       radio: "1",  // 单选
       dialogFormVisible2: false, //团期计划弹窗
@@ -1219,12 +1221,15 @@ export default {
              
             if(this.jointab == "2"){
                 paymentype = 2;
+                this.s_find = 1;
                 pid = this.plans.pid;
             }else if(this.jointab == "0"){
                paymentype = 1;
+               this.s_find = 2;
                pid = 0;
             }else if(this.jointab === "1"){
                paymentype = 1;
+               this.s_find = 2;
                pid = this.plans.pid;
                
             }
