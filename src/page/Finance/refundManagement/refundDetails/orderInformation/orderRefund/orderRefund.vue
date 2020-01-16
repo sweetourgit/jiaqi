@@ -68,7 +68,7 @@
         </el-form-item>
         <!--部分退-->
         <el-form-item label="还需退款" v-if="ruleForm.refundWay == 2" prop="needRefund">
-          <el-input :disabled="forbidden" @change="aaa" v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
+          <el-input :disabled="forbidden" v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
         </el-form-item>
         <el-form-item label="申请原由" v-if="ruleForm.refundWay == 2" prop="partPriginally">
           <el-input :disabled="forbidden" v-model="ruleForm.partPriginally" class="Words" placeholder="请输入申请原由"></el-input>
@@ -175,6 +175,11 @@ export default {
       show2:false,
       typeID:0, // 部分退款，选择下方报个ID
       multipleSelection: [], //选中的list
+      otherFees: 0 ,// 其他费用
+      overallDiscount:0 ,// 整体优惠
+      positiveNumber: 0 , //还需退款是正数时，实际退款金额
+      negativeNumber: 0 , //还需退款是负数时，实际退款金额
+
     };
   },
   filters: {
@@ -198,9 +203,6 @@ export default {
     this.getOrder();
   },
   methods: {
-    aaa(){
-      console.log(this.ruleForm.needRefund - this.nonPayment)
-    },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -257,6 +259,8 @@ export default {
           this.indentID = res.data.object.orderID; // 获取该团期订单ID
           this.orderAmount = res.data.object.payable; // 获取该团期订单金额
           this.productType = res.data.object.productType; // 获取该团期产品类型 
+          this.otherFees = res.data.object.otherPrice; // 其他费用
+          this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
           this.collection(); // 判断是否有收款方法
         }
       });
@@ -288,7 +292,7 @@ export default {
           });
         });
     },
-    undo(typeID){ // 点击选择客人退款
+    undo(typeID){ // 点击撤销客人退款
       this.$confirm("是否撤销该客人退款?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -304,51 +308,63 @@ export default {
           });
         });
     },
+    amount(){
+      if(this.typeID !== 0){
+        if(this.ruleForm.needRefund < 0){
+          this.negativeNumber = this.otherFees - this.ruleForm.needRefund;
+        }else if(this.ruleForm.needRefund >= 0){
+          this.positiveNumber = this.overallDiscount + this.ruleForm.needRefund;
+        }
+      }
+    },
     applyRefund(formName){ // 申请退款
-      this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",
-              {
-                object: {
-                  "id": 0, // 退款单
-                  "refundCode": "string", // 退款单号
-                  "userID": sessionStorage.getItem("id"), // 申请人ID
-                  "name": sessionStorage.getItem("name"), // 申请人姓名
-                  "orgID": sessionStorage.getItem("orgID"), // 申请人部门ID
-                  "orgName": sessionStorage.getItem("orgName"), // 申请人部门名称
-                  "orderID": this.indentID,  // 订单ID
-                  "orderCode": this.orderCode, // 订单号
-                  "refundType": this.ruleForm.refundWay == 1 ? 2 : 1, // 退款方式 1=部分退款 2=全部退款
-                  "reason": this.ruleForm.refundWay == 1 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
-                  "needRefundPrice": this.ruleForm.needRefund, // 还需退款
-                  "allRefundPrice": 0, // 总退款
-                  //"realRefundPrice":this.ruleForm.needRefund - this.nonPayment, // 实际退款金额(还需退款-未付金额)
-                  "payID": 0, // 支付账户
-                  "remittanceCode": this.ruleForm.refundWay == 1 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
-                  "remittanceBank": this.ruleForm.refundWay == 1 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
-                  "remittancePerson": this.ruleForm.refundWay == 1 ? this.ruleForm.cardPeople : this.ruleForm.partCardPeople, // 汇款开户人
-                  "isDeleted": 0,
-                  "payable": this.orderAmount, // 订单金额
-                  "refundStateType": 0, // 退款状态 0 申请退款 ，1退款完成，2拒绝退款
-                  "createTime": "2020-01-14T05:53:42.552Z", // 申请时间
-                  "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
-                  "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
-                  "productType": this.productType // 产品类型
-                }
-              })
-              .then(res => {
-                if(res.data.isSuccess == true){
-                   //this.pageList();
-                   this.dialogOrderRefund = false
-                   this.$refs[formName].resetFields();
-                }else{
-                   this.$message.success("申请失败");
-                }
-            })
-          } else {
-            return false;
-          }
-        });
+      if(this.typeID == 0 && this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
+        this.$message.error("还需退款金额为正数");
+        return;
+      }
+      // this.$refs[formName].validate((valid) => {
+      //     if (valid) {
+      //       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
+      //           object: {
+      //             "id": 0, // 退款单
+      //             "refundCode": "string", // 退款单号
+      //             "userID": sessionStorage.getItem("id"), // 申请人ID
+      //             "name": sessionStorage.getItem("name"), // 申请人姓名
+      //             "orgID": sessionStorage.getItem("orgID"), // 申请人部门ID
+      //             "orgName": sessionStorage.getItem("orgName"), // 申请人部门名称
+      //             "orderID": this.indentID,  // 订单ID
+      //             "orderCode": this.orderCode, // 订单号
+      //             "refundType": this.ruleForm.refundWay == 1 ? 2 : 1, // 退款方式 1=部分退款 2=全部退款
+      //             "reason": this.ruleForm.refundWay == 1 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
+      //             "needRefundPrice": this.ruleForm.needRefund, // 还需退款
+      //             "allRefundPrice": 0, // 总退款
+      //             //"realRefundPrice":this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber), // 实际退款金额(还需退款-未付金额)
+      //             "payID": 0, // 支付账户
+      //             "remittanceCode": this.ruleForm.refundWay == 1 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
+      //             "remittanceBank": this.ruleForm.refundWay == 1 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
+      //             "remittancePerson": this.ruleForm.refundWay == 1 ? this.ruleForm.cardPeople : this.ruleForm.partCardPeople, // 汇款开户人
+      //             "isDeleted": 0,
+      //             "payable": this.orderAmount, // 订单金额
+      //             "refundStateType": 0, // 退款状态 0 申请退款 ，1退款完成，2拒绝退款
+      //             "createTime": "2020-01-14T05:53:42.552Z", // 申请时间
+      //             "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
+      //             "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
+      //             "productType": this.productType // 产品类型
+      //           }
+      //         })
+      //         .then(res => {
+      //           if(res.data.isSuccess == true){
+      //              //this.pageList();
+      //              this.dialogOrderRefund = false
+      //              this.$refs[formName].resetFields();
+      //           }else{
+      //              this.$message.success("申请失败");
+      //           }
+      //       })
+      //     } else {
+      //       return false;
+      //     }
+      // });
     },
   }
 };
