@@ -23,7 +23,7 @@
         </el-form-item>
         <!-- 同业收款显示end -->
         <!-- 直客收款显示begin -->
-        <el-form-item label="交易流水号" prop="name">
+        <el-form-item label="交易流水号" prop="number">
           <el-input v-model="form.number" class="ipt"></el-input>
         </el-form-item>
         <!-- 直客收款显示end -->
@@ -219,7 +219,8 @@ export default {
       },
       rules: {
         date: [{ required: true, message: "请选择收款时间", trigger: "blur" }],
-        name: [{ required: true }],
+        name: [{ required: true}],
+        number: [{required: true, message: "请输入交易流水号", trigger: "blur"}],
         account: [
           { required: true, message: "请选择收款账户", trigger: "blur" }
         ],

@@ -1,4 +1,4 @@
-import { getOrderAction, getTeampreviewAction, getEnrollsAction, checkOrderhasCollection } from './api'
+import { getOrderAction, getTeampreviewAction, getEnrollsAction, orderSaveAction } from './api'
 
 const ProcessManageMixin= {
   
@@ -19,9 +19,6 @@ const ProcessManageMixin= {
       {
         enrollsDetailStr: '', // 订单详情,
         guestTotal: 0,  // 总报名数
-      },
-      {
-        disperseOrderDisabled: false, // 直客订单如果存在收款申请或收款通过，则不允许更改
       }
     )
   },
@@ -42,10 +39,9 @@ const ProcessManageMixin= {
       processManage(orderId){
         getOrderAction(orderId)
         .then(orderDetail => {
-          let { planID, guests, favourable, contact, priceType, orderCode, orderChannel }= orderDetail;
+          console.log(JSON.parse(sessionStorage.getItem('butPermission')))
 
-          // 直客订单orderChannel !== 1 &&如果存在收款申请或收款通过，则不允许更改 现在是直客同业都走这个方法
-          checkOrderhasCollection(orderCode).then(bol => this.disperseOrderDisabled= !bol)
+          let { planID, guests, favourable, contact }= orderDetail;
           Promise.all([
             getEnrollsAction(planID), 
             getTeampreviewAction(planID)
@@ -82,7 +78,7 @@ const ProcessManageMixin= {
        */
       sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect;
-        
+
         this.salePrice.splice(0);
         this.salePrice.push(
           ...enrolls.map((enroll, index) => {
@@ -236,7 +232,6 @@ const ProcessManageMixin= {
           this.isChangeNumberClick();
           this.replenishInfoToastFun(this.orderget.orderChannel);
         });
-
       },
     },
 

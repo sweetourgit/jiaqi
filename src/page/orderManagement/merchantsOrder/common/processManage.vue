@@ -8,7 +8,6 @@
       class="city_list"
       width="870px"
       style="margin-top:-50px"
-      @open="disperseOrderDisabled=false"
       @close="cancle"
     >
       <!--订单状态begin-->
@@ -80,7 +79,7 @@
             <!-- :max="salePriceNum[index].quota" -->
             <numberInputer class="input-num"
               :proto="item"
-              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
               @change="enrollChangeHandler">
             </numberInputer>
           </div>
@@ -101,7 +100,7 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
@@ -113,7 +112,7 @@
               v-readonly="'others'"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
@@ -124,8 +123,7 @@
               v-model="item.mark"
               placeholder="请输入摘要"
               class="input1"
-              :title="item.mark"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark"
@@ -135,8 +133,7 @@
               v-readonly="'others'"
               placeholder="请输入摘要"
               class="input1"
-              :title="item.mark"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
             ></el-input>
           </el-form-item>
         </div>
@@ -160,6 +157,7 @@
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactName"
+            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
@@ -167,6 +165,7 @@
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactPhone"
+            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
@@ -191,8 +190,7 @@
         <div class="travelMessage">出行人信息</div>
         <travelMessage
           :proto="salePrice"
-          :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
-          :editDisabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
+          :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           @remove-guest="removeGuestEmit"
           @edit-guest="editGuestEmit">
         </travelMessage>
@@ -204,7 +202,6 @@
         <el-button
           class="fl"
           @click="dialogVisible = true"
-          :disabled="disperseOrderDisabled"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
         >取消订单</el-button>
         <!-- 修改订单状态按钮:disabled="isChangeNumber || isLowPrice"-->
@@ -532,6 +529,7 @@ export default {
     //   }
     // },
     isSaveBtnClick(){
+      console.log(123)
       this.isSaveBtn = false
       if(this.totalPrice + this.changedPrice<= 0) return this.isSaveBtn = true;
       // 如果一个报名也没有也不可以保存
@@ -1146,6 +1144,7 @@ export default {
     },
 
     compPrice(type, index) {
+      console.log(type,index)
       //计算总价
       if (type == 2) {
         this.isChangeNumber = true; //数量有变动 则动态按钮不可点击
@@ -1341,10 +1340,9 @@ export default {
             
             // obj.payable = this.prePayable + (this.payable - this.prePayable);
             obj.payable= this.totalPrice+ this.changedPrice;
-            console.log("RefundStatus",guest)
+
             obj.guests = guest;
-            obj.teamID = this.orderget.teamID
-            obj.planID = this.orderget.planID
+            
             this.$http
               .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                 object: obj

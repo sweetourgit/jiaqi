@@ -16,6 +16,13 @@
               </template>
             </el-autocomplete>
           </el-form-item>
+          <el-form-item label="回冲供应商：" prop="supplier" label-width="140px">
+            <el-autocomplete class="inputWidth" v-model="ruleForm.supplierHC" :fetch-suggestions="querySearchHC" placeholder="请输入供应商" @select="handleSelectHC" @blur="blurHandHC">
+              <template slot-scope="{ item }">
+                <div>{{ item.valueName }}</div>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
           <el-form-item label="借款类型：" prop="type" label-width="140px">
             <el-select v-model="ruleForm.type" placeholder="请选择" class="inputWidth">
               <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -96,7 +103,10 @@
           abstract: '',
           supplier: '',// 选择的供应商
           supplierName: '',
-          supplierID: '',// 选择的供应商ID
+          supplierID: '',
+          supplierHC: '',
+          supplierNameHC: '',
+          supplierIDHC: '',
           number: '',
           buy_type: '',
           timeStart: '',
@@ -160,8 +170,8 @@
         handler: function () {
           if(this.dialogFormVisible){
             this.loadSupplier();
-//            this.getCode();
-//            alert(this.type);
+            //            this.getCode();
+            //            alert(this.type);
           }
         }
       }
@@ -188,6 +198,9 @@
           supplier: '',// 选择的供应商
           supplierName: '',
           supplierID: '',// 选择的供应商ID
+          supplierHC: '',
+          supplierNameHC: '',
+          supplierIDHC: '',
           number: '',
           buy_type: '',
           timeStart: '',
@@ -198,7 +211,6 @@
           timeEnd: '',
           productName: ''
         },
-//        this.rece_code = '';
         this.fileList = [];
         this.tableDataXG = [];
         this.$emit('close', false);
@@ -258,7 +270,9 @@
               if(code !== ''){
                 this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
                   "supplier_code": this.ruleForm.supplierID,
-                  "supplier_name": this.ruleForm.supplierName,
+                  "recoil_supplier_code": this.ruleForm.supplierIDHC,
+                  "supplier_name": this.ruleForm.supplierNameHC,
+                  // "supplier_name": this.ruleForm.supplierName,
                   "periphery_type": 3,
                   "loan_type": this.ruleForm.type,
                   "loan_money": this.ruleForm.money,
@@ -285,7 +299,6 @@
                     });
                     that.startWork(res.data.data);
 
-//                that.$emit('loadData');
                   } else {
                     if(res.data.message){
                       that.$message({
@@ -318,9 +331,9 @@
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess(response, file, fileList){
-//        console.log(file);
-//        console.log(fileList);
-//        console.log('response',response);
+        //        console.log(file);
+        //        console.log(fileList);
+        //        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
         }else{
@@ -329,16 +342,16 @@
           }else{
             this.$message.warning('文件上传失败');
           }
-//          this.fileList = fileList;
-//          console.log(fileList);
-//          this.fileList = fileList.splice(-1, 1);
-//          for(let i = 0; i < fileList.length; i++){
-//            console.log(i);
-//          }
+          //          this.fileList = fileList;
+          //          console.log(fileList);
+          //          this.fileList = fileList.splice(-1, 1);
+          //          for(let i = 0; i < fileList.length; i++){
+          //            console.log(i);
+          //          }
 
-//          console.log(this.fileList);
-//          this.fileList = {};
-//          this.$refs.upload1.clearFiles();
+          //          console.log(this.fileList);
+          //          this.fileList = {};
+          //          this.$refs.upload1.clearFiles();
         }
       },
       handleError(err, file, fileList){
@@ -369,7 +382,7 @@
         };
       },
       handleSelectD(item){
-        console.log(item);
+        // console.log(item);
         this.ruleForm.supplierID = item.id;
         this.getSupplierCode(item.id);
         this.ruleForm.supplier = item.valueName;
@@ -385,14 +398,14 @@
         }
 //        const name = 2;
         this.ruleForm.supplierName = nameStr;
-        this.loadRelatedData();
+        // this.loadRelatedData();
       },
       blurHand(){
         const that = this;
         let ida = '', namea = '';
         if(that.ruleForm.supplier == ''){
           that.ruleForm.supplierID = '';
-          that.tableDataXG = [];
+          // that.tableDataXG = [];
         }else{
           this.supplierList.forEach(function (item, index, arr) {
             if(that.ruleForm.supplier == item.value){
@@ -415,10 +428,74 @@
               nameStr = nameStr.substr(0, nameStr.length - 1);
             }
             that.ruleForm.supplierName = nameStr;
-//            const name = 2;
-            this.loadRelatedData();
+            // this.loadRelatedData();
           }else{
             that.ruleForm.dsupplierID = '';
+            // that.tableDataXG = [];
+          }
+        }
+      },
+
+      querySearchHC(queryString, cb){
+        const supplierList = this.supplierList;
+        var results = queryString ? supplierList.filter(this.createFilterHC(queryString)) : supplierList;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilterHC(queryString) {
+        return (supplierList) => {
+          return (supplierList.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
+        };
+      },
+      handleSelectHC(item){
+        console.log(item);
+        this.ruleForm.supplierIDHC = item.id;
+        // this.getSupplierCode(item.id);
+        this.ruleForm.supplierHC = item.valueName;
+        let nameArr = item.value.split(',');
+        let nameStr = '';
+        nameArr.forEach(function (item, index, arr) {
+          if(index > 0){
+            nameStr += item + ',';
+          }
+        });
+        if(nameStr.substr(nameStr.length-1,1) === ','){
+          nameStr = nameStr.substr(0, nameStr.length - 1);
+        }
+        this.ruleForm.supplierNameHC = nameStr;
+        this.loadRelatedData();
+      },
+      blurHandHC(){
+        const that = this;
+        let ida = '', namea = '';
+        if(that.ruleForm.supplierHC == ''){
+          that.ruleForm.supplierIDHC = '';
+          that.tableDataXG = [];
+        }else{
+          this.supplierList.forEach(function (item, index, arr) {
+            if(that.ruleForm.supplierHC == item.value){
+              ida = item.id;
+              namea = item.value;
+              that.ruleForm.supplierHC = item.valueName;
+            }
+          });
+          if(ida){
+            that.ruleForm.supplierIDHC = ida;
+            // that.getSupplierCode(ida);
+            let nameArr = namea.split(',');
+            let nameStr = '';
+            nameArr.forEach(function (item, index, arr) {
+              if(index > 0){
+                nameStr += item + ',';
+              }
+            });
+            if(nameStr.substr(nameStr.length-1,1) === ','){
+              nameStr = nameStr.substr(0, nameStr.length - 1);
+            }
+            that.ruleForm.supplierNameHC = nameStr;
+            this.loadRelatedData();
+          }else{
+            that.ruleForm.supplierIDHC = '';
             that.tableDataXG = [];
           }
         }
@@ -479,9 +556,8 @@
           timeEnd: this.ruleForm.timeEnd,
           productName: this.ruleForm.productName
         },
-//        this.ruleForm.supplierName = 3;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/getorder", {
-          "supplier_name": this.ruleForm.supplierName,
+          "supplier_name": this.ruleForm.supplierNameHC,
           "buy_type": 1,
           "time_start": this.ruleForm.timeStart,
           "time_end": this.ruleForm.timeEnd,
@@ -609,7 +685,6 @@
           }).then(function(obj) {
           console.log(obj);
           if(obj.data.isSuccess){
-//            that.rece_code = obj.data.object;
             return obj.data.object;
           }else{
             if(obj.data.result.message){

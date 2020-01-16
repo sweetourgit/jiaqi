@@ -42,12 +42,12 @@
                 </el-radio-group>
               </el-form-item>
               <div class="form_ori">
-              <el-form-item label="部门" prop="orderList" >
+              <el-form-item label="部门" prop="orilistprop" >
                 <div class="addOri">
-                    <el-button type="primary" plain @click="dialogFormVisible = true" v-model="orilist" class="but-left">{{orilist}}</el-button>
+                    <el-button type="primary" plain @click="addDep" v-model="ruleForm.orilist" class="but-left">{{ruleForm.orilist}}</el-button>
                     <div class="button-fun">
-                  <el-button type="primary" size="mini" @click="addDomain" >添加</el-button>
-                  <!--<el-button type="info" size="mini">默认职位</el-button>-->
+                 <!-- <el-button type="primary" size="mini" @click="addDomain" >添加</el-button>
+                  <el-button type="info" size="mini">默认职位</el-button>-->
                     </div>
                 </div>
 
@@ -59,124 +59,29 @@
                   :key="domain.key"
                   :prop="'domains.' + index + '.value'"
               >
-
                   <el-button type="primary" plain @click="tanchu(domain) " v-model="ruleForm1" class="but-left">{{domain.value}}</el-button>
                   <div class="button-fun">
                  <el-button type="danger"  @click.prevent="removeDomain(domain)" size="mini" class="delete-adjust" >删除</el-button>
                <!--  <el-button type="primary" size="mini" class="delete-adjust" @click="changstatus(domain)">设置默认</el-button>-->
                   </div>
-
               </div>
-
-
               <el-form-item class="button-adjust">
                 <el-button type="primary" @click="submitForm('ruleForm')" v-if="buttonsubmit">创建</el-button>
                 <el-button type="primary" @click="changeForm('ruleForm')" v-if="buttonchange">修改</el-button>
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
               </el-form-item>
-                <!--弹出框> <-->
-                  <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="500px" show-close>
-                    <!--<div class="qqqt">
-                     <el-form ref="form"  label-width="110px">
-                       &lt;!&ndash;<el-form-item label="部门:" class="form-la">
-                         <el-cascader
-                            placeholder="试试搜索：指南"
-                            @active-item-change="handleItemChange"
-                            :options="casc"
-                            separator="-"
-                            filterable
-                            v-model="selectedOptions"
-                          ></el-cascader>
-                       </el-form-item>&ndash;&gt;
-
-                       &lt;!&ndash;plan b begin&ndash;&gt;
-                       <el-form-item label="组织:" class="form-la">
-                         <el-select v-model="value" placeholder="请选择" @change="HandChange()">
-                           <el-option
-                             v-for="item in options"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                           </el-option>
-                         </el-select>
-                       </el-form-item>
-
-                       <el-form-item label="部门:" class="form-la">
-                         <el-select v-model="value1" placeholder="请选择"   @change="HandChange1()">
-                           <el-option
-                             v-for="item in options1"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                           </el-option>
-                         </el-select>
-                       </el-form-item>
-
-                       <el-form-item label="部门:" class="form-la" v-if="bumen2">
-                         <el-select v-model="value2" placeholder="请选择"   @change="HandChange2()" >
-                           <el-option
-                             v-for="item in options2"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                           </el-option>
-                         </el-select>
-                       </el-form-item>
-
-                       <el-form-item label="部门:" class="form-la" v-if="bumen1">
-                         <el-select v-model="value3" placeholder="请选择" @change="HandChange3()">
-                           <el-option
-                             v-for="item in options3"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                           </el-option>
-                         </el-select>
-                       </el-form-item>
-
-                       <el-form-item label="部门:" class="form-la" v-if="bumen3">
-                         <el-select v-model="value4" placeholder="请选择" >
-                           <el-option
-                             v-for="item in options4"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                           </el-option>
-                         </el-select>
-                       </el-form-item>
-                       &lt;!&ndash;plan b end&ndash;&gt;
-                       <el-form-item label="职位:" class="form-la">
-                         <el-select v-model="value8" filterable placeholder="请选择">
-                           <el-option
-                             v-for="item in bumen"
-                             :key="item.value"
-                             :label="item.label"
-                             :value="item.value">
-                           </el-option>
-                         </el-select>
-                       </el-form-item>
-
-                         <input type="hidden" v-model="hidval" value="hidval"/>
-                     </el-form>
-                        <div slot="footer" class="dialog-footer">
-                        <el-button type="primary" @click="addmaster">确 定</el-button>
-                      </div>
-                    </div>-->
-                    <div class="left">
-                      <div class="hh">
-                        <el-tree ref="oppo" @node-click="treeClick" @node-expand="treeClick" :props="props1" node-key="id" :load="loadNode" class="tree" @dblclick.native="treeDblclick" :render-content="renderContent" lazy :expand-on-click-node="isexpand" :default-expanded-keys="treeKey" highlight-current></el-tree>
-                      </div>
+                <!--弹出框-->
+                  <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="400px">
+                    <div class="ztree-bg">
+                       <ul id="tree" class="ztree"></ul>
                     </div>
                     <div style="position: absolute;top: 10px;right: 10px">
                       <el-button size="mini" @click="dialogFormVisible = false" type="primary">取消</el-button>
                       <el-button size="mini" @click="addmaster" type="primary">确定</el-button>
                     </div>
                 </el-dialog>
-                <!--弹出框> <-->
+                <!--弹出框-->
             </el-form>
-
-
-
           </el-tab-pane>
          <!--
           <el-tab-pane label="权限配置" name="second">
@@ -189,15 +94,11 @@
 </template>
 
 <script>
-import Permission from '@/page/account/userList/addUser/permission'
+import '../../../../../static/ztree/zTreeStyle/zTreeStyle.css'
+import '../../../../../static/ztree/jquery-1.4.4.min.js'
+import '../../../../../static/ztree/jquery.ztree.core.js'
   export default {
-    name:'addUser',
-    components:{
-      Permission
-    },
     data () {
-
-
         var checkPhone = (rule, value, callback) => {
           var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
           if(!value){
@@ -238,8 +139,22 @@ import Permission from '@/page/account/userList/addUser/permission'
 
       return {
         company:0,
-        fID:'',
-        dname:'',
+        parentID:0,
+        deptName:"",
+        setting: {
+          async: {
+              enable: true,
+              url: this.GLOBAL.serverSrc + "/org/dept/api/ztreelist",
+              autoParam: ["id"],
+              type: 'get',
+              checkable: true,
+              dataFilter: this.filter()
+          },
+          callback: {
+            onClick: this.onNodeClick,
+          }
+        },
+        zNodes: [],
         addInput: {
           name: "",
           topDepartment: "",
@@ -252,14 +167,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           note: "",
           ParentID: ""
         },
-        treeKey: [],
-        isexpand: false,
-        props1: {
-          label: "label",
-          isLeaf: "leaf"
-        },
         userState:'',
-        options: [],
         value: '',
         options1: [],
         value1: '',
@@ -273,9 +181,6 @@ import Permission from '@/page/account/userList/addUser/permission'
         arr1: [],
         arr2: [],
         arr3: [],
-        bumen2: false,
-        bumen1: false,
-        bumen3:false,
         buttonsubmit:false,
         buttonchange:false,
         uid:0,
@@ -283,8 +188,8 @@ import Permission from '@/page/account/userList/addUser/permission'
         disable :false,
         hidval:"-1",
         selectedOptions: [],
-        orilist: '请点击添加',
         ppid:'',
+        orgID:'',
         ruleForm1: {
           domains: [{
             value: '请点击添加',
@@ -308,7 +213,8 @@ import Permission from '@/page/account/userList/addUser/permission'
           sex:'1',
           type:'1',
           state:'',
-          orderList:'',
+          orilist: '请点击添加',
+          orilistprop:'',
           domains: [{
             value: ''
           }],
@@ -324,8 +230,8 @@ import Permission from '@/page/account/userList/addUser/permission'
           mail: [
             {  required: true, validator:checkMail, trigger: 'blur' }
           ],
-          orderList: [
-            {  required: true, message: '请选择部门', trigger: 'blur' }
+          orilistprop: [
+            {  required: true, message: '请选择部门', trigger: 'change' }
           ],
           number: [
             {  required: true, validator:checkTrail, trigger: 'blur' }
@@ -346,267 +252,46 @@ import Permission from '@/page/account/userList/addUser/permission'
 
     },
       methods: {
-        treeDblclick(a) {
-          this.treeKey = [];
-          if (this.dbSave.isLeaf == 2 || this.dbSave.isLeaf == 0) {
-            this.treeKey.push(this.dbSave.id);
+        zTreeInit(){
+          var ztree = $.fn.zTree.init($("#tree"), this.setting);
+      },
+      filter(treeId, parentNode, childNodes) {
+          if (!childNodes) return null;
+          for (var i = 0, l = childNodes.length; i < l; i++) {
+              childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
           }
-          this.dbSave = ''
-        },
-        getUser(key, label, id, isLeaf, resolve) {
-          this.data1 = [];
-          let _this = this;
-          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
-            object: {
-              ParentID: id
-            }
-          }).then(response => {
-            for (let i = 0; i < response.data.objects.length; i++) {
-              if (response.data.objects[i].isDeleted !== 1) {
-                if (response.data.objects[i].isLeaf == 1) {
-                  _this.data1.push({
-                    label: response.data.objects[i].orgName,
-                    id: response.data.objects[i].id,
-                    key: i,
-                    cities: [],
-                    isLeaf: response.data.objects[i].isLeaf,
-                    leaf: true
-                  });
-                } else if (response.data.objects[i].isLeaf == 2) {
-                  _this.data1.push({
-                    label: response.data.objects[i].orgName,
-                    id: response.data.objects[i].id,
-                    key: i,
-                    cities: [],
-                    isLeaf: response.data.objects[i].isLeaf,
-                    leaf: false
-                  });
-                }
-              }
-            }
-            setTimeout(() => {
-              let data = _this.data1;
-              resolve(data);
-            }, 200);
-          })
-            .catch(function(error) {
-              console.log(error);
-            });
-        },
-        // 单击tree节点
-        treeClick(a, b, c) {
-          if(a.leaf==false){
-            this.company=a.id;
-          }
-          //console.log(this.company);
-         // console.log(a.label);
-          this.fID = a.id;
-          this.dname = a.label;
-          this.data = [];
-          this.org = a.id;
-          this.tableData = [];
-          this.tableList = [];
-          this.addInput.ParentID = a.id;
-          this.addInput.topDepartment = a.label;
-          this.dbSave = a;
-          var _this = this;
-          //下级部门
-          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
-            object: {
-              ParentID: a.id
-            }
-          },{
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
-          }).then(response => {
-            for (let i = 0; i < response.data.objects.length; i++) {
-              if (response.data.objects[i].isDeleted !== 1) {
-                _this.tableData.push({
-                  label: response.data.objects[i].orgName,
-                  id: response.data.objects[i].id,
-                  key: i,
-                  value: response.data.objects[i].id
-                });
-              }
-            }
-          }).catch(function(error) {
-            console.log(error);
-          });
-          //部门人员
-          this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlistwithorg", {
-            id:a.id
-          },{
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
-          }).then(res => {
-            for(let i = 0;i<res.data.objects.length;i++){
-              if(res.data.objects[i].sex == 1){
-                res.data.objects[i].sex = '男'
-              }else{
-                res.data.objects[i].sex = '女'
-              }
-              _this.tableList.push({
-                id:res.data.objects[i].id,
-                name:res.data.objects[i].name,
-                phone:res.data.objects[i].mobile,
-                sex:res.data.objects[i].sex
-              })
-            }
-          }).catch(function(error){
-            console.log(error)
-          })
-        },
-        renderContent(h, { node, data, store }) {
-          if (data.isLeaf == 1) {
-            return (
-              <span>
-              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/257785656210656304.png"/>
-              <span>{node.label}</span>
-            </span>
-          );
-          } else if (data.isLeaf == 2 || data.isLeaf == 0) {
-            return (
-              <span>
-              <img style="position:relative;bottom: -3px" width="20px" src="../static/organList-image/ewqdewq.png"/>
-              <span>{node.label}</span>
-            </span>
-          );
-          }
-        },
-        //树形控件父级数据加载
-        loadNode(node, resolve) {
-          console.log(node.data)
-          this.node = node.data
-          this.removes = resolve
-          this.data = [];
-          let _this = this;
-          this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
-            object: {
-              ParentID: -1
-            }
-          },{
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
-          }).then(response => {
-            for (let i = 0; i < response.data.objects.length; i++) {
-              if (node.level === 0) {
-                _this.options.push({
-                  label: response.data.objects[i].orgName,
-                  value: response.data.objects[i].id + "-" + response.data.objects[i].orgName
-                });
-                resolve([
-                  {
-                    label: response.data.objects[i].orgName,
-                    key: i,
-                    id: response.data.objects[i].id,
-                    isLeaf: response.data.objects[i].isLeaf
-                  }
-                ]);
-              }
-            }
-            let num = Array();
-            num.push({
-              id: response.data.objects[0].id,
-              isLeaf: response.data.objects[0].isLeaf,
-              key: 0,
-              label: response.data.objects[0].orgName
-            });
-            if (this.flag) {
-              _this.treeClick(num[0]);
-              this.flag = false;
-            }
-            this.treeKey.push(204);
-          }).catch(function(error) {
-            console.log(error);
-          });
-          if (node.level >= 1) {
-            this.getUser(
-              node.data.key,
-              node.data.label,
-              node.data.id,
-              node.data.isLeaf,
-              resolve
-            );
-          }
-        },
-        HandChange () {
-          this.arr = this.value.split('-')
-          this.options1 = []
-          this.value1 = ''
-          this.value2 = ''
-          this.value3 = ''
-          var that = this
-          // 获取顶级，第一级城市beg
-          this.$http.post(
-            this.GLOBAL.serverSrc + "/org/api/deptlist",
-            {
-              'order': 'string',
-              'object': {
-                'isDeleted': 0,
-                'parentID': this.arr[0]
-              }
-            },{
-              headers:{
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-              }
-            }
-          )
-            .then(function (obj) {
-              if(obj.data.objects.length ==0){
-                that.bumen2 = false
-                that.bumen1 = false
-              }
-              console.log(obj)
-              var i = ''
-              for (i = 0; i < obj.data.objects.length; i++) {
-                that.options1.push({
-                  label: obj.data.objects[i].orgName,
-                  value: obj.data.objects[i].id + '-' + obj.data.objects[i].orgName
-                })
-              }
-            })
-            .catch(function (obj) {
-            })
-        },
+          return childNodes;
+      },
+      // 单击选中目录
+      onNodeClick(e, treeId, treeNode){
+        if(treeNode.isParent === true){
+          this.parentID = treeNode.id;
+        }else{
+          this.parentID = treeNode.parentID;       
+        }
+        this.deptName=treeNode.name;
+        this.orgID=treeNode.id;
+      },
+      addDep(){
+        this.dialogFormVisible = true;
+        setTimeout(()=>{
+          this.zTreeInit();
+        })
+      },
       /*----------*/
         changstatus(item){
           //默认的值
           var id = this.ruleForm1.domains.indexOf(item)
-          var one = this.orilist
-          this.orilist = this.ruleForm1.domains[id].value
+          var one = this.ruleForm.orilist
+          this.ruleForm.orilist = this.ruleForm1.domains[id].value
           this.ruleForm1.domains[id].value = one
         },
-        handleItemChange(){
-          console.log(13)
-        },
-
         addmaster() {
-        /*  console.log(this.value.split("-")[1])
-          console.log(this.value1.split("-")[1])
-          console.log(this.value2.split("-")[1])
-          console.log(this.value3.split("-")[1])
-          console.log(this.value4.split("-")[1])
-          console.log(this.value4)
-            var arr =  Object.values(this.selectedOptions)
-            var strb = arr.join("-"); //"aa:bb:cc"
-            var wei =this.value8*/
-            if(this.hidval== -1){
-                /*this.orilist = strb + '-' + wei*/
-              this.orilist = this.dname
-              this.ppid = this.fID
-              this.ruleForm.orderList = this.dname
-            }else{
-                 this.ruleForm1.domains[this.hidval].value = this.dname
-                 this.ruleForm1.domains[this.hidval].id = this.fID
-                 this.hidval= -1
-            }
-
-
-          this.dialogFormVisible = false
-
+          this.company = this.parentID;
+          this.ruleForm.orilist = this.deptName;
+          this.ruleForm.orilistprop = this.deptName;
+          this.ppid = this.orgID;
+          this.dialogFormVisible = false;
         },
         tanchu(item) {
             var index = this.ruleForm1.domains.indexOf(item)
@@ -653,17 +338,10 @@ import Permission from '@/page/account/userList/addUser/permission'
                      setTimeout(() => {
                        this.$router.push({path: "/userlist"});
                      }, 1000);
-
-
                  })
                  .catch(function (obj) {
                    console.log(obj)
                  })
-
-
-
-
-
               this.$message({
             type: 'success',
             message: '操作成功!'
@@ -715,17 +393,10 @@ import Permission from '@/page/account/userList/addUser/permission'
                     setTimeout(() => {
                       this.$router.push({path: "/userlist"});
                     }, 1000);
-
-
                   })
                   .catch(function (obj) {
                     console.log(obj)
                   })
-
-
-
-
-
                 this.$message({
                   type: 'success',
                   message: '操作成功!'
@@ -740,10 +411,8 @@ import Permission from '@/page/account/userList/addUser/permission'
         bumen123(){
           var that = this
           this.$http.post(
-            /* "http://192.168.1.168:6001/org/api/userget",*/
             this.GLOBAL.serverSrc + "/org/api/deptget",
             {
-
               id: that.ppid
             },{
               headers:{
@@ -752,15 +421,10 @@ import Permission from '@/page/account/userList/addUser/permission'
             }
           )
             .then(function (obj) {
-
-              that.orilist = obj.data.object.orgName
-              
-
-
+              that.ruleForm.orilist = obj.data.object.orgName;
+              that.ruleForm.orilistprop = obj.data.object.orgName;
             })
             .catch(function (obj) {
-
-
             })
         },
         submitForm(formName) {
@@ -897,46 +561,16 @@ import Permission from '@/page/account/userList/addUser/permission'
       }
     },
     created(){
-
       var that = this
-      //获取职位
-      this.$http.post(this.GLOBAL.serverSrc + "/org/api/positionpage", {
-        object: {
-          isDeleted: 0
-        },
-        pageSize: 100,
-        pageIndex: 1,
-        id: 0
-      },{
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        }
-      }).then(function(response) {
-        for (let i = 0; i < response.data.objects.length; i++) {
-          if (response.data.objects[i].isDeleted !== 1) {
-            that.bumen.push({
-              value: response.data.objects[i].id,
-              label: response.data.objects[i].name
-            });
-          }
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
-
-
       if(this.$route.query.id){
         this.buttonchange = true
         this.buttonsubmit = false
         this.uid = this.$route.query.id
         var that = this
         this.$http.post(
-         /* "http://192.168.1.168:6001/org/api/userget",*/
           this.GLOBAL.serverSrc + "/org/api/userget",
           {
-
               id: that.$route.query.id,
-
           },{
             headers:{
               'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -944,7 +578,7 @@ import Permission from '@/page/account/userList/addUser/permission'
           }
         )
           .then(function (obj) {
-            that.treeKey.push(obj.data.object.company);
+           //that.treeKey.push(obj.data.object.company);
             that.company=obj.data.object.company;
            // that.treeKey.push(obj.data.object.orgID);
             that.ruleForm.phone = obj.data.object.mobile
@@ -964,26 +598,18 @@ import Permission from '@/page/account/userList/addUser/permission'
                 that.enable = true
             }
             that.bumen123()
-
-
-
-
           })
-          .catch(function (obj) {
-
-
+          .catch(function (obj){
           })
-
       }else{
           this.buttonsubmit = true
           this.buttonchange = false
       }
-
-
     },
-
-
 }
+$(document).ajaxSend(function(event, jqxhr, settings){
+    jqxhr.setRequestHeader("Authorization",'Bearer ' + localStorage.getItem('token'));
+})
 </script>
 
 <style scoped>
@@ -1056,6 +682,6 @@ import Permission from '@/page/account/userList/addUser/permission'
     .but-left{
         float:left;
     }
-
+.ztree-bg{width: 250px;height:600px;margin:0 0 0 45px;padding: 10px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;overflow:scroll;}
 </style>
 

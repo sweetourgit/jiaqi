@@ -417,6 +417,15 @@ export default new Router({
       ]
     },
     {
+      path: '/merchantsOrder',
+      component: () => import('@/page/orderManagement/merchantsOrder/businessOrder'),
+      name: '商户订单',
+      meta: {
+        keepAlive: true,
+        auth: true
+      },
+    },
+    {
       path: '/scenicTicketingDetails',
       name: '产品管理  /团期计划  /详情',
       component: () => import('@/page/productManagement/regimentPlan/children/scenic/scenicTicketingDetails'),

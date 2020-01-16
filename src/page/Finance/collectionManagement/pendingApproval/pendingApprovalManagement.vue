@@ -9,12 +9,12 @@
           <span class="searchName">团期计划</span>
           <el-input v-model="groupCodeZK" class="searchInput"></el-input>
           <span class="searchName">申请人</span>
-          <!-- <el-input v-model="createUserZK" class="searchInput"></el-input> -->
           <el-autocomplete
             v-model="createUserZK"
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入内容"
             @select="handleSelect"
+            class="searchInput"
           ></el-autocomplete>
           <span class="searchName">收款时间</span>
           <el-date-picker
@@ -34,15 +34,25 @@
           ></el-date-picker>
           <br />
           <span class="searchName">状态</span>
-          <el-select v-model="checkTypeStatusZK" placeholder="请选择" style="width: 150px;">
-            <el-option
-              label="审批中" value="0"
-            ></el-option>
+          <el-select v-model="checkTypeStatusZK" placeholder="请选择" class="searchInput">
+            <el-option label="审批中" value="0"></el-option>
           </el-select>
-          <span class="searchName">收款账户</span>
-          <el-input v-model="collectionNumberZK" class="searchInput"></el-input>
+          <span class="searchInput btn"></span>
           <el-button type="primary" class="searchBtn" @click="handleSearchBtnZK">搜索</el-button>
           <el-button type="primary" class="searchBtn" @click="handleResetBtnZK">重置</el-button>
+          <br />
+          <br />
+          <span class="searchName">收款账户</span>
+          <el-checkbox-group
+            v-model="collectionNumberZK"
+            class="searchReceive"
+            @change="handleCheckbox"
+          >
+            <el-checkbox :label="item.id" v-for="(item,index) in ReceiveInfos" :key="index">
+              {{item.value
+              }}
+            </el-checkbox>
+          </el-checkbox-group>
         </div>
         <!-- 直客搜索end -->
 
@@ -72,6 +82,7 @@
               </span>
             </template>
           </el-table-column>
+          <el-table-column prop="collectionNumber" label="收款账户" align="center"></el-table-column>
           <el-table-column prop="orderNumber" label="订单号" align="center">
             <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
@@ -130,6 +141,7 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入内容"
             @select="handleSelect"
+            class="searchInput"
           ></el-autocomplete>
           <span class="searchName">收款时间</span>
           <el-date-picker
@@ -149,15 +161,25 @@
           ></el-date-picker>
           <br />
           <span class="searchName">状态</span>
-          <el-select v-model="checkTypeStatusTY" placeholder="请选择" style="width: 150px;">
-            <el-option
-              label="审批中" value="0"
-            ></el-option>
+          <el-select v-model="checkTypeStatusTY" placeholder="请选择" class="searchInput">
+            <el-option label="审批中" value="0"></el-option>
           </el-select>
-          <span class="searchName">收款账户</span>
-          <el-input v-model="collectionNumberTY" class="searchInput"></el-input>
+          <span class="searchInput btn"></span>
           <el-button type="primary" class="searchBtn" @click="handleSearchBtnTY">搜索</el-button>
           <el-button type="primary" class="searchBtn" @click="handleResetBtnTY">重置</el-button>
+          <br />
+          <br />
+          <span class="searchName">收款账户</span>
+          <el-checkbox-group
+            v-model="collectionNumberTY"
+            class="searchReceive"
+            @change="handleCheckbox"
+          >
+            <el-checkbox :label="item.id" v-for="(item,index) in ReceiveInfos" :key="index">
+              {{item.value
+              }}
+            </el-checkbox>
+          </el-checkbox-group>
         </div>
         <!-- 同业搜索end -->
         <!-- 同业表格 -->
@@ -187,6 +209,7 @@
               </span>
             </template>
           </el-table-column>
+          <el-table-column prop="collectionNumber" label="收款账户" align="center"></el-table-column>
           <el-table-column prop="orderNumber" label="订单号" align="center">
             <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
@@ -351,6 +374,7 @@ export default {
       applyPeopleChoose: {}, //选择搜索的申请人
       tabPosition: "left", // 左侧导航
       activeName: "first", // 当前tab项
+      ReceiveInfos: [], //直客同业搜索的 收款账户信息的集合
       // 审批页面显示隐藏
       dialogFormVisible: false,
       info: "",
@@ -394,7 +418,7 @@ export default {
       startTimeZK: "", //开始时间
       endTimeZK: "", //结束时间
       checkTypeStatusZK: "", //状态
-      collectionNumberZK: "", //收款账户
+      collectionNumberZK: [], //收款账户
 
       // 同业搜索
       groupCodeTY: "", //团期计划
@@ -402,7 +426,7 @@ export default {
       startTimeTY: "", //开始时间
       endTimeTY: "", //结束时间
       checkTypeStatusTY: "", //状态
-      collectionNumberTY: "" //收款账户
+      collectionNumberTY: [] //收款账户
     };
   },
   filters: {
@@ -435,7 +459,6 @@ export default {
           this.numZK + this.numTY + this.numNBSK + this.numBXHK;
       }
     }
-
   },
   methods: {
     moment,
@@ -511,7 +534,10 @@ export default {
             planID: 0,
             orderID: 0,
             orderNumber: "",
-            collectionNumber: "",
+            collectionNumber:
+              this.collectionNumberZK !== []
+                ? this.collectionNumberZK.toString()
+                : "",
             price: 0,
             dept: 0,
             createUser:
@@ -561,7 +587,7 @@ export default {
       this.startTimeZK = "";
       this.endTimeZK = "";
       this.checkTypeStatusZK = "";
-      this.collectionNumberZK = "";
+      this.collectionNumberZK = [];
       // this.statusChange("审批中");
       this.loadingZK = true;
       this.applyPeopleChoose = [];
@@ -601,7 +627,10 @@ export default {
             planID: 0,
             orderID: 0,
             orderNumber: "",
-            collectionNumber: "",
+            collectionNumber:
+              this.collectionNumberTY !== []
+                ? this.collectionNumberTY.toString()
+                : "",
             price: 0,
             dept: 0,
             createUser:
@@ -651,7 +680,7 @@ export default {
       this.startTimeTY = "";
       this.endTimeTY = "";
       this.checkTypeStatusTY = "";
-      this.collectionNumberTY = "";
+      this.collectionNumberTY = [];
       // this.statusChange("审批中");
       this.loadingTY = true;
       this.applyPeopleChoose = [];
@@ -871,11 +900,41 @@ export default {
           console.log(err);
         });
     },
+
     createStateFilter(queryString) {
       return state => {
         return state.value; //后台已做筛选  无需再过滤
       };
     },
+
+    // 直客同业的搜索 收款账户显示的集合
+    getSearchReceiveInfo() {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
+          object: {
+            cardType: 0,
+            subject: ""
+          }
+        })
+        .then(res => {
+          let { objects } = res.data;
+          objects.forEach((item, index) => {
+            this.ReceiveInfos.push({
+              id: item.id,
+              value: item.title
+            });
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
+    // 监听变化
+    handleCheckbox() {
+      console.log(this.collectionNumberZK.toString(), 1111);
+    },
+
     handleSelect(item) {
       this.applyPeopleChoose = item;
     }
@@ -886,6 +945,7 @@ export default {
     this.loadDataTY();
     this.loadDataNBSK();
     this.loadDataBXHK();
+    this.getSearchReceiveInfo();
   }
 };
 </script>
@@ -986,6 +1046,10 @@ export default {
 
 // 搜索begin
 .search {
+  margin: 20px 10px;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  background-color: #f7f7f7;
   .searchName {
     font-size: 14px;
     margin-left: 5px;
@@ -994,14 +1058,23 @@ export default {
     text-align: center;
   }
 
+  .searchReceive {
+    margin: -17px 0 0 83px;
+  }
+
   .searchInput {
     margin: 10px 5px;
-    width: 145px;
+    width: 20%;
+  }
+
+  .btn {
+    display: inline-block;
+    margin-left: 6%;
   }
 
   .startTime {
     margin-left: 10px;
-    width: 135px !important;
+    width: 12% !important;
   }
 
   .dateLine {

@@ -60,7 +60,7 @@ ul {
           <el-button
             class="fl cursor"
             @click="$emit('edit-guest', guest)"
-            :disabled="editDisabled"
+            :disabled="disabled"
           >编辑</el-button>
           <span class="fl">|</span>
           <el-button
@@ -81,7 +81,6 @@ export default {
     orderStatus: Number,
     proto: Array,
     disabled: Boolean,
-    editDisabled: Boolean //编辑按钮只有在出行中和订单已完成状态下禁用
   },
 
   watch: {
@@ -94,9 +93,6 @@ export default {
       },
       immediate: true,
       deep: true
-    },
-    editDisabled () {
-      console.log(this.editDisabled,1111)
     }
   },
 

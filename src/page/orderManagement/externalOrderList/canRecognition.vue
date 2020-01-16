@@ -50,7 +50,9 @@
       <el-row>
         <el-col :span="7">
           <span class="search-title">关联团期:</span>
-          <el-input v-model="activeForm.tour" class="input"></el-input>
+          <!-- <el-input v-model="activeForm.tour" class="input"></el-input> -->
+          <el-autocomplete class="el-input" v-model="activeForm.tour" :fetch-suggestions="querySearchT" placeholder="请输入关联团期" @select="handleSelectT">
+          </el-autocomplete>
         </el-col>
         <el-col :span="7">
           <span class="search-title">类别:</span>
@@ -142,6 +144,7 @@
     <!--table-->
     <div class="tableDv">
       <div class="table_trip" style="width: 100%;">
+        <div class="lineTitle" v-if="showTotal"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总成本：{{totalMoneyCost}}元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总收入：{{totalMoneyIncome}}元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量：{{totalNum}}</div>
         <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
@@ -250,6 +253,13 @@
     },
     data() {
       return {
+        
+        showTotal: false,
+        totalItem: 0,
+        totalMoneyCost: 0,
+        totalMoneyIncome: 0,
+        totalNum: 0,
+
         activeName: 'one',
         activeForm: {
           title: '',
@@ -273,17 +283,18 @@
           typeBuy: ''
         },// 筛选项
         reable: true,// 按钮是否可点击
+        planList: [],
 
         dialogFormVisible: false,
         dialogFormVisible2: false,
         dialogFormVisible3: false,
         dialogFormVisible4: false,
 
-//      表格数据
+        // 表格数据
         total: 0, // 总条数
         currentPage4: 1,
         pageIndex: 1, // 设定当前页数
-        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+        pageSize: 100, // 设定默认分页每页显示数 todo 具体看需求
         tableData: [],
         loading: true,// table加载的loading
         multipleSelection: [],
@@ -307,7 +318,6 @@
           3: '已借款'
         },// 借款状态
 
-//        时间限制，开始时间不能大于结束时间
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
         importStartDatePicker: this.beginDate1(),
@@ -322,6 +332,7 @@
     watch: {},
     created(){
       this.loadData();
+      this.loadRegimentPlan();
     },
     methods: {
       // 表格头部背景颜色
@@ -331,6 +342,21 @@
         } else {
           return ''
         }
+      },
+      // 关联团期选择
+      querySearchT(queryString, cb){
+        let planList = this.planList;
+        let results = queryString ? planList.filter(this.createFilter1(queryString)) : planList;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter1(queryString) {
+        return (planList) => {
+          return (planList.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
+        };
+      },
+      handleSelectT(item){
+        this.activeForm.tour = item.value;
       },
 //      导入订单
       importOrder() {
@@ -355,7 +381,7 @@
       },
       //关联
       relation() {
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
         let related = 0;
         let order = '';
         this.multipleSelection.forEach(function (item, index, arr) {
@@ -436,7 +462,7 @@
       },
       // 批量撤销认收款
       backout(){
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
         let num = 0;
         let orderS = '';
         this.multipleSelection.forEach(function (item, index, arr) {
@@ -463,7 +489,7 @@
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/order/external-order/batchrevokerec', {
               "order_sn": order_sn
             }).then(res => {
-              console.log(res);
+              // console.log(res);
               if (res.data.code == 200) {
                 this.$message({
                   type: 'success',
@@ -511,7 +537,7 @@
           this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/revokerec", {
             "order_sn": row.order_sn
           }, ).then(function(response) {
-            console.log('撤销',response);
+            // console.log('撤销',response);
             if (response.data.code == '200') {
               that.$message({
                 type: 'success',
@@ -541,6 +567,7 @@
       searchHand() {
         this.loading = true;
         this.pageIndex = 1;
+        this.showTotal = true;
         this.loadData();
       },
       resetHand() {
@@ -565,6 +592,7 @@
           distributorMarks: '',
           typeBuy: ''
         };
+        this.showTotal = false;
         this.loadData();
       },
       handleSizeChange(val) {
@@ -586,7 +614,7 @@
         }
       },
       selectionChange(val) {
-        console.log(val);
+        // console.log(val);
         if(val.length > 0){
           this.reable = false;
         }else{
@@ -627,15 +655,17 @@
           "buy_type": this.activeForm.typeBuy,
           "distributor_remark": this.activeForm.distributorMarks
         }, ).then(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.data.code == '200') {
-            console.log(response);
+            // console.log(response);
+            that.totalItem = response.data.data.total - 0;
+            that.totalMoneyCost = response.data.data.cost_all;
+            that.totalMoneyIncome = response.data.data.income_all;
+            that.totalNum = response.data.data.quantity_all;
             that.tableData = response.data.data.list;
             that.total = response.data.data.total - 0;
             that.loading = false;
             that.tableData.forEach(function (item, index, arr) {
-//            console.log(v,k,arr);
-//            console.log(item.sale_at);
               item.sale_at = formatDate(new Date(item.sale_at*1000));
               item.check_at = formatDate(new Date(item.check_at*1000));
               item.import_at = formatDate(new Date(item.import_at*1000));
@@ -649,11 +679,10 @@
       },
 //    时间限制
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
-            if (that.activeForm.endTime) {  //如果结束时间不为空，则小于结束时间
+            if (that.activeForm.endTime) { //如果结束时间不为空，则小于结束时间
               return new Date(that.activeForm.endTime).getTime() < time.getTime()
             } else {
               // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
@@ -662,7 +691,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -675,7 +703,6 @@
         }
       },
       beginDate1(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -688,7 +715,6 @@
         }
       },
       processDate1(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -701,7 +727,6 @@
         }
       },
       beginDate2(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -714,7 +739,6 @@
         }
       },
       processDate2(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -725,6 +749,37 @@
             }
           }
         }
+      },
+
+      loadRegimentPlan(){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/listpage", {
+          "product_name": "",
+          "tour_no": "",
+          "start_time": "",
+          "end_time": "",
+          "create_uid": 0,
+          "org_id": 0,
+          "bill_status": 0,
+          "limit": 0
+        }, ).then(function(response) {
+            console.log(response);
+          if (response.data.code == '200') {
+            console.log(response);
+            const planList = [];
+            response.data.data.list.forEach(function (item, index, arr) {
+              planList.push({
+                value: item.tour_no,
+                product: item.product_name
+              })
+            })
+            that.planList = planList;
+          } else {
+            that.$message.success("加载数据失败~");
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
     }
 
@@ -780,7 +835,17 @@
       }
 
     }
-
+    .lineTitle{
+      width: 100%;
+      /*margin: 10px auto;*/
+      background-color: #E6F3FC;
+      height: 40px;
+      line-height: 40px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      display: inline-block;
+      margin: 10px 10px 10px 0;
+    }
     .main {
       margin-top: 20px;
       margin-bottom: 20px;

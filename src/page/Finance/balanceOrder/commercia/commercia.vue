@@ -253,6 +253,6 @@ export default {
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
   /*表格*/
-  .labelTable{margin: 20px 30px 20px 0;max-width: 90%;overflow: hidden;clear:both;}
-  .pageList{float:right; margin: 0 0 60px 0;}
+  .labelTable{margin: 20px 30px 100px 0;max-width: 90%;overflow: hidden;clear:both;}
+  .pageList{float:right; margin: -70px 0 60px 0;}
 </style>
