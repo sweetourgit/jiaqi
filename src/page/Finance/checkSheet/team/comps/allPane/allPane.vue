@@ -3,6 +3,17 @@
   &>header{
     padding: 10px 0;
   }
+  &>main{
+    .check-type-0{
+      color: #909399;
+    }
+    .check-type-1{
+      color: #67C23A;
+    }
+    .check-type-2{
+      color: #F56C6C;
+    }
+  }
 }
 </style>
 
@@ -21,7 +32,11 @@
         :header-cell-style="getRowClass">
         <el-table-column align="center" prop="groupCode" label="团期计划" ></el-table-column>
 
-        <el-table-column align="center" prop="checkTypeEX" label="状态"></el-table-column>
+        <el-table-column align="center" label="状态">
+          <template slot-scope="scope">
+            <span :class="'check-type-'+ scope.row.checkType">{{ scope.row.checkTypeEX }}</span>
+          </template>
+        </el-table-column>
 
         <el-table-column prop="teamProTitle" align="center" label="产品名称"></el-table-column>
 

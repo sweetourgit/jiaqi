@@ -47,7 +47,8 @@
       <td class="base">
         <div class="cell"></div>
       </td>
-      <td class="base">
+      <td class="base" style="cursor:pointer;"
+        @click="wakeupMark">
         <div class="cell">{{ order.mark }}</div>
       </td>
     </tr>
@@ -55,20 +56,20 @@
     <tr 
       v-for="(item, i) in subs"
       :key="i">
-      <td class="base" colspan="7">
-        <div class="cell"></div>
-      </td>
-      <td class="base" style="width:5%;">
-        <div class="cell">{{ item.price | priceFilter(true) }}</div>
-      </td>
-      <td class="base" colspan="2">
+      <td class="base" colspan="10">
         <div class="cell"></div>
       </td>
       <td class="base">
-        <div class="cell">{{ item.collectionNumber }}</div>
+        <div class="cell">
+          <div class="label">{{ item.collectionNumber }}</div>
+          <div>{{ item.price | priceFilter(true) }}</div>
+        </div>
       </td>
       <td class="base">
-        <div class="cell">{{ item.ticketNumber }}</div>
+        <div class="cell">
+          <div class="label">{{ item.ticketNumber }}</div>
+          <div>{{ item.invoicePrice | priceFilter(true) }}</div>
+        </div>
       </td>
       <td class="base">
         <div class="cell">{{ item.mark }}</div>
@@ -83,6 +84,7 @@ export default {
   props: {
     rank: Number,
     proto: Object,
+    pageType: String, // add normal mine
   },
 
   filters: {
@@ -97,7 +99,8 @@ export default {
       handler(nval, oval){
         if(nval) this.init(nval);
       },
-      immediate: true
+      immediate: true,
+      deep: true
     }
   },
 
@@ -110,38 +113,41 @@ export default {
 
   methods: {
     init(income){
-      let { collectionNumber, ticketNumber, mark, ...order }= income;
+      let { collectionNumber, ticketNumber, ...order }= income;
       this.order= order;
-      this.subsMaker(collectionNumber, ticketNumber, mark);
+      this.subs= this.subsMaker(collectionNumber, ticketNumber);
     },
 
-    subsMaker(collection, ticket, mark){
-      let result= this.subs;
+    subsMaker(collection, ticket){
       let length;
+      let result= [];
       collection= JSON.parse(collection);
       ticket= JSON.parse(ticket);
-      mark= this.markMaker(mark);
       length= collection.length > ticket.length? collection.length: ticket.length;
-      length= length > mark.length? length: mark.length;
-      result.splice(0);
       for(let i= 0; i< length; i++){
         result.push({
           price: collection[i] && collection[i].MatchingPrice,
           collectionNumber: collection[i] && collection[i].CollectionID,
           ticketNumber: ticket[i] && ticket[i].InvoiceNumber,
-          mark: mark[i] && mark.Mark
+          invoicePrice: ticket[i] && ticket[i].InvoicePrice
         })
       }
+      return result;
     },
 
     /**
      * @description: mark里默认会有一个空注释
      */
     markMaker(mark){
-      mark= JSON.parse(mark);
+      if(mark=== 'string') return [];
+      mark= JSON.parse(mark || "[]");
       if(mark.length=== 1 && !mark.Mark) return []; 
-      return mark
-    }
+      return mark;
+    },
+
+    wakeupMark(){
+      if(this.pageType=== 'add') this.$emit('wakeup-mark', this.rank);
+    },
   }
 }
 </script>
