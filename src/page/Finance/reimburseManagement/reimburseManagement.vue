@@ -422,12 +422,18 @@
             <el-button @click="T_check" type="primary">搜 索</el-button>
             <el-button @click="T_update" type="primary">重 置</el-button>
           </div>
+      <el-tabs v-model="activebox" @tab-click="joinClick"   style="float:left;width: 100%;">
+          <el-tab-pane label="预付款" name="2"></el-tab-pane>
+          <el-tab-pane label="无收入" name="1"></el-tab-pane>
+          <el-tab-pane label="无收入(无团期计划)" name="0"></el-tab-pane>
+      </el-tabs>
+
         <el-table 
-         :data="joinData" 
-         border 
-         :highlight-current-row="true"
-         @row-click="joinData_btn"
-        style="width: 100%; margin-top: 30px">
+          :data="joinData" 
+          border 
+          :highlight-current-row="true"
+          @row-click="joinData_btn"
+          style="width: 100%; margin-top: 30px">
           <el-table-column prop="paymentID" label="预付款和无收入结款ID" width="170" align="center"></el-table-column>
          
           <el-table-column prop="supplierName" label="供应商" width="230" align="center"></el-table-column>
@@ -584,8 +590,10 @@ export default {
           time: ""
         }],
       formLabelWidth: "120px",
-    
       activeName: "first",
+      jointab:"2",
+      activebox:'2',
+      paymentype:2,
       expenseID: "",
       groupCode: "",
       t_plan: "",// 添加报销申请人
@@ -600,7 +608,7 @@ export default {
       payments:[],
       file: [],
       files: [], //文件上传列表
-      tabIndex: 1
+      tabIndex: 1,
     };
   },
    filters: {// 时间过滤
@@ -693,6 +701,7 @@ export default {
         showplan(){//取消1
             this.t_pageSize = 10;
             this.currentPage5 = 1;
+
             this.dialogFormVisible2 = false;
             this.T_update_btn(); 
         },
@@ -723,14 +732,16 @@ export default {
         Associated(
           planID,
           suppliername = this.t_supplier,
+          PaymentType = this.paymentype
         // createUser = this.t_plan
             ){
             this.subscript();
             let object = {};
                 suppliername !== "" ? (object.suppliername = suppliername) : suppliername,
                 planID !=="" ? (object.planID = planID) : planID,
+                PaymentType !=="" ? (object.PaymentType = PaymentType) : PaymentType,
               this.$http
-                .post(this.GLOBAL.serverSrc + "/finance/payment/api/checklist", {
+                .post(this.GLOBAL.serverSrc + "/finance/payment/api/checklist2", {
                   object:object,
                 })
                 .then(res => {
@@ -761,6 +772,7 @@ export default {
                      
                     }
                       this.s_content.joinData = this.joinData;
+                      this.t_supplier = "";
                  })
                 .catch(err => {
                   console.log(err);
@@ -985,6 +997,7 @@ export default {
                 this.t_price_sum();
                 this.dialogFormVisible3 = false;
                 this.joinData=[];
+                this.activebox='2';
   
          }
             
@@ -993,6 +1006,7 @@ export default {
         t_text_del(){//确认取消
          this.subscript();
          this.joinData=[];
+         this.activebox='2',
          this.dialogFormVisible3 = false;
         
         },
@@ -1195,6 +1209,28 @@ export default {
         handleClick(tab, event) {
           console.log(tab, event);
         },
+        joinClick(tab){ // 添加报销tab切换
+            this.subscript();
+            this.joinData = [];
+            this.jointab = tab.name;
+            let paymentype = this.paymentype;
+            let suppliername = this.t_supplier;
+            let pid = this.plans.pid;
+             
+            if(this.jointab == "2"){
+                paymentype = 2;
+                pid = this.plans.pid;
+            }else if(this.jointab == "0"){
+               paymentype = 1;
+               pid = 0;
+            }else if(this.jointab === "1"){
+               paymentype = 1;
+               pid = this.plans.pid;
+               
+            }
+           this.Associated(pid,suppliername,paymentype)
+           
+        },
         handleSizeChange(val) {
           this.pageSize = val;
           this.currentPage4 = 1;
@@ -1349,12 +1385,13 @@ export default {
         },
         T_check(){ //添加报销搜索
           this.joinData=[];
-          this.Associated(this.plans.pid);
+          this.joinClick(this.jointab);
         },
         T_update(){//添加报销重置
             this.t_plan = "";
             this.t_supplier = "";
             this.joinData=[];
+            this.activebox='2',
             this.Associated(this.plans.pid);
         },
         // beginDateBlur() {//开始时间
