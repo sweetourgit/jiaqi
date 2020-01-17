@@ -73,7 +73,7 @@
       </div>
     </header>
     <main>
-      <print-ground ref="printGround"></print-ground>
+      <print-ground ref="printGround" :class="type"></print-ground>
     </main>
     <footer>
       <approval-form
