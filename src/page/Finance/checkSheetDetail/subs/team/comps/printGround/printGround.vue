@@ -217,7 +217,9 @@ table{
           v-for="(item, i) in incomes"
           :key="i"
           :proto="item"
-          :rank="i">
+          :rank="i"
+          :page-type="pageType"
+          @wakeup-mark="wakeupMark">
         </income-bar>
 
         <tr>
@@ -283,9 +285,11 @@ table{
 
     </main>
     <footer>
+      <!-- 基本信息编辑 -->
       <basic-form ref="basicForm"
         @save-action="basicSave">
       </basic-form>
+      <!-- 挂账信息编辑 -->
       <expense-form ref="expenseForm"
         @wakeup-edit="awakeEditForm"
         @remove="removeExpense">
@@ -293,6 +297,9 @@ table{
       <expense-edit-form ref="expenseEditForm"
         @save-action="expenseSave">
       </expense-edit-form>
+      <!-- 注释编辑 -->
+      <mark-form ref="markForm">
+      </mark-form>
     </footer>
   </div>  
 </template>
@@ -304,10 +311,11 @@ import expenseGround from './subs/expenseGround'
 import basicForm from './subs/basicForm'
 import expenseForm from './subs/expenseForm'
 import expenseEditForm from './subs/expenseEditForm'
+import markForm from './subs/markForm'
 
 export default {
 
-  components: { incomeBar, otherGround, expenseGround, basicForm, expenseForm, expenseEditForm },
+  components: { incomeBar, otherGround, expenseGround, basicForm, expenseForm, expenseEditForm, markForm },
 
   filters: {
     dateFilter(val){
@@ -359,8 +367,9 @@ export default {
   },
 
   methods: {
-    init(printData){
+    init(printData, pageType){
       let { incomes, expenses, otherIncomes, ...pdData }= printData;
+      this.pageType= pageType;
       this.pd= pdData;
       this.incomes= incomes;
       this.otherIncomes= otherIncomes;
@@ -370,11 +379,25 @@ export default {
       this.changeHandler();
     },
 
+    /**
+     * @description: @1383 提交需要判断非月结和线下直客订单有欠款不能提交报账单
+     */
     getData(){
       let otherIncomes= this.otherIncomes;
       let expenses= this.expenses;
       let data= { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
-      if(this.$isNull(data.guideName) || this.$isNull(data.localName)) return this.$message.error('导游与接团社不能为空');
+      if(this.$isNull(data.guideName) || this.$isNull(data.localName)){
+        this.$message.error('导游与接团社不能为空');
+        return false;
+      }
+      // @1383
+      let incomeSum= this.incomeSum;
+      let { totalPrice }= this.incomesJoin;
+      let orderPrice= otherIncomes.length=== 0? 0: (+ otherIncomes[0].price);
+      if(+incomeSum!== totalPrice+ orderPrice){
+        this.$message.error('有直客和非月结社订单存在欠款，不允许报账');
+        return false;
+      }
       return data;
     },
 
@@ -400,6 +423,10 @@ export default {
       this.profitSum = this.profitSum.toFixed(2);
     },
 
+    wakeupMark(index){
+      this.$refs.markForm.wakeup(this.incomes[index]);
+    },
+
     awakeBasicForm(){
       let { id, guideName, localName }= this.pd;
       this.$refs.basicForm.wakeup({
@@ -417,6 +444,7 @@ export default {
       this.pd.guideName= guideName;
       this.pd.localName= localName;
       Object.assign(assignObj, { title, price, ticket });
+      // 如果填写过信息才会向otherIncomes中推入信息
       !isSave && title && this.otherIncomes.push(assignObj);
       this.changeHandler();
     },

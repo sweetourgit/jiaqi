@@ -73,7 +73,7 @@
       </div>
     </header>
     <main>
-      <print-ground ref="printGround"></print-ground>
+      <print-ground ref="printGround" :class="type"></print-ground>
     </main>
     <footer>
       <approval-form
@@ -94,8 +94,11 @@
 import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ, endForJQ, saveChcektype } from './api'
 import printGround from './comps/printGround/printGround'
 import approvalForm from './comps/approvalForm'
+import BackupMixin from './BackupMixin.js'
 
 export default {
+  mixins: [BackupMixin()],
+
   components: { printGround, approvalForm },
 
   // 创建和唤醒都要从新执行init
@@ -107,7 +110,7 @@ export default {
     return Object.assign(
       // 状态
       {
-        type: null, // 类型 add, mine, normal
+        type: "", // 类型 add, mine, normal
         isFromCheckSheet: false,  // 是否来自报账单 
       },
       // 数据
@@ -130,14 +133,17 @@ export default {
     addInit(){
       let { planID }= this.$route.query;
       getPreCheckSheetByPlanID(planID)
-      .then(res => this.$refs.printGround.init(res))
+      .then(res => {
+        this.getCacheCheckSheet(planID, res);
+        this.$refs.printGround.init(res, this.type);
+      })
     },
 
     // 需要我审批
     mineInit(){
       let { id }= this.$route.query;
       getCheckSheetByID(id)
-      .then(res => this.$refs.printGround.init(res))
+      .then(res => this.$refs.printGround.init(res, this.type))
     },
 
     // 普通
@@ -147,7 +153,7 @@ export default {
         if(id) return resolve(getCheckSheetByID(id));
         if(planID) return resolve(getCheckSheetByPlanID(planID));
       })
-      .then(res => this.$refs.printGround.init(res))
+      .then(res => this.$refs.printGround.init(res, this.type))
     },
 
     /**
@@ -168,6 +174,8 @@ export default {
 
     postCheckSheetAction(){
       let object= this.$refs.printGround.getData();
+      if(!object) return;
+      this.cacheCheckSheet(object);
       this.createTimeMaker(object.expenses);
       postCheckSheet(object)
       .then(res => {
@@ -196,6 +204,10 @@ export default {
 
     printHandler(){
       let dom= this.$refs.printGround.$el;
+      dom= dom.cloneNode(true);
+      Array.from(dom.querySelectorAll('.editable-cell')).forEach(dom => {
+        dom.remove();
+      })
       this.$printDom(dom);
     },
 
