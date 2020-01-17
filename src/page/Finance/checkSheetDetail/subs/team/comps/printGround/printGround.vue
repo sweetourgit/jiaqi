@@ -393,8 +393,8 @@ export default {
       // @1383
       let incomeSum= this.incomeSum;
       let { totalPrice }= this.incomesJoin;
-      let orderPrice= otherIncomes.length=== 0? 0: (+ !!otherIncomes[0].price);
-      if(incomeSum!== totalPrice+ orderPrice){
+      let orderPrice= otherIncomes.length=== 0? 0: (+ otherIncomes[0].price);
+      if(+incomeSum!== totalPrice+ orderPrice){
         this.$message.error('有直客和非月结社订单存在欠款，不允许报账');
         return false;
       }
