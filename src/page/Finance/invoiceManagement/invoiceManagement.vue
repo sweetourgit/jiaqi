@@ -29,6 +29,8 @@
         <el-select v-model="types" placeholder="请选择" class="group-no" style="width:200px">
           <el-option v-for="item in typeList" :key="item.value" :label="item.label":value="item.value" style="width:200px;"></el-option>
         </el-select>
+        <span class="search-title">收款单号</span>
+        <el-input placeholder="请输入" v-model="collectionNumber" class="group-no" style="width:200px;"></el-input>
         <el-button type="primary" class="search-but" @click="search()">搜索</el-button>
         <el-button type="primary" plain @click="reset()">重置</el-button>
       </div>
@@ -104,6 +106,7 @@ export default {
       invoiceTitle:'',// 发票抬头
       invoiceDate:'',// 开票日期
       types:'', // 直客/商户
+      collectionNumber: '', // 收款单号
       statesType:[{ // 搜索框状态数据
         value:'1',
         label:'待开票'
@@ -170,6 +173,7 @@ export default {
       this.invoiceTitle = '';// 发票抬头
       this.invoiceDate = '';// 开票日期
       this.types = ''; // 直客/商户
+      this.collectionNumber = '' ; //收款单号
       this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.pageList();
@@ -184,7 +188,7 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,invoiceNumber = this.invoiceNumber, merchantsName = this.merchantsName,selStartCreateTime=this.applyForDate == null ? 0 : this.applyForDate[0],selEndCreateTime = this.applyForDate == null ? 0 : this.applyForDate[1],states = this.states, invoiceTitle = this.invoiceTitle,selStartGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[0],selEndGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[1],types = this.types){
+    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,invoiceNumber = this.invoiceNumber, merchantsName = this.merchantsName,selStartCreateTime=this.applyForDate == null ? 0 : this.applyForDate[0],selEndCreateTime = this.applyForDate == null ? 0 : this.applyForDate[1],states = this.states, invoiceTitle = this.invoiceTitle,selStartGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[0],selEndGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[1],types = this.types,collectionNumber =this.collectionNumber){
       if(selStartCreateTime){ //YYYY-MM-DD 转换成时间戳
          selStartCreateTime = (new Date(selStartCreateTime)).getTime()
       }else{
@@ -213,7 +217,8 @@ export default {
           "invoiceHeader":invoiceTitle,
           "selStartGrantTime":selStartGrantTime,
           "selEndGrantTime":selEndGrantTime,
-          "collectionType":types == '' ? 0 : types
+          "collectionType":types == '' ? 0 : types,
+          "collectionID":this.collectionNumber == "" ? 0 : collectionNumber,
         },
         "pageSize":pageSize,
         "pageIndex":pageIndex,
@@ -294,7 +299,7 @@ export default {
   text-align:right;
 }
 .search-but {
-  margin: 0 0 0 630px;
+  margin: 0 0 0 327px;
   overflow: hidden;
 }
 /*表格*/
