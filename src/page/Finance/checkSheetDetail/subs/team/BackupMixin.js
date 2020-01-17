@@ -62,8 +62,8 @@ const BackupMixin= function(){
   return {
     methods: {
       cacheCheckSheet(checkSheet){
-        let { planID, guideName, localName, otherIncomes }= checkSheet;
-        backupStorage.set(planID, { guideName, localName, otherIncomes });
+        let { planID, guideName, localName, otherIncomes, expenses }= checkSheet;
+        backupStorage.set(planID, { guideName, localName, otherIncomes, expenses });
       },
       getCacheCheckSheet: backupStorage.get.bind(backupStorage)
     }
