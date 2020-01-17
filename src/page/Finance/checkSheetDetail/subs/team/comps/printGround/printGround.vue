@@ -386,12 +386,18 @@ export default {
       let otherIncomes= this.otherIncomes;
       let expenses= this.expenses;
       let data= { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
-      if(this.$isNull(data.guideName) || this.$isNull(data.localName)) return this.$message.error('导游与接团社不能为空');
+      if(this.$isNull(data.guideName) || this.$isNull(data.localName)){
+        this.$message.error('导游与接团社不能为空');
+        return false;
+      }
       // @1383
       let incomeSum= this.incomeSum;
       let { totalPrice }= this.incomesJoin;
-      let orderPrice= otherIncomes.length=== 0? 0: (+ !!otherIncomes[1].price);
-      if(incomeSum!== totalPrice+ orderPrice) return this.$message.error('有直客和非月结社订单存在欠款，不允许报账');
+      let orderPrice= otherIncomes.length=== 0? 0: (+ !!otherIncomes[0].price);
+      if(incomeSum!== totalPrice+ orderPrice){
+        this.$message.error('有直客和非月结社订单存在欠款，不允许报账');
+        return false;
+      }
       return data;
     },
 
