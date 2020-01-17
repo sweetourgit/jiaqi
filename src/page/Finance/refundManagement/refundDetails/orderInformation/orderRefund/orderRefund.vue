@@ -44,66 +44,72 @@
       <div class="way" @change="clickTab('ruleForm')">
         <div style="float:left; width:100px; margin:0 0 0 30px;">退款方式</div>
         <div style="float:left;margin:0 0 0 -30px;">
-          <el-radio label="1" class="radiomar" v-model="ruleForm.refundWay">全退</el-radio>
-          <el-radio label="2" class="radiomar" v-model="ruleForm.refundWay">部分退</el-radio>
+          <el-radio label="2" class="radiomar" v-model="ruleForm.refundWay">全退</el-radio>
+          <el-radio label="1" class="radiomar" v-model="ruleForm.refundWay">部分退</el-radio>
         </div>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
         <!--全退-->
-        <el-form-item label="申请原由" v-if="ruleForm.refundWay == 1" prop="originally">
-          <el-input :disabled="forbidden" v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由"></el-input>
-          <span class="Numbers">{{ruleForm.originally.length}}/100字</span>
-        </el-form-item>
-        <el-form-item label="汇款卡号" v-if="ruleForm.refundWay == 1" prop="cardNumber">
-          <el-input :disabled="forbidden" v-model="ruleForm.cardNumber" class="Words" placeholder="请输入汇款卡号"></el-input>
-          <span class="Numbers">{{ruleForm.cardNumber.length}}/80字</span>
-        </el-form-item>
-        <el-form-item label="汇款开户行" v-if="ruleForm.refundWay == 1" prop="cardBank">
-          <el-input :disabled="forbidden" v-model="ruleForm.cardBank" class="Words" placeholder="请输入汇款开户行"></el-input>
-          <span class="Numbers">{{ruleForm.cardBank.length}}/40字</span>
-        </el-form-item>
-        <el-form-item label="汇款开户人" v-if="ruleForm.refundWay == 1" prop="cardPeople">
-          <el-input :disabled="forbidden" v-model="ruleForm.cardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
-          <span class="Numbers">{{ruleForm.cardPeople.length}}/40字</span>
-        </el-form-item>
+        <div v-if="ruleForm.refundWay == 2">
+          <el-form-item label="申请原由" prop="originally">
+            <el-input :disabled="forbidden" v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由"></el-input>
+            <span class="Numbers">{{ruleForm.originally.length}}/100字</span>
+          </el-form-item>
+          <el-form-item label="汇款卡号" prop="cardNumber">
+            <el-input :disabled="forbidden" v-model="ruleForm.cardNumber" class="Words" placeholder="请输入汇款卡号"></el-input>
+            <span class="Numbers">{{ruleForm.cardNumber.length}}/80字</span>
+          </el-form-item>
+          <el-form-item label="汇款开户行" prop="cardBank">
+            <el-input :disabled="forbidden" v-model="ruleForm.cardBank" class="Words" placeholder="请输入汇款开户行"></el-input>
+            <span class="Numbers">{{ruleForm.cardBank.length}}/40字</span>
+          </el-form-item>
+          <el-form-item label="汇款开户人" prop="cardPeople">
+            <el-input :disabled="forbidden" v-model="ruleForm.cardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
+            <span class="Numbers">{{ruleForm.cardPeople.length}}/40字</span>
+          </el-form-item>
+        </div>
         <!--部分退-->
-        <el-form-item label="还需退款" v-if="ruleForm.refundWay == 2" prop="needRefund">
-          <el-input :disabled="forbidden" v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
-        </el-form-item>
-        <el-form-item label="申请原由" v-if="ruleForm.refundWay == 2" prop="partPriginally">
-          <el-input :disabled="forbidden" v-model="ruleForm.partPriginally" class="Words" placeholder="请输入申请原由"></el-input>
-          <span class="Numbers">{{ruleForm.partPriginally.length}}/100字</span>
-        </el-form-item>
-        <el-form-item label="汇款卡号" v-if="ruleForm.refundWay == 2" prop="partCardNumber">
-          <el-input :disabled="forbidden" v-model="ruleForm.partCardNumber" class="Words" placeholder="请输入汇款卡号"></el-input>
-          <span class="Numbers">{{ruleForm.partCardNumber.length}}/80字</span>
-        </el-form-item>
-        <el-form-item label="汇款开户行" v-if="ruleForm.refundWay == 2" prop="partCardBank">
-          <el-input :disabled="forbidden" v-model="ruleForm.partCardBank" class="Words" placeholder="请输入汇款开户行"></el-input>
-          <span class="Numbers">{{ruleForm.partCardBank.length}}/40字</span>
-        </el-form-item>
-        <el-form-item label="汇款开户人" v-if="ruleForm.refundWay == 2" prop="partCardPeople">
-          <el-input :disabled="forbidden" v-model="ruleForm.partCardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
-          <span class="Numbers">{{ruleForm.partCardPeople.length}}/40字</span>
-        </el-form-item>
-        <el-table v-if="ruleForm.refundWay == 2" :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow" :row-style="rowClass">
-          <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
-          <el-table-column prop="singlePrice" label="价钱" align="center"></el-table-column>
-          <el-table-column prop="cnName" label="姓名" align="center"></el-table-column>
-          <el-table-column prop="mobile" label="电话" align="center"></el-table-column>
-          <el-table-column prop="idCard" label="身份证" align="center"></el-table-column>
-          <el-table-column prop="sex" label="性别" align="center"></el-table-column>
-          <el-table-column label="选择退款客人信息" align="center">
-            <template slot-scope="scope">
-              <span v-show="show1" class="cursor blue" @click="choose(scope.row.id)">选择</span>
-              <span v-show="show2">
-                <span class="cursor blue">已选</span>
-                <span class="em">|</span>
-                <span class="cursor blue" @click="undo(scope.row.id)">撤销</span>
-              </span>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div v-if="ruleForm.refundWay == 1">
+          <el-form-item label="还需退款" prop="needRefund">
+            <el-input :disabled="forbidden" @change="needShow()" v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
+            <div class="red" v-show = "needRefundShow">还需退款金额不能大于总订单金额</div>
+          </el-form-item>
+          <el-form-item label="申请原由" prop="partPriginally">
+            <el-input :disabled="forbidden" v-model="ruleForm.partPriginally" class="Words" placeholder="请输入申请原由"></el-input>
+            <span class="Numbers">{{ruleForm.partPriginally.length}}/100字</span>
+          </el-form-item>
+          <el-form-item label="汇款卡号" prop="partCardNumber">
+            <el-input :disabled="forbidden" v-model="ruleForm.partCardNumber" class="Words" placeholder="请输入汇款卡号"></el-input>
+            <span class="Numbers">{{ruleForm.partCardNumber.length}}/80字</span>
+          </el-form-item>
+          <el-form-item label="汇款开户行" prop="partCardBank">
+            <el-input :disabled="forbidden" v-model="ruleForm.partCardBank" class="Words" placeholder="请输入汇款开户行"></el-input>
+            <span class="Numbers">{{ruleForm.partCardBank.length}}/40字</span>
+          </el-form-item>
+          <el-form-item label="汇款开户人" prop="partCardPeople">
+            <el-input :disabled="forbidden" v-model="ruleForm.partCardPeople" class="Words" placeholder="请输入汇款开户人"></el-input>
+            <span class="Numbers">{{ruleForm.partCardPeople.length}}/40字</span>
+          </el-form-item>
+          <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow" :row-style="rowClass">
+            <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
+            <el-table-column prop="singlePrice" label="价钱" align="center"></el-table-column>
+            <el-table-column prop="cnName" label="姓名" align="center"></el-table-column>
+            <el-table-column prop="mobile" label="电话" align="center"></el-table-column>
+            <el-table-column prop="idCard" label="身份证" align="center"></el-table-column>
+            <el-table-column prop="sex" label="性别" align="center"></el-table-column>
+            <el-table-column label="选择退款客人信息" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.refundStatus == 0" class="cursor blue" @click="choose(scope.$index)">选择</span>
+                <span v-if="scope.row.refundStatus == 5">
+                  <span class="blue">已选</span>
+                  <span class="em">|</span>
+                  <span class="cursor blue" @click="undo(scope.$index)">撤销</span>
+                </span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="money">总退款：￥{{allRefundPrice | numFilter}}</div>
+        </div>
       </el-form>
     </el-dialog>
   </div>
@@ -121,7 +127,7 @@ export default {
       dialogOrderRefund:true,
       orderList:{},
       ruleForm:{
-        refundWay:'1',// 退款方式
+        refundWay:'2',// 退款方式
         originally:'', // 全退原由
         cardNumber:'', // 全退汇款卡号
         cardBank:'', // 全退汇款开户行
@@ -179,7 +185,10 @@ export default {
       overallDiscount:0 ,// 整体优惠
       positiveNumber: 0 , //还需退款是正数时，实际退款金额
       negativeNumber: 0 , //还需退款是负数时，实际退款金额
-
+      guests :[], // 获取报名信息
+      singlePrice:0, // 获取报名信息价格
+      allRefundPrice:0, // 总退款
+      needRefundShow:false, // 验证还需退款是否超过订单总额
     };
   },
   filters: {
@@ -197,6 +206,19 @@ export default {
         },200);
         this.dialogOrderRefund = true;
       }
+    },
+    "ruleForm.needRefund": function(val) {
+      if(this.typeID == 0 && this.ruleForm.needRefund != ''){
+        this.allRefundPrice = this.ruleForm.needRefund;
+      }
+      // else if (this.typeID != 0 && this.ruleForm.needRefund == '') {
+      //   console.log(this.singlePrice)
+      //   this.allRefundPrice = this.singlePrice
+      // }
+      // else if(this.typeID != 0){
+      //   console.log(this.singlePrice)
+      //   this.allRefundPrice = this.ruleForm.needRefund + this.singlePrice;
+      // }
     },
   },
   created() {
@@ -231,6 +253,13 @@ export default {
         }
       }
     },
+    needShow(){ // 判断只退钱的时候还需退款大于订单总额验证
+      if(this.ruleForm.needRefund > this.orderAmount && this.ruleForm.needRefund != ''){
+        this.needRefundShow = true;
+      }else {
+        this.needRefundShow = false;
+      }
+    },
     clickTab(formName){ // 切换退款方式清空表单
       this.$refs[formName].resetFields();
     },
@@ -261,6 +290,7 @@ export default {
           this.productType = res.data.object.productType; // 获取该团期产品类型 
           this.otherFees = res.data.object.otherPrice; // 其他费用
           this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
+          this.guests = res.data.object.guests ; // 获取报名人退款状态
           this.collection(); // 判断是否有收款方法
         }
       });
@@ -275,15 +305,14 @@ export default {
         }
       });
     },
-    choose(typeID){ // 点击选择客人退款
+    choose(index){ // 点击选择客人退款
       this.$confirm("是否选择该客人退款?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-        console.log(this.typeID)
-          // this.show1 = false ;
-          // this.show2 = true ;
+        this.singlePrice = this.guests[index].singlePrice;
+        this.guests[index].refundStatus = 5;
         })
         .catch(res => {
           this.$message({
@@ -292,14 +321,13 @@ export default {
           });
         });
     },
-    undo(typeID){ // 点击撤销客人退款
+    undo(index){ // 点击撤销客人退款
       this.$confirm("是否撤销该客人退款?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-          // this.show1 = true ;
-          // this.show2 = false ;
+        this.guests[index].refundStatus = 0;
         })
         .catch(res => {
           this.$message({
@@ -309,6 +337,7 @@ export default {
         });
     },
     amount(){
+      this.allRefundPrice = this.typeID = 0 ? this.ruleForm.needRefund : this.ruleForm.needRefund + this.singlePrice;
       if(this.typeID !== 0){
         if(this.ruleForm.needRefund < 0){
           this.negativeNumber = this.otherFees - this.ruleForm.needRefund;
@@ -322,49 +351,49 @@ export default {
         this.$message.error("还需退款金额为正数");
         return;
       }
-      // this.$refs[formName].validate((valid) => {
-      //     if (valid) {
-      //       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
-      //           object: {
-      //             "id": 0, // 退款单
-      //             "refundCode": "string", // 退款单号
-      //             "userID": sessionStorage.getItem("id"), // 申请人ID
-      //             "name": sessionStorage.getItem("name"), // 申请人姓名
-      //             "orgID": sessionStorage.getItem("orgID"), // 申请人部门ID
-      //             "orgName": sessionStorage.getItem("orgName"), // 申请人部门名称
-      //             "orderID": this.indentID,  // 订单ID
-      //             "orderCode": this.orderCode, // 订单号
-      //             "refundType": this.ruleForm.refundWay == 1 ? 2 : 1, // 退款方式 1=部分退款 2=全部退款
-      //             "reason": this.ruleForm.refundWay == 1 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
-      //             "needRefundPrice": this.ruleForm.needRefund, // 还需退款
-      //             "allRefundPrice": 0, // 总退款
-      //             //"realRefundPrice":this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber), // 实际退款金额(还需退款-未付金额)
-      //             "payID": 0, // 支付账户
-      //             "remittanceCode": this.ruleForm.refundWay == 1 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
-      //             "remittanceBank": this.ruleForm.refundWay == 1 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
-      //             "remittancePerson": this.ruleForm.refundWay == 1 ? this.ruleForm.cardPeople : this.ruleForm.partCardPeople, // 汇款开户人
-      //             "isDeleted": 0,
-      //             "payable": this.orderAmount, // 订单金额
-      //             "refundStateType": 0, // 退款状态 0 申请退款 ，1退款完成，2拒绝退款
-      //             "createTime": "2020-01-14T05:53:42.552Z", // 申请时间
-      //             "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
-      //             "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
-      //             "productType": this.productType // 产品类型
-      //           }
-      //         })
-      //         .then(res => {
-      //           if(res.data.isSuccess == true){
-      //              //this.pageList();
-      //              this.dialogOrderRefund = false
-      //              this.$refs[formName].resetFields();
-      //           }else{
-      //              this.$message.success("申请失败");
-      //           }
-      //       })
-      //     } else {
-      //       return false;
-      //     }
-      // });
+      this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
+                object: {
+                  "id": 0, // 退款单
+                  "refundCode": "string", // 退款单号
+                  "userID": sessionStorage.getItem("id"), // 申请人ID
+                  "name": sessionStorage.getItem("name"), // 申请人姓名
+                  "orgID": sessionStorage.getItem("orgID"), // 申请人部门ID
+                  "orgName": sessionStorage.getItem("orgName"), // 申请人部门名称
+                  "orderID": this.indentID,  // 订单ID
+                  "orderCode": this.orderCode, // 订单号
+                  "refundType": this.ruleForm.refundWay, // 退款方式 1=部分退款 2=全部退款
+                  "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
+                  "needRefundPrice": this.ruleForm.needRefund, // 还需退款
+                  "allRefundPrice": this.allRefundPrice, // 总退款
+                  "realRefundPrice":this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber), // 实际退款金额(还需退款-未付金额)
+                  "payID": 0, // 支付账户
+                  "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
+                  "remittanceBank": this.ruleForm.refundWay == 2 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
+                  "remittancePerson": this.ruleForm.refundWay == 2 ? this.ruleForm.cardPeople : this.ruleForm.partCardPeople, // 汇款开户人
+                  "isDeleted": 0,
+                  "payable": this.orderAmount, // 订单金额
+                  "refundStateType": 0, // 退款状态 0 申请退款 ，1退款完成，2拒绝退款
+                  "createTime": "2020-01-14T05:53:42.552Z", // 申请时间
+                  "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
+                  "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
+                  "productType": this.productType // 产品类型
+                }
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                   //this.pageList();
+                   this.dialogOrderRefund = false
+                   this.$refs[formName].resetFields();
+                }else{
+                   this.$message.success("申请失败");
+                }
+            })
+          } else {
+            return false;
+          }
+      });
     },
   }
 };
@@ -375,7 +404,7 @@ export default {
 .border{border:1px solid #e6e6e6; border-radius:5px; overflow:hidden;line-height:40px; }
 .pa{position: absolute; top: 8px; right: 10px;}
 .title{line-height:40px; background:#f6f6f6;font-weight:bold;}
-.refund{padding:20px 0 0 0;clear: both;}
+.refund{padding:20px 0 0 0;clear: both;overflow:hidden;}
 .Words{width:300px;}
 .Numbers{margin:0 0 0 10px;}
 .way{margin:20px 0 20px 0 ; font-size:14px;}
@@ -383,6 +412,8 @@ export default {
 .fl{float:left;}
 .blue {color: #2e94f9;}
 .cursor {cursor: pointer;}
+.money{float:right; margin:30px 50px 0 0;font-size:14pt; font-weight:bold;}
+.red{color:red;}
 </style>
 
 
