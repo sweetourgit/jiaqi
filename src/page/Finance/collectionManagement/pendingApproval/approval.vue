@@ -991,7 +991,12 @@ export default {
           if (response.data.isSuccess) {
             //
             if (that.approval_status == "1") {
-              that.insert();
+              // 报销还款不需要发票  that.info.collectionType == 6则不走insert 直接走ebs接口
+              if(that.info.collectionType !== 6) {
+                that.insert();
+              } else {
+                that.tbEBS()
+              }
               // that.$message.success("审批提交成功~");
               // that.closeAdd();
             } else if (that.approval_status == "2") {
@@ -1014,6 +1019,7 @@ export default {
         });
     },
 
+    // 报销发票的接口  
     insert() {
       // alert('insert');
       const that = this;
@@ -1042,7 +1048,7 @@ export default {
         });
     },
 
-    // 通过insert之后还要走这个接口 收款同步EBS
+    // 通过insert接口之后还要走这个接口 收款同步EBS
     tbEBS() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collection/api/insertebs", {
