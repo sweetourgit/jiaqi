@@ -62,10 +62,34 @@ const BackupMixin= function(){
   return {
     methods: {
       cacheCheckSheet(checkSheet){
-        let { planID, guideName, localName, otherIncomes, expenses }= checkSheet;
-        backupStorage.set(planID, { guideName, localName, otherIncomes, expenses });
+        let { planID, guideName, localName, otherIncomes, expenses, incomes }= checkSheet;
+        backupStorage.set(planID, { guideName, localName, otherIncomes, expenses, incomes: this.getIncomesCache(incomes) });
       },
-      getCacheCheckSheet: backupStorage.get.bind(backupStorage)
+      
+      getCacheCheckSheet(planID, origin){
+        let cache= backupStorage.get(planID);
+        if(!cache) return origin;
+        let { incomes, ...others }= cache;
+        incomes && this.resetIncomesCache(origin.incomes, incomes);
+        Object.assign(origin, others);
+      },
+
+      getIncomesCache(incomes){
+        let result= [];
+        for(let i= 0; i< incomes.length; i++){
+          let { orderCode, mark }= incomes[i]
+          mark && result.push({ orderCode, mark });
+        }
+        return result;
+      },
+
+      resetIncomesCache(origin, cache){
+        cache.forEach(el => {
+          let result= origin.find(item => item.orderCode=== el.orderCode);
+          if(!result) return;
+          Object.assign(result, el);
+        })
+      }
     }
   }
 }

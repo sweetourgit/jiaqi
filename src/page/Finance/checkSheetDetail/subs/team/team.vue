@@ -134,8 +134,8 @@ export default {
       let { planID }= this.$route.query;
       getPreCheckSheetByPlanID(planID)
       .then(res => {
-        let cache= this.getCacheCheckSheet(planID);
-        this.$refs.printGround.init(Object.assign(res, cache), this.type);
+        this.getCacheCheckSheet(planID, res);
+        this.$refs.printGround.init(res, this.type);
       })
     },
 
