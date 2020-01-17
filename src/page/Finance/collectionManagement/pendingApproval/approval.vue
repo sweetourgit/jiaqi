@@ -918,9 +918,10 @@ export default {
     // 审批提交事件
     approvalSubmit() {
       const that = this;
-      if(that.info.collectionType == 6){// 报销还款
-        if(this.approval_status == "1"){
-          if(that.baseInfo.accountID != 13){
+      if (that.info.collectionType == 6) {
+        // 报销还款
+        if (this.approval_status == "1") {
+          if (that.baseInfo.accountID != 13) {
             if (this.hasSubject) {
               this.tableAssociated.forEach(function(item, index, arr) {
                 const dataLocal = JSON.parse(localStorage.getItem(item.id));
@@ -939,14 +940,15 @@ export default {
             } else {
               that.axiosSubmit();
             }
-          }else{
+          } else {
             that.axiosSubmit();
           }
-        }else if(this.approval_status == "2"){
+        } else if (this.approval_status == "2") {
           that.axiosSubmit();
         }
-      }else{// 其他
-        if(this.approval_status == "1"){
+      } else {
+        // 其他
+        if (this.approval_status == "1") {
           if (this.hasSubject) {
             this.tableAssociated.forEach(function(item, index, arr) {
               const dataLocal = JSON.parse(localStorage.getItem(item.id));
@@ -965,12 +967,10 @@ export default {
           } else {
             that.axiosSubmit();
           }
-        }else if(this.approval_status == "2"){
+        } else if (this.approval_status == "2") {
           that.axiosSubmit();
         }
       }
-      
-      
     },
 
     axiosSubmit() {
@@ -989,7 +989,7 @@ export default {
         .then(function(response) {
           // console.log('审批操作',response);
           if (response.data.isSuccess) {
-            // 
+            //
             if (that.approval_status == "1") {
               that.insert();
               // that.$message.success("审批提交成功~");
@@ -1026,8 +1026,9 @@ export default {
         .then(function(response) {
           // console.log(response);
           if (response.data.isSuccess) {
-            that.$message.success("审批提交成功~");
-            that.closeAdd();
+            that.tbEBS();
+            // that.$message.success("审批提交成功~");
+            // that.closeAdd();
           } else {
             if (response.data.message) {
               that.$message.warning(response.result.message);
@@ -1038,6 +1039,22 @@ export default {
         })
         .catch(function(error) {
           console.log(error);
+        });
+    },
+
+    // 通过insert之后还要走这个接口 收款同步EBS
+    tbEBS() {
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/collection/api/insertebs", {
+            collectionID: this.info.id,
+            accountID: this.baseInfo.accountID
+        })
+        .then(res => {
+          this.$message.success("审批提交成功~");
+          this.closeAdd();
+        })
+        .catch(err => {
+          console.log(err);
         });
     },
 
@@ -1107,7 +1124,7 @@ export default {
               trade_Amount: 0 - parseFloat(charge),
               value_Date: row.value_Date,
               exchange_rate: row.exchange_rate,
-              transaction_reference_number:row.transaction_reference_number, // + "_" + new Date().getTime()
+              transaction_reference_number: row.transaction_reference_number, // + "_" + new Date().getTime()
               record_ID: row.record_ID,
               reference: row.reference,
               purpose: row.purpose,
@@ -1192,8 +1209,7 @@ export default {
           .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/save", {
             object: {
               id: row.id,
-              bank_serial_number:
-                row.bank_serial_number, //  + "_" + new Date().getTime()
+              bank_serial_number: row.bank_serial_number, //  + "_" + new Date().getTime()
               account_number: row.account_number,
               account_name: row.account_name,
               certificate_code: row.certificate_code,
@@ -1339,7 +1355,10 @@ export default {
               //     : (response.data.object.accountID = "汇款")
             };
 
-            that.getAccount(response.data.object.accountID,response.data.object.arrears[0].id);
+            that.getAccount(
+              response.data.object.accountID,
+              response.data.object.arrears[0].id
+            );
 
             that.printMatchingPrice =
               response.data.object.arrears[0].matchingPrice;
@@ -1375,7 +1394,7 @@ export default {
         });
     },
 
-    getAccount(id,arrearsID) {
+    getAccount(id, arrearsID) {
       const that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
@@ -1436,8 +1455,8 @@ export default {
                 ? (that.passDisabled = true)
                 : (that.passDisabled = false);
             }
-            
-            if(that.isLookBtn == true) {
+
+            if (that.isLookBtn == true) {
               that.passDisabled = false;
             }
           }
