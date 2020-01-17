@@ -173,15 +173,16 @@ export default {
         for(var i = 0; i < model.length; i++){
           if(model[i].id == 6 ){
             this.flowModel = model[i].name;
+            console.log()
           }
         }
         this.commission();
       })
     },
     commission(){
-      console.log(this.flowModel)
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
-        "userCode": sessionStorage.getItem('tel'),
+        "userCode":18240316968,
+        //"userCode": sessionStorage.getItem('tel'),
         "startTime": this.applyForDate[0] ? moment(this.applyForDate[0]).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
         "endTime": this.applyForDate[1] ? moment(this.applyForDate[1]).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         "startIndex": -1,
@@ -189,30 +190,49 @@ export default {
         "workflowCode": this.flowModel
       }).then(res => {
         let keepRes = res.data
-        keepRes.forEach(function (item) {
-          this.getJqId.push(item.ordercode)
-          this.workItemID.push(item.workItemID)
+        let getJqId = [] ;
+        let workItemID = [];
+        keepRes.forEach(function (v) {
+          getJqId.push(v.jq_ID)
+          workItemID.push(v.workItemID)
+        })
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { // 通过GUID查找退款列表代办
+          "guid": getJqId
+        }).then(obj =>{
+          this.tableDate = obj.data.objects;
+          this.tableDate.forEach(function (v,k,arr) {
+            if(arr[k]['refundStateType'] == 0){
+              arr[k]['refundStateType'] = '申请退款'
+            }
+            if(arr[k]['productType'] == 1){
+              arr[k]['productType'] = '跟团游'
+            }else if(arr[k]['productType'] == 2) {
+              arr[k]['productType'] = '自由行'
+            }else if(arr[k]['productType'] == 3) {
+              arr[k]['productType'] = '签证'
+            }
+          })
         })
       })
-      this.pageList();
+      //this.pageList();
     },
     pageList(){
       this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { // 通过GUID查找退款列表代办
         "guid": this.getJqId
       }).then(obj =>{
         this.tableDate = obj.data.objects;
-        this.tableDate.forEach(function (v,k,arr) {
-          if(arr[k]['refundStateType'] == 0){
-            arr[k]['refundStateType'] = '申请退款'
-          }
-          if(arr[k]['productType'] == 1){
-            arr[k]['productType'] = '跟团游'
-          }else if(arr[k]['productType'] == 2) {
-            arr[k]['productType'] = '自由行'
-          }else if(arr[k]['productType'] == 3) {
-            arr[k]['productType'] = '签证'
-          }
-        })
+        // this.tableDate.forEach(function (v,k,arr) {
+        //   if(arr[k]['refundStateType'] == 0){
+        //     arr[k]['refundStateType'] = '申请退款'
+        //   }
+        //   if(arr[k]['productType'] == 1){
+        //     arr[k]['productType'] = '跟团游'
+        //   }else if(arr[k]['productType'] == 2) {
+        //     arr[k]['productType'] = '自由行'
+        //   }else if(arr[k]['productType'] == 3) {
+        //     arr[k]['productType'] = '签证'
+        //   }
+        // })
       })
     },
   }
