@@ -177,7 +177,6 @@ export default {
       if(!object) return;
       this.cacheCheckSheet(object);
       this.createTimeMaker(object.expenses);
-      return;
       postCheckSheet(object)
       .then(res => {
         let { path, query }= this.$route;
