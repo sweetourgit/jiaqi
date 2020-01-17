@@ -422,13 +422,20 @@
             <el-button @click="T_check" type="primary">搜 索</el-button>
             <el-button @click="T_update" type="primary">重 置</el-button>
           </div>
+      <el-tabs v-model="activebox" @tab-click="joinClick"   style="float:left;width: 100%;">
+          <el-tab-pane label="预付款" name="2"></el-tab-pane>
+          <el-tab-pane label="无收入" name="1"></el-tab-pane>
+          <el-tab-pane label="无收入(无团期计划)" name="0"></el-tab-pane>
+      </el-tabs>
+
         <el-table 
-         :data="joinData" 
-         border 
-         :highlight-current-row="true"
-         @row-click="joinData_btn"
-        style="width: 100%; margin-top: 30px">
-          <el-table-column prop="paymentID" label="预付款和无收入结款ID" width="170" align="center"></el-table-column>
+          :data="joinData" 
+          border 
+          :highlight-current-row="true"
+          @row-click="joinData_btn"
+          style="width: 100%; margin-top: 30px">
+          <el-table-column prop="paymentID" label="预付款借款ID" width="170" align="center" v-if="s_find==1"></el-table-column>
+          <el-table-column prop="paymentID" label="无收入借款ID" width="170" align="center" v-if="s_find==2"></el-table-column>
          
           <el-table-column prop="supplierName" label="供应商" width="230" align="center"></el-table-column>
           <el-table-column prop="supplierTypeEX" label="借款类型" width="140" align="center"></el-table-column>
@@ -512,6 +519,7 @@ export default {
       currentPage5: 1,
       change: false,
       find: 0, //分辨查看
+      s_find:1,//预付款借款id
       state:3,//审核中
       radio: "1",  // 单选
       dialogFormVisible2: false, //团期计划弹窗
@@ -584,8 +592,10 @@ export default {
           time: ""
         }],
       formLabelWidth: "120px",
-    
       activeName: "first",
+      jointab:"2",
+      activebox:'2',
+      paymentype:2,
       expenseID: "",
       groupCode: "",
       t_plan: "",// 添加报销申请人
@@ -600,7 +610,7 @@ export default {
       payments:[],
       file: [],
       files: [], //文件上传列表
-      tabIndex: 1
+      tabIndex: 1,
     };
   },
    filters: {// 时间过滤
@@ -693,6 +703,7 @@ export default {
         showplan(){//取消1
             this.t_pageSize = 10;
             this.currentPage5 = 1;
+
             this.dialogFormVisible2 = false;
             this.T_update_btn(); 
         },
@@ -723,14 +734,16 @@ export default {
         Associated(
           planID,
           suppliername = this.t_supplier,
+          PaymentType = this.paymentype
         // createUser = this.t_plan
             ){
             this.subscript();
             let object = {};
                 suppliername !== "" ? (object.suppliername = suppliername) : suppliername,
                 planID !=="" ? (object.planID = planID) : planID,
+                PaymentType !=="" ? (object.PaymentType = PaymentType) : PaymentType,
               this.$http
-                .post(this.GLOBAL.serverSrc + "/finance/payment/api/checklist", {
+                .post(this.GLOBAL.serverSrc + "/finance/payment/api/checklist2", {
                   object:object,
                 })
                 .then(res => {
@@ -761,6 +774,7 @@ export default {
                      
                     }
                       this.s_content.joinData = this.joinData;
+                      this.t_supplier = "";
                  })
                 .catch(err => {
                   console.log(err);
@@ -812,7 +826,6 @@ export default {
             })
             .then(res => {
               this.subscript();
-              //console.log(res.data.objects,'80523');
               this.t_pageCount = res.data.total;
               this.planData = res.data.objects;
               //this.s_content.count =  res.data.objects[0].count
@@ -986,6 +999,7 @@ export default {
                 this.t_price_sum();
                 this.dialogFormVisible3 = false;
                 this.joinData=[];
+                this.activebox='2';
   
          }
             
@@ -994,6 +1008,7 @@ export default {
         t_text_del(){//确认取消
          this.subscript();
          this.joinData=[];
+         this.activebox='2',
          this.dialogFormVisible3 = false;
         
         },
@@ -1010,7 +1025,6 @@ export default {
             for(let j in payments_box){
                 if(payments_box[j].paymentID === paymentID){
                           payments_box.splice(j, 1);
-                          //console.logconsole.log(payments_box,'删除后');
                           if(payments_box.length == 0){//删除后没数据了
                            this.s_content.payments=[];
                            
@@ -1024,8 +1038,7 @@ export default {
                             for(let y in this.alljoinData ){
                                     if(this.alljoinData[y].paymentID === paymentID){
                                         this.alljoinData.splice(y, 1);
-                                        //console.log(this.alljoinData,"删除的")
-                                      }
+                                     }
                                   }
                          this.t_price_sum()
                          this.$message.success('删除成功');
@@ -1046,7 +1059,6 @@ export default {
          
         t_price_sum(){//多少项总价多少
           this.subscript();
-           //console.log(this.s_content.t_price_box,"钱盒子2")
           let t_price_box = this.s_content.t_price_box;
           let sss = 0 ;
             for(let i=0;i < t_price_box.length;i++){
@@ -1199,6 +1211,31 @@ export default {
         handleClick(tab, event) {
           console.log(tab, event);
         },
+        joinClick(tab){ // 添加报销tab切换
+            this.subscript();
+            this.joinData = [];
+            this.jointab = tab.name;
+            let paymentype = this.paymentype;
+            let suppliername = this.t_supplier;
+            let pid = this.plans.pid;
+             
+            if(this.jointab == "2"){
+                paymentype = 2;
+                this.s_find = 1;
+                pid = this.plans.pid;
+            }else if(this.jointab == "0"){
+               paymentype = 1;
+               this.s_find = 2;
+               pid = 0;
+            }else if(this.jointab === "1"){
+               paymentype = 1;
+               this.s_find = 2;
+               pid = this.plans.pid;
+               
+            }
+           this.Associated(pid,suppliername,paymentype)
+           
+        },
         handleSizeChange(val) {
           this.pageSize = val;
           this.currentPage4 = 1;
@@ -1230,7 +1267,6 @@ export default {
             this.$set(this.s_content.files[i], "name", paths.Name);
           }
           this.image = 1;
-          // console.log(files);
           this.uid = files[0].uid;
         }, 
         handleRemove(file, files) {//图片删除
@@ -1264,11 +1300,7 @@ export default {
             this.ruleForm.editableTabsValue = newTabName;
           }
           if (action === "remove") {
-          //  if (this.ruleForm.editableTabs.length == 1) {
-          //     console.log(123);
-          //   } else {
-          //     console.log(567);
-          //   }
+         
             if(this.ruleForm.editableTabs.length == 1){
                  this.$confirm("是否取消本次报销申请", "提示", {
                     confirmButtonText: "确定",
@@ -1358,12 +1390,13 @@ export default {
         },
         T_check(){ //添加报销搜索
           this.joinData=[];
-          this.Associated(this.plans.pid);
+          this.joinClick(this.jointab);
         },
         T_update(){//添加报销重置
             this.t_plan = "";
             this.t_supplier = "";
             this.joinData=[];
+            this.activebox='2',
             this.Associated(this.plans.pid);
         },
         // beginDateBlur() {//开始时间
@@ -1486,9 +1519,7 @@ export default {
                           this.s_content.count =  res.data.objects[0].count
                           this.s_content.id =  res.data.objects[0].planID
                           this.plans.pid  = res.data.objects[0].planID
-                          // console.log(res.data.objects[0].count);
-                          // console.log(this.s_content.count);
-                      }
+                     }
                   }).catch(err => {
                     console.log(err)
                   })
@@ -1592,8 +1623,7 @@ export default {
                                               return;
                                         }
                                 }
-                                //console.logconsole.log(this.alljoinData)
-                                for(var i=0; i<this.alljoinData.length; i++){
+                              for(var i=0; i<this.alljoinData.length; i++){
                                   for(var j=i+1; j<this.alljoinData.length; j++){
                                     if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
                                         this.$message({
@@ -1628,9 +1658,7 @@ export default {
                               return;
                     }
               }
-               // console.log(this.object_lisr,'87077')
-             
-              if(verify !== 0){
+             if(verify !== 0){
                  this.add_form(this.object_lisr)//调用提交接口
                
               }
@@ -1644,7 +1672,6 @@ export default {
             jQ_ID: paramsGuid,
             jQ_Type: 3,
           }).then(obj => {
-            //console.log(obj.data.extend.instanceLogInfo,'809');
             that.tableCourse = []
             that.tableCourse = obj.data.extend.instanceLogInfo;
               if(that.tableCourse.length > 0 ) {
