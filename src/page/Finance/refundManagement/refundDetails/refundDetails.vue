@@ -10,7 +10,7 @@
   	    </div>
         <div class="fl" v-if="title == '审批'">
     	    <el-button class="ml13" type="primary" @click="payAccount()">支付账户</el-button>
-          <el-button class="ml13" type="primary">转 办</el-button>
+          <!-- <el-button class="ml13" type="primary">转 办</el-button> -->
           <el-button class="ml13" type="primary" @click="through()">通 过</el-button>
           <el-button class="ml13" type="primary" @click="rejected()">驳 回</el-button>
         </div>
@@ -129,7 +129,7 @@
         </el-table>
       </div>
     </el-dialog>
-    <order-information :refundID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
+    <order-information :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
     <!--支付账户弹窗-->
     <el-dialog title="选择账户" :visible.sync="dialogAccount" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1000px"
       @close="cancelAccount()">
@@ -214,13 +214,13 @@ export default {
     variable: function() {
       if (this.dialogType == 1) { // 退款记录详情
         setTimeout(() => {
-          //this.getInvoice(this.refundID);
+          this.getInvoice(this.refundID);
         },200);
         this.dialogFormOrder = true;
         this.title = "详情"
       } else if(this.dialogType == 2){  // 审批详情
         setTimeout(() => {
-          //this.getInvoice(this.refundID);
+          this.getInvoice(this.refundID);
         },200);
         this.dialogFormOrder = true;
         this.title = "审批"
@@ -290,12 +290,19 @@ export default {
           });
         });
     },
+    getJqId(){ // 获取审批结果
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ',{
+        "jq_id":this.orderCode,
+        "jQ_Type":6,
+      })
+    },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
-          this.refundList = res.data.object;
+          this.refundList = res.data.objects;
+          this.orderCode = res.data.objects.orderCode;
         }
       });
     },

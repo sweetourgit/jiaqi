@@ -124,7 +124,7 @@ export default {
   },
   data() {
     return {
-      dialogOrderRefund:true,
+      dialogOrderRefund:false,
       orderList:{},
       ruleForm:{
         refundWay:'2',// 退款方式
@@ -207,22 +207,25 @@ export default {
         this.dialogOrderRefund = true;
       }
     },
+    "typeID":function(val){
+      if(this.typeID != 0){
+        if(this.ruleForm.needRefund == ''){
+          this.allRefundPrice = this.singlePrice;
+        }else {
+          this.allRefundPrice = this.ruleForm.needRefund + this.singlePrice;
+        }
+      }
+    },
     "ruleForm.needRefund": function(val) {
       if(this.typeID == 0 && this.ruleForm.needRefund != ''){
         this.allRefundPrice = this.ruleForm.needRefund;
+      }else {
+        this.allRefundPrice = 0 ;
       }
-      // else if (this.typeID != 0 && this.ruleForm.needRefund == '') {
-      //   console.log(this.singlePrice)
-      //   this.allRefundPrice = this.singlePrice
-      // }
-      // else if(this.typeID != 0){
-      //   console.log(this.singlePrice)
-      //   this.allRefundPrice = this.ruleForm.needRefund + this.singlePrice;
-      // }
     },
   },
   created() {
-    this.getOrder();
+    //this.getOrder();
   },
   methods: {
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
@@ -270,7 +273,8 @@ export default {
     },
     getOrder(ID){ // 点击退款获取详情信息
       this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
-        id: 1812 // 无收款
+        id:ID,
+        //id: 1812 // 无收款
         //id: 21 // 有收款
       }).then(res => {
         if (res.data.isSuccess == true) {

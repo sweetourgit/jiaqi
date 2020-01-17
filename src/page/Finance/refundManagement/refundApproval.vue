@@ -85,11 +85,13 @@ export default {
       total: 0,
       current:1,
       multipleSelection: [], //选中的list
+      flowModel:"",
     };
 
   },
   mounted () {
     this.pageList();
+    this.getFlowModel();
   },
   methods: {
     moment,
@@ -161,6 +163,20 @@ export default {
     operation(i) {// 显示详情
       this.variable++;
       this.dialogType = i;
+    },
+    getFlowModel(){ // 获取id=6的FlowModel
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')
+      .then(res => {
+        let model = res.data.objects;
+        for(var i = 0; i < model.length; i++){
+          if(model[i].id == 6 ){
+            this.flowModel = model[i].name;
+          }
+        }
+      })
+    },
+    getJqId(){
+      
     },
   }
 };

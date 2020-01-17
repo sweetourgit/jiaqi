@@ -218,7 +218,7 @@ export default {
           "selStartGrantTime":selStartGrantTime,
           "selEndGrantTime":selEndGrantTime,
           "collectionType":types == '' ? 0 : types,
-          "collectionID":this.collectionNumber == "" ? 0 :collectionNumber,
+          "collectionID":this.collectionNumber == "" ? 0 : collectionNumber,
         },
         "pageSize":pageSize,
         "pageIndex":pageIndex,

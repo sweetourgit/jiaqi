@@ -222,7 +222,7 @@ export default {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
-      this.refundID = this.multipleSelection[0].orderID; // 获取表格内该条信息的订单ID
+      this.refundID = this.multipleSelection[0].id; // 获取表格内该条信息的订单ID
     },
     operation(i) {// 显示详情
       this.variable++;
