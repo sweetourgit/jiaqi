@@ -202,7 +202,7 @@ export default {
     orderRefund: function() {
       if (this.orderRefundDialog == 1) { // 订单详情
         setTimeout(() => {
-           this.getOrder(this.orderID);
+           this.getOrder(this.orderRefundID);
         },200);
         this.dialogOrderRefund = true;
       }
@@ -270,6 +270,7 @@ export default {
       this.dialogOrderRefund = false;
       this.$refs[formName].resetFields();
       this.tableDate = [];
+      this.forbidden = false;
     },
     getOrder(ID){ // 点击退款获取详情信息
       this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {

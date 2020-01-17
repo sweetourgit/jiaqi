@@ -49,7 +49,7 @@
         <el-table-column prop="" label="审批意见" align="center"></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue" @click="operation(1)">详情</span>
+            <span class="cursor blue" @click="operation(1,scope.row.id)">详情</span>
           </template>
         </el-table-column>
       </el-table>
@@ -222,11 +222,11 @@ export default {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
-      this.refundID = this.multipleSelection[0].id; // 获取表格内该条信息的订单ID
     },
-    operation(i) {// 显示详情
+    operation(i,id) {// 显示详情
       this.variable++;
       this.dialogType = i;
+      this.refundID = id;
     },
   }
 };

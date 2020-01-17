@@ -3,10 +3,10 @@
     <!--搜索框-->
     <div class="demo-input-suffix">
       <div>
-        <span class="search-title" style="margin:0 0 0 35px;">退款单号</span>
+        <!-- <span class="search-title" style="margin:0 0 0 35px;">退款单号</span>
         <el-input placeholder="请输入" v-model="refundNumber" class="group-no" style="width:200px;"></el-input> 
         <span class="search-title">申请人</span>
-        <el-input placeholder="请输入" v-model="applicant" class="group-no" style="width:200px;"></el-input>
+        <el-input placeholder="请输入" v-model="applicant" class="group-no" style="width:200px;"></el-input> -->
         <span class="search-title">申请日期</span>
         <el-date-picker v-model="applyForDate" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
           align="right" class="group-no" style="width:380px;"></el-date-picker>
@@ -19,21 +19,24 @@
     <div class="main">
       <!--列表表格-->
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun">
-        <el-table-column prop="" label="退款单号" align="center"></el-table-column>
-        <el-table-column prop="state" label="状态" align="center"></el-table-column>
-        <el-table-column prop="endTime" label="申请日期" align="center">
+        <el-table-column prop="refundCode" label="退款单号" align="center"></el-table-column>
+        <el-table-column prop="refundStateType" label="状态" align="center">
           <template slot-scope="scope">
-            <div v-if="scope.row.endTime !='0'">{{formatDate(new Date(scope.row.endTime))}}</div>
+            <div v-if="scope.row.refundStateType=='申请退款'" style="color: #7F7F7F" >{{scope.row.refundStateType}}</div>
           </template>
         </el-table-column>
-            
-        <el-table-column prop="" label="类型" align="center"></el-table-column>
-        <el-table-column prop="" label="退款金额" align="center"></el-table-column>
-        <el-table-column prop="" label="申请人" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="申请日期" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="productType" label="类型" align="center"></el-table-column>
+        <el-table-column prop="realRefundPrice" label="退款金额" align="center"></el-table-column>
+        <el-table-column prop="name" label="申请人" align="center"></el-table-column>
         <el-table-column prop="" label="审批意见" align="center"></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue" @click="operation(2)">审批</span>
+            <span class="cursor blue" @click="operation(2,scope.row.id)">审批</span>
           </template>
         </el-table-column>
       </el-table>
@@ -78,7 +81,7 @@ export default {
         value:'4',
         label:'完成退款'
       }],
-      tableDate:[{state:'申请退款'}],//表格 
+      tableDate:[],//表格 
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
@@ -86,11 +89,12 @@ export default {
       current:1,
       multipleSelection: [], //选中的list
       flowModel:"",
+      getJqId:[], // 获取JQ_ID
+      workItemID:[], // 获取workItemID
     };
 
   },
   mounted () {
-    this.pageList();
     this.getFlowModel();
   },
   methods: {
@@ -139,8 +143,6 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    pageList(){
-    },
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
@@ -158,11 +160,11 @@ export default {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
-      this.invoiceID = this.multipleSelection[0].id;
     },
-    operation(i) {// 显示详情
+    operation(i,id) {// 显示详情
       this.variable++;
       this.dialogType = i;
+      this.refundID = id;
     },
     getFlowModel(){ // 获取id=6的FlowModel
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')
@@ -173,10 +175,45 @@ export default {
             this.flowModel = model[i].name;
           }
         }
+        this.commission();
       })
     },
-    getJqId(){
-      
+    commission(){
+      console.log(this.flowModel)
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
+        "userCode": sessionStorage.getItem('tel'),
+        "startTime": this.applyForDate[0] ? moment(this.applyForDate[0]).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
+        "endTime": this.applyForDate[1] ? moment(this.applyForDate[1]).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+        "startIndex": -1,
+        "endIndex": -1,
+        "workflowCode": this.flowModel
+      }).then(res => {
+        let keepRes = res.data
+        keepRes.forEach(function (item) {
+          this.getJqId.push(item.ordercode)
+          this.workItemID.push(item.workItemID)
+        })
+      })
+      this.pageList();
+    },
+    pageList(){
+      this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { // 通过GUID查找退款列表代办
+        "guid": this.getJqId
+      }).then(obj =>{
+        this.tableDate = obj.data.objects;
+        this.tableDate.forEach(function (v,k,arr) {
+          if(arr[k]['refundStateType'] == 0){
+            arr[k]['refundStateType'] = '申请退款'
+          }
+          if(arr[k]['productType'] == 1){
+            arr[k]['productType'] = '跟团游'
+          }else if(arr[k]['productType'] == 2) {
+            arr[k]['productType'] = '自由行'
+          }else if(arr[k]['productType'] == 3) {
+            arr[k]['productType'] = '签证'
+          }
+        })
+      })
     },
   }
 };

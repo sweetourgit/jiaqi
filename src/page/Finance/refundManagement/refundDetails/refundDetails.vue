@@ -83,7 +83,7 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">订单ID:</div>
-                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{0}}</u></div>
+                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderID}}</u></div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">订单金额:</div>
@@ -91,21 +91,21 @@
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">已付金额:</div>
-                <div class="fl ml13">{{refundList.createTime}}</div>
+                <div class="fl ml13">{{refundList.paid}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">未付金额:</div>
-                <div class="fl ml13">{{refundList.invoiceHeader}}</div>
+                <div class="fl ml13">{{refundList.payable - refundList.paid}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">其他费用:</div>
-                <div class="fl ml13">{{refundList.taxpayerIDNumber}}</div>
+                <div class="fl ml13">{{refundList.otherPrice}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">整体优惠:</div>
-                <div class="fl ml13">{{refundList.tel}}</div>
+                <div class="fl ml13">{{refundList.entiretyFav}}</div>
               </td>
             </tr>
           </table>
@@ -113,19 +113,19 @@
         <div class="order-title"><span>部分退信息</span></div>
         <div>还需退款: {{refundList.needRefundPrice}}</div>
         <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-          <el-table-column prop="" label="报名类型" align="center"></el-table-column>
-          <el-table-column prop="" label="价钱" align="center"></el-table-column>
-          <el-table-column prop="" label="姓名" align="center"></el-table-column>
-          <el-table-column prop="" label="电话" align="center"></el-table-column>
-          <el-table-column prop="" label="身份证" align="center"></el-table-column>
-          <el-table-column prop="" label="性别" align="center"></el-table-column>
+          <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
+          <el-table-column prop="singlePrice" label="价钱" align="center"></el-table-column>
+          <el-table-column prop="cnName" label="姓名" align="center"></el-table-column>
+          <el-table-column prop="mobile" label="电话" align="center"></el-table-column>
+          <el-table-column prop="idCard" label="身份证" align="center"></el-table-column>
+          <el-table-column prop="sex" label="性别" align="center"></el-table-column>
         </el-table>
         <div class="order-title"><span>审核结果</span></div>
         <el-table :data="tableAudit" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-          <el-table-column prop="" label="审批时间" align="center"></el-table-column>
-          <el-table-column prop="" label="审批人" align="center"></el-table-column>
-          <el-table-column prop="" label="审批结果" align="center"></el-table-column>
-          <el-table-column prop="" label="审批意见" align="center"></el-table-column>
+          <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
+          <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+          <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+          <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
@@ -195,6 +195,7 @@ export default {
       dialogApproval:false, // 通过驳回弹窗
       approval:"",// 通过驳回标题
       opinion:'', // 通过驳回输入框
+      orderCode:'',// 获取orderCode来获取审核结果
     };
 
   },
@@ -290,10 +291,13 @@ export default {
           });
         });
     },
-    getJqId(){ // 获取审批结果
+    getJqId(result){ // 获取审批结果tableAudit
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ',{
-        "jq_id":this.orderCode,
+        "jq_id":result,
         "jQ_Type":6,
+      }).then(obj => {
+        this.tableAudit = [];
+        this.tableAudit = obj.data.extend.instanceLogInfo;
       })
     },
     getInvoice(ID){//详情弹窗
@@ -301,8 +305,18 @@ export default {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
-          this.refundList = res.data.objects;
-          this.orderCode = res.data.objects.orderCode;
+          this.getJqId(res.data.object.orderCode);
+          this.refundList = res.data.object;
+          this.orderCode = res.data.object.orderCode;
+          console.log(this.orderCode)
+          this.tableDate = res.data.object.guests;
+          this.tableDate.forEach(function (v,k,arr) {
+            if(arr[k]['sex'] == 0){
+              arr[k]['sex'] = '男'
+            }else if(arr[k]['sex'] == 1) {
+              arr[k]['sex'] = '女'
+            }
+          })
         }
       });
     },
