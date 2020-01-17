@@ -73,7 +73,7 @@
       </div>
     </header>
     <main>
-      <print-ground ref="printGround"></print-ground>
+      <print-ground ref="printGround" :class="type"></print-ground>
     </main>
     <footer>
       <approval-form
@@ -204,6 +204,10 @@ export default {
 
     printHandler(){
       let dom= this.$refs.printGround.$el;
+      dom= dom.cloneNode(true);
+      Array.from(dom.querySelectorAll('.editable-cell')).forEach(dom => {
+        dom.remove();
+      })
       this.$printDom(dom);
     },
 

@@ -49,7 +49,8 @@
       </td>
       <td class="base" style="cursor:pointer;"
         @click="wakeupMark">
-        <div class="cell">{{ order.mark }}</div>
+        <div class="cell" v-if="order.mark">{{ order.mark }}</div>
+        <div class="editable-cell" v-else>点击编辑</div>
       </td>
     </tr>
     

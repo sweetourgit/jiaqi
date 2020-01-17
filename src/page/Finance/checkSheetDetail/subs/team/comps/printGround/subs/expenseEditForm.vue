@@ -83,6 +83,7 @@ export default {
     
     wakeup(expense){
       this.isSave= !!expense;
+      this.supplierSelected= this.isSave;
       this.state= true;
       this.expenseCache= this.isSave? expense: this.getExpenseDTO();
       Object.keys(this.submitForm).forEach(attr => this.submitForm[attr]= this.expenseCache[attr]);
