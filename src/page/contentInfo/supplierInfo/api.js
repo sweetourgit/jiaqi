@@ -128,3 +128,40 @@ export const putSupplier= function(object){
     })
   })
 }
+
+export const getOrg= function(parent, cb){
+  let { id, children }= parent;
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + `/universal/supplier/api/suppliersave`, {
+      object
+    })
+    .then(res => {
+      let { isSuccess, objects }= res.data;
+      if(!isSuccess) throw ('修改供应商失败');
+      objects
+      Promise.all(
+
+      ).then()
+      resolve($message.success('修改供应商成功'));
+    })
+    .catch(err => {
+      console.log(err);
+      $message.error('修改供应商失败');
+      resolve([]);
+    })
+  })
+}
+
+class OrgMaker {
+  constructor(){
+    this._count= 3;  // 可用线程
+    this._queue= []; // 等待队列
+  }
+
+  make(){
+    let result= { id: 204, children: [] };
+    return new Promise((resolve, reject) => {
+      getOrg(result, resolve)
+    })
+  }
+}
