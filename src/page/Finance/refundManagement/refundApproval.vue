@@ -173,7 +173,6 @@ export default {
         for(var i = 0; i < model.length; i++){
           if(model[i].id == 6 ){
             this.flowModel = model[i].name;
-            console.log()
           }
         }
         this.commission();
@@ -196,6 +195,7 @@ export default {
           getJqId.push(v.jq_ID)
           workItemID.push(v.workItemID)
         })
+        this.workItemID = workItemID;
         this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { // 通过GUID查找退款列表代办
           "guid": getJqId
         }).then(obj =>{
@@ -213,26 +213,6 @@ export default {
             }
           })
         })
-      })
-      //this.pageList();
-    },
-    pageList(){
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { // 通过GUID查找退款列表代办
-        "guid": this.getJqId
-      }).then(obj =>{
-        this.tableDate = obj.data.objects;
-        // this.tableDate.forEach(function (v,k,arr) {
-        //   if(arr[k]['refundStateType'] == 0){
-        //     arr[k]['refundStateType'] = '申请退款'
-        //   }
-        //   if(arr[k]['productType'] == 1){
-        //     arr[k]['productType'] = '跟团游'
-        //   }else if(arr[k]['productType'] == 2) {
-        //     arr[k]['productType'] = '自由行'
-        //   }else if(arr[k]['productType'] == 3) {
-        //     arr[k]['productType'] = '签证'
-        //   }
-        // })
       })
     },
   }

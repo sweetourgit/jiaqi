@@ -157,7 +157,7 @@
       @close="cancelApproval()">
       <div class="controlButton">
         <el-button class="ml13" @click="cancelApproval()">取 消</el-button>
-        <el-button class="ml13" type="primary">确 认</el-button>
+        <el-button class="ml13" @clcik="determine()" type="primary">确 认</el-button>
       </div>
       <div class="oh">
         <div class="fl" v-if="approval === '审批通过'">通过说明:</div>
@@ -363,7 +363,29 @@ export default {
       this.dialogApproval = true ;
       this.approval = '审批驳回';
     },
+    determine(){
+      console.log(1)
+      if(this.approval = '审批通过'){
+        this.passRefund();
+      } else {
+        this.reject();
+      }
+      this.dialogApproval = false ;
+    },
+    passRefund(){ //通过方法
+      console.log(this.orderCode)
+      console.log(this.workItemID)
+      // this.$http.post(this.GLOBAL.jqUrl + 'JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
+      //   "jQ_ID":this.orderCode,
+      //   "jQ_Type":6,
+      //   "userCode":sessionStorage.getItem('tel'),
+      //   "workItemID":this.workItemID,
+      //   "commentText":this.opinion,
+      // })
+    },
+    reject(){ // 驳回方法
 
+    },
   }
 };
 </script>
