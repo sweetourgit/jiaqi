@@ -115,7 +115,7 @@ export default {
           }
         ],
         idCard: [
-          { required: true, message: "身份证号不能为空", trigger: "blur" },
+          // { required: true, message: "身份证号不能为空", trigger: "blur" },
           {
             pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
             message: "身份证号格式不正确",
