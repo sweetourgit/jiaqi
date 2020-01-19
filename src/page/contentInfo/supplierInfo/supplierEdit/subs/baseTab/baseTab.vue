@@ -161,9 +161,10 @@
       <el-col :span="12">
         <el-form-item label="使用部门：">
           <el-cascader size="small" clearable style="width: 100%;"
-            v-model="test"
-            :options="options"
-            :props="props">
+            v-model="orgsData"
+            :options="orgOptions"
+            :props="orgProps"
+            @change="orgChange">
           </el-cascader>
         </el-form-item>
       </el-col>
@@ -234,8 +235,8 @@
 <script>
 // this.GLOBAL.serverSrc + '/upload/obs/api/file' 上传路径
 import labelsInput from '../../comps/labelsInput'
-import { getDicOptions, checkSupplierCode, checkSupplierName } from '../../../api'
-import { ConditionTypeOptions, CompanyAreaOptions } from '../../../dictionary'
+import { getDicOptions, checkSupplierCode, checkSupplierName, orgMaker } from '../../../api'
+import { ConditionTypeOptions, CompanyAreaOptions, TreeNamer } from '../../../dictionary'
 
 export default {
   components: { labelsInput },
@@ -246,56 +247,11 @@ export default {
 
   data(){
     return Object.assign(
+      // org
       {
-        test: null,
-        props: { multiple: true },
-        options: [{
-          value: 1,
-          label: '东南',
-          children: [{
-            value: 2,
-            label: '上海',
-            children: [
-              { value: 3, label: '普陀' },
-              { value: 4, label: '黄埔' },
-              { value: 5, label: '徐汇' }
-            ]
-          }, {
-            value: 7,
-            label: '江苏',
-            children: [
-              { value: 8, label: '南京' },
-              { value: 9, label: '苏州' },
-              { value: 10, label: '无锡' }
-            ]
-          }, {
-            value: 12,
-            label: '浙江',
-            children: [
-              { value: 13, label: '杭州' },
-              { value: 14, label: '宁波' },
-              { value: 15, label: '嘉兴' }
-            ]
-          }]
-        }, {
-          value: 17,
-          label: '西北',
-          children: [{
-            value: 18,
-            label: '陕西',
-            children: [
-              { value: 19, label: '西安' },
-              { value: 20, label: '延安' }
-            ]
-          }, {
-            value: 21,
-            label: '新疆维吾尔族自治区',
-            children: [
-              { value: 22, label: '乌鲁木齐' },
-              { value: 23, label: '克拉玛依' }
-            ]
-          }]
-        }]
+        orgsData: [],
+        orgProps: { multiple: true, value: 'id', label: 'orgName' },
+        orgOptions: []
       },
       {
         isSave: false,
@@ -322,14 +278,8 @@ export default {
           createUser: null,
           supplierCode: null,
           alias: [],
-
+          orgs: [],
 // 几个给定的常量
-          orgs: [
-            {
-              id: 0,
-              orgName: "嘉麒集团"
-            }
-          ], 
           companyArea: 1,
           isDeleted: 0,
           isAgree: 2,
@@ -515,15 +465,17 @@ export default {
         this.submitForm.expireTime= new Date(this.submitForm.expireTime).getTime()+ 8* 3600* 1000;
 
         // org
-        this.sub
+        this.orgsData= this.treeNamer.getData(this.submitForm.orgs);
         this.$nextTick(() => this.$refs.submitForm.clearValidate());
       },
 
       makeOptions(){
+        let orgTree;
         Promise.all([
           getDicOptions('SupplierType'),
           getDicOptions('IsMonthly'),
-          getDicOptions('ProductArea')
+          getDicOptions('ProductArea'),
+          orgMaker.make()
         ]).then(res => {
           this.SupplierTypeOptions.push(
             ...res[0].map(el => {
@@ -535,7 +487,15 @@ export default {
           );
           this.IsMonthlyOptions.push(...res[1]);
           this.ProductAreaOptions.push(...res[2]);
+          orgTree= res[3].children;
+          this.orgOptions.push(...orgTree);
+          this.treeNamer= new TreeNamer(orgTree);
         })
+      },
+
+      orgChange(orgs){
+        let newOrgs= orgs.map(this.treeNamer.family.bind(this.treeNamer)); 
+        this.treeNamer.diff(this.submitForm.orgs, newOrgs);
       },
       
       // 后台目前是保存一次，那么所有类别重新建立一次联系（删除所有旧的，再插入新的）
