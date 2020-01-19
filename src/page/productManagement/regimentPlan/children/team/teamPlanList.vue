@@ -79,7 +79,7 @@
               <span class="em" v-if="scope.row.regimentType=='1'">|</span>
               <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
             </span>
-            <span class="em">|</span>
+            <span class="em" v-if="scope.row.regimentType=='1'">|</span>
             <span class="cursor blue" @click="informDeparture(scope.row.id)">出团通知书</span>
           </template>
         </el-table-column>
