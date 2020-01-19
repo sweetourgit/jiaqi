@@ -66,6 +66,8 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
+      <el-table-column prop="id" label="明细ID" align="center">
+      </el-table-column>
       <el-table-column prop="id" label="状态" align="center">
         <template slot-scope="scope">
           <span v-if="scope.row.is_EBS == 0">未导入</span>
