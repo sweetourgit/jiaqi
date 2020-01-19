@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { storageLocal } from '@/js/libs/storage.js'
 let { $http, GLOBAL, $message, $isArray }= Vue.prototype;
 
 /**
@@ -129,29 +130,6 @@ export const putSupplier= function(object){
   })
 }
 
-export const getOrg= function(parent, cb){
-  let { id, children }= parent;
-  return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.serverSrc + `/universal/supplier/api/suppliersave`, {
-      object
-    })
-    .then(res => {
-      let { isSuccess, objects }= res.data;
-      if(!isSuccess) throw ('修改供应商失败');
-      objects
-      Promise.all(
-
-      ).then()
-      resolve($message.success('修改供应商成功'));
-    })
-    .catch(err => {
-      console.log(err);
-      $message.error('修改供应商失败');
-      resolve([]);
-    })
-  })
-}
-
 class OrgMaker {
   constructor(){
     this._count= 3;  // 可用线程
@@ -159,9 +137,69 @@ class OrgMaker {
   }
 
   make(){
+    this.test= 100;
     let result= { id: 204, children: [] };
-    return new Promise((resolve, reject) => {
-      getOrg(result, resolve)
+    let cache= storageLocal.get('organList');
+    if(cache) return Promise.resolve(cache);
+    return this.getOrg(result).then(res => {
+      storageLocal.set('organList', res);
+      return Promise.resolve(res);
     })
   }
+
+  getOrg(parent){
+    let { id: ParentID }= parent;
+    return new Promise((resolve, reject) => {
+      $http.post(GLOBAL.serverSrc + `/org/api/deptlist`, {
+        object: { ParentID }
+      })
+      .then(res => {
+        let { isSuccess, objects }= res.data;
+        if(!isSuccess) throw ('修改供应商失败');
+        this.backCount();
+        if(objects.length) parent.children= objects;
+        this._queue.forEach(item => item.func());
+        Promise.all([
+          ...objects.map((object) => this.mapCb(object))
+        ]).then(resolve.bind(this, parent))
+      })
+      .catch(err => {
+        console.log(err);
+        $message.error('修改供应商失败');
+        resolve();
+      })
+    })
+  }
+
+  mapCb(org){
+    if(this._count> 0){
+      this._count--;
+      return this.getOrg(org);
+    }
+    return new Promise((resolve, reject) => {
+      if(org.isLeaf=== 1) return resolve();
+      let func= this.delay.bind(this, org, resolve)
+      this._queue.push({ id: org.id, func });
+    })
+  }
+
+  delay(org, resolve){
+    if(this._count<= 0) return;
+    this._count--;
+    this.queueRemove(org.id);
+    this.getOrg(org).then(resolve);
+  }
+
+  backCount(){
+    if(this._count>= 3) return;
+    this._count++;
+  }
+
+  queueRemove(id){
+    let index= this._queue.findIndex(el => el.id=== id);
+    if(index=== -1) return console.error('queueRemove find none');
+    this._queue.splice(index, 1);
+  }
 }
+
+export const orgMaker= new OrgMaker();
