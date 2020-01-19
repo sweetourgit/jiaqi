@@ -8,7 +8,7 @@
       class="city_list"
       width="870px"
       style="margin-top:-50px"
-      @open="disperseOrderDisabled=false"
+      @open="openDiolog"
       @close="cancle"
     >
       <!--订单状态begin-->
@@ -204,7 +204,7 @@
         <el-button
           class="fl"
           @click="dialogVisible = true"
-          :disabled="disperseOrderDisabled"
+          :disabled="isCancelBtn"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
         >取消订单</el-button>
         <!-- 修改订单状态按钮:disabled="isChangeNumber || isLowPrice"-->
@@ -1477,6 +1477,11 @@ export default {
         s += "0";
       }
       return s;
+    },
+
+    openDiolog() {
+      this.disperseOrderDisabled=false
+      this.isCancelBtn = false
     },
 
     cancle() {
