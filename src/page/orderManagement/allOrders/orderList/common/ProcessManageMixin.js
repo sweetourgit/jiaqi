@@ -21,8 +21,7 @@ const ProcessManageMixin= {
         guestTotal: 0,  // 总报名数
       },
       {
-        disperseOrderDisabled: false, // 直客订单如果存在收款申请或收款通过，则不允许更改 这个还要控制直客订单的输入框是否禁用
-        isCancelBtn: false, //不管直客还是同业 只要存在收矿申请或收款通过  取消订单就不可以更改
+        disperseOrderDisabled: false, // 直客订单如果存在收款申请或收款通过，则不允许更改 
       }
     )
   },
@@ -44,15 +43,9 @@ const ProcessManageMixin= {
         getOrderAction(orderId)
         .then(orderDetail => {
           let { planID, guests, favourable, contact, priceType, orderCode, orderChannel }= orderDetail;
-          // 不管直客还是同业只要有申请或收矿则取消订单按钮都禁用， 直客的输入框也禁用，  同业可以更改
-          checkOrderhasCollection(orderCode).then(bol => {if(orderChannel !== 1) {
-            this.disperseOrderDisabled= !bol;
-            this.isCancelBtn= !bol
-          } else {
-            this.isCancelBtn= !bol
-          }})
-          // 直客订单 如果存在收款申请或收款通过，则不允许更改 
-          // orderChannel !== 1 && checkOrderhasCollection(orderCode).then(bol => this.disperseOrderDisabled= !bol)
+          
+          // 直客订单 orderChannel !== 1 &&  如果存在收款申请或收款通过，则不允许更改 现在是直客同业都是收款就不可以改了
+          checkOrderhasCollection(orderCode).then(bol => this.disperseOrderDisabled= !bol)
           Promise.all([
             getEnrollsAction(planID), 
             getTeampreviewAction(planID)
