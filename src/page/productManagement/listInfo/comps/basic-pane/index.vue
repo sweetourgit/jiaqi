@@ -15,7 +15,7 @@
       :rules="rules"
     >
       <el-form-item label="产品名称：" prop="title">
-        <el-input v-model="submitForm.title" placeholder="产品名称" style="width: 300px;" size="small" maxlength="20" show-word-limit></el-input>
+        <el-input v-model="submitForm.title" placeholder="产品名称" style="width: 300px;" size="small" maxlength="30" show-word-limit></el-input>
       </el-form-item>
 
       <el-form-item label="出游类型：" prop="isForeign">
@@ -244,8 +244,8 @@ export default {
         rules: {
           title: { 
             required: true, 
-            validator: this.simpleValidator, 
-            message: '产品名称不能为空', 
+            pattern: /^([0-9a-zA-Z\，\+\/\[\]\［\］\u4e00-\u9fa5]{1,30})$|^([0-9a-zA-Z\，\+\/\[\]\［\］\u4e00-\u9fa5\（]{1,29}\）)$/, 
+            message: '含中括号【】中文逗号，英文+/可用，中文小括号（）仅能用在句尾，30个汉字以内', 
             trigger: 'blur'
           },
           isForeign: { 
