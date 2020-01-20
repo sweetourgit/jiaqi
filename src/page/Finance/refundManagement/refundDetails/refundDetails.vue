@@ -481,6 +481,7 @@ export default {
          cancelButtonText: "取消",
          type: "warning"
       }).then(() => {
+          this.dialogFormOrder = false;
           this.EndProcess();
           this.updateUndo();
           this.delRefund();

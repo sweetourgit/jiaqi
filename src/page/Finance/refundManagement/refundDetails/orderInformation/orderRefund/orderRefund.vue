@@ -355,10 +355,6 @@ export default {
       }
     },
     applyRefund(formName){ // 申请退款
-      // if(this.typeID == 0 && this.ruleForm.needRefund < 0){
-      //   this.$message.error("还需退款金额为正数");
-      //   return;
-      // }
       if(this.allRefundPrice > this.orderAmount){
         this.$message.error("总退款金额大于总订单总额，无法申请");
         return;
