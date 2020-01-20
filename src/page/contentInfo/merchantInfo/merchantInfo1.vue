@@ -272,9 +272,9 @@
                   <!-- <el-button size="small" type="primary">点击上传</el-button> -->
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
-                <div v-if=" this.imgnum == 2">
+                <!-- <div v-if=" this.imgnum == 2">
                   <img width="100%" height="12%" :src="ruleForm.imgUrl" />
-                </div>
+                </div> -->
               </el-form-item>
               <!-- action="http://test.dayuntong.com/upload/obs/api/picture/" -->
               <el-form-item label="附件 :" prop="companyLogo" style="width:360px;">
@@ -305,9 +305,9 @@
                   <el-button size="small" type="primary">点击上传</el-button>
                   <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
                 </el-upload>
-                <div v-if=" this.imgnum == 2">
-                  <img width="100%" height="12%" :src="ruleForm.fileUrl" />
-                </div>
+                <!-- <div v-if=" this.imgnum == 2">
+                  <img width="100%" height="12%" :src="ruleForm.fileUrl.url" />
+                </div> -->
               </el-form-item>
             </div>
             <div class="ty" style="float: left; margin-left: 60px">
