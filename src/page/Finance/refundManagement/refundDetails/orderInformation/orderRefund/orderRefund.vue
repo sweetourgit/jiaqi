@@ -116,6 +116,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   props: {
     orderRefundID:0,
@@ -290,7 +291,7 @@ export default {
           })
           this.nonPayment = res.data.object.payable - res.data.object.paid; // 获取未付款金额
           this.orderCode = res.data.object.orderCode; // 获取该团期订单号
-          this.indentID = res.data.object.orderID; // 获取该团期订单ID
+          this.indentID = res.data.object.id; // 获取该团期订单ID
           this.orderAmount = res.data.object.payable; // 获取该团期订单金额
           this.productType = res.data.object.productType; // 获取该团期产品类型 
           this.otherFees = res.data.object.otherPrice; // 其他费用
@@ -361,7 +362,7 @@ export default {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
                 object: {
                   "id": 0, // 退款单
-                  "refundCode": "string", // 退款单号
+                  "refundCode": this.orderCode, // 退款单号
                   "userID": sessionStorage.getItem("id"), // 申请人ID
                   "name": sessionStorage.getItem("name"), // 申请人姓名
                   "orgID": sessionStorage.getItem("orgID"), // 申请人部门ID
@@ -380,10 +381,11 @@ export default {
                   "isDeleted": 0,
                   "payable": this.orderAmount, // 订单金额
                   "refundStateType": 0, // 退款状态 0 申请退款 ，1退款完成，2拒绝退款
-                  "createTime": "2020-01-14T05:53:42.552Z", // 申请时间
+                  "createTime": moment(new Date()).format('YYYY-MM-DD'), // 申请时间
                   "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
                   "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
-                  "productType": this.productType // 产品类型
+                  "productType": 1
+                  //"productType": this.productType // 产品类型
                 }
               })
               .then(res => {
@@ -391,6 +393,7 @@ export default {
                    //this.pageList();
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
+                   this.$message.success("申请退款成功");
                 }else{
                    this.$message.success("申请失败");
                 }

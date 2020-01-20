@@ -166,7 +166,7 @@ export default {
       this.variable++;
       this.dialogType = i;
       this.refundID = id;
-      this.workID = this.workItemID;
+      this.workID = String(this.workItemID); // 把workItemID数组类型转换成字符串类型
     },
     getFlowModel(){ // 获取id=6的FlowModel
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')
@@ -182,8 +182,8 @@ export default {
     },
     commission(){
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GettingUnfinishedTasksForJQ', {
-        "userCode":18240316968,
-        //"userCode": sessionStorage.getItem('tel'),
+        //"userCode":18240316968,
+        "userCode": sessionStorage.getItem('tel'),
         "startTime": this.applyForDate[0] ? moment(this.applyForDate[0]).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
         "endTime": this.applyForDate[1] ? moment(this.applyForDate[1]).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         "startIndex": -1,

@@ -294,31 +294,6 @@ export default {
       this.tableAudit = [];
       this.orderCode = '';
     },
-    undoRefund(){ // 撤销该条退款
-      this.$confirm("是否需要撤销该笔退款?", "提示", {
-         confirmButtonText: "确定",
-         cancelButtonText: "取消",
-         type: "warning"
-      }).then(() => {
-          // this.$http.post(this.GLOBAL.serverSrc + '/order/blacklist/api/delete',{
-          //   "id": this.multipleSelection[0].id
-          // })
-          // .then(res => {
-          //   if(res.data.isSuccess == true){
-          //      this.$message.success("撤销成功");
-          //      this.$parent.pageList(
-          //        this.pageIndex == 1 ? this.pageIndex : 1
-          //      );
-          //     }
-          //  })
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消"
-          });
-        });
-    },
     getJqId(result){ // 获取审批结果tableAudit
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ',{
         "jq_id":result,
@@ -444,24 +419,69 @@ export default {
             this.dialogApproval = false;
             this.dialogFormOrder = false;
             this.$parent.commission();
-            this.passRefund01();
             this.$message.success("退款申请通过");
           }else {
             this.$message.success("退款申请失败");
           }
       })
     },
-    passRefund01(){ // 工作流通过后，走业务接口
-      this.$http.post(this.GLOBAL.jqUrl + '/flowquery/approval/api/pass', {
-        "object": {
-          "guid": this.orderCode,
-          "checkType": 0,
-          "flowModel": 6
+    reject(){ // 驳回方法
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion', {
+        "jQ_ID":this.orderCode,
+        "jQ_Type":6,
+        "userCode":sessionStorage.getItem('tel'),
+        "workItemID":this.workID,
+        "commentText":this.opinion,
+      }).then(res =>{
+          this.dialogApproval = false;
+          this.dialogFormOrder = false;
+          this.$parent.commission();
+          this.EndProcess(); // 工作流结束
+          this.updateReject();// 业务驳回
+          this.$message.success("退款驳回成功");
+        })
+    },
+    EndProcess(){
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', { 
+        "jQ_id":this.orderCode,
+        "jQ_Type":6,
+      })
+    },
+    updateReject(){
+      for(var i= 0 ; i < this.tableDate.length ; i ++){
+        this.tableDate[i].refundStatus = 2
+      }
+      this.$http.post(this.GLOBAL.serverSrc + "/order/refundstat/api/update",{
+        object:{
+          orderCode :this.orderCode,
+          guests:this.tableDate
         }
       })
     },
-    reject(){ // 驳回方法
-
+    updateUndo(){ // 撤销业务接口
+      for(var i= 0 ; i < this.tableDate.length ; i ++){
+        this.tableDate[i].refundStatus = 0
+      }
+      this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
+        object:this.tableDate
+      })
+    },
+    undoRefund(){ // 撤销该条退款
+      this.$confirm("是否需要撤销该笔退款?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      }).then(() => {
+          this.EndProcess();
+          this.updateUndo();
+          this.$parent.pageList(this.pageIndex == 1 ? this.pageIndex : 1);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     },
   }
 };
