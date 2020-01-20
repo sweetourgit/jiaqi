@@ -440,12 +440,18 @@ export default {
         "workItemID":this.workID,
         "commentText":this.opinion,
       }).then(res =>{
-          this.dialogApproval = false;
-          this.dialogFormOrder = false;
-          this.$parent.commission();
+          if(res.data.isSuccess == true){
+            this.dialogApproval = false;
+            this.dialogFormOrder = false;
+            this.$parent.commission();
+            this.passRefund01();
+            this.$message.success("退款申请通过");
+          }else {
+            this.$message.success("退款申请失败");
+          }
       })
     },
-    passRefund(){
+    passRefund01(){ // 工作流通过后，走业务接口
       this.$http.post(this.GLOBAL.jqUrl + '/flowquery/approval/api/pass', {
         "object": {
           "guid": this.orderCode,
