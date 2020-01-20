@@ -11,7 +11,7 @@
         <div class="fl" v-if="title == '审批'">
     	    <el-button class="ml13" type="primary" @click="payAccount()">支付账户</el-button>
           <!-- <el-button class="ml13" type="primary">转 办</el-button> -->
-          <el-button class="ml13" type="primary" @click="through()">通 过</el-button>
+          <el-button class="ml13" type="primary" :disabled="forbidden" @click="through()">通 过</el-button>
           <el-button class="ml13" type="primary" @click="rejected()">驳 回</el-button>
         </div>
       </div>
@@ -135,9 +135,10 @@
       @close="cancelAccount()">
       <div class="controlButton">
         <el-button class="ml13" @click="cancelAccount()">取 消</el-button>
-        <el-button class="ml13" type="primary">确 认</el-button>
+        <el-button class="ml13" @click="payment()"type="primary">确 认</el-button>
       </div>
-      <el-table :data="tableAccount" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+      <el-table :data="tableAccount" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass"
+        :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
         <el-table-column label="类型" prop="cardType" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.cardType===1">收款</span>
@@ -157,7 +158,7 @@
       @close="cancelApproval()">
       <div class="controlButton">
         <el-button class="ml13" @click="cancelApproval()">取 消</el-button>
-        <el-button class="ml13" @clcik="determine()" type="primary">确 认</el-button>
+        <el-button class="ml13" @click="determine()" type="primary">确 认</el-button>
       </div>
       <div class="oh">
         <div class="fl" v-if="approval === '审批通过'">通过说明:</div>
@@ -178,7 +179,8 @@ export default {
   props: {
     refundID:0,
     variable: 0,
-    dialogType: 0
+    dialogType: 0,
+    workID:0,
   },
   data() {
     return {
@@ -196,6 +198,12 @@ export default {
       approval:"",// 通过驳回标题
       opinion:'', // 通过驳回输入框
       orderCode:'',// 获取orderCode来获取审核结果
+      indentID:0,
+      multipleSelection: [], //选中的list
+      payID:0, //选择支付账户获取账户ID
+      accountID:0,
+      disbursementID:0, // 获取详情时支付账户的id
+      forbidden: false,
     };
 
   },
@@ -221,7 +229,8 @@ export default {
         this.title = "详情"
       } else if(this.dialogType == 2){  // 审批详情
         setTimeout(() => {
-          this.getInvoice(this.refundID);
+          this.getInvoice(this.refundID,this.workID);
+          console.log(this.workID)
         },200);
         this.dialogFormOrder = true;
         this.title = "审批"
@@ -261,10 +270,29 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
+    changeFun(val) {
+      //保存选中项的数据
+      this.multipleSelection = val;
+    },
+    clickRow(row) {
+      //选中行复选框勾选
+      this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+      this.$refs.multipleTable.toggleRowSelection(row);
+      this.payID = this.multipleSelection[0].id;
+      console.log(this.payID)
+    },
+    rowClass({row, rowIndex}){  //选中行样式改变
+     for(var i=0;i<this.multipleSelection.length;i++){
+        if(this.multipleSelection[i].id==row.id){
+           return { "background-color": "#ecf5ff" }
+        }
+      }
+    },
     cancelInfoOrder(){ // 关闭详情弹窗
       this.dialogFormOrder = false;
       this.tableDate = [];
       this.tableAudit = [];
+      this.orderCode = '';
     },
     undoRefund(){ // 撤销该条退款
       this.$confirm("是否需要撤销该笔退款?", "提示", {
@@ -305,11 +333,15 @@ export default {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
-          this.getJqId(res.data.object.orderCode);
           this.refundList = res.data.object;
           this.orderCode = res.data.object.orderCode;
-          console.log(this.orderCode)
+          this.indentID = res.data.object.orderID;
+          if(this.title == '审批'){
+            this.getJqId(this.orderCode);
+          }
           this.tableDate = res.data.object.guests;
+          this.accountID = res.data.object.id; 
+          this.disbursementID = res.data.object.payID;
           this.tableDate.forEach(function (v,k,arr) {
             if(arr[k]['sex'] == 0){
               arr[k]['sex'] = '男'
@@ -317,12 +349,18 @@ export default {
               arr[k]['sex'] = '女'
             }
           })
+          if(this.disbursementID == 0){
+            this.forbidden = true;
+          }else{
+            this.forbidden = false;
+          }
         }
       });
     },
     orderDetails(i){ // 点击订单ID出现弹窗
       this.orderVariable++;
       this.orderDialogType = i;
+      this.orderID = this.indentID;
       this.dialogFormOrder = false;
     },
     cancelAccount(){ // 支付账户点击取消弹窗隐藏
@@ -351,6 +389,23 @@ export default {
           console.log(obj)
         })
     },
+    payment(){ // 选择支付账户
+      // let paymentAccount = this.refundList;
+      // paymentAccount.payID = this.payID;
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/save",{
+        object:{
+          id:this.accountID,
+          payID:this.payID
+        }
+      })
+      .then(res => {
+        if(res.data.isSuccess == true){
+           this.dialogAccount = false;
+        }else{
+           this.$message.success("申请失败");
+        }
+    })
+    },
     cancelApproval(){ // 通过、驳回弹窗取消
       this.dialogApproval = false ;
       this.opinion = '';
@@ -358,14 +413,19 @@ export default {
     through(){ // 点击通过显示弹窗
       this.dialogApproval = true ;
       this.approval = '审批通过';
+      if(this.disbursementID == 0){
+        this.forbidden = true;
+        this.$message.error("请先选择支付账户")
+      }else{
+        this.forbidden = false;
+      }
     },
     rejected(){ // 点击驳回显示弹窗
       this.dialogApproval = true ;
       this.approval = '审批驳回';
     },
     determine(){
-      console.log(1)
-      if(this.approval = '审批通过'){
+      if(this.approval == '审批通过'){
         this.passRefund();
       } else {
         this.reject();
@@ -373,15 +433,26 @@ export default {
       this.dialogApproval = false ;
     },
     passRefund(){ //通过方法
-      console.log(this.orderCode)
-      console.log(this.workItemID)
-      // this.$http.post(this.GLOBAL.jqUrl + 'JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
-      //   "jQ_ID":this.orderCode,
-      //   "jQ_Type":6,
-      //   "userCode":sessionStorage.getItem('tel'),
-      //   "workItemID":this.workItemID,
-      //   "commentText":this.opinion,
-      // })
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
+        "jQ_ID":this.orderCode,
+        "jQ_Type":6,
+        "userCode":sessionStorage.getItem('tel'),
+        "workItemID":this.workID,
+        "commentText":this.opinion,
+      }).then(res =>{
+          this.dialogApproval = false;
+          this.dialogFormOrder = false;
+          this.$parent.commission();
+      })
+    },
+    passRefund(){
+      this.$http.post(this.GLOBAL.jqUrl + '/flowquery/approval/api/pass', {
+        "object": {
+          "guid": this.orderCode,
+          "checkType": 0,
+          "flowModel": 6
+        }
+      })
     },
     reject(){ // 驳回方法
 

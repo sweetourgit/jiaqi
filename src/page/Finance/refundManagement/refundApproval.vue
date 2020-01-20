@@ -44,7 +44,7 @@
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
-      <refund-details :refundID="refundID" :variable="variable" :dialogType="dialogType"></refund-details>
+      <refund-details :refundID="refundID" :variable="variable" :dialogType="dialogType" :workID="workID"></refund-details>
     </div>
   </div>
 </template>
@@ -62,6 +62,7 @@ export default {
       refundID:0,
       variable: 0, //设置一个变量展示弹窗
       dialogType: 0, //弹窗类型  1：详情
+      workID:0,
       //搜索框
       refundNumber:'',//退款号码
       applicant:'',//申请人
@@ -161,10 +162,11 @@ export default {
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
     },
-    operation(i,id) {// 显示详情
+    operation(i,id,workItemID) {// 显示详情
       this.variable++;
       this.dialogType = i;
       this.refundID = id;
+      this.workID = this.workItemID;
     },
     getFlowModel(){ // 获取id=6的FlowModel
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')

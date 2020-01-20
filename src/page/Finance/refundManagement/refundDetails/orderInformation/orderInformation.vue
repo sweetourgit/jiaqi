@@ -130,7 +130,7 @@
             <span class="fl">待确认剩余</span>
             <span class="fl red">23:00:00</span>
           </div> -->
-          <div class="fr">
+          <!-- <div class="fr">
             <span class="fl cursor">联系客人</span>
             <span class="fl ml5">|</span>
             <span class="fl cursor">备注</span>
@@ -144,18 +144,18 @@
             <span class="fl cursor" @click="refund(1)">退款</span>
             <span class="fl ml5">|</span>
             <span class="fl cursor">更多</span>
-          </div>
+          </div> -->
         </div>
       </div>
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="" label="姓名" align="center"></el-table-column>
-        <el-table-column prop="" label="报名类型" align="center"></el-table-column>
-        <el-table-column prop="" label="电话" align="center"></el-table-column>
-        <el-table-column prop="" label="身份证" align="center"></el-table-column>
-        <el-table-column prop="" label="性别" align="center"></el-table-column>
+        <el-table-column prop="cnName" label="姓名" align="center"></el-table-column>
+        <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
+        <el-table-column prop="mobile" label="电话" align="center"></el-table-column>
+        <el-table-column prop="idCard" label="身份证" align="center"></el-table-column>
+        <el-table-column prop="sex" label="性别" align="center"></el-table-column>
       </el-table>
     </el-dialog>
-    <order-refund :orderRefundID="orderRefundID" :orderRefund="orderRefund" :orderRefundDialog="orderRefundDialog"></order-refund>
+    <!-- <order-refund :orderRefundID="orderRefundID" :orderRefund="orderRefund" :orderRefundDialog="orderRefundDialog"></order-refund> -->
   </div>
 </template>
 
@@ -192,7 +192,7 @@ export default {
     orderVariable: function() {
       if (this.orderDialogType == 1) { // 订单详情
         setTimeout(() => {
-          //this.getOrder(this.orderID);
+          this.getOrder(this.orderID);
         },200);
         this.dialogOrder = true;
       }
@@ -220,15 +220,22 @@ export default {
       }).then(res => {
         if (res.data.isSuccess == true) {
           this.orderList = res.data.object;
-          this.tableDate = res.data.object.guest; // 获取订单信息页面表格内容
+          this.tableDate = res.data.object.guests; // 获取订单信息页面表格内容
+          this.tableDate.forEach(function (v,k,arr) {
+            if(arr[k]['sex'] == 0){
+              arr[k]['sex'] = '男'
+            }else if(arr[k]['sex'] == 1) {
+              arr[k]['sex'] = '女'
+            }
+          })
         }
       });
     },                                                                                                                                                                          
-    refund(i){ // 点击退款出现退款流程弹窗
-      this.orderRefund++;
-      this.orderRefundDialog = i;
-      this.dialogOrder = false;
-    },
+    // refund(i){ // 点击退款出现退款流程弹窗
+    //   this.orderRefund++;
+    //   this.orderRefundDialog = i;
+    //   this.dialogOrder = false;
+    // },
   }
 };
 </script>
