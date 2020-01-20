@@ -42,12 +42,12 @@ const ProcessManageMixin= {
       processManage(orderId){
         getOrderAction(orderId)
         .then(orderDetail => {
-          let { planID, guests, favourable, contact, priceType, orderCode, orderChannel, settlementType }= orderDetail;
+          let { planID, guests, favourable, contact, priceType, orderCode, orderChannel}= orderDetail;
           
-          // 直客订单 orderChannel !== 1 &&  如果存在收款申请或收款通过，则不允许更改 
-          // 现在是直客和非月结的同业是收款就不可以改了  同业月结的只要下单了就不可以更改了
-          orderChannel !== 1 && settlementType == 1 ? this.disperseOrderDisabled = true : this.disperseOrderDisabled = false
-          if(orderChannel == 1 || (orderChannel !== 1 && settlementType == 2)) {
+          //同业月结的只要下单了就不可以更改了 orderChannel == 3为直客 settlementType = 1 则是同业月结的 2非月结
+          orderChannel !== 3 && this.settlementType == 1 ? this.disperseOrderDisabled = true : this.disperseOrderDisabled = false
+          // 现在是直客和非月结的同业如果存在收款申请或收款通过，则不允许更改
+          if(orderChannel == 3 || (orderChannel !== 3 && this.settlementType !== 1)) {
             checkOrderhasCollection(orderCode).then(bol => this.disperseOrderDisabled= !bol)
           }
           Promise.all([
