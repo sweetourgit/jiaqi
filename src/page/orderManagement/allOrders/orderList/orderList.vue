@@ -1058,7 +1058,6 @@ export default {
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
     operation(item, i) {
-      console.log(item,i)
       this.orderId = item.id;
       this.variable++;
       this.dialogType = i;
