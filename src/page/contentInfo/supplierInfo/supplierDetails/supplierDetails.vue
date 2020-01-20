@@ -125,11 +125,11 @@
 
             <el-row :gutter="100" class="common-row">
               <el-col :span="12">
-                <el-form-item label="产品主要方向：" prop="productDirection">
+                <el-form-item label="公司可见性：">
                   <span class="content"
                     v-grey-null>
-                    {{ submitForm.productDirection | nullFilter }}
-                  </span>
+                    {{ submitForm.companyArea | nullFilter }}
+                  </span> 
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -137,6 +137,33 @@
                   <span class="content"
                     v-grey-null>
                     {{ submitForm.billName | nullFilter }}
+                  </span> 
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="100" class="common-row">
+              <el-col :span="12">
+                <el-form-item label="使用部门：" prop="productDirection">
+                  <div>
+                    <div class="file-outer" 
+                      v-for="(org, i) in submitForm.orgs" 
+                      :key="i">
+                      {{ org }}
+                    </div>
+                  </div>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="产品主要方向：" prop="productDirection">
+                  <span class="content"
+                    v-grey-null>
+                    {{ submitForm.productDirection | nullFilter }}
+                  </span>
+                </el-form-item>
+                <el-form-item label="供应商协议：" prop="isAgree">
+                  <span class="content">
+                    {{ submitForm.isAgree }}
                   </span>
                 </el-form-item>
               </el-col>
@@ -151,16 +178,6 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="供应商协议：" prop="isAgree">
-                  <span class="content">
-                    {{ submitForm.isAgree }}
-                  </span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row :gutter="100" class="common-row">
-              <el-col :span="12" :offset="12">
                 <el-form-item label="备注：" prop="memo">
                   <span class="content"
                     v-grey-null>
@@ -225,8 +242,8 @@
 </template>
 
 <script>
-import { getSupplierDTO } from '../dictionary'
-import { getSupplierById, getDicOptions } from '../api'
+import { getSupplierDTO, CompanyAreaOptions, reeNamer } from '../dictionary'
+import { getSupplierById, getDicOptions, orgMaker } from '../api'
 import axios from 'axios'
 
 export default {
@@ -237,13 +254,18 @@ export default {
   },
 
   data(){
-    return {
-      submitForm: { ...getSupplierDTO() },
-      SupplierTypeOptions: [],
-      IsMonthlyOptions: [],
-      ProductAreaOptions: [],
-      ConditionTypeOptions: [{ value: 1, label: "正常" },{value: 2, label: "停用"},{value: 0, label: "待审核"}]
-    }
+    return Object.assign(
+      {
+        submitForm: { ...getSupplierDTO() },
+        ConditionTypeOptions: [{ value: 1, label: "正常" },{value: 2, label: "停用"},{value: 0, label: "待审核"}]
+      },
+      {
+        SupplierTypeOptions: [],
+        IsMonthlyOptions: [],
+        ProductAreaOptions: [],
+        CompanyAreaOptions
+      }
+    )
   },
 
   directives: {
@@ -300,8 +322,10 @@ export default {
         this.submitForm.isMonthly= this.IsMonthlyOptions.find(el => el.id== res.isMonthly).name;
         this.submitForm.expireTime= this.expireTimeAdaptor(res.expireTime);
         this.submitForm.isAgree= res.isAgree=== 1? '是': '否';
+        this.submitForm.companyArea= this.CompanyAreaOptions.find(el => el.value== res.companyArea).label;
         //this.submitForm.files= this.filesAdaptor(res.files);
         this.submitForm.alias= this.aliasAdaptor(res.alias);
+        this.submitForm.orgs= this.orgsAdaptor(res.orgs);
       })
     },
 
@@ -324,6 +348,14 @@ export default {
     
     aliasAdaptor(alias){
       return alias.map(alias => alias.name).join('、');
+    },
+
+    orgsAdaptor(orgs){
+      return orgs.map(org => {
+        let { parent }= org;
+        parent= JSON.parse(parent);
+        return parent.map(el => el.name).join(' / ');
+      })
     },
 
     backListWithQuery(){

@@ -35,7 +35,11 @@
         </el-table-column>
         <el-table-column prop="supplierTypeEX" label="类型" align="center"></el-table-column>
         <el-table-column prop="isMonthlyEX" label="结算方式" align="center"></el-table-column>
-        <el-table-column prop="orgName" label="所属部门" align="center"></el-table-column>
+        <el-table-column prop="orgName" label="所属部门" align="center">
+          <template slot-scope="scope">
+            {{ orgsAdaptor(scope.row.orglist) }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="159" align="center">
           <template slot-scope="scope">
             <el-button size="small" type="text"
@@ -176,6 +180,14 @@ export default {
         .catch(err => {
           this.tableData.splice(0);
         })
+      },
+
+      orgsAdaptor(orgs){
+        return orgs.map(org => {
+          let { parent }= org;
+          parent= JSON.parse(parent);
+          return parent.map(el => el.name).join(' / ');
+        }).join(',')
       },
 
       // 导向新增，携带本页当前状态

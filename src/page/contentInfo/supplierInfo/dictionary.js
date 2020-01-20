@@ -5,7 +5,7 @@ export const getSupplierDTO= function(){
     createTime: null,	// integer($int64)
     // code
     name: null,
-    types: [],
+    types: null,
     productDirection: null,
     isMonthly: null,
     productArea: null,
@@ -78,7 +78,6 @@ export class TreeNamer {
   formate(orgList){
     let newArr= [...orgList];
     let parent;
-    let result;
     parent= newArr.map(el => {
       let { id, orgName }= el;
       return { id, name: orgName };
