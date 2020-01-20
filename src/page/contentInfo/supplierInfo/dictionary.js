@@ -78,7 +78,6 @@ export class TreeNamer {
   formate(orgList){
     let newArr= [...orgList];
     let parent;
-    let result;
     parent= newArr.map(el => {
       let { id, orgName }= el;
       return { id, name: orgName };
