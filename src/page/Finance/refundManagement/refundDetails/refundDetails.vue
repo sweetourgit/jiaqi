@@ -464,7 +464,16 @@ export default {
       }
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
         object:this.tableDate
-      })
+      }).then(res => {
+        
+        })
+    },
+    delRefund(){
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/delete",{
+        id:this.accountID
+      }).then(res => {
+
+        })
     },
     undoRefund(){ // 撤销该条退款
       this.$confirm("是否需要撤销该笔退款?", "提示", {
@@ -474,6 +483,7 @@ export default {
       }).then(() => {
           this.EndProcess();
           this.updateUndo();
+          this.delRefund();
           this.$parent.pageList(this.pageIndex == 1 ? this.pageIndex : 1);
         })
         .catch(() => {

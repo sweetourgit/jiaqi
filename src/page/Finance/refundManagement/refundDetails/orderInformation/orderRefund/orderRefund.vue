@@ -99,8 +99,9 @@
             <el-table-column prop="sex" label="性别" align="center"></el-table-column>
             <el-table-column label="选择退款客人信息" align="center">
               <template slot-scope="scope">
-                <span v-if="scope.row.refundStatus == 0" class="cursor blue" @click="choose(scope.$index)">选择</span>
-                <span v-if="scope.row.refundStatus == 5">
+                <el-button type="text"v-if="scope.row.refundStatus == 0" :disabled="forbidden" @click="choose(scope.$index)">选择</el-button>
+                <!-- <span v-if="scope.row.refundStatus == 0" :disabled="forbidden" class="cursor blue" @click="choose(scope.$index)">选择</span> -->
+                <span v-if="scope.row.refundStatus == 5" :disabled="forbidden">
                   <span class="blue">已选</span>
                   <span class="em">|</span>
                   <span class="cursor blue" @click="undo(scope.$index)">撤销</span>
@@ -268,6 +269,7 @@ export default {
       this.$refs[formName].resetFields();
     },
     cancelOrder(formName){ // 关闭退款弹窗
+      this.ruleForm.refundWay = '2';
       this.dialogOrderRefund = false;
       this.$refs[formName].resetFields();
       this.tableDate = [];
@@ -353,9 +355,22 @@ export default {
       }
     },
     applyRefund(formName){ // 申请退款
-      if(this.typeID == 0 && this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
-        this.$message.error("还需退款金额为正数");
+      // if(this.typeID == 0 && this.ruleForm.needRefund < 0){
+      //   this.$message.error("还需退款金额为正数");
+      //   return;
+      // }
+      if(this.allRefundPrice > this.orderAmount){
+        this.$message.error("总退款金额大于总订单总额，无法申请");
         return;
+      }
+      if(this.typeID == 0){
+        if(this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
+          this.$message.error("还需退款金额为正数");
+          return;
+        } else if(this.ruleForm.needRefund == ''){
+          this.$message.error("总退款金额不能小于0");
+          return;
+        }
       }
       this.$refs[formName].validate((valid) => {
           if (valid) {
