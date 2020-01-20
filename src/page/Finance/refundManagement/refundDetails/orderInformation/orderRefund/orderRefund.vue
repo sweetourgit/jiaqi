@@ -401,7 +401,6 @@ export default {
               })
               .then(res => {
                 if(res.data.isSuccess == true){
-                   //this.pageList();
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");

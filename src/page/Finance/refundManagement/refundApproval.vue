@@ -41,9 +41,9 @@
         </el-table-column>
       </el-table>
       <!--分页-->
-      <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
+      <!-- <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
-      ></el-pagination>
+      ></el-pagination> -->
       <refund-details :refundID="refundID" :variable="variable" :dialogType="dialogType" :workID="workID"></refund-details>
     </div>
   </div>
@@ -202,6 +202,8 @@ export default {
           "guid": getJqId
         }).then(obj =>{
           this.tableDate = obj.data.objects;
+          this.total = obj.data.total;
+          console.log(this.total)
           this.tableDate.forEach(function (v,k,arr) {
             if(arr[k]['refundStateType'] == 0){
               arr[k]['refundStateType'] = '申请退款'
