@@ -9,6 +9,7 @@
           type="success"
           @click="touchPrint"
           plain
+          v-if="isShowDY"
         >
           打印本页详情信息
         </el-button>
@@ -108,6 +109,7 @@
     },
     data() {
       return {
+        isShowDY: false,
         printMsg1: {},
         disabled: true,
         // 基础信息
@@ -314,16 +316,14 @@
             if(response.data.data.info.create_uid != sessionStorage.getItem('id')){
               that.showBack = false;
             }
-//            alert(that.baseInfo.approval_status == 1 && that.showBack == true);
+            // alert(that.baseInfo.approval_status == 1 && that.showBack == true);
 
             // 根据ID获取人名
             that.getName(response.data.data.info.create_uid).then(res => {
-//              console.log(res);
               that.baseInfo.create_uid = res;
             });
             // 获取所属部门
             that.getOrgName(response.data.data.info.create_uid).then(res => {
-//              console.log(res);
               that.baseInfo.orgName = res;
             });
 
@@ -471,7 +471,11 @@
       }
     },
     created() {
-
+      if(sessionStorage.getItem('userCode') == 'TC900007' || sessionStorage.getItem('userCode') == 'TC900006') {
+        this.isShowDY = true;
+      } else {
+        this.isShowDY = false;
+      }
     },
     mounted() {
 

@@ -11,6 +11,7 @@
           type="success"
           @click="touchPrint"
           plain
+          v-if="isShowDY"
         >
           打印本页详情信息
         </el-button>
@@ -126,6 +127,7 @@
     },
     data() {
       return {
+        isShowDY: false,
         printMsg1: {},
         passButtonDo: false,
         // 基础信息
@@ -519,7 +521,11 @@
 
     },
     created() {
-
+      if(sessionStorage.getItem('userCode') == 'TC900007' || sessionStorage.getItem('userCode') == 'TC900006') {
+        this.isShowDY = true;
+      } else {
+        this.isShowDY = false;
+      }
     },
     mounted() {
 
