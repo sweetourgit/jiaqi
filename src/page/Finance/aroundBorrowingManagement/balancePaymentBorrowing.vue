@@ -247,16 +247,12 @@
           "periphery_type": 3,
           "approval_status": this.borrowStatus
         }, ).then(function(response) {
-          console.log('无收入借款list',response);
+          // console.log('无收入借款list',response);
           if (response.data.code == '200') {
-//            console.log('无收入借款list',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
               // 获取申请人
               that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
@@ -265,7 +261,6 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-//                console.log(response);
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
@@ -345,7 +340,7 @@
         }).then(function(response) {
 
           if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
+            // console.log(response.data.objects);
             let operatorList = [];
             response.data.objects.forEach(function (item, index, arr) {
               const operator = {
@@ -404,7 +399,7 @@
         };
       },
       handleSelectD(item){
-        console.log(item);
+        // console.log(item);
         this.supplierID = item.id;
         this.supplier = item.valueName;
       },
@@ -433,7 +428,7 @@
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
-          console.log('获取供应商',obj);
+          // console.log('获取供应商',obj);
           if(obj.data.isSuccess){
             let supplierObj = [];
             obj.data.objects.forEach(function (item, index, arr) {

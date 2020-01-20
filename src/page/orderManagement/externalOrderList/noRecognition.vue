@@ -322,7 +322,6 @@
           let deleteStr = '';
           let num = 0;
           this.multipleSelection.forEach(function (item, index, arr) {
-//            console.log(item.bill_status);
             if(item.bill_status == 3 || item.bill_status == 4 || item.bill_status == 5 || item.bill_status == 7){
               deleteStr += item.order_sn + ',';
             }
@@ -330,7 +329,6 @@
           if(num == 0){
             let strD = '';
             this.multipleSelection.forEach(function (item, index, arr) {
-//            console.log(item.bill_status);
               strD += item.order_sn + ',';
             });
             strD = strD.substr(0, strD.length - 1);
@@ -379,7 +377,6 @@
           orderStr += this.multipleSelection[i].order_sn + ',';
         }
         orderStr = orderStr.substr(0,orderStr.length-1);
-//        console.log(arr);
         this.$router.push({
           path: "/recognitionMsg",
           name: '订单管理/外部订单/认收款信息',
@@ -396,7 +393,6 @@
         let num = 0;
         let orderS = '';
         this.multipleSelection.forEach(function (item, index, arr) {
-//        alert(item.bill_status == 1 && item.is_relate_pro == 2);
           if(item.bill_status == 1 && item.is_relate_pro == 2){
 
           }else{
@@ -405,7 +401,6 @@
             return;
           }
         });
-//      alert(num);
         if(num == 0){
           this.$confirm('是否需要解绑选中订单?', '提示', {
             confirmButtonText: '确定',

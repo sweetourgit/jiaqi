@@ -5,6 +5,13 @@
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.approval_status == 1 && showBack == true">撤销</el-button>
+        <el-button
+          type="success"
+          @click="touchPrint"
+          plain
+        >
+          打印本页详情信息
+        </el-button>
         <!-- 选择付款账户需求更改，改到审批时选择 -->
         <!-- <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.pay_type == null">选择付款账户</el-button> -->
       </div>
@@ -80,6 +87,7 @@
           </el-table>
         </div>
       </div>
+      <printPage ref="printHandle" :printMsg1='printMsg1' style='display:none;'></printPage>
       <chooseAccount :dialogFormVisible2="dialogFormVisible2" :info="info" @close="close"></chooseAccount>
     </el-dialog>
   </div>
@@ -87,10 +95,12 @@
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
   import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择付款账户
+  import printPage from '@/page/Finance/aroundBorrowingManagement/printPage.vue'// 打印
   export default {
     name: "collectionDetail",
     components: {
-      chooseAccount
+      chooseAccount,
+      printPage
     },
     props: {
       dialogFormVisible1: false,
@@ -98,6 +108,7 @@
     },
     data() {
       return {
+        printMsg1: {},
         disabled: true,
         // 基础信息
         baseInfo: {
@@ -133,7 +144,14 @@
 
         showBack: true, // 是否显示撤销按钮(当前状态为审批中，并且登录人和申请人相同时，显示按钮，可以撤销)
 
-        dialogFormVisible2: false
+        dialogFormVisible2: false,
+
+        approval_s_n: {
+          0: '等待中',
+          1: '审批中',
+          2: '驳回',
+          3: '通过'
+        }
       }
     },
     computed: {
@@ -150,6 +168,28 @@
       }
     },
     methods: {
+      // 打印详情
+      touchPrint(){
+        const that = this;
+        let printAuditingContent = '';
+        if(this.tableDataResult.length > 0 ) {
+          printAuditingContent = '<b>开始</b> -> '
+          this.tableDataResult.forEach(function (item) {
+            printAuditingContent += item.approval_uid + '( <b>' + that.approval_s_n[item.approval_status] + '</b> )'  + ' -> ';
+          })
+          printAuditingContent += '<b>结束</b>'
+        }
+        this.printMsg1 = {
+          getTopName: sessionStorage.getItem('topName'),
+          presentRouter: this.periphery_type[this.baseInfo.type],
+          fundamental: this.baseInfo,
+          checkType: 0,
+          printContent: printAuditingContent
+        };
+        // console.log(this.printMsg1);
+        this.$nextTick(() => this.$refs.printHandle.printDetails());
+        
+      },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {

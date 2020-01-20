@@ -7,6 +7,13 @@
         <el-button type="primary" @click="approvalPass" :disabled="passButtonDo">通过</el-button>
         <el-button type="primary" @click="approvalReject">驳回</el-button>
         <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && passButtonDo">选择付款账户</el-button>
+        <el-button
+          type="success"
+          @click="touchPrint"
+          plain
+        >
+          打印本页详情信息
+        </el-button>
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -98,7 +105,7 @@
         </el-dialog>
       </div>
       <!--审批结束-->
-
+      <printPage ref="printHandle" :printMsg1='printMsg1' style='display:none;'></printPage>
       <chooseAccount :dialogFormVisible2="dialogFormVisible2" :info="info.id" @close="close"></chooseAccount>
     </el-dialog>
   </div>
@@ -106,10 +113,12 @@
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
   import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择付款账户
+  import printPage from '@/page/Finance/aroundBorrowingManagement/printPage.vue'// 打印
   export default {
     name: "collectionDetail",
     components: {
-      chooseAccount
+      chooseAccount,
+      printPage
     },
     props: {
       dialogFormVisible: false,
@@ -117,6 +126,7 @@
     },
     data() {
       return {
+        printMsg1: {},
         passButtonDo: false,
         // 基础信息
         baseInfo: {
@@ -154,7 +164,14 @@
         approvalMark: '',
 
         // 选择付款账户
-        dialogFormVisible2: false
+        dialogFormVisible2: false,
+
+        approval_s_n: {
+          0: '等待中',
+          1: '审批中',
+          2: '驳回',
+          3: '通过'
+        }
       }
     },
     computed: {
@@ -173,6 +190,27 @@
       }
     },
     methods: {
+      // 打印详情
+      touchPrint(){
+        const that = this;
+        let printAuditingContent = '';
+        if(this.tableDataResult.length > 0 ) {
+          printAuditingContent = '<b>开始</b> -> '
+          this.tableDataResult.forEach(function (item) {
+            printAuditingContent += item.approval_uid + '( <b>' + that.approval_s_n[item.approval_status] + '</b> )'  + ' -> ';
+          })
+          printAuditingContent += '<b>结束</b>'
+        }
+        this.printMsg1 = {
+          getTopName: sessionStorage.getItem('topName'),
+          presentRouter: this.periphery_type[this.baseInfo.type],
+          fundamental: this.baseInfo,
+          checkType: 0,
+          printContent: printAuditingContent
+        };
+        // console.log(this.printMsg1);
+        this.$nextTick(() => this.$refs.printHandle.printDetails());
+      },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
