@@ -241,6 +241,13 @@ import { ConditionTypeOptions, CompanyAreaOptions, TreeNamer } from '../../../di
 export default {
   components: { labelsInput },
 
+  created(){
+    this.checkProto= null; // 原始数据
+    this.treeNamer= null; // 部门树数据处理对象
+    this.reactKey= null; // 同步钥匙
+    this.reactLock= new Promise((resolve, reject) => this.reactKey= resolve)  // 同步锁
+  },
+
   mounted(){
     this.makeOptions();
   },
@@ -379,10 +386,13 @@ export default {
   methods: Object.assign(
     {
       init(payload){
-        this.isSave= !!(payload.id || false);
-        this.initSubmitForm(payload);
-        this.proto= payload;
-        this.checkProto= this.$deepCopy(this.submitForm);
+        this.reactLock
+        .then(() => {
+          this.isSave= !!(payload.id || false);
+          this.initSubmitForm(payload);
+          this.proto= payload;
+          this.checkProto= this.$deepCopy(this.submitForm);
+        })
       },
 
       hasChanged(){
@@ -402,6 +412,7 @@ export default {
         // 适配types在数据库中的存储格式
         this.typesAdaptor(data);
         this.expireTimeAdaptor(data);
+        this.orgsAdaptor(data);
         data.createTime= Date.now();
         return data;
       },
@@ -490,6 +501,7 @@ export default {
           orgTree= res[3].children;
           this.orgOptions.push(...orgTree);
           this.treeNamer= new TreeNamer(orgTree);
+          this.reactKey();
         })
       },
 
@@ -537,6 +549,13 @@ export default {
         }
         if(this.isSave) newFile.supplierID= this.submitForm.id;
         return newFile;
+      },
+
+      orgsAdaptor(data){
+        let { orgs }= data;
+        orgs.forEach(org => {
+          org.parent= JSON.stringify(org.parent);
+        })
       }
     },
 
