@@ -572,14 +572,14 @@
               <td class="longWeight">
                 <!-- {{ruleForm.imgUrl}} -->
                 <!-- <img width="100%" height="12%" :src="ruleForm.imgUrl" /> -->
-                <a :href="ruleForm.imgUrl">logo</a>
+                <a :href="ruleForm.imgUrl? ruleForm.imgUrl.url:''">{{ruleForm.imgUrl? ruleForm.imgUrl.name:''}}</a>
               </td>
               <div class="BodyTableCenter">
                 <td class="tr">附件：&nbsp;&nbsp;</td>
                 <td class="longWeight">
                   <!-- {{ruleForm.fileUrl}} -->
                   <!-- <img width="100%" height="12%" :src="ruleForm.fileUrl" /> -->
-                  <a :href="ruleForm.fileUrl">附件</a>
+                  <a :href="ruleForm.fileUrl?ruleForm.fileUrl.url:''">{{ruleForm.fileUrl?ruleForm.fileUrl.name:''}}</a>
                 </td>
               </div>
             </tr>
@@ -707,7 +707,7 @@
           <!-- 详情页下级商户end -->
         </div>
         <div class="ButtonCls">
-          <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确定</el-button>
+          <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确1定</el-button>
           <el-button type="primary" v-if="btnindex == 1" @click="editBtn(2)">编辑</el-button>
           <el-button type="primary" v-if="btnindex == 2" @click="editorForm('ruleForm')">修改</el-button>
           <el-button @click="resetForm('ruleForm')">取消</el-button>
@@ -1007,8 +1007,8 @@ export default {
         administrative: "", //管理人员
         otherNames: "", //商户其他名字
         localCompCode: "", //商户编码
-        ImgUrl: "", //logo
-        fileUrl: "", //附件
+        ImgUrl: {}, //logo
+        fileUrl: {}, //附件
         parentID: -1, //所属上级商户id
         parentName: "" //所属上级商户名字
       },
@@ -1959,7 +1959,6 @@ export default {
     // 关联欠款的表格的总价计算
     getDebitTablePrice(id, total) {
       this.arrears = 0;
-      console.log(this.arrears)
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: 1,
@@ -2028,8 +2027,8 @@ export default {
         localCompRole: "", //商户角色
         salesman: "", //销售人员
         administrative: "", //管理人员
-        ImgUrl: "", //logo
-        fileUrl: "", //附件
+        ImgUrl: {}, //logo
+        fileUrl: {}, //附件
         parentName: "",
         parentID: -1,
         areaInformationName: "",
@@ -2245,7 +2244,6 @@ export default {
       this.ruleForm.parentID == null
         ? (this.ruleForm.parentID = -1)
         : this.ruleForm.parentID;
-      // console.log(this.ruleForm.parentID,"this.ruleForm.parentID")
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -2267,8 +2265,8 @@ export default {
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
             // arrears: this.ruleForm.arrears,
-            imgUrl: this.ruleForm.imgUrl,
-            fileUrl: this.ruleForm.fileUrl,
+            imgUrl: this.ruleForm.imgUrl !== undefined ? JSON.stringify(this.ruleForm.imgUrl) : '',
+            fileUrl: this.ruleForm.imgUrl !== undefined ? JSON.stringigy(this.ruleForm.fileUrl) : '',
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
             storeType: this.ruleForm.storeType,
@@ -2488,8 +2486,8 @@ export default {
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
             // arrears: this.ruleForm.arrears,
-            imgUrl: this.ruleForm.imgUrl,
-            fileUrl: this.ruleForm.fileUrl,
+            imgUrl: JSON.stringify(this.ruleForm.imgUrl),
+            fileUrl: JSON.stringify(this.ruleForm.fileUrl),
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
             storeType: this.ruleForm.storeType,
@@ -2593,13 +2591,12 @@ export default {
             orgs,
             useList
           } = obj.data.object;
-
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
           // 父级的结算方式
           this.parentSettlementType = object.parentSettlementType;
           this.ruleForm.name = object.name;
-          this.ruleForm.imgUrl = object.imgUrl;
-          this.ruleForm.fileUrl = object.fileUrl;
+          this.ruleForm.imgUrl = object.imgUrl ? JSON.parse(object.imgUrl): {name: "",url: ""};
+          this.ruleForm.fileUrl = object.fileUrl ? JSON.parse(object.fileUrl) : {name: "",url: ""};
           this.AbouQuota = object.abouQuota;
           this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
@@ -2842,24 +2839,26 @@ export default {
     },
     //图片上传成功
     handleSuccess(response, file, fileList2) {
-      console.log(file, "logo");
       if (file.status == "success") {
         this.imgnum = 1;
         let T_img = JSON.parse(response);
-        this.ruleForm.imgUrl = T_img.paths[0].Url;
-        // this.ruleForm.imgUrl = URL.createObjectURL(file.raw);
+        this.ruleForm.imgUrl = {
+          url: T_img.paths[0].Url,
+          name: fileList2[0].name
+        }
       } else {
         this.$message.error("图片上传失败重新上传");
       }
     },
     //附件上传成功
     handleSuccessFileUrl(response, file, fileList1) {
-      console.log(file, "附件");
       if (file.status == "success") {
         this.fileUrl = 1;
         let T_fileUrl = JSON.parse(response);
-        this.ruleForm.fileUrl = T_fileUrl.paths[0].Url;
-        // this.ruleForm.fileUrl = URL.createObjectURL(file.raw);
+        this.ruleForm.fileUrl = {
+          url: T_fileUrl.paths[0].Url,
+          name: fileList1[0].name
+        }
       } else {
         this.$message.error("附件上传失败重新上传");
       }
