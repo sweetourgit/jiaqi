@@ -5,7 +5,7 @@ export const getSupplierDTO= function(){
     createTime: null,	// integer($int64)
     // code
     name: null,
-    types: [],
+    types: null,
     productDirection: null,
     isMonthly: null,
     productArea: null,
