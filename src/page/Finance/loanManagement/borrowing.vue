@@ -381,7 +381,7 @@
           type="success"
           @click="touchPrint"
           plain
-          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 488) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
+          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
         >
           打印本页详情信息
         </el-button>
