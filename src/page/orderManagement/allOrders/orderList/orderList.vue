@@ -272,10 +272,10 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,3)"
               >出团通知书</el-breadcrumb-item>
-              <!-- <el-breadcrumb-item
+              <el-breadcrumb-item
                 class="breadCrumbPointer"
                 @click.native="operation(item,5)"
-              >退款</el-breadcrumb-item> -->
+              >退款</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
