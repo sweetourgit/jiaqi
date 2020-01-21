@@ -355,7 +355,7 @@
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :orderRefundDialog="orderRefundDialog"></orderRefund>
+      <!-- <orderRefund :orderRefundID="orderId" :orderRefund="variable" :orderRefundDialog="orderRefundDialog"></orderRefund> -->
     </div>
   </div>
 </template>
@@ -364,14 +364,14 @@
 import processManage from "./common/processManage";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
-import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
+// import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
 import moment from "moment";
 export default {
   components: {
     "process-manage": processManage,
     "remarks-infor": remarksInfor,
     "order-transfer": orderTransfer,
-    orderRefund
+    // orderRefund
   },
   data() {
     return {
