@@ -374,6 +374,9 @@ export default {
       .then(res => {
         if(res.data.isSuccess == true){
            this.dialogAccount = false;
+           if(this.disbursementID !== 0){
+              this.forbidden = false;
+           }
         }else{
            this.$message.success("申请失败");
         }
@@ -389,8 +392,6 @@ export default {
       if(this.disbursementID == 0){
         this.forbidden = true;
         this.$message.error("请先选择支付账户")
-      }else{
-        this.forbidden = false;
       }
     },
     rejected(){ // 点击驳回显示弹窗
