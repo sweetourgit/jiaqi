@@ -36,7 +36,7 @@
         <el-table-column prop="" label="审批意见" align="center"></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue" @click="operation(2,scope.row.id)">审批</span>
+            <span class="cursor blue" @click="operation(2,scope.row.id,scope.$index)">审批</span>
           </template>
         </el-table-column>
       </el-table>
@@ -162,11 +162,12 @@ export default {
       this.$refs.multipleTable.clearSelection(); // 清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
     },
-    operation(i,id,workItemID) {// 显示详情
+    operation(i,id,index) {// 显示详情
       this.variable++;
       this.dialogType = i;
       this.refundID = id;
-      this.workID = String(this.workItemID); // 把workItemID数组类型转换成字符串类型
+      this.workID = this.workItemID[index];
+      //this.workID = String(this.workItemID); // 把workItemID数组类型转换成字符串类型
     },
     getFlowModel(){ // 获取id=6的FlowModel
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')

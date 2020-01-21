@@ -313,7 +313,7 @@ export default {
           this.indentID = res.data.object.orderID;
           this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
-          this.accountID = res.data.object.id; 
+          this.accountID = res.data.object.id;
           this.disbursementID = res.data.object.payID;
           this.tableDate.forEach(function (v,k,arr) {
             if(arr[k]['sex'] == 0){
@@ -374,9 +374,8 @@ export default {
       .then(res => {
         if(res.data.isSuccess == true){
            this.dialogAccount = false;
-           if(this.disbursementID !== 0){
-              this.forbidden = false;
-           }
+           this.forbidden = false;
+           this.getInvoice(this.accountID)
         }else{
            this.$message.success("申请失败");
         }
@@ -414,12 +413,14 @@ export default {
         "workItemID":this.workID,
         "commentText":this.opinion,
       }).then(res =>{
-          if(res.data.isSuccess == true){
+          var data = new Function('return ' + res.data)();
+          let code = data.code;
+          if(code == 0){
             this.dialogApproval = false;
             this.dialogFormOrder = false;
             this.$parent.commission();
             this.$message.success("退款申请通过");
-          }else {
+          }else if(code == 1){
             this.$message.success("退款申请失败");
           }
       })
@@ -432,12 +433,19 @@ export default {
         "workItemID":this.workID,
         "commentText":this.opinion,
       }).then(res =>{
-          this.dialogApproval = false;
-          this.dialogFormOrder = false;
-          this.$parent.commission();
-          this.EndProcess(); // 工作流结束
-          this.updateReject();// 业务驳回
-          this.$message.success("退款驳回成功");
+          var data = new Function('return ' + res.data)();
+          let code = data.code;
+          if(code == 0){
+            this.dialogApproval = false;
+            this.dialogFormOrder = false;
+            this.$parent.commission();
+            this.EndProcess(); // 工作流结束
+            this.updateReject();// 业务驳回
+            this.$message.success("退款驳回成功");
+          }else {
+            this.$message.success("退款驳回失败");
+          }
+          
         })
     },
     EndProcess(){
