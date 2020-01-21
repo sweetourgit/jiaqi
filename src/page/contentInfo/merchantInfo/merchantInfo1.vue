@@ -284,7 +284,7 @@
                   :action="imgUpload()"
                   :on-preview="handlePreview"
                   :on-remove="handleRemove"
-                  :file-list="fileList2"
+                  :file-list="fileList1"
                   :limit="1"
                   :on-error="handleErrorFileUrl"
                   :on-success="handleSuccessFileUrl"
@@ -2597,6 +2597,9 @@ export default {
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl ? JSON.parse(object.imgUrl): {name: "",url: ""};
           this.ruleForm.fileUrl = object.fileUrl ? JSON.parse(object.fileUrl) : {name: "",url: ""};
+          // this.fileList1.push({
+
+          // })
           this.AbouQuota = object.abouQuota;
           this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
