@@ -247,8 +247,8 @@
                   class="upload-demo"
                   :action="imgUpload()"
                   :on-preview="handlePreview"
-                  :on-remove="handleRemove"
-                  :file-list="fileList2"
+                  :on-remove="handleRemove1"
+                  :file-list="fileList1"
                   :limit="1"
                   :on-error="handleError"
                   :on-success="handleSuccess"
@@ -274,7 +274,7 @@
                 </el-upload>
                 <!-- <div v-if=" this.imgnum == 2">
                   <img width="100%" height="12%" :src="ruleForm.imgUrl" />
-                </div> -->
+                </div>-->
               </el-form-item>
               <!-- action="http://test.dayuntong.com/upload/obs/api/picture/" -->
               <el-form-item label="附件 :" prop="companyLogo" style="width:360px;">
@@ -283,8 +283,8 @@
                   class="upload-demo"
                   :action="imgUpload()"
                   :on-preview="handlePreview"
-                  :on-remove="handleRemove"
-                  :file-list="fileList1"
+                  :on-remove="handleRemove2"
+                  :file-list="fileList2"
                   :limit="1"
                   :on-error="handleErrorFileUrl"
                   :on-success="handleSuccessFileUrl"
@@ -307,7 +307,7 @@
                 </el-upload>
                 <!-- <div v-if=" this.imgnum == 2">
                   <img width="100%" height="12%" :src="ruleForm.fileUrl.url" />
-                </div> -->
+                </div>-->
               </el-form-item>
             </div>
             <div class="ty" style="float: left; margin-left: 60px">
@@ -572,14 +572,18 @@
               <td class="longWeight">
                 <!-- {{ruleForm.imgUrl}} -->
                 <!-- <img width="100%" height="12%" :src="ruleForm.imgUrl" /> -->
-                <a :href="ruleForm.imgUrl? ruleForm.imgUrl.url:''">{{ruleForm.imgUrl? ruleForm.imgUrl.name:''}}</a>
+                <a
+                  :href="ruleForm.imgUrl? ruleForm.imgUrl.url:''"
+                >{{ruleForm.imgUrl? ruleForm.imgUrl.name:''}}</a>
               </td>
               <div class="BodyTableCenter">
                 <td class="tr">附件：&nbsp;&nbsp;</td>
                 <td class="longWeight">
                   <!-- {{ruleForm.fileUrl}} -->
                   <!-- <img width="100%" height="12%" :src="ruleForm.fileUrl" /> -->
-                  <a :href="ruleForm.fileUrl?ruleForm.fileUrl.url:''">{{ruleForm.fileUrl?ruleForm.fileUrl.name:''}}</a>
+                  <a
+                    :href="ruleForm.fileUrl?ruleForm.fileUrl.url:''"
+                  >{{ruleForm.fileUrl?ruleForm.fileUrl.name:''}}</a>
                 </td>
               </div>
             </tr>
@@ -1120,8 +1124,8 @@ export default {
           label: "非月结"
         }
       ],
-      fileList2: [], //图片
-      fileList1: [], //附件
+      fileList1: [], //图片
+      fileList2: [], //附件
       isSelect: false, // 判断是否进入select
       areaInformationName: "", //地区value
       superiorMerchants: [], //所属上级商户的集合
@@ -1814,9 +1818,6 @@ export default {
     // handlePreview(file) {
     // console.log(file);
     // },
-    // handleRemove(file, fileList) {
-    // console.log(file, fileList);
-    // },
 
     // dialog关闭的回调
     closeDialog() {
@@ -1826,6 +1827,8 @@ export default {
       this.parentSettlementType = null;
       this.glPageIndex = 1;
       this.glPageSize = 10;
+      this.fileList1 = [];
+      this.fileList2 = [];
     },
     // 重置
     handleReset() {
@@ -2265,8 +2268,14 @@ export default {
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
             // arrears: this.ruleForm.arrears,
-            imgUrl: this.ruleForm.imgUrl !== undefined ? JSON.stringify(this.ruleForm.imgUrl) : '',
-            fileUrl: this.ruleForm.imgUrl !== undefined ? JSON.stringigy(this.ruleForm.fileUrl) : '',
+            imgUrl:
+              this.ruleForm.imgUrl !== undefined
+                ? JSON.stringify(this.ruleForm.imgUrl)
+                : "",
+            fileUrl:
+              this.ruleForm.imgUrl !== undefined
+                ? JSON.stringigy(this.ruleForm.fileUrl)
+                : "",
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
             storeType: this.ruleForm.storeType,
@@ -2595,11 +2604,43 @@ export default {
           // 父级的结算方式
           this.parentSettlementType = object.parentSettlementType;
           this.ruleForm.name = object.name;
-          this.ruleForm.imgUrl = object.imgUrl ? JSON.parse(object.imgUrl): {name: "",url: ""};
-          this.ruleForm.fileUrl = object.fileUrl ? JSON.parse(object.fileUrl) : {name: "",url: ""};
-          // this.fileList1.push({
+          this.ruleForm.imgUrl = object.imgUrl
+            ? JSON.parse(object.imgUrl)
+            : { name: "", url: "" };
+          this.ruleForm.fileUrl = object.fileUrl
+            ? JSON.parse(object.fileUrl)
+            : { name: "", url: "" };
 
-          // })
+          if (object.imgUrl && object.imgUrl !== "{}") {
+            this.fileList1.push({
+              name:
+                object.imgUrl && object.imgUrl !== "{}"
+                  ? JSON.parse(object.imgUrl).name
+                  : "",
+              url:
+                object.imgUrl && object.imgUrl !== "{}"
+                  ? JSON.parse(object.imgUrl).url
+                  : ""
+            });
+          } else {
+            this.fileList1 = [];
+          }
+
+          if (object.fileUrl && object.fileUrl !== "{}") {
+            this.fileList2.push({
+              name:
+                object.fileUrl && object.fileUrl !== "{}"
+                  ? JSON.parse(object.fileUrl).name
+                  : "",
+              url:
+                object.fileUrl && object.fileUrl !== "{}"
+                  ? JSON.parse(object.fileUrl).url
+                  : ""
+            });
+          } else {
+            this.fileList2 = [];
+          }
+
           this.AbouQuota = object.abouQuota;
           this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
@@ -2831,15 +2872,16 @@ export default {
     //图片上传失败
     handleError(err, file) {
       this.$message.error("图片上传失败重新上传");
-      this.fileList2 = [];
+      this.fileList1 = [];
       this.imgnum = 2;
     },
     // 附件上传失败
     handleErrorFileUrl(err, file) {
       this.$message.error("附件上传失败重新上传");
-      this.fileList1 = [];
+      this.fileList2 = [];
       this.fileUrl = 2;
     },
+
     //图片上传成功
     handleSuccess(response, file, fileList2) {
       if (file.status == "success") {
@@ -2848,23 +2890,34 @@ export default {
         this.ruleForm.imgUrl = {
           url: T_img.paths[0].Url,
           name: fileList2[0].name
-        }
+        };
       } else {
         this.$message.error("图片上传失败重新上传");
       }
     },
     //附件上传成功
-    handleSuccessFileUrl(response, file, fileList1) {
+    handleSuccessFileUrl(response, file, fileList2) {
       if (file.status == "success") {
         this.fileUrl = 1;
         let T_fileUrl = JSON.parse(response);
         this.ruleForm.fileUrl = {
           url: T_fileUrl.paths[0].Url,
-          name: fileList1[0].name
-        }
+          name: fileList2[0].name
+        };
       } else {
         this.$message.error("附件上传失败重新上传");
       }
+    },
+    // 图片删除更改
+    handleRemove1(file, fileList) {
+      console.log(11);
+      this.fileList1 = [];
+      this.ruleForm.imgUrl = {};
+    },
+    // 图片删除更改
+    handleRemove2(file, fileList) {
+      this.fileList2 = [];
+      this.ruleForm.fileUrl = {};
     },
     //删除
     // rowDelete() {
@@ -2907,15 +2960,15 @@ export default {
       // this.uid=file.uid;
     },
     //删除待上传的图片
-    handleRemove(file, fileList) {
-      // this.uid=fileList[0].uid;
-      // for(let i=0;i<this.fileList.length;i++){
-      //  if(file.uid==this.fileList[i].uid){
-      //  this.fileList.splice(i,1);
-      //  }
-      // }
-      // this.time=this.fileList.length;
-    },
+    // handleRemove(file, fileList) {
+    // this.uid=fileList[0].uid;
+    // for(let i=0;i<this.fileList.length;i++){
+    //  if(file.uid==this.fileList[i].uid){
+    //  this.fileList.splice(i,1);
+    //  }
+    // }
+    // this.time=this.fileList.length;
+    // },
     // 商户信息
     handleClick(row, event, column) {
       this.tid = row.id;
