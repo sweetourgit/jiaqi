@@ -795,14 +795,14 @@ export default {
             message: "手机号格式不正确"
           }
         ],
-        idCard: [
-          { required: true, message: "身份证号不能为空", trigger: "blur" },
-          {
-            pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
-            message: "身份证号格式不正确",
-            trigger: "blur"
-          }
-        ]
+        // idCard: [
+        //   { required: true, message: "身份证号不能为空", trigger: "blur" },
+        //   {
+        //     pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+        //     message: "身份证号格式不正确",
+        //     trigger: "blur"
+        //   }
+        // ]
         //credTOV:[{ required: true, message: "请选择证件有效期", trigger: "blur" }],
       },
       //出行人信息表格
