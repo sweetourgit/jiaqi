@@ -352,7 +352,7 @@ export default new Router({
       },
     }, {
       path: '/orderList',
-      component: () => import('@/page/orderManagement/orderList/orderList'),
+      component: () => import('@/page/orderManagement/allOrders/orderList/orderList'),
       name: '订单管理',
       meta: {
         keepAlive: true,
