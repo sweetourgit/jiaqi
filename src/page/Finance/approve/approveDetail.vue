@@ -227,7 +227,7 @@
       return {
         fundamental:{},
         isShowPrintContent: true,
-        ifShowPrintTable: false,
+        ifShowPrintTable: true,
         listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
         ifShowPassBtn: false, // 先从接口获取数据判断下是否有未拆分的数据，没有显示通过按钮
@@ -247,7 +247,7 @@
         getLsParamsSplitArr: null,
         keepStatus: null,
         tablePrint: [
-          /*{
+          {
           'parentID':482,
           'id':486,
           'supplierTypeEX':1,
@@ -263,7 +263,7 @@
             'createUser':1,
             'mark':1,
             'price':130,
-          }*/
+          }
         ],
         keepTabId: [],
         tabCount: 0
@@ -304,7 +304,9 @@
     methods: {
       // 打印详情
       printDetails(){
-        this.$print(this.$refs.print)
+        this.$nextTick(() => {
+          this.$print(this.$refs.print)
+        })
       },
       // 获取一条信息
       getLabel(paramPaymentID){
