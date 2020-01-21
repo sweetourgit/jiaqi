@@ -311,9 +311,7 @@ export default {
           this.refundList = res.data.object;
           this.orderCode = res.data.object.orderCode;
           this.indentID = res.data.object.orderID;
-          if(this.title == '审批'){
-            this.getJqId(this.orderCode);
-          }
+          this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
           this.accountID = res.data.object.id; 
           this.disbursementID = res.data.object.payID;
