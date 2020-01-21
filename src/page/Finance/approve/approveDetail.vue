@@ -226,7 +226,7 @@
     data(){
       return {
         fundamental:{},
-        isShowPrintContent: true,
+        isShowPrintContent: false,
         ifShowPrintTable: false,
         listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
@@ -315,7 +315,7 @@
         }).then(res => {
           if(res.data.isSuccess == true){
             this.fundamental = {}
-            // this.isShowPrintContent = true
+            this.isShowPrintContent = true
             this.fundamental=res.data.object;
             this.printDetails()
           }
@@ -324,7 +324,6 @@
       handlePrintClose(){
         this.ifShowPrintTable = false
         this.backListPage()
-        console.log('关闭弹窗？')
       },
       handlePrint(index, row){
         this.getLabel(row.id)
@@ -415,13 +414,13 @@
           "id": paramsTabId
         }).then( obj =>  {
           this.tabCount--
-          console.log(obj.data.objects,'obj')
+          // console.log(obj.data.objects,'obj')
           this.tablePrint.push(...obj.data.objects)
           if(this.tabCount <= 0){
-            console.log(this.tabCount)
+            // console.log(this.tabCount)
             this.ifShowPrintTable = true
           }
-          console.log(this.tablePrint,'this.tablePrint')
+          // console.log(this.tablePrint,'this.tablePrint')
         })
       },
       // 审批通过弹窗-确定
