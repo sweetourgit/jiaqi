@@ -236,7 +236,7 @@
               'accountID': this.keepAcountIdArr[item.id]
             })
           }) )
-          console.log(paramsSplitArr, 'paramsSplitArr')
+          // console.log(paramsSplitArr, 'paramsSplitArr')
           Vue.ls.set('lsParamsSplitArr', paramsSplitArr);
           this.$router.push({ path: '/approve/approveDetail', query: { source: 'splitLoan', queryApproveExpenseID: this.getApproveList, approveDetailGuid: this.getApproveListGuid, queryWorkItemID: this.workItemIDArr, ifClickKeepBtn: true } })
         }

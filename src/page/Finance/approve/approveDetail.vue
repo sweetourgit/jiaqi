@@ -108,6 +108,112 @@
       </el-row>
     </el-dialog>
     <!-- 通过、驳回弹框 END -->
+    <el-dialog width="45%" title="打印" :visible="ifShowPrintTable" :before-close="handlePrintClose">
+      <div class="indialog">
+        <el-table :data="tablePrint" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
+          <el-table-column prop="parentID" label="拆分前借款单ID" width="150" align="center"></el-table-column>
+          <el-table-column prop="id" label="新无收入借款单ID" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
+          <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+          <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
+          <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
+          <el-table-column prop="opinion" label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
+    <!-- 打印信息 -->
+    <div ref="print" v-if="isShowPrintContent">
+<!--      <div class="print-title">{{ getTopName }} - {{ presentRouter == '无收入借款管理' ? '无收入借款' : '预付款' }} - 借款单 </div>-->
+      <!-- 基本信息 -->
+      <div class="item-content print-hidden">
+        <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
+        <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
+        <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
+      </div>
+      <!-- 第一行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ fundamental.id }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
+          <el-col :span="15"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
+        </el-col>
+      </el-row>
+      <!-- 第一行 END -->
+      <!-- 第二行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">团期计划:</div></el-col>
+          <el-col :span="15"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">产品名称:</div></el-col>
+          <el-col :span="15"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="7"><div class="grid-del label-color">供应商:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
+        </el-col>
+      </el-row>
+      <!-- 第二行 END -->
+      <!-- 第三行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">借款类型:</div></el-col>
+          <el-col :span="15">
+            <div class="grid-del">{{ fundamental.supplierTypeEX }}</div>
+          </el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">借款金额:</div></el-col>
+          <el-col :span="15"><div class="grid-del">{{ fundamental.price }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <!-- 摘要打印时隐藏 -->
+          <el-col :span="6" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
+          <el-col :span="17" class="print-hidden"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
+        </el-col>
+      </el-row>
+      <!-- 第三行 END -->
+      <!-- 支付账户 -->
+      <el-row type="flex" class="row-bg print-acount" justify="start">
+        <el-col :span="2" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
+        <el-col :span="18"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
+      </el-row>
+      <!-- 支付账户 -->
+      <!-- 审批人 打印时输出 -->
+      <!--<el-row type="flex" class="row-bg print-approve" justify="start">
+        <el-col :span="2" :offset="1"><div class="grid-del label-color">审批人:</div></el-col>
+        <el-col :span="18"><div class="grid-del" v-html="printAuditingContent"></div></el-col>
+      </el-row>-->
+      <!-- 审批人 打印时输出 END -->
+      <!-- 第四行 -->
+      <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
+          <el-col :span="18"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">开户行:</div></el-col>
+          <el-col :span="15"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">开户名:</div></el-col>
+          <el-col :span="15"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -119,6 +225,9 @@
     name: "approveDetail",
     data(){
       return {
+        fundamental:{},
+        isShowPrintContent: false,
+        ifShowPrintTable: false,
         listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
         ifShowPassBtn: false, // 先从接口获取数据判断下是否有未拆分的数据，没有显示通过按钮
@@ -137,6 +246,27 @@
         getKeepBtnStatus: false,
         getLsParamsSplitArr: null,
         keepStatus: null,
+        tablePrint: [
+          /*{
+          'parentID':482,
+          'id':486,
+          'supplierTypeEX':1,
+          'supplierName':1,
+          'createUser':1,
+          'mark':1,
+          'price':13,
+        },{
+            'parentID':484,
+            'id':474,
+            'supplierTypeEX':1,
+            'supplierName':1,
+            'createUser':1,
+            'mark':1,
+            'price':130,
+          }*/
+        ],
+        keepTabId: [],
+        tabCount: 0
       }
     },
     // 关于时间的过滤
@@ -172,6 +302,32 @@
       }
     },
     methods: {
+      // 打印详情
+      printDetails(){
+        this.$nextTick(() => {
+          this.$print(this.$refs.print)
+        })
+      },
+      // 获取一条信息
+      getLabel(paramPaymentID){
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
+          "id":paramPaymentID
+        }).then(res => {
+          if(res.data.isSuccess == true){
+            this.fundamental = {}
+            this.isShowPrintContent = true
+            this.fundamental=res.data.object;
+            this.printDetails()
+          }
+        })
+      },
+      handlePrintClose(){
+        this.ifShowPrintTable = false
+        this.backListPage()
+      },
+      handlePrint(index, row){
+        this.getLabel(row.id)
+      },
       // 点击图片钩子
       handlePreview(file) {
         window.open(file.url);
@@ -247,10 +403,24 @@
           });
           this.loadingBtn = false
           this.transitShow = false;
-          this.backListPage()
+          // this.backListPage()
         }).catch( (err) => {
           this.$message.warning("审批通过失败 ");
           this.loadingBtn = false
+        })
+      },
+      showPrintTable(paramsTabId){
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
+          "id": paramsTabId
+        }).then( obj =>  {
+          this.tabCount--
+          // console.log(obj.data.objects,'obj')
+          this.tablePrint.push(...obj.data.objects)
+          if(this.tabCount <= 0){
+            // console.log(this.tabCount)
+            this.ifShowPrintTable = true
+          }
+          // console.log(this.tablePrint,'this.tablePrint')
         })
       },
       // 审批通过弹窗-确定
@@ -268,7 +438,14 @@
               this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
                 "object": this.getLsParamsSplitArr
               }).then( obj =>  {
-                console.log(obj, '提交申请返回来的参数')
+                this.keepTabId.length = 0
+                this.keepBackContent.forEach( (item) => {
+                  this.keepTabId.push(item.id)
+                })
+                this.tabCount = this.keepTabId.length
+                this.keepTabId.forEach((item) =>{
+                  this.showPrintTable(item)
+                })
                 this.handlePassApi()
               }).catch( err => {
                 console.log(err)
