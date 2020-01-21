@@ -6,7 +6,7 @@
       <div class="controlButton">
   	    <div class="fl">
   	      <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
-  	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情'">撤 销</el-button>
+  	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情' && refundList.refundStateType !='1'">撤 销</el-button>
   	    </div>
         <div class="fl" v-if="title == '审批'">
     	    <el-button class="ml13" type="primary" @click="payAccount()">支付账户</el-button>
