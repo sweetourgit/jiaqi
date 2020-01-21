@@ -34,7 +34,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.refundStateType=='申请退款'" style="color: #7F7F7F" >{{scope.row.refundStateType}}</div>
             <div v-if="scope.row.refundStateType=='拒绝退款'" style="color: #FF4A3D" >{{scope.row.refundStateType}}</div>
-            <div v-if="scope.row.refundStateType=='完成退款'" style="color: #33D174" >{{scope.row.refundStateType}}</div>
+            <div v-if="scope.row.refundStateType=='退款完成'" style="color: #33D174" >{{scope.row.refundStateType}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="申请日期" align="center">
