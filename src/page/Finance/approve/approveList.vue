@@ -93,7 +93,7 @@
       },
       // tab切换
       handleClick(tab, event) {
-        console.log(tab, event);
+        // console.log(tab, event);
       },
       // 重置
       HandleResetApprove (paramsFrom){
