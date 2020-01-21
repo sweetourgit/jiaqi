@@ -706,7 +706,6 @@ export default {
         })
         .catch(function(obj) {})
     },
-    // 同业社名称模糊查询
     querySearch3(queryString3, cb) {
       this.sameTradeData = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/list', {
@@ -717,7 +716,7 @@ export default {
       }).then(res => {
         for (let i = 0; i < res.data.objects.length; i++) {
           this.sameTradeData.push({
-            "value": res.data.objects[i].name,
+            "value": res.data.objects[i].id + ' - ' +res.data.objects[i].name,
             "id": res.data.objects[i].id
           })
           this.supplierId = res.data.objects[i].id ? res.data.objects[i].id : 0;
