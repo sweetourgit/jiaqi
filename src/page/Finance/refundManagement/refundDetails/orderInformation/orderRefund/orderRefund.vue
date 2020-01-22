@@ -428,7 +428,7 @@ export default {
         }
       }
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
-        object:updata
+        objects:updata
       }).then(res => {
         
       })
