@@ -711,7 +711,7 @@
           <!-- 详情页下级商户end -->
         </div>
         <div class="ButtonCls">
-          <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确1定</el-button>
+          <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确定</el-button>
           <el-button type="primary" v-if="btnindex == 1" @click="editBtn(2)">编辑</el-button>
           <el-button type="primary" v-if="btnindex == 2" @click="editorForm('ruleForm')">修改</el-button>
           <el-button @click="resetForm('ruleForm')">取消</el-button>
@@ -2268,14 +2268,8 @@ export default {
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
             // arrears: this.ruleForm.arrears,
-            imgUrl:
-              this.ruleForm.imgUrl !== undefined
-                ? JSON.stringify(this.ruleForm.imgUrl)
-                : "",
-            fileUrl:
-              this.ruleForm.imgUrl !== undefined
-                ? JSON.stringigy(this.ruleForm.fileUrl)
-                : "",
+            imgUrl: JSON.stringify(this.ruleForm.imgUrl),
+            fileUrl: JSON.stringify(this.ruleForm.fileUrl),
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
             storeType: this.ruleForm.storeType,
