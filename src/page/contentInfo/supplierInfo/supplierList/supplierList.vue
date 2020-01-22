@@ -4,6 +4,12 @@
   &>header{
     padding: 10px 0;
   }
+  .no-wrap{
+    word-break:keep-all;/* 不换行 */
+    white-space:nowrap;/* 不换行 */
+    overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+    text-overflow:ellipsis;
+  }
 }
 </style>
 
@@ -37,7 +43,11 @@
         <el-table-column prop="isMonthlyEX" label="结算方式" align="center"></el-table-column>
         <el-table-column prop="orgName" label="所属部门" align="center">
           <template slot-scope="scope">
-            {{ orgsAdaptor(scope.row.orglist) }}
+            <el-tooltip :content="orgsAdaptor(scope.row.orglist)" placement="top">
+              <span class="no-wrap">
+                {{ orgsAdaptor(scope.row.orglist) }}
+              </span>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="159" align="center">
@@ -187,7 +197,7 @@ export default {
           let { parent }= org;
           parent= JSON.parse(parent);
           return parent.map(el => el.name).join(' / ');
-        }).join(',')
+        }).join(`,`)
       },
 
       // 导向新增，携带本页当前状态

@@ -55,7 +55,9 @@ export class TreeNamer {
     this._cache= {};
   }
 
-  // arr: [1,2,3]
+  /**
+   * @description: 根据几联选择器的数据还原它在树中的家族
+   */
   family(arr){
     let point= 0;
     let result= [];
@@ -78,14 +80,17 @@ export class TreeNamer {
   formate(orgList){
     let newArr= [...orgList];
     let parent;
-    parent= newArr.map(el => {
+    // JSON.stringify保持和数据库传来的根式一致
+    parent= JSON.stringify(newArr.map(el => {
       let { id, orgName }= el;
       return { id, name: orgName };
-    });
+    }));
+    // 最后一个节点是叶子节点
     let { id: orgID, orgName }= newArr.pop();
     return { orgID, orgName, parent };
   }
 
+  // 获取几联选择器的绑定值
   getData(orgs){
     if(!orgs) return [];
     return orgs.map(org => {
@@ -96,14 +101,14 @@ export class TreeNamer {
 
   diff(oval, nval){
     let result= [];
+    let old= oval.splice(0);
+    // 先排除掉nval中不存在的
+    oval.push(...old.filter(el => !!nval.find(item => item.orgID=== el.orgID)));
     nval.forEach(el => {
       let hit= oval.find(item => item.orgID=== el.orgID);
-      if(hit){
-        hit.parent= el.parent;
-        return;
-      };
+      if(hit) return;
       result.push(el);
-    })
+    });
     oval.push(...result);
   }
 }
