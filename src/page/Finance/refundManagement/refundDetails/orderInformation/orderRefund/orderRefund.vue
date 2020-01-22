@@ -249,6 +249,7 @@ export default {
       this.singlePrice = this.multipleSelection[0].singlePrice;
       this.refundStatus = this.multipleSelection[0].refundStatus;
       console.log(this.singlePrice)
+      console.log(this.typeID)
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -421,9 +422,9 @@ export default {
     },
     updateUndo(){ // 撤销业务接口
       let updata = [];
-      for(var i= 0 ; i < this.tableDate.length ; i ++){
-        if(this.tableDate[i].refundStatus == 5){
-          updata.push(this.tableDate[i])
+      for(var i= 0 ; i < this.guests.length ; i ++){
+        if(this.guests[i].refundStatus == 5){
+          updata.push(this.guests[i])
         }
       }
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
