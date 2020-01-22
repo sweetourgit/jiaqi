@@ -5,7 +5,9 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div style="height: 300px;">
           <el-form-item label="团期计划" prop="tour" label-width="120px" style="float:left;">
-            <el-input v-model="ruleForm.tour" @blur="tour_check" class="inputWidth" placeholder="请输入或者选择团期计划"></el-input>
+            <!-- <el-input v-model="ruleForm.tour" @blur="tour_check" class="inputWidth" placeholder="请输入或者选择团期计划"></el-input> -->
+            <el-autocomplete class="el-input" v-model="ruleForm.tour" :fetch-suggestions="querySearchT" placeholder="请输入关联团期" @select="handleSelectT" @blur="tour_check">
+            </el-autocomplete>
             <el-input v-model="ruleForm.title" :disabled="true" class="inputWidth" style="margin-top: 5px" placeholder="自动显示产品名称"></el-input>
           </el-form-item>
           <div class="footer">
@@ -23,7 +25,7 @@ export default {
   components: {},
   props: {
     dialogFormVisible: false,
-    pid: '',
+    planList: '',
   },
   data() {
     return {
@@ -46,6 +48,22 @@ export default {
       this.ruleForm.tour = '';
       this.ruleForm.title = '';
       this.$emit('close', false);
+    },
+    // 关联团期选择
+    querySearchT(queryString, cb){
+      let planList = this.planList;
+      let results = queryString ? planList.filter(this.createFilter1(queryString)) : planList;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter1(queryString) {
+      return (planList) => {
+        return (planList.value.toLowerCase().indexOf(queryString.toLowerCase()) > -1);
+      };
+    },
+    handleSelectT(item){
+      this.ruleForm.tour = item.value;
+      this.tour_check();
     },
     tour_check() {
       console.log('执行！');

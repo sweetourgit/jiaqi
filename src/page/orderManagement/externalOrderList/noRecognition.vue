@@ -136,7 +136,8 @@
           <el-table-column prop="" label="客人信息" align="center" width="145">
             <template slot-scope="scope">
               <span>取票人:{{scope.row.contact_name}}</span><br>
-              <span>手机:{{scope.row.contact_phone}}</span>
+              <span>手机:{{scope.row.contact_phone}}</span><br>
+              <span v-if="scope.row.op_remark">备注:{{scope.row.op_remark}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="check_at" label="验证时间" align="center">
@@ -184,7 +185,7 @@
       </div>
       <!--分页-->
       <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
         </el-pagination>
       </div>
     </div>
