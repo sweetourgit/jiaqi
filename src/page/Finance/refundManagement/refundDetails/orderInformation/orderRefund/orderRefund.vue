@@ -420,12 +420,14 @@ export default {
       });
     },
     updateUndo(){ // 撤销业务接口
+      let updata = [];
       for(var i= 0 ; i < this.tableDate.length ; i ++){
-        this.tableDate[i].refundStatus = 5;
-        console.log(this.tableDate)
+        if(this.tableDate[i].refundStatus == 5){
+          updata.push(this.tableDate[i])
+        }
       }
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
-        object:this.tableDate
+        object:updata
       }).then(res => {
         
       })
