@@ -118,6 +118,7 @@
 </template>
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
+  import { storageLocal } from '@/js/libs/storage'
   export default {
     name: "newTour",
     components: {},
@@ -211,7 +212,12 @@
       dialogFormVisible: {
         handler: function () {
           if(this.dialogFormVisible){
-            this.loadSupplier();
+            // this.loadSupplier();
+            if(storageLocal.get("supplier")){
+              this.supplierList = storageLocal.get("supplier");
+            }else{
+              this.loadSupplier();
+            }
           }
         }
       }
@@ -614,6 +620,8 @@
               supplierObj.push(supplier);
             });
             that.supplierList = supplierObj;
+            // const dataSup = JSON.stringfy(supplierObj);
+            storageLocal.set("supplier", supplierObj, '5m');
           }
         }).catch(function(obj) {
           console.log(obj);
