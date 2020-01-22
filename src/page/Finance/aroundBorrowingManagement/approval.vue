@@ -32,7 +32,7 @@
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户行：</span>{{baseInfo.accountBank}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户名：</span>{{baseInfo.accountName}}</p>
-        <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountCode}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
 
         <div class="inputLabel">
@@ -143,7 +143,7 @@
           account: '',
           accountBank: '',
           accountName: '',
-          accountCode: '',
+          accountPay: '',
           reimbursed_money: ''
         },
         // 认款方式array
@@ -245,7 +245,7 @@
           account: '',
           accountBank: '',
           accountName: '',
-          accountCode: '',
+          accountPay: '',
           reimbursed_money: ''
         };
 
@@ -365,7 +365,7 @@
               type: response.data.data.info.periphery_type,
               money: response.data.data.info.loan_money,
               remark: response.data.data.info.mark,
-              accountCode: '',
+              accountPay: '',
               account: response.data.data.info.remittance_account,
               accountBank: response.data.data.info.opening_bank,
               accountName: response.data.data.info.account_name,
@@ -378,7 +378,7 @@
             }
             if(response.data.data.info.pay_type){
               const payType = JSON.parse(response.data.data.info.pay_type);
-              that.baseInfo.accountCode = payType.account;
+              that.baseInfo.accountPay = payType.account;
               that.passButtonDo = false;
             }
 

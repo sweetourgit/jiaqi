@@ -188,7 +188,7 @@
           checkType: 0,
           printContent: printAuditingContent
         };
-        console.log(this.printMsg1);
+        // console.log(this.printMsg1);
         this.$nextTick(() => this.$refs.printHandle.printDetails());
         
       },
