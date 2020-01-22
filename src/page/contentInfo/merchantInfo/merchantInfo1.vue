@@ -2247,6 +2247,11 @@ export default {
       this.ruleForm.parentID == null
         ? (this.ruleForm.parentID = -1)
         : this.ruleForm.parentID;
+      if (this.ruleForm.imgUrl == "{}") this.ruleForm.imgUrl = "";
+      if (this.ruleForm.fileUrl == "{}") {
+        this.ruleForm.fileUrl = "";
+        console.log(1);
+      }
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/insert", {
           object: {
@@ -2268,8 +2273,14 @@ export default {
             bankcardNo: this.ruleForm.bankcardNo,
             balance: this.ruleForm.balance,
             // arrears: this.ruleForm.arrears,
-            imgUrl: JSON.stringify(this.ruleForm.imgUrl),
-            fileUrl: JSON.stringify(this.ruleForm.fileUrl),
+            imgUrl:
+              this.ruleForm.imgUrl !== "{}"
+                ? JSON.stringify(this.ruleForm.imgUrl)
+                : "",
+            fileUrl:
+              this.ruleForm.fileUrl !== "{}"
+                ? JSON.stringify(this.ruleForm.fileUrl)
+                : "",
             localCompRole: this.ruleForm.localCompRole,
             //localCompRole: 1,
             storeType: this.ruleForm.storeType,
@@ -2904,7 +2915,7 @@ export default {
     },
     // 图片删除更改
     handleRemove1(file, fileList) {
-      console.log(11);
+      // console.log(11);
       this.fileList1 = [];
       this.ruleForm.imgUrl = {};
     },
