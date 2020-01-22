@@ -210,32 +210,22 @@ export default {
         this.dialogOrderRefund = true;
       }
     },
-    "typeID":function(val){
-      if(this.typeID != 0){
-        if(this.ruleForm.needRefund == ''){
-          if(this.refundStatus == 5){
-            this.allRefundPrice += this.singlePrice;
-          } 
-          else if(this.refundStatus == 0){
-            this.allRefundPrice -= this.singlePrice;
-          }
-        }else {
-          this.allRefundPrice += Number(this.ruleForm.needRefund) + Number(this.singlePrice);
-        }
-      }
-    },
     "ruleForm.needRefund": function(val) {
-      if(this.typeID == 0 && this.ruleForm.needRefund != ''){
-        this.allRefundPrice = this.ruleForm.needRefund;
-      }else {
-        this.allRefundPrice = 0 ;
-      }
+      this.price();
     },
   },
   created() {
-    //this.getOrder();
   },
   methods: {
+    price(){ // 总金额算法
+      this.allRefundPrice = 0 ;
+      this.allRefundPrice += Number(this.ruleForm.needRefund);
+      for( var i = 0 ; i < this.guests.length ; i ++){
+        if(this.guests[i].refundStatus == 5){
+          this.allRefundPrice += Number(this.guests[i].singlePrice);
+        }
+      }
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -331,6 +321,7 @@ export default {
       }).then(res => {
         //this.singlePrice = this.guests[index].singlePrice;
         this.guests[index].refundStatus = 5;
+        this.price();
         })
         .catch(res => {
           this.$message({
@@ -346,6 +337,7 @@ export default {
         type: "warning"
       }).then(res => {
         this.guests[index].refundStatus = 0;
+        this.price();
         })
         .catch(res => {
           this.$message({
