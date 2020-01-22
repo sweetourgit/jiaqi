@@ -407,6 +407,9 @@ export default {
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
                    this.allRefundPrice = 0 ;
+                   if(this.typeID != 0){
+                    this.updateUndo();
+                   }
                 }else{
                    this.$message.success("申请失败");
                 }
@@ -415,6 +418,17 @@ export default {
             return false;
           }
       });
+    },
+    updateUndo(){ // 撤销业务接口
+      for(var i= 0 ; i < this.tableDate.length ; i ++){
+        this.tableDate[i].refundStatus = 5;
+        console.log(this.tableDate)
+      }
+      this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
+        object:this.tableDate
+      }).then(res => {
+        
+      })
     },
   }
 };
