@@ -191,6 +191,7 @@ export default {
       singlePrice:0, // 获取报名信息价格
       allRefundPrice:0, // 总退款
       needRefundShow:false, // 验证还需退款是否超过订单总额
+      refundStatus:0,
     };
   },
   filters: {
@@ -212,9 +213,14 @@ export default {
     "typeID":function(val){
       if(this.typeID != 0){
         if(this.ruleForm.needRefund == ''){
-          this.allRefundPrice = this.singlePrice;
+          if(this.refundStatus == 5){
+            this.allRefundPrice += this.singlePrice;
+          } 
+          else if(this.refundStatus == 0){
+            this.allRefundPrice -= this.singlePrice;
+          }
         }else {
-          this.allRefundPrice = this.ruleForm.needRefund + this.singlePrice;
+          this.allRefundPrice += Number(this.ruleForm.needRefund) + Number(this.singlePrice);
         }
       }
     },
@@ -243,12 +249,16 @@ export default {
     changeFun(val) {
       //保存选中项的数据
       this.multipleSelection = val;
+      //console.log(val.length)
     },
     clickRow(row) {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
       this.typeID = this.multipleSelection[0].id;
+      this.singlePrice = this.multipleSelection[0].singlePrice;
+      this.refundStatus = this.multipleSelection[0].refundStatus;
+      console.log(this.singlePrice)
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -319,7 +329,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-        this.singlePrice = this.guests[index].singlePrice;
+        //this.singlePrice = this.guests[index].singlePrice;
         this.guests[index].refundStatus = 5;
         })
         .catch(res => {
@@ -404,6 +414,7 @@ export default {
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
+                   this.allRefundPrice = 0 ;
                 }else{
                    this.$message.success("申请失败");
                 }
