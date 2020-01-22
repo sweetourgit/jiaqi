@@ -300,6 +300,11 @@ export default {
           this.otherFees = res.data.object.otherPrice; // 其他费用
           this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
           this.guests = res.data.object.guests ; // 获取报名人退款状态
+          if(res.data.object.refundStatus==5){
+            this.forbidden = true;
+            this.$message.error("订单已经存在退款");
+            return;
+          }
           this.collection(); // 判断是否有收款方法
         }
       });
