@@ -380,10 +380,51 @@ export default new Router({
             keepAlive: true,
             auth: true
           },
-        }
+        //   children: [{
+        //     path: 'visaCheck',
+        //     name: '签证/报账',
+        //     component: () => import('@/page/productManagement/regimentPlan/children/visaOrder/VisaCheck/VisaCheck'),
+        //     meta: {
+        //       keepAlive: true,
+        //       auth: true
+        //     },
+        //   },
+        //   {
+        //     path: 'visaDetails',
+        //     name: '签证/sku详情',
+        //     component: () => import('@/page/productManagement/regimentPlan/children/visaOrder/VisaDetails/visaDetails'),
+        //     meta: {
+        //       keepAlive: true,
+        //       auth: true
+        //     },
+        //   },
+        // ]
+        },
+        
+     
 
       ]
-    },{
+    },
+    {
+      path: '/VisaContent',
+      name: '产品管理  /团期计划  /签证  /详情',
+      component: () => import('@/page/productManagement/regimentPlan/children/visaOrder/VisaDetails/VisaContent'),
+      meta: {
+        keepAlive: true,
+        auth: true
+      },
+    },
+    {
+      path: '/NewOrder',
+      name: '产品管理  /团期计划  /签证  /下单',
+      component: () => import('@/page/productManagement/regimentPlan/children/visaOrder/VisaDetails/NewOrder'),
+      meta: {
+        keepAlive: true,
+        auth: true
+      },
+    },
+   
+    {
       path: '/orderManagement',
       component: () => import('@/page/orderManagement/allOrders/orderManagement'),
       name: '订单管理',
@@ -595,6 +636,15 @@ export default new Router({
       path: '/invoiceManagement',
       component: () => import('@/page/Finance/invoiceManagement/invoiceManagement'),
       name: '发票管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/invoiceApply',
+      component: () => import('@/page/Finance/invoiceApply/invoiceApply'),
+      name: '发票申请管理',
       meta: {
         keepAlive: true,
         auth: true
