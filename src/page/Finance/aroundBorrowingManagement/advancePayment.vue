@@ -111,6 +111,7 @@
   import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择收款账户
   import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
+  import { storageLocal } from '@/js/libs/storage'
   export default {
     name: "tradeList",
     components:{
@@ -216,12 +217,15 @@
         this.dialogFormVisible2 = true;
       },
       // 关闭弹窗
-      closeAdd() {
+      closeAdd(str) {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
         this.dialogFormVisible2 = false;
         this.info = '';
-        this.loadData();
+        // this.loadData();
+        if(str !== 'detail'){
+          this.loadData();
+        }
         const that = this;
         const timer = setTimeout(function () {
           that.$parent.loadData('IncomeLoan_ZB');
@@ -470,6 +474,8 @@
               supplierObj.push(supplier);
             });
             that.supplierList = supplierObj;
+            // const dataSup = JSON.stringfy(supplierObj);
+            storageLocal.set("supplier", supplierObj, '5m');
           }
         }).catch(function(obj) {
           console.log(obj);
@@ -479,7 +485,12 @@
     created(){
       this.loadData();
       this.loadOper();
-      this.loadSupplier();
+      if(storageLocal.get("supplier")){
+        this.supplierList = storageLocal.get("supplier");
+      }else{
+        this.loadSupplier();
+      }
+      
     }
   }
 </script>

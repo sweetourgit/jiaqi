@@ -159,13 +159,21 @@
 
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
-        <el-form-item label="产品主要方向：" prop="productDirection">
-          <el-input size="small" placeholder="产品主要方向" style="width: 100%;" maxlength="80" show-word-limit
-            v-model="submitForm.productDirection">
-          </el-input>
+        <el-form-item label="使用部门：">
+          <el-cascader size="small" clearable style="width: 100%;"
+            v-model="orgsData"
+            :options="orgOptions"
+            :props="orgProps"
+            @change="orgChange">
+          </el-cascader>
         </el-form-item>
       </el-col>
       <el-col :span="12">
+        <el-form-item label="产品主要方向：" prop="productDirection">
+          <el-input size="small" placeholder="产品主要方向" maxlength="80" show-word-limit style="width: 100%;"
+            v-model="submitForm.productDirection">
+          </el-input>
+        </el-form-item>
         <el-form-item label="供应商协议：" prop="isAgree">
           <el-select size="small" placeholder="供应商协议" style="width: 100%;"
             v-model="submitForm.isAgree">
@@ -227,11 +235,18 @@
 <script>
 // this.GLOBAL.serverSrc + '/upload/obs/api/file' 上传路径
 import labelsInput from '../../comps/labelsInput'
-import { getDicOptions, checkSupplierCode, checkSupplierName } from '../../../api'
-import { ConditionTypeOptions, CompanyAreaOptions } from '../../../dictionary'
+import { getDicOptions, checkSupplierCode, checkSupplierName, orgMaker } from '../../../api'
+import { ConditionTypeOptions, CompanyAreaOptions, getSupplierDTO, TreeNamer } from '../../../dictionary'
 
 export default {
   components: { labelsInput },
+
+  created(){
+    this.checkProto= null; // 原始数据
+    this.treeNamer= null; // 部门树数据处理对象
+    this.reactKey= null; // 同步钥匙
+    this.reactLock= new Promise((resolve, reject) => this.reactKey= resolve)  // 同步锁
+  },
 
   mounted(){
     this.makeOptions();
@@ -239,45 +254,17 @@ export default {
 
   data(){
     return Object.assign(
+      // org
+      {
+        orgsData: [],
+        orgProps: { multiple: true, value: 'id', label: 'orgName' },
+        orgOptions: []
+      },
       {
         isSave: false,
       },
       {
-        submitForm: {
-          id: 0,
-          createTime: null,	// integer($int64)
-          name: null,
-          types: [],
-          productDirection: null,
-          isMonthly: null,
-          productArea: null,
-          leader: null,
-          phone: null,
-          legalPerson: null,
-          handPerson: null,
-          handPhone: null,
-          billName:	null,
-          taxNumber: null,
-          expireTime: null,	// string($date-time)
-          memo: null,
-          files: [],
-          createUser: null,
-          supplierCode: null,
-          alias: [],
-
-// 几个给定的常量
-          orgs: [
-            {
-              id: 0,
-              orgName: "嘉麒集团"
-            }
-          ], 
-          companyArea: 1,
-          isDeleted: 0,
-          isAgree: 2,
-          userState: 1, // 角色的数据状态 0等待审核 1正常 2停用
-          manageType: 1
-        },
+        submitForm: getSupplierDTO(),
         rules: {
           name: [
             { 
@@ -371,10 +358,13 @@ export default {
   methods: Object.assign(
     {
       init(payload){
-        this.isSave= !!(payload.id || false);
-        this.initSubmitForm(payload);
-        this.proto= payload;
-        this.checkProto= this.$deepCopy(this.submitForm);
+        this.reactLock
+        .then(() => {
+          this.isSave= !!(payload.id || false);
+          this.initSubmitForm(payload);
+          this.proto= payload;
+          this.checkProto= this.$deepCopy(this.submitForm);
+        })
       },
 
       hasChanged(){
@@ -394,6 +384,7 @@ export default {
         // 适配types在数据库中的存储格式
         this.typesAdaptor(data);
         this.expireTimeAdaptor(data);
+        // this.orgsAdaptor(data);
         data.createTime= Date.now();
         return data;
       },
@@ -431,41 +422,43 @@ export default {
     // 数据加工
     {
       initSubmitForm(payload){
-        Object.keys(this.submitForm).forEach(attr => {
-          if(this.$isArray(this.submitForm[attr])){
+        // 类型需要特殊处理
+        // 类型多选
+        // this.submitForm.types= this.submitForm.types.map(type => type.supplierType);
+      
+        // 类型单选
+        payload.types= 
+          payload.types[0]? 
+            payload.types[0].supplierType: null;
+        // 类型单选结束
+
+        // 用filesList来绑定上传组件的file-list，因为上传组件会给file-list的元素添加status属性
+        this.filesList.splice(0);
+        this.filesList.push(...this.$deepCopy(payload.files));
+
+        // 纠正时间
+        payload.expireTime= new Date(payload.expireTime).getTime()+ 8* 3600* 1000;
+
+        // 绑定给级联选择器的数据 例:[[1,2],[3,4]]
+        this.orgsData= this.treeNamer.getData(payload.orgs);
+
+        Object.keys(payload).forEach(attr => { 
+          if(this.$isArray(payload[attr])){
             this.submitForm[attr].splice(0);
             this.submitForm[attr].push(...payload[attr]);
             return;
           }
           this.submitForm[attr]= payload[attr];
         })
-        // 类型需要特殊处理
-        // 类型多选
-        // this.submitForm.types= this.submitForm.types.map(type => type.supplierType);
-      
-        // 类型单选
-        this.submitForm.types= 
-          this.submitForm.types[0]? 
-            this.submitForm.types[0].supplierType: null;
-        // 类型单选结束
-
-        // 用filesList来绑定上传组件的file-list，因为上传组件会给file-list的元素添加status属性
-        this.filesList.splice(0);
-        this.filesList.push(...this.$deepCopy(this.submitForm.files));
-
-        // 纠正时间
-        this.submitForm.expireTime= new Date(this.submitForm.expireTime).getTime()+ 8* 3600* 1000;
-
-        // org
-        this.sub
-        this.$nextTick(() => this.$refs.submitForm.clearValidate());
       },
 
       makeOptions(){
+        let orgTree;
         Promise.all([
           getDicOptions('SupplierType'),
           getDicOptions('IsMonthly'),
-          getDicOptions('ProductArea')
+          getDicOptions('ProductArea'),
+          orgMaker.make()
         ]).then(res => {
           this.SupplierTypeOptions.push(
             ...res[0].map(el => {
@@ -477,7 +470,19 @@ export default {
           );
           this.IsMonthlyOptions.push(...res[1]);
           this.ProductAreaOptions.push(...res[2]);
+          orgTree= res[3].children;
+          this.orgOptions.push(...orgTree);
+          this.treeNamer= new TreeNamer(orgTree);
+          this.reactKey();
         })
+      },
+
+      /**
+       * @description: orgs是几联选择器带回的结构
+       */
+      orgChange(orgs){
+        let newOrgs= orgs.map(this.treeNamer.family.bind(this.treeNamer));
+        this.treeNamer.diff(this.submitForm.orgs, newOrgs);
       },
       
       // 后台目前是保存一次，那么所有类别重新建立一次联系（删除所有旧的，再插入新的）
@@ -519,6 +524,13 @@ export default {
         }
         if(this.isSave) newFile.supplierID= this.submitForm.id;
         return newFile;
+      },
+
+      orgsAdaptor(data){
+        let { orgs }= data;
+        orgs.forEach(org => {
+          org.parent= JSON.stringify(org.parent);
+        })
       }
     },
 

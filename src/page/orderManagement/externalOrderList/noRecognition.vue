@@ -1,6 +1,6 @@
 <template>
   <div class="vivo" style="position:relative">
-    <div class="demo-input-suffix ">
+    <div class="demo-input-suffix">
       <el-row>
         <el-col :span="7">
           <span class="search-title">产品名称:</span>
@@ -103,12 +103,13 @@
     </div>
     <div class="main">
       <el-button type="primary" @click="importOrder" plain>导入订单</el-button>
-      <el-button type="primary" :disabled="reable" @click="delOrder" plain>删除订单</el-button>
+      <el-button type="primary" :disabled="reable" @click="delOrder" plain v-if='show_extra_order_del'>删除订单</el-button>
       <el-button type="primary" @click="importHistory" plain>导入历史</el-button>
       <el-button type="primary" :disabled="reable" @click="recognition" plain>认收款</el-button>
     </div>
     <div class="tableDv">
       <div class="table_trip" style="width: 100%;">
+        <div class="lineTitle" v-if="showTotal"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联&nbsp;{{totalItem}}&nbsp;项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总成本：{{totalMoneyCost}}元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总收入：{{totalMoneyIncome}}元&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量：{{totalNum}}</div>
         <el-table ref="multipleTable" v-loading="loading" :data="tableData" border style="width: 100%;" :header-cell-style="getRowClass" @selection-change="selectionChange" @row-click="handleRowClick">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="order_sn" label="订单ID" align="center">
@@ -135,7 +136,8 @@
           <el-table-column prop="" label="客人信息" align="center" width="145">
             <template slot-scope="scope">
               <span>取票人:{{scope.row.contact_name}}</span><br>
-              <span>手机:{{scope.row.contact_phone}}</span>
+              <span>手机:{{scope.row.contact_phone}}</span><br>
+              <span v-if="scope.row.op_remark">备注:{{scope.row.op_remark}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="check_at" label="验证时间" align="center">
@@ -183,7 +185,7 @@
       </div>
       <!--分页-->
       <div class="block" style="margin-top: 30px;margin-left:-30%;text-align:center;">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage4" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
         </el-pagination>
       </div>
     </div>
@@ -201,6 +203,14 @@
     },
     data() {
       return {
+        show_extra_order_del: false,
+
+        showTotal: false,
+        totalItem: 0,
+        totalMoneyCost: 0,
+        totalMoneyIncome: 0,
+        totalNum: 0,
+
         activeName: 'one',
         activeForm: {
           title: '',
@@ -229,11 +239,11 @@
         dialogFormVisible: false,
         dialogFormVisible2: false,
 
-//      表格数据
+        // 表格数据
         total: 0, //总条数
         currentPage4: 1,
         pageIndex: 1, // 设定当前页数
-        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
+        pageSize: 100, // 设定默认分页每页显示数 todo 具体看需求
         tableData: [],
         loading: true,
         multipleSelection: [],
@@ -268,6 +278,19 @@
     watch: {},
     created(){
       this.loadData();
+      // 删除权限
+      let jurisdiction = JSON.parse(sessionStorage.getItem('jurisdiction'));
+      for (let i = 0;i < jurisdiction.length;i++){
+        if(jurisdiction[i].Uri == '/externalOrderList/canRecognition'){
+          if(jurisdiction[i].Act.length > 0){
+            for (let j = 0;j < jurisdiction[i].Act.length;j++){
+              if(jurisdiction[i].Act[j].Characteristic == 'extra_order_del'){
+                this.show_extra_order_del = true;
+              }
+            }
+          }
+        }
+      }
     },
     methods: {
       // 表格头部背景颜色
@@ -281,7 +304,7 @@
       handleClick() {
         this.reable = true;
         this.transmit = !this.transmit;
-        this.pid = ''
+        this.pid = '';
       },
       importOrder() {
         this.dialogFormVisible2 = true
@@ -291,7 +314,7 @@
         this.loadData();
       },
       delOrder() {
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
         this.$confirm('是否删除此外部订单?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -300,7 +323,6 @@
           let deleteStr = '';
           let num = 0;
           this.multipleSelection.forEach(function (item, index, arr) {
-//            console.log(item.bill_status);
             if(item.bill_status == 3 || item.bill_status == 4 || item.bill_status == 5 || item.bill_status == 7){
               deleteStr += item.order_sn + ',';
             }
@@ -308,7 +330,6 @@
           if(num == 0){
             let strD = '';
             this.multipleSelection.forEach(function (item, index, arr) {
-//            console.log(item.bill_status);
               strD += item.order_sn + ',';
             });
             strD = strD.substr(0, strD.length - 1);
@@ -316,9 +337,9 @@
             this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/order/external-order/del", {
               "order_sn": strD
             }, ).then(function(response) {
-              console.log('删除',response);
+              // console.log('删除',response);
               if (response.data.code == '200') {
-                console.log(response);
+                // console.log(response);
                 that.$message({
                   type: 'success',
                   message: '删除成功!'
@@ -357,7 +378,6 @@
           orderStr += this.multipleSelection[i].order_sn + ',';
         }
         orderStr = orderStr.substr(0,orderStr.length-1);
-//        console.log(arr);
         this.$router.push({
           path: "/recognitionMsg",
           name: '订单管理/外部订单/认收款信息',
@@ -374,7 +394,6 @@
         let num = 0;
         let orderS = '';
         this.multipleSelection.forEach(function (item, index, arr) {
-//        alert(item.bill_status == 1 && item.is_relate_pro == 2);
           if(item.bill_status == 1 && item.is_relate_pro == 2){
 
           }else{
@@ -383,7 +402,6 @@
             return;
           }
         });
-//      alert(num);
         if(num == 0){
           this.$confirm('是否需要解绑选中订单?', '提示', {
             confirmButtonText: '确定',
@@ -399,7 +417,7 @@
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/order/external-order/unbind', {
               "order_sn": order_sn
             }).then(res => {
-              console.log(res);
+              // console.log(res);
               if (res.data.code == 200) {
                 this.$message({
                   type: 'success',
@@ -433,6 +451,7 @@
       // 搜索
       searchHand() {
         this.loading = true;
+        this.showTotal = true;
         this.loadData();
       },
       resetHand() {
@@ -457,6 +476,7 @@
           typeBuy: ''
         };
         this.loading = true;
+        this.showTotal = false;
         this.loadData();
       },
       handleSizeChange(val) {
@@ -484,7 +504,7 @@
           this.reable = true;
         }
         this.multipleSelection = val;
-        console.log(this.multipleSelection);
+        // console.log(this.multipleSelection);
       },
       handleRowClick(row, column, event){
         if(row.accountingStatus != '已报账' && row.pay_type != 5){
@@ -520,15 +540,17 @@
           "buy_type": this.activeForm.typeBuy,
           "distributor_remark": this.activeForm.distributorMarks
         }, ).then(function(response) {
-          console.log(response);
+          // console.log(response);
           if (response.data.code == '200') {
-            console.log(response);
+            // console.log(response);
+            that.totalItem = response.data.data.total - 0;
+            that.totalMoneyCost = response.data.data.cost_all;
+            that.totalMoneyIncome = response.data.data.income_all;
+            that.totalNum = response.data.data.quantity_all;
             that.tableData = response.data.data.list;
             that.total = response.data.data.total - 0;
             that.loading = false;
             that.tableData.forEach(function (item, index, arr) {
-//            console.log(v,k,arr);
-//            console.log(item.sale_at);
               item.sale_at = formatDate(new Date(item.sale_at*1000));
               item.check_at = formatDate(new Date(item.check_at*1000));
               item.import_at = formatDate(new Date(item.import_at*1000));
@@ -543,7 +565,6 @@
 
       // 时间限制
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -556,7 +577,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -569,7 +589,6 @@
         }
       },
       beginDate1(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -582,7 +601,6 @@
         }
       },
       processDate1(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -595,7 +613,6 @@
         }
       },
       beginDate2(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -608,7 +625,6 @@
         }
       },
       processDate2(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -674,7 +690,17 @@
       }
 
     }
-
+    .lineTitle{
+      width: 100%;
+      /*margin: 10px auto;*/
+      background-color: #E6F3FC;
+      height: 40px;
+      line-height: 40px;
+      box-sizing: border-box;
+      padding: 0 10px;
+      display: inline-block;
+      margin: 10px 10px 10px 0;
+    }
     .main {
       margin-top: 20px;
       margin-bottom: 20px;

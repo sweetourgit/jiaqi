@@ -5,7 +5,16 @@
         <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.approval_status == 1 && showBack == true">撤销</el-button>
-        <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.approval_status == 3 && baseInfo.pay_type == null">选择付款账户</el-button>
+        <el-button
+          type="success"
+          @click="touchPrint"
+          plain
+          v-if="isShowDY"
+        >
+          打印本页详情信息
+        </el-button>
+        <!-- 选择付款账户需求更改，改到审批时选择 -->
+        <!-- <el-button @click="chooseAccount" type="warning" class="table_details" v-if="baseInfo.type != 3 && baseInfo.pay_type == null">选择付款账户</el-button> -->
       </div>
       <!--<p class="stepTitle">基本信息</p>-->
       <el-divider content-position="left">基本信息</el-divider>
@@ -18,9 +27,9 @@
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
         <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
-        <p class="inputLabel" v-if="baseInfo.type != 1"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
-        <p class="inputLabel" v-if="baseInfo.type == 1"><span>借款金额：</span>{{baseInfo.money}}</p>
-        <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != '1'"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
+        <p class="inputLabel" v-if="baseInfo.type == '1'"><span>借款金额：</span>{{baseInfo.money}}</p>
+        <!-- <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p> -->
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户行：</span>{{baseInfo.accountBank}}</p>
@@ -79,6 +88,7 @@
           </el-table>
         </div>
       </div>
+      <printPage ref="printHandle" :printMsg1='printMsg1' style='display:none;'></printPage>
       <chooseAccount :dialogFormVisible2="dialogFormVisible2" :info="info" @close="close"></chooseAccount>
     </el-dialog>
   </div>
@@ -86,10 +96,12 @@
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
   import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择付款账户
+  import printPage from '@/page/Finance/aroundBorrowingManagement/printPage.vue'// 打印
   export default {
     name: "collectionDetail",
     components: {
-      chooseAccount
+      chooseAccount,
+      printPage
     },
     props: {
       dialogFormVisible1: false,
@@ -97,6 +109,8 @@
     },
     data() {
       return {
+        isShowDY: false,
+        printMsg1: {},
         disabled: true,
         // 基础信息
         baseInfo: {
@@ -132,7 +146,14 @@
 
         showBack: true, // 是否显示撤销按钮(当前状态为审批中，并且登录人和申请人相同时，显示按钮，可以撤销)
 
-        dialogFormVisible2: false
+        dialogFormVisible2: false,
+
+        approval_s_n: {
+          0: '等待中',
+          1: '审批中',
+          2: '驳回',
+          3: '通过'
+        }
       }
     },
     computed: {
@@ -149,6 +170,28 @@
       }
     },
     methods: {
+      // 打印详情
+      touchPrint(){
+        const that = this;
+        let printAuditingContent = '';
+        if(this.tableDataResult.length > 0 ) {
+          printAuditingContent = '<b>开始</b> -> '
+          this.tableDataResult.forEach(function (item) {
+            printAuditingContent += item.approval_uid + '( <b>' + that.approval_s_n[item.approval_status] + '</b> )'  + ' -> ';
+          })
+          printAuditingContent += '<b>结束</b>'
+        }
+        this.printMsg1 = {
+          getTopName: sessionStorage.getItem('topName'),
+          presentRouter: this.periphery_type[this.baseInfo.type],
+          fundamental: this.baseInfo,
+          checkType: 0,
+          printContent: printAuditingContent
+        };
+        // console.log(this.printMsg1);
+        this.$nextTick(() => this.$refs.printHandle.printDetails());
+        
+      },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -178,16 +221,16 @@
           pay_type: ''
         };
 
-        this.$emit('close', false);
+        this.$emit('close', 'detail');
       },
       // 选择付款账户
       chooseAccount(row){
-//        this.info = this.info;
         this.dialogFormVisible2 = true;
       },
 
       close(){
         this.dialogFormVisible2 = false;
+        this.closeAdd();
       },
 
       // 撤销操作
@@ -228,7 +271,7 @@
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
-          console.log('工作流结束进程', response);
+          // console.log('工作流结束进程', response);
 
         }).catch(function(error) {
           console.log(error);
@@ -242,7 +285,7 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/info", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('详情',response);
+          // console.log('详情',response);
           if (response.data.code == '200') {
             response.data.data.info.created_at = formatDate(new Date(response.data.data.info.created_at*1000));
 
@@ -273,16 +316,14 @@
             if(response.data.data.info.create_uid != sessionStorage.getItem('id')){
               that.showBack = false;
             }
-//            alert(that.baseInfo.approval_status == 1 && that.showBack == true);
+            // alert(that.baseInfo.approval_status == 1 && that.showBack == true);
 
             // 根据ID获取人名
             that.getName(response.data.data.info.create_uid).then(res => {
-//              console.log(res);
               that.baseInfo.create_uid = res;
             });
             // 获取所属部门
             that.getOrgName(response.data.data.info.create_uid).then(res => {
-//              console.log(res);
               that.baseInfo.orgName = res;
             });
 
@@ -297,7 +338,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   that.baseInfo.supplier = response.data.object.name
                 } else {
@@ -339,7 +380,7 @@
               that.tableDataResult.forEach(function (item, index, arr) {
                 item.approval_at = formatDate(new Date(item.approval_at*1000));
                 that.getName(item.approval_uid).then(res => {
-                  console.log(res);
+                  // console.log(res);
                   item.approval_uid = res;
                 });
               })
@@ -369,7 +410,7 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(function(response) {
-          console.log('名字',response.data.object.name);
+          // console.log('名字',response.data.object.name);
           if (response.data.isSuccess) {
             return response.data.object.name;
           } else {
@@ -430,7 +471,11 @@
       }
     },
     created() {
-
+      if(sessionStorage.getItem('userCode') == 'TC900007' || sessionStorage.getItem('userCode') == 'TC900006') {
+        this.isShowDY = true;
+      } else {
+        this.isShowDY = false;
+      }
     },
     mounted() {
 

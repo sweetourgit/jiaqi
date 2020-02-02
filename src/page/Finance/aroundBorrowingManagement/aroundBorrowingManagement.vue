@@ -44,7 +44,7 @@
           "endIndex": -1,
           "workflowCode": loan
         }, ).then(function(response) {
-          console.log('获取未完成任务数量', response);
+          // console.log('获取未完成任务数量', response);
 //          alert(response.data.length);
 
           if(loan === 'NoIncomeLoan_ZB'){

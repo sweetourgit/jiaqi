@@ -94,6 +94,7 @@
   import applyForBalance from '@/page/Finance/aroundBorrowingManagement/apply/applyForBalance.vue'// 添加
   import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
+  import { storageLocal } from '@/js/libs/storage'
   export default {
     name: "tradeList",
     components:{
@@ -191,11 +192,14 @@
         this.dialogFormVisible1 = true;
       },
       // 关闭弹窗
-      closeAdd() {
+      closeAdd(str) {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
         this.info = '';
-        this.loadData();
+        // this.loadData();
+        if(str !== 'detail'){
+          this.loadData();
+        }
         const that = this;
         const timer = setTimeout(function () {
           that.$parent.loadData('BalancePayment_ZB');
@@ -244,16 +248,12 @@
           "periphery_type": 3,
           "approval_status": this.borrowStatus
         }, ).then(function(response) {
-          console.log('无收入借款list',response);
+          // console.log('无收入借款list',response);
           if (response.data.code == '200') {
-//            console.log('无收入借款list',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
               // 获取申请人
               that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
@@ -262,7 +262,6 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-//                console.log(response);
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
@@ -342,7 +341,7 @@
         }).then(function(response) {
 
           if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
+            // console.log(response.data.objects);
             let operatorList = [];
             response.data.objects.forEach(function (item, index, arr) {
               const operator = {
@@ -401,7 +400,7 @@
         };
       },
       handleSelectD(item){
-        console.log(item);
+        // console.log(item);
         this.supplierID = item.id;
         this.supplier = item.valueName;
       },
@@ -430,7 +429,7 @@
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
-          console.log('获取供应商',obj);
+          // console.log('获取供应商',obj);
           if(obj.data.isSuccess){
             let supplierObj = [];
             obj.data.objects.forEach(function (item, index, arr) {
@@ -443,6 +442,8 @@
               supplierObj.push(supplier);
             });
             that.supplierList = supplierObj;
+            // const dataSup = JSON.stringfy(supplierObj);
+            storageLocal.set("supplier", supplierObj, '5m');
           }
         }).catch(function(obj) {
           console.log(obj);
@@ -452,7 +453,11 @@
     created(){
       this.loadData();
       this.loadOper();
-      this.loadSupplier();
+      if(storageLocal.get("supplier")){
+        this.supplierList = storageLocal.get("supplier");
+      }else{
+        this.loadSupplier();
+      }
     }
   }
 </script>
