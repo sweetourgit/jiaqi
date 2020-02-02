@@ -1,5 +1,5 @@
 <style lang="scss" scoped>
-.red /deep/ input{
+.red >>> input{
   color: red !important;
 }
 </style>
