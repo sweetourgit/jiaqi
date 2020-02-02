@@ -384,7 +384,7 @@ export default {
         // 适配types在数据库中的存储格式
         this.typesAdaptor(data);
         this.expireTimeAdaptor(data);
-        this.orgsAdaptor(data);
+        // this.orgsAdaptor(data);
         data.createTime= Date.now();
         return data;
       },
@@ -439,10 +439,10 @@ export default {
         // 纠正时间
         payload.expireTime= new Date(payload.expireTime).getTime()+ 8* 3600* 1000;
 
-        // org
+        // 绑定给级联选择器的数据 例:[[1,2],[3,4]]
         this.orgsData= this.treeNamer.getData(payload.orgs);
 
-        Object.keys(payload).forEach(attr => {
+        Object.keys(payload).forEach(attr => { 
           if(this.$isArray(payload[attr])){
             this.submitForm[attr].splice(0);
             this.submitForm[attr].push(...payload[attr]);
@@ -477,8 +477,11 @@ export default {
         })
       },
 
+      /**
+       * @description: orgs是几联选择器带回的结构
+       */
       orgChange(orgs){
-        let newOrgs= orgs.map(this.treeNamer.family.bind(this.treeNamer)); 
+        let newOrgs= orgs.map(this.treeNamer.family.bind(this.treeNamer));
         this.treeNamer.diff(this.submitForm.orgs, newOrgs);
       },
       

@@ -48,7 +48,7 @@
         </el-col>
         <el-col :span="6">
           <el-col :span="9"><div class="grid-del label-color">借款金额:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.reimbursed_money }}</div></el-col>
+          <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.money }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第二行 END -->
@@ -122,6 +122,7 @@ export default {
   watch: {
     printMsg1: {
       handler:function(){
+        console.log(this.printMsg1)
         this.printMsg = this.printMsg1;
       },
       deep: true,

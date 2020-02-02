@@ -94,6 +94,7 @@
   import applyForBalance from '@/page/Finance/aroundBorrowingManagement/apply/applyForBalance.vue'// 添加
   import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'// 详情
   import {formatDate} from '@/js/libs/publicMethod.js'
+  import { storageLocal } from '@/js/libs/storage'
   export default {
     name: "tradeList",
     components:{
@@ -441,6 +442,8 @@
               supplierObj.push(supplier);
             });
             that.supplierList = supplierObj;
+            // const dataSup = JSON.stringfy(supplierObj);
+            storageLocal.set("supplier", supplierObj, '5m');
           }
         }).catch(function(obj) {
           console.log(obj);
@@ -450,7 +453,11 @@
     created(){
       this.loadData();
       this.loadOper();
-      this.loadSupplier();
+      if(storageLocal.get("supplier")){
+        this.supplierList = storageLocal.get("supplier");
+      }else{
+        this.loadSupplier();
+      }
     }
   }
 </script>
