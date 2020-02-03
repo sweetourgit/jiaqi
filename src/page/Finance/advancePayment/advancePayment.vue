@@ -301,7 +301,8 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
         {
           "object": {
-            "isDeleted": 0
+            "isDeleted": 0,
+            'orgID': sessionStorage.getItem('topID'),
           }
         }).then(function (obj) {
         that.tableSelect = obj.data.objects
