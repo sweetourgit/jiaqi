@@ -159,7 +159,7 @@
 
     <el-row :gutter="100" class="common-row">
       <el-col :span="12">
-        <el-form-item label="使用部门：">
+        <el-form-item label="使用部门：" prop="orgs">
           <el-cascader size="small" clearable style="width: 100%;"
             v-model="orgsData"
             :options="orgOptions"
@@ -303,6 +303,11 @@ export default {
             validator: this.simpleValidator, 
             message: '线路不能为空', 
             trigger: 'blur'
+          },
+          orgs: {
+            required: true,
+            trigger: 'change',
+            message: '使用部门不能为空'
           },
           types: { 
             required: true, 

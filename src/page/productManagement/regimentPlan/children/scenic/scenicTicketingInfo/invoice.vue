@@ -67,7 +67,7 @@
           </el-table-column>
           <el-table-column prop="proce_amount" label="未处理金额" align="center">
           </el-table-column>
-          <el-table-column prop="money" label="发票金额" align="center">
+          <el-table-column prop="money" label="发票金额" align="center" width="160">
             <template slot-scope="scope">
               <el-input v-model="scope.row.money" placeholder="申请金额" @blur="addMoney"></el-input>
             </template>

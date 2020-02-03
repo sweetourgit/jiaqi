@@ -25,7 +25,7 @@
           </el-table-column>
           <el-table-column prop="proce_amount" label="未处理金额" align="center">
           </el-table-column>
-          <el-table-column prop="money" label="申请金额" align="center">
+          <el-table-column prop="money" label="申请金额" align="center" width="160">
             <template slot-scope="scope">
               <el-input v-model="scope.row.money" placeholder="申请金额" @blur="addMoney"></el-input>
             </template>
@@ -165,9 +165,11 @@ export default {
     },
     loadData(){
       this.tableDataCode = this.info;
-      console.log(this.info);
+      // console.log(this.info);
+      const that = this;
       this.tableDataCode.forEach(function(item, index, arr){
-        item.money = item.proce_amount;
+        that.$set(item, "money", item.proce_amount)
+        // item.money = item.proce_amount;
       })
       this.addMoney();
     },
