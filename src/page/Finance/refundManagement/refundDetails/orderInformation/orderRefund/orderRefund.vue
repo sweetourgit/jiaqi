@@ -367,7 +367,7 @@ export default {
         this.$message.error("总退款金额大于总订单总额，无法申请");
         return;
       }
-      if(this.typeID == 0){
+      if(this.typeID == 0 && this.ruleForm.refundWay == 1){
         if(this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
           this.$message.error("还需退款金额为正数");
           return;
