@@ -10,7 +10,7 @@
   </el-tabs>
 </template>
 <script>
-  import VisaDetails from '@/page/productManagement/regimentPlan/children/visaOrder/VisaDetails/visaDetails';
+  import VisaDetails from '@/page/productManagement/regimentPlan/children/visaOrder/VisaDetails/VisaDetails';
   import VisaCheck from '@/page/productManagement/regimentPlan/children/visaOrder/VisaCheck/VisaCheck';
   export default {
      name: "visaOrderList",
