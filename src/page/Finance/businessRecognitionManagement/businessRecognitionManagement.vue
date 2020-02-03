@@ -44,7 +44,12 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="23">
+          <el-col :span="7">
+            <span class="search_style">分销商：</span>
+            <!-- <el-input v-model="distributor" placeholder="请输入内容" class="search_input"></el-input> -->
+            <el-autocomplete class="search_input" v-model="distributor" :fetch-suggestions="querySearchD" placeholder="请输入分销商" @select="handleSelectD" @blur="blurHand"></el-autocomplete>
+          </el-col>
+          <el-col :span="16">
             <div>
               <el-button type="primary" @click="resetFun" plain style="float: right;margin-right: 20px;">重置</el-button>
               <el-button type="primary" @click="searchFun" style="float: right;margin-right: 20px;">搜索</el-button>
@@ -140,6 +145,9 @@
         status: '',
         money: '',
         rec_mode: '',
+        distributor: '',// 选择的分销商
+        distributorID: '',// 选择的分销商ID
+        distributorList: [],// 分销商列表
 
         pageSize: 10,
         currentPage: 1,
@@ -159,6 +167,68 @@
       };
     },
     methods: {
+      // 分销商选择
+      querySearchD(queryString, cb){
+        const distributorList = this.distributorList;
+        var results = queryString ? distributorList.filter(this.createFilter1(queryString)) : distributorList;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter1(queryString) {
+        return (distributorList) => {
+          return (distributorList.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelectD(item){
+        console.log(item);
+        this.distributorID = item.id;
+        this.getLocalCompCode(item.id);
+
+      },
+      blurHand(){
+        const that = this;
+        let ida = '';
+        if(that.distributor == ''){
+          that.distributorID = '';
+        }else{
+          this.operatorList.forEach(function (item, index, arr) {
+            if(that.distributor == item.value){
+              ida = item.id;
+            }
+          });
+          if(ida){
+            that.distributorID = ida;
+            this.getLocalCompCode(ida);
+          }else{
+            that.distributorID = '';
+          }
+        }
+      },
+      // 加载分销商信息
+      loadDistributor(name){
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcZb + "/universal/localcomp/api/list", {
+          object: {
+            "name": name,
+            "isDeleted": 0
+          }
+        }).then(function(obj) {
+          console.log('获取分销商',obj);
+          if(obj.data.isSuccess){
+            let distributorObj = [];
+            obj.data.objects.forEach(function (item, index, arr) {
+              const distributor = {
+                'value' : item.name,
+                'id' : item.id
+              };
+              distributorObj.push(distributor);
+            });
+            that.distributorList = distributorObj;
+          }
+        }).catch(function(obj) {
+          console.log(obj);
+        });
+      },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -232,7 +302,8 @@
           "receivables_end": this.endTime,
           "status_rece": this.status,
           "rece_money": this.money,
-          "rec_mode": this.rec_mode
+          "rec_mode": this.rec_mode,
+          "distributor_code": this.distributorID
         }, ).then(function(response) {
           if (response.data.code == '200') {
             console.log('业务收款列表',response);
@@ -299,6 +370,7 @@
     },
     created(){
       this.loadData();
+      this.loadDistributor();
     }
   }
 </script>
