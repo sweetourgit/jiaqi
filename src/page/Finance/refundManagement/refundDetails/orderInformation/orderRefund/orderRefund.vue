@@ -392,8 +392,8 @@ export default {
                   "refundType": this.ruleForm.refundWay, // 退款方式 1=部分退款 2=全部退款
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
                   "needRefundPrice": this.ruleForm.refundWay == 1?this.ruleForm.needRefund:0, // 还需退款
-                  "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(orderList.paid)-Number(allRefundPrice)), // 总退款
-                  "realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(orderList.paid)-Number(allRefundPrice)), // 实际退款金额(还需退款-未付金额)
+                  "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
+                  "realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
                   "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
                   "remittanceBank": this.ruleForm.refundWay == 2 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
