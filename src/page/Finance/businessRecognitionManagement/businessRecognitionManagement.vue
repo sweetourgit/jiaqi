@@ -182,7 +182,7 @@
       handleSelectD(item){
         console.log(item);
         this.distributorID = item.id;
-        this.getLocalCompCode(item.id);
+        // this.getLocalCompCode(item.id);
 
       },
       blurHand(){
@@ -198,7 +198,7 @@
           });
           if(ida){
             that.distributorID = ida;
-            this.getLocalCompCode(ida);
+            // this.getLocalCompCode(ida);
           }else{
             that.distributorID = '';
           }
