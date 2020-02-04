@@ -268,6 +268,10 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item.id,1,item.orderCode)"
               >流程管理</el-breadcrumb-item>
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item,5)"
+              >退款</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
@@ -316,6 +320,7 @@
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
+      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :orderRefundDialog="orderRefundDialog"></orderRefund>
     </div>
   </div>
 </template>
@@ -324,15 +329,18 @@
 import processManage from "./common/processManage";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
+import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
 import moment from "moment";
 export default {
   components: {
     "process-manage": processManage,
     "remarks-infor": remarksInfor,
-    "order-transfer": orderTransfer
+    "order-transfer": orderTransfer,
+    orderRefund,
   },
   data() {
     return {
+      orderRefundDialog: 0,//退款控制显示隐藏的 
       defaultProps: {
         children: "children",
         label: "label"
@@ -993,10 +1001,18 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
-    operation(orderId, i, orderCode) {
-      this.orderId = orderId;
+    //operation(item,orderId, i, orderCode) {
+      //this.orderId = orderId;
+      //this.variable++;
+      //this.dialogType = i;
+      //if(i == 5) this.orderRefundDialog = 1
+    //},
+    operation(item, i, orderCode) {
+      this.orderId = item.id;
       this.variable++;
       this.dialogType = i;
+      this.planID = item.planID;
+      if(i == 5) this.orderRefundDialog = 1;
     },
     // 出发日期转换格式显示
     // goDataChangeFun (data) {
