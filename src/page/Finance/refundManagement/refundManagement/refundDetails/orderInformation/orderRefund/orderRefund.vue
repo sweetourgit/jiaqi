@@ -191,6 +191,7 @@ export default {
       singlePrice:0, // 获取报名信息价格
       allRefundPrice:0, // 总退款
       needRefundShow:false, // 验证还需退款是否超过订单总额
+      refundStatus:0,
     };
   },
   filters: {
@@ -209,27 +210,22 @@ export default {
         this.dialogOrderRefund = true;
       }
     },
-    "typeID":function(val){
-      if(this.typeID != 0){
-        if(this.ruleForm.needRefund == ''){
-          this.allRefundPrice = this.singlePrice;
-        }else {
-          this.allRefundPrice = this.ruleForm.needRefund + this.singlePrice;
-        }
-      }
-    },
     "ruleForm.needRefund": function(val) {
-      if(this.typeID == 0 && this.ruleForm.needRefund != ''){
-        this.allRefundPrice = this.ruleForm.needRefund;
-      }else {
-        this.allRefundPrice = 0 ;
-      }
+      this.price();
     },
   },
   created() {
-    //this.getOrder();
   },
   methods: {
+    price(){ // 总金额算法
+      this.allRefundPrice = 0 ;
+      this.allRefundPrice += Number(this.ruleForm.needRefund);
+      for( var i = 0 ; i < this.guests.length ; i ++){
+        if(this.guests[i].refundStatus == 5){
+          this.allRefundPrice += Number(this.guests[i].singlePrice);
+        }
+      }
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -243,12 +239,17 @@ export default {
     changeFun(val) {
       //保存选中项的数据
       this.multipleSelection = val;
+      //console.log(val.length)
     },
     clickRow(row) {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
       this.typeID = this.multipleSelection[0].id;
+      this.singlePrice = this.multipleSelection[0].singlePrice;
+      this.refundStatus = this.multipleSelection[0].refundStatus;
+      console.log(this.singlePrice)
+      console.log(this.typeID)
     },
     rowClass({ row, rowIndex }) {
       //选中行样式改变
@@ -289,6 +290,8 @@ export default {
               arr[k]['sex'] = '男'
             }else if(arr[k]['sex'] == 1) {
               arr[k]['sex'] = '女'
+            }else if(arr[k]['sex'] == 3) {
+              arr[k]['sex'] = '未选择'
             }
           })
           this.nonPayment = res.data.object.payable - res.data.object.paid; // 获取未付款金额
@@ -299,6 +302,17 @@ export default {
           this.otherFees = res.data.object.otherPrice; // 其他费用
           this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
           this.guests = res.data.object.guests ; // 获取报名人退款状态
+          if(res.data.object.refundStatus==5){
+            this.forbidden = true;
+            this.$message.error("订单已经存在退款");
+            //this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
+            //  id:ID,
+            //}).then(res => {
+            //  this.ruleForm.originally = res.data.object.reason; // 全退申请原由
+            // });
+            
+            return;
+          }
           this.collection(); // 判断是否有收款方法
         }
       });
@@ -319,8 +333,9 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-        this.singlePrice = this.guests[index].singlePrice;
+        //this.singlePrice = this.guests[index].singlePrice;
         this.guests[index].refundStatus = 5;
+        this.price();
         })
         .catch(res => {
           this.$message({
@@ -336,6 +351,7 @@ export default {
         type: "warning"
       }).then(res => {
         this.guests[index].refundStatus = 0;
+        this.price();
         })
         .catch(res => {
           this.$message({
@@ -359,7 +375,7 @@ export default {
         this.$message.error("总退款金额大于总订单总额，无法申请");
         return;
       }
-      if(this.typeID == 0){
+      if(this.typeID == 0 && this.ruleForm.refundWay == 1){
         if(this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
           this.$message.error("还需退款金额为正数");
           return;
@@ -382,9 +398,9 @@ export default {
                   "orderCode": this.orderCode, // 订单号
                   "refundType": this.ruleForm.refundWay, // 退款方式 1=部分退款 2=全部退款
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
-                  "needRefundPrice": this.ruleForm.needRefund, // 还需退款
-                  "allRefundPrice": this.allRefundPrice, // 总退款
-                  "realRefundPrice":this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber), // 实际退款金额(还需退款-未付金额)
+                  "needRefundPrice": this.ruleForm.refundWay == 1?this.ruleForm.needRefund:0, // 还需退款
+                  "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
+                  "realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
                   "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
                   "remittanceBank": this.ruleForm.refundWay == 2 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
@@ -397,6 +413,8 @@ export default {
                   "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
                   "productType": 1
                   //"productType": this.productType // 产品类型
+
+                  //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
                 }
               })
               .then(res => {
@@ -404,6 +422,10 @@ export default {
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
+                   this.allRefundPrice = 0 ;
+                   if(this.typeID != 0){
+                    this.updateUndo();
+                   }
                 }else{
                    this.$message.success("申请失败");
                 }
@@ -412,6 +434,19 @@ export default {
             return false;
           }
       });
+    },
+    updateUndo(){ // 撤销业务接口
+      let updata = [];
+      for(var i= 0 ; i < this.guests.length ; i ++){
+        if(this.guests[i].refundStatus == 5){
+          updata.push(this.guests[i])
+        }
+      }
+      this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
+        objects:updata
+      }).then(res => {
+        
+      })
     },
   }
 };
