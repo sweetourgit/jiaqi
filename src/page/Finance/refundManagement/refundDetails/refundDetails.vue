@@ -41,7 +41,10 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">退款方式:</div>
-                <div class="fl ml13">{{refundList.refundType}}</div>
+                <div>
+                  <div v-if="refundList.refundType=='1'" class="fl ml13">部分退</div>
+                  <div v-if="refundList.refundType=='2'" class="fl ml13">全退</div>
+                </div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">总退款:</div>
@@ -83,7 +86,7 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">订单ID:</div>
-                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderID}}</u></div>
+                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderCode}}</u></div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">订单金额:</div>
@@ -347,11 +350,13 @@ export default {
       this.accountList();
     },
     accountList() { // 点击支付账户查询列表
+    console.log(sessionStorage.getItem("id"))
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
         {
           "object": {
+            //"orgID":sessionStorage.getItem("id"),
             "isDeleted": 0
           },
         },)

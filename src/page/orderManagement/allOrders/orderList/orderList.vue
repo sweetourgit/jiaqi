@@ -289,6 +289,11 @@
                 待确认剩余 &nbsp;
                 <span class="moneyColor">1天22:33:33</span>
               </span>
+              <!--退款状态-->
+              <span class="dotFather01">
+                <span class="dot"></span>
+                <span>{{item.refundStatus}}</span>
+              </span>
             </div>
           </div>
         </transition>
@@ -916,6 +921,19 @@ export default {
         } else if (item.orderStatus == 10) {
           item.orderStatus = "确认订单";
         }
+        if (item.refundStatus == 1) {
+          item.refundStatus = "退款中";
+        }else if (item.refundStatus == 2) {
+          item.refundStatus = "拒绝退款";
+        }else if (item.refundStatus == 3) {
+          item.refundStatus = "已退款";
+        }else if (item.refundStatus == 4) {
+          item.refundStatus = "无退款";
+        }else if (item.refundStatus == 5) {
+          item.refundStatus = "申请退款";
+        }else if (item.refundStatus == 6) {
+          item.refundStatus = "完成退款";
+        }
         //产品类型
         // if (item.productType == 1) {
         //   item.productType = "跟团游";
@@ -1260,6 +1278,9 @@ export default {
 }
 .dotFather {
   margin-right: 16px;
+}
+.dotFather01 {
+  margin-left: 25px;
 }
 .dot {
   display: inline-block;
