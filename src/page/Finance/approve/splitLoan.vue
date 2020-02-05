@@ -302,7 +302,8 @@
         // 获取银行账户数据
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
           "object": {
-            "isDeleted": 0
+            "isDeleted": 0,
+            'orgID': sessionStorage.getItem('topID')
           }
         }).then( obj =>  {
           this.bankAccountData = obj.data.objects
