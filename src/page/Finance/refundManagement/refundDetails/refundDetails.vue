@@ -6,7 +6,7 @@
       <div class="controlButton">
   	    <div class="fl">
   	      <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
-  	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情'">撤 销</el-button>
+  	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情' && refundList.refundStateType !='1'">撤 销</el-button>
   	    </div>
         <div class="fl" v-if="title == '审批'">
     	    <el-button class="ml13" type="primary" @click="payAccount()">支付账户</el-button>
@@ -41,7 +41,10 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">退款方式:</div>
-                <div class="fl ml13">{{refundList.refundType}}</div>
+                <div>
+                  <div v-if="refundList.refundType=='1'" class="fl ml13">部分退</div>
+                  <div v-if="refundList.refundType=='2'" class="fl ml13">全退</div>
+                </div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">总退款:</div>
@@ -83,7 +86,7 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">订单ID:</div>
-                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderID}}</u></div>
+                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderCode}}</u></div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">订单金额:</div>
@@ -311,11 +314,9 @@ export default {
           this.refundList = res.data.object;
           this.orderCode = res.data.object.orderCode;
           this.indentID = res.data.object.orderID;
-          if(this.title == '审批'){
-            this.getJqId(this.orderCode);
-          }
+          this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
-          this.accountID = res.data.object.id; 
+          this.accountID = res.data.object.id;
           this.disbursementID = res.data.object.payID;
           this.tableDate.forEach(function (v,k,arr) {
             if(arr[k]['sex'] == 0){
@@ -349,11 +350,13 @@ export default {
       this.accountList();
     },
     accountList() { // 点击支付账户查询列表
+    console.log(sessionStorage.getItem("id"))
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
         {
           "object": {
+            //"orgID":sessionStorage.getItem("id"),
             "isDeleted": 0
           },
         },)
@@ -376,6 +379,8 @@ export default {
       .then(res => {
         if(res.data.isSuccess == true){
            this.dialogAccount = false;
+           this.forbidden = false;
+           this.getInvoice(this.accountID)
         }else{
            this.$message.success("申请失败");
         }
@@ -391,8 +396,6 @@ export default {
       if(this.disbursementID == 0){
         this.forbidden = true;
         this.$message.error("请先选择支付账户")
-      }else{
-        this.forbidden = false;
       }
     },
     rejected(){ // 点击驳回显示弹窗
@@ -415,12 +418,14 @@ export default {
         "workItemID":this.workID,
         "commentText":this.opinion,
       }).then(res =>{
-          if(res.data.isSuccess == true){
+          var data = new Function('return ' + res.data)();
+          let code = data.code;
+          if(code == 0){
             this.dialogApproval = false;
             this.dialogFormOrder = false;
             this.$parent.commission();
             this.$message.success("退款申请通过");
-          }else {
+          }else if(code == 1){
             this.$message.success("退款申请失败");
           }
       })
@@ -433,12 +438,19 @@ export default {
         "workItemID":this.workID,
         "commentText":this.opinion,
       }).then(res =>{
-          this.dialogApproval = false;
-          this.dialogFormOrder = false;
-          this.$parent.commission();
-          this.EndProcess(); // 工作流结束
-          this.updateReject();// 业务驳回
-          this.$message.success("退款驳回成功");
+          var data = new Function('return ' + res.data)();
+          let code = data.code;
+          if(code == 0){
+            this.dialogApproval = false;
+            this.dialogFormOrder = false;
+            this.$parent.commission();
+            this.EndProcess(); // 工作流结束
+            this.updateReject();// 业务驳回
+            this.$message.success("退款驳回成功");
+          }else {
+            this.$message.success("退款驳回失败");
+          }
+          
         })
     },
     EndProcess(){
@@ -460,13 +472,14 @@ export default {
     },
     updateUndo(){ // 撤销业务接口
       for(var i= 0 ; i < this.tableDate.length ; i ++){
-        this.tableDate[i].refundStatus = 0
+        this.tableDate[i].refundStatus = 0;
+        console.log(this.tableDate)
       }
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
         object:this.tableDate
       }).then(res => {
         
-        })
+      })
     },
     delRefund(){
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/delete",{
@@ -485,7 +498,7 @@ export default {
           this.EndProcess();
           this.updateUndo();
           this.delRefund();
-          this.$parent.pageList(this.pageIndex == 1 ? this.pageIndex : 1);
+          this.$parent.pageList(1);
         })
         .catch(() => {
           this.$message({

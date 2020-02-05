@@ -25,7 +25,7 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">下单时间:</div>
-                  <div class="fl ml13">{{orderList.createTime}}</div>
+                  <div class="fl ml13">{{formatDate(new Date(orderList.createTime))}}</div>
                 </td>
               </tr>
               <tr>
@@ -53,7 +53,10 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">产品类型:</div>
-                  <div class="fl ml13">{{orderList.productType}}</div>
+                  <div v-if="orderList.productType=='1'" class="fl ml13">跟团游</div>
+                  <div v-if="orderList.productType=='2'" class="fl ml13">自由行</div>
+                  <div v-if="orderList.productType=='3'" class="fl ml13">签证</div>
+                  <div v-if="orderList.productType=='4'" class="fl ml13">邮轮</div>
                 </td>
               <tr>
                 <td width="33%">
@@ -80,7 +83,9 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">订单来源:</div>
-                  <div class="fl ml13">{{orderList.orderChannel}}</div>
+                  <div v-if="orderList.orderChannel=='1'" class="fl ml13">同业</div>
+                  <div v-if="orderList.orderChannel=='2'" class="fl ml13">线上直客</div>
+                  <div v-if="orderList.orderChannel=='3'" class="fl ml13">线下直客</div>
                 </td>
               </tr>
               <tr>
@@ -100,7 +105,8 @@
               <tr>
                 <td width="33%">
                   <div width="80" class="fl fb">平台:</div>
-                  <div class="fl ml13">{{orderList.platform}}</div>
+                  <div v-if="orderList.platform=='1'" class="fl ml13">ERP系统</div>
+                  <div v-if="orderList.platform=='2'" class="fl ml13">同业系统</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">支付方式:</div>
@@ -201,6 +207,20 @@ export default {
   created() {
   },
   methods: {
+    formatDate(date) {//时间转化
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      var h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = date.getSeconds();  
+      second = second < 10 ? "0" + second : second;
+      return y + "-" + m + "-" + d;
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -226,6 +246,8 @@ export default {
               arr[k]['sex'] = '男'
             }else if(arr[k]['sex'] == 1) {
               arr[k]['sex'] = '女'
+            }else if(arr[k]['sex'] == 3) {
+              arr[k]['sex'] = '未选择'
             }
           })
         }
