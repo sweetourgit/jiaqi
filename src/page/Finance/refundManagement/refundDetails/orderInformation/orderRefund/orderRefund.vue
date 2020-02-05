@@ -437,6 +437,15 @@ export default {
     },
     updateUndo(){ // 撤销业务接口
       let updata = [];
+      this.guests.forEach(function (v,k,arr) {
+        if(arr[k]['sex'] == '男'){
+          arr[k]['sex'] = 0
+        }else if(arr[k]['sex'] == '女') {
+          arr[k]['sex'] = 1
+        }else if(arr[k]['sex'] == '未选择') {
+          arr[k]['sex'] = 3
+        }
+      })
       for(var i= 0 ; i < this.guests.length ; i ++){
         if(this.guests[i].refundStatus == 5){
           updata.push(this.guests[i])

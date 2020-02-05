@@ -9,7 +9,7 @@
   	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情' && refundList.refundStateType !='1'">撤 销</el-button>
   	    </div>
         <div class="fl" v-if="title == '审批'">
-    	    <el-button class="ml13" type="primary" @click="payAccount()">支付账户</el-button>
+    	    <el-button class="ml13" type="primary" @click="payAccount()" v-if="ifDY100068">支付账户</el-button>
           <!-- <el-button class="ml13" type="primary">转 办</el-button> -->
           <el-button class="ml13" type="primary" :disabled="forbidden" @click="through()">通 过</el-button>
           <el-button class="ml13" type="primary" @click="rejected()">驳 回</el-button>
@@ -207,6 +207,7 @@ export default {
       accountID:0,
       disbursementID:0, // 获取详情时支付账户的id
       forbidden: false,
+      ifDY100068:false,
     };
 
   },
@@ -237,6 +238,11 @@ export default {
         },200);
         this.dialogFormOrder = true;
         this.title = "审批"
+      }
+      if(sessionStorage.getItem('userCode') == 'DY100068'){
+        this.ifDY100068 = true;
+      }else{
+        this.ifDY100068 = false;
       }
     },
   },
@@ -323,6 +329,8 @@ export default {
               arr[k]['sex'] = '男'
             }else if(arr[k]['sex'] == 1) {
               arr[k]['sex'] = '女'
+            }else if(arr[k]['sex'] == 3) {
+              arr[k]['sex'] = ' 未选择'
             }
           })
           if(this.disbursementID == 0){
