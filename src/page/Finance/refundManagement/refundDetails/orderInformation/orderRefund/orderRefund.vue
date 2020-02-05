@@ -122,7 +122,8 @@ export default {
   props: {
     orderRefundID:0,
     orderRefund:0,
-    orderRefundDialog:false,
+    dialogType:0,
+    orderRefundDialog:0,
   },
   data() {
     return {
@@ -203,7 +204,7 @@ export default {
   },
   watch: {
     orderRefund: function() {
-      if (this.orderRefundDialog == 1) { // 订单详情
+      if (this.dialogType == 5) { // 订单详情
         setTimeout(() => {
            this.getOrder(this.orderRefundID);
         },200);

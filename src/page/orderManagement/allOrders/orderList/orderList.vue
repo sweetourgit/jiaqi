@@ -290,7 +290,7 @@
                 <span class="moneyColor">1天22:33:33</span>
               </span>
               <!--退款状态-->
-              <span class="dotFather01">
+              <span class="dotFather01" v-if="item.refundStatus !=0">
                 <span class="dot"></span>
                 <span>{{item.refundStatus}}</span>
               </span>
@@ -360,7 +360,7 @@
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :orderRefundDialog="orderRefundDialog"></orderRefund>
+      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></orderRefund>
     </div>
   </div>
 </template>
@@ -1083,7 +1083,9 @@ export default {
       if (i == 3) {
         this.dialogAdviceNote = true;
       }
-      if(i == 5) this.orderRefundDialog = 1
+      //if(i == 5) {
+      //  this.orderRefundDialog = 1
+      //}
     },
     // 出团通知书获取
     getActiceNote() {
