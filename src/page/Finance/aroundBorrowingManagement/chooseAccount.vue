@@ -72,7 +72,8 @@
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/list", {
           "object": {
-            "isDeleted": 0
+            "isDeleted": 0,
+            'orgID': sessionStorage.getItem('topID')
           },
         },).then(function (obj) {
           console.log(obj);
