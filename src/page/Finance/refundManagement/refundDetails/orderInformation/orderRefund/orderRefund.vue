@@ -72,6 +72,7 @@
         <div v-if="ruleForm.refundWay == 1">
           <el-form-item label="还需退款" prop="needRefund">
             <el-input :disabled="forbidden" @change="needShow()" v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
+            <div class="red" v-show="needRefundPriceShow">还需退款金额不能为空</div>
             <div class="red" v-show = "needRefundShow">还需退款金额不能大于总订单金额</div>
           </el-form-item>
           <el-form-item label="申请原由" prop="partPriginally">
@@ -193,6 +194,7 @@ export default {
       allRefundPrice:0, // 总退款
       needRefundShow:false, // 验证还需退款是否超过订单总额
       refundStatus:0,
+      needRefundPriceShow:false,
     };
   },
   filters: {
@@ -218,7 +220,11 @@ export default {
   created() {
   },
   methods: {
+    
     price(){ // 总金额算法
+      if(this.ruleForm.needRefund != '' || this.typeID !=0){
+        this.needRefundPriceShow = false;
+      }
       this.allRefundPrice = 0 ;
       this.allRefundPrice += Number(this.ruleForm.needRefund);
       for( var i = 0 ; i < this.guests.length ; i ++){
@@ -382,7 +388,10 @@ export default {
           return;
         } else if(this.ruleForm.needRefund == ''){
           this.$message.error("总退款金额不能小于0");
+          this.needRefundPriceShow = true;
           return;
+        }else {
+          this.needRefundPriceShow = false;
         }
       }
       this.$refs[formName].validate((valid) => {
@@ -399,7 +408,7 @@ export default {
                   "orderCode": this.orderCode, // 订单号
                   "refundType": this.ruleForm.refundWay, // 退款方式 1=部分退款 2=全部退款
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
-                  "needRefundPrice": this.ruleForm.refundWay == 1?this.ruleForm.needRefund:0, // 还需退款
+                  "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, // 还需退款
                   "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
                   "realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
