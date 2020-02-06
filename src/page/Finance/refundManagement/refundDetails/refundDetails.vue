@@ -121,7 +121,13 @@
           <el-table-column prop="cnName" label="姓名" align="center"></el-table-column>
           <el-table-column prop="mobile" label="电话" align="center"></el-table-column>
           <el-table-column prop="idCard" label="身份证" align="center"></el-table-column>
-          <el-table-column prop="sex" label="性别" align="center"></el-table-column>
+          <el-table-column label="性别" align="center">
+            <template slot-scope="scope">
+               <span v-if="scope.row.sex===0">男</span>
+               <span v-if="scope.row.sex===1">女</span>
+               <span v-if="scope.row.sex===3">未选择</span>
+          </template>
+          </el-table-column>
         </el-table>
         <div class="order-title"><span>审核结果</span></div>
         <el-table :data="tableAudit" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
@@ -324,15 +330,6 @@ export default {
           this.tableDate = res.data.object.guests;
           this.accountID = res.data.object.id;
           this.disbursementID = res.data.object.payID;
-          this.tableDate.forEach(function (v,k,arr) {
-            if(arr[k]['sex'] == 0){
-              arr[k]['sex'] = '男'
-            }else if(arr[k]['sex'] == 1) {
-              arr[k]['sex'] = '女'
-            }else if(arr[k]['sex'] == 3) {
-              arr[k]['sex'] = ' 未选择'
-            }
-          })
           if(this.disbursementID == 0 && this.ifDY100068 == true){
             this.forbidden = true;
           }else{
@@ -486,7 +483,7 @@ export default {
         console.log(this.tableDate)
       }
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
-        object:this.tableDate
+        objects:this.tableDate
       }).then(res => {
         
       })
