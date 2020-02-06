@@ -195,6 +195,9 @@ export default {
       needRefundShow:false, // 验证还需退款是否超过订单总额
       refundStatus:0,
       needRefundPriceShow:false,
+      needRefund01:0,
+      needRefund02:0,
+      needRefund03:0,
     };
   },
   filters: {
@@ -376,6 +379,10 @@ export default {
           this.positiveNumber = this.overallDiscount + this.ruleForm.needRefund;
         }
       }
+      this.needRefund01 = this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber;
+      this.needRefund02 = this.typeID == 0 ? this.ruleForm.needRefund : needRefund01;
+      this.needRefund03 = this.orderList.paid - this.allRefundPrice;
+
     },
     applyRefund(formName){ // 申请退款
       if(this.allRefundPrice > this.orderAmount){
