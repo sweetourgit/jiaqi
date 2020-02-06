@@ -371,7 +371,7 @@ export default {
         });
     },
     amount(){
-      this.allRefundPrice = this.typeID = 0 ? this.ruleForm.needRefund : this.ruleForm.needRefund + this.singlePrice;
+      //this.allRefundPrice = this.typeID = 0 ? this.ruleForm.needRefund : this.ruleForm.needRefund + this.singlePrice;
       if(this.typeID !== 0){
         if(this.ruleForm.needRefund < 0){
           this.negativeNumber = this.otherFees - this.ruleForm.needRefund;
@@ -380,17 +380,17 @@ export default {
         }
       }
       this.needRefund01 = this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber;
-      this.needRefund02 = this.typeID == 0 ? this.ruleForm.needRefund : needRefund01;
+      this.needRefund02 = this.typeID == 0 ? this.ruleForm.needRefund : this.needRefund01;
       this.needRefund03 = this.orderList.paid - this.allRefundPrice;
 
     },
     applyRefund(formName){ // 申请退款
+      this.amount();
       if(this.allRefundPrice > this.orderAmount){
         this.$message.error("总退款金额大于总订单总额，无法申请");
         return;
       }
       if(this.typeID == 0 && this.ruleForm.refundWay == 1){
-        this.amount();
         if(this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
           this.$message.error("还需退款金额为正数");
           return;
@@ -418,7 +418,8 @@ export default {
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
                   "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, // 还需退款
                   "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
-                  "realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
+                  "realRefundPrice":this.ruleForm.refundWay == 1 ?this.needRefund02:this.needRefund03,
+                  //"realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
                   "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
                   "remittanceBank": this.ruleForm.refundWay == 2 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
