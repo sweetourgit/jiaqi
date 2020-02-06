@@ -390,6 +390,7 @@ export default {
         return;
       }
       if(this.typeID == 0 && this.ruleForm.refundWay == 1){
+        this.amount();
         if(this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
           this.$message.error("还需退款金额为正数");
           return;
