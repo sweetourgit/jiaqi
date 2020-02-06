@@ -320,7 +320,7 @@
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :orderRefundDialog="orderRefundDialog"></orderRefund>
+      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></orderRefund>
     </div>
   </div>
 </template>
@@ -1012,8 +1012,8 @@ export default {
       this.variable++;
       this.dialogType = i;
       this.planID = item.planID;
-      if(i == 5) this.orderRefundDialog = 1;
     },
+
     // 出发日期转换格式显示
     // goDataChangeFun (data) {
     //   console.log(data)
