@@ -364,7 +364,7 @@ export default {
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
         {
           "object": {
-            //"orgID":sessionStorage.getItem("id"),
+          	"orgID": sessionStorage.getItem('topID'),
             "isDeleted": 0
           },
         },)
