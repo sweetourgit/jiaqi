@@ -333,7 +333,7 @@ export default {
               arr[k]['sex'] = ' 未选择'
             }
           })
-          if(this.disbursementID == 0){
+          if(this.disbursementID == 0 && this.ifDY100068 == true){
             this.forbidden = true;
           }else{
             this.forbidden = false;
@@ -401,9 +401,11 @@ export default {
     through(){ // 点击通过显示弹窗
       this.dialogApproval = true ;
       this.approval = '审批通过';
-      if(this.disbursementID == 0){
+      if(this.disbursementID == 0 && this.ifDY100068 == true){
         this.forbidden = true;
         this.$message.error("请先选择支付账户")
+      } else{
+        this.forbidden = false;
       }
     },
     rejected(){ // 点击驳回显示弹窗
