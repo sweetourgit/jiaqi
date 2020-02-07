@@ -323,22 +323,19 @@ export default {
                 if (res.data.isSuccess == true){
                    let refundType = res.data.objects[0].refundType;
                    if(refundType == 2){ // 全退
-                      this.ruleForm.originally = res.data.objects.reason; // 全退申请原由
-                      this.ruleForm.cardNumber = res.data.objects.remittanceCode; // 全退卡号
-                      this.rruleForm.cardBank = res.data.objects.remittanceBank; // 全退开户行
-                      this.rruleForm.cardPeople = res.data.objects.remittancePerson; // 全退开户人
+                      this.ruleForm.originally = res.data.objects[0].reason; // 全退申请原由
+                      this.ruleForm.cardNumber = res.data.objects[0].remittanceCode; // 全退卡号
+                      this.rruleForm.cardBank = res.data.objects[0].remittanceBank; // 全退开户行
+                      this.rruleForm.cardPeople = res.data.objects[0].remittancePerson; // 全退开户人
                    }else if(refundType == 1){ // 部分退
-                      this.ruleForm.needRefund = res.data.objects.needRefundPrices; // 部分退还需退款
-                      this.ruleForm.partPriginally = res.data.objects.reason; // 部分退申请原由
-                      this.ruleForm.partCardNumber = res.data.objects.remittanceCode; // 部分退卡号
-                      this.ruleForm.partCardBank = res.data.objects.remittanceBank; // 部分退开户行
-                      this.ruleForm.partCardPeople = res.data.objects.remittancePerson; // 部分退开户人
+                      this.ruleForm.needRefund = res.data.objects[0].needRefundPrice; // 部分退还需退款
+                      this.ruleForm.partPriginally = res.data.objects[0].reason; // 部分退申请原由
+                      this.ruleForm.partCardNumber = res.data.objects[0].remittanceCode; // 部分退卡号
+                      this.ruleForm.partCardBank = res.data.objects[0].remittanceBank; // 部分退开户行
+                      this.ruleForm.partCardPeople = res.data.objects[0].remittancePerson; // 部分退开户人
                    }
                 }
-                
-             
             });
-            
             return;
           }
           this.collection(); // 判断是否有收款方法
@@ -459,6 +456,7 @@ export default {
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
+                   sthis.$parent.axiosListOneInfo(this.orderRefundID);
                    this.allRefundPrice = 0 ;
                    if(this.typeID != 0){
                     this.updateUndo();
