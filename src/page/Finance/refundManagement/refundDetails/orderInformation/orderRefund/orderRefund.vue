@@ -304,7 +304,7 @@ export default {
               arr[k]['sex'] = '未选择'
             }
           })
-          this.nonPayment = res.data.object.payable - res.data.object.paid; // 获取未付款金额
+          this.nonPayment = res.data.object.payable - (res.data.object.paid - res.data.object.allRefundPrice); // 获取未付款金额
           this.orderCode = res.data.object.orderCode; // 获取该团期订单号
           this.indentID = res.data.object.id; // 获取该团期订单ID
           this.orderAmount = res.data.object.payable; // 获取该团期订单金额
