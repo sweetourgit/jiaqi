@@ -198,6 +198,7 @@ export default {
       needRefund01:0,
       needRefund02:0,
       needRefund03:0,
+      totalRefund:0, // 获取当前id的总退款
     };
   },
   filters: {
@@ -313,6 +314,7 @@ export default {
           this.otherFees = res.data.object.otherPrice; // 其他费用
           this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
           this.guests = res.data.object.guests ; // 获取报名人退款状态
+          this.totalRefund = res.data.object.allRefundPrice; // 获取总退款
           if(res.data.object.refundStatus==5){
             this.forbidden = true;
             this.$message.error("订单已经存在退款");
@@ -418,6 +420,8 @@ export default {
           this.needRefundPriceShow = false;
         }
       }
+      let bbb = this.totalRefund - this.nonPayment;
+      let aaa = bbb >= 0 ? bbb : 0;
       this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
@@ -434,7 +438,7 @@ export default {
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
                   "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, // 还需退款
                   "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
-                  "realRefundPrice":this.ruleForm.refundWay == 1 ?this.allRefundPrice:this.orderAmount,
+                  "realRefundPrice":this.ruleForm.refundWay == 1 ? aaa : 0,
                   //"realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
                   "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
@@ -454,7 +458,7 @@ export default {
               })
               .then(res => {
                 if(res.data.isSuccess == true){
-                   this.$parent.axiosListOneInfo(this.orderRefundID);
+                   this.$parent.orderPage(this.orderRefundID);
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
