@@ -422,6 +422,7 @@ export default {
       }
       let bbb = this.totalRefund - this.nonPayment;
       let aaa = bbb >= 0 ? bbb : 0;
+      
       this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
