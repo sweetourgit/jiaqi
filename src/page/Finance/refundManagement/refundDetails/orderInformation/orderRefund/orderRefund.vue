@@ -423,11 +423,7 @@ export default {
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
                   "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, // 还需退款
                   "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
-<<<<<<< HEAD
                   "realRefundPrice":this.ruleForm.refundWay == 1 ? aaa : 0,
-=======
-                  "realRefundPrice":this.ruleForm.refundWay == 1 ?this.needRefund02:this.needRefund03,
->>>>>>> f19dab7e1785f43e6686fb15744ce694ab53a877
                   //"realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
                   "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
@@ -447,10 +443,7 @@ export default {
               })
               .then(res => {
                 if(res.data.isSuccess == true){
-<<<<<<< HEAD
                    this.$parent.orderPage(this.orderRefundID);
-=======
->>>>>>> f19dab7e1785f43e6686fb15744ce694ab53a877
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
