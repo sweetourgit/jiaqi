@@ -11,9 +11,9 @@
        <el-table-column  label="操作" width="200" align="center">
             <template slot-scope="scope">
                <el-breadcrumb separator="|" class="breadCrumb">
-                  <el-breadcrumb-item><span class="breadCrumbPointer" @click="add(2)">修改</span></el-breadcrumb-item>
+                  <el-breadcrumb-item @click.native="add(2)"><span class="breadCrumbPointer">修改</span></el-breadcrumb-item>
                   <el-breadcrumb-item @click.native="online(scope.row.id)"><span class="breadCrumbPointer">上线</span></el-breadcrumb-item>
-                  <el-breadcrumb-item @click.native="offline(scope.row.id)" v-if="false"><span class="breadCrumbPointer">上线</span></el-breadcrumb-item>
+                  <el-breadcrumb-item @click.native="offline(scope.row.id)" v-if="false"><span class="breadCrumbPointer">下线</span></el-breadcrumb-item>
                   <el-breadcrumb-item @click.native="delInventory(scope.row.id)"><span class="breadCrumbPointer">删除</span></el-breadcrumb-item>
                </el-breadcrumb>
             </template>
