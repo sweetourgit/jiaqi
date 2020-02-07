@@ -315,11 +315,29 @@ export default {
           if(res.data.object.refundStatus==5){
             this.forbidden = true;
             this.$message.error("订单已经存在退款");
-            //this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
-            //  id:ID,
-            //}).then(res => {
-            //  this.ruleForm.originally = res.data.object.reason; // 全退申请原由
-            // });
+            this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/list", {
+             object:{
+               "orderCode":this.orderCode
+             }
+            }).then(res => {
+                if (res.data.isSuccess == true){
+                   let refundType = res.data.objects[0].refundType;
+                   if(refundType == 2){ // 全退
+                      this.ruleForm.originally = res.data.objects.reason; // 全退申请原由
+                      this.ruleForm.cardNumber = res.data.objects.remittanceCode; // 全退卡号
+                      this.rruleForm.cardBank = res.data.objects.remittanceBank; // 全退开户行
+                      this.rruleForm.cardPeople = res.data.objects.remittancePerson; // 全退开户人
+                   }else if(refundType == 1){ // 部分退
+                      this.ruleForm.needRefund = res.data.objects.needRefundPrices; // 部分退还需退款
+                      this.ruleForm.partPriginally = res.data.objects.reason; // 部分退申请原由
+                      this.ruleForm.partCardNumber = res.data.objects.remittanceCode; // 部分退卡号
+                      this.ruleForm.partCardBank = res.data.objects.remittanceBank; // 部分退开户行
+                      this.ruleForm.partCardPeople = res.data.objects.remittancePerson; // 部分退开户人
+                   }
+                }
+                
+             
+            });
             
             return;
           }
@@ -374,18 +392,18 @@ export default {
       //this.allRefundPrice = this.typeID = 0 ? this.ruleForm.needRefund : this.ruleForm.needRefund + this.singlePrice;
       if(this.typeID !== 0){
         if(this.ruleForm.needRefund < 0){
-          this.negativeNumber = this.otherFees - this.ruleForm.needRefund;
+          this.negativeNumber = Number(this.otherFees) - this.ruleForm.needRefund;
         }else if(this.ruleForm.needRefund >= 0){
-          this.positiveNumber = this.overallDiscount + this.ruleForm.needRefund;
+          this.positiveNumber = Number(this.overallDiscount) + this.ruleForm.needRefund;
         }
       }
       this.needRefund01 = this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber;
       this.needRefund02 = this.typeID == 0 ? this.ruleForm.needRefund : this.needRefund01;
-      this.needRefund03 = this.orderList.paid - this.allRefundPrice;
+      this.needRefund03 = Number(this.orderList.paid) - Number(this.allRefundPrice);
 
     },
     applyRefund(formName){ // 申请退款
-      this.amount();
+      //this.amount();
       if(this.allRefundPrice > this.orderAmount){
         this.$message.error("总退款金额大于总订单总额，无法申请");
         return;
@@ -418,7 +436,7 @@ export default {
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
                   "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, // 还需退款
                   "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
-                  "realRefundPrice":this.ruleForm.refundWay == 1 ?this.needRefund02:this.needRefund03,
+                  "realRefundPrice":this.ruleForm.refundWay == 1 ?this.allRefundPrice:this.orderAmount,
                   //"realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
                   "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
