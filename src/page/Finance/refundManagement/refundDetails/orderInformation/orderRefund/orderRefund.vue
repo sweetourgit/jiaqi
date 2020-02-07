@@ -212,6 +212,7 @@ export default {
       if (this.dialogType == 5) { // 订单详情
         setTimeout(() => {
            this.getOrder(this.orderRefundID);
+           console.log(this.orderRefundID)
         },200);
         this.dialogOrderRefund = true;
       }
@@ -453,10 +454,10 @@ export default {
               })
               .then(res => {
                 if(res.data.isSuccess == true){
+                   this.$parent.axiosListOneInfo(this.orderRefundID);
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
-                   sthis.$parent.axiosListOneInfo(this.orderRefundID);
                    this.allRefundPrice = 0 ;
                    if(this.typeID != 0){
                     this.updateUndo();
