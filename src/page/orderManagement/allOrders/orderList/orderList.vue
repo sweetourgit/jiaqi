@@ -290,9 +290,9 @@
                 <span class="moneyColor">1天22:33:33</span>
               </span>
               <!--退款状态-->
-              <span class="dotFather01" v-if="item.refundStatus !=0">
+              <span class="dotFather01" v-if="getListOneMessage.refundStatus !=0">
                 <span class="dot"></span>
-                <span>{{item.refundStatus}}</span>
+                <span>{{getrefundStatus(getListOneMessage.refundStatus)}}</span>
               </span>
             </div>
           </div>

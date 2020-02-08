@@ -75,7 +75,7 @@
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">支付账户:</div>
-                <div class="fl ml13">{{refundList.payID}}</div>
+                <div class="fl ml13">{{payName}}</div>
               </td>
             </tr>
           </table>
@@ -214,6 +214,7 @@ export default {
       disbursementID:0, // 获取详情时支付账户的id
       forbidden: false,
       ifDY100068:false,
+      payName:'', // 选择支付账户，通过ID获取名字
     };
 
   },
@@ -308,6 +309,7 @@ export default {
       this.tableDate = [];
       this.tableAudit = [];
       this.orderCode = '';
+      this.payName = '';
     },
     getJqId(result){ // 获取审批结果tableAudit
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ',{
@@ -330,6 +332,13 @@ export default {
           this.tableDate = res.data.object.guests;
           this.accountID = res.data.object.id;
           this.disbursementID = res.data.object.payID;
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",{
+              id:this.disbursementID,
+           }).then(res => {
+              if(res.data.isSuccess == true){
+                this.payName = res.data.object.title;
+              }
+           })
           if(this.disbursementID == 0 && this.ifDY100068 == true){
             this.forbidden = true;
           }else{
@@ -378,7 +387,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/save",{
         object:{
           id:this.accountID,
-          payID:this.payID
+          payID:this.payID,
         }
       })
       .then(res => {
