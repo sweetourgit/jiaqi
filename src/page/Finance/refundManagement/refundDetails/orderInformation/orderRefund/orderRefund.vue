@@ -410,6 +410,9 @@ export default {
       let bbb = this.totalRefund - this.nonPayment;
       let aaa = bbb >= 0 ? bbb : 0;
       this.$refs[formName].validate((valid) => {
+          if(this.ruleForm.refundWay == 2&&this.orderList.paid==0){
+             valid=true;
+          }
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
                 object: {
@@ -445,7 +448,11 @@ export default {
               })
               .then(res => {
                 if(res.data.isSuccess == true){
-                   this.$parent.orderPage(this.orderRefundID);
+                   if(this.ruleForm.refundWay == 2&&this.orderList.paid==0){
+                       this.$parent.orderPage();
+                   }else{
+                       this.$parent.axiosListOneInfo(this.orderRefundID);
+                   }
                    this.dialogOrderRefund = false
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
