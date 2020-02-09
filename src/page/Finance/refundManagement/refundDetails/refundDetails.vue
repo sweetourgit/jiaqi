@@ -487,6 +487,7 @@ export default {
       })
     },
     updateUndo(){ // 撤销业务接口
+      if(this.tableDate.length>0){
       for(var i= 0 ; i < this.tableDate.length ; i ++){
         this.tableDate[i].refundStatus = 0;
         console.log(this.tableDate)
@@ -496,6 +497,7 @@ export default {
       }).then(res => {
         
       })
+      }
     },
     delRefund(){
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/delete",{
