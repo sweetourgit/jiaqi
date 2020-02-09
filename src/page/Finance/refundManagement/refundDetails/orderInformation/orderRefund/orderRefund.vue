@@ -102,10 +102,12 @@
               <template slot-scope="scope">
                 <el-button type="text"v-if="scope.row.refundStatus == 0" :disabled="forbidden" @click="choose(scope.$index)">选择</el-button>
                 <!-- <span v-if="scope.row.refundStatus == 0" :disabled="forbidden" class="cursor blue" @click="choose(scope.$index)">选择</span> -->
-                <span v-if="scope.row.refundStatus == 5" :disabled="forbidden">
+                <span v-if="scope.row.refundStatus == 5||scope.row.refundStatus == 10" :disabled="forbidden">
                   <span class="blue">已选</span>
-                  <span class="em">|</span>
-                  <span class="cursor blue" @click="undo(scope.$index)">撤销</span>
+                  <span v-if="scope.row.refundStatus != 10">
+                    <span class="em">|</span>
+                    <span class="cursor blue" @click="undo(scope.$index)">撤销</span>
+                  </span>
                 </span>
               </template>
             </el-table-column>
@@ -313,6 +315,7 @@ export default {
           this.otherFees = res.data.object.otherPrice; // 其他费用
           this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
           this.guests = res.data.object.guests ; // 获取报名人退款状态
+          this.guests.forEach(el => el.refundStatus==5?el.refundStatus=10:'');
           this.totalRefund = res.data.object.allRefundPrice; // 获取总退款
           if(res.data.object.refundStatus==5){
             this.forbidden = true;
@@ -406,7 +409,6 @@ export default {
       }
       let bbb = this.totalRefund - this.nonPayment;
       let aaa = bbb >= 0 ? bbb : 0;
-      
       this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
@@ -472,7 +474,7 @@ export default {
         }
       })
       for(var i= 0 ; i < this.guests.length ; i ++){
-        if(this.guests[i].refundStatus == 5){
+        if(this.guests[i].refundStatus == 5||this.guests[i].refundStatus == 10){
           updata.push(this.guests[i])
         }
       }
