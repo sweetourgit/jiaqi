@@ -475,7 +475,8 @@ export default {
       })
       for(var i= 0 ; i < this.guests.length ; i ++){
         if(this.guests[i].refundStatus == 5||this.guests[i].refundStatus == 10){
-          updata.push(this.guests[i])
+          this.guests[i].refundStatus = 5;
+          updata.push(this.guests[i]);
         }
       }
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
