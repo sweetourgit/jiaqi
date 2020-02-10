@@ -23,7 +23,7 @@
                 <div width="80" class="fl fb">未付金额:</div>
                 <div class="fl ml13">{{nonPayment | numFilter}}</div>
               </td>
-            </tr>
+            </tr> 
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">其他费用:</div>
@@ -427,9 +427,9 @@ export default {
       let bbb = this.totalRefund - this.nonPayment;
       let aaa = bbb >= 0 ? bbb : 0;
       this.$refs[formName].validate((valid) => {
-          if(this.ruleForm.refundWay == 2&&this.orderList.paid==0){
-             valid=true;
-          }
+         // if(this.ruleForm.refundWay == 2&&this.orderList.paid==0){
+         //    valid=true;
+        //  }
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
                 object: {
