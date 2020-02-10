@@ -410,9 +410,9 @@ export default {
       let bbb = this.totalRefund - this.nonPayment;
       let aaa = bbb >= 0 ? bbb : 0;
       this.$refs[formName].validate((valid) => {
-          if(this.ruleForm.refundWay == 2&&this.orderList.paid==0){
-             valid=true;
-          }
+         // if(this.ruleForm.refundWay == 2&&this.orderList.paid==0){
+         //    valid=true;
+        //  }
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
                 object: {
