@@ -124,7 +124,8 @@ export default {
     },      
     search(){ // 搜索
       this.current = 1;
-      this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
+      //this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
+      this.getFlowModel();
     },
     reset(curPage){ // 重置
       this.refundNumber = '';//退款号码
