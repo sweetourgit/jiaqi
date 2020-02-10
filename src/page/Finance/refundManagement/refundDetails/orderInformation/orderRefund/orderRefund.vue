@@ -23,7 +23,7 @@
                 <div width="80" class="fl fb">未付金额:</div>
                 <div class="fl ml13">{{nonPayment | numFilter}}</div>
               </td>
-            </tr>
+            </tr> 
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">其他费用:</div>
