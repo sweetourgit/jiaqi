@@ -320,11 +320,28 @@ export default {
           if(res.data.object.refundStatus==5){
             this.forbidden = true;
             this.$message.error("订单已经存在退款");
-            //this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
-            //  id:ID,
-            //}).then(res => {
-            //  this.ruleForm.originally = res.data.object.reason; // 全退申请原由
-            // });
+            this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/list", {
+             object:{
+               "orderCode":this.orderCode
+             }
+            }).then(res => {
+                if(res.data.isSuccess == true){
+                  let refundType = res.data.objects[0].refundType;
+                  if(refundType == 2){ // 全退
+                    this.ruleForm.originally = res.data.objects[0].reason; // 全退申请原由
+                    this.ruleForm.cardNumber = res.data.objects[0].remittanceCode;
+                    this.ruleForm.cardBank = res.data.objects[0].remittanceBank;
+                    this.ruleForm.cardPeople = res.data.objects[0].remittancePerson;
+                  }else if(refundType == 1){ // 部分退
+                    this.ruleForm.needRefund = res.data.objects[0].needRefundPrice; // 全退申请原由
+                    this.ruleForm.partPriginally = res.data.objects[0].reason;
+                    this.ruleForm.partCardNumber = res.data.objects[0].remittanceCode;
+                    this.ruleForm.partCardBank = res.data.objects[0].remittanceBank;
+                    this.ruleForm.partCardPeople = res.data.objects[0].remittancePerson;
+                  }
+                }
+             //this.ruleForm.originally = res.data.object.reason; // 全退申请原由
+            });
             
             return;
           }

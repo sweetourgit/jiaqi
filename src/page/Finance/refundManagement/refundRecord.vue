@@ -42,7 +42,7 @@
             <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="orderCode" label="订单ID" align="center"></el-table-column>
+        <el-table-column prop="orderID" label="订单ID" align="center"></el-table-column>
         <el-table-column prop="productType" label="类型" align="center"></el-table-column>
         <el-table-column prop="realRefundPrice" label="退款金额" align="center"></el-table-column>
         <el-table-column prop="name" label="申请人" align="center"></el-table-column>
@@ -177,6 +177,7 @@ export default {
              startTime:startTime, // 开始时间
              endTime:endTime, // 结束时间
              refundStateType:this.states == "" ? -1 : this.states, // 状态
+             //orderCode:orderCode, // 订单ID
              orderID:this.orderID == "" ? 0 : orderID // 订单ID
           },
           "pageSize":this.pageSize,
