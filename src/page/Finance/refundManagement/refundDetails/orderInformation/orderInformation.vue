@@ -79,7 +79,7 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">销售:</div>
-                  <div class="fl ml13">{{orderList.saler}}</div>
+                  <div class="fl ml13">{{orderList.indirectSale}}</div>
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">订单来源:</div>
@@ -99,7 +99,7 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="fl fb">商户销售:</div>
-                  <div class="fl ml13">{{orderList.indirectSale}}</div>
+                  <div class="fl ml13">{{orderList.saler}}</div>
                 </td>
               </tr>
               <tr>
