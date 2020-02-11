@@ -302,6 +302,7 @@ export default {
       }).then(res => {
           if(res.data.isSuccess == true){
             this.refundType = res.data.objects[0].refundType;
+            this.ruleForm.refundWay = res.data.objects[0].refundType+'';
             console.log(this.refundType)
             this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
               id:ID,
