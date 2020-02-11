@@ -202,6 +202,7 @@ export default {
       needRefund02:0,
       needRefund03:0,
       totalRefund:0, // 获取当前id的总退款
+      statusRefund:'', // 获取当前订单的退款状态
     };
   },
   filters: {
@@ -290,11 +291,7 @@ export default {
       this.tableDate = [];
       this.forbidden = false;
     },
-    getRefndType(){
-
-    },
     getOrder(ID){ // 点击退款获取详情信息
-      this.getRefndType();
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/list", {
        object:{
          "orderCode":this.orderCode
@@ -303,7 +300,6 @@ export default {
           if(res.data.isSuccess == true){
             this.refundType = res.data.objects[0].refundType;
             this.ruleForm.refundWay = res.data.objects[0].refundType+'';
-            console.log(this.refundType)
             this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
               id:ID,
               //id: 1812 // 无收款
@@ -331,6 +327,7 @@ export default {
                 this.guests = res.data.object.guests ; // 获取报名人退款状态
                 this.guests.forEach(el => el.refundStatus==5?el.refundStatus=10:'');
                 this.totalRefund = res.data.object.allRefundPrice; // 获取总退款
+                this.statusRefund = res.data.object.refundStatus ; // 获取订单的退款状态
                 if(res.data.object.refundStatus==5){
                   this.forbidden = true;
                   this.$message.error("订单已经存在退款");
@@ -413,7 +410,7 @@ export default {
 
     },
     applyRefund(formName){ // 申请退款
-      this.amount();
+      //this.amount();
       if(this.allRefundPrice > this.orderAmount){
         this.$message.error("总退款金额大于总订单总额，无法申请");
         return;
@@ -430,7 +427,7 @@ export default {
           this.needRefundPriceShow = false;
         }
       }
-      let bbb = this.totalRefund - this.nonPayment;
+      let bbb = this.allRefundPrice - this.nonPayment;
       let aaa = bbb >= 0 ? bbb : 0;
       this.$refs[formName].validate((valid) => {
          // if(this.ruleForm.refundWay == 2&&this.orderList.paid==0){
@@ -450,8 +447,8 @@ export default {
                   "refundType": this.ruleForm.refundWay, // 退款方式 1=部分退款 2=全部退款
                   "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
                   "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, // 还需退款
-                  "allRefundPrice": this.ruleForm.refundWay == 1 ?this.allRefundPrice:(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 总退款
-                  "realRefundPrice":this.ruleForm.refundWay == 1 ? aaa : 0,
+                  "allRefundPrice": this.ruleForm.refundWay == 1 ? this.allRefundPrice:this.orderList.payable, // 总退款
+                  "realRefundPrice":this.ruleForm.refundWay == 1 ? aaa : Number(this.orderList.paid)-Number(this.realRefundPrice),
                   //"realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
                   "payID": 0, // 支付账户
                   "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
