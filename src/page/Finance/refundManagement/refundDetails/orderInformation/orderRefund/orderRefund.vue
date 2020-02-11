@@ -133,7 +133,7 @@ export default {
       dialogOrderRefund:false,
       orderList:{},
       ruleForm:{
-        refundWay:'2',// 退款方式
+        refundWay:this.refundType,// 退款方式
         originally:'', // 全退原由
         cardNumber:'', // 全退汇款卡号
         cardBank:'', // 全退汇款开户行
@@ -144,6 +144,7 @@ export default {
         partCardBank:'', // 部分退汇款开户行
         partCardPeople:'', // 部分退汇款开户人
       },
+      refundType:'', // 点击get获取到退款方式
       rules:{
         refundWay: [
           { required: true, message: "请选择退款方式", trigger: "change" }
@@ -326,13 +327,13 @@ export default {
              }
             }).then(res => {
                 if(res.data.isSuccess == true){
-                  let refundType = res.data.objects[0].refundType;
-                  if(refundType == 2){ // 全退
+                this.refundType = res.data.objects[0].refundType;
+                  if(this.refundType == 2){ // 全退
                     this.ruleForm.originally = res.data.objects[0].reason; // 全退申请原由
                     this.ruleForm.cardNumber = res.data.objects[0].remittanceCode;
                     this.ruleForm.cardBank = res.data.objects[0].remittanceBank;
                     this.ruleForm.cardPeople = res.data.objects[0].remittancePerson;
-                  }else if(refundType == 1){ // 部分退
+                  }else if(this.refundType == 1){ // 部分退
                     this.ruleForm.needRefund = res.data.objects[0].needRefundPrice; // 全退申请原由
                     this.ruleForm.partPriginally = res.data.objects[0].reason;
                     this.ruleForm.partCardNumber = res.data.objects[0].remittanceCode;
