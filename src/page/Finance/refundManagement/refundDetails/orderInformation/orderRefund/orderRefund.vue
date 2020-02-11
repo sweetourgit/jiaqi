@@ -203,6 +203,7 @@ export default {
       needRefund03:0,
       totalRefund:0, // 获取当前id的总退款
       statusRefund:'', // 获取当前订单的退款状态
+      
     };
   },
   filters: {
