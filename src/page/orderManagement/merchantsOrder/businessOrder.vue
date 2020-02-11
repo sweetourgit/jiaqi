@@ -285,6 +285,11 @@
                 待确认剩余 &nbsp;
                 <span class="moneyColor">1天22:33:33</span>
               </span>
+              <!--退款状态-->
+              <span class="dotFather01" v-if="getListOneMessage.refundStatus !=0">
+                <span class="dot"></span>
+                <span>{{getrefundStatus(getListOneMessage.refundStatus)}}</span>
+              </span>
             </div>
           </div>
         </transition>
@@ -1193,5 +1198,8 @@ export default {
   border-radius: 50%;
   margin-top: -2px;
   margin-right: 6px;
+}
+.dotFather01 {
+  margin-left: 25px;
 }
 </style>
