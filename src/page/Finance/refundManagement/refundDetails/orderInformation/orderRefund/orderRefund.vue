@@ -133,7 +133,7 @@ export default {
       dialogOrderRefund:false,
       orderList:{},
       ruleForm:{
-        refundWay:this.refundType,// 退款方式
+        refundWay:'2',// 退款方式
         originally:'', // 全退原由
         cardNumber:'', // 全退汇款卡号
         cardBank:'', // 全退汇款开户行
@@ -336,8 +336,7 @@ export default {
             }).then(res => {
                 if(res.data.isSuccess == true){
                   this.refundType = res.data.objects[0].refundType;
-                  this.ruleForm.refundWay = res.data.objects[0].refundType+'';
-                  
+                  this.ruleForm.refundWay = res.data.objects[0].refundType + '';
                   if(this.refundType == 2){ // 全退
                     this.ruleForm.originally = res.data.objects[0].reason; // 全退申请原由
                     this.ruleForm.cardNumber = res.data.objects[0].remittanceCode;
