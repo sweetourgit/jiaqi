@@ -290,66 +290,77 @@ export default {
       this.$refs[formName].resetFields();
       this.tableDate = [];
       this.forbidden = false;
+      this.ruleForm.needRefund = '';
+      this.ruleForm.originally = ''; // 全退申请原由
+      this.ruleForm.cardNumber = '';
+      this.ruleForm.cardBank = '';
+      this.ruleForm.cardPeople = '';
+      this.ruleForm.partPriginally = '';
+      this.ruleForm.partCardNumber = '';
+      this.ruleForm.partCardBank = '';
+      this.ruleForm.partCardPeople = '';
     },
     getOrder(ID){ // 点击退款获取详情信息
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/list", {
-       object:{
-         "orderCode":this.orderCode
-       }
-      }).then(res => {
-          if(res.data.isSuccess == true){
-            this.refundType = res.data.objects[0].refundType;
-            this.ruleForm.refundWay = res.data.objects[0].refundType+'';
-            this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
+      this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
               id:ID,
               //id: 1812 // 无收款
               //id: 21 // 有收款
-            }).then(res => {
-              if (res.data.isSuccess == true) {
-                this.orderList = res.data.object;
-                this.tableDate = res.data.object.guests;
-                this.tableDate.forEach(function (v,k,arr) {
-                  if(arr[k]['sex'] == 0){
-                    arr[k]['sex'] = '男'
-                  }else if(arr[k]['sex'] == 1) {
-                    arr[k]['sex'] = '女'
-                  }else if(arr[k]['sex'] == 3) {
-                    arr[k]['sex'] = '未选择'
-                  }
-                })
-                this.nonPayment = res.data.object.payable - (res.data.object.paid - res.data.object.allRefundPrice); // 获取未付款金额
-                this.orderCode = res.data.object.orderCode; // 获取该团期订单号
-                this.indentID = res.data.object.id; // 获取该团期订单ID
-                this.orderAmount = res.data.object.payable; // 获取该团期订单金额
-                this.productType = res.data.object.productType; // 获取该团期产品类型 
-                this.otherFees = res.data.object.otherPrice; // 其他费用
-                this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
-                this.guests = res.data.object.guests ; // 获取报名人退款状态
-                this.guests.forEach(el => el.refundStatus==5?el.refundStatus=10:'');
-                this.totalRefund = res.data.object.allRefundPrice; // 获取总退款
-                this.statusRefund = res.data.object.refundStatus ; // 获取订单的退款状态
-                if(res.data.object.refundStatus==5){
-                  this.forbidden = true;
-                  this.$message.error("订单已经存在退款");
-                  return;
-                }
-                this.collection(); // 判断是否有收款方法
-              }
-            });
-            if(this.refundType == 2){ // 全退
-              this.ruleForm.originally = res.data.objects[0].reason; // 全退申请原由
-              this.ruleForm.cardNumber = res.data.objects[0].remittanceCode;
-              this.ruleForm.cardBank = res.data.objects[0].remittanceBank;
-              this.ruleForm.cardPeople = res.data.objects[0].remittancePerson;
-            }else if(this.refundType == 1){ // 部分退
-              this.ruleForm.needRefund = res.data.objects[0].needRefundPrice; // 全退申请原由
-              this.ruleForm.partPriginally = res.data.objects[0].reason;
-              this.ruleForm.partCardNumber = res.data.objects[0].remittanceCode;
-              this.ruleForm.partCardBank = res.data.objects[0].remittanceBank;
-              this.ruleForm.partCardPeople = res.data.objects[0].remittancePerson;
+      }).then(res => {
+        if (res.data.isSuccess == true) {
+          this.orderList = res.data.object;
+          this.tableDate = res.data.object.guests;
+          this.tableDate.forEach(function (v,k,arr) {
+            if(arr[k]['sex'] == 0){
+              arr[k]['sex'] = '男'
+            }else if(arr[k]['sex'] == 1) {
+              arr[k]['sex'] = '女'
+            }else if(arr[k]['sex'] == 3) {
+              arr[k]['sex'] = '未选择'
             }
+          })
+          this.nonPayment = res.data.object.payable - (res.data.object.paid - res.data.object.allRefundPrice); // 获取未付款金额
+          this.orderCode = res.data.object.orderCode; // 获取该团期订单号
+          this.indentID = res.data.object.id; // 获取该团期订单ID
+          this.orderAmount = res.data.object.payable; // 获取该团期订单金额
+          this.productType = res.data.object.productType; // 获取该团期产品类型 
+          this.otherFees = res.data.object.otherPrice; // 其他费用
+          this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
+          this.guests = res.data.object.guests ; // 获取报名人退款状态
+          this.guests.forEach(el => el.refundStatus==5?el.refundStatus=10:'');
+          this.totalRefund = res.data.object.allRefundPrice; // 获取总退款
+          this.statusRefund = res.data.object.refundStatus ; // 获取订单的退款状态
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/list", {
+             object:{
+               "orderCode":this.orderCode
+             }
+            }).then(res => {
+                if(res.data.isSuccess == true){
+                  this.refundType = res.data.objects[0].refundType;
+                  this.ruleForm.refundWay = res.data.objects[0].refundType+'';
+                  
+                  if(this.refundType == 2){ // 全退
+                    this.ruleForm.originally = res.data.objects[0].reason; // 全退申请原由
+                    this.ruleForm.cardNumber = res.data.objects[0].remittanceCode;
+                    this.ruleForm.cardBank = res.data.objects[0].remittanceBank;
+                    this.ruleForm.cardPeople = res.data.objects[0].remittancePerson;
+                  }else if(this.refundType == 1){ // 部分退
+                    this.ruleForm.needRefund = res.data.objects[0].needRefundPrice; // 全退申请原由
+                    this.ruleForm.partPriginally = res.data.objects[0].reason;
+                    this.ruleForm.partCardNumber = res.data.objects[0].remittanceCode;
+                    this.ruleForm.partCardBank = res.data.objects[0].remittanceBank;
+                    this.ruleForm.partCardPeople = res.data.objects[0].remittancePerson;
+                  }
+                }
+            });
+          if(res.data.object.refundStatus==5){
+            this.forbidden = true;
+            this.$message.error("订单已经存在退款");
+            return;
           }
+          this.collection(); // 判断是否有收款方法
+        }
       });
+      
       
     },
     collection(){ // 有收款就不允许退款了
@@ -477,6 +488,15 @@ export default {
                    this.$refs[formName].resetFields();
                    this.$message.success("申请退款成功");
                    this.allRefundPrice = 0 ;
+                   this.ruleForm.needRefund = '';
+                   this.ruleForm.originally = ''; // 全退申请原由
+                   this.ruleForm.cardNumber = '';
+                   this.ruleForm.cardBank = '';
+                   this.ruleForm.cardPeople = '';
+                   this.ruleForm.partPriginally = '';
+                   this.ruleForm.partCardNumber = '';
+                   this.ruleForm.partCardBank = '';
+                   this.ruleForm.partCardPeople = '';
                    if(this.typeID != 0){
                     this.updateUndo();
                    }
