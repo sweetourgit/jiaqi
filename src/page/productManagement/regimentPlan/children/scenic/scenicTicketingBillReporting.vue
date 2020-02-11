@@ -21,6 +21,7 @@
         <el-col :span="8">
           <div class="button">
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
+            <el-button class="el-button" type="primary" @click="toPrint">订单打印</el-button>
             <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
             <!--<el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>-->
             <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7 && statusBtn != 8">提交报账单</el-button>
@@ -243,6 +244,10 @@ export default {
 
   },
   methods: {
+    // print 
+    toPrint(){
+      window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/exportorders?tour_no=" + this.msg.tour_no;
+    },
     cellStyle(data) {
       if (data.columnIndex == 3) {
         return "background-color:#FFFF00;";

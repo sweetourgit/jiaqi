@@ -23,7 +23,13 @@
             <span class="search_style">收款单号：</span>
             <el-input v-model="orderNum" placeholder="请输入收款单号" class="search_input"></el-input>
           </el-col>
-          <el-col :span="9" :offset="7">
+          <el-col :span="9">
+            <span class="search_style">收款日期：</span>
+            <el-date-picker v-model="startTimeSK" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
+            <div class="date-line"></div>
+            <el-date-picker v-model="endTimeSK" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
+          </el-col>
+          <el-col :span="7">
             <div class="buttonDv">
               <el-button type="primary" @click="resetFun" plain>重置</el-button>
               <el-button type="primary" @click="searchFun">搜索</el-button>
@@ -91,6 +97,8 @@
         reimbursementPerID: '',
         operatorList: [],
         orderNum: '',
+        startTimeSK: '',
+        endTimeSK: '',// 搜索项，结束时间
 
         pageSize: 10,
         currentPage: 1,
@@ -172,6 +180,8 @@
         this.endTime = '';
         this.reimbursementPerID = '';
         this.orderNum = '';
+        this.startTimeSK = '';
+        this.endTimeSK = '';
         this.loadData();
       },
       handleSizeChange(val) {
@@ -194,7 +204,9 @@
           "apply_start": this.startTime,
           "apply_end": this.endTime,
           "create_type": '2',
-          "rece_code": this.orderNum
+          "rece_code": this.orderNum,
+          "receivables_start": this.startTimeSK,
+          "receivables_end": this.endTimeSK
         }, ).then(function(response) {
           if (response.data.code == '200') {
             that.tableData = response.data.data.list;

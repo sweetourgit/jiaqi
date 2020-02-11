@@ -33,13 +33,21 @@
             <el-input v-model="orderNum" placeholder="请输入收款单号" class="search_input"></el-input>
           </el-col>
           <el-col :span="9">
+            <span class="search_style">收款日期：</span>
+            <el-date-picker v-model="startTimeSK" type="date" placeholder="开始日期" class="start-time" :editable="disabled" :picker-options="startDatePicker"></el-date-picker>
+            <div class="date-line"></div>
+            <el-date-picker v-model="endTimeSK" type="date" placeholder="结束日期" class="start-time" :editable="disabled" :picker-options="endDatePicker"></el-date-picker>
+          </el-col>
+          
+        </el-row>
+        <el-row>
+          <el-col :span="9" :offset="15">
             <div class="buttonDv">
               <el-button type="primary" @click="resetFun" plain>重置</el-button>
               <el-button type="primary" @click="searchFun">搜索</el-button>
             </div>
           </el-col>
         </el-row>
-
       </div>
       <div class="search" style="background-color: transparent;padding: 0;">
         <el-button type="primary" @click="addFun" plain>添加</el-button>
@@ -111,6 +119,8 @@
         operatorList: [],// 申请人list
         collectionStatus: '',// 待认款收款状态[10:未认款;11:待认收款;12:已认完]
         orderNum: '',// 收款单号
+        startTimeSK: '',
+        endTimeSK: '',// 搜索项，结束时间
 
         // 页数，页码，条数
         pageSize: 10,
@@ -210,6 +220,8 @@
         this.reimbursementPerID = '';
         this.collectionStatus = '';
         this.orderNum = '';
+        this.startTimeSK = '';
+        this.endTimeSK = '';
         this.loadData();
       },
       // 每页条数操作
@@ -236,7 +248,9 @@
           "apply_end": this.endTime,
           "status_rece": this.collectionStatus,
           "create_type": '1',
-          "rece_code": this.orderNum
+          "rece_code": this.orderNum,
+          "receivables_start": this.startTimeSK,
+          "receivables_end": this.endTimeSK
         }, ).then(function(response) {
           if (response.data.code == '200') {
             that.tableData = response.data.data.list;
