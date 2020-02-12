@@ -400,8 +400,8 @@ export default new Router({
         //   },
         // ]
         },
-        
-     
+
+
 
       ]
     },
@@ -423,7 +423,7 @@ export default new Router({
         auth: true
       },
     },
-   
+
     {
       path: '/orderManagement',
       component: () => import('@/page/orderManagement/allOrders/orderManagement'),
@@ -564,6 +564,24 @@ export default new Router({
       path: '/planInventory',
       component: () => import('@/page/productManagement/planInventory/index'),
       name: '团期/库存',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/approve/approveList',
+      component: () => import('@/page/Finance/approve/approveList'),
+      name: '需要您审批',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/doneAll/list',
+      component: () => import('@/page/Finance/doneAll/list'),
+      name: '已办',
       meta: {
         keepAlive: true,
         auth: true
