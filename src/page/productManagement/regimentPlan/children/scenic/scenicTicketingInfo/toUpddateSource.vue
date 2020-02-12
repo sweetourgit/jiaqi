@@ -39,7 +39,7 @@ export default {
       },
       rules: {
         source: [{ required: true, message: '收入来源不能为空!', trigger: 'blur' }],
-        distributor: [{ required: true, message: '经手人不能为空!', trigger: 'blur' }],
+        distributor: [{ required: false, message: '经手人不能为空!', trigger: 'blur' }],
         text: [{ required: false, message: '', trigger: 'blur' }]
       },
     }
