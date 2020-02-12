@@ -36,6 +36,8 @@
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户名：</span>{{baseInfo.accountName}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
+        <p class="inputLabel"><span>回冲供应商：</span>{{baseInfo.supplierHC}}</p>
+        <p class="inputLabel"><span>对公/对私：</span>{{baseInfo.account_type}}</p>
 
         <div class="inputLabel">
           <span>附件：</span>
@@ -129,7 +131,9 @@
           accountPay: '',
           reimbursed_money: '',
           approval_status: '',
-          pay_type: ''
+          pay_type: '',
+          supplierHC: '',
+          account_type: ''
         },
         // 认款方式array
         periphery_type: {
@@ -285,7 +289,7 @@
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/info", {
           "id": this.info
         }, ).then(function(response) {
-          // console.log('详情',response);
+          console.log('详情',response);
           if (response.data.code == '200') {
             response.data.data.info.created_at = formatDate(new Date(response.data.data.info.created_at*1000));
 
@@ -305,7 +309,9 @@
               accountPay: '',
               reimbursed_money: response.data.data.info.reimbursed_money,
               approval_status: response.data.data.info.approval_status,
-              pay_type: response.data.data.info.pay_type
+              pay_type: response.data.data.info.pay_type,
+              supplierHC: '',
+              account_type: response.data.data.info.account_type == 1 ? '对公' : '对私'
             };
 
             if(response.data.data.info.pay_type){
@@ -341,6 +347,31 @@
                 // console.log(response);
                 if (response.data.isSuccess) {
                   that.baseInfo.supplier = response.data.object.name
+                } else {
+                  if(response.data.result.message){
+                    that.$message.warning(response.data.result.message);
+                  }else{
+                    that.$message.warning("获取供应商名称失败~");
+                  }
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+            }
+
+            if(response.data.data.info.recoil_supplier_code){
+
+              // 获取供应商名称
+              that.$http.post(that.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
+                "id": response.data.data.info.recoil_supplier_code
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+                // console.log(response);
+                if (response.data.isSuccess) {
+                  that.baseInfo.supplierHC = response.data.object.name
                 } else {
                   if(response.data.result.message){
                     that.$message.warning(response.data.result.message);
