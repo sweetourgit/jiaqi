@@ -236,7 +236,7 @@ export default {
       this.allRefundPrice = 0 ;
       this.allRefundPrice += Number(this.ruleForm.needRefund);
       for( var i = 0 ; i < this.guests.length ; i ++){
-        if(this.guests[i].refundStatus == 5){
+        if(this.guests[i].refundStatus == 5 || this.guests[i].refundStatus == 10){
           this.allRefundPrice += Number(this.guests[i].singlePrice);
         }
       }

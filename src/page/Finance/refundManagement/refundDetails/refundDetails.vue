@@ -486,7 +486,7 @@ export default {
         }
       })
     },
-    updateUndo(){ // 撤销业务接口
+    updateUndo(){ // 撤销业务接口(又退人又退钱)
       if(this.tableDate.length>0){
         for(var i= 0 ; i < this.tableDate.length ; i ++){
           this.tableDate[i].refundStatus = 0;
@@ -497,6 +497,13 @@ export default {
           
         })
       }
+    },
+    updateCode(){
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/code",{
+        ordercode:this.orderCode
+      }).then(res => {
+
+        })
     },
     delRefund(){
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/delete",{
@@ -512,9 +519,13 @@ export default {
          type: "warning"
       }).then(() => {
           this.dialogFormOrder = false;
-          //this.EndProcess();
-          this.updateUndo();
-          //this.delRefund();
+          this.EndProcess();
+          if(this.tableDate > 0){
+            this.updateUndo();
+          }else {
+            this.updateCode();
+          }
+          this.delRefund();
           //this.$parent.pageList(1);
         })
         .catch(() => {
