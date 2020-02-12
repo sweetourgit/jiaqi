@@ -229,7 +229,6 @@ export default {
   created() {
   },
   methods: {
-    
     price(){ // 总金额算法
       if(this.ruleForm.needRefund != '' || this.typeID !=0){
         this.needRefundPriceShow = false;
