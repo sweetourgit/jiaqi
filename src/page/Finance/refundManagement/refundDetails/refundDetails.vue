@@ -488,15 +488,14 @@ export default {
     },
     updateUndo(){ // 撤销业务接口
       if(this.tableDate.length>0){
-      for(var i= 0 ; i < this.tableDate.length ; i ++){
-        this.tableDate[i].refundStatus = 0;
-        console.log(this.tableDate)
-      }
-      this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
-        objects:this.tableDate
-      }).then(res => {
-        
-      })
+        for(var i= 0 ; i < this.tableDate.length ; i ++){
+          this.tableDate[i].refundStatus = 0;
+        }
+        this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
+          objects:this.tableDate
+        }).then(res => {
+          
+        })
       }
     },
     delRefund(){
@@ -513,10 +512,10 @@ export default {
          type: "warning"
       }).then(() => {
           this.dialogFormOrder = false;
-          this.EndProcess();
+          //this.EndProcess();
           this.updateUndo();
-          this.delRefund();
-          this.$parent.pageList(1);
+          //this.delRefund();
+          //this.$parent.pageList(1);
         })
         .catch(() => {
           this.$message({

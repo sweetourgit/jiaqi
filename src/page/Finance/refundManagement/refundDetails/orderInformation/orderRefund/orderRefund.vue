@@ -306,7 +306,7 @@ export default {
               //id: 1812 // 无收款
               //id: 21 // 有收款
       }).then(res => {
-        if (res.data.isSuccess == true) {
+        if (res.data.isSuccess == true) 
           this.orderList = res.data.object;
           this.tableDate = res.data.object.guests;
           this.tableDate.forEach(function (v,k,arr) {
@@ -358,7 +358,7 @@ export default {
           }
           this.collection(); // 判断是否有收款方法
         }
-      });
+      );
       
       
     },
