@@ -21,7 +21,7 @@
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">未付金额:</div>
-                <div class="fl ml13">{{nonPayment | numFilter}}</div>
+                <div class="fl ml13">{{nonPayment > 0 ? nonPayment : 0 | numFilter}}</div>
               </td>
             </tr> 
             <tr>
