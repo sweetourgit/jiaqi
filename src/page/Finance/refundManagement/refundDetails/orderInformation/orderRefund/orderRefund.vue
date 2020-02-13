@@ -35,7 +35,9 @@
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">退款金额:</div>
-                <div class="fl ml13">{{orderList.allRefundPrice | numFilter}}</div>
+                <div class="fl ml13">{{orderList.realRefundPrice | numFilter}}</div>
+                <!-- <div class="fl ml13">{{nonPayment < allRefundPrice ? (allRefundPrice - nonPayment) : 0 | numFilter}}</div> -->
+                <!-- <div class="fl ml13">{{orderList.allRefundPrice | numFilter}}</div> -->
               </td>
             </tr>
           </table>
