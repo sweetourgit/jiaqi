@@ -266,7 +266,7 @@
               <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item.id,1,item.orderCode)"
+                @click.native="operation(item,1,item.orderCode)"
               >流程管理</el-breadcrumb-item>
               <el-breadcrumb-item
                 class="breadCrumbPointer"
