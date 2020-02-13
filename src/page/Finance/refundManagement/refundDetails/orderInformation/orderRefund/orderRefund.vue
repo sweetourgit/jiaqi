@@ -282,7 +282,9 @@ export default {
       }
     },
     clickTab(formName){ // 切换退款方式清空表单
-      this.$refs[formName].resetFields();
+      if(this.forbidden == false){
+        this.$refs[formName].resetFields();
+      }
     },
     cancelOrder(formName){ // 关闭退款弹窗
       this.ruleForm.refundWay = '2';
