@@ -100,8 +100,7 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">未付金额:</div>
-                <div class="fl ml13">{{(refundList.payable - refundList.paid + refundList.realRefundPrice)}}</div>
-                <!-- <div class="fl ml13">{{(refundList.payable - refundList.paid + refundList.realRefundPrice) > 0 ? (refundList.payable - refundList.paid + refundList.realRefundPrice) : 0}}</div> -->
+                <div class="fl ml13">{{(refundList.payable - refundList.paid + refundList.realRefundPrice) > 0 ? (refundList.payable - refundList.paid + refundList.realRefundPrice) : 0}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">其他费用:</div>
