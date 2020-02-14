@@ -330,7 +330,7 @@ export default {
       }).then(res => {
         if (res.data.isSuccess == true){
           let orderInfo = res.data.object;
-          if(this.refundList.refundType==1){
+          if(this.refundList.refundStateType==1){
              this.nonPayment = this.refundList.payable - (this.refundList.paid - this.refundList.realRefundPrice);
           }else{
              this.nonPayment = this.refundList.payable - this.refundList.paid;
