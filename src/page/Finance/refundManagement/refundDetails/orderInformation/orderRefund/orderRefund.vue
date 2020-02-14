@@ -134,6 +134,7 @@ export default {
     return {
       dialogOrderRefund:false,
       orderList:{},
+      reasonList:{}, // 获取原由数组
       ruleForm:{
         refundWay:'2',// 退款方式
         originally:'', // 全退原由
@@ -345,6 +346,7 @@ export default {
              }
             }).then(res => {
                 if(res.data.isSuccess == true){
+                  this.reasonList = res.data.objects;
                   this.refundType = res.data.objects[0].refundType;
                   this.ruleForm.refundWay = res.data.objects[0].refundType + '';
                   if(this.refundType == 2){ // 全退
@@ -484,7 +486,8 @@ export default {
                   "createTime": moment(new Date()).format('YYYY-MM-DD'), // 申请时间
                   "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
                   "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
-                  "productType": 1
+                  "productType": 1,
+                  "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID > 0 ? 1 : 0) : 1
                   //"productType": this.productType // 产品类型
 
                   //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
