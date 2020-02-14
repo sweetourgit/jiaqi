@@ -1,34 +1,137 @@
 <template>
   <div class="curiseShipDetail">
-    <el-button @click="cancal" type="primary">取消</el-button>
-    <p>详情</p>
-    <el-button @click="routerTo" type="warning">添加</el-button>
+    <div class="baseContent">
+      <div class="topDv">
+        <p class="title">基本信息</p>
+        <el-button @click="cancal" type="primary" plain>取消</el-button>
+        <el-button @click="edit" type="primary">编辑</el-button>
+      </div>
+      <div class="msg">
+        <div class="itemMsg"><span class="labelSpan">ID：</span><p class="infoMsg">{{baseInfo.id}}</p></div>
+        <div class="itemMsg"><span class="labelSpan">邮轮公司名称：</span><p class="infoMsg">{{baseInfo.company}}</p></div>
+        <div class="itemMsg"><span class="labelSpan">旗下邮轮：</span><p class="infoMsg">{{baseInfo.shipNum}}</p></div>
+        <div class="itemMsg"><span class="labelSpan">操作人：</span><p class="infoMsg">{{baseInfo.person}}</p></div>
+        <div class="itemMsg"><span class="labelSpan">修改时间：</span><p class="infoMsg">{{baseInfo.date}}</p></div>
+        <div class="itemMsg"><span class="labelSpan">LOGO：</span><p class="infoMsg">{{baseInfo.logo}}</p></div>
+        <div class="itemMsg"><span class="labelSpan">图片：</span><p class="infoMsg">{{baseInfo.picture}}</p></div>
+        <div class="itemMsg itemMsgLong"><span class="labelSpan">简介：</span><p class="infoMsg">{{baseInfo.information}}</p></div>
+      </div>
+      <div class="topDv">
+        <p class="title">旗下邮轮</p>
+        <el-button @click="routerToAdd" type="warning">添加</el-button>
+      </div>
+      <!-- 表格 -->
+      <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
+        <el-table-column prop="id" label="ID" align="center">
+        </el-table-column>
+        <el-table-column prop="company" label="邮轮名称" align="center">
+        </el-table-column>
+        <el-table-column prop="sruiseShip" label="更新时间" align="center">
+        </el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button @click="editShip(scope.row)" type="text" size="small" class="table_details">补充完整</el-button>
+            <el-button @click="editShip(scope.row)" type="text" size="small" class="table_details">编辑</el-button>
+            <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="block">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+        </el-pagination>
+      </div>
+      <!-- 表格 END -->
+    </div>
+    <cruiseShipAdd :dialogFormVisible='dialogFormVisible' :info='info' @close="closeAdd"></cruiseShipAdd>
   </div>
 </template>
 <script type="text/javascript">
+import cruiseShipAdd from '@/page/contentInfo/cruiseShip/cruiseShipAdd.vue'
 export default {
   name: "curiseShipDetail",
   components: {
-    
+    cruiseShipAdd
   },
   data() {
     return {
-      
+      baseInfo: {
+        id: '111',
+        company: '哈哈哈哈哈',
+        shipNum: '3',
+        person: '哈哈哈哈哈',
+        date: '2019-09-09',
+        logo: '',
+        picture: '',
+        information: '哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或'
+      },
+
+      tableData: [{}], // 表格数据
+      pageCurrent: 1, // 当前页数
+      pageSize: 10, // 每页条数
+      total: 0, // 总条数
+
+      dialogFormVisible: false,
+      info: ''
     }
   },
   computed: {},
   methods: {
+    // 表格header设置
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
+    // 编辑
+    edit(row){
+      this.dialogFormVisible = true;
+      this.info = 'id';
+    },
+    // 关闭添加弹框
+    closeAdd(){
+      this.dialogFormVisible = false;
+      this.info = '';
+    },
     cancal(){
       this.$router.push({
         path: '/cruiseShip',
         name: '邮轮管理'
       });
     },
-    routerTo(){
+    routerToAdd(){
       this.$router.push({
         path: '/cruiseShip/shipDetailAdd',
         name: '邮轮管理/详情/添加游轮'
       });
+    },
+
+    // 编辑
+    editShip(){
+      this.$router.push({
+        path: '/cruiseShip/shipDetailAdd',
+        name: '邮轮管理/详情/添加游轮',
+        query: 'id'
+      });
+    },
+    // 删除
+    deleteFun(){
+
+    },
+
+    // 改变每页条数
+    handleSizeChange(val){
+      this.pageSize = val;
+      this.pageCurrent = 1;
+    },
+    // 改变页数
+    handleCurrentChange(val){
+      this.pageCurrent = val;
+    },
+    // 加载数据
+    loadData(){
+
     }
   },
   created() {
@@ -41,5 +144,61 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-  
+  .curiseShipDetail{
+    .baseContent{
+      width: 98%;
+      margin: 25px auto;
+      min-width: 1096px;
+      .topDv{
+        overflow: hidden;
+        margin: 10px auto;
+        .title{
+          font-size: 20px;
+          float: left;
+          margin: 0;
+          line-height: 40px;
+        }
+        .el-button{
+          float: right;
+          margin-right: 20px;
+        }
+      }
+      .msg{
+        display: flex;
+        display: -webkit-flex;
+        justify-content: space-between;
+        flex-direction: row;
+        flex-wrap: wrap;
+        background-color: #f7f7f7;
+        padding: 18px;
+        .itemMsg{
+          width: 33.333%;
+          line-height: 32px;
+          font-size: 14px;
+          .labelSpan{
+            display: inline-block;
+            width: 120px;
+            vertical-align: top;
+          }
+          .infoMsg{
+            display: inline-block;
+            width: calc(100% - 120px);
+            margin: 0;
+          }
+        }
+        .itemMsgLong{
+          width: 66.666%;
+        }
+      }
+      #table-content{
+        width: 100%;
+        margin: 20px auto;
+      }
+      .block{
+        width: 100%;
+        text-align: center;
+        margin: 30px auto;
+      }
+    }
+  }
 </style>
