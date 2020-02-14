@@ -337,7 +337,7 @@ export default {
         invoicemoney: [{ required: true, message: '请填写发票金额', trigger: 'blur' }],
         mobile: [{ required: true, message: '请填写联系电话', trigger: 'blur' }],
         invoiceItem: [{ required: true, message: '请选择发票项目', trigger: 'blur' }],
-        voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
+        // voucher: [{ required: true, trigger: 'change', validator: validateVoucher}],
         collectionTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         createTime: [{ required: true, message: '收款时间不能为空', trigger: 'blur' }],
         sameTrade: [{ required: true, message: '同业社不能为空', trigger: 'change' }],
