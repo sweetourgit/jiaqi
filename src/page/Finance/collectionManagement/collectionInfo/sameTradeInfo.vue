@@ -404,7 +404,23 @@ export default {
       this.getCollectionPriceTotal = filterPriceCount
       // console.log(this.arrearsList)
       // console.log(this.getCollectionPriceTotal)
+      // 如果当前订单存在退款的情况则不允许进行收款
+     /* this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/list", {
+          object:{orderCode: that.indent},
+      })
+      .then(function(obj) {
+        if(obj.data.objects.length == 0){
 
+        } else {
+          this.$message({
+            type: "info",
+            message: "该笔订单正在退款中，不能进行收款操作"
+          });
+        }
+      })
+      .catch(function(obj) {
+        console.log(obj)
+      })*/
     },
     // 时间插件
     moment,

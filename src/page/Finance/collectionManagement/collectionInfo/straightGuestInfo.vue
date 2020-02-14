@@ -463,19 +463,34 @@ export default {
       // this.getnumber()
       var that = this
       this.$http.post(
-          this.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
-            orderCode: that.indent,
-          }
-        )
+        this.GLOBAL.serverSrc + "/finance/refund/api/list", {
+          object:{orderCode: that.indent},
+        })
         .then(function(obj) {
-          // obj.data.object.collectedMoney = that.collectedMoney 暂时没用上
-          obj.data.object.uncollectedMoney = obj.data.object.payable - obj.data.object.collPrice // 订单金额 - 已收金额
-          // obj.data.object.collectedMoney = that.examineMoney 暂时没用上
-          obj.data.object.matchingPrice = 0
-          that.arrearsList.push(obj.data.object)
-          that.ruleForm.planID = obj.data.object.planID
-          that.ruleForm.orderID = obj.data.object.id
-          that.ruleForm.groupCode = obj.data.object.groupCode
+          if(obj.data.objects.length == 0){
+            that.$http.post(
+              that.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
+                orderCode: that.indent,
+              })
+              .then(function(obj) {
+                // obj.data.object.collectedMoney = that.collectedMoney 暂时没用上
+                obj.data.object.uncollectedMoney = obj.data.object.payable - obj.data.object.collPrice // 订单金额 - 已收金额
+                // obj.data.object.collectedMoney = that.examineMoney 暂时没用上
+                obj.data.object.matchingPrice = 0
+                that.arrearsList.push(obj.data.object)
+                that.ruleForm.planID = obj.data.object.planID
+                that.ruleForm.orderID = obj.data.object.id
+                that.ruleForm.groupCode = obj.data.object.groupCode
+              })
+              .catch(function(obj) {
+                console.log(obj)
+              })
+          }else {
+            that.$message({
+              type: "info",
+              message: "该笔订单正在退款中，不能进行收款操作"
+            });
+          }
         })
         .catch(function(obj) {
           console.log(obj)
