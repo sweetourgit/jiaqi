@@ -100,7 +100,7 @@
             <tr>
               <td width="33%">
                 <div width="80" class="fl fb">未付金额:</div>
-                <div class="fl ml13">{{(refundList.payable - refundList.paid + refundList.realRefundPrice) > 0 ? (refundList.payable - refundList.paid + refundList.realRefundPrice) : 0}}</div>
+                <div class="fl ml13">{{nonPayment}}</div>
               </td>
               <td width="33%">
                 <div width="80" class="fl fb">其他费用:</div>
@@ -215,6 +215,7 @@ export default {
       forbidden: false,
       ifDY100068:false,
       payName:'', // 选择支付账户，通过ID获取名字
+      nonPayment:0,//未付金额
     };
 
   },
@@ -246,6 +247,9 @@ export default {
         this.dialogFormOrder = true;
         this.title = "审批"
       }
+     setTimeout(() => {
+      this.getOrder(this.refundList.orderID);
+     },500);
       if(sessionStorage.getItem('userCode') == 'DY100068'){
         this.ifDY100068 = true;
       }else{
@@ -319,6 +323,21 @@ export default {
         this.tableAudit = [];
         this.tableAudit = obj.data.extend.instanceLogInfo;
       })
+    },
+    getOrder(ID){ // 点击退款获取详情信息
+      this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
+              id:ID,
+      }).then(res => {
+        if (res.data.isSuccess == true){
+          let orderInfo = res.data.object;
+          if(this.refundList.refundType==1){
+             this.nonPayment = this.refundList.payable - (this.refundList.paid - this.refundList.realRefundPrice);
+          }else{
+             this.nonPayment = this.refundList.payable - this.refundList.paid;
+          }
+          this.nonPayment=this.nonPayment>0?this.nonPayment:0;
+        }
+      })           
     },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
