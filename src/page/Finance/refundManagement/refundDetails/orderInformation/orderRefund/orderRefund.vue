@@ -504,7 +504,7 @@ export default {
                    this.ruleForm.partCardNumber = '';
                    this.ruleForm.partCardBank = '';
                    this.ruleForm.partCardPeople = '';
-                   if(this.typeID != 0){
+                   if(this.typeID !== 0){
                     this.updateUndo();
                    }
                 }else{
