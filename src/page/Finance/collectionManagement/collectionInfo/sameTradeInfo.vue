@@ -175,7 +175,7 @@
            <el-table-column prop="repayment_Amount" label="已还金额" align="center"></el-table-column>
            <el-table-column label="匹配收款金额" align="center" width="180">
               <template slot-scope="scope">
-                <el-input-number :controls="false" size="small" v-model="scope.row.matchingMoney" placeholder="匹配收款金额" @blur="handleCollectionPrice"></el-input-number>
+                <el-input-number :controls="false" size="small" v-model="scope.row.matchingMoney" placeholder="匹配收款金额" @blur="handleCollectionPrice(scope.row.matchingMoney)"></el-input-number>
               </template>
            </el-table-column>
         </el-table>
@@ -390,7 +390,8 @@ export default {
   },
   methods: {
     // 计算匹配金额的总价
-    handleCollectionPrice(event){
+    handleCollectionPrice(val){
+      console.log(val,'inputde的值')
       let filterCount = null
       let filterPriceCount = 0
       filterCount = this.arrearsList.filter(function (item) {
