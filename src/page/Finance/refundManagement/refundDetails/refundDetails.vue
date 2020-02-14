@@ -522,6 +522,7 @@ export default {
           this.EndProcess();
           if(this.tableDate > 0){
             this.updateUndo();
+            this.updateCode();
           }else {
             this.updateCode();
           }
