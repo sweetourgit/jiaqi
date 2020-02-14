@@ -488,6 +488,12 @@ export default {
           
         })
     },
+    EndProcessForJQ(){
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcessForJQ', { 
+        "jQ_id":this.orderCode,
+        "jQ_Type":6,
+      })
+    },
     EndProcess(){
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', { 
         "jQ_id":this.orderCode,
@@ -538,7 +544,7 @@ export default {
          type: "warning"
       }).then(() => {
           this.dialogFormOrder = false;
-          this.EndProcess();
+          this.EndProcessForJQ();
           if(this.tableDate > 0){
             this.updateUndo();
             this.updateCode();
