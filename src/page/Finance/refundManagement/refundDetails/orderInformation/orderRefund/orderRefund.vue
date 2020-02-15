@@ -487,7 +487,7 @@ export default {
                   "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
                   "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
                   "productType": 1,
-                  "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID > 0 ? 1 : 0) : 1
+                  "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID !=0 ? 1 : 0) : 1
                   //"productType": this.productType // 产品类型
 
                   //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
