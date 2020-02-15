@@ -479,8 +479,8 @@ export default {
             this.dialogApproval = false;
             this.dialogFormOrder = false;
             this.$parent.commission();
-            this.EndProcessForJQ();
-            //this.EndProcess(); // 工作流结束
+            //this.EndProcessForJQ();
+            this.EndProcess(); // 工作流结束
             this.updateReject();// 业务驳回
             this.$message.success("退款驳回成功");
           }else {
