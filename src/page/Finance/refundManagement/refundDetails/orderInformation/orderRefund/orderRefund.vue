@@ -54,19 +54,19 @@
         <!--全退-->
         <div v-if="ruleForm.refundWay == 2">
           <el-form-item label="申请原由" prop="originally">
-            <el-input :disabled="forbidden" v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由" :title="reasonList[0].reason"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由" :title="ruleForm.originally"></el-input>
             <span class="Numbers">{{ruleForm.originally.length}}/100字</span>
           </el-form-item>
           <el-form-item label="汇款卡号" prop="cardNumber">
-            <el-input :disabled="forbidden" v-model="ruleForm.cardNumber" class="Words" placeholder="请输入汇款卡号" :title="reasonList[0].remittanceCode"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.cardNumber" class="Words" placeholder="请输入汇款卡号" :title="ruleForm.cardNumber"></el-input>
             <span class="Numbers">{{ruleForm.cardNumber.length}}/80字</span>
           </el-form-item>
           <el-form-item label="汇款开户行" prop="cardBank">
-            <el-input :disabled="forbidden" v-model="ruleForm.cardBank" class="Words" placeholder="请输入汇款开户行" :title="reasonList[0].remittanceBank"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.cardBank" class="Words" placeholder="请输入汇款开户行" :title="ruleForm.cardBank"></el-input>
             <span class="Numbers">{{ruleForm.cardBank.length}}/40字</span>
           </el-form-item>
           <el-form-item label="汇款开户人" prop="cardPeople">
-            <el-input :disabled="forbidden" v-model="ruleForm.cardPeople" class="Words" placeholder="请输入汇款开户人" :title="reasonList[0].remittancePerson"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.cardPeople" class="Words" placeholder="请输入汇款开户人" :title="ruleForm.cardPeople"></el-input>
             <span class="Numbers">{{ruleForm.cardPeople.length}}/40字</span>
           </el-form-item>
         </div>
@@ -78,19 +78,19 @@
             <div class="red" v-show = "needRefundShow">还需退款金额不能大于总订单金额</div>
           </el-form-item>
           <el-form-item label="申请原由" prop="partPriginally">
-            <el-input :disabled="forbidden" v-model="ruleForm.partPriginally" class="Words" placeholder="请输入申请原由" :title="reasonList[0].reason"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.partPriginally" class="Words" placeholder="请输入申请原由" :title="ruleForm.partPriginally"></el-input>
             <span class="Numbers">{{ruleForm.partPriginally.length}}/100字</span>
           </el-form-item>
           <el-form-item label="汇款卡号" prop="partCardNumber">
-            <el-input :disabled="forbidden" v-model="ruleForm.partCardNumber" class="Words" placeholder="请输入汇款卡号" :title="reasonList[0].remittanceCode"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.partCardNumber" class="Words" placeholder="请输入汇款卡号" :title="ruleForm.partCardNumber"></el-input>
             <span class="Numbers">{{ruleForm.partCardNumber.length}}/80字</span>
           </el-form-item>
           <el-form-item label="汇款开户行" prop="partCardBank">
-            <el-input :disabled="forbidden" v-model="ruleForm.partCardBank" class="Words" placeholder="请输入汇款开户行" :title="reasonList[0].remittanceBank"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.partCardBank" class="Words" placeholder="请输入汇款开户行" :title="ruleForm.partCardBank"></el-input>
             <span class="Numbers">{{ruleForm.partCardBank.length}}/40字</span>
           </el-form-item>
           <el-form-item label="汇款开户人" prop="partCardPeople">
-            <el-input :disabled="forbidden" v-model="ruleForm.partCardPeople" class="Words" placeholder="请输入汇款开户人" :title="reasonList[0].remittancePerson"></el-input>
+            <el-input :disabled="forbidden" v-model="ruleForm.partCardPeople" class="Words" placeholder="请输入汇款开户人" :title="ruleForm.partCardPeople"></el-input>
             <span class="Numbers">{{ruleForm.partCardPeople.length}}/40字</span>
           </el-form-item>
           <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow" :row-style="rowClass">
