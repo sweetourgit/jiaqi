@@ -233,6 +233,7 @@ export default {
   },
   methods: {
     price(){ // 总金额算法
+      this.getTypeId();
       if(this.ruleForm.needRefund != '' || this.typeID !=0){
         this.needRefundPriceShow = false;
       }
@@ -259,11 +260,20 @@ export default {
       this.multipleSelection = val;
       //console.log(val.length)
     },
+    getTypeId(){
+      this.typeID = 0;
+      for(var i= 0 ; i < this.guests.length ; i ++){
+        if(this.guests[i].refundStatus == 5){
+          this.typeID = 1;
+          break;
+        }
+      }
+    },
     clickRow(row) {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
-      this.typeID = this.multipleSelection[0].id;
+      //this.typeID = this.multipleSelection[0].id;
       this.singlePrice = this.multipleSelection[0].singlePrice;
       this.refundStatus = this.multipleSelection[0].refundStatus;
       console.log(this.singlePrice)
@@ -432,6 +442,7 @@ export default {
 
     },
     applyRefund(formName){ // 申请退款
+      this.getTypeId();
       //this.amount();
       if(this.allRefundPrice<0){
         this.$message.error("总退款金额不能小于0");

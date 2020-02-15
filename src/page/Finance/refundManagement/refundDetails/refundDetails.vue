@@ -546,7 +546,7 @@ export default {
       }).then(() => {
           this.dialogFormOrder = false;
           this.EndProcessForJQ();
-          if(this.tableDate > 0){
+          if(this.tableDate.length > 0){
             this.updateUndo();
             this.updateCode();
           }else {
