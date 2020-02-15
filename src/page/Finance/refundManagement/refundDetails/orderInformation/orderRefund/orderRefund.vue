@@ -206,7 +206,6 @@ export default {
       needRefund03:0,
       totalRefund:0, // 获取当前id的总退款
       statusRefund:'', // 获取当前订单的退款状态
-
     };
   },
   filters: {
@@ -233,6 +232,7 @@ export default {
   },
   methods: {
     price(){ // 总金额算法
+      this.getTypeId();
       if(this.ruleForm.needRefund != '' || this.typeID !=0){
         this.needRefundPriceShow = false;
       }
@@ -259,11 +259,20 @@ export default {
       this.multipleSelection = val;
       //console.log(val.length)
     },
+    getTypeId(){
+      this.typeID = 0;
+      for(var i= 0 ; i < this.guests.length ; i ++){
+        if(this.guests[i].refundStatus == 5){
+          this.typeID = 1;
+          break;
+        }
+      }
+    },
     clickRow(row) {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
-      this.typeID = this.multipleSelection[0].id;
+      //this.typeID = this.multipleSelection[0].id;
       this.singlePrice = this.multipleSelection[0].singlePrice;
       this.refundStatus = this.multipleSelection[0].refundStatus;
       console.log(this.singlePrice)
@@ -429,9 +438,9 @@ export default {
       this.needRefund01 = this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber;
       this.needRefund02 = this.typeID == 0 ? this.ruleForm.needRefund : this.needRefund01;
       this.needRefund03 = this.orderList.paid - this.allRefundPrice;
-
     },
     applyRefund(formName){ // 申请退款
+      this.getTypeId();
       //this.amount();
       if(this.allRefundPrice<0){
         this.$message.error("总退款金额不能小于0");
@@ -487,9 +496,8 @@ export default {
                   "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
                   "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
                   "productType": 1,
-                  "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID > 0 ? 1 : 0) : 1
+                  "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID !=0 ? 1 : 0) : 1
                   //"productType": this.productType // 产品类型
-
                   //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
                 }
               })
@@ -568,5 +576,3 @@ export default {
 .money{float:right; margin:30px 50px 0 0;font-size:14pt; font-weight:bold;}
 .red{color:red;}
 </style>
-
-
