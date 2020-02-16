@@ -316,12 +316,13 @@ export default {
       this.payName = '';
     },
     getJqId(result){ // 获取审批结果tableAudit
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ',{
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ',{
         "jq_id":result,
         "jQ_Type":6,
       }).then(obj => {
         this.tableAudit = [];
-        this.tableAudit = obj.data.extend.instanceLogInfo;
+        this.tableAudit = obj.data[0].extend.instanceLogInfo;
+        console.log(this.tableAudit)
       })
     },
     getOrder(ID){ // 点击退款获取详情信息
