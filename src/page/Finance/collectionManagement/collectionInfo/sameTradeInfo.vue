@@ -287,6 +287,7 @@ export default {
       }
     };
     return {
+      refundOrder: [], // 退款中的订单
       tableManyRow: null, // 关联欠款表格共多少行
       getCollectionPriceTotal: 0, // 当前收款总额（合计）
       ifShowApply: false, // 当同业社名字下面没有关联欠款清下将其置灰
@@ -813,191 +814,208 @@ export default {
             pictureList.push({ url: JSON.parse(item.response).paths[0].Url, name: item.name})
           })
 
-          // 存筛选中订单号
-          let keepOrderCode = []
-          // 筛选中退款中的订单
-          this.arrearsList.forEach(function(item){
-            if(item.matchingMoney != undefined && item.matchingMoney != '' && Number(item.matchingMoney) > 0){
-              // 先进行该订单是否为退款中的订单的验证，若是，置灰，清空之前填的值
-              // 如果当前订单存在退款的情况则不允许进行收款
-              _this.$http.post(_this.GLOBAL.serverSrc + "/finance/refund/api/list", {
-                   object:{orderCode: item.orderCode},
-               })
-               .then(function(obj) {
-                 if(obj.data.objects.length == 0){
-                   console.log(_this.arrearsList, '这是什么')
-                   // 获得匹配输入值为正常金额
-                   let getNoWriteData  = _this.arrearsList.some(function (item) {
-                     return (item.matchingMoney != undefined && item.matchingMoney != '' && Number(item.matchingMoney) > 0)
-                   })
-                   // 对表格数据进行相关校验
-                   // 如果所有表格都没有填写关联欠款数据，则提示必填一项
-                   if(!getNoWriteData){
-                     _this.$message({
-                       type: 'info',
-                       message: '请填写匹配收款金额，并且匹配收款金额应大于0'
-                     });
-                     return
-                   } else {
-                     // 对已填写匹配金额的行进行如下公式校验
-                     let getCompareData = _this.arrearsList.some(function (item) {
-                       if(item.matchingMoney != undefined){
-                         return (!(item.arrears_Amount - item.audited_Amount >= item.matchingMoney))
-                       }
-                     })
-                     if(getCompareData){
-                       _this.$message({
-                         type: 'info',
-                         message: '需遵循此公式：未收金额 - 待审批金额 >=  匹配收款金额'
-                       });
-                       return
-                     } else {
-                       // 每一项匹配收款金额累计与输入框的数据进行比对，相等才可以通过
-                       let matchingMoneyAll = 0
-                       _this.arrearsList.forEach(function (item) {
-                         if(typeof item.matchingMoney == "number") {
-                           matchingMoneyAll += item.matchingMoney
-                         }
-                       })
-                       if(matchingMoneyAll != Number(_this.ruleForm.price)){
-                         _this.$message({
-                           type: 'info',
-                           message: '收款金额要与匹配收款金额相等'
-                         });
-                         return
-                       }
-                     }
-                   }
-
-                   let objectRequest = {}
-                   let getMatchingMoney = 0
-
-                   let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
-                   _this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
-                     if(item.matchingMoney != '' && item.matchingMoney > 0){
-                       getMatchingMoney +=  Number(item.matchingMoney)
-                       needArrearData.push({
-                         "id": 0,
-                         'planID':item.planID,
-                         "collectionID": 0, // 收款id
-                         "orderCode": item.orderCode,
-                         "productName": item.proName,
-                         "groupCode": item.groupCode,
-                         "date": item.departure,
-                         "payablePrice": item.payable, // 订单金额
-                         "arrearsPrice": item.arrears_Amount, // 欠款金额
-                         "repaidPrice": item.repayment_Amount, // 已还金额
-                         "amountPrice": item.audited_Amount, // 待审核金额
-                         "matchingPrice": item.matchingMoney // 匹配收款金额
-                       })
-                     }
-                   })
-                   objectRequest = {
-                     "GroupCode":"",
-                     "OrderNumber":"",
-                     "Dept":sessionStorage.getItem('orgName'),
-                     "LocalCompName":_this.originPlace,
-                     "ProductName":"暂无",
-                     "checkType": 0, // 审批状态
-                     "collectionTime": moment(_this.ruleForm.collectionTime).format('YYYY-MM-DD'), // 收款时间,
-                     "groupCode": _this.ruleForm.groupCode, // 团号,
-                     "orderID": 0, // 订单ID,
-                     "planID": 0, // 计划id,
-                     "orderNumber": _this.indent, // 订单号
-                     "collectionNumber":  _this.ruleForm.collectionNumber, // 收款账户
-                     "price": getMatchingMoney, // 金额,
-                     // "dept": _this.org, // 组织部门 _this.dept
-                     "createUser": sessionStorage.getItem('userCode'), // 创建者
-                     "createTime": newDate, // 申请时间
-                     "code": "",
-                     "serialNumber": 0, // 流水号
-                     "abstract": _this.ruleForm.abstract, // 摘要
-                     "files": pictureList, // 文件
-                     "invoice": _this.ruleForm.isInvoice, // 是否发票,
-                     "isDeleted": 0,
-                     "collectionType": 2, // 直客1.同业2
-                     "localCompID": _this.productPos, // 直客0，同业变成同业社id
-                     "arrears": needArrearData, // 收款 - 关联欠款列表
-                     "isEBS": 0,
-                     "accountID": _this.accountCredited == null ? 0 : _this.accountCredited, // 银行账号ID
-                     "moneyExplain": "string", // 款项说明
-                     "distributor": "string", // 分销商
-                     "payarr": [], // 付款 欠款关联订单
-                   }
-
-                   console.log(objectRequest)
-                   // return
-
-                   if(_this.ruleForm.isInvoice == 1) { // 发票列表，如果选择发票则添加该对象
-                     let needInvoiceData = []
-                     _this.ruleForm.invoiceList.forEach(function(item){
-                       needInvoiceData.push({
-                         "id": 0,
-                         "createTime": "2019-11-11T02:43:05.258Z",
-                         "code": "string",
-                         "invoiceID": item.invoiceID, // 发票类型 – 纸质发票
-                         "invoiceType": item.invoiceType, // 个人/单位
-                         "invoiceNumber": item.taxesNumber, // 纳税人识别号
-                         "invoiceHeaderOrTel": item.titleOrMobile, // 发票抬头/手机号
-                         "invoiceItem": item.invoiceItem, // 发票项目–旅游费
-                         "invoicePrice": item.invoicemoney, // 金额
-                         "cardNumber": item.account, // 账号
-                         "bankName": item.bank, // 开户行
-                         "address": item.address, // 地址
-                         "tel": item.mobile, // 电话
-                         "collectionID": 0
-                       })
-                     })
-                     objectRequest.invoiceTable = needInvoiceData
-                   } else {
-                     objectRequest.invoiceTable = []
-                   }
-
-                   _this.$http.post(_this.GLOBAL.serverSrc + '/finance/collection/api/insert', {
-                     "object": objectRequest
-                   }).then(res => {
-                     // console.log(res.data);
-                     if (res.data.isSuccess == true) {
-                       _this.tableManyRow = 0
-                       _this.fileList = []
-                       _this.getCollectionPriceTotal = 0
-                       _this.$refs["ruleForm"].resetFields();
-                       _this.arrearsList = [];
-                       _this.indent = '';
-                       _this.dialogVisibleInvoice = false;
-                       // _this.a = false;
-                       if(_this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement){
-                         _this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
-                       };
-                       _this.$emit('searchHand', '')
-                       _this.$message({
-                         type: 'success',
-                         message: '创建成功!'
-                       });
-                       _this.closeAdd(true)
-                     } else {}
-                   }).catch(err => {})
-                 } else {
-                   console.log(item.orderCode,'该笔订单正在退款中')
-                   keepOrderCode.push(item.orderCode)
-                   // 添加 isDisabled 属性用来给其置灰
-                   _this.$nextTick(function () {
-                     item.isDisabled = true
-                     item.matchingMoney = undefined
-                     // delete item.matchingMoney
-                   })
-                   console.log(keepOrderCode)
-                   _this.$message({
-                     type: "info",
-                     message: "该笔订单正在退款中，不能进行收款操作"
-                   });
-                 }
-               })
-               .catch(function(obj) {
-                 console.log(obj)
-               })
-            }
+          // 获得匹配输入值为正常金额
+          let getNoWriteData  = _this.arrearsList.some(function (item) {
+            return (item.matchingMoney != undefined && item.matchingMoney != '' && Number(item.matchingMoney) > 0)
           })
+          // 对表格数据进行相关校验
+          // 如果所有表格都没有填写关联欠款数据，则提示必填一项
+          if(!getNoWriteData) {
+            _this.$message({
+              type: 'info',
+              message: '请填写匹配收款金额，并且匹配收款金额应大于0'
+            });
+            return
+          } else {
+            // 存筛选中订单号
+            let keepOrderCode = []
+            let showMessgeTime = true // 只让提示语执行一次
+            let showMessgeTime2 = true // 只让提示语执行一次
+            let indexOfArray = [] // 记录forEach循环次数
+            // 筛选中退款中的订单
+            this.arrearsList.forEach(function(item, index, array){
+              if(item.matchingMoney != undefined && item.matchingMoney != '' && Number(item.matchingMoney) > 0){
+                // 先进行该订单是否为退款中的订单的验证，若是，置灰，清空之前填的值
+                // 如果当前订单存在退款的情况则不允许进行收款
+                _this.$http.post(_this.GLOBAL.serverSrc + "/finance/refund/api/list", {
+                  object:{orderCode: item.orderCode},
+                })
+                .then(function(obj) {
+                  // 对所有不在退款中的订单进行验证
+                  if(obj.data.objects.length == 0){
+                    // 对已填写匹配金额的行进行如下公式校验
+                    let getCompareData = _this.arrearsList.some(function (item) {
+                      if(item.matchingMoney != undefined){
+                        return (!(item.arrears_Amount - item.audited_Amount >= item.matchingMoney))
+                      }
+                    })
+                    if(getCompareData && showMessgeTime){
+                      showMessgeTime = false
+                      _this.$message({
+                        type: 'info',
+                        message: '需遵循此公式：未收金额 - 待审批金额 >=  匹配收款金额'
+                      });
+                      return
+                    } else {
+                      // 每一项匹配收款金额累计与输入框的数据进行比对，相等才可以通过
+                      let matchingMoneyAll = 0
+                      _this.arrearsList.forEach(function (item) {
+                        if(typeof item.matchingMoney == "number") {
+                          matchingMoneyAll += item.matchingMoney
+                        }
+                      })
+                      if(matchingMoneyAll != Number(_this.ruleForm.price) && showMessgeTime2){
+                        showMessgeTime2 = false
+                        _this.$message({
+                          type: 'info',
+                          message:'收款金额要与匹配收款金额相等'
+                        });
+                        return
+                      }
+                    }
+
+                    // 数据验证成功之后，一次性进行提交，所以要保证forEach循环结束之后
+                    let howServer = 0
+                    _this.arrearsList.forEach(function (item) {
+                      if(typeof item.matchingMoney == "number") {
+                        howServer++
+                      }
+                    })
+                    console.log(howServer)
+                    indexOfArray.push(index)
+                    console.log(indexOfArray)
+                    if(howServer == indexOfArray.length){
+                      howServer = 0
+                      let objectRequest = {}
+                      let getMatchingMoney = 0
+
+                      let needArrearData = [] // 转变关联欠款数据格式之后的数据模型
+                      _this.arrearsList.forEach(function(item){ // 转换关联欠款表格数据结构
+                        if(item.matchingMoney != '' && item.matchingMoney > 0){
+                          getMatchingMoney +=  Number(item.matchingMoney)
+                          needArrearData.push({
+                            "id": 0,
+                            'planID':item.planID,
+                            "collectionID": 0, // 收款id
+                            "orderCode": item.orderCode,
+                            "productName": item.proName,
+                            "groupCode": item.groupCode,
+                            "date": item.departure,
+                            "payablePrice": item.payable, // 订单金额
+                            "arrearsPrice": item.arrears_Amount, // 欠款金额
+                            "repaidPrice": item.repayment_Amount, // 已还金额
+                            "amountPrice": item.audited_Amount, // 待审核金额
+                            "matchingPrice": item.matchingMoney // 匹配收款金额
+                          })
+                        }
+                      })
+                      objectRequest = {
+                        "GroupCode":"",
+                        "OrderNumber":"",
+                        "Dept":sessionStorage.getItem('orgName'),
+                        "LocalCompName":_this.originPlace,
+                        "ProductName":"暂无",
+                        "checkType": 0, // 审批状态
+                        "collectionTime": moment(_this.ruleForm.collectionTime).format('YYYY-MM-DD'), // 收款时间,
+                        "groupCode": _this.ruleForm.groupCode, // 团号,
+                        "orderID": 0, // 订单ID,
+                        "planID": 0, // 计划id,
+                        "orderNumber": _this.indent, // 订单号
+                        "collectionNumber":  _this.ruleForm.collectionNumber, // 收款账户
+                        "price": getMatchingMoney, // 金额,
+                        // "dept": _this.org, // 组织部门 _this.dept
+                        "createUser": sessionStorage.getItem('userCode'), // 创建者
+                        "createTime": newDate, // 申请时间
+                        "code": "",
+                        "serialNumber": 0, // 流水号
+                        "abstract": _this.ruleForm.abstract, // 摘要
+                        "files": pictureList, // 文件
+                        "invoice": _this.ruleForm.isInvoice, // 是否发票,
+                        "isDeleted": 0,
+                        "collectionType": 2, // 直客1.同业2
+                        "localCompID": _this.productPos, // 直客0，同业变成同业社id
+                        "arrears": needArrearData, // 收款 - 关联欠款列表
+                        "isEBS": 0,
+                        "accountID": _this.accountCredited == null ? 0 : _this.accountCredited, // 银行账号ID
+                        "moneyExplain": "string", // 款项说明
+                        "distributor": "string", // 分销商
+                        "payarr": [], // 付款 欠款关联订单
+                      }
+
+                      console.log(objectRequest)
+                      // return
+
+                      if(_this.ruleForm.isInvoice == 1) { // 发票列表，如果选择发票则添加该对象
+                        let needInvoiceData = []
+                        _this.ruleForm.invoiceList.forEach(function(item){
+                          needInvoiceData.push({
+                            "id": 0,
+                            "createTime": "2019-11-11T02:43:05.258Z",
+                            "code": "string",
+                            "invoiceID": item.invoiceID, // 发票类型 – 纸质发票
+                            "invoiceType": item.invoiceType, // 个人/单位
+                            "invoiceNumber": item.taxesNumber, // 纳税人识别号
+                            "invoiceHeaderOrTel": item.titleOrMobile, // 发票抬头/手机号
+                            "invoiceItem": item.invoiceItem, // 发票项目–旅游费
+                            "invoicePrice": item.invoicemoney, // 金额
+                            "cardNumber": item.account, // 账号
+                            "bankName": item.bank, // 开户行
+                            "address": item.address, // 地址
+                            "tel": item.mobile, // 电话
+                            "collectionID": 0
+                          })
+                        })
+                        objectRequest.invoiceTable = needInvoiceData
+                      } else {
+                        objectRequest.invoiceTable = []
+                      }
+
+                      _this.$http.post(_this.GLOBAL.serverSrc + '/finance/collection/api/insert', {
+                        "object": objectRequest
+                      }).then(res => {
+                        // console.log(res.data);
+                        if (res.data.isSuccess == true) {
+                          _this.tableManyRow = 0
+                          _this.fileList = []
+                          _this.getCollectionPriceTotal = 0
+                          _this.$refs["ruleForm"].resetFields();
+                          _this.arrearsList = [];
+                          _this.indent = '';
+                          _this.dialogVisibleInvoice = false;
+                          // _this.a = false;
+                          if(_this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+                            _this.$parent.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
+                          };
+                          _this.$emit('searchHand', '')
+                          _this.$message({
+                            type: 'success',
+                            message: '创建成功!'
+                          });
+                          _this.closeAdd(true)
+                        } else {}
+                      }).catch(err => {})
+                    }
+                  } else {
+                    console.log(item.orderCode,'该笔订单正在退款中')
+                    _this.refundOrder.push(item.orderCode)
+                    // 添加 isDisabled 属性用来给其置灰
+                    _this.$nextTick(function () {
+                      item.isDisabled = true
+                      item.matchingMoney = undefined
+                      // delete item.matchingMoney
+                    })
+                    _this.$message({
+                      type: "info",
+                      message: "该笔订单正在退款中，不能进行收款操作"
+                    });
+                  }
+                })
+                .catch(function(obj) {
+                  console.log(obj)
+                })
+              }
+            })
+          }
         } else {
           return false;
         }
