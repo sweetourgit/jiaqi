@@ -536,6 +536,7 @@ export default {
           }
       });
     },
+    
     updateUndo(){ // 撤销业务接口
       let updata = [];
       this.guests.forEach(function (v,k,arr) {
