@@ -206,7 +206,6 @@ export default {
       needRefund03:0,
       totalRefund:0, // 获取当前id的总退款
       statusRefund:'', // 获取当前订单的退款状态
-
     };
   },
   filters: {
@@ -439,7 +438,6 @@ export default {
       this.needRefund01 = this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber;
       this.needRefund02 = this.typeID == 0 ? this.ruleForm.needRefund : this.needRefund01;
       this.needRefund03 = this.orderList.paid - this.allRefundPrice;
-
     },
     applyRefund(formName){ // 申请退款
       this.getTypeId();
@@ -500,7 +498,6 @@ export default {
                   "productType": 1,
                   "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID !=0 ? 1 : 0) : 1
                   //"productType": this.productType // 产品类型
-
                   //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
                 }
               })
@@ -579,5 +576,3 @@ export default {
 .money{float:right; margin:30px 50px 0 0;font-size:14pt; font-weight:bold;}
 .red{color:red;}
 </style>
-
-
