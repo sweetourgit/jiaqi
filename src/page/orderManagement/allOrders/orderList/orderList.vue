@@ -431,6 +431,10 @@ export default {
       contact: "", //订单联系人
       orderChannel: null, //订单来源
       whichStateTab: null, //判断tab是从1 还是2 过来的
+      enrollDetail: "", //报名信息传给后台的格式
+      tour:{},//顾客别类数组
+      allnumber:[],//总游客数组
+      salePrice:[],//拼接空数组
       // breadcrumbSelectValue: "更多", //面包屑更多默认
       // breadcrumbOptions: [
       //   {
@@ -581,12 +585,25 @@ export default {
       // this.orderpage = temp;
       if (this.showContent != index) {
         this.showContent = index;
+        this.tour = {};
+        this.teamEnrolls(item.planID);
         this.axiosListOneInfo(item.id);
       } else {
         this.showContent = null;
       }
     },
-
+    teamEnrolls(id) {
+      //获取报名类型列表数据
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
+          id: id
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            this.tour = res.data.objects;
+           }
+        });
+    },
     // 请求list中的一个数据
     axiosListOneInfo(id) {
       this.$http
@@ -597,7 +614,11 @@ export default {
           // console.log("请求一条数据的",res)
           this.enrollDetailShow = "";
           this.getListOneMessage = res.data.object;
-          // let enrollDetail = this.getListOneMessage.enrollDetail;
+          this.allnumber = []; //总游客信息,二维数组
+          for (let i = 0; i < this.getListOneMessage.length; i++) {
+              this.allnumber=[];
+            }
+         // let enrollDetail = this.getListOneMessage.enrollDetail;
           // this.formatData(enrollDetail);
           // console.log(enrollDetail);
           // if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
@@ -650,11 +671,42 @@ export default {
           } else {
             this.getListOneMessage.platform = "同业系统";
           }
+          //同步报名人数
+           let datas = this.tour;//标题
+           let guest= this.getListOneMessage.guests;
+           let allnumber = this.allnumber
+           for (let g = 0; g < datas.length; g++) {
+             console.log(datas[g],'data');
+              for (let i = 0; i < guest.length; i++) {
+                 console.log(guest[i],'list');
+               if (datas[g].enrollName == guest[i].enrollName) {
+                   allnumber[g].push(guest[i]);
+                }  
+              }
+            }
+
+            //  let guest = this.orderget.guests;
+            // for (let g = 0; g < data.length; g++) {
+            //   for (let i = 0; i < guest.length; i++) {
+            //     if (guest[i].enrollName == data[g].enrollName) {
+            //       //console.log(g,"g")
+            //       this.tour[g].push(guest[i]);
+            //     } else {
+            //       this.tour.push();
+            //     }
+            //   }
+            // }
+            
+            console.log(this.allnumber,'ddd')
+           
+
         })
         .catch(err => {
           console.log(err);
         });
     },
+  
+     
     // 整理数据报名信息的格式显示
     // formatData(origindata) {
     //   let data = JSON.parse(origindata);
@@ -919,7 +971,12 @@ export default {
         } else if (item.orderStatus == 9) {
           item.orderStatus = "作废订单";
         } else if (item.orderStatus == 10) {
-          item.orderStatus = "确认订单";
+           if (item.refundStatus != 0) {
+              item.orderStatus = "确定占位";
+           }else{
+              item.orderStatus = "确认订单";
+           }
+
         }
         if (item.refundStatus == 1) {
           item.refundStatus = "退款中";
@@ -1083,9 +1140,26 @@ export default {
       if (i == 3) {
         this.dialogAdviceNote = true;
       }
-      //if(i == 5) {
-      //  this.orderRefundDialog = 1
-      //}
+      if(i == 5) {
+         this.variable = 0;
+         this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
+         id: this.orderId
+         })
+        .then(res => {
+          if (res.data.isExist == true) {
+              this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
+              return false;
+           }else{
+               this.variable++;
+           }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+          
+       //this.orderRefundDialog = 1
+      }
     },
     // 出团通知书获取
     getActiceNote() {

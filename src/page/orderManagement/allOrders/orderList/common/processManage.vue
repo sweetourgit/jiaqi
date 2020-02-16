@@ -497,10 +497,10 @@ export default {
       });
 
       return this.enrollformatData = result;
-    },
+   },
     // 报名信息显示
     showApplyInfo(res) {
-      res.forEach(item => {
+     res.forEach(item => {
         this.enrollDetailShow += `${item[0]}(${item[1]}*${item[2]})`;
       });
     },
@@ -1071,13 +1071,14 @@ export default {
             for (let g = 0; g < data.length; g++) {
               for (let i = 0; i < guest.length; i++) {
                 if (guest[i].enrollName == data[g].enrollName) {
-                  // console.log(g,"g")
+                  //console.log(g,"g")
                   this.tour[g].push(guest[i]);
                 } else {
                   this.tour.push();
                 }
               }
             }
+             
             //设置报名人数
             for (let i = 0; i < this.tour.length; i++) {
               this.applyInfomations.push(this.tour[i].length);
@@ -1331,14 +1332,13 @@ export default {
             })
           }
 
-          
+          console.log(obj,'那来的1')
           // if (sum !== guest.length ) {
           if (0) {
             this.$message.error("报名人数与出行人信息不符，请修改出行人信息");
           } else {
             // obj.enrollDetail = JSON.stringify(this.enrollDetail);
             obj.enrollDetail= this.enrollsDetailStr;
-            
             // obj.payable = this.prePayable + (this.payable - this.prePayable);
             obj.payable= this.totalPrice+ this.changedPrice;
             console.log("RefundStatus",guest)

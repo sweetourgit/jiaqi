@@ -528,7 +528,7 @@ export default {
                     this.updateUndo();
                    }
                 }else{
-                   this.$message.success("申请失败");
+                   this.$message.error("申请失败");
                 }
             })
           } else {
