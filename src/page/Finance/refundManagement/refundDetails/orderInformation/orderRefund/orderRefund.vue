@@ -416,7 +416,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-        this.guests[index].refundStatus == 0;
+        this.guests[index].refundStatus = 0;
         this.price();
         })
         .catch(res => {
