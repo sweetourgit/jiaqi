@@ -102,7 +102,7 @@
             <el-table-column prop="sex" label="性别" align="center"></el-table-column>
             <el-table-column label="选择退款客人信息" align="center">
               <template slot-scope="scope">
-                <el-button type="text"v-if="scope.row.refundStatus == 0" :disabled="forbidden" @click="choose(scope.$index)">选择</el-button>
+                <el-button type="text"v-if="scope.row.refundStatus == 0 || scope.row.refundStatus == 2" :disabled="forbidden" @click="choose(scope.$index)">选择</el-button>
                 <!-- <span v-if="scope.row.refundStatus == 0" :disabled="forbidden" class="cursor blue" @click="choose(scope.$index)">选择</span> -->
                 <span v-if="scope.row.refundStatus == 5||scope.row.refundStatus == 10" :disabled="forbidden">
                   <span class="blue">已选</span>
@@ -316,9 +316,9 @@ export default {
     },
     getOrder(ID){ // 点击退款获取详情信息
       this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
-              id:ID,
-              //id: 1812 // 无收款
-              //id: 21 // 有收款
+        id:ID,
+        //id: 1812 // 无收款
+        //id: 21 // 有收款
       }).then(res => {
         if (res.data.isSuccess == true) 
           this.orderList = res.data.object;
@@ -416,7 +416,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(res => {
-        this.guests[index].refundStatus = 0;
+        this.guests[index].refundStatus == 0;
         this.price();
         })
         .catch(res => {
