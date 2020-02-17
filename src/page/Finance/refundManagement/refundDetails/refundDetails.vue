@@ -511,7 +511,8 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/order/refundstat/api/update",{
         object:{
           orderCode :this.orderCode,
-          guests:this.tableDate
+          guests:this.tableDate,
+          refundStatus:2
         }
       })
     },
