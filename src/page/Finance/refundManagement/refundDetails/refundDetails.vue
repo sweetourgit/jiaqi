@@ -217,6 +217,7 @@ export default {
       payName:'', // 选择支付账户，通过ID获取名字
       nonPayment:0,//未付金额
       mark:[],
+      instanceID:0,
     };
 
   },
@@ -317,9 +318,10 @@ export default {
       this.payName = '';
     },
     getJqId(result){ // 获取审批结果tableAudit
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ',{
-        "jq_id":result,
-        "jQ_Type":6,
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ_BY_InstanceID',{
+        "instanceId":this.instanceID,
+        // "jq_id":result,
+        // "jQ_Type":6,
       }).then(obj => {
         this.tableAudit = [];
         this.tableAudit = obj.data[0].extend.instanceLogInfo;
@@ -349,6 +351,7 @@ export default {
           this.refundList = res.data.object;
           this.orderCode = res.data.object.orderCode;
           this.indentID = res.data.object.orderID;
+          this.instanceID = res.data.object.instanceID;
           this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
           this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
