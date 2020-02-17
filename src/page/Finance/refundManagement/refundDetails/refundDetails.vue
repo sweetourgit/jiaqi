@@ -115,7 +115,7 @@
         </div>
         <div class="order-title"><span>部分退信息</span></div>
         <div>还需退款: {{refundList.needRefundPrice}}</div>
-        <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+        <el-table :data="mark" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
           <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
           <el-table-column prop="singlePrice" label="价钱" align="center"></el-table-column>
           <el-table-column prop="cnName" label="姓名" align="center"></el-table-column>
@@ -216,6 +216,7 @@ export default {
       ifDY100068:false,
       payName:'', // 选择支付账户，通过ID获取名字
       nonPayment:0,//未付金额
+      mark:[],
     };
 
   },
@@ -350,6 +351,7 @@ export default {
           this.indentID = res.data.object.orderID;
           this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
+          this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
           this.accountID = res.data.object.id;
           this.disbursementID = res.data.object.payID;
           this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",{
