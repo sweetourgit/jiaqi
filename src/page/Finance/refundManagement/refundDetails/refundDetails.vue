@@ -324,7 +324,7 @@ export default {
         // "jQ_Type":6,
       }).then(obj => {
         this.tableAudit = [];
-        this.tableAudit = obj.data[0].extend.instanceLogInfo;
+        this.tableAudit = obj.data.extend.instanceLogInfo;
         console.log(this.tableAudit)
       })
     },
@@ -352,6 +352,7 @@ export default {
           this.orderCode = res.data.object.orderCode;
           this.indentID = res.data.object.orderID;
           this.instanceID = res.data.object.instanceID;
+          console.log(res.data.object.instanceID)
           this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
           this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
