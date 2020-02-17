@@ -1017,6 +1017,26 @@ export default {
       this.variable++;
       this.dialogType = i;
       this.planID = item.planID;
+      if(i == 5) {
+         this.variable = 0;
+         this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
+         id: this.orderId
+         })
+        .then(res => {
+          if (res.data.isExist == true) {
+              this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
+              return false;
+           }else{
+               this.variable++;
+           }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+          
+       //this.orderRefundDialog = 1
+      }
     },
 
     // 出发日期转换格式显示
