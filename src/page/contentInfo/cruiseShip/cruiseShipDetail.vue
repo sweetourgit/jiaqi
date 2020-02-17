@@ -12,8 +12,20 @@
         <div class="itemMsg"><span class="labelSpan">旗下邮轮：</span><p class="infoMsg">{{baseInfo.shipNum}}</p></div>
         <div class="itemMsg"><span class="labelSpan">操作人：</span><p class="infoMsg">{{baseInfo.person}}</p></div>
         <div class="itemMsg"><span class="labelSpan">修改时间：</span><p class="infoMsg">{{baseInfo.date}}</p></div>
-        <div class="itemMsg"><span class="labelSpan">LOGO：</span><p class="infoMsg">{{baseInfo.logo}}</p></div>
-        <div class="itemMsg"><span class="labelSpan">图片：</span><p class="infoMsg">{{baseInfo.picture}}</p></div>
+        <div class="itemMsg"><span class="labelSpan">LOGO：</span>
+          <ul class="infoMsgList">
+            <li v-for="item in fileList" :key="item.index">
+              <a :href="item.pic_url" target="_blank">{{item.pic_name}}</a>
+            </li>
+          </ul>
+        </div>
+        <div class="itemMsg"><span class="labelSpan">图片：</span>
+          <ul class="infoMsgList">
+            <li v-for="item in fileList1" :key="item.index">
+              <a :href="item.pic_url" target="_blank">{{item.pic_name}}</a>
+            </li>
+          </ul>
+        </div>
         <div class="itemMsg itemMsgLong"><span class="labelSpan">简介：</span><p class="infoMsg">{{baseInfo.information}}</p></div>
       </div>
       <div class="topDv">
@@ -64,6 +76,9 @@ export default {
         picture: '',
         information: '哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或'
       },
+
+      fileList: [],
+      fileList1: [],
 
       tableData: [{}], // 表格数据
       pageCurrent: 1, // 当前页数
@@ -131,11 +146,61 @@ export default {
     },
     // 加载数据
     loadData(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-company/viewlinercom", {
+        "id": this.$route.query.id
+      }, ).then(function(response) {
+        console.log('获取邮轮公司detail',response);
+        if (response.data.code == '200') {
+          that.baseInfo = {
+            id: response.data.data.id,
+            company: response.data.data.name,
+            shipNum: response.data.data.linernums,
+            person: response.data.data.create_third_user,
+            date: response.data.data.updated_at,
+            information: response.data.data.introduce
+          },
+          that.fileList = response.data.data.logo;
+          that.fileList1 = response.data.data.pics;
+          that.fileList[0].pic_url = "http://yl.dayuntong.com" + response.data.data.logo[0].pic_url;
+          that.fileList1.forEach(function(item, index, arr){
+            item.pic_url = "http://yl.dayuntong.com" + response.data.data.pics[index].pic_url;
+          })
 
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("加载数据失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/listpage", {
+        "pageIndex": this.pageCurrent,
+        "pageSize": this.pageSize,
+        // "name": this.company,
+        "company_id": this.$route.query.id
+      }, ).then(function(response) {
+        console.log('获取邮轮公司',response);
+        if (response.data.code == '200') {
+          that.tableData = response.data.data.list;
+          that.totalNum = response.data.data.total - 0;
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("加载数据失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
   },
   created() {
-    
+    this.loadData();
   },
   mounted() {
 
@@ -184,6 +249,13 @@ export default {
             display: inline-block;
             width: calc(100% - 120px);
             margin: 0;
+          }
+          .infoMsgList{
+            display: inline-block;
+            width: calc(100% - 150px);
+            margin: 0;
+            padding: 0;
+            list-style: none;
           }
         }
         .itemMsgLong{

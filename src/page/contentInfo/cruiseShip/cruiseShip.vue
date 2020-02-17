@@ -94,13 +94,16 @@ export default {
     closeAdd(){
       this.dialogFormVisible = false;
       this.info = '';
+      this.loadData();
     },
     // 查看详情
     routerToDetail(row){
       this.$router.push({
         path: '/cruiseShip/cruiseShipDetail',
         name: '邮轮管理/详情',
-        query: row.id
+        query: {
+          "id": row.id
+        }
       });
     },
     // 改变每页条数

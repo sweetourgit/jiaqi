@@ -1,10 +1,10 @@
 <template>
   <div class="vivo" style="position:relative" id="applyFor">
     <!--申请预付款-->
-    <el-dialog title="添加" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
+    <el-dialog :title="topTitle" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
-          <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">添 加</el-button>
+          <el-button class="el-button" type="primary" @click="submitForm('ruleForm')">提 交</el-button>
           <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
         </div>
         <div>
@@ -15,7 +15,7 @@
             <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea"></el-input>
           </el-form-item>
           <el-form-item label="LOGO：" label-width="140px" required>
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileList">
+            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileList" :limit=1>
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
@@ -47,7 +47,8 @@
           company: [{ required: true, message: '邮轮公司不能为空!', trigger: 'change' }]
         },
         fileList: [], // logo文件
-        fileList1: [] // 图片文件
+        fileList1: [], // 图片文件
+        topTitle: '添加'
       }
     },
     computed: {
@@ -62,7 +63,10 @@
       dialogFormVisible: {
         handler: function () {
           if(this.info){
+            this.topTitle = '编辑';
             this.loadData();
+          }else{
+            this.topTitle = '添加';
           }
         }
       }
@@ -75,6 +79,7 @@
           introduction: '',
         };
         this.fileList = [];
+        this.fileList1 = [];
         this.$emit('close', false);
       },
       // 取消按钮事件
@@ -99,62 +104,102 @@
         const that = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-
+            // console.log(that.fileList);
+            // console.log(that.fileList1);
+            if(that.fileList.length == 0){
+              that.$message.warning("LOGO不能为空！");
+            }
             let fileArr = [];
-            console.log(that.fileList);
-            if(that.fileList.length != 0){
-              that.fileList.forEach(function (item, index, arr) {
+            if(that.fileList1.length == 0){
+              that.$message.warning("图片不能为空！");
+            }else{
+              that.fileList1.forEach(function (item, index, arr) {
                 fileArr.push({
-                  name: item.name,
-                  url: item.response.data.url
+                  pic_id: item.id,
+                  pic_url: item.url
                 });
               })
-            }else{
-              fileArr = [];
             }
-
-            this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
-              "supplier_code": this.ruleForm.supplierID,
-              "supplier_name": this.ruleForm.supplierName,
-              "periphery_type": 1,
-              "loan_type": this.ruleForm.type,
-              "loan_money": this.ruleForm.money,
-              "mark": this.ruleForm.abstract,
-              "remittance_account": this.ruleForm.payNumber,
-              "account_name": this.ruleForm.payName,
-              "opening_bank": this.ruleForm.payAccount,
-              "number": this.ruleForm.number,
-              "file": fileArr,
-              "create_uid": sessionStorage.getItem('id'),
-              "org_id": sessionStorage.getItem('orgID'),
-              "buy_type": this.ruleForm.buy_type,
-              "account_type": this.ruleForm.account_type,
-              "oracle_supplier_code": this.supplierCode
-            }).then(res => {
-              console.log(res);
-              if (res.data.code == 200) {
-                that.$message({
-                  type: 'success',
-                  message: '创建成功!'
-                });
-                that.startWork(res.data.data);
-
-              } else {
-                if(res.data.message){
+              
+            if(this.info == ''){
+              this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-company/addlinercom', {
+                "name": this.ruleForm.company,
+                "introduce": this.ruleForm.introduction,
+                "logo": [
+                  {
+                    "pic_id": this.fileList[0].id,
+                    "pic_url": this.fileList[0].url
+                  }
+                ],
+                "pics": fileArr,
+                "create_uid": sessionStorage.getItem('id'),
+                "org_id": sessionStorage.getItem('orgID')
+              }).then(res => {
+                // console.log(res);
+                if (res.data.code == 200) {
                   that.$message({
-                    type: 'warning',
-                    message: res.data.message
+                    type: 'success',
+                    message: '创建成功!'
                   });
-                }else{
-                  that.$message({
-                    type: 'warning',
-                    message: '创建失败'
-                  });
+                  that.closeAdd();
+
+                } else {
+                  if(res.data.message){
+                    that.$message({
+                      type: 'warning',
+                      message: res.data.message
+                    });
+                  }else{
+                    that.$message({
+                      type: 'warning',
+                      message: '创建失败'
+                    });
+                  }
                 }
-              }
-            }).catch(err => {
-              console.log(err)
-            })
+              }).catch(err => {
+                console.log(err)
+              })
+            }else{
+              this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-company/editlinercom', {
+                "id": this.info,
+                "name": this.ruleForm.company,
+                "introduce": this.ruleForm.introduction,
+                "logo": [
+                  {
+                    "pic_id": this.fileList[0].id,
+                    "pic_url": this.fileList[0].url
+                  }
+                ],
+                "pics": fileArr,
+                "create_uid": sessionStorage.getItem('id'),
+                "org_id": sessionStorage.getItem('orgID')
+              }).then(res => {
+                // console.log(res);
+                if (res.data.code == 200) {
+                  that.$message({
+                    type: 'success',
+                    message: '修改成功!'
+                  });
+                  that.closeAdd();
+
+                } else {
+                  if(res.data.message){
+                    that.$message({
+                      type: 'warning',
+                      message: res.data.message
+                    });
+                  }else{
+                    that.$message({
+                      type: 'warning',
+                      message: '修改失败'
+                    });
+                  }
+                }
+              }).catch(err => {
+                console.log(err)
+              })
+            }
+            
 
           } else {
             console.log('error submit!!');
@@ -168,8 +213,10 @@
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess(response, file, fileList){
+        // console.log(response);
+        // console.log(file);
         if(response.code == 200){
-          this.fileList = fileList;
+          this.fileList.push(response.data);
         }else{
           if(response.message){
             this.$message.warning(response.message);
@@ -197,8 +244,9 @@
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess1(response, file, fileList){
+        console.log(response);
         if(response.code == 200){
-          this.fileList = fileList;
+          this.fileList1.push(response.data);
         }else{
           if(response.message){
             this.$message.warning(response.message);
@@ -212,7 +260,7 @@
       },
       handleRemove1(file, fileList) {
         console.log(file, fileList);
-        this.fileList = fileList;
+        this.fileList1 = fileList;
       },
       handleExceed1(files, fileList) {
         this.$message.warning(`平台订单只支持一个附件上传！`);
@@ -223,7 +271,38 @@
 
       // 加载编辑数据
       loadData(){
-        alert(this.info);
+        // alert(this.info);
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-company/viewlinercom", {
+          "id": this.info
+        }, ).then(function(response) {
+          console.log('获取邮轮公司detail',response);
+          if (response.data.code == '200') {
+            that.ruleForm = {
+              company: response.data.data.name,
+              introduction: response.data.data.introduce
+            };
+            that.fileList = response.data.data.logo;
+            that.fileList1 = response.data.data.pics;
+            that.fileList[0].name = response.data.data.logo[0].pic_name;
+            that.fileList[0].id = response.data.data.logo[0].pic_id;
+            that.fileList[0].url = response.data.data.logo[0].pic_url;
+            that.fileList1.forEach(function(item, index, arr){
+              item.name = response.data.data.pics[index].pic_name;
+              item.id = response.data.data.pics[index].pic_id;
+              item.url = response.data.data.pics[index].pic_url;
+            })
+
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("加载数据失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
       }
     },
     created() {
