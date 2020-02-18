@@ -510,6 +510,15 @@ export default new Router({
       }
     },
     {
+      path: '/refundManagement',
+      component: () => import('@/page/Finance/refundManagement/refundManagement'),
+      name: '退款管理',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/collectionManagement',
       component: () => import('@/page/Finance/collectionManagement/collectionManagement'),
       name: '收款管理',
