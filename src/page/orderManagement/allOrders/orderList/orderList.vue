@@ -602,6 +602,7 @@ export default {
           if (res.data.isSuccess == true) {
             this.tour = res.data.objects;
            }
+           
         });
     },
     // 请求list中的一个数据
