@@ -1018,6 +1018,7 @@ export default {
       this.dialogType = i;
       this.planID = item.planID;
       if(i == 5) {
+        //判断订单是否有记录
          this.variable = 0;
          this.$http
         .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
