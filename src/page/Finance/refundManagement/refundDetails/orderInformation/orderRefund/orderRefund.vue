@@ -498,7 +498,7 @@ export default {
                   "productType": 1,
                   "Mark":JSON.stringify(this.getGuests()),
                   "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID !=0 ? 1 : 0) : 1,
-                  //"isEBS":0
+                  "isEBS":0
                   //"productType": this.productType // 产品类型
                   //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
                 }

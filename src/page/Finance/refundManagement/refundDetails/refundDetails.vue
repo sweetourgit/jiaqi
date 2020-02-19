@@ -391,6 +391,7 @@ export default {
     },
     accountList() { // 点击支付账户查询列表
     console.log(sessionStorage.getItem("id"))
+    
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
