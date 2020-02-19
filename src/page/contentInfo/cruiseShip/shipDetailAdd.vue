@@ -59,16 +59,26 @@ export default {
     cancel() {
       this.$router.back();
     },
-    tabTo(index) {
+    tabTo(index, str) {
       // alert(index);
-      if(this.status[index] == 'success'){
-        this.activeIndex = index;
+      if(str == "creat"){
+        this.activeIndex = index - 0;
         this.$set(this.status, this.activeIndex, 'finish');
+        for(let i = 0; i < index; i++){
+          this.$set(this.status, i, 'success');
+        }
+        
+      }else{
+        if(this.status[index] == 'success'){
+          this.activeIndex = index;
+          this.$set(this.status, this.activeIndex, 'finish');
+        }
       }
+      
     }
   },
   created() {
-    
+    this.tabTo(this.$route.query.step, 'creat')
   },
   mounted() {
     

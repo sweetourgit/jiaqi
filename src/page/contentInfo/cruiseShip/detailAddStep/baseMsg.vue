@@ -235,7 +235,7 @@ export default {
             this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/savelinerbasic", {
               "button_type": type,
               "company_id": this.$route.query.id,
-              "id": '',
+              "id": localStorage.getItem('liner_id'),
               "name": this.ruleForm.name,
               "strengths": strengthArr,
               "tonnage": this.ruleForm.weight,
@@ -263,6 +263,7 @@ export default {
                 if(type == '1'){
                   // alert('保存');
                   that.$router.back();
+                  localStorage.removeItem('liner_id', res.data.data.liner_id);
                   // that.$router.push({
                   //   path: '/cruiseShip/cruiseShipDetail',
                   //   name: '邮轮管理/详情',
@@ -273,6 +274,7 @@ export default {
                 }else if(type == '2'){
                   // alert('下一步');
                   // console.log(that.$parent);
+                  localStorage.setItem('liner_id', res.data.data.liner_id);
                   that.$parent.next();
                 }
               } else {

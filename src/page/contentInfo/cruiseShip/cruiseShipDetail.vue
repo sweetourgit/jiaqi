@@ -36,14 +36,14 @@
       <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
         <el-table-column prop="id" label="ID" align="center">
         </el-table-column>
-        <el-table-column prop="company" label="邮轮名称" align="center">
+        <el-table-column prop="name" label="邮轮名称" align="center">
         </el-table-column>
-        <el-table-column prop="sruiseShip" label="更新时间" align="center">
+        <el-table-column prop="updated_at" label="更新时间" align="center">
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button @click="editShip(scope.row)" type="text" size="small" class="table_details">补充完整</el-button>
-            <el-button @click="editShip(scope.row)" type="text" size="small" class="table_details">编辑</el-button>
+            <el-button @click="editShip(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.line_status == 2">补充完整</el-button>
+            <el-button @click="editShip(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.line_status == 1">编辑</el-button>
             <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
           </template>
         </el-table-column>
@@ -127,12 +127,27 @@ export default {
     },
 
     // 编辑
-    editShip(){
-      this.$router.push({
-        path: '/cruiseShip/shipDetailAdd',
-        name: '邮轮管理/详情/添加游轮',
-        query: 'id'
-      });
+    editShip(row){
+      localStorage.setItem('liner_id', row.id);
+      if(row.line_status == 1){//编辑
+        this.$router.push({
+          path: '/cruiseShip/shipDetailAdd',
+          name: '邮轮管理/详情/添加游轮',
+          query: {
+            "id": row.id,
+            "step": 0
+          }
+        });
+      }else{
+        this.$router.push({//补充完整
+          path: '/cruiseShip/shipDetailAdd',
+          name: '邮轮管理/详情/添加游轮',
+          query: {
+            "id": row.id,
+            "step": row.cur_steps
+          }
+        });
+      }
     },
     // 删除
     deleteFun(){
@@ -187,10 +202,13 @@ export default {
         // "name": this.company,
         "company_id": this.$route.query.id
       }, ).then(function(response) {
-        console.log('获取邮轮公司',response);
+        console.log('获取邮轮',response);
         if (response.data.code == '200') {
           that.tableData = response.data.data.list;
-          that.totalNum = response.data.data.total - 0;
+          that.total = response.data.data.total - 0;
+          that.tableData.forEach(function(item, index, arr){
+            item.updated_at = formatDate(new Date(item.updated_at*1000));
+          })
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);
