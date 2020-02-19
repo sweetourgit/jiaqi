@@ -427,23 +427,24 @@
           <el-tab-pane label="无收入" name="1"></el-tab-pane>
           <el-tab-pane label="无收入(无团期计划)" name="0"></el-tab-pane>
       </el-tabs>
-
+ <!-- @row-click="joinData_btn" -->
         <el-table 
           :data="joinData" 
           border 
-          :highlight-current-row="true"
-          @row-click="joinData_btn"
+          tooltip-effect="dark"
+          @selection-change="joinData_btn"
           style="width: 100%; margin-top: 30px">
-          <el-table-column prop="paymentID" label="预付款借款ID" width="170" align="center" v-if="s_find==1"></el-table-column>
-          <el-table-column prop="paymentID" label="无收入借款ID" width="170" align="center" v-if="s_find==2"></el-table-column>
+          <el-table-column type="selection" width="50" align="center"></el-table-column>
+          <el-table-column prop="paymentID" label="预付款借款ID" width="160" align="center" v-if="s_find==1"></el-table-column>
+          <el-table-column prop="paymentID" label="无收入借款ID" width="160" align="center" v-if="s_find==2"></el-table-column>
          
-          <el-table-column prop="supplierName" label="供应商" width="230" align="center"></el-table-column>
+          <el-table-column prop="supplierName" label="供应商" width="210" align="center"></el-table-column>
           <el-table-column prop="supplierTypeEX" label="借款类型" width="140" align="center"></el-table-column>
           <!-- <el-table-column prop="orgName" label="部门" width="140"  align="center"></el-table-column> -->
           <el-table-column prop="price" label="金额" width="120" align="center"></el-table-column>
           <!-- <el-table-column prop="wcount" label="未报销金额" width="150" align="center"></el-table-column> -->
           <el-table-column prop="paymentMark" label="摘要" width="200" align="center"></el-table-column>
-          <el-table-column prop="createUser" label="申请人" width="146" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="申请人" width="136" align="center"></el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
           <el-button @click="t_text_del('joinData')">取 消</el-button>
@@ -958,31 +959,34 @@ export default {
         joinData_btn(row) {  //获取管理订单
          this.subscript(); 
          this.s_content.joinData = row;
-       },
+        },
+      //  else if(joinData.length != undefined){ 2020/02/19隐藏
+      //      console.log(joinData.length,'爸爸')
+      //         this.dialogFormVisible3 = true;
+      //         this.$message({
+      //               type: "warning",
+      //               message: "请选择关联单据"
+      //               }); 
+      //               return;
+      //    }
         t_text() {//确认添加
          this.subscript(); 
          let joinData = this.s_content.joinData;
          let joinDataid = this.s_content.joinData.paymentID;
          let payments = this.s_content.payments;
         // this.t_price_box= [];
-         if(joinData.length == 0){
+        if(joinData.length == 0){
             this.$message({
                 type: "warning",
                 message: "请重新选择团期计划"
               });
               this.dialogFormVisible3 = false;
 
-         }else if(joinData.length != undefined){
-              this.dialogFormVisible3 = true;
-              this.$message({
-                    type: "warning",
-                    message: "请选择关联单据"
-                    }); 
-                    return;
          }else{
              if(payments.length != 0){
                       for(let i in payments){
-                        if( payments[i].paymentID === joinDataid ){
+                         for(let j in joinData){
+                           if( payments[i].paymentID === joinData[j].paymentID ){
                               //payments.splice(i, 1);
                               this.dialogFormVisible3 = true;
                               this.$message({
@@ -991,11 +995,16 @@ export default {
                                     });  
                                     return;
                                 } 
-                             }
+                            
+                        }
+                  }
                }
-                this.s_content.payments.push(joinData);
-                this.alljoinData.push(joinData);
-                this.s_content.t_price_box.push(joinData.price);
+                
+                 for(let k in joinData){
+                    this.s_content.payments.push(joinData[k]);
+                    this.alljoinData.push(joinData[k]);
+                    this.s_content.t_price_box.push(joinData[k].price);
+                   }
                 this.t_price_sum();
                 this.dialogFormVisible3 = false;
                 this.joinData=[];
