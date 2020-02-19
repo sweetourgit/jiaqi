@@ -59,6 +59,7 @@
 </template>
 <script type="text/javascript">
 import cruiseShipAdd from '@/page/contentInfo/cruiseShip/cruiseShipAdd.vue'
+import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "curiseShipDetail",
   components: {
@@ -67,14 +68,14 @@ export default {
   data() {
     return {
       baseInfo: {
-        id: '111',
-        company: '哈哈哈哈哈',
-        shipNum: '3',
-        person: '哈哈哈哈哈',
-        date: '2019-09-09',
+        id: '',
+        company: '',
+        shipNum: '',
+        person: '',
+        date: '',
         logo: '',
         picture: '',
-        information: '哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或或哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或'
+        information: ''
       },
 
       fileList: [],
@@ -118,7 +119,10 @@ export default {
     routerToAdd(){
       this.$router.push({
         path: '/cruiseShip/shipDetailAdd',
-        name: '邮轮管理/详情/添加游轮'
+        name: '邮轮管理/详情/添加游轮',
+        query: {
+          "id": this.$route.query.id
+        }
       });
     },
 
@@ -157,7 +161,7 @@ export default {
             company: response.data.data.name,
             shipNum: response.data.data.linernums,
             person: response.data.data.create_third_user,
-            date: response.data.data.updated_at,
+            date: formatDate(new Date(response.data.data.updated_at*1000)),
             information: response.data.data.introduce
           },
           that.fileList = response.data.data.logo;

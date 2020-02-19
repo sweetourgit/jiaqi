@@ -57,13 +57,10 @@ export default {
       if (this.activeIndex++ >= 5) this.activeIndex = 0;
     },
     cancel() {
-      this.$router.push({
-        path: '/cruiseShip/cruiseShipDetail',
-        name: '邮轮管理/详情'
-      });
+      this.$router.back();
     },
     tabTo(index) {
-      alert(index);
+      // alert(index);
       if(this.status[index] == 'success'){
         this.activeIndex = index;
         this.$set(this.status, this.activeIndex, 'finish');
