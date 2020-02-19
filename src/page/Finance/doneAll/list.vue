@@ -1,15 +1,14 @@
-<!-- 已办列表页 -->
 <template>
   <div class="distributor-content">
     <el-tabs v-model="tabShowWhich" @tab-click="handleClick" style="width: 98%;margin: 20px auto;">
       <el-tab-pane :label="'无收入借款管理(' + approveDataNum +')'" name="borrow">
-        <noIn :whereTab="whereTab" @handlePassVal="handleGetAlreadyNum"></noIn>
+        <noIn :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumNoin"></noIn>
       </el-tab-pane>
-      <el-tab-pane label="预付款管理" name="advance">
-        <noIn :whereTab="whereTab"></noIn>
+      <el-tab-pane :label="'预付款管理(' + approveDataNumAdvance +')'" name="advance">
+        <advance :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumAdvance"></advance>
       </el-tab-pane>
-      <el-tab-pane label="报销管理" name="reimburse">
-        <reimbursement></reimbursement>
+      <el-tab-pane :label="'报销管理(' + approveDataNumReimburse +')'" name="reimburse">
+        <reimbursement :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumReimburse"></reimbursement>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -17,18 +16,22 @@
 
 <script>
   import noIn from './noIn'
+  import advance from './advance'
   import reimbursement from './reimbursement'
   export default {
     name: "approveList",
     components: {
       noIn,
+      advance,
       reimbursement
     },
     data(){
       return{
         whereTab:'borrow',
         approveDataNum:0,
-        tabShowWhich: 'borrow', // 显示哪一个tab
+        approveDataNumAdvance:0,
+        approveDataNumReimburse:0,
+        tabShowWhich: 'borrow',
       }
     },
     created(){
@@ -38,14 +41,17 @@
 
     },
     methods: {
-      // tab切换
       handleClick(tab, event) {
         this.whereTab = tab.name
-        // console.log(tab.name);
       },
-      handleGetAlreadyNum(paramsPassCount){
-        console.log(paramsPassCount)
+      handleGetAlreadyNumNoin(paramsPassCount){
         this.approveDataNum = paramsPassCount
+      },
+      handleGetAlreadyNumAdvance(paramsPassCount){
+        this.approveDataNumAdvance = paramsPassCount
+      },
+      handleGetAlreadyNumReimburse(paramsPassCount){
+        this.approveDataNumReimburse = paramsPassCount
       }
     }
   }

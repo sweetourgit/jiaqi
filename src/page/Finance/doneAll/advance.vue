@@ -4,18 +4,18 @@
     <div class="plan">
       <el-form :model="ruleFormSearch" ref="ruleFormSearch" label-width="80px" style="margin-top: 20px">
         <el-row type="flex" class="row-bg">
-          <el-col :span="8">
-            <el-form-item label="报销单号" prop="order">
-              <el-input v-model="ruleFormSearch.order"  placeholder="请输入报销单号"></el-input>
+          <el-col :span="6">
+            <el-form-item label="团期计划" prop="tour">
+              <el-input v-model="ruleFormSearch.tour"  placeholder="请输入或者选择团期计划"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="申请人" prop="creator">
-              <el-input v-model="ruleFormSearch.creator" placeholder="请输入或者选择申请人"></el-input>
+              <el-input v-model="ruleFormSearch.creator"  placeholder="请输入申请人"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="发起时间:">
+          <el-col :span="6">
+            <el-form-item label="申请时间:">
               <el-col :span="11">
                 <el-form-item prop="startTime">
                   <el-date-picker type="date" placeholder="选择开始日期" v-model="ruleFormSearch.startTime" style="width: 100%;"></el-date-picker>
@@ -29,17 +29,31 @@
               </el-col>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg">
-          <el-col :span="8">
-            <el-form-item label="团期计划" prop="plan">
-              <el-input v-model="ruleFormSearch.plan"  placeholder="请输入或者选择团期计划"></el-input>
+          <el-col :span="6">
+            <el-form-item label="状态" prop="statusNoIn">
+              <el-select v-model="ruleFormSearch.status" placeholder="请选择状态" style="width: 100%;">
+                <el-option label="审批中" value="0"></el-option>
+                <el-option label="驳回" value="1"></el-option>
+                <el-option label="通过" value="2"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" style="text-align: left">
+        </el-row>
+        <el-row>
+          <el-col :span="6">
+            <el-form-item label="摘要" prop="remark">
+              <el-input v-model="ruleFormSearch.remark"  placeholder="请输入摘要内容"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="借款金额" prop="borrow">
+              <el-input v-model="ruleFormSearch.borrow"  placeholder="请输入借款金额"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" style="text-align: left">
             <el-form-item>
-              <el-button @click="HandleSearchReiburse()" type="primary">搜索</el-button>
-              <el-button @click="HandleResetReimburse('ruleFormSearch')" type="primary">重置</el-button>
+              <el-button @click="HandleSearchApprove()" type="primary">搜索</el-button>
+              <el-button @click="HandleResetApprove('ruleFormSearch')" type="primary">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -47,13 +61,16 @@
     </div>
     <!-- 检索 END -->
     <!-- 表格 -->
-    <el-table :data="approveTableDataReimburse" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content" v-loading="listLoading">
+    <el-table :data="approveTableDataAdvance" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content" v-loading="listLoading">
       <el-table-column prop="expenseID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="expenseID" label="状态" align="center"></el-table-column>
-      <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
+      <el-table-column prop="creatorTime" :formatter='dateFormat' label="申请时间" width="180" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-      <el-table-column prop="groupCode" label="报销金额" align="center"></el-table-column>
-      <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="供应商名称" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="类型" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="借款金额" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="已报销金额" align="center"></el-table-column>
+      <el-table-column prop="creatorUser" label="申请人" align="center"></el-table-column>
       <el-table-column prop="price" label="审批意见" align="center"></el-table-column>
       <el-table-column label="操作" width="150" align="center">
         <template slot-scope="scope">
@@ -66,28 +83,29 @@
 </template>
 
 <script>
-  import done from "./done";
+  import done from './done'
   export default {
-    name: "reimbursement",
+    name: "advance",
     props:{
       whereTab: String
     },
     data(){
       return {
-        reimburseDataLength: null,
-        // keepWorkItemID: [], // 保存workItemid
         ruleFormSearch: {
+          endTime:'',
+          status: '',
           creator: '',
+          remark: '',
+          borrow: '',
           startTime: '',
-          endTime: '',
           plan: '',
         },
-        approveTableDataReimburse: [],
+        approveTableDataAdvance: [],
       }
     },
     mixins: [done],
     created(){
-      this.approveTableList('reimburse');
+      this.approveTableList('advance');
     },
     computed: {
       tabChange: function () {
@@ -96,24 +114,22 @@
     },
     watch:{
       tabChange: function(val, oldVal){
-        if(val === 'reimburse'){
+        if(val === 'advance'){
           this.approveTableList(val)
         }
       }
     },
     methods: {
-      HandleResetReimburse (paramsFrom){
+      HandleResetApprove (paramsFrom){
         this.$refs[paramsFrom].resetFields()
-        this.approveTableList('reimburse');
+        this.approveTableList('advance');
       },
       HandleSearchApprove () {
         this.approveTableList()
       },
       handleJumpDetail(index, row){
         let getCurrentGuid = row.guid
-        // let getWorkItemID = this.keepWorkItemID
-        let getCurrentExpenseID = row.expenseID
-        this.$router.push({ path: "/approve/approveDetail", query: { approveDetailGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
+        this.$router.push({ path: "/approve/approveDetail", query: { approveDetailGuid: getCurrentGuid } })
       },
     }
   }
@@ -143,4 +159,3 @@
     }
   }
 </style>
-
