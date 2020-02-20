@@ -57,21 +57,28 @@ export default {
       if (this.activeIndex++ >= 5) this.activeIndex = 0;
     },
     cancel() {
-      this.$router.push({
-        path: '/cruiseShip/cruiseShipDetail',
-        name: '邮轮管理/详情'
-      });
+      this.$router.back();
     },
-    tabTo(index) {
-      alert(index);
-      if(this.status[index] == 'success'){
-        this.activeIndex = index;
+    tabTo(index, str) {
+      // alert(index);
+      if(str == "creat"){
+        this.activeIndex = index - 0;
         this.$set(this.status, this.activeIndex, 'finish');
+        for(let i = 0; i < index; i++){
+          this.$set(this.status, i, 'success');
+        }
+        
+      }else{
+        if(this.status[index] == 'success'){
+          this.activeIndex = index;
+          this.$set(this.status, this.activeIndex, 'finish');
+        }
       }
+      
     }
   },
   created() {
-    
+    this.tabTo(this.$route.query.step, 'creat')
   },
   mounted() {
     
