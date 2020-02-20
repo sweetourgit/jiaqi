@@ -162,6 +162,18 @@
         <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
       </el-table>
     </el-dialog>
+    <!--手续费弹窗-->
+    <el-dialog title="退款手续费" :visible.sync="refundChargeShow" custom-class="city_list dialogOrder" style="margin-top:-100px" width="500px"
+      @close="cancelRefundCharge()">
+      <div class="controlButton">
+        <el-button class="ml13" @click="cancelRefundCharge()">取 消</el-button>
+        <el-button class="ml13" @click="paymentRefundCharge()"type="primary">确 认</el-button>
+      </div>
+      <div class="oh">
+        <div class="fl">退款手续费:</div>
+        <el-input class="opinions" placeholder="0.00" v-model="refundCharge"> </el-input>
+      </div>
+    </el-dialog>
     <!--通过、驳回弹窗-->
     <el-dialog :title="approval" :visible.sync="dialogApproval" custom-class="city_list" style="margin-top:-100px;" width="800px"
       @close="cancelApproval()">
@@ -218,6 +230,8 @@ export default {
       nonPayment:0,//未付金额
       mark:[],
       instanceID:0,
+      refundCharge:0.00 ,//手续费
+      refundChargeShow:false, // 手续费弹窗
     };
 
   },
@@ -409,18 +423,27 @@ export default {
         })
     },
     payment(){ // 选择支付账户
+      this.refundChargeShow = true;
+    },
+    cancelRefundCharge(){ // 关闭手续费弹窗
+      this.refundChargeShow = false;
+      this.refundCharge = '';
+    },
+    paymentRefundCharge(){
       // let paymentAccount = this.refundList;
       // paymentAccount.payID = this.payID;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/save",{
         object:{
           id:this.accountID,
           payID:this.payID,
+          refundCharge:this.refundCharge == '' ? 0 : this.refundCharge,
         }
       })
       .then(res => {
         if(res.data.isSuccess == true){
            this.dialogAccount = false;
            this.forbidden = false;
+           this.cancelRefundCharge();
            this.getInvoice(this.accountID)
         }else{
            this.$message.success("申请失败");

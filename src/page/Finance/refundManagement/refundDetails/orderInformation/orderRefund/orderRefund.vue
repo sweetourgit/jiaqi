@@ -338,7 +338,6 @@ export default {
              this.nonPayment = res.data.object.payable - (res.data.object.paid - res.data.object.realRefundPrice);
           }
           this.nonPayment=this.nonPayment>0?this.nonPayment:0;
-          
           this.orderCode = res.data.object.orderCode; // 获取该团期订单号
           this.indentID = res.data.object.id; // 获取该团期订单ID
           this.orderAmount = res.data.object.payable; // 获取该团期订单金额
@@ -380,8 +379,6 @@ export default {
           this.collection(); // 判断是否有收款方法
         }
       );
-      
-      
     },
     collection(){ // 有收款就不允许退款了
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/iscollection", {
