@@ -129,7 +129,7 @@
       },
       handleJumpDetail(index, row){
         let getCurrentGuid = row.guid
-        this.$router.push({ path: "/approve/approveDetail", query: { approveDetailGuid: getCurrentGuid } })
+        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: { approveDetailGuid: getCurrentGuid } })
       },
     }
   }
