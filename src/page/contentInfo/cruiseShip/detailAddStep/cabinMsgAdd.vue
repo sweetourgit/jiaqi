@@ -132,21 +132,16 @@
             }
               
             this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-cabin/savelinercabin', {
-							"liner_id": 0,
-							"id": 0,
-							"cabin_type_id": 0,
-							"name": "string",
-							"number": 0,
-							"floor": "string",
-							"area": "string",
-							"window": "string",
-							"introduce": "string",
-							"pics": [
-								{
-									"pic_id": 0,
-									"pic_url": "string"
-								}
-							],
+							"liner_id": localStorage.getItem('liner_id'),
+							"id": '',
+							"cabin_type_id": this.ruleForm.cabinType,
+							"name": this.ruleForm.name,
+							"number": this.ruleForm.person,
+							"floor": this.ruleForm.floor,
+							"area": this.ruleForm.area,
+							"window": this.ruleForm.window,
+							"introduce": this.ruleForm.introduction,
+							"pics": fileArr,
 							"create_uid": sessionStorage.getItem('id'),
 							"org_id": sessionStorage.getItem('orgID')
 						}).then(res => {
@@ -184,42 +179,12 @@
       },
 
       // 上传凭证 function logo
-      UploadUrl(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-      },
-      handleSuccess(response, file, fileList){
-        // console.log(response);
-        // console.log(file);
-        if(response.code == 200){
-          this.fileList.push(response.data);
-        }else{
-          if(response.message){
-            this.$message.warning(response.message);
-          }else{
-            this.$message.warning('文件上传失败');
-          }
-        }
-      },
-      handleError(err, file, fileList){
-        this.$message.warning(`文件上传失败，请重新上传！`);
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-        this.fileList = fileList;
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`平台订单只支持一个附件上传！`);
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      },
-
-      // 上传凭证 function  图片
       UploadUrl1(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess1(response, file, fileList){
-        console.log(response);
+        // console.log(response);
+        // console.log(file);
         if(response.code == 200){
           this.fileList1.push(response.data);
         }else{
