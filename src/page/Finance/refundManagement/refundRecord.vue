@@ -45,6 +45,7 @@
         <el-table-column prop="orderID" label="订单ID" align="center"></el-table-column>
         <el-table-column prop="productType" label="类型" align="center"></el-table-column>
         <el-table-column prop="allRefundPrice" label="退款金额" align="center"></el-table-column>
+        <el-table-column prop="realRefundPrice" label="实际退款金额" align="center"></el-table-column>
         <el-table-column prop="name" label="申请人" align="center"></el-table-column>
         <el-table-column prop="" label="审批意见" align="center"></el-table-column>
         <el-table-column label="操作" width="180">
