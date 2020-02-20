@@ -35,26 +35,36 @@ export default {
               // that.arr1.push(v.workItemID)
               // that.keepWorkItemID.push(v)
             })
-            this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/listforguid', { // 通过GUID查找无收入/预付款列表
-              "guid": arr
-            }).then(obj =>{
-              let showTabCount = 0
-              if(obj.data.objects != null){
-                showTabCount = obj.data.objects.length
-              }
-              if(paramsTab == 'borrow') {
-                that.$emit('handlePassVal',showTabCount)
-                that.approveTableDataNoIn = obj.data.objects
-              } else if(paramsTab == 'advance') {
-                that.$emit('handlePassVal',showTabCount)
-                that.approveTableDataAdvance = obj.data.objects
-              }else {
+            if(paramsTab == 'borrow' || paramsTab == 'advance') {
+              this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                let showTabCount = 0
+                if(obj.data.objects != null){
+                  showTabCount = obj.data.objects.length
+                }
+                if(paramsTab == 'borrow') {
+                  that.$emit('handlePassVal',showTabCount)
+                  that.approveTableDataNoIn = obj.data.objects
+                } else {
+                  that.$emit('handlePassVal',showTabCount)
+                  that.approveTableDataAdvance = obj.data.objects
+                }
+                that.listLoading = false
+              })
+            } else {
+              this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                let showTabCount = 0
+                if(obj.data.objects != null){
+                  showTabCount = obj.data.objects.length
+                }
                 that.$emit('handlePassVal',showTabCount)
                 that.approveTableDataReimburse = obj.data.objects
-              }
-              that.listLoading = false
-
-            })
+                that.listLoading = false
+              })
+            }
           })
         })
     },
