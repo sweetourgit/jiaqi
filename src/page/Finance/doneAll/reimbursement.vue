@@ -49,12 +49,12 @@
     <!-- 表格 -->
     <el-table :data="approveTableDataReimburse" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content" v-loading="listLoading">
       <el-table-column prop="expenseID" label="借款单号" align="center"></el-table-column>
-      <el-table-column prop="expenseID" label="状态" align="center"></el-table-column>
+      <el-table-column prop="checkTypeEX" label="状态" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-      <el-table-column prop="groupCode" label="报销金额" align="center"></el-table-column>
+      <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-      <el-table-column prop="price" label="审批意见" align="center"></el-table-column>
+      <el-table-column prop="" label="审批意见" align="center"></el-table-column>
       <el-table-column label="操作" width="150" align="center">
         <template slot-scope="scope">
           <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
