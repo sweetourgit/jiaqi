@@ -170,8 +170,8 @@
         <el-button class="ml13" @click="paymentRefundCharge()"type="primary">确 认</el-button>
       </div>
       <div class="oh">
-        <div class="fl">退款手续费:</div>
-        <el-input class="opinions" placeholder="0.00" v-model="refundCharge"> </el-input>
+        <div class="fl" style="margin:10px 0 0 0;">退款手续费:</div>
+        <el-input class="refundChargeClass" placeholder="0.00" v-model="refundCharge"> </el-input>
       </div>
     </el-dialog>
     <!--通过、驳回弹窗-->
@@ -230,7 +230,7 @@ export default {
       nonPayment:0,//未付金额
       mark:[],
       instanceID:0,
-      refundCharge:0.00 ,//手续费
+      refundCharge:'' ,//手续费
       refundChargeShow:false, // 手续费弹窗
     };
 
@@ -623,4 +623,5 @@ export default {
 .cursor {cursor: pointer;}
 .oh{overflow: hidden;}
 .opinions{float: left;margin: 0 0 0 13px; width: 500px;}
+.refundChargeClass{float: left;margin: 0 0 0 13px; width: 200px;}
 </style>
