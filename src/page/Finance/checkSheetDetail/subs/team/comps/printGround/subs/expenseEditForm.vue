@@ -72,7 +72,7 @@ export default {
         },
         rules: {
           supplier: { required: true, validator: this.supplierValidator, message: '不存在或未选择供应商', trigger: 'change' },
-          arrearsPrice: { required: true, pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/, message: '请输入正确的价格格式', trigger: 'blur' },
+          arrearsPrice: { required: true, pattern: /(^-?[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/, message: '请输入正确的价格格式', trigger: 'blur' },
           peopleCount: { required: true, pattern: /^(0|[1-9][0-9]*)$/, message: '请输入正确的人数', trigger: 'blur' },
         }
       }
