@@ -22,7 +22,7 @@ const ProcessManageMixin= {
       },
       {
         disperseOrderDisabled: false, // 直客订单如果存在收款申请或收款通过，则不允许更改 
-        isCancelBtn: false, //取消订单的按钮 收款或通过就禁用
+        // isCancelBtn: false, //取消订单的按钮 收款或通过就禁用
       }
     )
   },
@@ -45,11 +45,13 @@ const ProcessManageMixin= {
         .then(orderDetail => {
           let { planID, guests, favourable, contact, priceType, orderCode, orderChannel}= orderDetail;
           checkOrderhasCollection(orderCode).then(bol => { 
-            this.isCancelBtn = !bol
+            // 同业 月结 非月结 和直客的一样 只要有收款或者通过就禁用（包括输入框和取消订单的按钮）
+            this.disperseOrderDisabled= !bol; 
+            // this.isCancelBtn = !bol
             // 同业月结的只要下单了就不可以更改了 orderChannel == 3为直客 settlementType = 1 则是同业月结的 2非月结 取消订单按钮可点击
-            if(orderChannel !== 3 && this.settlementType == 1)  this.disperseOrderDisabled = true
+            // if(orderChannel !== 3 && this.settlementType == 1)  this.disperseOrderDisabled = true
             // 现在是直客和非月结的同业如果存在收款申请或收款通过，则不允许更改 取消订单按钮禁用
-            if(orderChannel == 3 || (orderChannel !== 3 && this.settlementType == 2))  this.disperseOrderDisabled= !bol; 
+            // if(orderChannel == 3 || (orderChannel !== 3 && this.settlementType == 2))  this.disperseOrderDisabled= !bol; 
           })
           Promise.all([
             getEnrollsAction(planID), 
@@ -86,8 +88,9 @@ const ProcessManageMixin= {
        * @return: 
        */
       sourceMaker(enrolls, guests){
+        //console.log(enrolls,'telet');
+        //console.log(guests,'all');
         let salePriceReflect= this.salePriceReflect;
-        
         this.salePrice.splice(0);
         this.salePrice.push(
           ...enrolls.map((enroll, index) => {

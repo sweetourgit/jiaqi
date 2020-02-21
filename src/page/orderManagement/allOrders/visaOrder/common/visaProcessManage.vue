@@ -1,7 +1,8 @@
 <template>
   <div>
        <!--流程管理弹窗-->
-       <el-dialog title="流程管理" :visible.sync="dialogFormProcess" class="city_list" width="850px" style="margin-top:-50px" @close="cancle">
+       <el-dialog title="流程管理" :visible.sync="dialogFormProcess"  custom-class="city_list" class="abow_dialog" width="940px" @close="cancle">
+         <div :style="authDiocss"> 
           <div class="main-left">
              <div v-for="(item,index) in orderStatusInfo"> 
                <div>
@@ -13,19 +14,49 @@
                    <div v-for="list in item.lists">{{list.title}}:{{list.content}}</div>
                </div>
              </div>
-             
-
-
-
-
-
           </div>
-          <div class="main-right"></div>
+          <div class="main-right">
+            <el-form :model="processFrom" :rules="rules" ref="processFrom" label-width="20px" class="demo-ruleForm">
+               <el-form-item prop="contactName">
+                  <div class="required"><span>*</span>订单联系人</div>
+                  <el-input v-model="processFrom.contactName" maxlength="10"></el-input>
+               </el-form-item>
+               <el-form-item prop="contactPhone">
+                  <div class="required"><span>*</span>联系电话</div>
+                  <el-input v-model="processFrom.contactPhone" maxlength="20"></el-input>
+               </el-form-item>
+               <el-table :data="tourList" class="table" :header-cell-style="getRowClass" border> 
+                 <el-table-column  prop="name" label="姓名" width="80" align="center"></el-table-column>
+                 <el-table-column  prop="phone" label="电话" width="110" align="center"></el-table-column>
+                 <el-table-column  prop="idCard" label="身份证" width="170" align="center"></el-table-column>
+                 <el-table-column  prop="card" label="护照号" width="130" align="center"></el-table-column>
+                 <el-table-column  label="操作">
+                      <template slot-scope="scope">
+                         <el-breadcrumb separator="|">
+                            <el-breadcrumb-item><span class="breadCrumbPointer">编辑</span></el-breadcrumb-item>
+                            <el-breadcrumb-item><span class="breadCrumbPointer">删除</span></el-breadcrumb-item>
+                         </el-breadcrumb>
+                      </template>
+                 </el-table-column>
+               </el-table>
+               <el-form-item>
+                  <div class="required"><span>*</span>更改状态</div>
+                  <el-select v-model="processFrom.orderStatu" placeholder="请选择">
+                     <el-option v-for="item in processFrom.orderStatus" :key="item.id" :label="item.label" :value="item.id"></el-option>
+                  </el-select>
+               </el-form-item>
+
+
+
+
+            </el-form>
+          </div>
           <div slot="footer" class="footer">
-            <el-button class="fl">取消订单</el-button>
-            <el-button @click="cancle">取 消</el-button>
-            <el-button type="primary">保存更改</el-button>
+            <el-button class="cancel-order">取消订单</el-button>     
+            <el-button class="fr save" type="primary">保存更改</el-button>
+            <el-button class="fr" @click="cancle">取 消</el-button>
           </div>
+         </div>
        </el-dialog>
   </div>
 </template>
@@ -39,8 +70,28 @@ export default {
   },
   data() {
     return {
+       processFrom:{
+         contactName:"",
+         contactPhone:"",
+         orderStatu:"",
+         orderStatus:[
+           {label:"收到材料",id:"1"},
+           {label:"收到材料",id:"2"},
+         ],
+       },
+       
+       tourList:[{
+         name:"测试",
+         phone:"15845263256",
+         idCard:"210113198809233726",
+         card:"1546213213",
+       }],
+       authDiocss:{
+　　　　 height:'',
+         overflowY:'scroll'
+　　　 },
        //流程管理弹窗
-       dialogFormProcess:true,
+       dialogFormProcess:false,
        orderget:{},//保存单个订单信息
        orderStatus:11,
        orderStatusInfo:[
@@ -81,7 +132,19 @@ export default {
          {name:"订单完成"}
        ],
        rules:{      
-
+         contactName: [
+          { required: true, message: "订单联系人不能为空", trigger: "blur" },
+          { max: 10, message: "不能超过10位长度", trigger: "blur" }
+         ],
+         contactPhone: [
+           { required: true, message: "联系电话不能为空", trigger: "blur" },
+           {
+             pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/,
+             message: "电话号格式不正确",
+             trigger: "blur"
+           },
+           { max: 20, message: "不能超过20位长度", trigger: "blur" }
+        ],
        }
     }
   },
@@ -91,12 +154,20 @@ export default {
   watch: {
       variable:function(){      
         if(this.dialogType==2){
+          this.getHeight();
           this.getOrder(this.orderId);   
           this.dialogFormProcess=true;    
         }    
      }
   },
   methods: {
+      getRowClass({ row, column, rowIndex, columnIndex }){
+        if (rowIndex == 0) {
+          return 'background:#f7f7f7;height:35px;textAlign:center;color:#333;fontSize:15px'
+        } else {
+          return ''
+        }
+      },
       //流程管理
       getOrder(orderId){
         //查询一条订单信息
@@ -104,7 +175,9 @@ export default {
              "id": orderId
           }).then(res => {
             if(res.data.isSuccess == true){
-               this.orderget = res.data.object;      
+               this.orderget = res.data.object;    
+               let {id, guests}= res.data.object;
+               console.log(guests); 
             }
           }).catch(err => {
             console.log(err)
@@ -112,17 +185,32 @@ export default {
       },
       cancle(){   
         this.dialogFormProcess=false;
+        this.$refs["processFrom"].resetFields();
+      },
+      getHeight(){
+        this.authDiocss.height=document.body.clientHeight-200+"px";
       }
     }
 }
 </script>
 
 <style scoped>
+  .abow_dialog{margin:-100px 0 0 0}
   .fl{float:left}
-  .footer{clear:both;padding-top:20px}
-  .main-left{float:left;width:250px}
-  .main-right{float:left}
+  .fr{float:right}
+  .save{margin-right: 40px}
+  .cancel-order{margin-left: 35px}
+  .footer{clear:both;padding:20px 0;position: absolute;bottom: 0;left:0;width: 100%;background-color: #fff}
+  .main-left{float:left;width:250px;margin-bottom: 30px}
+  .main-right{float:left;margin-bottom: 30px}
   .sta-title{color:#191818}
   .line{display: inline-block;margin: 5px 0 5px 17px;padding:3px 0 3px 23px;min-height:18px;line-height: 20px}
   .line1{border-left:3px solid #eee}
+  .demo-ruleForm{margin-top: 17px}
+  .demo-ruleForm .el-input{width:340px} 
+  .demo-ruleForm .el-select{width:340px}
+  .required{margin-top: -17px}
+  .required span{color: red}
+  .table{border:1px solid #e6e6e6;width:593px;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:50px 20px}
+  .breadCrumbPointer{cursor:pointer;color:#2e94f9}
 </style>
