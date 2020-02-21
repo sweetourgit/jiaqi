@@ -37,7 +37,7 @@
       
     </div>
     <div class="main">
-      <el-button type="primary" class="apply">申请</el-button>
+      <el-button type="primary" class="apply" @click="addInvoiceApply()">申请</el-button>
       <!--列表表格-->
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun">
         <el-table-column prop="id" label="发票ID" align="center"></el-table-column>
@@ -77,6 +77,7 @@
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
       <invoiceApply-details :invoiceID="invoiceID" :variable="variable" :dialogType="dialogType"></invoiceApply-details>
+      <!-- <addInvoiceApply :dialogFormVisible="dialogFormVisible" :find="find" :change="change"></addInvoiceApply> -->
     </div>
   </div>
 </template>
@@ -84,16 +85,21 @@
 <script>
 import moment from "moment";
 import invoiceApplyDetails from "./invoiceApplyDetails/invoiceApplyDetails";
+// import addInvoiceApply from "./invoiceApplyDetails/addInvoiceApply";
 export default {
   name: "invoiceApply",
   components: {
-    invoiceApplyDetails
+    invoiceApplyDetails,
+    //addInvoiceApply
   },
   data() {
     return {
       invoiceID:0,
       variable: 0, //设置一个变量展示弹窗
       dialogType: 0, //弹窗类型  1：详情
+      find: 0,
+      change: false,
+      dialogFormVisible: false, // 申请发票开关
       //搜索框
       invoiceNumber:'',//发票号码
       merchantsName:'',//商户名称
@@ -173,6 +179,11 @@ export default {
       this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.pageList();
+    },
+    addInvoiceApply(){
+      // this.find = 0;
+      // this.change = false
+      // this.dialogFormVisible = true;
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {

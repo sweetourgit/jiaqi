@@ -371,6 +371,7 @@ export default {
           this.tableDate = res.data.object.guests;
           this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
           this.accountID = res.data.object.id;
+          console.log(this.accountID)
           this.disbursementID = res.data.object.payID;
           this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",{
               id:this.disbursementID,
@@ -459,10 +460,17 @@ export default {
       this.approval = '审批通过';
       if(this.disbursementID == 0 && this.ifDY100068 == true){
         this.forbidden = true;
+        this.insertEBS(this.accountID);
         this.$message.error("请先选择支付账户")
       } else{
         this.forbidden = false;
       }
+    },
+    insertEBS(){ // 退款同步EBS
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insertebs",{
+        refundID:this.accountID,
+        accountID:this.payID,
+      })
     },
     rejected(){ // 点击驳回显示弹窗
       this.dialogApproval = true ;
