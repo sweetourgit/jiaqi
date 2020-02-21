@@ -128,8 +128,8 @@
         this.approveTableList()
       },
       handleJumpDetail(index, row){
-        let getCurrentGuid = row.guid
-        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: { approveDetailGuid: getCurrentGuid } })
+        let getCurrentPaymentID = row.paymentID
+        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance'} })
       },
     }
   }

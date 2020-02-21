@@ -110,10 +110,10 @@
         this.approveTableList()
       },
       handleJumpDetail(index, row){
+        let getCurrentPaymentID = row.paymentID
         let getCurrentGuid = row.guid
-        // let getWorkItemID = this.keepWorkItemID
         let getCurrentExpenseID = row.expenseID
-        this.$router.push({ path: "/approve/approveDetail", query: { approveDetailGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
+        this.$router.push({ path: "/doneAll/reimbursementDetails", query: {reimburseDetailPaymentID: getCurrentPaymentID, queryApproveExpenseID: getCurrentExpenseID, componentName: 'reimbursement',approveDetailGuid: getCurrentGuid} })
       },
     }
   }

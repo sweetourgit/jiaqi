@@ -1,6 +1,6 @@
 <template>
-  <div class="loan-management" style="margin-bottom: 50px;">
-    <div style="text-align: right;">
+  <div class="loan-management">
+    <div style="text-align: right; margin:25px 20px 0 0;">
       <el-button type="info" plain @click="goBack">取消</el-button>
       <el-button type="primary" @click="splitRelTable">拆分关系表</el-button>
     </div>
@@ -196,6 +196,7 @@
     data(){
       return {
         keepPaymentId: null,
+        keepComponentName: null,
         tableIncomeCheck: null,
         fundamental:{},
         fileList: [],
@@ -223,6 +224,7 @@
     },
     created(){
       let passPaymentID = this.$route.query.doneDetailPaymentID
+      this.keepComponentName = this.$route.query.componentName
       this.keepPaymentId = passPaymentID
       this.getLabel(passPaymentID);
     },
@@ -251,7 +253,6 @@
           return ''
         }
       },
-      // 审批过程-查看
       processIncome(index,row, type){
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: row.guid,
@@ -261,12 +262,11 @@
           this.dialogFormVisible_Income = true;
         }).catch(obj => {})
       },
-      // 审核结果
       auditResult(result, paramJqType) {
         var that =this
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: result,
-          jQ_Type: paramJqType, // 无收入1 预付款2
+          jQ_Type: paramJqType,
         }).then(obj => {
           that.tableCourse = []
           that.tableCourse = obj.data.extend.instanceLogInfo;
@@ -294,13 +294,12 @@
           }
         })
       },
-      // 无收入没有订单号根据登录人员查询无收入借款明细
       bbb(params){
         var that = this
         that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
           "object": {
-            "paymentType": 1, // 1 无收入 2 预付款
-            "createUser": params, // sessionStorage.getItem('userCode')
+            "paymentType": that.keepComponentName == 'noIn' ? 1 : 2,
+            "createUser": params,
           }
         }).then(res => {
           if (res.data.isSuccess == true) {
@@ -310,13 +309,11 @@
           console.log(err)
         })
       },
-      // 获取相关表格信息
       getPaymentdetails(val) {
         var that = this
-        //相关信息
         that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/planfinancelist', {
           "object": {
-            planID: val, //团期计划ID
+            planID: val,
           }
         }).then(res => {
           if (res.data.isSuccess == true) {
@@ -326,7 +323,6 @@
         }).catch(err => {
           console.log(err)
         })
-        //预付付款明细
         that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
           "object": {
             "paymentType": 2,
@@ -339,7 +335,6 @@
         }).catch(err => {
           console.log(err)
         })
-        // 无收入借款明细
         that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
           "object": {
             "paymentType": 1,
@@ -352,7 +347,6 @@
         }).catch(err => {
           console.log(err)
         })
-        //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
         that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
           "id": val
         }).then(res => {
@@ -363,7 +357,6 @@
         }).catch(err => {
           console.log(err)
         })
-        // 收入明细
         that.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
           "id": val,
         }).then(res => {
@@ -377,13 +370,26 @@
     },
   }
 </script>
+
+
 <style scoped lang="scss">
   .loan-management{
+    width: 99%;
+    margin: 25px auto 50px;
+    height: auto;
+    border: 1px solid #e6e6e6;
+    .row-content{
+      width: 95%;
+      margin: 0 auto;
+    }
     .title-margin{
       margin-bottom: 30px;
     }
+    .reimbursement-mt{
+      margin: 20px 0;
+    }
     .item-content{
-      margin-bottom: 20px;
+      margin: 10px 0;
     }
     .title-margin-t{
       margin-top: 45px;
@@ -392,7 +398,7 @@
       font-size: 17px !important
     }
     .distributor-status{
-      margin-left: 40px;
+      margin-left: 27px;
     }
     .row-bg {
       padding: 13px 0;

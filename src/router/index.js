@@ -590,7 +590,16 @@ export default new Router({
     {
       path: '/doneAll/advanceAndNoInDetails',
       component: () => import('@/page/Finance/doneAll/advanceAndNoInDetails'),
-      name: '详情',
+      name: '已办/借款详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/doneAll/reimbursementDetails',
+      component: () => import('@/page/Finance/doneAll/reimbursementDetails'),
+      name: '已办/报销详情',
       meta: {
         keepAlive: true,
         auth: true

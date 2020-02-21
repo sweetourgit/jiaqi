@@ -129,7 +129,7 @@
       },
       handleJumpDetail(index, row){
         let getCurrentPaymentID = row.paymentID
-        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID } })
+        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'noIn'} })
       },
     }
   }
