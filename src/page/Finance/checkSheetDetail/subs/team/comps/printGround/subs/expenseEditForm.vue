@@ -66,6 +66,7 @@ export default {
       {
         type: '地接款',
         submitForm: {
+          supplierID: null,
           supplier: null,
           arrearsPrice: null,
           peopleCount: null
@@ -118,6 +119,7 @@ export default {
         title: '地接款',
         supplierType: 1,
 
+        supplierID: null,
         supplier: null,
         peopleCount: null,
         price: null,
@@ -153,7 +155,9 @@ export default {
       })
     },
 
-    selectSupplier(){
+    selectSupplier(dto){
+      let { id }= dto;
+      this.submitForm.supplierID= id;
       this.supplierSelected= true;
     },
 
