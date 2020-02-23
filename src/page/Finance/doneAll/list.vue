@@ -10,6 +10,9 @@
       <el-tab-pane :label="'报销管理(' + approveDataNumReimburse +')'" name="reimburse">
         <reimbursement :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumReimburse"></reimbursement>
       </el-tab-pane>
+      <el-tab-pane :label="'退款管理(' + approveDataNumRefund +')'" name="refund">
+        <refund :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumRefund"></refund>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -18,11 +21,13 @@
   import noIn from './noIn'
   import advance from './advance'
   import reimbursement from './reimbursement'
+  import refund from './refund'
   export default {
     name: "approveList",
     components: {
       noIn,
       advance,
+      refund,
       reimbursement
     },
     data(){
@@ -31,6 +36,7 @@
         approveDataNum:0,
         approveDataNumAdvance:0,
         approveDataNumReimburse:0,
+        approveDataNumRefund:0,
         tabShowWhich: 'borrow',
       }
     },
@@ -52,6 +58,9 @@
       },
       handleGetAlreadyNumReimburse(paramsPassCount){
         this.approveDataNumReimburse = paramsPassCount
+      },
+      handleGetAlreadyNumRefund(paramsPassCount){
+        this.approveDataNumRefund = paramsPassCount
       }
     }
   }

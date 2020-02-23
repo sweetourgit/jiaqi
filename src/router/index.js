@@ -606,6 +606,15 @@ export default new Router({
       }
     },
     {
+      path: '/doneAll/refundAndNoInDetails',
+      component: () => import('@/page/Finance/doneAll/refundAndNoInDetails'),
+      name: '已办/退款详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/approve/approveList',
       component: () => import('@/page/Finance/approve/approveList'),
       name: '需要您审批',

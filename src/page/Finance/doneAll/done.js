@@ -18,9 +18,11 @@ export default {
             getWorkflowCode = 'loan_noIncome4'
           } else if(paramsTab == 'advance') {
             getWorkflowCode = 'borrow_Moneys4'
-          }else {
+          }else if(paramsTab == 'reimburse'){
             getWorkflowCode = 'Reimbursement_noIncome4'
-          }
+          }else if(paramsTab == 'refund'){
+            getWorkflowCode = 'refund4'
+          } else {}
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingfinishedTasksForJQ",{
             //"userCode": sessionStorage.getItem('userCode'),
             "userCode": sessionStorage.getItem('tel'),
@@ -52,7 +54,7 @@ export default {
                 }
                 that.listLoading = false
               })
-            } else {
+            } else if(paramsTab == 'reimburse'){
               this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/listforguid', {
                 "guid": arr
               }).then(obj =>{
@@ -62,6 +64,18 @@ export default {
                 }
                 that.$emit('handlePassVal',showTabCount)
                 that.approveTableDataReimburse = obj.data.objects
+                that.listLoading = false
+              })
+            } else if(paramsTab == 'refund'){
+              this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                let showTabCount = 0
+                if(obj.data.objects != null){
+                  showTabCount = obj.data.objects.length
+                }
+                that.$emit('handlePassVal',showTabCount)
+                that.approveTableDataRefund = obj.data.objects
                 that.listLoading = false
               })
             }
