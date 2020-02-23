@@ -458,9 +458,11 @@ export default {
     through(){ // 点击通过显示弹窗
       this.dialogApproval = true ;
       this.approval = '审批通过';
+      if(this.ifDY100068 == true){
+        this.insertEBS(this.accountID);
+      }
       if(this.disbursementID == 0 && this.ifDY100068 == true){
         this.forbidden = true;
-        this.insertEBS(this.accountID);
         this.$message.error("请先选择支付账户")
       } else{
         this.forbidden = false;
