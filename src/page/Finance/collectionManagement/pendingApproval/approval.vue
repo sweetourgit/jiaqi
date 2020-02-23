@@ -994,6 +994,7 @@ export default {
               // 报销还款不需要发票  that.info.collectionType == 6则不走insert 直接走ebs接口
               if(that.info.collectionType !== 6) {
                 that.insert();
+                that.tbEBS();
               } else {
                 that.tbEBS()
               }
@@ -1031,17 +1032,18 @@ export default {
         })
         .then(function(response) {
           // console.log(response);
-          if (response.data.isSuccess) {
-            that.tbEBS();
-            // that.$message.success("审批提交成功~");
-            // that.closeAdd();
-          } else {
-            if (response.data.message) {
-              that.$message.warning(response.result.message);
-            } else {
-              that.$message.warning("insert失败~");
-            }
-          }
+          // 暂时去掉判断，后期需要和郭哥联调
+          // if (response.data.isSuccess) {
+          //   // that.tbEBS();
+          //   that.$message.success("提交发票成功~");
+          //   // that.closeAdd();
+          // } else {
+          //   if (response.data.message) {
+          //     that.$message.warning(response.result.message);
+          //   } else {
+          //     that.$message.warning("提交发票失败~");
+          //   }
+          // }
         })
         .catch(function(error) {
           console.log(error);
@@ -1327,7 +1329,7 @@ export default {
         .then(function(response) {
           // console.log('审批详情',response);
           if (response.data.isSuccess) {
-            const hasInvoice = response.data.object.invoice == 1 ? "有" : "无";
+            const hasInvoice = response.data.object.invoiceTable.length > 0 ? "有" : "无";
             let createTimeStr = "";
             if (response.data.object.createTime) {
               createTimeStr = response.data.object.createTime.split("T")[0];
