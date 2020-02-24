@@ -18,5 +18,8 @@ export default {
   },
   changeBankData(state, data){ // 银行流水单 -- 收款/手续费 数据改变同时刷新另一项
     state.bankDataUpdate = data;
+  },
+  referDoneAllShowWhichTab(state, data){
+    state.doneAllShowWhichTab = data
   }
 }

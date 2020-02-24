@@ -3,7 +3,7 @@
     <div class="plan">
       <el-form :model="ruleFormSearch" ref="ruleFormSearch" label-width="80px" style="margin-top: 20px">
         <el-row type="flex" class="row-bg">
-          <el-col :span="6">
+          <el-col :span="9">
             <el-form-item label="申请时间:">
               <el-col :span="11">
                 <el-form-item prop="startTime">
@@ -18,10 +18,10 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="12" style="text-align: left">
+          <el-col :span="11" style="text-align: left">
             <el-form-item>
-              <el-button @click="HandleSearchApprove()" type="primary">搜索</el-button>
-              <el-button @click="HandleResetApprove('ruleFormSearch')" type="primary">重置</el-button>
+              <el-button @click="HandleSearchApprove('refund')" type="primary">搜索</el-button>
+              <el-button @click="HandleResetApprove('ruleFormSearch', 'refund')" type="primary">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -84,17 +84,9 @@
       }
     },
     methods: {
-      HandleResetApprove (paramsFrom){
-        this.$refs[paramsFrom].resetFields()
-        this.approveTableList('refund');
-      },
-      HandleSearchApprove () {
-        this.approveTableList()
-      },
       handleJumpDetail(index, row){
-        this.workID = this.workItemID[index];
         let getCurrentPaymentID = row.id
-        this.$router.push({ path: "/doneAll/refundAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'refund'} })
+        this.$router.push({ path: "/doneAll/refundDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'refund'} })
       },
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin:25px 20px 0 0;">
-      <el-button type="info" plain @click="goBack">取消</el-button>
+      <el-button type="info" plain @click="handleCancel(keepComponentName)">取消</el-button>
       <el-button type="primary" @click="splitRelTable">拆分关系表</el-button>
     </div>
     <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -22,7 +22,7 @@
         </el-col>
         <el-col :span="6">
           <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
+          <el-col :span="15"><div class="grid-del ">{{ fundamental.createTime  | formatDateCreateAn  }}</div></el-col>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
@@ -152,7 +152,7 @@
       <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
       <el-table-column prop="process" label="审批过程" align="center">
         <template slot-scope="scope">
-          <el-button @click="processIncome(scope.$index, scope.row,2)" type="primary" plain size="small">查看</el-button>
+          <el-button @click="processIncome(scope.$index, scope.row,2)" type="primary" plain size="small" :loading="false">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -167,12 +167,12 @@
       <el-table-column label="欠款金额" align="center" prop="arrears"></el-table-column>
       <el-table-column prop="arrearsDate" label="欠款日期" align="center">
         <template slot-scope="scope">
-          <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.arrearsDate | formatDateDetails }}</div>
+          <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.arrearsDate | formatDateDetailsAn }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="repaymentDate" label="应还日期" align="center">
         <template slot-scope="scope">
-          <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.repaymentDate | formatDateDetails }}</div>
+          <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.repaymentDate | formatDateDetailsAn }}</div>
         </template>
       </el-table-column>
     </el-table>
@@ -190,11 +190,12 @@
 </template>
 
 <script>
-  import moment from 'moment'
+  import common from "./common";
   export default {
     name: 'advanceAndNoInDetails',
     data(){
       return {
+        loading: true,
         keepPaymentId: null,
         keepComponentName: null,
         tableIncomeCheck: null,
@@ -210,18 +211,7 @@
         keepPaymentType: null,
       }
     },
-    filters: {
-      formatDate: function (value) {
-        return moment(value).format('YYYY-MM-DD HH:mm:ss')
-      },
-      formatDateDetails:function (value) {
-        if(typeof value == 'string'){
-          return ''
-        } else {
-          return moment(value).format('YYYY-MM-DD')
-        }
-      }
-    },
+    mixins: [common],
     created(){
       let passPaymentID = this.$route.query.doneDetailPaymentID
       this.keepComponentName = this.$route.query.componentName
@@ -229,29 +219,11 @@
       this.getLabel(passPaymentID);
     },
     methods: {
-      moment,
-      dateFormat: function(row, column) {
-        let date = row[column.property];
-        if(date == undefined || date == '') {
-          return '';
-        }
-        return moment(date).format('YYYY-MM-DD')
-      },
-      goBack(){
-        this.$router.go(-1)
-      },
       splitRelTable(){
         this.$router.push({ path: "/relationSplitMap", query: { id: this.keepPaymentId } })
       },
       handlePreview(file) {
         window.open(file.url);
-      },
-      getRowClass({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
-          return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
-        } else {
-          return ''
-        }
       },
       processIncome(index,row, type){
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
@@ -398,7 +370,7 @@
       font-size: 17px !important
     }
     .distributor-status{
-      margin-left: 27px;
+      margin-left: 4%;
     }
     .row-bg {
       padding: 13px 0;

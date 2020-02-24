@@ -1,7 +1,7 @@
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin:25px 20px 0 0;">
-      <el-button type="info" plain  @click="handleCancel">取消</el-button>
+      <el-button type="info" plain  @click="handleCancel('reimburse')">取消</el-button>
     </div>
     <el-divider content-position="left" class='title-margin'>报销信息</el-divider>
     <el-row class="row-content">
@@ -24,7 +24,7 @@
               </el-col>
               <el-col :span="6">
                 <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-                <el-col :span="15"><div class="grid-del">{{ tabItem.createTime | formatDate }}</div></el-col>
+                <el-col :span="15"><div class="grid-del">{{ tabItem.createTime | formatDateCreateAn }}</div></el-col>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
@@ -63,7 +63,6 @@
                 <el-table-column prop="paymentID" label="无收入借款或预付款ID" align="center"></el-table-column>
                 <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
                 <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-                <!--<el-table-column prop=" " label="申请人" align="center"></el-table-column>-->
                 <el-table-column prop="paymentMark" label="摘要" align="center"></el-table-column>
                 <el-table-column prop="paymentPrice" label="借款金额" align="center"></el-table-column>
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
@@ -88,7 +87,7 @@
 
 <script>
   import Vue from 'vue'
-  import moment from 'moment'
+  import common from './common'
 
   export default {
     name: "reimbursementDetails",
@@ -99,16 +98,14 @@
         examineData: [],
         getApproveListGuid: null,
         keepBackContent: null,
+        keepComponentName: null
       }
     },
-    filters: {
-      formatDate: function (value) {
-        return moment(value).format('YYYY-MM-DD HH:mm:ss')
-      }
-    },
+    mixins:[common],
     created(){
       this.tabShowWhich = String(this.$route.query.queryApproveExpenseID)
       this.getApproveListGuid = this.$route.query.approveDetailGuid
+      this.keepComponentName = this.$route.query.componentName
       this.getApproveDetail(this.getApproveListGuid)
       this.auditResult(this.getApproveListGuid)
     },
@@ -116,7 +113,6 @@
       handlePreview(file) {
         window.open(file.url);
       },
-      moment,
       auditResult(paramsGuid) {
         this.listLoading = true
         var that =this
@@ -146,17 +142,7 @@
       },
       handleClick(){
 
-      },
-      handleCancel(){
-        this.$router.go(-1)
-      },
-      getRowClass({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
-          return 'background:#f5f7fa;height:60px;textAlign:center;color:#333;fontSize:15px'
-        } else {
-          return ''
-        }
-      },
+      }
     }
   }
 </script>
@@ -168,7 +154,6 @@
     margin: 25px auto 50px;
     height: auto;
     border: 1px solid #e6e6e6;
-    text-align: right;
     .row-content{
       width: 95%;
       margin: 0 auto;
@@ -189,7 +174,7 @@
       font-size: 17px !important
     }
     .distributor-status{
-      margin-left: 27px;
+      margin-left: 2%;
     }
     .row-bg {
       padding: 13px 0;

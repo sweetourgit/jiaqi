@@ -606,8 +606,8 @@ export default new Router({
       }
     },
     {
-      path: '/doneAll/refundAndNoInDetails',
-      component: () => import('@/page/Finance/doneAll/refundAndNoInDetails'),
+      path: '/doneAll/refundDetails',
+      component: () => import('@/page/Finance/doneAll/refundDetails'),
       name: '已办/退款详情',
       meta: {
         keepAlive: true,

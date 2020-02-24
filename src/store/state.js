@@ -4,5 +4,6 @@ export default {
   name:"",
   advinceData: 0,
   updatAdvancePaymentData: 0,
-  bankDataUpdate: ''
+  bankDataUpdate: '',
+  doneAllShowWhichTab: 'borrow'
 }

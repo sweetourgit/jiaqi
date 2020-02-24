@@ -4,17 +4,7 @@
     <div class="plan">
       <el-form :model="ruleFormSearch" ref="ruleFormSearch" label-width="80px" style="margin-top: 20px">
         <el-row type="flex" class="row-bg">
-          <el-col :span="8">
-            <el-form-item label="报销单号" prop="order">
-              <el-input v-model="ruleFormSearch.order"  placeholder="请输入报销单号"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="申请人" prop="creator">
-              <el-input v-model="ruleFormSearch.creator" placeholder="请输入或者选择申请人"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
+          <el-col :span="9">
             <el-form-item label="发起时间:">
               <el-col :span="11">
                 <el-form-item prop="startTime">
@@ -29,17 +19,10 @@
               </el-col>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg">
-          <el-col :span="8">
-            <el-form-item label="团期计划" prop="plan">
-              <el-input v-model="ruleFormSearch.plan"  placeholder="请输入或者选择团期计划"></el-input>
-            </el-form-item>
-          </el-col>
           <el-col :span="8" style="text-align: left">
             <el-form-item>
-              <el-button @click="HandleSearchReiburse()" type="primary">搜索</el-button>
-              <el-button @click="HandleResetReimburse('ruleFormSearch')" type="primary">重置</el-button>
+              <el-button @click="HandleSearchApprove('reimburse')" type="primary">搜索</el-button>
+              <el-button @click="HandleResetApprove('ruleFormSearch', 'reimburse')" type="primary">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -75,12 +58,9 @@
     data(){
       return {
         reimburseDataLength: null,
-        // keepWorkItemID: [], // 保存workItemid
         ruleFormSearch: {
-          creator: '',
           startTime: '',
           endTime: '',
-          plan: '',
         },
         approveTableDataReimburse: [],
       }
@@ -102,13 +82,6 @@
       }
     },
     methods: {
-      HandleResetReimburse (paramsFrom){
-        this.$refs[paramsFrom].resetFields()
-        this.approveTableList('reimburse');
-      },
-      HandleSearchApprove () {
-        this.approveTableList()
-      },
       handleJumpDetail(index, row){
         let getCurrentPaymentID = row.paymentID
         let getCurrentGuid = row.guid

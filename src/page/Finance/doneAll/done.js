@@ -6,12 +6,20 @@ export default {
     }
   },
   methods:{
+    moment,
+    HandleSearchApprove (paramsModule) {
+      this.approveTableList(paramsModule)
+    },
+    HandleResetApprove (paramsFrom, paramsModule){
+      this.$refs[paramsFrom].resetFields()
+      this.approveTableList(paramsModule);
+    },
     approveTableList(paramsTab){
       let that = this
       let arr = []
       this.listLoading = true
       that.approveTableData  = []
-      that.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+      that.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')
         .then(obj => {
           let getWorkflowCode
           if(paramsTab == 'borrow') {
@@ -24,18 +32,15 @@ export default {
             getWorkflowCode = 'refund4'
           } else {}
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingfinishedTasksForJQ",{
-            //"userCode": sessionStorage.getItem('userCode'),
             "userCode": sessionStorage.getItem('tel'),
-            "startTime": this.ruleFormSearch.startTime ?  moment(this.ruleFormSearch.startTime).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
-            "endTime": this.ruleFormSearch.endTime ? moment(this.ruleFormSearch.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-            "startIndex": -1,  // 页码
-            "endIndex": -1 ,  // 每页条数
+            "startTime": that.ruleFormSearch.startTime ? moment(that.ruleFormSearch.startTime).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
+            "endTime": that.ruleFormSearch.endTime ? moment(that.ruleFormSearch.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+            "startIndex": -1,
+            "endIndex": -1 ,
             "workflowCode": getWorkflowCode
           }).then(obj => {
             obj.data.forEach(v=>{
               arr.push(v.jq_ID)
-              // that.arr1.push(v.workItemID)
-              // that.keepWorkItemID.push(v)
             })
             if(paramsTab == 'borrow' || paramsTab == 'advance') {
               this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
@@ -96,5 +101,5 @@ export default {
         return ''
       }
     }
-  },
+  }
 }

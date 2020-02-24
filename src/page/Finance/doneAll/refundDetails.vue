@@ -1,7 +1,7 @@
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin:25px 20px 0 0;">
-      <el-button type="info" plain @click="goBack">取消</el-button>
+      <el-button type="info" plain  @click="handleCancel('refund')">取消</el-button>
     </div>
     <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
     <div>
@@ -72,7 +72,7 @@
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">订单ID:</div></el-col>
-          <el-col :span="17"><div class="grid-del" @click="orderDetails(1)">{{ refundList.orderCode }}</div></el-col>
+          <el-col :span="17"><div class="grid-del" @click="orderDetails(1)"><el-link type="info">{{ refundList.orderCode }}</el-link></div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">订单金额:</div></el-col>
@@ -100,7 +100,9 @@
     </div>
     <el-divider content-position="left" class='title-margin title-margin-t'>部分退信息</el-divider>
     <div>
-      <div>还需退款: {{refundList.needRefundPrice}}</div>
+      <div class="item-content">
+        <el-tag type="success">还需退款: {{refundList.needRefundPrice}}</el-tag>
+      </div>
       <el-table :data="mark" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
         <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
         <el-table-column prop="singlePrice" label="价钱" align="center"></el-table-column>
@@ -125,22 +127,16 @@
         <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
       </el-table>
     </div>
-  <!--<order-information :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>-->
+  <order-info :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-info>
   </div>
 </template>
 <script>
-  import moment from "moment";
-  // import orderInformation from "./orderInformation/orderInformation";
+  import orderInfo from "./orderInfo";
+  import common from "./common";
   export default {
-    name: "refundAndNoInDetails",
+    name: "refundDetails",
     components: {
-      // orderInformation
-    },
-    props: {
-      refundID:0,
-      variable: 0,
-      dialogType: 0,
-      workID:0,
+      orderInfo
     },
     data() {
       return {
@@ -158,71 +154,18 @@
         nonPayment:0,//未付金额
         mark:[],
         instanceID:0,
+        keepComponentName: null
       };
-
     },
-    filters: {
-      numFilter (value) {
-        // 截取当前数据到小数点后两位
-        let realVal = parseFloat(value).toFixed(2)
-        return realVal
-      },
-      formatDate: function (value) {//截取详情时间格式
-        return moment(value).format('YYYY-MM-DD')
-      }
-    },
+    mixins: [common],
     created(){
       let passPaymentID = this.$route.query.doneDetailPaymentID
       this.keepComponentName = this.$route.query.componentName
       this.keepPaymentId = passPaymentID
-      this.getLabel(passPaymentID);
-    },
-    watch: {
-      variable: function() {
-        if (this.dialogType == 1) { // 退款记录详情
-          setTimeout(() => {
-            this.getInvoice(this.refundID);
-          },200);
-        } else if(this.dialogType == 2){  // 审批详情
-          setTimeout(() => {
-            this.getInvoice(this.refundID,this.workID);
-          },200);
-        }
-        setTimeout(() => {
-          this.getOrder(this.refundList.orderID);
-        },500);
-      },
+      this.getInvoice(passPaymentID);
+    //    this.getOrder(this.refundList.orderID);
     },
     methods: {
-      formatDate01(date) {//时间转化
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? "0" + m : m;
-        var d = date.getDate();
-        d = d < 10 ? "0" + d : d;
-        var h = date.getHours();
-        h = h < 10 ? "0" + h : h;
-        var minute = date.getMinutes();
-        minute = minute < 10 ? "0" + minute : minute;
-        var second = date.getSeconds();
-        second = second < 10 ? "0" + second : second;
-        return y + "-" + m + "-" + d;
-      },
-      // 起始时间格式转换
-      dateFormat: function(row, column) {
-        let date = row[column.property];
-        if(date == undefined) {
-          return '';
-        }
-        return moment(date).format('YYYY-MM-DD')
-      },
-      getRowClass({ row, column, rowIndex, columnIndex }) {x
-        if (rowIndex == 0) {
-          return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
-        } else {
-          return "";
-        }
-      },
       getCellClass() {
         return "textAlign:center";
       },
@@ -327,7 +270,7 @@
       font-size: 17px !important
     }
     .distributor-status{
-      margin-left: 27px;
+      margin-left: 4%;
     }
     .row-bg {
       padding: 13px 0;
