@@ -162,6 +162,18 @@
         <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
       </el-table>
     </el-dialog>
+    <!--手续费弹窗-->
+    <el-dialog title="退款手续费" :visible.sync="refundChargeShow" custom-class="city_list dialogOrder" style="margin-top:-100px" width="500px"
+      @close="cancelRefundCharge()">
+      <div class="controlButton">
+        <el-button class="ml13" @click="cancelRefundCharge()">取 消</el-button>
+        <el-button class="ml13" @click="paymentRefundCharge()"type="primary">确 认</el-button>
+      </div>
+      <div class="oh">
+        <div class="fl" style="margin:10px 0 0 0;">退款手续费:</div>
+        <el-input class="refundChargeClass" placeholder="0.00" v-model="refundCharge"> </el-input>
+      </div>
+    </el-dialog>
     <!--通过、驳回弹窗-->
     <el-dialog :title="approval" :visible.sync="dialogApproval" custom-class="city_list" style="margin-top:-100px;" width="800px"
       @close="cancelApproval()">
@@ -218,6 +230,8 @@ export default {
       nonPayment:0,//未付金额
       mark:[],
       instanceID:0,
+      refundCharge:'' ,//手续费
+      refundChargeShow:false, // 手续费弹窗
     };
 
   },
@@ -357,6 +371,7 @@ export default {
           this.tableDate = res.data.object.guests;
           this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
           this.accountID = res.data.object.id;
+          console.log(this.accountID)
           this.disbursementID = res.data.object.payID;
           this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",{
               id:this.disbursementID,
@@ -391,6 +406,7 @@ export default {
     },
     accountList() { // 点击支付账户查询列表
     console.log(sessionStorage.getItem("id"))
+    
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
@@ -408,18 +424,27 @@ export default {
         })
     },
     payment(){ // 选择支付账户
+      this.refundChargeShow = true;
+    },
+    cancelRefundCharge(){ // 关闭手续费弹窗
+      this.refundChargeShow = false;
+      this.refundCharge = '';
+    },
+    paymentRefundCharge(){
       // let paymentAccount = this.refundList;
       // paymentAccount.payID = this.payID;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/save",{
         object:{
           id:this.accountID,
           payID:this.payID,
+          refundCharge:this.refundCharge == '' ? 0 : this.refundCharge,
         }
       })
       .then(res => {
         if(res.data.isSuccess == true){
            this.dialogAccount = false;
            this.forbidden = false;
+           this.cancelRefundCharge();
            this.getInvoice(this.accountID)
         }else{
            this.$message.success("申请失败");
@@ -433,12 +458,21 @@ export default {
     through(){ // 点击通过显示弹窗
       this.dialogApproval = true ;
       this.approval = '审批通过';
+      if(this.ifDY100068 == true){
+        this.insertEBS(this.accountID);
+      }
       if(this.disbursementID == 0 && this.ifDY100068 == true){
         this.forbidden = true;
         this.$message.error("请先选择支付账户")
       } else{
         this.forbidden = false;
       }
+    },
+    insertEBS(){ // 退款同步EBS
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insertebs",{
+        refundID:this.accountID,
+        accountID:this.payID,
+      })
     },
     rejected(){ // 点击驳回显示弹窗
       this.dialogApproval = true ;
@@ -599,4 +633,5 @@ export default {
 .cursor {cursor: pointer;}
 .oh{overflow: hidden;}
 .opinions{float: left;margin: 0 0 0 13px; width: 500px;}
+.refundChargeClass{float: left;margin: 0 0 0 13px; width: 200px;}
 </style>
