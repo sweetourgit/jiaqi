@@ -21,7 +21,7 @@
           <el-col :span="11" style="text-align: left">
             <el-form-item>
               <el-button @click="HandleSearchApprove('refund')" type="primary">搜索</el-button>
-              <el-button @click="HandleResetApprove('ruleFormSearch', 'refund')" type="primary">重置</el-button>
+              <el-button type="primary" plain @click="HandleResetApprove('ruleFormSearch', 'refund')">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>

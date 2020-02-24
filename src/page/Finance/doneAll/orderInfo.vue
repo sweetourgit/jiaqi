@@ -8,7 +8,7 @@
       :show-close="false"
     >
       <div style="position: absolute; top: 8px; right: 10px;">
-        <el-button class="ml13" @click="cancelOrder()">取 消</el-button>
+        <el-button type="warning" class="ml13" @click="cancelOrder()">取 消</el-button>
       </div>
       <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
       <div>

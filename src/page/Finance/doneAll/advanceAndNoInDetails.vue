@@ -1,7 +1,7 @@
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin:25px 20px 0 0;">
-      <el-button type="info" plain @click="handleCancel(keepComponentName)">取消</el-button>
+      <el-button type="warning" plain @click="handleCancel(keepComponentName)">取消</el-button>
       <el-button type="primary" @click="splitRelTable">拆分关系表</el-button>
     </div>
     <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -21,18 +21,18 @@
           <el-col :span="17"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ fundamental.createTime  | formatDateCreateAn  }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">创建时间:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.createTime  | formatDateCreateAn  }}</div></el-col>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">团期计划:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">团期计划:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">产品名称:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">产品名称:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">供应商:</div></el-col>
@@ -41,44 +41,44 @@
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">借款类型:</div></el-col>
-          <el-col :span="15">
+          <el-col :span="7"><div class="grid-del label-color">借款类型:</div></el-col>
+          <el-col :span="17">
             <div class="grid-del">{{ fundamental.supplierTypeEX }}</div>
           </el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">借款金额:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ fundamental.price }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">借款金额:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ fundamental.price }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">摘要:</div></el-col>
           <el-col :span="17"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
-          <el-col :span="18"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">账号:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">开户行:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">开户行:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">开户名:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">开户名:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">支付账户:</div></el-col>
-          <el-col :span="12">
+          <el-col :span="7"><div class="grid-del label-color">支付账户:</div></el-col>
+          <el-col :span="17">
             <div class="grid-del">{{ fundamental.accountsName }}</div>
           </el-col>
         </el-col>
         <el-col :span="14">
-          <el-col :span="6"><div class="grid-del label-color">附件:</div></el-col>
-          <el-col :span="18">
+          <el-col :span="7"><div class="grid-del label-color">附件:</div></el-col>
+          <el-col :span="17">
             <el-upload
               class="upload-demo"
               name="files"

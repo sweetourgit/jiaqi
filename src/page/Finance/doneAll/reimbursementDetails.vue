@@ -1,7 +1,7 @@
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin:25px 20px 0 0;">
-      <el-button type="info" plain  @click="handleCancel('reimburse')">取消</el-button>
+      <el-button type="warning" plain  @click="handleCancel('reimburse')">取消</el-button>
     </div>
     <el-divider content-position="left" class='title-margin'>报销信息</el-divider>
     <el-row class="row-content">
