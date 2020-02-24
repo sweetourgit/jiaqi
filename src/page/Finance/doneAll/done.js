@@ -30,7 +30,11 @@ export default {
             getWorkflowCode = 'Reimbursement_noIncome4'
           }else if(paramsTab == 'refund'){
             getWorkflowCode = 'refund4'
-          } else {}
+          }else if(paramsTab == 'sheet'){
+            getWorkflowCode = 'reimbursement4'
+          }  else {
+
+          }
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingfinishedTasksForJQ",{
             "userCode": sessionStorage.getItem('tel'),
             "startTime": that.ruleFormSearch.startTime ? moment(that.ruleFormSearch.startTime).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
@@ -81,6 +85,18 @@ export default {
                 }
                 that.$emit('handlePassVal',showTabCount)
                 that.approveTableDataRefund = obj.data.objects
+                that.listLoading = false
+              })
+            }else if(paramsTab == 'sheet'){
+              this.$http.post(this.GLOBAL.serverSrc + '/finance/checksheet/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                let showTabCount = 0
+                if(obj.data.objects != null){
+                  showTabCount = obj.data.objects.length
+                }
+                that.$emit('handlePassVal',showTabCount)
+                that.approveTableDataSheet = obj.data.objects
                 that.listLoading = false
               })
             }
