@@ -1,15 +1,18 @@
 <template>
   <div class="curiseShip">
-    <p>邮轮舱房管理</p>
+    <div class="buttonDv">
+      <el-button type="info" class="topButton">添加顶级</el-button>
+    </div>
     <div class="block">
       <!-- <p>使用 scoped slot</p> -->
       <el-tree
         :data="data"
-        node-key="id"
-        default-expand-all
+        :node-key="data.id"
+        render-after-expand
+        :props="defaultProps"
         :expand-on-click-node="false">
         <span class="custom-tree-node" slot-scope="{ node, data }">
-          <span>{{ node.label }}</span>
+          <span>{{ data.name }}</span>
           <span>
             <el-button
               type="text"
@@ -34,69 +37,41 @@
         </span>
       </el-tree>
     </div>
+    <cabinAdd :dialogFormVisible='dialogFormVisible' :info='info' @close="closeAdd"></cabinAdd>
   </div>
 </template>
 <script type="text/javascript">
+import cabinAdd from '@/page/contentInfo/cruiseShipCabin/cabinAdd.vue'
 export default {
   name: "curiseShip",
   components: {
-    
+    cabinAdd
   },
   data() {
-    const data = [{
-      id: 1,
-      label: '一级 1',
-      children: [{
-        id: 4,
-        label: '二级 1-1',
-        children: [{
-          id: 9,
-          label: '三级 1-1-1'
-        }, {
-          id: 10,
-          label: '三级 1-1-2'
-        }]
-      }]
-    }, {
-      id: 2,
-      label: '一级 2',
-      children: [{
-        id: 5,
-        label: '二级 2-1'
-      }, {
-        id: 6,
-        label: '二级 2-2'
-      }]
-    }, {
-      id: 3,
-      label: '一级 3',
-      children: [{
-        id: 7,
-        label: '二级 3-1'
-      }, {
-        id: 8,
-        label: '二级 3-2'
-      }]
-    }];
+    const data = [];
     return {
-      data: JSON.parse(JSON.stringify(data))
+      data: JSON.parse(JSON.stringify(data)),
+      defaultProps: {
+        children: 'child',
+      },
+      dialogFormVisible: false,
+      info: ''
     }
   },
   computed: {},
   methods: {
+    closeAdd(){
+      this.dialogFormVisible = false;
+      this.info = "";
+      this.loadData();
+    },
     append(data) {
-      const newChild = { id: id++, label: 'testtest', children: [] };
-      if (!data.children) {
-        this.$set(data, 'children', []);
-      }
-      data.children.push(newChild);
+      this.dialogFormVisible = true;
+      this.info = data.id;
     },
     edit(node, data){
-      const newChild = { id: id++, label: 'testtest', children: [] };
-      if (!data.children) {
-        this.$set(data, 'children', []);
-      }
-      data.children.push(newChild);
+      this.dialogFormVisible = true;
+      this.info = data.id;
     },
     remove(node, data) {
       const parent = node.parent;
@@ -104,9 +79,32 @@ export default {
       const index = children.findIndex(d => d.id === data.id);
       children.splice(index, 1);
     },
+    loadData(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/cabin-type/listall", {
+        "id": 0
+      }, ).then(function(response) {
+        console.log('获取邮轮舱房',response);
+        if (response.data.code == '200') {
+          that.data = JSON.parse(JSON.stringify(response.data.data))
+          // console.log(JSON.stringify(response.data.data))
+          // that.data.forEach(function(item, index, arr){
+          //   if(item.children)
+          // })
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("加载数据失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
   },
   created() {
-    
+    this.loadData();
   },
   mounted() {
 
@@ -115,6 +113,12 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+  .buttonDv{
+    overflow: hidden;
+  }
+  .topButton{
+    float: right;
+  }
   .custom-tree-node{
     span{
       margin-right: 20px;

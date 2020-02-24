@@ -500,7 +500,7 @@
             {{baseInfo.createUser}}
           </p>
           <p class="inputLabel">
-            <span>创建时间：</span>
+            <span>申请时间：</span>
             {{baseInfo.createTime}}
           </p>
           <p class="inputLabel" v-if="info.collectionType == 2">

@@ -97,8 +97,8 @@
           <!-- <el-table-column prop="dept" label="申请组织" align="center">
           </el-table-column>-->
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-          <!-- <el-table-column prop="createTime" label="申请时间" align="center">
-          </el-table-column>-->
+          <el-table-column prop="createTime" label="申请时间" align="center">
+          </el-table-column>
           <!--<el-table-column prop="" label="审批意见" align="center">-->
           <!--</el-table-column>-->
           <el-table-column label="操作" width="100" align="center">
@@ -221,7 +221,7 @@
           <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
           <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
           <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-          <!--<el-table-column prop="" label="审批意见" align="center"></el-table-column>-->
+          <el-table-column prop="createTime" label="申请时间" align="center"></el-table-column>
           <el-table-column label="操作" width="100" align="center">
             <template slot-scope="scope">
               <el-button @click="approvalTY(scope.row)" type="text" size="small">审批</el-button>
@@ -561,6 +561,7 @@ export default {
             that.tableDataZK = obj.data.objects;
             that.tableDataZK.forEach(function(item, index, arr) {
               item.collectionTime = item.collectionTime.split("T")[0];
+              item.createTime = item.createTime.split("T")[0];
             });
             that.loadingZK = false;
           } else {
@@ -654,6 +655,7 @@ export default {
             that.tableDataTY = obj.data.objects;
             that.tableDataTY.forEach(function(item, index, arr) {
               item.collectionTime = item.collectionTime.split("T")[0];
+              item.createTime = item.createTime.split("T")[0];
             });
             that.loadingTY = false;
           } else {
