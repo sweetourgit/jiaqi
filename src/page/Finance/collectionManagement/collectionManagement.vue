@@ -61,6 +61,8 @@ export default {
     handleClick(tab, event) {// 点击切换获取当前值
       if(tab.label == "直客"){
         this.getStraightGuestManagement();
+      } else if(tab.label == "报销还款"){
+        this.$refs.reimbursement.searchHandInside()
       }else{
         this.pageList();
       }
