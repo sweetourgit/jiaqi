@@ -525,14 +525,14 @@ export default {
       // this.orderpage = temp;
       if (this.showContent != index) {
         this.showContent = index;
-        this.axiosListOneInfo(item.id);
+       this.axiosListOneInfo(item.id,item.planID);
       } else {
         this.showContent = null;
       }
     },
 
     // 请求list中的一个数据
-    axiosListOneInfo(id) {
+    axiosListOneInfo(id,planID) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
           id: id
@@ -594,11 +594,73 @@ export default {
           } else {
             this.getListOneMessage.platform = "同业系统";
           }
+           //获取报名类型列表数据
+          this.$http
+            .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
+              id: planID
+            })
+            .then(res => {
+              if (res.data.isSuccess == true) {
+                    enrolls = res.data.objects;
+                    guest= this.getListOneMessage.guests;
+                    this.sourceMaker(enrolls,guest);
+                    this.enrollDetailMaker();
+                  }
+              
+            });
         })
         .catch(err => {
           console.log(err);
         });
     },
+    sourceMaker(enrolls, guests){
+        let salePriceReflect= this.salePriceReflect={};
+        this.salePrice.splice(0);
+        this.salePrice.push(
+          ...enrolls.map((enroll, index) => {
+            let result= [];
+            result.enroll= enroll;
+            // 收集所有相同报名类型的实例，只有当前存在的报名类型需要这个属性，不存在的报名类型肯定不可以新增实例了
+            enroll.children= [];
+            salePriceReflect[this.enrollKeyMaker(enroll)]= result;
+            return result;
+          })
+        )
+        guests.forEach(guest => {
+          let { enrollName, singlePrice }= guest;
+          let key= `${enrollName}_${singlePrice}`;
+          // 不知道存不存在这个情况，过去有一个报名类型，但是现在没有了，这个时候hitEnroll为undefined
+          // guest的报名类型不存在于当前enrolls
+          salePriceReflect[key].push(guest); 
+        })
+        // 这里的el就是上边的salePriceReflect[key]
+        this.salePrice.forEach(el => {
+          el.enroll && el.enroll.children.push(el);
+        });
+      },
+      //根据报名类型和价格类型返回key
+      enrollKeyMaker(enroll){
+         let { enrollName, price_01, price_02 }= enroll;
+        return `${enrollName}_${price_01}`
+      },
+        // 报名信息
+      enrollDetailMaker(){
+        let str= '';
+        let singlePrice;
+        let count= 0;
+        let price= 0;
+        this.salePrice.forEach(el => {
+          let { enrollName, price_01 }= el.enroll;
+          singlePrice= price_01;
+          str+= el.length? `[ ${enrollName} ${this.toDecimal2(singlePrice)} ] x ${el.length}\n`: '';
+          price+= singlePrice* el.length;
+          count+= el.length;
+        })
+        this.guestTotal= count;
+        this.getListOneMessage.enrollDetail= str;
+        //console.log( this.getListOneMessage.enrollDetail,'最后结果')
+        return price;
+      },
     // 整理数据报名信息的格式显示
     // formatData(origindata) {
     //   let data = JSON.parse(origindata);
