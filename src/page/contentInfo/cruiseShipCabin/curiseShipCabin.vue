@@ -1,7 +1,7 @@
 <template>
   <div class="curiseShip">
     <div class="buttonDv">
-      <el-button type="info" class="topButton">添加顶级</el-button>
+      <el-button type="info" class="topButton" @click="append()">添加顶级</el-button>
     </div>
     <div class="block">
       <!-- <p>使用 scoped slot</p> -->
@@ -66,18 +66,59 @@ export default {
       this.loadData();
     },
     append(data) {
-      this.dialogFormVisible = true;
-      this.info = data.id;
+      if(data){
+        this.dialogFormVisible = true;
+        this.info = {
+          type: "add",
+          id: data.id
+        };
+      }else{
+        this.dialogFormVisible = true;
+        this.info = {
+          type: "add",
+          id: 0
+        };
+      }
+      
     },
     edit(node, data){
       this.dialogFormVisible = true;
-      this.info = data.id;
+      this.info = {
+        type: "edit",
+        id: data.id
+      };
     },
     remove(node, data) {
-      const parent = node.parent;
-      const children = parent.data.children || parent.data;
-      const index = children.findIndex(d => d.id === data.id);
-      children.splice(index, 1);
+      const that = this;
+      this.$confirm("是否删除该舱房信息?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/cabin-type/del", {
+          "id": data.id
+        }, ).then(function(response) {
+            // console.log('获取邮轮舱房',response);
+            if (response.data.code == '200') {
+                that.$message.success("删除成功！");
+                that.loadData();
+            } else {
+                if(response.data.message){
+                    that.$message.warning(response.data.message);
+                }else{
+                    that.$message.warning("加载数据失败~");
+                }
+            }
+        }).catch(function(error) {
+            console.log(error);
+        });
+      }).catch(() => {
+        this.$message({
+          type: "warning",
+          message: "已取消删除"
+        });
+      });
+      
     },
     loadData(){
       const that = this;
