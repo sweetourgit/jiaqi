@@ -23,6 +23,9 @@ export default {
     pageHeader,
     navLeft
   },
+  created() {
+    this.getBrowserInfo()
+  },
   watch:{
     $route: {
     handler: function(val, oldVal){
@@ -43,8 +46,24 @@ export default {
         },
         deep: true
       }
+  },
+  methods:{
+    getBrowserInfo(){
+      console.log(navigator)
+      let ua = navigator.userAgent.toLocaleLowerCase();
+      if (!(ua.match(/chrome/) != null && navigator.mimeTypes.length == 4 && navigator.languages.length == 3)) {
+       this.$alert('请使用谷歌浏览器访问该页面', '提示', {
+         dangerouslyUseHTMLString: true,
+         showClose: false,
+         callback: () => {
+           window.location.href = 'https://www.google.cn/intl/zh-CN/chrome/'
+         }
+       });
+      }
+    }
   }
 }
+
 </script>
 
 
