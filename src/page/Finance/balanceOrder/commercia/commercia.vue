@@ -37,12 +37,13 @@
       <!--搜索框-->
  
         <!--表格-->
+    <div class="table_style">
          <el-table :data="tableData" class="labelTable"  border style="width: 100%;" :row-class-name="tableRowClassName" >
             <el-table-column prop="ID" label="订单单号" width="185" align="center"></el-table-column>
-            <el-table-column prop="name" label="商户名称" width="140" align="center"></el-table-column>
+            <el-table-column prop="name" label="商户名称" width="119" align="center"></el-table-column>
             <el-table-column prop="moneyType" label="结款方式" width="80" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" width="170" align="center"></el-table-column>
-            <el-table-column prop="plan" label="团期计划" width="150" align="center"></el-table-column>
+            <el-table-column prop="plan" label="团期计划" width="140" align="center"></el-table-column>
             <el-table-column prop="order" label="订单金额" width="85" align="center"></el-table-column>
             <el-table-column prop="arrears" label="欠款金额" width="85" align="center"></el-table-column>
             <el-table-column prop="also" label="已还金额" width="85" align="center"></el-table-column>
@@ -67,6 +68,7 @@
           :total="total"
           background
         ></el-pagination>
+
          <el-dialog title="修改时间" :visible.sync="dialogFormVisible" width="40%" :show-close="false":close-on-click-modal="false" >
              <el-date-picker type="date" placeholder="选择日期" v-model="amendTime" style="width: 100%;"></el-date-picker>
              <div slot="footer" class="dialog-footer" style="position: absolute;top: 20px;right: 20px;">
@@ -74,6 +76,7 @@
                 <el-button  type="primary" @click="submitForm(amendTime)" >确 定</el-button>
             </div>
             </el-dialog>
+        </div>
       </div>
       
        
@@ -89,6 +92,7 @@
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
   /*表格*/
+  .table_style {width: 98%;margin-left: 20px;margin-top: 20px;}
   .labelTable{margin: 20px 30px 100px 0;overflow: hidden;clear:both;}
   .pageList{float:right; margin: -70px 0 60px 0;}
   .el-table .warning-red-jenny { color: red;}
