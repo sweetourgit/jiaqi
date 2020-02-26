@@ -4,9 +4,9 @@
         <!--搜索框-->
         <div style="width:100%; padding:30px 0 0 0;">
             <span class="emptyPlan">订单单号</span>
-            <el-input v-model="orderid" placeholder="订单ID" class="search_input"></el-input>
+            <el-input v-model="orderid" placeholder="订单ID" class="search_input" style='width:200px;'></el-input>
             <span class="emptyPlan">商户名称</span>
-            <el-input v-model="ordertitle"  placeholder="请输入商户名称" class="search_input"></el-input>
+            <el-input v-model="ordertitle"  placeholder="请输入商户名称" class="search_input" style='width:200px;'></el-input>
             <span class="emptyPlan">出团日期</span>
              <el-date-picker
                 class="search_input"
@@ -83,7 +83,6 @@
 </template>
 <style lang="stylus">
   /*搜索框*/
-  .el-input{width:0}
   .search_input{ width: 200px;float:left; line-height: 30px;margin: 0 0 0 10px; }
   .fl{float:left; margin: 20px 0 20px 0;}
   .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
