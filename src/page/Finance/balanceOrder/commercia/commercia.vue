@@ -2,14 +2,14 @@
    <div  class="vivo" style="position:relative; width:100%;">
      <div label="商户欠款订单">
         <!--搜索框-->
-        <div>
+        <div style="width:100%;">
           <div class="fl">
             <span class="emptyPlan">订单单号</span>
-            <el-input v-model="orderid" class="empty" width="200"  placeholder="订单ID"></el-input>
+            <el-input v-model="orderid" class="empty"  placeholder="订单ID"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">商户名称</span>
-            <el-input v-model="ordertitle" class="empty" width="200" placeholder="请输入商户名称"></el-input>
+            <el-input v-model="ordertitle" class="empty" placeholder="请输入商户名称"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">出团时间</span>
@@ -47,20 +47,20 @@
       <!--搜索框-->
  
         <!--表格-->
-         <el-table :data="tableData" class="labelTable" border style="width:100%" :row-class-name="tableRowClassName" >
+         <el-table :data="tableData" class="labelTable"  border style="width: 100%;" :row-class-name="tableRowClassName" >
             <el-table-column prop="ID" label="订单单号" width="185" align="center"></el-table-column>
-            <el-table-column prop="name" label="商户名称" width="120" align="center"></el-table-column>
-            <el-table-column prop="moneyType" label="结款方式" width="82" align="center"></el-table-column>
-            <el-table-column prop="productName" label="产品名称" width="150" align="center"></el-table-column>
-            <el-table-column prop="plan" label="团期计划" width="100" align="center"></el-table-column>
-            <el-table-column prop="order" label="订单金额" width="77" align="center"></el-table-column>
-            <el-table-column prop="arrears" label="欠款金额" width="77" align="center"></el-table-column>
-            <el-table-column prop="also" label="已还金额" width="77" align="center"></el-table-column>
-            <el-table-column prop="examine" label="待审批金额" width="77" align="center"></el-table-column>
+            <el-table-column prop="name" label="商户名称" width="140" align="center"></el-table-column>
+            <el-table-column prop="moneyType" label="结款方式" width="80" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" width="170" align="center"></el-table-column>
+            <el-table-column prop="plan" label="团期计划" width="150" align="center"></el-table-column>
+            <el-table-column prop="order" label="订单金额" width="85" align="center"></el-table-column>
+            <el-table-column prop="arrears" label="欠款金额" width="85" align="center"></el-table-column>
+            <el-table-column prop="also" label="已还金额" width="85" align="center"></el-table-column>
+            <el-table-column prop="examine" label="待审批金额" width="85" align="center"></el-table-column>
             <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
             <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
             <el-table-column prop="date" label="出团日期" width="100" align="center"></el-table-column>
-            <el-table-column prop="paymentID" label="操作" width="60" align="center">
+            <el-table-column prop="paymentID" label="操作" width="80" align="center">
                           <template slot-scope="scope">
                           <div @click="dialogchange(scope)" style="color: #f5a142">修改时间</div>
                          </template>
@@ -93,13 +93,13 @@
 </template>
 <style lang="stylus">
   /*搜索框*/
-  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
+  .empty{float:left; line-height: 30px;margin: 0 0 0 10px; }
   .fl{float:left; margin: 20px 0 20px 0;}
   .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
   /*表格*/
-  .labelTable{margin: 20px 30px 100px 0;max-width: 90%;overflow: hidden;clear:both;}
+  .labelTable{margin: 20px 30px 100px 0;overflow: hidden;clear:both;}
   .pageList{float:right; margin: -70px 0 60px 0;}
   .el-table .warning-red-jenny { color: red;}
   
