@@ -5,11 +5,11 @@
         <div>
           <div class="fl">
             <span class="emptyPlan">订单单号</span>
-            <el-input v-model="orderid" class="empty"   placeholder="订单ID"></el-input>
+            <el-input v-model="orderid" class="empty" width="200"  placeholder="订单ID"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">商户名称</span>
-            <el-input v-model="ordertitle" class="empty"   placeholder="请输入商户名称"></el-input>
+            <el-input v-model="ordertitle" class="empty" width="200" placeholder="请输入商户名称"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">出团时间</span>
@@ -48,38 +48,24 @@
  
         <!--表格-->
          <el-table :data="tableData" class="labelTable" border style="width:100%" :row-class-name="tableRowClassName" >
-            <el-table-column prop="ID" label="订单单号" width="195" align="center"></el-table-column>
+            <el-table-column prop="ID" label="订单单号" width="185" align="center"></el-table-column>
             <el-table-column prop="name" label="商户名称" width="120" align="center"></el-table-column>
             <el-table-column prop="moneyType" label="结款方式" width="82" align="center"></el-table-column>
             <el-table-column prop="productName" label="产品名称" width="150" align="center"></el-table-column>
             <el-table-column prop="plan" label="团期计划" width="100" align="center"></el-table-column>
-            <el-table-column prop="order" label="订单金额" width="82" align="center"></el-table-column>
-            <el-table-column prop="arrears" label="欠款金额" width="82" align="center"></el-table-column>
-            <el-table-column prop="also" label="已还金额" width="82" align="center"></el-table-column>
-            <el-table-column prop="examine" label="待审批金额" width="82" align="center"></el-table-column>
-            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
-            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
-            <el-table-column
-              fixed="right"
-              label="操作"
-              align="center"
-              width="80"
-              >
-              <template slot-scope="scope">
-                <el-button @click="dialogchange(scope)" type="text" size="small">修改时间</el-button>
-             </template>
+            <el-table-column prop="order" label="订单金额" width="77" align="center"></el-table-column>
+            <el-table-column prop="arrears" label="欠款金额" width="77" align="center"></el-table-column>
+            <el-table-column prop="also" label="已还金额" width="77" align="center"></el-table-column>
+            <el-table-column prop="examine" label="待审批金额" width="77" align="center"></el-table-column>
+            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
+            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
+            <el-table-column prop="date" label="出团日期" width="100" align="center"></el-table-column>
+            <el-table-column prop="paymentID" label="操作" width="60" align="center">
+                          <template slot-scope="scope">
+                          <div @click="dialogchange(scope)" style="color: #f5a142">修改时间</div>
+                         </template>
             </el-table-column>
-         </el-table>
-         <!-- <el-pagination 
-         class="pageList" 
-         :page-sizes="[10,1,30,50]" 
-         background @size-change="handleSizeChange" 
-         :page-size="pageSize" 
-         :current-page.sync="currentPage" 
-         @current-change="handleCurrentChange" 
-         layout="total, sizes, prev, pager, next, jumper" 
-         :total="total">
-         </el-pagination> -->
+          </el-table>
          <el-pagination
           class="pageList" 
           @size-change="handleSizeChange"
@@ -115,7 +101,7 @@
   /*表格*/
   .labelTable{margin: 20px 30px 100px 0;max-width: 90%;overflow: hidden;clear:both;}
   .pageList{float:right; margin: -70px 0 60px 0;}
-  .el-table .warning-row { color: red;}
+  .el-table .warning-red-jenny { color: red;}
   
 </style>
 <script>
@@ -223,6 +209,9 @@ export default {
                   }else if(obj.data.objects[j].settlement == 2){
                       moneyType = "非月结"
                   }
+                  let str = obj.data.objects[j].date;
+                      str = str.toString();
+                  let nawdata = str[0]+str[1]+str[2]+str[3]+"-"+str[4]+str[5]+"-"+str[6]+str[7];
                   that.tableData.push({
                         ID:obj.data.objects[j].orderCode,//id+
                         planid:obj.data.objects[j].id,//id+
@@ -236,6 +225,7 @@ export default {
                         examine:obj.data.objects[j].approvedPrice,//待审批金额
                         arrearsDate:obj.data.objects[j].createDate,//欠款日期
                         alsoDate:obj.data.objects[j].arrearsDate,//应还日期
+                        date:nawdata,//出团日期
                   })
                 }
               })
@@ -250,7 +240,7 @@ export default {
             if (arrearsDate < mydatas) {
                 rowIndex = rowIndex+1
              if(rowIndex){
-                 return 'warning-row';
+                 return 'warning-red-jenny';
                 }else{
                  return '';
                 }
@@ -262,8 +252,11 @@ export default {
       this.orderid ='',
       this.ordertitle ='',
       this.planTime = '';
+      this.endDate = null;
+      this.startDate = null;
       this.typeColl = -1;
       this.currentPage4 = 1;
+      this.settlement = -1;
       this.pageList(1, this.pageSize);
     },
     //判断结束时间不能在开始时间之前
@@ -304,7 +297,7 @@ export default {
           return moment(date).format('YYYY-MM-DD')
         },
     dialogchange(id) {  // 修改时间弹窗
-         this.planid = id.row.planid
+         this.planid = id.row.planid 
          this.dialogFormVisible = true;
         },
     chanceSubmit() { // 取消按钮
@@ -349,6 +342,14 @@ export default {
                          this.$message({
                               type: "success",
                               message: "修改成功!"
+                            });
+                            this.dialogFormVisible = false;
+                            this.amendTime = "";
+                            this.pageList();
+                      }else{
+                        this.$message({
+                              type: "error",
+                              message: "修改失败!"
                             });
                             this.dialogFormVisible = false;
                             this.amendTime = "";
