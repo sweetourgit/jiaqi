@@ -5,11 +5,11 @@
         <div style="width:100%;">
           <div class="fl">
             <span class="emptyPlan">订单单号</span>
-            <el-input v-model="orderid" class="empty"  placeholder="订单ID"></el-input>
+            <el-input v-model="orderid" placeholder="订单ID" class="search_input"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">商户名称</span>
-            <el-input v-model="ordertitle" class="empty" placeholder="请输入商户名称"></el-input>
+            <el-input v-model="ordertitle" placeholder="请输入商户名称" class="search_input"></el-input>
           </div>
           <div class="fl">
             <span class="emptyPlan">出团时间</span>
@@ -93,7 +93,7 @@
 </template>
 <style lang="stylus">
   /*搜索框*/
-  .empty{float:left; line-height: 30px;margin: 0 0 0 10px; }
+  .search_input{ width: 200px;float:left; line-height: 30px;margin: 0 0 0 10px; }
   .fl{float:left; margin: 20px 0 20px 0;}
   .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
