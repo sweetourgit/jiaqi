@@ -9,10 +9,10 @@
           </div>
           <div class="fl">
             <span class="emptyPlan">商户名称</span>
-            <el-input v-model="ordertitle" placeholder="请输入商户名称" class="search_input"></el-input>
+            <el-input v-model="ordertitle"  placeholder="请输入商户名称" class="search_input"></el-input>
           </div>
           <div class="fl">
-            <span class="emptyPlan">出团时间</span>
+            <span class="emptyPlan">出团日期</span>
              <el-date-picker
                 class="planTime"
                 style="width:70%"
@@ -29,15 +29,15 @@
         <div style="width:1100px;clear:both; padding:0 0 50px 0;">
           <div style=" float:left">
                <span class="emptyPlan">欠款逾期</span>
-             <el-select v-model="typeColl" placeholder="请选择逾期类型" class="empty">
+             <el-select v-model="typeColl" placeholder="请选择逾期类型"  class="search_input">
                      <el-option :label="item.label" :value="item.value" v-for="item in settlements" :key="item.value" /> 
                    </el-select>
           </div>
            <div style=" float:left">
                <span class="emptyPlan">结款类型</span>
-             <el-select v-model="settlement" placeholder="请选择结款类型" class="empty">
+             <el-select v-model="settlement" placeholder="请选择结款类型"  class="search_input">
                      <el-option :label="item.label" :value="item.value" v-for="item in moneydata" :key="item.value" /> 
-                   </el-select>
+              </el-select>
           </div>
           <div style="float:right; margin: 20px -50px 0 0;">
             <el-button type="primary" @click="handleSearch()">搜索</el-button>
