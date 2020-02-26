@@ -128,10 +128,6 @@ export default {
         console.log('获取邮轮舱房',response);
         if (response.data.code == '200') {
           that.data = JSON.parse(JSON.stringify(response.data.data))
-          // console.log(JSON.stringify(response.data.data))
-          // that.data.forEach(function(item, index, arr){
-          //   if(item.children)
-          // })
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);

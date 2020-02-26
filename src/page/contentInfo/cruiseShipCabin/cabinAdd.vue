@@ -81,7 +81,6 @@
                 "create_uid": sessionStorage.getItem('id'),
                 "org_id": sessionStorage.getItem('orgID')
             }, ).then(function(response) {
-                // console.log('获取邮轮舱房',response);
                 if (response.data.code == '200') {
                     that.$message.success("提交成功！");
                     that.closeAdd();
@@ -100,7 +99,6 @@
                 "id": this.info.id,
                 "name": this.ruleForm.cabinName
             }, ).then(function(response) {
-                // console.log('获取邮轮舱房',response);
                 if (response.data.code == '200') {
                     that.$message.success("提交成功！");
                     that.closeAdd();
@@ -121,12 +119,10 @@
 
       // 加载编辑数据
       loadData(){
-        // alert(this.info);
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/cabin-type/info", {
           "id": this.info.id
         }, ).then(function(response) {
-        //   console.log('获取邮轮cangfang',response);
           if (response.data.code == '200') {
             that.ruleForm.cabinName = response.data.data.name;
           } else {
