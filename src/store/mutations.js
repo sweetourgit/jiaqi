@@ -21,5 +21,8 @@ export default {
   },
   referDoneAllShowWhichTab(state, data){
     state.doneAllShowWhichTab = data
+  },
+  showSheetCount(state, data){
+    state.sheetCount = data
   }
 }

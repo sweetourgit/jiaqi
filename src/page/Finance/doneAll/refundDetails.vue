@@ -131,7 +131,7 @@
   </div>
 </template>
 <script>
-  import orderInfo from "./orderInfo";
+  import orderInfo from "./orderDetails";
   import common from "./common";
   export default {
     name: "refundDetails",

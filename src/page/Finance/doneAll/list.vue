@@ -19,8 +19,12 @@
       <el-tab-pane :label="'退款管理(' + approveDataNumRefund +')'" name="refund">
         <refund :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumRefund"></refund>
       </el-tab-pane>
-      <el-tab-pane :label="'报账单管理(' + approveDataNumSheet +')'" name="sheet">
-        <check-sheet :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumSheet"></check-sheet>
+      <el-tab-pane :label="'报账单管理(' + this.$store.state.sheetCount +')'" name="sheet">
+<!--        <check-sheet :whereTab="whereTab" @handleSheetPassVal="handleGetAlreadyNumSheet"></check-sheet>-->
+        <check-sheet :whereTab="whereTab"></check-sheet>
+      </el-tab-pane>
+      <el-tab-pane :label="'收款管理(' + this.$store.state.sheetCount +')'" name="collection">
+        <check-sheet :whereTab="whereTab"></check-sheet>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -74,9 +78,9 @@
       handleGetAlreadyNumRefund(paramsPassCount){
         this.approveDataNumRefund = paramsPassCount
       },
-      handleGetAlreadyNumSheet(paramsPassCount){
+     /* handleGetAlreadyNumSheet(paramsPassCount){
         this.approveDataNumSheet = paramsPassCount
-      }
+      }*/
     }
   }
 </script>

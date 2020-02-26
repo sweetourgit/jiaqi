@@ -96,6 +96,8 @@ export default {
                   showTabCount = obj.data.objects.length
                 }
                 that.$emit('handlePassVal',showTabCount)
+                this.$store.commit('showSheetCount', showTabCount)
+
                 that.approveTableDataSheet = obj.data.objects
                 that.listLoading = false
               })

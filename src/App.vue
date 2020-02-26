@@ -49,8 +49,6 @@ export default {
   },
   methods:{
     getBrowserInfo(){
-      console.log(navigator)
-      console.log(navigator.userAgent)
       let ua = navigator.userAgent.toLocaleLowerCase();
       if (!(ua.match(/chrome/) != null && navigator.mimeTypes.length == 4)) {
        this.$alert('请使用谷歌浏览器访问该页面', '提示', {

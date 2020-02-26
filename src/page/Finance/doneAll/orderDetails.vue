@@ -158,7 +158,7 @@
 
 <script>
   export default {
-    name: "orderInfo",
+    name: "orderDetails",
     props: {
       orderID: 0,
       orderVariable: 0,
