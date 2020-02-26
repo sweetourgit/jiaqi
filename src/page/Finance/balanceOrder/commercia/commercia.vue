@@ -83,6 +83,7 @@
 </template>
 <style lang="stylus">
   /*搜索框*/
+  .el-input{width:0}
   .search_input{ width: 200px;float:left; line-height: 30px;margin: 0 0 0 10px; }
   .fl{float:left; margin: 20px 0 20px 0;}
   .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
