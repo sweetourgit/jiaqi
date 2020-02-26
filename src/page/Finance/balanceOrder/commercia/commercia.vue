@@ -2,20 +2,14 @@
    <div  class="vivo" style="position:relative; width:100%;">
      <div label="商户欠款订单">
         <!--搜索框-->
-        <div style="width:100%;">
-          <div class="fl">
+        <div style="width:100%; padding:30px 0 0 0;">
             <span class="emptyPlan">订单单号</span>
             <el-input v-model="orderid" placeholder="订单ID" class="search_input"></el-input>
-          </div>
-          <div class="fl">
             <span class="emptyPlan">商户名称</span>
             <el-input v-model="ordertitle"  placeholder="请输入商户名称" class="search_input"></el-input>
-          </div>
-          <div class="fl">
             <span class="emptyPlan">出团日期</span>
              <el-date-picker
-                class="planTime"
-                style="width:70%"
+                class="search_input"
                 v-model="planTime"
                 @change="endDateChange()" 
                 type="daterange"
@@ -24,22 +18,18 @@
                 end-placeholder="终止日期"
                 >
               </el-date-picker>
-          </div>
         </div>
-        <div style="width:1100px;clear:both; padding:0 0 50px 0;">
-          <div style=" float:left">
-               <span class="emptyPlan">欠款逾期</span>
+        <div style="width:1100px;clear:both; padding:30px 0 50px 0;">
+             <span class="emptyPlan">欠款逾期</span>
              <el-select v-model="typeColl" placeholder="请选择逾期类型"  class="search_input">
                      <el-option :label="item.label" :value="item.value" v-for="item in settlements" :key="item.value" /> 
-                   </el-select>
-          </div>
-           <div style=" float:left">
-               <span class="emptyPlan">结款类型</span>
-             <el-select v-model="settlement" placeholder="请选择结款类型"  class="search_input">
+            </el-select>
+            <span class="emptyPlan">结款类型</span>
+            <el-select v-model="settlement" placeholder="请选择结款类型"  class="search_input">
                      <el-option :label="item.label" :value="item.value" v-for="item in moneydata" :key="item.value" /> 
-              </el-select>
-          </div>
-          <div style="float:right; margin: 20px -50px 0 0;">
+            </el-select>
+          
+          <div style="float:right; margin: 20px -40px 30px 0;">
             <el-button type="primary" @click="handleSearch()">搜索</el-button>
             <el-button type="primary" @click="emptyButton()" >重置</el-button>
           </div>
