@@ -117,6 +117,9 @@ export default {
       });
     },
     routerToAdd(){
+      if(localStorage.getItem('liner_id')){
+        localStorage.removeItem('liner_id');
+      }
       this.$router.push({
         path: '/cruiseShip/shipDetailAdd',
         name: '邮轮管理/详情/添加游轮',
@@ -129,7 +132,7 @@ export default {
     // 编辑
     editShip(row){
       localStorage.setItem('liner_id', row.id);
-      if(row.line_status == 1){//编辑
+      if(row.line_status == 1){// 编辑
         this.$router.push({
           path: '/cruiseShip/shipDetailAdd',
           name: '邮轮管理/详情/添加游轮',
@@ -139,7 +142,7 @@ export default {
           }
         });
       }else{
-        this.$router.push({//补充完整
+        this.$router.push({// 补充完整
           path: '/cruiseShip/shipDetailAdd',
           name: '邮轮管理/详情/添加游轮',
           query: {

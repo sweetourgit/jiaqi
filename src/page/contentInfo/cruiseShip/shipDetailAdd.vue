@@ -78,7 +78,10 @@ export default {
     }
   },
   created() {
-    this.tabTo(this.$route.query.step, 'creat')
+    if(this.$route.query.step){
+      this.tabTo(this.$route.query.step, 'creat')
+    }
+    
   },
   mounted() {
     

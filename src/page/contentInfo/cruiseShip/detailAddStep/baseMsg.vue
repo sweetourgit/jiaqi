@@ -303,17 +303,63 @@ export default {
     },
 
     cancalBtn(){
-
+      this.$router.back();
+      localStorage.removeItem('liner_id', res.data.data.liner_id);
     },
 
     handlePictureCardPreview(file) {
       console.log(file);
       this.dialogImageUrl = 'http://yl.dayuntong.com' + file.url;
       this.dialogVisible = true;
+    },
+
+    loadData(){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/viewlinerbasic", {
+        "id": localStorage.getItem('liner_id')
+      }, ).then(function(response) {
+        console.log('基础信息',response);
+        if (response.data.code == '200') {
+          that.ruleForm = {
+            name: response.data.data.name,
+            word1: response.data.data.name,
+            word2: '',
+            word3: '',
+            word4: '',
+            weight: response.data.data.tonnage,
+            passenger: response.data.data.passenger,
+            firstDate: response.data.data.maiden_voyage,
+            floor: response.data.data.floor,
+            length: response.data.data.length,
+            width: response.data.data.width
+          };
+
+          that.fileListPic = response.data.data.pics;
+          that.fileListPic.forEach(function(item, index, arr){
+            item.url = 'http://yl.dayuntong.com' + item.pic_url;
+            item.urlCopy = item.pic_url;
+          })
+          that.fileListVideo = response.data.data.videos;
+          that.fileListVideo.forEach(function(item, index, arr){
+            item.url = 'http://yl.dayuntong.com' + item.pic_url;
+            item.urlCopy = item.pic_url;
+          })
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("加载数据失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
   },
   created() {
-
+    if(localStorage.getItem('liner_id')){
+      this.loadData();
+    }
   },
   mounted() {
 
