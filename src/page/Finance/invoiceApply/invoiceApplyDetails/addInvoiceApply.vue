@@ -55,8 +55,7 @@
         <div class="associated">
           <div class="warning"><i class="el-icon-warning"></i></div>
           <div class="fl ml13">已关联<span class="relateditems">{{tableDate.length}}</span>项</div>
-          <div class="aggregate">总计:<span class="mr5">{{ 100 | numFilter}}</span>元</div>
-          <!-- <div class="aggregate">总计:<span class="ml13">{{ sum_01 | numFilter}}</span>元</div> -->
+          <div class="aggregate">总计:<span class="mr5">{{ residuePrice | numFilter}}</span>元</div>
         </div>
         <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
           <el-table-column prop="" label="订单ID" align="center"></el-table-column>
@@ -83,25 +82,39 @@
           <el-input placeholder="请输入" v-model="merchantsName" class="group-no" style="width:200px;"></el-input>
           <span class="search-title">收款单号</span>
           <el-input placeholder="请输入" v-model="collectionNumber" class="group-no" style="width:200px;"></el-input>
-          <el-button class="ml13" type="primary">搜 索</el-button>
-          <el-button class="ml13" type="primary">重 置</el-button>
+          <el-button class="ml13" type="primary" @click="orderSearch()">搜 索</el-button>
+          <el-button class="ml13" type="primary" @click="orderReset()">重 置</el-button>
         </div>
       </div>
+      <el-button class="mt10" type="primary" @click="allChoose()">全 选</el-button>
+      <el-button class="mt10" @click="cancelChoose()">清除选择</el-button>
       <div class="addassociated">
         <div class="warning"><i class="el-icon-warning"></i></div>
-        <div class="fl ml13">已关联<span class="relateditems">{{tableDate.length}}</span>项</div>
-        <div class="aggregate">剩余开票金额:<span class="ml13">{{ 100 | numFilter}}</span>元</div>
+        <div class="fl ml13">已关联<span class="relateditems">{{nape}}</span>项</div>
+        <div class="aggregate">剩余开票金额:<span class="mr5">{{ residuePrice | numFilter}}</span>元</div>
       </div>
-      <el-table :data="addOrderTable" ref="multipleTable" class="ordertable" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="" label="订单ID" align="center"></el-table-column>
-        <el-table-column prop="" label="产品名称" align="center"></el-table-column>
-        <el-table-column prop="" label="订单来源" align="center"></el-table-column>
-        <el-table-column prop="" label="团期计划" align="center"></el-table-column>
-        <el-table-column prop="" label="下单日期" align="center"></el-table-column>
-        <el-table-column prop="" label="已付金额" align="center"></el-table-column>
-        <el-table-column prop="" label="剩余开票金额" align="center"></el-table-column>
+      <el-table :data="addOrderTable" ref="multipleTable" class="ordertable" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun" :row-style="rowClass">
+        <!-- <el-table-column type="selection" width="55"></el-table-column> -->
+        <el-table-column prop="orderCode" label="订单ID" align="center"></el-table-column>
+        <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+        <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
+        <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="下单日期" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="yfje" label="已付金额" align="center"></el-table-column>
+        <el-table-column prop="syje" label="剩余开票金额" align="center"></el-table-column>
         <el-table-column label="操作" align="center">
-          
+          <template slot-scope="scope">
+            <el-button type="text" @click="choose(scope.$index)" v-if="scope.row.choose ==false">选择</el-button>
+            <span v-if="scope.row.choose ==true">
+              <span class="blue">已选</span>
+              <span class="em">|</span>
+              <el-button type="text" @click="undo(scope.$index)">撤销</el-button>
+            </span>
+          </template>
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -117,7 +130,7 @@ export default {
    },
   data() {
     return {
-      dialogFormVisible :false,
+      dialogFormVisible :true,
       ruleForm:{
         unitPersonal:'1', // 单位/个人
         invoiceTitle:'', //发票抬头
@@ -168,7 +181,11 @@ export default {
       orderID:'', // 添加订单中订单ID
       merchantsName:'', // 添加订单中商户名称
       collectionNumber:'', // 添加订单中收款单号
+      multipleSelection: [],   //选中的list
       addOrderTable:[],
+      collectionID:'',
+      nape:0,
+      residuePrice:0, // 获取添加订单剩余开票金额总和
     };
   },
   filters: {
@@ -177,18 +194,32 @@ export default {
       let realVal = parseFloat(value).toFixed(2)
       return realVal
     },
-    formatDate: function (value) {//截取详情时间格式
+    formatDate01: function (value) {//截取详情时间格式
       return moment(value).format('YYYY-MM-DD')
     }
   },
   watch: {
     variableInvoice:function(){        
       this.dialogFormVisible=true; 
-   }
+    },
   },
   created() {
   },
   methods: {
+    formatDate(date) {//时间转化
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      var h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = date.getSeconds();  
+      second = second < 10 ? "0" + second : second;
+      return y + "-" + m + "-" + d;
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -199,14 +230,199 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
+    rowClass({row, rowIndex}){  //选中行样式改变
+     for(var i=0;i<this.multipleSelection.length;i++){
+        if(this.multipleSelection[i].collectionID==row.collectionID){
+           return { "background-color": "#ecf5ff" }
+        }
+      }
+    },
+    changeFun(val) {
+      //保存选中项的数据
+      this.multipleSelection = val;
+    },
+    clickRow(row) {//选中行复选框勾选
+      this.$refs.multipleTable.toggleRowSelection(row);
+      let arr = {} ;
+      for( var i = 0 ; i < this.addOrderTable.length ; i ++){
+         arr = row
+      }
+      console.log(arr)
+      //this.collectionID = this.multipleSelection[0].collectionID;
+    },
     closeAdd(){
       this.dialogFormVisible = false;
+      this.residuePrice = 0 ;
+      this.tableDate = [];
     },
-    addOrder(){
+    addOrder(orderCode = this.orderID , localCompName = this.merchantsName,collectionID = this.collectionNumber){
       this.addOrderShow = true;
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
+        "object": {
+          "orderCode":this.orderID,
+          "localCompName":this.merchantsName,
+          "collectionID":this.collectionNumber == "" ? 0 : this.collectionNumber,
+        },
+      }).then(res => {
+          this.addOrderTable = res.data.objects;
+          for( var i = 0 ; i < this.addOrderTable.length ; i ++){
+             this.addOrderTable[i].choose=false
+          }
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
     },
-    closeOrderShow(){
+    orderSearch(){ // 添加订单搜索
+      this.addOrder();
+    },
+    orderReset(){ // 添加订单重置
+      this.orderID = '';
+      this.merchantsName = '';
+      this.collectionNumber = '';
+      this.addOrder();
+    },
+    allChoose(row){ // 添加订单全选
+      let arr = [...this.addOrderTable];
+      for( var i = 0 ; i < arr.length ; i ++){
+        arr[i].choose=true;
+      }
+      this.addOrderTable = arr ;
+      this.nape = arr.length;
+      this.price();
+    },
+    cancelChoose(){ // 添加订单取消全选
+      let arr = [...this.addOrderTable];
+      for( var i = 0 ; i < arr.length ; i ++){
+        arr[i].choose=false;
+      }
+      this.addOrderTable = arr ;
+      this.nape = 0;
+      this.price();
+    },
+    napeNumber(){ // 添加订单选择获取几项数据
+      let count = 0;
+      for( var i = 0 ; i < this.addOrderTable.length ; i ++){
+        if(this.addOrderTable[i].choose==true){
+          count ++;
+        }
+      }
+      this.nape = count;
+    },
+    price(){ // 添加订单获取剩余开票金额总和
+      this.residuePrice = 0 ;
+      for( var i = 0 ; i < this.addOrderTable.length ; i ++){
+        if(this.addOrderTable[i].choose==true){
+          this.residuePrice += Number(this.addOrderTable[i].syje);
+        }
+      }
+    },
+    choose(index){
+      this.addOrderTable[index].choose=true;
+      this.napeNumber();
+      this.price();
+    },
+    undo(index){
+      this.addOrderTable[index].choose=false;
+      this.napeNumber();
+      this.price();
+    },
+    closeOrderShow(){ // 关闭添加订单弹窗
       this.addOrderShow = false;
+      this.residuePrice = 0 ;
+      this.orderID = '';
+      this.merchantsName = '';
+      this.collectionNumber = '';
+      this.addOrderTable = [] ;
+    },
+    insertInvoice(){ // 申请发票方法
+      this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insertapplicationreceipt",{
+                "object": {
+                    "receipt": {
+                      "id": 0,
+                      "createTime": "2020-02-26T11:49:26.673Z",
+                      "code": "string",
+                      "collectionID": 0,
+                      "accountGroupCode": "string",
+                      "invoiceNumber": "string",
+                      "invoiceID": 1,
+                      "invoiceType": 1,
+                      "taxpayerIDNumber": "string",
+                      "invoiceHeader": "string",
+                      "tel": "string",
+                      "invoiceItem": 1,
+                      "invoicePrice": 0,
+                      "cardNumber": "string",
+                      "bankName": "string",
+                      "address": "string",
+                      "collectionType": 1,
+                      "localCompName": "string",
+                      "endTime": 0,
+                      "state": 1,
+                      "jqUserOrUserOrLocalCompID": 0,
+                      "ordNum": 0,
+                      "selStartCreateTime": 0,
+                      "selEndCreateTime": 0,
+                      "selStartGrantTime": 0,
+                      "selEndGrantTime": 0,
+                      "parentID": 0,
+                      "isDisplay": 0,
+                      "ordelist": [
+                        {
+                          "id": 0,
+                          "orderCode": "string",
+                          "collectionID": 0,
+                          "isDeleted": 0,
+                          "createTime": "2020-02-26T11:49:26.673Z",
+                          "title": "string",
+                          "groupCode": "string",
+                          "orderCreateTime": 0,
+                          "skPrice": 0,
+                          "kpPrice": 0,
+                          "guidCode": "string",
+                          "ypPrice": 0,
+                          "collectionPrice": 0,
+                          "orgID": 0,
+                          "useID": 0
+                        }
+                      ],
+                      "guidCode": "string",
+                      "userName": "string",
+                      "userCode": sessionStorage.getItem("userCode"),
+                      "hpid": 0,
+                      "oldInvoiceNumber": "string",
+                      "receiptType": 0
+                    },
+                    "cosList": [
+                      {
+                        "orid": 0,
+                        "orderCode": "string",
+                        "collectionID": 0,
+                        "productName": "string",
+                        "source": "string",
+                        "planID": 0,
+                        "groupCode": "string",
+                        "createTime": 0,
+                        "yfje": 0,
+                        "syje": 0,
+                        "collectionType": 0
+                      }
+                    ]
+                  }
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                   
+                }else{
+                   this.$message.error("申请失败");
+                }
+            })
+          } else {
+            return false;
+          }
+      });
     },
   }
 };
@@ -219,6 +435,7 @@ export default {
 .mr5{margin:0 5px 0 5px;}
 .invoice{overflow: hidden;}
 .w500{width:500px}
+.mt10{margin:10px 15px 0 0;}
 .Words{width:200px;}
 .Numbers{margin:0 0 0 10px;}
 .addorderbutton{margin:10px 0 0 13px;}
@@ -232,6 +449,7 @@ export default {
 .group-no {margin-left: 10px;}
 .addassociated{background: #e6f3fc;border: 1px solid #d5f0fc; line-height: 30px; border-radius: 5px;overflow: hidden;margin: 15px 0 0 0;width:1060px}
 .ordertable{margin:15px 0 0 0;width:1060px}
+.blue {color: #2e94f9;}
 </style>
 
 
