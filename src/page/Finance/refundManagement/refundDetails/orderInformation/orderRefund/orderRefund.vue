@@ -47,7 +47,7 @@
         <div style="float:left; width:100px; margin:0 0 0 30px;">退款方式</div>
         <div style="float:left;margin:0 0 0 -30px;">
           <el-radio label="2" class="radiomar" v-model="ruleForm.refundWay">全退</el-radio>
-          <el-radio label="1" class="radiomar" v-model="ruleForm.refundWay">部分退</el-radio>
+          <el-radio label="1" class="radiomar"v-if="orderList.payable - (orderList.paid - orderList.realRefundPrice) == 0 " v-model="ruleForm.refundWay">部分退</el-radio>
         </div>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
@@ -338,7 +338,6 @@ export default {
              this.nonPayment = res.data.object.payable - (res.data.object.paid - res.data.object.realRefundPrice);
           }
           this.nonPayment=this.nonPayment>0?this.nonPayment:0;
-          
           this.orderCode = res.data.object.orderCode; // 获取该团期订单号
           this.indentID = res.data.object.id; // 获取该团期订单ID
           this.orderAmount = res.data.object.payable; // 获取该团期订单金额
@@ -380,8 +379,6 @@ export default {
           this.collection(); // 判断是否有收款方法
         }
       );
-      
-      
     },
     collection(){ // 有收款就不允许退款了
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/iscollection", {
@@ -497,7 +494,8 @@ export default {
                   "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
                   "productType": 1,
                   "Mark":JSON.stringify(this.getGuests()),
-                  "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID !=0 ? 1 : 0) : 1
+                  "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID !=0 ? 1 : 0) : 1,
+                  "isEBS":0
                   //"productType": this.productType // 产品类型
                   //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
                 }
