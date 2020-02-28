@@ -9,7 +9,10 @@
         </div>
         <div>
           <el-form-item label="舱型：" prop="cabinType" label-width="140px">
-            <el-input v-model="ruleForm.cabinType" placeholder="请输入" class="inputWidth"></el-input>
+            <!-- <el-input v-model="ruleForm.cabinType" placeholder="请输入" class="inputWidth"></el-input> -->
+            <el-select  v-model="ruleForm.cabinType">
+              <el-option :key="item.id" v-for="item in typeArr" :label="item.name" :value="item.id"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="名称：" prop="name" label-width="140px">
             <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
@@ -62,7 +65,8 @@
           company: [{ required: true, message: '邮轮公司不能为空!', trigger: 'change' }]
         },
         fileList1: [], // 图片文件
-        topTitle: '添加'
+        topTitle: '添加',
+        typeArr: []
       }
     },
     computed: {
@@ -130,10 +134,13 @@
                 });
               })
             }
-              
+            let idStr = '';
+            if(this.info){
+              idStr = this.info;
+            }
             this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-cabin/savelinercabin', {
 							"liner_id": localStorage.getItem('liner_id'),
-							"id": '',
+							"id": idStr,
 							"cabin_type_id": this.ruleForm.cabinType,
 							"name": this.ruleForm.name,
 							"number": this.ruleForm.person,
@@ -213,26 +220,45 @@
       loadData(){
         // alert(this.info);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-company/viewlinercom", {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-cabin/viewlinercabin", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('获取邮轮公司detail',response);
+          console.log('bianji~',response);
           if (response.data.code == '200') {
             that.ruleForm = {
-              company: response.data.data.name,
+              cabinType: response.data.data.cabin_type_id,
+              name: response.data.data.name,
+              person: response.data.data.number,
+              floor: response.data.data.floor,
+              area: response.data.data.area,
+              window: response.data.data.window,
               introduction: response.data.data.introduce
             };
-            that.fileList = response.data.data.logo;
             that.fileList1 = response.data.data.pics;
-            that.fileList[0].name = response.data.data.logo[0].pic_name;
-            that.fileList[0].id = response.data.data.logo[0].pic_id;
-            that.fileList[0].url = response.data.data.logo[0].pic_url;
             that.fileList1.forEach(function(item, index, arr){
-              item.name = response.data.data.pics[index].pic_name;
               item.id = response.data.data.pics[index].pic_id;
               item.url = response.data.data.pics[index].pic_url;
+              item.name = response.data.data.pics[index].pic_name;
             })
-
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("加载数据失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      },
+      loadCabin(){
+        // alert(this.info);
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/cabin-type/laststage")
+        .then(function(response) {
+          console.log('moji~',response);
+          if (response.data.code == '200') {
+            that.typeArr = response.data.data.list
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -246,7 +272,7 @@
       }
     },
     created() {
-
+      this.loadCabin();
     },
     mounted() {
 

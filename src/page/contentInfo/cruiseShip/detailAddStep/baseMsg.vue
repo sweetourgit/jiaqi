@@ -263,7 +263,7 @@ export default {
                 if(type == '1'){
                   // alert('保存');
                   that.$router.back();
-                  localStorage.removeItem('liner_id', res.data.data.liner_id);
+                  localStorage.removeItem('liner_id');
                   // that.$router.push({
                   //   path: '/cruiseShip/cruiseShipDetail',
                   //   name: '邮轮管理/详情',
@@ -369,6 +369,13 @@ export default {
 </script>
 <style lang="scss">
   .curiseShipBaseMsg{
+    .buttonDv{
+      overflow: hidden;
+      .el-button{
+        float: right;
+        margin-right: 18px;
+      }
+    }
     .el-upload-list__item{
       width: 148px !important;
     }
