@@ -254,9 +254,18 @@ export default {
       }
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
-      this.variable++;
-      this.basisShow = false;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.variable++;
+          this.basisShow = false;
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
       // this.$refs[formName].validate((valid) => {
+      //   this.variable++;
+      //   this.basisShow = false;
         
       // });
     },

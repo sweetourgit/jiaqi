@@ -47,7 +47,7 @@
         <div style="float:left; width:100px; margin:0 0 0 30px;">退款方式</div>
         <div style="float:left;margin:0 0 0 -30px;">
           <el-radio label="2" class="radiomar" v-model="ruleForm.refundWay">全退</el-radio>
-          <el-radio label="1" class="radiomar" v-model="ruleForm.refundWay">部分退</el-radio>
+          <el-radio label="1" class="radiomar"v-if="orderList.payable - (orderList.paid - orderList.realRefundPrice) == 0 " v-model="ruleForm.refundWay">部分退</el-radio>
         </div>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
