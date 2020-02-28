@@ -24,5 +24,8 @@ export default {
   },
   showSheetCount(state, data){
     state.sheetCount = data
+  },
+  showCollectionTab(state, data){
+    state.collectionWhichTab = data
   }
 }

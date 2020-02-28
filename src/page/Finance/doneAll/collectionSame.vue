@@ -31,6 +31,11 @@
         </el-row>
         <el-row>
           <el-col :span="8">
+            <el-form-item label="团期计划:" prop="plan">
+              <el-input placeholder="请输入团期计划" v-model="ruleFormSearch.plan" class="group-no" style="width: 100%;"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="状态:">
               <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" :disabled="true">
                 <el-option label="驳回" value="2"></el-option>
@@ -39,7 +44,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12" style="text-align: left">
+          <el-col :span="8" style="text-align: left">
             <el-form-item>
               <el-button @click="HandleSearchApprove" type="primary">搜索</el-button>
               <el-button type="primary" plain @click="HandleResetApprove">重置</el-button>
@@ -60,49 +65,43 @@
         </el-row>
       </el-form>
     </div>
-      <el-table :data="approveTableDataSheet" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" id="table-content1" v-loading="listLoading">
-        <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
-        <el-table-column prop="checkTypeStatus" label="状态" align="center">
-          <template slot-scope="scope">
-            <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F">审批中</div>
-            <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D">驳回</div>
-            <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
-        <el-table-column prop="groupCode" label="团期计划" align="center">
-          <template slot-scope="scope">
+    <el-table :data="approveTableDataSheet" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" id="table-content1" v-loading="listLoading">
+      <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
+      <el-table-column prop="checkTypeStatus" label="状态" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F">审批中</div>
+          <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D">驳回</div>
+          <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="团期计划" align="center">
+        <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
                 {{item.groupCode}}
                 <i v-if="index != scope.row.arrears.length-1">，</i>
               </span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="collectionNumber" label="收款账户" align="center"></el-table-column>
-        <el-table-column prop="orderNumber" label="订单号" align="center">
-          <template slot-scope="scope">
+        </template>
+      </el-table-column>
+      <el-table-column prop="collectionNumber" label="收款账户" align="center"></el-table-column>
+      <el-table-column prop="orderNumber" label="订单号" align="center">
+        <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
                 {{item.orderCode}}
                 <i v-if="index != scope.row.arrears.length-1">，</i>
               </span>
-          </template>
-        </el-table-column>
-        <!-- <el-table-column prop="collectionNumber" label="收款账户" align="center">
-        </el-table-column>-->
-        <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
-        <!-- <el-table-column prop="dept" label="申请组织" align="center">
-        </el-table-column>-->
-        <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="申请时间" align="center">
-        </el-table-column>
-        <!--<el-table-column prop="" label="审批意见" align="center">-->
-        <!--</el-table-column>-->
-        <el-table-column label="操作" width="100" align="center">
-          <template slot-scope="scope">
-            <el-button @click="handleDetails(scope.row)" type="text" size="small" class="table_details">详情</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column prop="localCompName" label="同业社名称" align="center"></el-table-column>
+      <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
+      <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+      <el-table-column prop="createTime" label="申请时间" align="center"></el-table-column>
+      <el-table-column label="操作" width="100" align="center">
+        <template slot-scope="scope">
+          <el-button @click="handleDetails(scope.row)" type="text" size="small" class="table_details">详情</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     <div class="el-pagination">
       <el-pagination
         style="margin: 10px auto"
@@ -122,7 +121,7 @@
 <script>
   import moment from 'moment'
   export default {
-    name: "checkSheetDirect",
+    name: "collectionSame",
     props:{
       whereSheetTab: String
     },
@@ -133,6 +132,7 @@
           startTime: '',
           order: '',
           creater: '',
+          plan: '',
           // checkType: '',
           collectionAccountSel: []
         },
@@ -171,7 +171,7 @@
       },
       handleDetails(row){
         let getCurrentPaymentID = row.id
-        this.$router.push({ path: "/doneAll/collectionDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'direct'} })
+        this.$router.push({ path: "/doneAll/collectionDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'same'} })
       },
       handleSizeChange(val) {
         this.pageSize = val;
@@ -202,7 +202,7 @@
               collectionTime: "2019-05-16",
               startTime: this.ruleFormSearch.startTime ? moment(this.ruleFormSearch.startTime).format("YYYY-MM-DD"): "2000-05-16",
               endTime: this.ruleFormSearch.endTime ? moment(this.ruleFormSearch.endTime).format("YYYY-MM-DD") : "2099-05-16",
-              groupCode: "",
+              groupCode: this.ruleFormSearch.plan ? this.ruleFormSearch.plan : '',
               planID: 0,
               orderID: 0,
               orderNumber: this.ruleFormSearch.orderNumber,
@@ -215,7 +215,7 @@
               serialNumber: "",
               abstract: "",
               isDeleted: 0,
-              collectionType: 1, // 直客1.同业2
+              collectionType: 2, // 直客1.同业2
               localCompID: 0 // 直客0,同业变成同业社id
               //"localCompName":""
             }
@@ -265,18 +265,18 @@
             subject: ""
           }
         })
-        .then(res => {
-          let { objects } = res.data;
-          objects.forEach((item, index) => {
-            this.collectionAccountInfos.push({
-              id: item.id,
-              value: item.title
+          .then(res => {
+            let { objects } = res.data;
+            objects.forEach((item, index) => {
+              this.collectionAccountInfos.push({
+                id: item.id,
+                value: item.title
+              });
             });
+          })
+          .catch(err => {
+            console.log(err);
           });
-        })
-        .catch(err => {
-          console.log(err);
-        });
       },
     }
   }

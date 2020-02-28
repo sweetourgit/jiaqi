@@ -7,4 +7,5 @@ export default {
   bankDataUpdate: '',
   doneAllShowWhichTab: 'borrow',
   sheetCount: 0,
+  collectionWhichTab: 'direct',
 }

@@ -20,11 +20,11 @@
         <refund :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumRefund"></refund>
       </el-tab-pane>
       <el-tab-pane :label="'报账单管理(' + this.$store.state.sheetCount +')'" name="sheet">
-<!--        <check-sheet :whereTab="whereTab" @handleSheetPassVal="handleGetAlreadyNumSheet"></check-sheet>-->
+<!--        <check-sheet :whereTab="whereTab" @handleSheetPassVal="handleGetAlreadyNumSheet"></check-sheet>       -->
         <check-sheet :whereTab="whereTab"></check-sheet>
       </el-tab-pane>
       <el-tab-pane :label="'收款管理(' + this.$store.state.sheetCount +')'" name="collection">
-        <check-sheet :whereTab="whereTab"></check-sheet>
+        <collection :whereTab="whereTab"></collection>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -36,6 +36,7 @@
   import reimbursement from './reimbursement'
   import refund from './refund'
   import checkSheet from './checkSheet'
+  import collection from './collection'
   export default {
     name: "approveList",
     components: {
@@ -43,7 +44,8 @@
       advance,
       refund,
       reimbursement,
-      checkSheet
+      checkSheet,
+      collection
     },
     data(){
       return{

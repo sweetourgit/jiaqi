@@ -29,7 +29,10 @@ export default {
   },
   methods: {
     moment,
-    handleCancel(paramsTabName){
+    handleCancel(paramsTabName, paramsCollectionTab){
+      if(paramsTabName == 'collection'){
+        this.$store.commit('showCollectionTab', paramsCollectionTab)
+      }
       this.$store.commit('referDoneAllShowWhichTab', paramsTabName)
       this.$router.go(-1)
     },
