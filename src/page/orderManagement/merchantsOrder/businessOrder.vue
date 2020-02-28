@@ -426,7 +426,8 @@ export default {
       showContent: null, //list折叠展示的
       businessLists: [], //商户名称下拉列表展示
       isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
-      enrollDetailShow: "" //报名信息的数量
+      enrollDetailShow: "" ,//报名信息的数量
+      salePrice:[],//拼接空数组
     };
   },
   watch: {
@@ -539,6 +540,8 @@ export default {
         })
         .then(res => {
           // console.log("请求一条数据的",res)
+          let enrolls=[];//标题
+          let guest;//全部数据
           this.enrollDetailShow = ""
           this.getListOneMessage = res.data.object;
           // let enrollDetail = this.getListOneMessage.enrollDetail;
@@ -603,6 +606,7 @@ export default {
               if (res.data.isSuccess == true) {
                     enrolls = res.data.objects;
                     guest= this.getListOneMessage.guests;
+                    console.log(enrolls);
                     this.sourceMaker(enrolls,guest);
                     this.enrollDetailMaker();
                   }
@@ -615,6 +619,7 @@ export default {
     },
     sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect={};
+        console.log(this.salePrice,'8021')
         this.salePrice.splice(0);
         this.salePrice.push(
           ...enrolls.map((enroll, index) => {

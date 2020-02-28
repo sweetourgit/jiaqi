@@ -677,6 +677,7 @@ export default {
   
    sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect={};
+           console.log(this.salePrice,'88')
         this.salePrice.splice(0);
         this.salePrice.push(
           ...enrolls.map((enroll, index) => {
