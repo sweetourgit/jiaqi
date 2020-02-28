@@ -623,6 +623,15 @@ export default new Router({
       }
     },
     {
+      path: '/doneAll/collectionDetails',
+      component: () => import('@/page/Finance/doneAll/collectionDetails'),
+      name: '已办/收款详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/approve/approveList',
       component: () => import('@/page/Finance/approve/approveList'),
       name: '需要您审批',
