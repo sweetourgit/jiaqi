@@ -171,7 +171,8 @@
             if (obj.data.isSuccess) {
               that.approveTableDataSheet = obj.data.objects;
               that.totalCount = obj.data.total;
-              this.$emit('handlePassVal', obj.data.total)
+              that.$emit('handlePassVal', obj.data.total)
+              that.$store.commit('doneAll/updateCollectionReimburseNum', obj.data.total)
               that.tableDataBXHK.forEach(function(item, index, arr) {
                 item.createTime = moment(item.createTime).format(
                   "YYYY-MM-DD HH:mm:ss"
@@ -185,6 +186,7 @@
             }
           })
           .catch(function(obj) {});
+        return that.totalCount
       },
       dateFormat: function(row, column) {
         let date = row[column.property];

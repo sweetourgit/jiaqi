@@ -5,7 +5,4 @@ export default {
   advinceData: 0,
   updatAdvancePaymentData: 0,
   bankDataUpdate: '',
-  doneAllShowWhichTab: 'borrow',
-  sheetCount: 0,
-  collectionWhichTab: 'direct',
 }

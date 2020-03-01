@@ -31,9 +31,9 @@ export default {
     moment,
     handleCancel(paramsTabName, paramsCollectionTab){
       if(paramsTabName == 'collection'){
-        this.$store.commit('showCollectionTab', paramsCollectionTab)
+        this.$store.commit('doneAll/showCollectionTab', paramsCollectionTab)
       }
-      this.$store.commit('referDoneAllShowWhichTab', paramsTabName)
+      this.$store.commit('doneAll/referDoneAllShowWhichTab', paramsTabName)
       this.$router.go(-1)
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {

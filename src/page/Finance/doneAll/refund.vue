@@ -1,3 +1,4 @@
+<!-- 退款-表格 -->
 <template>
   <div>
     <div class="plan">
@@ -37,11 +38,17 @@
         </template>
       </el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请时间" width="180" align="center"></el-table-column>
-      <el-table-column prop="productType" label="类型" align="center"></el-table-column>
+      <el-table-column prop="productType" label="类型" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.productType== 1">跟团游</div>
+          <div v-if="scope.row.productType== 2">自由行</div>
+          <div v-if="scope.row.productType== 3">签证</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="allRefundPrice" label="退款金额" align="center"></el-table-column>
       <el-table-column prop="realRefundPrice" label="实际退款金额" align="center"></el-table-column>
       <el-table-column prop="name" label="申请人" align="center"></el-table-column>
-      <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
+      <el-table-column prop="" label="审批意见" align="center"></el-table-column>
       <el-table-column label="操作" width="150" align="center">
         <template slot-scope="scope">
           <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>

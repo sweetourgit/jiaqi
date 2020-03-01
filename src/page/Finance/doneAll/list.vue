@@ -19,12 +19,12 @@
       <el-tab-pane :label="'退款管理(' + approveDataNumRefund +')'" name="refund">
         <refund :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumRefund"></refund>
       </el-tab-pane>
-      <el-tab-pane :label="'报账单管理(' + this.$store.state.sheetCount +')'" name="sheet">
+      <el-tab-pane :label="'报账单管理(' + this.$store.state.doneAll.sheetCount +')'" name="sheet">
 <!--        <check-sheet :whereTab="whereTab" @handleSheetPassVal="handleGetAlreadyNumSheet"></check-sheet>       -->
         <check-sheet :whereTab="whereTab"></check-sheet>
       </el-tab-pane>
-      <el-tab-pane :label="'收款管理(' + this.$store.state.sheetCount +')'" name="collection">
-        <collection :whereTab="whereTab"></collection>
+      <el-tab-pane :label="'收款管理(' + allCount +')'" name="collection">
+        <collection :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumCollection"></collection>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -55,14 +55,17 @@
         approveDataNumReimburse:0,
         approveDataNumRefund:0,
         approveDataNumSheet:0,
+        approveDataNumCollection:0,
         tabShowWhich: 'borrow',
       }
     },
     created(){
-      this.tabShowWhich = this.$store.state.doneAllShowWhichTab
+      this.tabShowWhich = this.$store.state.doneAll.doneAllShowWhichTab
     },
     computed: {
-
+      allCount: function () {
+        return (this.$store.state.doneAll.collectionNumDirect + this.$store.state.doneAll.collectionNumSame + this.$store.state.doneAll.collectionNumInner + this.$store.state.doneAll.collectionNumReimburse)
+      }
     },
     methods: {
       handleClick(tab, event) {
@@ -80,6 +83,9 @@
       handleGetAlreadyNumRefund(paramsPassCount){
         this.approveDataNumRefund = paramsPassCount
       },
+      handleGetAlreadyNumCollection(paramsPassCount){
+        this.approveDataNumCollection = paramsPassCount
+      }
      /* handleGetAlreadyNumSheet(paramsPassCount){
         this.approveDataNumSheet = paramsPassCount
       }*/

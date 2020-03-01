@@ -197,7 +197,8 @@
             if (obj.data.isSuccess) {
               that.approveTableDataSheet = obj.data.objects;
               that.totalCount = obj.data.total;
-              this.$emit('handlePassVal', obj.data.total)
+              that.$emit('handlePassVal', obj.data.total)
+              that.$store.commit('doneAll/updateCollectionInnerNum', obj.data.total)
               that.approveTableDataSheet.forEach(function(item, index, arr) {
                 item.collectionTime = item.collectionTime.split("T")[0];
                 item.createTime = item.createTime.split("T")[0];
@@ -210,6 +211,7 @@
             }
           })
           .catch(function(obj) {});
+        return that.totalCount
       },
       dateFormat: function(row, column) {
         let date = row[column.property];

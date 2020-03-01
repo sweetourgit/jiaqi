@@ -1,3 +1,4 @@
+<!-- 报账单-跟团游 -->
 <template>
   <div>
     <div class="plan">
@@ -29,7 +30,13 @@
     </div>
     <el-table :data="approveTableDataSheet" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content" v-loading="listLoading">
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-      <el-table-column prop="checkTypeEX" label="状态" align="center"></el-table-column>
+      <el-table-column prop="checkTypeEX" label="状态" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.checkTypeEX=='审批中'" style="color: #7F7F7F">{{scope.row.checkTypeEX}}</div>
+          <div v-if="scope.row.checkTypeEX=='驳回'" style="color: #FF4A3D">{{scope.row.checkTypeEX}}</div>
+          <div v-if="scope.row.checkTypeEX=='通过'" style="color: #33D174">{{scope.row.checkTypeEX}}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="teamProTitle" label="产品名称" align="center"></el-table-column>
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请时间" width="180" align="center"></el-table-column>

@@ -2,7 +2,6 @@
   <div class="loan-management">
     <div style="text-align: right; margin:25px 20px 0 0;">
       <el-button type="warning" plain @click="handleCancel(keepComponentName)">取消</el-button>
-      <el-button type="primary" @click="splitRelTable">拆分关系表</el-button>
     </div>
     <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
     <div ref="print">
@@ -219,9 +218,6 @@
       this.getLabel(passPaymentID);
     },
     methods: {
-      splitRelTable(){
-        this.$router.push({ path: "/relationSplitMap", query: { id: this.keepPaymentId } })
-      },
       handlePreview(file) {
         window.open(file.url);
       },
