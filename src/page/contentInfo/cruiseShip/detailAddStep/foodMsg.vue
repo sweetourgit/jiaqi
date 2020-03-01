@@ -3,20 +3,32 @@
     <el-button type="warning" @click='addCabin'>添加</el-button>
     <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column prop="id" label="类型" align="center">
+        <template slot-scope="scope"> 
+          <div v-for='item in typeArr'>
+            <span v-if='item.id == scope.row.type'>{{item.name}}</span>
+          </div>
+        </template>
       </el-table-column>
-      <el-table-column prop="id" label="名称" align="center">
+      <el-table-column prop="name" label="名称" align="center">
       </el-table-column>
-      <el-table-column prop="id" label="容纳人数" align="center">
+      <el-table-column prop="number" label="容纳人数" align="center">
       </el-table-column>
-      <el-table-column prop="id" label="楼层" align="center">
+      <el-table-column prop="floor" label="楼层" align="center">
       </el-table-column>
-      <el-table-column prop="id" label="消费" align="center">
+      <el-table-column prop="consumption" label="消费" align="center">
       </el-table-column>
-      <el-table-column prop="id" label="开放时间" align="center">
+      <el-table-column prop="opening_hours" label="开放时间" align="center">
       </el-table-column>
-      <el-table-column prop="id" label="简介" align="center">
+      <el-table-column prop="introduce" label="简介" align="center">
       </el-table-column>
       <el-table-column prop="id" label="图片" align="center">
+        <template slot-scope="scope"> 
+          <ul class="picList">
+            <li v-for="item in scope.row.pics" :key="item.index">
+              <a :href="item.url" target="_blank">{{item.pic_name}}</a>
+            </li>
+          </ul>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope"> 
@@ -41,12 +53,27 @@ export default {
   },
   data() {
     return {
-      tableData: [{id: '11'}],
+      tableData: [],
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
       dialogFormVisible: false,
-      info: ''
+      info: '',
+      typeArr: [
+        {
+          id: 1,
+          name: "主餐厅"
+        },{
+          id: 2,
+          name: "自助餐厅"
+        },{
+          id: 3,
+          name: "特色餐厅"
+        },{
+          id: 4,
+          name: "酒吧"
+        }
+      ]
     }
   },
   computed: {},
@@ -64,6 +91,7 @@ export default {
     },
     closeAdd(){
       this.dialogFormVisible = false;
+      this.loadData();
     },
     handleSizeChange(){
 
@@ -72,11 +100,30 @@ export default {
 
     },
     loadData(){
-
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-delicious/listall", {
+        "liner_id": localStorage.getItem('liner_id')
+      }, ).then(function(response) {
+        console.log('foodMsg信息',response);
+        if (response.data.code == '200') {
+          that.tableData = response.data.data.list;
+          that.total = response.data.data.list.length;
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("加载数据失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
     }
   },
   created() {
-    
+    if(localStorage.getItem('liner_id')){
+      this.loadData();
+    }
   },
   mounted() {
 
@@ -89,5 +136,10 @@ export default {
     display: block;
     text-align: center;
     margin: 10px auto;
+  }
+  .picList{
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 </style>

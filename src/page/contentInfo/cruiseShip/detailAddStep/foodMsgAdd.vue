@@ -8,8 +8,11 @@
           <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
         </div>
         <div>
-          <el-form-item label="类型：" prop="cabinType" label-width="140px">
-            <el-input v-model="ruleForm.cabinType" placeholder="请输入" class="inputWidth"></el-input>
+          <el-form-item label="类型：" prop="foodType" label-width="140px">
+            <!-- <el-input v-model="ruleForm.cabinType" placeholder="请输入" class="inputWidth"></el-input> -->
+            <el-select  v-model="ruleForm.foodType">
+              <el-option :key="item.id" v-for="item in typeArr" :label="item.name" :value="item.id"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="名称：" prop="name" label-width="140px">
             <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
@@ -51,7 +54,7 @@
       return {
         disabled: true,
         ruleForm: {
-          cabinType: '',
+          foodType: '',
           name: '',
           person: '',
           floor: '',
@@ -63,7 +66,22 @@
           company: [{ required: true, message: '邮轮公司不能为空!', trigger: 'change' }]
         },
         fileList1: [], // 图片文件
-        topTitle: '添加'
+        topTitle: '添加',
+        typeArr: [
+          {
+            id: 1,
+            name: "主餐厅"
+          },{
+            id: 2,
+            name: "自助餐厅"
+          },{
+            id: 3,
+            name: "特色餐厅"
+          },{
+            id: 4,
+            name: "酒吧"
+          }
+        ]
       }
     },
     computed: {
@@ -90,7 +108,7 @@
       // 关闭弹框
       closeAdd() {
         this.ruleForm = {
-          cabinType: '',
+          foodType: '',
           name: '',
           person: '',
           floor: '',
@@ -132,15 +150,15 @@
               })
             }
               
-            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-cabin/savelinercabin', {
+            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-delicious/savelinerdelicious', {
 							"liner_id": localStorage.getItem('liner_id'),
 							"id": '',
-							"cabin_type_id": this.ruleForm.cabinType,
+							"type": this.ruleForm.foodType,
 							"name": this.ruleForm.name,
 							"number": this.ruleForm.person,
 							"floor": this.ruleForm.floor,
-							"area": this.ruleForm.area,
-							"window": this.ruleForm.window,
+							"consumption": this.ruleForm.money,
+							"opening_hours": this.ruleForm.openTime,
 							"introduce": this.ruleForm.introduction,
 							"pics": fileArr,
 							"create_uid": sessionStorage.getItem('id'),
