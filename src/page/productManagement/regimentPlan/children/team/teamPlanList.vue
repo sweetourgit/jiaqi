@@ -221,16 +221,16 @@ export default {
     };
   },
   created() {
-    this.teamQueryList();  
-    this.permission();  
+    this.teamQueryList();
+    this.permission();
   },
   mounted () {
   },
   methods: {
     permission(){
       let orgID = sessionStorage.getItem('orgID');
-      let arr = ['492','493','494','545','501','520'];
-      if(arr.indexOf(orgID)==-1){     
+      let arr = ['303','304','305','320','338','340','358','360','492','493','494','501','520','532','534','535','538','539','544','545','568','572','573','578','579','580','581','592','593','594'];
+      if(arr.indexOf(orgID)==-1){
         this.show1 = true ;
       }else{
         this.show2 = true;
@@ -376,7 +376,7 @@ export default {
         this.pageIndex = 1;
         this.getUserCode();
       }
-      
+
     },
     getUserCode(){//op输入名字获取usercode
       var that = this
@@ -591,7 +591,7 @@ export default {
       }).then(res =>{
         if(res.data.isSuccess == true){
          this.$message.success("上传成功");
-         
+
         }
       })
     },
@@ -610,7 +610,7 @@ export default {
   padding: 20px 0 10px 10px;
   width: 1390px;
   background-color: #f7f7f7;
-} 
+}
 .el-input {
   width: auto;
 }
@@ -650,7 +650,7 @@ export default {
   background-color: #f7f7f7;
   text-align: center;
   margin: 20px 0 0 0;
-  
+
 }
 .el-table tr {
   background: #f6f6f6 !important;
