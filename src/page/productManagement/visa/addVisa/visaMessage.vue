@@ -1,5 +1,5 @@
 <template>
-  <div v-show="dialogForm">
+  <div>
     <div class="visalist">
       <div class="button">
         <el-button>取消</el-button>
@@ -34,18 +34,15 @@
 
 export default {
   props: {
-   teamID:0,
-   variable: 0,
+   
   },
   data() {
     return {
-      dialogForm:false,
+      
     };
   },
   watch: {
-    variable:function(){        
-      this.dialogForm=true; 
-   }
+    
   },
   created() {
   },

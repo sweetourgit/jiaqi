@@ -335,7 +335,7 @@ export default new Router({
         auth: true
       }
     },{
-      path: '/visaProducts', // 添加签证信息
+      path: '/visaMessage', // 添加签证信息
       component: () => import('@/page/productManagement/visa/addVisa/visaMessage'),
       name: '添加签证',
       meta: {

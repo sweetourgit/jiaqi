@@ -35,7 +35,7 @@
     </div>
     <!--按钮-->
     <div class="productbut">
-      <el-button type="primary" @click="addProducts">添加</el-button>
+      <el-button type="primary" @click="addProducts()">添加</el-button>
       <el-button :disabled="forbidden">编辑</el-button>
       <el-button :disabled="forbidden">预订</el-button>
       <el-button :disabled="forbidden" @click="visaInventory()">库存</el-button>
@@ -46,12 +46,12 @@
     </div>
     <!--列表表格-->
     <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun" :row-style="rowClass">
-      <el-table-column prop="productID" label="产品ID" align="center" width="120"></el-table-column>
-      <el-table-column prop="productName" label="产品名称" align="center" width="278"></el-table-column>
-      <el-table-column prop="countriesArea" label="国家地区" align="center" width="120"></el-table-column>
-      <el-table-column prop="visaTypes" label="签证类型" align="center" width="120"></el-table-column>
-      <el-table-column prop="minPrice" label="价格" align="center" width="120"></el-table-column>
-      <el-table-column prop="op" label="操作人员" align="center" width="120"></el-table-column>
+      <el-table-column prop="ID" label="产品ID" align="center" width="120"></el-table-column>
+      <el-table-column prop="visaTitle" label="产品名称" align="center" width="278"></el-table-column>
+      <el-table-column prop="country" label="国家地区" align="center" width="120"></el-table-column>
+      <el-table-column prop="visaType" label="签证类型" align="center" width="120"></el-table-column>
+      <el-table-column prop="price" label="价格" align="center" width="120"></el-table-column>
+      <el-table-column prop="userName" label="操作人员" align="center" width="120"></el-table-column>
       <el-table-column prop="onlineType" label="线上状态" align="center" width="140"></el-table-column>
       <el-table-column prop="erpType" label="erp状态" align="center" width="140"></el-table-column>
     </el-table>
@@ -107,11 +107,7 @@ export default {
         value:'5',
         label:'商务签证'
       }],
-      tableDate:[{
-        productID:'1'
-      },{
-        productID:'2'
-      }],//表格
+      tableDate:[],//表格
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数

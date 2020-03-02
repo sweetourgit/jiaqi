@@ -1,6 +1,6 @@
 <template>
-  <!-- <div class="visalist">
-    <div v-show="basisShow">
+  <div class="visalist">
+    <div>
       <div class="button">
         <el-button @click="cancel()">取消</el-button>
         <el-button type="primary" @click="nextMessage('ruleForm')">下一步</el-button>
@@ -132,24 +132,24 @@
         </div>
       </div>
     </div>
-    <visa-message :teamID="teamID" :variable="variable"></visa-message>
-  </div> -->
+    <!-- <visa-message :teamID="teamID" :variable="variable"></visa-message> -->
+  </div>
 </template>
   
 <script>
 import {VueEditor} from 'vue2-editor' // 引用富文本编辑器组件
 import MaterialList from '@/common/Image' // 图片库组件
-import visaMessage from './visaMessage' // 签证信息组件
+//import visaMessage from './visaMessage' // 签证信息组件
 export default {
   name: "visaProducts",
     components: {
       VueEditor, // 富文本编辑器
       MaterialList, // 图片库
-      "visa-message":visaMessage, // 签证信息组件
+      //"visa-message":visaMessage, // 签证信息组件
     },
   data() {
     return {
-      basisShow:true, // 父组件  点击下一步显示子组件，隐藏父组件
+      //basisShow:true, // 父组件  点击下一步显示子组件，隐藏父组件
       ruleForm: {
         name: '',//产品名称
         highlightWords:'',//亮点词
@@ -254,10 +254,12 @@ export default {
       }
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
+      this.$router.push({ path: "/visaMessage" });
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.variable++;
-          this.basisShow = false;
+          //this.$router.push({ path: "./visaMessage" });
+          // this.variable++;
+          // this.basisShow = false;
         } else {
           console.log('error submit!!');
           return false;
