@@ -43,6 +43,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  
   export default {
     name: "newTour",
     components: {},
@@ -69,16 +70,16 @@
         topTitle: '添加',
         typeArr: [
           {
-            id: 1,
+            id: "1",
             name: "主餐厅"
           },{
-            id: 2,
+            id: "2",
             name: "自助餐厅"
           },{
-            id: 3,
+            id: "3",
             name: "特色餐厅"
           },{
-            id: 4,
+            id: "4",
             name: "酒吧"
           }
         ]
@@ -149,10 +150,14 @@
                 });
               })
             }
+            let ida = '';
+            if(this.info){
+              ida = this.info;
+            }
               
             this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-delicious/savelinerdelicious', {
 							"liner_id": localStorage.getItem('liner_id'),
-							"id": '',
+							"id": ida,
 							"type": this.ruleForm.foodType,
 							"name": this.ruleForm.name,
 							"number": this.ruleForm.person,
@@ -232,20 +237,21 @@
       loadData(){
         // alert(this.info);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-company/viewlinercom", {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-delicious/viewlinerdelicious", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('获取邮轮公司detail',response);
+          console.log('food-detail',response);
           if (response.data.code == '200') {
             that.ruleForm = {
-              company: response.data.data.name,
+              foodType: response.data.data.type,
+              name: response.data.data.name,
+              person: response.data.data.number,
+              floor: response.data.data.floor,
+              money: response.data.data.consumption,
+              openTime: response.data.data.opening_hours,
               introduction: response.data.data.introduce
             };
-            that.fileList = response.data.data.logo;
             that.fileList1 = response.data.data.pics;
-            that.fileList[0].name = response.data.data.logo[0].pic_name;
-            that.fileList[0].id = response.data.data.logo[0].pic_id;
-            that.fileList[0].url = response.data.data.logo[0].pic_url;
             that.fileList1.forEach(function(item, index, arr){
               item.name = response.data.data.pics[index].pic_name;
               item.id = response.data.data.pics[index].pic_id;

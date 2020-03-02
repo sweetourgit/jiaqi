@@ -322,10 +322,10 @@ export default {
         if (response.data.code == '200') {
           that.ruleForm = {
             name: response.data.data.name,
-            word1: response.data.data.name,
-            word2: '',
-            word3: '',
-            word4: '',
+            word1: response.data.data.strength[0] ? response.data.data.strength[0].strength : '',
+            word2: response.data.data.strength[1] ? response.data.data.strength[1].strength : '',
+            word3: response.data.data.strength[2] ? response.data.data.strength[2].strength : '',
+            word4: response.data.data.strength[3] ? response.data.data.strength[3].strength : '',
             weight: response.data.data.tonnage,
             passenger: response.data.data.passenger,
             firstDate: response.data.data.maiden_voyage,

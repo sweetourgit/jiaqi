@@ -8,8 +8,11 @@
           <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
         </div>
         <div>
-          <el-form-item label="类型：" prop="cabinType" label-width="140px">
-            <el-input v-model="ruleForm.cabinType" placeholder="请输入" class="inputWidth"></el-input>
+          <el-form-item label="类型：" prop="type" label-width="140px">
+            <!-- <el-input v-model="ruleForm.cabinType" placeholder="请输入" class="inputWidth"></el-input> -->
+            <el-select  v-model="ruleForm.type">
+              <el-option :key="item.id" v-for="item in typeArr" :label="item.name" :value="item.id"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="名称：" prop="name" label-width="140px">
             <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
@@ -51,7 +54,7 @@
       return {
         disabled: true,
         ruleForm: {
-          cabinType: '',
+          type: '',
           name: '',
           person: '',
           floor: '',
@@ -63,7 +66,23 @@
           company: [{ required: true, message: '邮轮公司不能为空!', trigger: 'change' }]
         },
         fileList1: [], // 图片文件
-        topTitle: '添加'
+        topTitle: '添加',
+        // 1:船上娱乐;2:运动健身;3:海上休闲;4:其他
+        typeArr: [
+          {
+            id: "1",
+            name: "船上娱乐"
+          },{
+            id: "2",
+            name: "运动健身"
+          },{
+            id: "3",
+            name: "海上休闲"
+          },{
+            id: "4",
+            name: "其他"
+          }
+        ]
       }
     },
     computed: {
@@ -131,16 +150,20 @@
                 });
               })
             }
+            let ida = '';
+            if(this.info){
+              ida = this.info;
+            }
               
-            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-cabin/savelinercabin', {
+            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-entertainment/savelinerentertainment', {
 							"liner_id": localStorage.getItem('liner_id'),
-							"id": '',
-							"cabin_type_id": this.ruleForm.cabinType,
+							"id": ida,
+							"type": this.ruleForm.type,
 							"name": this.ruleForm.name,
 							"number": this.ruleForm.person,
 							"floor": this.ruleForm.floor,
-							"area": this.ruleForm.area,
-							"window": this.ruleForm.window,
+							"consumption": this.ruleForm.money,
+							"opening_hours": this.ruleForm.openTime,
 							"introduce": this.ruleForm.introduction,
 							"pics": fileArr,
 							"create_uid": sessionStorage.getItem('id'),
@@ -170,7 +193,6 @@
 						}).catch(err => {
 							console.log(err)
 						})
-            
 
           } else {
             console.log('error submit!!');
@@ -214,20 +236,21 @@
       loadData(){
         // alert(this.info);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-company/viewlinercom", {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-entertainment/viewlinerentertainment", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('获取邮轮公司detail',response);
+          console.log('play-detail',response);
           if (response.data.code == '200') {
             that.ruleForm = {
-              company: response.data.data.name,
+              type: response.data.data.type,
+              name: response.data.data.name,
+              person: response.data.data.number,
+              floor: response.data.data.floor,
+              money: response.data.data.consumption,
+              openTime: response.data.data.opening_hours,
               introduction: response.data.data.introduce
             };
-            that.fileList = response.data.data.logo;
             that.fileList1 = response.data.data.pics;
-            that.fileList[0].name = response.data.data.logo[0].pic_name;
-            that.fileList[0].id = response.data.data.logo[0].pic_id;
-            that.fileList[0].url = response.data.data.logo[0].pic_url;
             that.fileList1.forEach(function(item, index, arr){
               item.name = response.data.data.pics[index].pic_name;
               item.id = response.data.data.pics[index].pic_id;
