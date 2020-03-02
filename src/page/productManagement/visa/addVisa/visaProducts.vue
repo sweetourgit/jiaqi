@@ -254,12 +254,9 @@ export default {
       }
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
-      this.$router.push({ path: "/visaMessage" });
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          //this.$router.push({ path: "./visaMessage" });
-          // this.variable++;
-          // this.basisShow = false;
+          this.$router.push({ path: "/visaMessage" }); // 基本信息添加完跳转到签证信息页面
         } else {
           console.log('error submit!!');
           return false;

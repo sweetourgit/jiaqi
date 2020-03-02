@@ -65,19 +65,19 @@
         <el-table-column label="操作" width="220">
           <template slot-scope="scope">
             <span v-show="show1">
-              <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales(scope.row.id)">停售</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='1'" v-has="'ensconce'" @click="haltSales(scope.row.id)">停售</span>
               <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-              <span class="cursor blue" v-if="scope.row.regimentType=='2'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='2'" v-has="'ensconce'" @click="haltSales_01(scope.row.id)">恢复售卖</span>
             </span>
             <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='2'">|</span> -->
-            <span v-show="show2"><span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="operation(1,scope.$index)">下单</span></span>
+            <span v-show="show2"><span class="cursor blue" v-has="'placeOrder'" v-if="scope.row.regimentType=='1'" @click="operation(1,scope.$index)">下单</span></span>
             <!-- <span v-show="show2" class="em" v-if="scope.row.regimentType=='1'">|</span> -->
             <span v-show="show1">
-              <span class="cursor blue" @click="operation(2)">详情</span>
+              <span class="cursor blue" @click="operation(2)" v-has="'ensconce'">详情</span>
               <span class="em" v-if="scope.row.regimentType=='3'">|</span>
-              <span class="cursor blue" v-if="scope.row.regimentType=='3'" @click="reimbursement(scope.row.id)">报账单</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='3'" v-has="'ensconce'" @click="reimbursement(scope.row.id)">报账单</span>
               <span class="em" v-if="scope.row.regimentType=='1'">|</span>
-              <span class="cursor blue" v-if="scope.row.regimentType=='1'" @click="haltSales_02(scope.row.id)">封团</span>
+              <span class="cursor blue" v-if="scope.row.regimentType=='1'" v-has="'ensconce'" @click="haltSales_02(scope.row.id)">封团</span>
             </span>
             <span class="em" v-if="scope.row.regimentType=='1'">|</span>
             <span class="cursor blue" @click="informDeparture(scope.row.id)">出团通知书</span>
@@ -229,7 +229,7 @@ export default {
   methods: {
     permission(){
       let orgID = sessionStorage.getItem('orgID');
-      let arr = ['492','493','494','545','501','520','571'];
+      let arr = ['303','304','305','320','338','340','358','360','492','493','494','501','520','532','534','535','538','539','544','545','568','572','573','578','579','580','581','592','593','594'];
       if(arr.indexOf(orgID)==-1){     
         this.show1 = true ;
       }else{
