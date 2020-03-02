@@ -32,7 +32,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="状态:">
-              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" :disabled="true">
+              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态">
                 <el-option label="驳回" value="2"></el-option>
                 <el-option label="通过" value="1"></el-option>
                 <el-option label="审批中" value="0"></el-option>
@@ -209,7 +209,8 @@
               collectionNumber: this.ruleFormSearch.collectionAccountSel !== [] ? this.ruleFormSearch.collectionAccountSel.toString() : "",
               price: 0,
               dept: 0,
-              createUser: this.ruleFormSearch.creater !== "" ? this.ruleFormSearch.creater : "",
+              // createUser: this.ruleFormSearch.creater !== "" ? this.ruleFormSearch.creater : "",
+              createUser: sessionStorage.getItem('userCode'),
               createTime: "2019-05-16 01:02:40",
               code: "",
               serialNumber: "",

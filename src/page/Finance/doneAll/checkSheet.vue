@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-tabs :tab-position="tabPosition">
-      <el-tab-pane :label="'跟团游(' + approveCountSheetTeam +')'">
+      <el-tab-pane :label="'跟团游(' + approveCountSheetTeam +')'" name="sheetTeam">
         <check-sheet-team ref="sheetTeam" :whereSheetTab="whereSheetTab" @handlePassVal="approveTableDataSheet"></check-sheet-team>
       </el-tab-pane>
     </el-tabs>

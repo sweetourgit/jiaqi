@@ -156,7 +156,7 @@
               collectionNumber: "",
               price: 0,
               dept: 0,
-              createUser: this.ruleFormSearch.creater !== "" ? this.ruleFormSearch.creater : "",
+              createUser: sessionStorage.getItem('userCode'),
               createTime: "2019-05-16 01:02:40",
               code: "",
               serialNumber: "",
