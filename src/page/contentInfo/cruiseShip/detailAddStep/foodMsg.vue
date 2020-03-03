@@ -5,7 +5,7 @@
       <el-button class="el-button" type="primary" @click="saveFun(2)">下一步</el-button>
       <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
     </div>
-    <el-button type="warning" @click='addCabin'>添加</el-button>
+    <el-button type="warning" @click='addCabin' class="addBtn">添加</el-button>
     <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column prop="id" label="类型" align="center">
         <template slot-scope="scope"> 
@@ -93,8 +93,15 @@ export default {
       }
     },
     cancalBtn(){
-      this.$router.back();
-      localStorage.removeItem('liner_id', res.data.data.liner_id);
+      // this.$router.back();
+      this.$router.push({
+        path: '/cruiseShip/cruiseShipDetail',
+        name: '邮轮管理/详情',
+        query: {
+          "id": this.$route.query.id
+        }
+      });
+      localStorage.removeItem('liner_id');
     },
     saveFun(type){
       const that = this;
@@ -112,7 +119,14 @@ export default {
           });
           if(type == '1'){
             // alert('保存');
-            that.$router.back();
+            // that.$router.back();
+            that.$router.push({
+              path: '/cruiseShip/cruiseShipDetail',
+              name: '邮轮管理/详情',
+              query: {
+                "id": that.$route.query.id
+              }
+            });
             localStorage.removeItem('liner_id');
           }else if(type == '2'){
             // alert('下一步');
@@ -214,10 +228,15 @@ export default {
 <style lang="scss" scoped>
   .buttonDv{
     overflow: hidden;
+    margin: 12px auto;
     .el-button{
       float: right;
       margin-right: 18px;
     }
+  }
+  .addBtn{
+    display: block;
+    margin: 16px 0;
   }
   .block{
     display: block;

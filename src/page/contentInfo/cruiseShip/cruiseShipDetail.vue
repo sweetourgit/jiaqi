@@ -137,7 +137,7 @@ export default {
           path: '/cruiseShip/shipDetailAdd',
           name: '邮轮管理/详情/添加游轮',
           query: {
-            "id": row.id,
+            "id":  this.$route.query.id,
             "step": 0
           }
         });
@@ -146,7 +146,7 @@ export default {
           path: '/cruiseShip/shipDetailAdd',
           name: '邮轮管理/详情/添加游轮',
           query: {
-            "id": row.id,
+            "id":  this.$route.query.id,
             "step": row.cur_steps
           }
         });

@@ -1,9 +1,9 @@
 <template>
   <div class="shipDetailAdd">
-    <div class="buttonDv">
+    <!-- <div class="buttonDv">
       <el-button @click="next" type="primary">下一步</el-button>
       <el-button @click="cancel" type="primary" plain>取消</el-button>
-    </div>
+    </div> -->
     <div class="leftStep">
       <el-steps direction="vertical" :active="activeIndex">
         <el-step title="基础信息" :status="status[0]" @click.native="tabTo(0)"></el-step>
@@ -53,7 +53,11 @@ export default {
   watch: {},
   methods: {
     next() {
+      // alert(this.activeIndex);
+      // alert(this.activeIndex + 1);
       this.$set(this.status, this.activeIndex, 'success');
+
+      this.$set(this.status, this.activeIndex + 1, 'finish');
       if (this.activeIndex++ >= 5) this.activeIndex = 0;
     },
     cancel() {
@@ -69,6 +73,9 @@ export default {
         }
         
       }else{
+        for(let i = 0; i < index; i++){
+          this.$set(this.status, i, 'success');
+        }
         if(this.status[index] == 'success'){
           this.activeIndex = index;
           this.$set(this.status, this.activeIndex, 'finish');
@@ -78,8 +85,17 @@ export default {
     }
   },
   created() {
-    if(this.$route.query.step){
-      this.tabTo(this.$route.query.step, 'creat')
+    // alert(this.$route.query.step);
+    if(this.$route.query.step || this.$route.query.step == 0){
+      if(this.$route.query.step == 0){
+        for(let i = 0; i < 6; i++){
+          console.log(i);
+          this.$set(this.status, i, 'success');
+        }
+        this.$set(this.status, 0, 'finish');
+      }else{
+        this.tabTo(this.$route.query.step, 'creat')
+      }
     }
     
   },

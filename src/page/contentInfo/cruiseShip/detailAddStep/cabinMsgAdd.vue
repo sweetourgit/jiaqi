@@ -106,7 +106,7 @@
       },
       // 取消按钮事件
       cancalBtn(){
-        this.$confirm("是否取消本次添加?", "提示", {
+        this.$confirm("是否取消本次操作?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"

@@ -84,13 +84,18 @@
       },
       // 取消按钮事件
       cancalBtn(){
+        let words = '添加';
+        if(this.info){
+          words = '编辑';
+        }
+        
         if(this.ruleForm.company != '' || this.ruleForm.introduction != '' || this.fileList.length != 0 || this.fileList1.length != 0){
-          this.$confirm("是否取消本次添加?", "提示", {
+          this.$confirm("是否取消本次"+ words +"?", "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning"
           }).then(() => {
-            this.$message.success("已取消添加");
+            this.$message.success("已取消");
             this.closeAdd();
           }).catch(() => {
 

@@ -262,15 +262,15 @@ export default {
                 });
                 if(type == '1'){
                   // alert('保存');
-                  that.$router.back();
+                  // that.$router.back();
                   localStorage.removeItem('liner_id');
-                  // that.$router.push({
-                  //   path: '/cruiseShip/cruiseShipDetail',
-                  //   name: '邮轮管理/详情',
-                  //   query: {
-                  //     "id": that.$route.query.id
-                  //   }
-                  // });
+                  that.$router.push({
+                    path: '/cruiseShip/cruiseShipDetail',
+                    name: '邮轮管理/详情',
+                    query: {
+                      "id": that.$route.query.id
+                    }
+                  });
                 }else if(type == '2'){
                   // alert('下一步');
                   // console.log(that.$parent);
@@ -303,8 +303,14 @@ export default {
     },
 
     cancalBtn(){
-      this.$router.back();
-      localStorage.removeItem('liner_id', res.data.data.liner_id);
+      this.$router.push({
+        path: '/cruiseShip/cruiseShipDetail',
+        name: '邮轮管理/详情',
+        query: {
+          "id": this.$route.query.id
+        }
+      });
+      localStorage.removeItem('liner_id');
     },
 
     handlePictureCardPreview(file) {
@@ -371,6 +377,7 @@ export default {
   .curiseShipBaseMsg{
     .buttonDv{
       overflow: hidden;
+      margin: 12px auto;
       .el-button{
         float: right;
         margin-right: 18px;

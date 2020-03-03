@@ -1051,7 +1051,7 @@ export default {
         });
     },
 
-    // 通过insert接口之后还要走这个接口 收款同步EBS
+    //  收款同步EBS
     tbEBS() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collection/api/insertebs", {
