@@ -5,9 +5,8 @@
       @close="cancelInfoOrder()">
       <div class="controlButton">
         <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
-        <el-button class="ml13" v-if="invoiceList.state!='3'" type="primary" @click="rejectedIncoice(invoiceID)">驳回</el-button>
-        <el-button type="primary" v-if="invoiceList.state=='1'" @click="openInvoice(invoiceID)" class="ml13">开票</el-button>
-        <el-button type="primary" v-if="invoiceList.state=='2'" @click="changeInvoice(invoiceID)" class="ml13">换发票</el-button>
+        <el-button class="ml13" v-if="invoiceList.state!='3'" type="primary" @click="rejectedIncoice(invoiceID)">撤销</el-button>
+     
       </div>
       <div class="planBorder">
         <div class="order-title"><span>基本信息</span></div>
@@ -324,22 +323,26 @@ export default {
         }
       });
     },
-    rejectedIncoice(ID){// 驳回
-      this.$confirm("是否驳回本次发票信息?", "提示", {
+    rejectedIncoice(ID){// 撤销
+      this.$confirm("是撤销本次发票信息?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
          type: "warning"
       })
       .then(res => {
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/Receipt/api/regression',{
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/Receipt/api/RevokeReceipt',{
           "object": {
-            "id": ID,
+                  "id": ID,
+                  "userCode": sessionStorage.getItem('userCode'),//申请人
           },
         }).then(res => {
+          console.log(res);
           if(res.data.isSuccess == true){
-             this.$message.success("驳回成功");
+             this.$message.success("撤销成功");
              this.$parent.pageList();
              this.dialogFormOrder = false;
+            }else{
+              this.$message.error("撤销失败");
             }
          })
       })

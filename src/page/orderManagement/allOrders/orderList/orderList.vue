@@ -339,7 +339,7 @@
         </div>
       </el-dialog>
       <!--出团通知书弹窗end-->
-
+      <!--流程管理弹窗-->
       <process-manage
         :orderId="orderId"
         :variable="variable"
@@ -353,12 +353,15 @@
         @orderPage="orderPage"
         @childByValue="childByValue"
       ></process-manage>
+       <!--流程管理弹窗and-->
+       <!--备注信息弹窗-->
       <remarks-infor
         :orderId="orderId"
         :variable="variable"
         :dialogType="dialogType"
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
+      <!--备注信息弹窗end-->
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
       <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></orderRefund>
     </div>
@@ -677,7 +680,7 @@ export default {
   
    sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect={};
-           console.log(this.salePrice,'88')
+          // console.log(this.salePrice,'88')
         this.salePrice.splice(0);
         this.salePrice.push(
           ...enrolls.map((enroll, index) => {

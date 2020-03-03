@@ -84,7 +84,7 @@
 
 <script>
 import moment from "moment";
-import invoiceApplyDetails from "./invoiceApplyDetails/invoiceApplyDetails";
+import invoiceApplyDetails from "./invoiceApplyDetails/invoiceApplyDetails";//详情
 import addInvoiceApply from "./invoiceApplyDetails/addInvoiceApply";
 export default {
   name: "invoiceApply",

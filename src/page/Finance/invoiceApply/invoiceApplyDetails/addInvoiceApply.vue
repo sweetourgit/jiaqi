@@ -1,9 +1,9 @@
 <template>
   <div>
-    <el-dialog title="申请发票管理" :visible="dialogFormVisible"style="margin:-80px 0 0 0;"width=1100px :show-close="false" custom-class="city_list" class="addReceivables"@close="closeAdd()">
+    <el-dialog title="申请发票管理" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd()">
       <div class="cancel">
         <el-button class="ml13" @click="closeAdd()">取 消</el-button>
-        <el-button class="ml13" type="primary">申 请</el-button>
+        <el-button class="ml13" type="primary" @click="closeApply(ruleForm)">申 请</el-button>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm invoice">
         <div class="fl w500">
@@ -45,7 +45,7 @@
               <el-option v-for="item in invoiceTypeList" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="发票类型：" prop="invoiceProject">
+          <el-form-item label="发票项目：" prop="invoiceProject">
             <el-select v-model="ruleForm.invoiceProject" placeholder="请输入发票类型" :disabled="forbidden">
               <el-option v-for="item in projectList" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
@@ -55,24 +55,28 @@
         <div class="associated">
           <div class="warning"><i class="el-icon-warning"></i></div>
           <div class="fl ml13">已关联<span class="relateditems">{{tableDate.length}}</span>项</div>
-          <div class="aggregate">总计:<span class="mr5">{{ residuePrice | numFilter}}</span>元</div>
+          <div class="aggregate">总计:<span class="mr5">{{ residuePD | numFilter}}</span>元</div>
         </div>
         <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-          <el-table-column prop="" label="订单ID" align="center"></el-table-column>
-          <el-table-column prop="" label="产品名称" align="center"></el-table-column>
-          <el-table-column prop="" label="订单来源" align="center"></el-table-column>
-          <el-table-column prop="" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="" label="下单日期" align="center"></el-table-column>
-          <el-table-column prop="" label="已付金额" align="center"></el-table-column>
-          <el-table-column prop="" label="剩余开票金额" align="center"></el-table-column>
+          <el-table-column prop="orderCode" label="订单ID2" align="center"></el-table-column>
+          <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+          <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
+          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+          <el-table-column prop="createTime" label="下单日期" align="center">
+             <template slot-scope="scope">
+                <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="yfje" label="已付金额" align="center"></el-table-column>
+          <el-table-column prop="syje" label="剩余开票金额" align="center"></el-table-column>
         </el-table>
       </el-form>
     </el-dialog>
     <!--添加订单弹窗-->
-    <el-dialog title="添加订单" :visible="addOrderShow"style="margin:-80px 0 0 0;"width=1100px :show-close="false" custom-class="city_list" class="addReceivables"@close="closeOrderShow()">
+    <el-dialog title="添加订单" :visible="addOrderShow" style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeOrderShow()">
       <div class="cancel">
         <el-button class="ml13" @click="closeOrderShow()">取 消</el-button>
-        <el-button class="ml13" type="primary">添 加</el-button>
+        <el-button class="ml13" @click="closeOrderadd()" type="primary">添 加</el-button>
       </div>
       <div class="search">
         <div style="margin:15px 0 15px 0;">
@@ -122,6 +126,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
    name: "addInvoiceApply",
    components: {},
@@ -177,6 +182,7 @@ export default {
       },
       forbidden: true,
       tableDate:[],
+      tableDatebox:[],
       addOrderShow:false, // 添加订单弹窗
       orderID:'', // 添加订单中订单ID
       merchantsName:'', // 添加订单中商户名称
@@ -186,6 +192,7 @@ export default {
       collectionID:'',
       nape:0,
       residuePrice:0, // 获取添加订单剩余开票金额总和
+      residuePD:0,//选择后的总价格
     };
   },
   filters: {
@@ -244,16 +251,48 @@ export default {
     clickRow(row) {//选中行复选框勾选
       this.$refs.multipleTable.toggleRowSelection(row);
       let arr = {} ;
-      for( var i = 0 ; i < this.addOrderTable.length ; i ++){
-         arr = row
-      }
-      console.log(arr)
-      //this.collectionID = this.multipleSelection[0].collectionID;
-    },
+      
+      },
     closeAdd(){
       this.dialogFormVisible = false;
       this.residuePrice = 0 ;
       this.tableDate = [];
+    },
+    closeApply(ruleForm){
+      for(let i in this.tableDate){
+          let cTime = moment(this.tableDate[i].createTime).format("YYYY-MM-DD");
+          this.tableDate[i].createTime = cTime
+         }
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insertapplicationreceipt",{
+        "object": {
+          "receipt":{
+                "ordelist":this.tableDate,//关联订单
+                "ordNum":this.tableDate.length,//关联订单个数
+                "userName":sessionStorage.getItem('userCode'),//申请人
+                "cardNumber":ruleForm.account,//账号
+                "bankName":ruleForm.partCardBank,//开户行
+                "address":ruleForm.address,//地址
+                "invoicePrice":ruleForm.invoicePrice,//发票金额
+                "invoiceHeader":ruleForm.invoiceTitle,//发票抬头
+                "tel":ruleForm.phone,//手机号
+                "invoiceItem":this.invoiceItem,//发票项目
+                "invoiceID":this.invoiceID,//发票类型
+                "taxpayerNumber":ruleForm.taxpayerNumber,//纳税人识别号
+                "invoiceType":ruleForm.unitPersonal,//单位个人
+        }
+         
+        },
+      }).then(res => {
+            if(res.data.isSuccess == true){
+                  this.$message.success("申请成功");
+              }else{
+                  this.$message.error("申请失败");
+              }
+         
+        })
+        .catch(function (res) {
+          console.log(res)
+        })
     },
     addOrder(orderCode = this.orderID , localCompName = this.merchantsName,collectionID = this.collectionNumber){
       this.addOrderShow = true;
@@ -321,11 +360,32 @@ export default {
       this.addOrderTable[index].choose=true;
       this.napeNumber();
       this.price();
+      this.tableDatebox=[];
+      for( var i in this.addOrderTable){
+        if(this.addOrderTable[i].choose == true){
+          this.tableDatebox.push(this.addOrderTable[i]);
+         }
+       }
+          
+          
     },
     undo(index){
+      this.tableDatebox=[];
       this.addOrderTable[index].choose=false;
       this.napeNumber();
       this.price();
+       for( var i in this.addOrderTable){
+          if(this.addOrderTable[i].choose == true){
+             this.tableDatebox.push(this.addOrderTable[i]);
+           }
+       }
+      
+    },
+    price_ed(){ // 添加订单获取剩余开票金额总和
+      this.residuePD = 0 ;
+      for( var i = 0 ; i < this.tableDate.length ; i ++){
+           this.residuePD += Number(this.tableDate[i].syje);
+      }
     },
     closeOrderShow(){ // 关闭添加订单弹窗
       this.addOrderShow = false;
@@ -334,6 +394,57 @@ export default {
       this.merchantsName = '';
       this.collectionNumber = '';
       this.addOrderTable = [] ;
+      this.nape= 0 ;
+    },
+    closeOrderadd(){// 确认添加订单
+    if(this.tableDate.length == 0 ){
+       this.tableDate =  this.tableDatebox;
+        this.addOrderShow = false;
+        this.orderID = '';
+        this.merchantsName = '';
+        this.collectionNumber = '';
+        this.addOrderTable = [] ;
+        this.price_ed();
+     }else{
+       for(let j in this.tableDate){
+             for(let i in this.tableDatebox){
+              if(this.tableDate[j].orid == this.tableDatebox[i].orid){
+                 this.tableDatebox=[];
+                 this.$message({
+                      type: "warning",
+                      message: "存在以添加的订单，请重新选择"
+                      }); 
+                     return false;
+              }else if(this.tableDatebox[i].syje == 0){
+                 this.tableDatebox=[];
+                 this.$message({
+                        type: "warning",
+                        message: "选择订单剩余开票金额为0，请重新选择"
+                        }); 
+                      return false;
+              } 
+         
+          }
+      }
+                  for(let i in this.tableDatebox){
+                    this.tableDate.push(this.tableDatebox[i]);
+                        this.$message({
+                                  type: "success",
+                                  message: "添加成功"
+                                  });
+                  }
+                   
+                  this.addOrderShow = false;
+                  this.orderID = '';
+                  this.merchantsName = '';
+                  this.collectionNumber = '';
+                  this.addOrderTable = [] ;
+                  this.price_ed();
+    }
+     
+      
+       
+
     },
     insertInvoice(){ // 申请发票方法
       this.$refs[formName].validate((valid) => {
