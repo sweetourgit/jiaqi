@@ -343,6 +343,14 @@ export default new Router({
         auth: true
       }
     },{
+      path: '/visaImportant', // 添加重要信息
+      component: () => import('@/page/productManagement/visa/addVisa/visaImportant'),
+      name: '添加签证',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
       path: '/visaInventory',
       component: () => import('@/page/productManagement/visa/visaInventory/visaInventory'),
       name: '团期/签证库存',
