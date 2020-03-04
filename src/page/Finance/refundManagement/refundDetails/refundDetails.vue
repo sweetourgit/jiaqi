@@ -458,9 +458,6 @@ export default {
     through(){ // 点击通过显示弹窗
       this.dialogApproval = true ;
       this.approval = '审批通过';
-      if(this.ifDY100068 == true){
-        this.insertEBS(this.accountID);
-      }
       if(this.disbursementID == 0 && this.ifDY100068 == true){
         this.forbidden = true;
         this.$message.error("请先选择支付账户")
@@ -500,6 +497,9 @@ export default {
             this.dialogApproval = false;
             this.dialogFormOrder = false;
             this.$parent.commission();
+            if(this.ifDY100068 == true){ // 通过后推送EBS
+              this.insertEBS(this.accountID);
+            }
             this.$message.success("退款申请通过");
           }else if(code == 1){
             this.$message.success("退款申请失败");
