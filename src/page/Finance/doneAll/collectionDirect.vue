@@ -3,7 +3,7 @@
     <div class="plan">
       <el-form :model="ruleFormSearch" ref="ruleFormSearch" label-width="80px" style="margin-top: 20px">
         <el-row type="flex" class="row-bg">
-          <el-col :span="9">
+          <el-col :span="8">
             <el-form-item label="收款时间:">
               <el-col :span="11">
                 <el-form-item prop="startTime">
@@ -18,28 +18,20 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="订单:" prop="order">
               <el-input placeholder="请输入订单编号" v-model="ruleFormSearch.order" class="group-no" style="width: 100%;"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="申请人:" prop="creater">
-              <el-input placeholder="请输入申请人" v-model="ruleFormSearch.creater" class="group-no" style="width: 100%;"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="状态:">
-              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态">
-                <el-option label="驳回" value="2"></el-option>
-                <el-option label="通过" value="1"></el-option>
-                <el-option label="审批中" value="0"></el-option>
+              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" style="width: 100%;">
+                <el-option label="驳回" value="6"></el-option>
+                <el-option label="通过" value="5"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12" style="text-align: left">
+          <el-col :span="6" style="text-align: left">
             <el-form-item>
               <el-button @click="HandleSearchApprove" type="primary">搜索</el-button>
               <el-button type="primary" plain @click="HandleResetApprove">重置</el-button>
@@ -132,7 +124,6 @@
           endTime:'',
           startTime: '',
           order: '',
-          creater: '',
           // checkType: '',
           collectionAccountSel: []
         },
@@ -198,14 +189,14 @@
             pageSize: this.pageSize,
             object: {
               id: 0,
-              checkType: 4,
+              checkType: this.ruleFormSearch.checkType ? this.ruleFormSearch.checkType : 4,
               collectionTime: "2019-05-16",
               startTime: this.ruleFormSearch.startTime ? moment(this.ruleFormSearch.startTime).format("YYYY-MM-DD"): "2000-05-16",
               endTime: this.ruleFormSearch.endTime ? moment(this.ruleFormSearch.endTime).format("YYYY-MM-DD") : "2099-05-16",
               groupCode: "",
               planID: 0,
               orderID: 0,
-              orderNumber: this.ruleFormSearch.orderNumber,
+              orderNumber: this.ruleFormSearch.order,
               collectionNumber: this.ruleFormSearch.collectionAccountSel !== [] ? this.ruleFormSearch.collectionAccountSel.toString() : "",
               price: 0,
               dept: 0,

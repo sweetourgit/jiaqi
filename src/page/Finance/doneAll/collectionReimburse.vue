@@ -18,17 +18,12 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="7">
+          <el-col :span="8">
             <el-form-item label="报销单号:" prop="order">
               <el-input placeholder="请输入报销单号" v-model="ruleFormSearch.order" class="group-no" style="width: 100%;"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="7">
-            <el-form-item label="申请人:" prop="creater">
-              <el-input placeholder="请输入申请人" v-model="ruleFormSearch.creater" class="group-no" style="width: 100%;"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5" style="text-align: left">
+          <el-col :span="8" style="text-align: left">
             <el-form-item>
               <el-button @click="HandleSearchApprove" type="primary">搜索</el-button>
               <el-button type="primary" plain @click="HandleResetApprove">重置</el-button>
@@ -86,7 +81,6 @@
           endTime:'',
           startTime: '',
           order: '',
-          creater: '',
           // checkType: '',
         },
         approveTableDataSheet: [],
@@ -154,6 +148,7 @@
               orderID: 0,
               orderNumber: '',
               collectionNumber: "",
+              reimbursement: this.ruleFormSearch.order ? this.ruleFormSearch.order : 0,
               price: 0,
               dept: 0,
               createUser: sessionStorage.getItem('userCode'),

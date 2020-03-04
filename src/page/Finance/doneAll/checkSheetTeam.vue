@@ -21,8 +21,8 @@
           </el-col>
           <el-col :span="12" style="text-align: left">
             <el-form-item>
-              <el-button @click="HandleSearchApprove('borrow')" type="primary">搜索</el-button>
-              <el-button type="primary" plain @click="HandleResetApprove('ruleFormSearch', 'borrow')">重置</el-button>
+              <el-button @click="HandleSearchApprove('sheet')" type="primary">搜索</el-button>
+              <el-button type="primary" plain @click="HandleResetApprove('ruleFormSearch', 'sheet')">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>

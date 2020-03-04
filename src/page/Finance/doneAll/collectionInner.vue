@@ -18,24 +18,17 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="分销商:" prop="distributor">
               <el-input placeholder="请输入分销商" v-model="ruleFormSearch.distributor" class="group-no" style="width: 100%;"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="申请人:" prop="creater">
-              <el-input placeholder="请输入申请人" v-model="ruleFormSearch.creater" class="group-no" style="width: 100%;"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="款项说明:" prop="moneyExplain">
               <el-input placeholder="请输入款项说明" v-model="ruleFormSearch.moneyExplain" class="group-no" style="width: 100%;"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12" style="text-align: left">
+          <el-col :span="6" style="text-align: left">
             <el-form-item>
               <el-button @click="HandleSearchApprove" type="primary">搜索</el-button>
               <el-button type="primary" plain @click="HandleResetApprove">重置</el-button>
@@ -109,7 +102,6 @@
           endTime:'',
           startTime: '',
           distributor: '',
-          creater: '',
           moneyExplain: '',
           // checkType: '',
         },

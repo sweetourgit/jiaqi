@@ -24,23 +24,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="申请人:" prop="creater">
-              <el-input placeholder="请输入申请人" v-model="ruleFormSearch.creater" class="group-no" style="width: 100%;"></el-input>
+            <el-form-item label="团期计划:" prop="plan">
+              <el-input placeholder="请输入团期计划" v-model="ruleFormSearch.plan" class="group-no" style="width: 100%;"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="团期计划:" prop="plan">
-              <el-input placeholder="请输入团期计划" v-model="ruleFormSearch.plan" class="group-no" style="width: 100%;"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="状态:">
-              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" :disabled="true">
-                <el-option label="驳回" value="2"></el-option>
-                <el-option label="通过" value="1"></el-option>
-                <el-option label="审批中" value="0"></el-option>
+            <el-form-item label="状态:" prop="checkType">
+              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" style="width: 100%;">
+                <el-option label="驳回" value="6"></el-option>
+                <el-option label="通过" value="5"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -131,9 +125,8 @@
           endTime:'',
           startTime: '',
           order: '',
-          creater: '',
           plan: '',
-          // checkType: '',
+          checkType: '',
           collectionAccountSel: []
         },
         approveTableDataSheet: [],
@@ -198,14 +191,14 @@
             pageSize: this.pageSize,
             object: {
               id: 0,
-              checkType: 4,
+              checkType: this.ruleFormSearch.checkType ? this.ruleFormSearch.checkType : 4,
               collectionTime: "2019-05-16",
               startTime: this.ruleFormSearch.startTime ? moment(this.ruleFormSearch.startTime).format("YYYY-MM-DD"): "2000-05-16",
               endTime: this.ruleFormSearch.endTime ? moment(this.ruleFormSearch.endTime).format("YYYY-MM-DD") : "2099-05-16",
               groupCode: this.ruleFormSearch.plan ? this.ruleFormSearch.plan : '',
               planID: 0,
               orderID: 0,
-              orderNumber: this.ruleFormSearch.orderNumber,
+              orderNumber: this.ruleFormSearch.order,
               collectionNumber: this.ruleFormSearch.collectionAccountSel !== [] ? this.ruleFormSearch.collectionAccountSel.toString() : "",
               price: 0,
               dept: 0,
