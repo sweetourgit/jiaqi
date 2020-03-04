@@ -118,7 +118,7 @@
           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
-          <el-table-column prop="coPrice" label="已付金额" align="center"></el-table-column>
+          <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
           <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
         </el-table>
       </div>
@@ -517,7 +517,7 @@ export default {
 .planBorder{width: 95%;margin: 0 30px 10px 0;font-size: 14px;line-height: 25px;}
 .order-title{font-size: 14pt; color:#000;line-height: 40px;}
 .controlButton{position: absolute; top: 8px; right: 10px;}
-.fl{float: left;}
+.fl{float: left; margin: 0;}
 .fb{font-weight: bold;}
 .ml13{margin: 0 0 0 13px;}
 .state01{text-align: center; background: #ffaa00; border-radius: 5px; color: #fff;width:60px;padding: 2px; margin: 10px 0 0 0;}

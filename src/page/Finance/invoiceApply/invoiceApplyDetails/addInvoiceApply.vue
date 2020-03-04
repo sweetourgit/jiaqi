@@ -58,7 +58,7 @@
           <div class="aggregate">总计:<span class="mr5">{{ residuePD | numFilter}}</span>元</div>
         </div>
         <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-          <el-table-column prop="orderCode" label="订单ID2" align="center"></el-table-column>
+          <el-table-column prop="orderCode" label="订单ID" align="center"></el-table-column>
           <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -285,7 +285,7 @@ export default {
        for(let i in this.tableDate){
          // let cTime = moment(this.tableDate[i].createTime).format("YYYY-MM-DD HH:mm:ss");
         //  this.tableDate[i].createTime = cTime
-          this.newtabledate.push({
+         this.newtabledate.push({
             "orid":this.tableDate[i].orid,
             "orderCode": this.tableDate[i].orderCode,
             "collectionID": this.tableDate[i].collectionID,
@@ -298,6 +298,13 @@ export default {
             "collectionType": this.tableDate[i].collectionType
           })
          }
+          if(ruleForm.invoicePrice > this.residuePrice ){
+                    this.$message({
+                      type: "warning",
+                      message: "重新填写开票金额"
+                      }); 
+                      return;
+            }
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insertapplicationreceipt",{
         "object": {
           "receipt":{
