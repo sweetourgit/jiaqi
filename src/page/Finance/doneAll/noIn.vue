@@ -3,7 +3,7 @@
     <div class="plan">
       <el-form :model="ruleFormSearch" ref="ruleFormSearch" label-width="80px" style="margin-top: 20px">
         <el-row type="flex" class="row-bg">
-          <el-col :span="9">
+          <el-col :span="13">
             <el-form-item label="申请时间:">
               <el-col :span="11">
                 <el-form-item prop="startTime">

@@ -37,8 +37,8 @@ export default {
           }
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingfinishedTasksForJQ",{
             "userCode": sessionStorage.getItem('tel'),
-            "startTime": that.ruleFormSearch.startTime ? moment(that.ruleFormSearch.startTime).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
-            "endTime": that.ruleFormSearch.endTime ? moment(that.ruleFormSearch.endTime).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+            "startTime": that.ruleFormSearch.startTime ? moment(that.ruleFormSearch.startTime).format('YYYY-MM-DD 00:00:00') : "1970-07-23T01:30:54.452Z",
+            "endTime": that.ruleFormSearch.endTime ? moment(that.ruleFormSearch.endTime).format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
             "startIndex": -1,
             "endIndex": -1 ,
             "workflowCode": getWorkflowCode
@@ -77,7 +77,8 @@ export default {
               })
             } else if(paramsTab == 'refund'){
               this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
-                "guid": arr
+                "guid": arr,
+                'type': 1, // 0是待办，非0已办
               }).then(obj =>{
                 let showTabCount = 0
                 if(obj.data.objects != null){
