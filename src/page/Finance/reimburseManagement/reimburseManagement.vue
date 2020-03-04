@@ -231,13 +231,13 @@
                    <div class="re_style">
                     <el-table :data="item.content.payments" border style="width: 100%; margin-top: 30px"> 
                       
-                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="180" align="center" v-if="find==1"></el-table-column>
-                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="80" align="center" v-if="find==0"></el-table-column>
-                      <el-table-column prop="supplierTypeEX" label="借款类型" width="120" align="center"></el-table-column>
-                      <el-table-column prop="supplierName" label="供应商" width="120" align="center"></el-table-column>
-                      <el-table-column prop="createUser" label="申请人" width="125" align="center"></el-table-column>
-                      <el-table-column prop="paymentMark" label="摘要" width="140" align="center"></el-table-column>
-                      <el-table-column prop="paymentPrice" label="借款金额" width="118" align="center"></el-table-column>
+                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="160" align="center" v-if="find==1"></el-table-column>
+                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="60" align="center" v-if="find==0"></el-table-column>
+                      <el-table-column prop="supplierTypeEX" label="借款类型" width="100" align="center"></el-table-column>
+                      <el-table-column prop="supplierName" label="供应商" width="110" align="center"></el-table-column>
+                      <el-table-column prop="createUser" label="申请人" width="115" align="center"></el-table-column>
+                      <el-table-column prop="paymentMark" label="摘要" width="130" align="center"></el-table-column>
+                      <el-table-column prop="paymentPrice" label="借款金额" width="108" align="center"></el-table-column>
                       <!-- <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column> -->
                       <el-table-column prop="wcount" label="本次报销金额"   width="140"   align="center" v-if="find==0">
                         <template slot-scope="scope">
@@ -249,7 +249,8 @@
                           <el-input v-model="scope.row.peopleCount" style="width:100px;"></el-input>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="paymentID" label="操作" width="114"  v-if="find==0" align="center">
+                      <el-table-column prop="orderStatus" label="还款/拆分" width="90" align="center"></el-table-column>
+                      <el-table-column prop="paymentID" label="操作" width="104"  v-if="find==0" align="center">
                           <template slot-scope="scope">
                           <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</div>
                          </template>

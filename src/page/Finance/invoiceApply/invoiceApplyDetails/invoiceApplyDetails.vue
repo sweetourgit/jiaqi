@@ -331,11 +331,9 @@ export default {
       })
       .then(res => {
         this.$http.post(this.GLOBAL.serverSrc + '/finance/Receipt/api/RevokeReceipt',{
-          "object": {
-                  "id": ID,
-                  "userCode": sessionStorage.getItem('userCode'),//申请人
-          },
-        }).then(res => {
+           "id": ID,
+           "userCode": sessionStorage.getItem('userCode'),//申请人
+          }).then(res => {
           console.log(res);
           if(res.data.isSuccess == true){
              this.$message.success("撤销成功");

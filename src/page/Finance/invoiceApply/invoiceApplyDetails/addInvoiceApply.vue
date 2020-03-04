@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="申请发票管理" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd()">
+    <el-dialog title="申请发票管理" :visible="dialogFormVisible"    style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd()">
       <div class="cancel">
         <el-button class="ml13" @click="closeAdd()">取 消</el-button>
         <el-button class="ml13" type="primary" @click="closeApply(ruleForm)">申 请</el-button>
@@ -46,12 +46,12 @@
             </el-select>
           </el-form-item>
           <el-form-item label="发票项目：" prop="invoiceProject">
-            <el-select v-model="ruleForm.invoiceProject" placeholder="请输入发票类型" :disabled="forbidden">
+            <el-select v-model="ruleForm.invoiceProject" placeholder="请输入发票项目" :disabled="forbidden">
               <el-option v-for="item in projectList" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
         </div>
-        <el-button class="addorderbutton" type="primary" @click="addOrder()">添加订单</el-button>
+        <el-button class="addorderbutton" type="primary" @click="addOrderopen()">添加订单</el-button>
         <div class="associated">
           <div class="warning"><i class="el-icon-warning"></i></div>
           <div class="fl ml13">已关联<span class="relateditems">{{tableDate.length}}</span>项</div>
@@ -90,37 +90,39 @@
           <el-button class="ml13" type="primary" @click="orderReset()">重 置</el-button>
         </div>
       </div>
-      <el-button class="mt10" type="primary" @click="allChoose()">全 选</el-button>
-      <el-button class="mt10" @click="cancelChoose()">清除选择</el-button>
-      <div class="addassociated">
-        <div class="warning"><i class="el-icon-warning"></i></div>
-        <div class="fl ml13">已关联<span class="relateditems">{{nape}}</span>项</div>
-        <div class="aggregate">剩余开票金额:<span class="mr5">{{ residuePrice | numFilter}}</span>元</div>
+      <div v-if="find==1" class="one">
+          <el-button class="mt10" type="primary" @click="allChoose()">全 选</el-button>
+          <el-button class="mt10" @click="cancelChoose()">清除选择</el-button>
+          <div class="addassociated">
+            <div class="warning"><i class="el-icon-warning"></i></div>
+            <div class="fl ml13">已关联<span class="relateditems">{{nape}}</span>项</div>
+            <div class="aggregate">剩余开票金额:<span class="mr5">{{ residuePrice | numFilter}}</span>元</div>
+          </div>
+          <el-table :data="addOrderTable" ref="multipleTable" class="ordertable" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun" :row-style="rowClass">
+            <!-- <el-table-column type="selection" width="55"></el-table-column> -->
+            <el-table-column prop="orderCode" label="订单ID" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
+            <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+            <el-table-column prop="createTime" label="下单日期" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="yfje" label="已付金额" align="center"></el-table-column>
+            <el-table-column prop="syje" label="剩余开票金额" align="center"></el-table-column>
+            <el-table-column label="操作" align="center">
+              <template slot-scope="scope">
+                <el-button type="text" @click="choose(scope.$index)" v-if="scope.row.choose ==false">选择</el-button>
+                <span v-if="scope.row.choose ==true">
+                  <span class="blue">已选</span>
+                  <span class="em">|</span>
+                  <el-button type="text" @click="undo(scope.$index)">撤销</el-button>
+                </span>
+              </template>
+            </el-table-column>
+          </el-table>
       </div>
-      <el-table :data="addOrderTable" ref="multipleTable" class="ordertable" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun" :row-style="rowClass">
-        <!-- <el-table-column type="selection" width="55"></el-table-column> -->
-        <el-table-column prop="orderCode" label="订单ID" align="center"></el-table-column>
-        <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
-        <el-table-column prop="source" label="订单来源" align="center"></el-table-column>
-        <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-        <el-table-column prop="createTime" label="下单日期" align="center">
-          <template slot-scope="scope">
-            <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="yfje" label="已付金额" align="center"></el-table-column>
-        <el-table-column prop="syje" label="剩余开票金额" align="center"></el-table-column>
-        <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
-            <el-button type="text" @click="choose(scope.$index)" v-if="scope.row.choose ==false">选择</el-button>
-            <span v-if="scope.row.choose ==true">
-              <span class="blue">已选</span>
-              <span class="em">|</span>
-              <el-button type="text" @click="undo(scope.$index)">撤销</el-button>
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -135,7 +137,7 @@ export default {
    },
   data() {
     return {
-      dialogFormVisible :true,
+      dialogFormVisible :false,
       ruleForm:{
         unitPersonal:'1', // 单位/个人
         invoiceTitle:'', //发票抬头
@@ -184,11 +186,13 @@ export default {
       tableDate:[],
       tableDatebox:[],
       addOrderShow:false, // 添加订单弹窗
+      find:0,//没内容隐藏
       orderID:'', // 添加订单中订单ID
       merchantsName:'', // 添加订单中商户名称
       collectionNumber:'', // 添加订单中收款单号
       multipleSelection: [],   //选中的list
       addOrderTable:[],
+      newtabledate:[],
       collectionID:'',
       nape:0,
       residuePrice:0, // 获取添加订单剩余开票金额总和
@@ -257,36 +261,77 @@ export default {
       this.dialogFormVisible = false;
       this.residuePrice = 0 ;
       this.tableDate = [];
+      this.ruleNull();
+      this.$parent.pageList();
+       
+    },
+    ruleNull(){ // 清空内容
+            this.ruleForm= {
+                  unitPersonal:'1', // 单位/个人
+                  invoiceTitle:'', //发票抬头
+                  taxpayerNumber:'', // 纳税人识别号
+                  phone:'', // 手机号
+                  account:'', // 账号
+                  partCardBank:'', // 开户行
+                  address:'', // 地址
+                  invoicePrice:'', // 开票金额
+                  invoiceType:'1', // 发票类型
+                  invoiceProject:'1', // 发票项目
+                  }
     },
     closeApply(ruleForm){
-      for(let i in this.tableDate){
-          let cTime = moment(this.tableDate[i].createTime).format("YYYY-MM-DD");
-          this.tableDate[i].createTime = cTime
+        let myDate = new Date();
+        let mydatas = moment(myDate).format("YYYY-MM-DD HH:mm:ss");
+       for(let i in this.tableDate){
+         // let cTime = moment(this.tableDate[i].createTime).format("YYYY-MM-DD HH:mm:ss");
+        //  this.tableDate[i].createTime = cTime
+          this.newtabledate.push({
+            "orid":this.tableDate[i].orid,
+            "orderCode": this.tableDate[i].orderCode,
+            "collectionID": this.tableDate[i].collectionID,
+            "productName": this.tableDate[i].productName,
+            "source": this.tableDate[i].source,
+            "planID": this.tableDate[i].planID,
+            "createTime": this.tableDate[i].createTime,
+            "yfje": this.tableDate[i].yfje,
+            "syje": this.tableDate[i].syje,
+            "collectionType": this.tableDate[i].collectionType
+          })
          }
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insertapplicationreceipt",{
         "object": {
           "receipt":{
-                "ordelist":this.tableDate,//关联订单
-                "ordNum":this.tableDate.length,//关联订单个数
-                "userName":sessionStorage.getItem('userCode'),//申请人
+                "createTime":mydatas,
+                "invoiceType":ruleForm.unitPersonal,//单位个人
+                "invoiceID":ruleForm.invoiceType,//发票类型
+                "taxpayerIDNumber":ruleForm.taxpayerNumber,//纳税人识别号
+                "invoiceHeader":ruleForm.invoiceTitle,//发票抬头
+                "tel":ruleForm.phone,//手机号
+                "invoiceItem":ruleForm.invoiceProject,//发票项目
+                "invoicePrice":ruleForm.invoicePrice,//发票金额
                 "cardNumber":ruleForm.account,//账号
                 "bankName":ruleForm.partCardBank,//开户行
                 "address":ruleForm.address,//地址
-                "invoicePrice":ruleForm.invoicePrice,//发票金额
-                "invoiceHeader":ruleForm.invoiceTitle,//发票抬头
-                "tel":ruleForm.phone,//手机号
-                "invoiceItem":this.invoiceItem,//发票项目
-                "invoiceID":this.invoiceID,//发票类型
-                "taxpayerNumber":ruleForm.taxpayerNumber,//纳税人识别号
-                "invoiceType":ruleForm.unitPersonal,//单位个人
-        }
+                "userCode":sessionStorage.getItem('userCode'),//申请人
+                "cosList":this.newtabledate,//关联订单
+                },
+            "cosList":this.newtabledate
          
         },
       }).then(res => {
             if(res.data.isSuccess == true){
-                  this.$message.success("申请成功");
-              }else{
-                  this.$message.error("申请失败");
+                   this.$message.success("申请成功");
+                    this.dialogFormVisible = false;
+                    this.residuePrice = 0 ;
+                    this.tableDate = [];
+                    this.ruleNull();
+                    this.$parent.pageList();
+
+              }else if(res.data.isSuccess == false){
+                  this.$message({
+                        type: "warning",
+                        message: res.data.result.message
+                        }); 
               }
          
         })
@@ -295,7 +340,7 @@ export default {
         })
     },
     addOrder(orderCode = this.orderID , localCompName = this.merchantsName,collectionID = this.collectionNumber){
-      this.addOrderShow = true;
+     
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
         "object": {
           "orderCode":this.orderID,
@@ -312,14 +357,19 @@ export default {
           console.log(res)
         })
     },
+    addOrderopen(){
+      this.addOrderShow = true;
+   },
     orderSearch(){ // 添加订单搜索
       this.addOrder();
+       this.find = 1;
     },
     orderReset(){ // 添加订单重置
       this.orderID = '';
       this.merchantsName = '';
       this.collectionNumber = '';
       this.addOrder();
+      this.find = 0;
     },
     allChoose(row){ // 添加订单全选
       let arr = [...this.addOrderTable];
@@ -446,95 +496,7 @@ export default {
        
 
     },
-    insertInvoice(){ // 申请发票方法
-      this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insertapplicationreceipt",{
-                "object": {
-                    "receipt": {
-                      "id": 0,
-                      "createTime": "2020-02-26T11:49:26.673Z",
-                      "code": "string",
-                      "collectionID": 0,
-                      "accountGroupCode": "string",
-                      "invoiceNumber": "string",
-                      "invoiceID": 1,
-                      "invoiceType": 1,
-                      "taxpayerIDNumber": "string",
-                      "invoiceHeader": "string",
-                      "tel": "string",
-                      "invoiceItem": 1,
-                      "invoicePrice": 0,
-                      "cardNumber": "string",
-                      "bankName": "string",
-                      "address": "string",
-                      "collectionType": 1,
-                      "localCompName": "string",
-                      "endTime": 0,
-                      "state": 1,
-                      "jqUserOrUserOrLocalCompID": 0,
-                      "ordNum": 0,
-                      "selStartCreateTime": 0,
-                      "selEndCreateTime": 0,
-                      "selStartGrantTime": 0,
-                      "selEndGrantTime": 0,
-                      "parentID": 0,
-                      "isDisplay": 0,
-                      "ordelist": [
-                        {
-                          "id": 0,
-                          "orderCode": "string",
-                          "collectionID": 0,
-                          "isDeleted": 0,
-                          "createTime": "2020-02-26T11:49:26.673Z",
-                          "title": "string",
-                          "groupCode": "string",
-                          "orderCreateTime": 0,
-                          "skPrice": 0,
-                          "kpPrice": 0,
-                          "guidCode": "string",
-                          "ypPrice": 0,
-                          "collectionPrice": 0,
-                          "orgID": 0,
-                          "useID": 0
-                        }
-                      ],
-                      "guidCode": "string",
-                      "userName": "string",
-                      "userCode": sessionStorage.getItem("userCode"),
-                      "hpid": 0,
-                      "oldInvoiceNumber": "string",
-                      "receiptType": 0
-                    },
-                    "cosList": [
-                      {
-                        "orid": 0,
-                        "orderCode": "string",
-                        "collectionID": 0,
-                        "productName": "string",
-                        "source": "string",
-                        "planID": 0,
-                        "groupCode": "string",
-                        "createTime": 0,
-                        "yfje": 0,
-                        "syje": 0,
-                        "collectionType": 0
-                      }
-                    ]
-                  }
-              })
-              .then(res => {
-                if(res.data.isSuccess == true){
-                   
-                }else{
-                   this.$message.error("申请失败");
-                }
-            })
-          } else {
-            return false;
-          }
-      });
-    },
+    
   }
 };
 </script>
