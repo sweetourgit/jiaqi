@@ -118,7 +118,7 @@
           <el-table-column prop="title" label="产品名称" align="center"></el-table-column>
           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
           <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center"></el-table-column>
-          <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column>
+          <el-table-column prop="coPrice" label="已付金额" align="center"></el-table-column>
           <el-table-column prop="skPrice" label="剩余开票金额" align="center"></el-table-column>
         </el-table>
       </div>
@@ -143,41 +143,41 @@
         <div class="aggregate">总计:<span>{{sum | numFilter}}</span>元</div>
       </div>
       <el-table :data="invoiceDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column v-if="title == '换票'" label="原票号" align="center":key="1">
+        <el-table-column v-if="title == '换票'" label="原票号" align="center" :key="1">
           <template slot-scope="scope">
             <span>{{originalBanks}}</span>
           </template>
         </el-table-column>
         <!-- <el-table-column prop="oldInvoiceNumber" v-if="title == '换票'" label="原票号" align="center"></el-table-column> -->
-        <el-table-column v-if="title == '开票'" label="发票抬头" align="center":key="2">
+        <el-table-column v-if="title == '开票'" label="发票抬头" align="center" :key="2">
           <template slot-scope="scope">
             <span>{{invoiceHeader}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center":key="3"></el-table-column>
-        <el-table-column prop="tel" label="电话" align="center":key="4"></el-table-column>
-        <el-table-column prop="cardNumber" label="账号" align="center":key="5"></el-table-column>
-        <el-table-column prop="address" label="地址" align="center":key="6"></el-table-column>
-        <el-table-column prop="bankName" label="开户行" align="center":key="7"></el-table-column>
-        <el-table-column prop="invoiceHeader" v-if="title == '换票'" label="发票抬头" align="center" min-width="150":key="8">
+        <el-table-column prop="taxpayerIDNumber" v-if="title == '开票'" label="纳税人识别号" align="center" :key="3"></el-table-column>
+        <el-table-column prop="tel" label="电话" align="center" :key="4"></el-table-column>
+        <el-table-column prop="cardNumber" label="账号" align="center" :key="5"></el-table-column>
+        <el-table-column prop="address" label="地址" align="center" :key="6"></el-table-column>
+        <el-table-column prop="bankName" label="开户行" align="center" :key="7"></el-table-column>
+        <el-table-column prop="invoiceHeader" v-if="title == '换票'" label="发票抬头" align="center" min-width="150" :key="8">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoiceHeader" class="w150"></el-input>
             <div class="validation" v-if="scope.row.invoiceHeader == '' && a == true">发票抬头不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="150":key="9">
+        <el-table-column prop="taxpayerIDNumber" v-if="title == '换票'" label="纳税人识别号" align="center" min-width="150" :key="9">
           <template slot-scope="scope">
             <el-input v-model="scope.row.taxpayerIDNumber" class="w150"></el-input>
             <!-- <div class="validation" v-if="scope.row.taxpayerIDNumber == '' && a == true">纳税人识别号不能为空</div> -->
           </template>
         </el-table-column>
-        <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="150":key="10">
+        <el-table-column prop="invoicePrice" label="发票金额" align="center" min-width="150" :key="10">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoicePrice" class="w150" @blur="invoiceSum()" @input="clearNoNum(scope.$index,scope.row.invoicePrice)"></el-input>
             <div class="validation" v-if="scope.row.invoicePrice == '' && a == true">发票金额不能为空</div>
           </template>
         </el-table-column>
-        <el-table-column label="发票号码" align="center" min-width="150":key="11">
+        <el-table-column label="发票号码" align="center" min-width="150" :key="11">
           <template slot-scope="scope">
             <el-input v-model="scope.row.invoiceNumber" class="w150"></el-input>
             <div class="validation" v-if="scope.row.invoiceNumber == '' && a == true">发票号码不能为空</div>
@@ -191,13 +191,13 @@
         <div class="aggregate">总计:<span>{{ sum_01 | numFilter}}</span>元</div>
       </div>
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="orderCode" label="订单编号" align="center":key="12"></el-table-column>
-        <el-table-column prop="title" label="产品名称" align="center":key="13"></el-table-column>
-        <el-table-column prop="groupCode" label="团期计划" align="center":key="14"></el-table-column>
+        <el-table-column prop="orderCode" label="订单编号" align="center" :key="12"></el-table-column>
+        <el-table-column prop="title" label="产品名称" align="center" :key="13"></el-table-column>
+        <el-table-column prop="groupCode" label="团期计划" align="center" :key="14"></el-table-column>
         <el-table-column prop="orderCreateTime" :formatter='dateFormat' label="下单日期" align="center":key="15"></el-table-column>
         <!-- <el-table-column prop="kpPrice" label="已付金额" align="center"></el-table-column> -->
-        <el-table-column prop="coPrice" label="已付金额" align="center":key="16"></el-table-column>
-        <el-table-column prop="skPrice" label="剩余开票金额" align="center":key="17"></el-table-column>
+        <el-table-column prop="coPrice" label="已付金额" align="center" :key="16"></el-table-column>
+        <el-table-column prop="skPrice" label="剩余开票金额" align="center" :key="17"></el-table-column>
       </el-table>
     </el-dialog>
   </div> 
