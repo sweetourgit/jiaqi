@@ -7,7 +7,8 @@ export default{
     collectionNumDirect: 0,
     collectionNumSame: 0,
     collectionNumInner: 0,
-    collectionNumReimburse: 0
+    collectionNumReimburse: 0,
+    showSheetWhichTab: 'sheetTeam'  // 报账单的tab
   },
   mutations:{
     referDoneAllShowWhichTab(state, data){
@@ -18,6 +19,9 @@ export default{
     },
     showCollectionTab(state, data){
       state.collectionWhichTab = data
+    },
+    showSheetTab(state, data){ // 报账单的tab
+      state.showSheetWhichTab = data
     },
     updateCollectionDirectNum(state, data){
       state.collectionNumDirect = data

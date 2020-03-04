@@ -84,7 +84,7 @@
     methods: {
       handleJumpDetail(index, row){
         let getCurrentPaymentID = row.id
-        this.$router.push({ path: "/checkSheetDetail/team", query: {id: getCurrentPaymentID} })
+        this.$router.push({ path: "/checkSheetDetail/team", query: {id: getCurrentPaymentID, comeFrom: 'processed'} })
       },
     }
   }

@@ -360,7 +360,6 @@
     created(){
       let passPaymentID = this.$route.query.doneDetailPaymentID
       this.keepComponentName = this.$route.query.componentName
-      console.log(this.keepComponentName)
       this.keepPaymentId = passPaymentID
       this.getLabel(passPaymentID);
       //    this.getOrder(this.refundList.orderID);

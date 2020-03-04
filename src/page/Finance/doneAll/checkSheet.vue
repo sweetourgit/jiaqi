@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-tabs :tab-position="tabPosition">
+    <el-tabs v-model="tabSheetShowWhich" :tab-position="tabPosition">
       <el-tab-pane :label="'跟团游(' + approveCountSheetTeam +')'" name="sheetTeam">
         <check-sheet-team ref="sheetTeam" :whereSheetTab="whereSheetTab" @handlePassVal="approveTableDataSheet"></check-sheet-team>
       </el-tab-pane>
@@ -15,8 +15,9 @@
     data() {
       return {
         tabPosition: 'left',
+        tabSheetShowWhich: 'sheetTeam',
         approveCountSheetTeam:0,
-        whereSheetTab:'borrow',
+        whereSheetTab:'sheetTeam',
       }
     },
     props:{
@@ -25,10 +26,12 @@
     components: {
       checkSheetTeam
     },
+    created() {
+      this.tabSheetShowWhich = this.$store.state.doneAll.showSheetWhichTab
+    },
     watch: {
       tabChange: function(val, oldVal){
         if(val === 'sheet'){
-          console.log(val)
           this.$refs.sheetTeam.approveTableList(val)
         }
       }
