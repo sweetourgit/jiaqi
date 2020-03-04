@@ -202,7 +202,8 @@ export default {
         })
         this.workItemID = workItemID;
         this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { // 通过GUID查找退款列表代办
-          "guid": getJqId
+          "guid": getJqId,
+          "type":0 // 查看代办  0代办，1已办
         }).then(obj =>{
           this.tableDate = obj.data.objects;
           this.total = obj.data.objects.length;
