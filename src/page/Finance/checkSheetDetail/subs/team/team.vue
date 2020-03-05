@@ -177,16 +177,19 @@ export default {
     /**
      * @type1 : 来自团期计划，会携带 planID 和 isCheckSheet
      * @type2 : 来自报账单，会携带 id:报账单id / tab:来自报账单的all还是mine / conditions:报账单的搜索条件
+     * @type3 : 来自已办，会携带comeFrom
      */
     choosePageType(){
       let { path, query }= this.$route;
-      let { id, planID, isCheckSheet, tab, conditions, workItemID, guid }= query;
+      let { id, planID, isCheckSheet, tab, conditions, workItemID, guid,
+        comeFrom
+      }= query;
       this.cacheConditions= conditions;
       this.isFromCheckSheet= tab? true: false;
-      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID, guid } });
+      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID, guid, comeFrom } });
       if(isCheckSheet=== '0') return 'add';
       // 如果[ isCheckSheet 不为 undefined ]或者[ tab 是 all ] 只能查看
-      if(!this.$isNull(isCheckSheet) || tab=== 'all') return 'normal';
+      if(!this.$isNull(isCheckSheet) || tab=== 'all' || comeFrom ) return 'normal';
       return 'mine';
     },
 
@@ -230,7 +233,18 @@ export default {
     },
 
     backPage(){
-      let { tab }= this.$route.query;
+      let { 
+        tab,
+        comeFrom
+      }= this.$route.query;
+      
+      // 来自已办的逻辑
+      if(comeFrom){
+        this.$store.commit('doneAll/referDoneAllShowWhichTab', 'sheet'); 
+        this.$store.commit('doneAll/showSheetTab', 'sheetTeam');
+        return this.$router.replace({ path: '/doneAll/list' });
+      }
+      
       this.isFromCheckSheet?
         this.$router.replace({ path: '/checkSheet/team', query: { tab, conditions: this.cacheConditions }})
           : this.$router.replace({ path: '/regimentPlan/teamPlanList' });  
