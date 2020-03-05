@@ -3,7 +3,7 @@
     <el-dialog title="申请发票管理" :visible="dialogFormVisible"    style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd()">
       <div class="cancel">
         <el-button class="ml13" @click="closeAdd()">取 消</el-button>
-        <el-button class="ml13" type="primary" @click="closeApply(ruleForm)">申 请</el-button>
+        <el-button class="ml13" type="primary" @click="closeApply(ruleForm)" :loading="loadingbut">{{loadingbuttext}}</el-button>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="110px" class="demo-ruleForm invoice">
         <div class="fl w500">
@@ -197,6 +197,8 @@ export default {
       nape:0,
       residuePrice:0, // 获取添加订单剩余开票金额总和
       residuePD:0,//选择后的总价格
+      loadingbut:false,//审核提交加载中
+	    loadingbuttext:'申 请',
     };
   },
   filters: {
@@ -301,10 +303,12 @@ export default {
           if(ruleForm.invoicePrice > this.residuePD ){
                     this.$message({
                       type: "warning",
-                      message: "申请开发票金额小于剩余金额 重新填写开票金额"
+                      message: "申请开发票金额大于剩余金额 重新填写开票金额"
                       }); 
                       return;
             }
+            this.loadingbut = true;
+				    this.loadingbuttext = '申请中...';
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insertapplicationreceipt",{
         "object": {
           "receipt":{
@@ -333,6 +337,8 @@ export default {
                     this.tableDate = [];
                     this.ruleNull();
                     this.$parent.pageList();
+                    this.loadingbut = false;
+				            this.loadingbuttext = '申 请';
 
               }else if(res.data.isSuccess == false){
                   this.$message({
