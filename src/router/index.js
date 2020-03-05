@@ -300,8 +300,25 @@ export default new Router({
             keepAlive: true,
             auth: true
           },
+        },
+        {
+          path: 'productLiner',
+          name: '邮轮',
+          component: () => import('@/page/productManagement/productList/tab/productLiner'),
+          meta: {
+            keepAlive: true,
+            auth: true
+          },
         }
       ]
+    }, {
+      path: '/productLiner/liner',
+      component: () => import('@/page/productManagement/liner/linerAdd'),
+      name: '邮轮/ 添加',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
     }, {
       path: '/listInfo',
       component: () => import('@/page/productManagement/listInfo/listInfo'),
