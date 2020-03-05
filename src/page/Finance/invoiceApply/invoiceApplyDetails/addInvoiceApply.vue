@@ -298,10 +298,10 @@ export default {
             "collectionType": this.tableDate[i].collectionType
           })
          }
-          if(ruleForm.invoicePrice > this.residuePrice ){
+          if(ruleForm.invoicePrice < this.residuePrice ){
                     this.$message({
                       type: "warning",
-                      message: "重新填写开票金额"
+                      message: "申请开发票金额小于剩余金额 重新填写开票金额"
                       }); 
                       return;
             }
