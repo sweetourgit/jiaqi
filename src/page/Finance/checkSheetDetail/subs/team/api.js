@@ -133,3 +133,19 @@ export const saveChcektype= function(object){
     })
   })
 }
+
+export const getFlowFinishedList= function(jq_id){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.jqUrl+ '/JQ/GetWorkItemFinishedList',
+      {
+        jq_id, jq_Type: 5
+      }
+    ).then((res) => {
+      let { statusText, data }= res;
+      if(statusText!== "OK") throw '获取审批列表失败';
+      return resolve(data);
+    }).catch((err) => {
+      reject(err);
+    })
+  }) 
+}

@@ -251,29 +251,8 @@ table{
           <td class="base label" style="width:15%;">
             <div class="cell">审批人</div>
           </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">计调</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
-          </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">部门经理</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
-          </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">财务部</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
-          </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">总经理</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
+          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;width: 85%;">
+            <div class="cell" style="text-align: left;padding-left: 5%; font-weight: bold;">{{ finishedListStr }}</div>
           </td>
         </tr>
         <tr>
@@ -358,6 +337,7 @@ export default {
         expenseSum: 0, // 总支出
         profitSum: 0, // 毛利额
         profitRate: 0, // 毛利率
+        finishedListStr: ''
       },
       {
         pd: {},  // printData缩写
@@ -368,7 +348,8 @@ export default {
 
   methods: {
     init(printData, pageType){
-      let { incomes, expenses, otherIncomes, ...pdData }= printData;
+      let { incomes, expenses, otherIncomes, finishedList, ...pdData }= printData;
+      if(finishedList) this.finishedListStr= this.getFinishedListStr(finishedList);
       this.pageType= pageType;
       this.pd= pdData;
       this.incomes= incomes;
@@ -473,6 +454,11 @@ export default {
         this.expenses.push(...result);
         this.changeHandler();
       })
+    },
+
+    getFinishedListStr(finishedList){
+      console.log(finishedList.map(finished => finished.participantName).join(" >> "))
+      return finishedList.map(finished => finished.participantName).join(" >> ");
     }
   }
 }
