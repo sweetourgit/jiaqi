@@ -325,6 +325,7 @@ export default {
                 "address":ruleForm.address,//地址
                 "userCode":sessionStorage.getItem('userCode'),//申请人
                 "cosList":this.newtabledate,//关联订单
+                "receiptType":2,//发票申请
                 },
             "cosList":this.newtabledate
          

@@ -584,7 +584,7 @@ export default {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
-      //console.log(item,'叭叭叭')
+      console.log(item,'叭叭叭')
       if (this.showContent != index) {
         this.showContent = index;
         this.tour = {};
