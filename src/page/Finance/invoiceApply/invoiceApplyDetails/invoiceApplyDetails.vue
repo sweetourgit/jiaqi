@@ -5,7 +5,7 @@
       @close="cancelInfoOrder()">
       <div class="controlButton">
         <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
-        <el-button class="ml13" v-if="invoiceList.state!='3'" type="primary" @click="rejectedIncoice(invoiceID)">撤销</el-button>
+        <el-button class="ml13" v-if="invoiceList.state!='3'" type="primary" :loading="loadingbut" @click="rejectedIncoice(invoiceID)">撤销</el-button>
      
       </div>
       <div class="planBorder">
@@ -235,6 +235,7 @@ export default {
       sum:0,//发票金额的总和
       sum_01:0,
       invoiceHeader:'',
+      loadingbut:false,//提交撤销加载中
     };
 
   },
@@ -330,6 +331,7 @@ export default {
          type: "warning"
       })
       .then(res => {
+         this.loadingbut = true;
         this.$http.post(this.GLOBAL.serverSrc + '/finance/Receipt/api/RevokeReceipt',{
            "id": ID,
            "userCode": sessionStorage.getItem('userCode'),//申请人
@@ -339,6 +341,7 @@ export default {
              this.$message.success("撤销成功");
              this.$parent.pageList();
              this.dialogFormOrder = false;
+              this.loadingbut = false;
             }else{
               this.$message.error("撤销失败");
             }
