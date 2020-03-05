@@ -91,7 +91,7 @@
  * 2. 通过 /checkSheetDetail 进入，携带有财务报账单进入此页面时的tab和搜索条件等状态
  */
 
-import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ, endForJQ, saveChcektype } from './api'
+import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ, endForJQ, saveChcektype, getFlowFinishedList } from './api'
 import printGround from './comps/printGround/printGround'
 import approvalForm from './comps/approvalForm'
 import BackupMixin from './BackupMixin.js'
@@ -142,18 +142,36 @@ export default {
     // 需要我审批
     mineInit(){
       let { id }= this.$route.query;
+      let payload;
       getCheckSheetByID(id)
-      .then(res => this.$refs.printGround.init(res, this.type))
+      .then(res => {
+        payload= res;
+        let { guid }= res;
+        return getFlowFinishedList(guid)
+      })
+      .then(res => {
+        Object.assign(payload, { finishedList: res });
+        this.$refs.printGround.init(payload, this.type)
+      })
     },
 
     // 普通
     normalInit(){
       let { id, planID }= this.$route.query;
+      let payload;
       new Promise((resolve, reject) => {
         if(id) return resolve(getCheckSheetByID(id));
         if(planID) return resolve(getCheckSheetByPlanID(planID));
       })
-      .then(res => this.$refs.printGround.init(res, this.type))
+      .then(res => {
+        payload= res;
+        let { guid }= res;
+        return getFlowFinishedList(guid)
+      })
+      .then(res => {
+        Object.assign(payload, { finishedList: res });
+        this.$refs.printGround.init(payload, this.type)
+      })
     },
 
     /**
