@@ -29,6 +29,25 @@
         </div>
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
+            <el-col :span="7"><div class="grid-del label-color">团期计划</div></el-col>
+            <el-col :span="17"><div class="grid-del">{{ orderList.groupCode }}</div></el-col>
+          </el-col>
+          <el-col :span="6">
+            <el-col :span="7"><div class="grid-del label-color">下单时间:</div></el-col>
+            <el-col :span="17"><div class="grid-del">{{ moment(orderList.createTime).format("YYYY-MM-DD") }}</div></el-col>
+          </el-col>
+          <el-col :span="6">
+            <el-col :span="7"><div class="grid-del label-color">平台:</div></el-col>
+            <el-col :span="17">
+              <div class="grid-del">
+                <div v-if="orderList.platform=='1'" class="fl ml13">ERP系统</div>
+                <div v-if="orderList.platform=='2'" class="fl ml13">同业系统</div>
+              </div>
+            </el-col>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around">
+          <el-col :span="6">
             <el-col :span="7"><div class="grid-del label-color">订单总额:</div></el-col>
             <el-col :span="17"><div class="grid-del">{{ orderList.payable | numFilter }}</div></el-col>
           </el-col>
@@ -126,31 +145,13 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
-            <el-col :span="7"><div class="grid-del label-color">平台:</div></el-col>
-            <el-col :span="17">
-              <div class="grid-del">
-                <div v-if="orderList.platform=='1'" class="fl ml13">ERP系统</div>
-                <div v-if="orderList.platform=='2'" class="fl ml13">同业系统</div>
-              </div>
-            </el-col>
-          </el-col>
-          <el-col :span="6">
             <el-col :span="7"><div class="grid-del label-color">支付方式:</div></el-col>
             <el-col :span="17"><div class="grid-del">{{ 0 }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="7"><div class="grid-del label-color">团期计划</div></el-col>
-            <el-col :span="17"><div class="grid-del">{{ orderList.groupCode }}</div></el-col>
-          </el-col>
-        </el-row>
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="7"><div class="grid-del label-color">下单时间:</div></el-col>
-            <el-col :span="17"><div class="grid-del">{{ moment(orderList.createTime).format("YYYY-MM-DD") }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
             <el-col :span="7"><div class="grid-del label-color"></div></el-col>
-            <el-col :span="17"><div class="grid-del"></div></el-col>
+            <el-col :span="17">
+            </el-col>
           </el-col>
           <el-col :span="6">
             <el-col :span="7"><div class="grid-del label-color"></div></el-col>

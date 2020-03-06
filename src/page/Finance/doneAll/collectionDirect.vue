@@ -24,7 +24,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="状态:">
+            <el-form-item label="状态:" prop="checkType">
               <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" style="width: 100%;">
                 <el-option label="驳回" value="6"></el-option>
                 <el-option label="通过" value="5"></el-option>
