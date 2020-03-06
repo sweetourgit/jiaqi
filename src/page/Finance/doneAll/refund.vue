@@ -48,7 +48,6 @@
       <el-table-column prop="allRefundPrice" label="退款金额" align="center"></el-table-column>
       <el-table-column prop="realRefundPrice" label="实际退款金额" align="center"></el-table-column>
       <el-table-column prop="name" label="申请人" align="center"></el-table-column>
-      <el-table-column prop="" label="审批意见" align="center"></el-table-column>
       <el-table-column label="操作" width="150" align="center">
         <template slot-scope="scope">
           <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
@@ -93,7 +92,8 @@
     methods: {
       handleJumpDetail(index, row){
         let getCurrentPaymentID = row.id
-        this.$router.push({ path: "/doneAll/refundDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'refund'} })
+        let getCurrentGuid = row.orderCode
+        this.$router.push({ path: "/doneAll/refundDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'refund', optionsGuid: getCurrentGuid} })
       },
     }
   }

@@ -76,10 +76,10 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <el-row type="flex" class="row-bg row-content" justify="space-between">
       <el-table :data="examineData" border :header-cell-style="getRowClass" v-loading="listLoading">
-        <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
-        <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-        <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-        <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
+        <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
+        <el-table-column prop="name" label="审批人" align="center"></el-table-column>
+        <el-table-column prop="typeStr" label="审批结果" align="center"></el-table-column>
+        <el-table-column prop="opinions" label="审批意见" align="center"></el-table-column>
       </el-table>
     </el-row>
   </div>
@@ -98,7 +98,7 @@
         examineData: [],
         getApproveListGuid: null,
         keepBackContent: null,
-        keepComponentName: null
+        keepComponentName: null,
       }
     },
     mixins:[common],
@@ -116,12 +116,12 @@
       auditResult(paramsGuid) {
         this.listLoading = true
         var that =this
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetOpinions', {
           jQ_ID: paramsGuid,
           jQ_Type: 3,
         }).then(obj => {
           that.examineData = []
-          that.examineData = obj.data.extend.instanceLogInfo;
+          that.examineData = obj.data;
           this.listLoading = false
         }).catch(obj => {})
       },

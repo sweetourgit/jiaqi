@@ -37,8 +37,8 @@
             <el-col :span="17"><div class="grid-del">{{ orderList.paid | numFilter }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="9"><div class="grid-del label-color">订单ID:</div></el-col>
-            <el-col :span="15"><div class="grid-del">{{ orderList.orderCode }}</div></el-col>
+            <el-col :span="7"><div class="grid-del label-color">订单ID:</div></el-col>
+            <el-col :span="17"><div class="grid-del">{{ orderList.orderCode }}</div></el-col>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around">
@@ -51,8 +51,8 @@
             <el-col :span="17"><div class="grid-del">{{ orderList.pod }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="9"><div class="grid-del label-color">目的地:</div></el-col>
-            <el-col :span="15"><div class="grid-del ">{{ orderList.destination }}</div></el-col>
+            <el-col :span="7"><div class="grid-del label-color">目的地:</div></el-col>
+            <el-col :span="17"><div class="grid-del ">{{ orderList.destination }}</div></el-col>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around">
@@ -65,8 +65,8 @@
             <el-col :span="17"><div class="grid-del">{{ orderList.contactTel }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="9"><div class="grid-del label-color">产品类型:</div></el-col>
-            <el-col :span="15">
+            <el-col :span="7"><div class="grid-del label-color">产品类型:</div></el-col>
+            <el-col :span="17">
               <div class="grid-del">
                 <div v-if="orderList.productType=='1'" class="fl ml13">跟团游</div>
                 <div v-if="orderList.productType=='2'" class="fl ml13">自由行</div>
@@ -86,8 +86,8 @@
             <el-col :span="17"><div class="grid-del">{{ orderList.number }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="9"><div class="grid-del label-color">其他费用:</div></el-col>
-            <el-col :span="15"><div class="grid-del">{{ orderList.otherPrice }}</div></el-col>
+            <el-col :span="7"><div class="grid-del label-color">其他费用:</div></el-col>
+            <el-col :span="17"><div class="grid-del">{{ orderList.otherPrice }}</div></el-col>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around">
@@ -100,8 +100,8 @@
             <el-col :span="17"><div class="grid-del">{{ orderList.indirectSale }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="9"><div class="grid-del label-color">订单来源:</div></el-col>
-            <el-col :span="15">
+            <el-col :span="7"><div class="grid-del label-color">订单来源:</div></el-col>
+            <el-col :span="17">
               <div class="grid-del">
                 <div v-if="orderList.orderChannel=='1'" class="fl ml13">同业</div>
                 <div v-if="orderList.orderChannel=='2'" class="fl ml13">线上直客</div>
@@ -120,8 +120,8 @@
             <el-col :span="17"><div class="grid-del">{{ orderList.op }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="9"><div class="grid-del label-color">商户销售:</div></el-col>
-            <el-col :span="15"><div class="grid-del">{{ orderList.saler }}</div></el-col>
+            <el-col :span="7"><div class="grid-del label-color">商户销售:</div></el-col>
+            <el-col :span="17"><div class="grid-del">{{ orderList.saler }}</div></el-col>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around">
@@ -139,8 +139,22 @@
             <el-col :span="17"><div class="grid-del">{{ 0 }}</div></el-col>
           </el-col>
           <el-col :span="6">
-            <el-col :span="9"><div class="grid-del label-color"></div></el-col>
-            <el-col :span="15"><div class="grid-del"></div></el-col>
+            <el-col :span="7"><div class="grid-del label-color">团期计划</div></el-col>
+            <el-col :span="17"><div class="grid-del">{{ orderList.groupCode }}</div></el-col>
+          </el-col>
+        </el-row>
+        <el-row type="flex" class="row-bg" justify="space-around">
+          <el-col :span="6">
+            <el-col :span="7"><div class="grid-del label-color">下单时间:</div></el-col>
+            <el-col :span="17"><div class="grid-del">{{ moment(orderList.createTime).format("YYYY-MM-DD") }}</div></el-col>
+          </el-col>
+          <el-col :span="6">
+            <el-col :span="7"><div class="grid-del label-color"></div></el-col>
+            <el-col :span="17"><div class="grid-del"></div></el-col>
+          </el-col>
+          <el-col :span="6">
+            <el-col :span="7"><div class="grid-del label-color"></div></el-col>
+            <el-col :span="17"><div class="grid-del"></div></el-col>
           </el-col>
         </el-row>
       </div>
@@ -157,6 +171,7 @@
 </template>
 
 <script>
+  import moment from 'moment'
   export default {
     name: "orderDetails",
     props: {
@@ -190,6 +205,7 @@
     created () {
     },
     methods: {
+      moment,
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
