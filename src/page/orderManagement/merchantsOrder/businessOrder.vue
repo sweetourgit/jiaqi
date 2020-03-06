@@ -325,7 +325,7 @@
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></orderRefund>
+      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType"></orderRefund>
     </div>
   </div>
 </template>
@@ -345,7 +345,7 @@ export default {
   },
   data() {
     return {
-      orderRefundDialog: 0,//退款控制显示隐藏的 
+      // orderRefundDialog: 0,//退款控制显示隐藏的 
       defaultProps: {
         children: "children",
         label: "label"
@@ -1081,30 +1081,35 @@ export default {
     //},
     operation(item, i, orderCode) {
       this.orderId = item.id;
-      this.variable++;
       this.dialogType = i;
       this.planID = item.planID;
+      console.log(i);
       if(i == 5) {
         //判断订单是否有记录
-         this.variable = 0;
          this.$http
         .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
          id: this.orderId
          })
         .then(res => {
           if (res.data.isExist == true) {
+              this.variable = 0;
               this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
-              return false;
-           }else{
-               this.variable++;
+               return;
+           } else{
+              this.variable++;
            }
         })
         .catch(err => {
           console.log(err);
         });
-          
-       //this.orderRefundDialog = 1
+       
+      }else{
+        this.variable++;
       }
+      
+      
+      console.log( this.variable,'+++');
+     
     },
 
     // 出发日期转换格式显示

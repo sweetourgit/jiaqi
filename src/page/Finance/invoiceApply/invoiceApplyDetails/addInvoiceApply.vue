@@ -262,6 +262,7 @@ export default {
     closeAdd(){
       this.dialogFormVisible = false;
       this.residuePrice = 0 ;
+      this.residuePD = 0 ;
       this.tableDate = [];
       this.ruleNull();
       this.$parent.pageList();
@@ -335,7 +336,9 @@ export default {
                    this.$message.success("申请成功");
                     this.dialogFormVisible = false;
                     this.residuePrice = 0 ;
+                    this.residuePD = 0 ;
                     this.tableDate = [];
+                    this.newtabledate = [];
                     this.ruleNull();
                     this.$parent.pageList();
                     this.loadingbut = false;
@@ -454,6 +457,7 @@ export default {
     closeOrderShow(){ // 关闭添加订单弹窗
       this.addOrderShow = false;
       this.residuePrice = 0 ;
+      this.newtabledate = [];
       this.orderID = '';
       this.merchantsName = '';
       this.collectionNumber = '';

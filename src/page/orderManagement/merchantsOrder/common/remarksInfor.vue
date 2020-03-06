@@ -91,6 +91,7 @@ export default {
     close() {
       this.dialogFormMark = false;
       this.$refs["markFormAdd"].resetFields();
+      this.$parent.variable = 0;
     },
     orderGetFun(orderId,orderCode) {
 
