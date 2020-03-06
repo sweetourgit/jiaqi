@@ -26,13 +26,14 @@
           <el-form-item label="消费：" prop="area" label-width="140px">
             <el-input v-model="ruleForm.money" class="inputWidth" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="开放时间：" prop="window" label-width="140px">
-              <el-date-picker v-model="ruleForm.openTime" type="date" placeholder="结束日期" class="inputWidth" :editable="disabled"></el-date-picker>
+          <el-form-item label="开放时间：" prop="openTime" label-width="140px">
+            <el-time-picker v-model="ruleForm.openTime" placeholder="开放时间"></el-time-picker>
+              <!-- <el-date-picker v-model="ruleForm.openTime" type="date" placeholder="结束日期" class="inputWidth" :editable="disabled"></el-date-picker> -->
           </el-form-item>
           <el-form-item label="简介：" prop="introduction" label-width="140px">
             <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea"></el-input>
           </el-form-item>
-          <el-form-item label="图片：" label-width="140px" required>
+          <el-form-item label="图片：" label-width="140px">
             <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -64,7 +65,8 @@
           introduction: ''
         },
         rules: {
-          company: [{ required: true, message: '邮轮公司不能为空!', trigger: 'change' }]
+          foodType: [{ required: true, message: '类型不能为空!', trigger: 'change' }],
+          name: [{ required: true, message: '名称不能为空!', trigger: 'blur' }]
         },
         fileList1: [], // 图片文件
         topTitle: '添加',
@@ -141,7 +143,7 @@
             
             let fileArr = [];
             if(that.fileList1.length == 0){
-              that.$message.warning("图片不能为空！");
+              // that.$message.warning("图片不能为空！");
             }else{
               that.fileList1.forEach(function (item, index, arr) {
                 fileArr.push({

@@ -5,7 +5,7 @@
       <el-button class="el-button" type="primary" @click="saveFun(2)">下一步</el-button>
       <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
     </div>
-    <el-button type="warning" @click='addCabin'>添加</el-button>
+    <el-button type="warning" @click='addCabin' class="addBtn">添加</el-button>
     <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column prop="id" label="类型" align="center">
         <template slot-scope="scope"> 
@@ -93,8 +93,26 @@ export default {
       }
     },
     cancalBtn(){
-      this.$router.back();
-      localStorage.removeItem('liner_id', res.data.data.liner_id);
+      const that = this;
+      this.$confirm("是否取消本次添加?", "提示", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "退出并保存",
+        cancelButtonText: "退出并删除",
+        type: "warning"
+      }).then(() => {
+        that.saveFun(1);
+      }).catch( action => {
+        if(action === 'cancel'){
+          this.$router.push({
+            path: '/cruiseShip/cruiseShipDetail',
+            name: '邮轮管理/详情',
+            query: {
+              "id": this.$route.query.id
+            }
+          });
+          localStorage.removeItem('liner_id');
+        }
+      });
     },
     saveFun(type){
       const that = this;
@@ -112,7 +130,14 @@ export default {
           });
           if(type == '1'){
             // alert('保存');
-            that.$router.back();
+            // that.$router.back();
+            that.$router.push({
+              path: '/cruiseShip/cruiseShipDetail',
+              name: '邮轮管理/详情',
+              query: {
+                "id": that.$route.query.id
+              }
+            });
             localStorage.removeItem('liner_id');
           }else if(type == '2'){
             // alert('下一步');
@@ -186,7 +211,11 @@ export default {
           that.tableData = response.data.data.list;
           that.total = response.data.data.list.length;
           that.tableData.forEach(function(item, index, arr){
-            item.opening_hours = formatDate(new Date(item.opening_hours)).split(" ")[0];
+            item.opening_hours = formatDate(new Date(item.opening_hours)).split(" ")[1];
+
+            item.pics.forEach(function(item, index, arr){
+              item.url = that.GLOBAL.serverSrcYL + item.pic_url;
+            })
           })
         } else {
           if(response.data.message){
@@ -218,6 +247,10 @@ export default {
       float: right;
       margin-right: 18px;
     }
+  }
+  .addBtn{
+    display: block;
+    margin: 16px 0;
   }
   .block{
     display: block;
