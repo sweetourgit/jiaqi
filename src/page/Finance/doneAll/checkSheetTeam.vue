@@ -38,7 +38,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="teamProTitle" label="产品名称" align="center"></el-table-column>
-      <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+      <el-table-column prop="userName" label="申请人" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请时间" width="180" align="center"></el-table-column>
       <el-table-column label="操作" width="150" align="center">
         <template slot-scope="scope">
