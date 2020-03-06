@@ -272,6 +272,12 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,5)"
               >退款</el-breadcrumb-item>
+              <el-breadcrumb-item
+                v-if="item.orderStatus == '订单完成' "
+                class="breadCrumbPointer"
+                @click.native="operation(item,6,item.orderCode)"
+              >发票申请</el-breadcrumb-item>
+              
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
@@ -325,13 +331,16 @@
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
+      <order-invoiceApply :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-invoiceApply>
       <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType"></orderRefund>
+     
     </div>
   </div>
 </template>
 
 <script>
 import processManage from "./common/processManage";
+import invoiceApply from "./common/invoiceApply";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
 import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
@@ -341,6 +350,7 @@ export default {
     "process-manage": processManage,
     "remarks-infor": remarksInfor,
     "order-transfer": orderTransfer,
+    "order-invoiceApply": invoiceApply,
     orderRefund,
   },
   data() {
@@ -1083,7 +1093,7 @@ export default {
       this.orderId = item.id;
       this.dialogType = i;
       this.planID = item.planID;
-      console.log(i);
+      console.log(this.dialogType);
       if(i == 5) {
         //判断订单是否有记录
          this.$http
