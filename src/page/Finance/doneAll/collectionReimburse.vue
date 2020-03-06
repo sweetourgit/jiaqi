@@ -44,7 +44,7 @@
       <el-table-column prop="reimbursement" label="报销单号" align="center"></el-table-column>
       <el-table-column prop="loan" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="price" label="收款金额" align="center"></el-table-column>
-      <el-table-column prop="createTime" label="申请时间" align="center"></el-table-column>
+      <el-table-column prop="createTime" :formatter='dateFormatDetails' label="申请时间" align="center"></el-table-column>
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
@@ -107,6 +107,13 @@
       }*/
     },
     methods: {
+      dateFormatDetails: function(row, column) {
+        let date = row[column.property];
+        if(date == undefined) {
+          return '';
+        }
+        return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      },
       HandleResetApprove(){
         this.$refs['ruleFormSearch'].resetFields()
       },

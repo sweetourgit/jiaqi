@@ -984,7 +984,8 @@ export default {
           spstate: this.approval_status,
           spcontent: this.approvalMark,
           checktype: this.approval_status,
-          id: this.info.id
+          id: this.info.id,
+          SpCode: sessionStorage.getItem('userCode')
         })
         .then(function(response) {
           // console.log('审批操作',response);
@@ -1020,7 +1021,7 @@ export default {
         });
     },
 
-    // 报销发票的接口  
+    // 报销发票的接口
     insert() {
       // alert('insert');
       const that = this;

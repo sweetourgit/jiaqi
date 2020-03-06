@@ -65,7 +65,6 @@
               collectionCount += item
             })
             this.$emit('handlePassVal', collectionCount)
-            console.log(collectionCount)
           }).catch((error) => {
             console.log(error)
           })
