@@ -267,7 +267,7 @@
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
-          <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
+          <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
           <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
           <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
