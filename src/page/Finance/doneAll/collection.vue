@@ -1,3 +1,4 @@
+<!-- 收款tab下的子tab -->
 <template>
   <div>
     <el-tabs v-model="tabCollectionShowWhich" :tab-position="tabPosition" @tab-click="handleClick">
