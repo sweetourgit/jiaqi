@@ -402,7 +402,7 @@ export default new Router({
       auth: true
     },
   },
-  
+
   {
     path: '/externalOrderList',
     component: () => import('@/page/orderManagement/externalOrderList/externalOrderList'),
@@ -495,6 +495,51 @@ export default new Router({
     path: '/approve/approveDetail',
     component: () => import('@/page/Finance/approve/approveDetail'),
     name: '审批详情',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
+    path: '/doneAll/list',
+    component: () => import('@/page/Finance/doneAll/list'),
+    name: '已办',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
+    path: '/doneAll/advanceAndNoInDetails',
+    component: () => import('@/page/Finance/doneAll/advanceAndNoInDetails'),
+    name: '已办/借款详情',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
+    path: '/doneAll/reimbursementDetails',
+    component: () => import('@/page/Finance/doneAll/reimbursementDetails'),
+    name: '已办/报销详情',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
+    path: '/doneAll/refundDetails',
+    component: () => import('@/page/Finance/doneAll/refundDetails'),
+    name: '已办/退款详情',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
+    path: '/doneAll/collectionDetails',
+    component: () => import('@/page/Finance/doneAll/collectionDetails'),
+    name: '已办/收款详情',
     meta: {
       keepAlive: true,
       auth: true
