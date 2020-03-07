@@ -320,7 +320,7 @@
           <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
           <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
           <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-          <el-table-column prop="prop" label="操作" align="center">
+          <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout == 3">
             <template slot-scope="scope">
               <el-button type="text" @click="handleRecognitionDetail(scope.row)">查看认款信息</el-button>
             </template>
@@ -343,6 +343,7 @@
     data() {
       return {
         orderID:0,
+        collCheckout: null,
         refundList:{},
         dialogFormVisible: false,
         fundamental:{},//查看详情基本信息数组
@@ -387,6 +388,7 @@
         }).then(res => {
           //console.log(res.data.object.invoiceTable)
           if (res.data.isSuccess == true) {
+            this.collCheckout = res.data.object.checkType
             this.tableAssociated = res.data.object.arrears
             this.fundamental = res.data.object;
             this.tableInvoice = res.data.object.invoiceTable;

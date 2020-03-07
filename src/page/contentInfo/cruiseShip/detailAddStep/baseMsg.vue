@@ -303,14 +303,29 @@ export default {
     },
 
     cancalBtn(){
-      this.$router.push({
-        path: '/cruiseShip/cruiseShipDetail',
-        name: '邮轮管理/详情',
-        query: {
-          "id": this.$route.query.id
+      const that = this;
+      this.$confirm("是否取消本次添加?", "提示", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "退出并保存",
+        cancelButtonText: "退出并删除",
+        type: "warning"
+      }).then(() => {
+        that.saveFun('ruleForm', 1);
+      }).catch( action => {
+        // console.log(action)
+        if(action === 'cancel'){
+          this.$router.push({
+            path: '/cruiseShip/cruiseShipDetail',
+            name: '邮轮管理/详情',
+            query: {
+              "id": this.$route.query.id
+            }
+          });
+          localStorage.removeItem('liner_id');
         }
+        
       });
-      localStorage.removeItem('liner_id');
+      
     },
 
     handlePictureCardPreview(file) {

@@ -43,7 +43,6 @@
       <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
       <el-table-column prop="expensePrice" label="已报销金额" align="center"></el-table-column>
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-      <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
       <el-table-column label="操作" width="150" align="center">
         <template slot-scope="scope">
           <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
@@ -88,7 +87,8 @@
     methods: {
       handleJumpDetail(index, row){
         let getCurrentPaymentID = row.paymentID
-        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance'} })
+        let getCurrentGuid = row.guid
+        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance', optionsGuid: getCurrentGuid} })
       },
     }
   }

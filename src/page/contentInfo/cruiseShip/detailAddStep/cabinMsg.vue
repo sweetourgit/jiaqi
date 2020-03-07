@@ -9,7 +9,7 @@
     <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column prop="cabin_type_id" label="舱型" align="center">
         <template slot-scope="scope"> 
-          <div v-for='item in typeArr'>
+          <div v-for='item in typeArr' :key="item.id">
             <span v-if='item.id == scope.row.cabin_type_id'>{{item.name}}</span>
           </div>
         </template>
@@ -78,14 +78,26 @@ export default {
       }
     },
     cancalBtn(){
-      this.$router.push({
-        path: '/cruiseShip/cruiseShipDetail',
-        name: '邮轮管理/详情',
-        query: {
-          "id": this.$route.query.id
+      const that = this;
+      this.$confirm("是否取消本次添加?", "提示", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "退出并保存",
+        cancelButtonText: "退出并删除",
+        type: "warning"
+      }).then(() => {
+        that.saveFun(1);
+      }).catch( action => {
+        if(action === 'cancel'){
+          this.$router.push({
+            path: '/cruiseShip/cruiseShipDetail',
+            name: '邮轮管理/详情',
+            query: {
+              "id": this.$route.query.id
+            }
+          });
+          localStorage.removeItem('liner_id');
         }
       });
-      localStorage.removeItem('liner_id');
     },
     saveFun(type){
       const that = this;
@@ -182,6 +194,11 @@ export default {
         if (response.data.code == '200') {
           that.tableData = response.data.data.list;
           that.total = response.data.data.list.length;
+          that.tableData.forEach(function(item, index, arr){
+            item.pics.forEach(function(item, index, arr){
+              item.url = that.GLOBAL.serverSrcYL + item.pic_url;
+            })
+          })
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);

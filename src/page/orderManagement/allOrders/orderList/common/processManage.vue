@@ -1497,6 +1497,7 @@ export default {
       this.isPricechange = null;
       this.prePayable = 0;
       this.payable = 0;
+      this.$parent.orderPage();
     }
   }
 };

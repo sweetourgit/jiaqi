@@ -2,14 +2,14 @@
   <div>
     <!--备注信息弹窗-->
     <el-dialog
-      title="订单备注"
+      title="申请发票"
       :visible.sync="dialogFormMark"
       :close-on-click-modal="false"
       class="city_list"
       width="780px"
       @close="close"
     >
-      <el-form
+      <!-- <el-form
         :model="markFormAdd"
         :rules="rules"
         ref="markFormAdd"
@@ -44,7 +44,7 @@
         <el-form-item>
           <el-button class="colse" @click="close">关闭</el-button>
         </el-form-item>
-      </el-form>
+      </el-form> -->
     </el-dialog>
   </div>
 </template>
@@ -80,7 +80,8 @@ export default {
   },
   watch: {
     variable: function() {
-      if (this.dialogType == 2) {
+      console.log(this.dialogType,'jj')
+      if (this.dialogType == 6) {
         this.orderGetFun(this.orderId,this.orderCodeSon);
         this.dialogFormMark = true;
       }

@@ -21,19 +21,19 @@
           <el-col :span="17"><div class="grid-del ">{{ refundList.name }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">申请时间:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ refundList.createTime | formatDate  }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">申请时间:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ refundList.createTime | formatDate  }}</div></el-col>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">退款方式:</div></el-col>
-          <el-col :span="15" v-if="refundList.refundType == 1"><div class="grid-del">部分退</div></el-col>
-          <el-col :span="15" v-if="refundList.refundType == 2"><div class="grid-del">全退</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">退款方式:</div></el-col>
+          <el-col :span="17" v-if="refundList.refundType == 1"><div class="grid-del">部分退</div></el-col>
+          <el-col :span="17" v-if="refundList.refundType == 2"><div class="grid-del">全退</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">总退款:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ refundList.allRefundPrice }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">总退款:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ refundList.allRefundPrice }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">实际退款金额:</div></el-col>
@@ -42,28 +42,28 @@
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">汇款账号:</div></el-col>
-          <el-col :span="15">
+          <el-col :span="7"><div class="grid-del label-color">汇款账号:</div></el-col>
+          <el-col :span="17">
             <div class="grid-del">{{ refundList.remittanceCode }}</div>
           </el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">汇款开户行:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ refundList.remittanceBank }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">汇款开户行:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ refundList.remittanceBank }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="6"><div class="grid-del label-color">汇款开户人:</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">汇款开户人:</div></el-col>
           <el-col :span="17"><div class="grid-del ">{{ refundList.remittancePerson }}</div></el-col>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="6"><div class="grid-del label-color">退款原由:</div></el-col>
-          <el-col :span="18"><div class="grid-del ">{{ refundList.reason }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">退款原由:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ refundList.reason }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">支付账户:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ payName }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">支付账户:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ payName }}</div></el-col>
         </el-col>
         <el-col :span="6"></el-col>
       </el-row>
@@ -73,15 +73,15 @@
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">订单ID:</div></el-col>
-          <el-col :span="17"><div class="grid-del" @click="orderDetails(1)"><el-link type="info">{{ refundList.orderCode }}</el-link></div></el-col>
+          <el-col :span="17"><div class="grid-del" @click="orderDetails(1)"><a href="#" type="info">{{ refundList.orderCode }}</a></div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">订单金额:</div></el-col>
           <el-col :span="17"><div class="grid-del ">{{ refundList.payable }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">已付金额:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ refundList.paid }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">已付金额:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ refundList.paid }}</div></el-col>
         </el-col>
       </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
@@ -94,8 +94,8 @@
           <el-col :span="17"><div class="grid-del ">{{ refundList.otherPrice }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">整体优惠:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ refundList.entiretyFav }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">整体优惠:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ refundList.entiretyFav }}</div></el-col>
         </el-col>
       </el-row>
     </div>
@@ -122,10 +122,10 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <div>
       <el-table :data="tableAudit" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
-        <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-        <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-        <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+        <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
+        <el-table-column prop="name" label="审批人" align="center"></el-table-column>
+        <el-table-column prop="typeStr" label="审批结果" align="center"></el-table-column>
+        <el-table-column prop="opinions" label="审批意见" align="center"></el-table-column>
       </el-table>
     </div>
   <order-info :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-info>
@@ -187,13 +187,12 @@
         }
       },
       getJqId(result){ // 获取审批结果tableAudit
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ_BY_InstanceID',{
-          "instanceId":this.instanceID,
-          // "jq_id":result,
-          // "jQ_Type":6,
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetOpinions',{
+          "jq_id":result,
+          "jQ_Type":6,
         }).then(obj => {
           this.tableAudit = [];
-          this.tableAudit = obj.data.extend.instanceLogInfo;
+          this.tableAudit = obj.data
           console.log(this.tableAudit)
         })
       },

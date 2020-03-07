@@ -11,13 +11,13 @@
           <el-form-item label="名称：" prop="name" label-width="140px">
             <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="消费：" prop="area" label-width="140px">
+          <el-form-item label="消费：" prop="money" label-width="140px">
             <el-input v-model="ruleForm.money" class="inputWidth" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="简介：" prop="introduction" label-width="140px">
             <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea"></el-input>
           </el-form-item>
-          <el-form-item label="图片：" label-width="140px" required>
+          <el-form-item label="图片：" label-width="140px">
             <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -44,7 +44,7 @@
           introduction: ''
         },
         rules: {
-          company: [{ required: true, message: '邮轮公司不能为空!', trigger: 'change' }]
+          name: [{ required: true, message: '名称不能为空!', trigger: 'blur' }]
         },
         fileList1: [], // 图片文件
         topTitle: '添加'
@@ -87,7 +87,7 @@
       },
       // 取消按钮事件
       cancalBtn(){
-        this.$confirm("是否取消本次添加?", "提示", {
+        this.$confirm("是否取消本次操作?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -106,7 +106,7 @@
             
             let fileArr = [];
             if(that.fileList1.length == 0){
-              that.$message.warning("图片不能为空！");
+              // that.$message.warning("图片不能为空！");
             }else{
               that.fileList1.forEach(function (item, index, arr) {
                 fileArr.push({
@@ -115,16 +115,16 @@
                 });
               })
             }
+            let ida = '';
+            if(this.info){
+              ida = this.info;
+            }
               
-            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-cabin/savelinercabin', {
+            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-service/savelinerservice', {
 							"liner_id": localStorage.getItem('liner_id'),
-							"id": '',
-							"cabin_type_id": this.ruleForm.cabinType,
+							"id": ida,
 							"name": this.ruleForm.name,
-							"number": this.ruleForm.person,
-							"floor": this.ruleForm.floor,
-							"area": this.ruleForm.area,
-							"window": this.ruleForm.window,
+							"consumption": this.ruleForm.money,
 							"introduce": this.ruleForm.introduction,
 							"pics": fileArr,
 							"create_uid": sessionStorage.getItem('id'),
@@ -198,20 +198,17 @@
       loadData(){
         // alert(this.info);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-company/viewlinercom", {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-service/viewlinerservice", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('获取邮轮公司detail',response);
+          console.log('play-detail',response);
           if (response.data.code == '200') {
             that.ruleForm = {
-              company: response.data.data.name,
+              name: response.data.data.name,
+              money: response.data.data.consumption,
               introduction: response.data.data.introduce
             };
-            that.fileList = response.data.data.logo;
             that.fileList1 = response.data.data.pics;
-            that.fileList[0].name = response.data.data.logo[0].pic_name;
-            that.fileList[0].id = response.data.data.logo[0].pic_id;
-            that.fileList[0].url = response.data.data.logo[0].pic_url;
             that.fileList1.forEach(function(item, index, arr){
               item.name = response.data.data.pics[index].pic_name;
               item.id = response.data.data.pics[index].pic_id;

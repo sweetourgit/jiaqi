@@ -29,6 +29,13 @@ export default {
   },
   methods: {
     moment,
+    dateFormatDetails: function(row, column) {
+      let date = row[column.property];
+      if(date == undefined) {
+        return '';
+      }
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
     handleCancel(paramsTabName, paramsCollectionTab){
       if(paramsTabName == 'collection'){
         this.$store.commit('doneAll/showCollectionTab', paramsCollectionTab)

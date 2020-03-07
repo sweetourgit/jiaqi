@@ -94,10 +94,10 @@
     </div>
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <el-table :data="tableCourse" border :header-cell-style="getRowClass">
-      <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-      <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-      <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
-      <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
+      <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
+      <el-table-column prop="name" label="审批人" align="center"></el-table-column>
+      <el-table-column prop="typeStr" label="审批结果" align="center"></el-table-column>
+      <el-table-column prop="opinions" label="审批意见" align="center"></el-table-column>
     </el-table>
     <el-divider content-position="left" class='title-margin title-margin-t'>相关信息</el-divider>
     <el-table :data="tableMoney" border :header-cell-style="getRowClass">
@@ -178,10 +178,10 @@
     <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income" append-to-body>
       <div class="indialog">
         <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
-          <el-table-column prop="finishedTime" label="审批时间" width="150" align="center"></el-table-column>
-          <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-          <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-          <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+          <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
+          <el-table-column prop="name" label="审批人" align="center"></el-table-column>
+          <el-table-column prop="typeStr" label="审批结果" align="center"></el-table-column>
+          <el-table-column prop="opinions" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
@@ -222,22 +222,23 @@
         window.open(file.url);
       },
       processIncome(index,row, type){
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        // GetInstanceActityInfoForJQ
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetOpinions', {
           jQ_ID: row.guid,
           jQ_Type: type,
         }).then(obj => {
-          this.tableIncomeCheck = obj.data.extend.instanceLogInfo;
+          this.tableIncomeCheck = obj.data;
           this.dialogFormVisible_Income = true;
         }).catch(obj => {})
       },
       auditResult(result, paramJqType) {
         var that =this
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetOpinions', {
           jQ_ID: result,
           jQ_Type: paramJqType,
         }).then(obj => {
           that.tableCourse = []
-          that.tableCourse = obj.data.extend.instanceLogInfo;
+          that.tableCourse = obj.data;
         }).catch(obj => {})
       },
       getLabel(paramsPaymentID){
