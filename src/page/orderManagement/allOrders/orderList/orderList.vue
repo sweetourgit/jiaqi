@@ -260,13 +260,13 @@
               <!-- <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,2)"
+                @click.native="operation(item,2,item.orderCode)"
               >备注</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,1)"
+                @click.native="operation(item,1,item.orderCode)"
               >流程管理</el-breadcrumb-item>
               <!-- <el-breadcrumb-item
                 class="breadCrumbPointer"
@@ -1181,7 +1181,7 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
-    operation(item, i) {
+    operation(item, i,orderCode) {
       this.orderId = item.id;
       this.dialogType = i;
       this.planID = item.planID;

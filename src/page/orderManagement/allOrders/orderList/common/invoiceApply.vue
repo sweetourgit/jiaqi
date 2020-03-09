@@ -10,7 +10,7 @@
       @close="close"
     >
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class=" demo-ruleForm invoice">
-        <div class="fl w500">
+        <div class=" w500">
           <el-form-item label="单位/个人：" prop="unitPersonal">
             <el-radio v-model="ruleForm.unitPersonal" label="1">个人</el-radio>
             <el-radio v-model="ruleForm.unitPersonal" label="2">单位</el-radio>
@@ -32,7 +32,7 @@
             <span class="Numbers">{{ruleForm.account.length}}/40字</span>
           </el-form-item>
         </div>
-        <div class="fl w500">
+        <div class=" w500">
           <el-form-item label="开户行：" prop="partCardBank">
             <el-input v-model="ruleForm.partCardBank" class="Words" placeholder="请输入开户行"></el-input>
             <span class="Numbers">{{ruleForm.partCardBank.length}}/80字</span>
