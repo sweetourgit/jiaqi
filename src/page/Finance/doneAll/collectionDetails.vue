@@ -267,7 +267,7 @@
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
-          <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
+          <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
           <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
           <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
@@ -320,7 +320,7 @@
           <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
           <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
           <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-          <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout == 3">
+          <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout">
             <template slot-scope="scope">
               <el-button type="text" @click="handleRecognitionDetail(scope.row)">查看认款信息</el-button>
             </template>
@@ -343,7 +343,7 @@
     data() {
       return {
         orderID:0,
-        collCheckout: null,
+        collCheckout: false,
         refundList:{},
         dialogFormVisible: false,
         fundamental:{},//查看详情基本信息数组
@@ -380,21 +380,35 @@
         };
         this.dialogFormVisible = true;
       },
+      getAccountId(paramsId){
+        let that = this
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get', {
+          "id": paramsId
+        }).then(res => {
+          if (res.data.isSuccess == true) {
+            if (res.data.object.subject) {
+              that.collCheckout = true; //有科目值 对公的 ( 有科目值可以去认款 )
+            }
+          }
+        }).catch(function(res) {
+          console.log(res)
+        })
+      },
       getLabel(id) {
         this.tableAssociated = [];
-        var that = this
+        let that = this
         this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll', {
           "id": id
         }).then(res => {
           //console.log(res.data.object.invoiceTable)
           if (res.data.isSuccess == true) {
-            this.collCheckout = res.data.object.checkType
             this.tableAssociated = res.data.object.arrears
             this.fundamental = res.data.object;
             this.tableInvoice = res.data.object.invoiceTable;
             this.tableAudit = res.data.object.spw
             this.tour_id = res.data.object.planID;
             this.tableManyRow = that.tableAssociated.length;
+            this.getAccountId(res.data.object.accountID)
             this.tableAssociated.forEach(item => {
               that.getCollectionPriceTotal += item.matchingPrice;
             })

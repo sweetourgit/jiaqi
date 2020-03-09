@@ -10,7 +10,7 @@
       @close="close"
     >
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class=" demo-ruleForm invoice">
-        <div class="w500">
+        <div class=" w500">
           <el-form-item label="单位/个人：" prop="unitPersonal">
             <el-radio v-model="ruleForm.unitPersonal" label="1">个人</el-radio>
             <el-radio v-model="ruleForm.unitPersonal" label="2">单位</el-radio>
@@ -20,19 +20,19 @@
             <span class="Numbers">{{ruleForm.invoiceTitle.length}}/80字</span>
           </el-form-item>
           <el-form-item label="纳税人识别号：" prop="taxpayerNumber">
-            <el-input v-model="ruleForm.taxpayerNumber" class="Words" placeholder="请输入纳税人识别号："></el-input>
+            <el-input v-model="ruleForm.taxpayerNumber" class="Words" placeholder="请输入发票抬头"></el-input>
             <span class="Numbers">{{ruleForm.taxpayerNumber.length}}/40字</span>
           </el-form-item>
           <el-form-item label="手机号：" prop="phone">
-            <el-input v-model="ruleForm.phone" class="Words" placeholder="请输入手机号："></el-input>
+            <el-input v-model="ruleForm.phone" class="Words" placeholder="请输入发票抬头"></el-input>
             <span class="Numbers">{{ruleForm.phone.length}}/20字</span>
           </el-form-item>
           <el-form-item label="账号：" prop="account">
-            <el-input v-model="ruleForm.account" class="Words" placeholder="请输入账号："></el-input>
+            <el-input v-model="ruleForm.account" class="Words" placeholder="请输入发票抬头"></el-input>
             <span class="Numbers">{{ruleForm.account.length}}/40字</span>
           </el-form-item>
         </div>
-        <div class="w500">
+        <div class=" w500">
           <el-form-item label="开户行：" prop="partCardBank">
             <el-input v-model="ruleForm.partCardBank" class="Words" placeholder="请输入开户行"></el-input>
             <span class="Numbers">{{ruleForm.partCardBank.length}}/80字</span>
@@ -100,7 +100,7 @@ export default {
           { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
         ],
         phone:[
-          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'change' }
+          { min: 1, max: 20, message: '长度在 1 到 40 个字符', trigger: 'change' }
         ],
         account:[
           { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
@@ -159,7 +159,7 @@ export default {
      closeApply(ruleForm){
         let myDate = new Date();
         let mydatas = moment(myDate).format("YYYY-MM-DD HH:mm:ss");
-          if(ruleForm.invoicePrice > this.allPrice ){
+             if(ruleForm.invoicePrice > this.allPrice ){
                     this.$message({
                       type: "warning",
                       message: "申请开发票金额大于剩余金额 重新填写开票金额"
