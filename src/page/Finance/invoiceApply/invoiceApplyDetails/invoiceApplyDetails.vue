@@ -302,6 +302,7 @@ export default {
       this.dialogFormOrder = false;
       this.tableDate = [];
       this.invoiceDate = [];
+      
     },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/get", {

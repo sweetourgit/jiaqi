@@ -255,7 +255,7 @@ export default {
   
   props: {
     orderId: 0,
-    variable: 0,
+    a_variable: 0,
     dialogType: 0,
     orderCode: "",
     paid: 0, //已付金额
@@ -384,7 +384,7 @@ export default {
   created() {},
 
   watch: {
-    variable() {
+    a_variable() {
       if (this.dialogType == 1) {
         this.processManage(this.orderId);
         this.dialogFormProcess = true;
@@ -1490,11 +1490,7 @@ export default {
       this.isPricechange = null;
       this.prePayable = 0;
       this.payable = 0;
-     // this.$parent.variable = 0;
-     
-       
-       
-    }
+  }
   }
 };
 </script>
