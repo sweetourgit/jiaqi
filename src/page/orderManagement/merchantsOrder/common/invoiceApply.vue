@@ -24,11 +24,11 @@
             <span class="Numbers">{{ruleForm.taxpayerNumber.length}}/40字</span>
           </el-form-item>
           <el-form-item label="手机号：" prop="phone">
-            <el-input v-model="ruleForm.phone" class="Words" placeholder="请输入手机号："></el-input>
-            <span class="Numbers">{{ruleForm.phone.length}}/20字</span>
+            <el-input v-model="ruleForm.phone" class="Words" placeholder="请输入手机号"></el-input>
+            <span class="Numbers">{{ruleForm.phone.length}}/11字</span>
           </el-form-item>
           <el-form-item label="账号：" prop="account">
-            <el-input v-model="ruleForm.account" class="Words" placeholder="请输入账号："></el-input>
+            <el-input v-model="ruleForm.account" class="Words" placeholder="请输入账号"></el-input>
             <span class="Numbers">{{ruleForm.account.length}}/40字</span>
           </el-form-item>
         </div>
@@ -100,7 +100,7 @@ export default {
           { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
         ],
         phone:[
-          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'change' }
+          { required: true,min: 1, max: 11, message: '请输入正确手机号', trigger: 'change' }
         ],
         account:[
           { min: 1, max: 40, message: '长度在 1 到 40 个字符', trigger: 'change' }
@@ -109,7 +109,7 @@ export default {
           { min: 1, max: 80, message: '长度在 1 到 80 个字符', trigger: 'change' }
         ],
         address:[
-          { min: 1, max: 80, message: '长度在 1 到 80 个字符', trigger: 'change' }
+          { required: true,min: 1, max: 80, message: '长度在 1 到 80 个字符', trigger: 'change' }
         ],
         invoicePrice:[
           { required: true, message: '请输入开票金额', trigger: 'change' },
@@ -165,7 +165,7 @@ export default {
                       message: "申请开发票金额大于剩余金额 重新填写开票金额"
                       }); 
                       return;
-            }else if(ruleForm.invoicePrice =="" || ruleForm.invoiceTitle == "" ||ruleForm.phone == ""){
+            }else if(ruleForm.invoicePrice =="" || ruleForm.invoiceTitle == "" ||ruleForm.phone == ""||ruleForm.address == ""){
                    this.$message({
                       type: "warning",
                       message: "请填写相关信息"
@@ -175,6 +175,12 @@ export default {
                   this.$message({
                       type: "warning",
                       message: "请检查发票抬头字数 重新填写"
+                      }); 
+                      return;
+            }else if(ruleForm.phone.length > 11){
+                  this.$message({
+                      type: "warning",
+                      message: "请填写正确手机号 "
                       }); 
                       return;
             }

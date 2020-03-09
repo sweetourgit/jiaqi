@@ -252,8 +252,8 @@
                       <el-table-column prop="orderStatus" label="还款/拆分" width="90" align="center"></el-table-column>
                       <el-table-column prop="paymentID" label="操作" width="104"  v-if="find==0" align="center">
                           <template slot-scope="scope">
-                             <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">设置</div> |
-                          <div @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</div>
+                             <span @click="amend(scope.row.paymentID)" style="color: #f5a142">设置</span> |
+                             <span @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</span>
                          </template>
                       </el-table-column>
                     
@@ -454,6 +454,29 @@
         </div>
       </el-dialog>
       <!--添加报销弹窗end-->
+      <!--拆分弹窗-->
+      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body @close="t_text_del('joinData')" >
+         <span class="search_style">供应商：</span>
+           <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
+        
+     
+ <!-- @row-click="joinData_btn" -->
+        <el-table 
+          :data="joinData" 
+          border 
+          style="width: 100%; margin-top: 30px">
+         
+          <el-table-column prop="paymentID" label='类型' width="160" align="center" v-if="s_find==1"></el-table-column>
+          <el-table-column prop="paymentID" label="账号名称" width="160" align="center" v-if="s_find==2"></el-table-column>
+          <el-table-column prop="supplierName" label="卡号" width="210" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="开户行" width="140" align="center"></el-table-column>
+          <el-table-column prop="price" label="开户人" width="120" align="center"></el-table-column>
+          <el-table-column prop="createUser" label="选择" width="136" align="center"></el-table-column>
+        </el-table>
+        
+      </el-dialog>
+      <!--拆分弹窗end-->
+
       <!--需要你审批 先隐藏有需要在打开-->
       <!-- <el-tab-pane label="需要您审批" name="second">
          <approvalToBorrow></approvalToBorrow>
@@ -1023,6 +1046,9 @@ export default {
          this.dialogFormVisible3 = false;
         
         },
+        amend(paymentID){ // 设置拆分
+          console.log(paymentID,'我是拆分 id');
+        },
         t_delete(paymentID){// 添加数据删除
           this.subscript();
           let payments_box = this.s_content.payments;
@@ -1045,20 +1071,16 @@ export default {
                            this.s_content.t_price_box.splice(j, 1);
                            
                           }
-
-                            for(let y in this.alljoinData ){
+                           for(let y in this.alljoinData ){
                                     if(this.alljoinData[y].paymentID === paymentID){
                                         this.alljoinData.splice(y, 1);
                                      }
                                   }
                          this.t_price_sum()
                          this.$message.success('删除成功');
-                            
-                     }
-                    
-             }
-            
-          })
+                      }
+               }
+           })
           .catch(() => {
             console.log(7);
             this.$message({
