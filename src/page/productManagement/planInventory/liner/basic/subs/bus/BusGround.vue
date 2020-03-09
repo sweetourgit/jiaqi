@@ -26,8 +26,11 @@
         <el-table-column label="售卖价格" prop="quota" header-align="center" align="center" width="300">
           <template slot-scope="scope">
             <TableInputer
-              v-model="scope.row.name">
-              123
+              v-model="scope.row.name"
+              :options="priceOptions"
+              table="bus"
+              column="price">
+              {{ scope.row }}
             </TableInputer>
           </template>
         </el-table-column>
@@ -36,6 +39,10 @@
             <el-button type="text"
               @click="openDetailer(scope.row)">
               详情
+            </el-button>
+            <el-button type="text"
+              @click="openPrice('bus', 'price', scope.$index)">
+              价格
             </el-button>
             <el-button type="text">
               上线
@@ -53,7 +60,7 @@
 
 <script>
 // import TableInputer from './comps/TableInputer'
-import { TableInputer } from './comps/TableInputer/index'
+import { TableInputer, manager as TableInputerManager } from './comps/TableInputer/index'
 import BusDetailer from './comps/BusDetailer'
 
 export default {
@@ -63,6 +70,21 @@ export default {
   data(){
     return {
       tableData: [{ id: 123, name: 32 }],
+      priceOptions: {
+        placeholder: '请输入价格',
+        pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,
+        message: '价格格式输入错误',
+        adaptor: (val) => {
+          return parseFloat(val);
+        }
+      }
+    }
+  },
+
+  methods: {
+    openPrice(table, column, index){
+      let vm= TableInputerManager.getVm(table, column, index);
+      vm.focus();
     }
   }
 
