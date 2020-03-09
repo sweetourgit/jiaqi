@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import foolseward from './foolseward'
 
 Vue.use(Router);
 
 export default new Router({
-  routes: [{
+  routes: [
+    
+    ...foolseward,
+
+    {
       path: '/',
       redirect: 'login',
     },  {
