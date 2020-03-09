@@ -265,7 +265,7 @@ export default new Router({
     }, {
       path: '/curiseShipCabin',
       component: () => import('@/page/contentInfo/cruiseShipCabin/curiseShipCabin.vue'),
-      name: '游轮舱房管理',
+      name: '邮轮舱房管理',
       meta: {
         keepAlive: true,
         auth: true
