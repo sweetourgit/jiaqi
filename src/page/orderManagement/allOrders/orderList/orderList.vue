@@ -276,6 +276,11 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,5)"
               >退款</el-breadcrumb-item>
+               <el-breadcrumb-item
+                v-if="getListOneMessage.paid > 0"
+                class="breadCrumbPointer"
+                @click.native="operation(item,6,item.orderCode)"
+              >发票申请</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
@@ -342,7 +347,7 @@
       <!--流程管理弹窗-->
       <process-manage
         :orderId="orderId"
-        :variable="variable"
+         :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCode="orderCode"
         :paid="getListOneMessage.paid"
@@ -357,18 +362,34 @@
        <!--备注信息弹窗-->
       <remarks-infor
         :orderId="orderId"
-        :variable="variable"
+        :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
       <!--备注信息弹窗end-->
-      <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></orderRefund>
+      <order-transfer 
+      :orderId="orderId" 
+      :a_variable="a_variable" 
+      :dialogType="dialogType"
+      ></order-transfer>
+       <order-invoiceApply 
+        :orderId="orderId" 
+        :variable_s="variable_s"
+        :dialogType="dialogType"
+        :orderCodeSon="orderCodeSon"
+      ></order-invoiceApply>
+      <orderRefund 
+      :orderRefundID="orderId"
+      :orderRefund="variable" 
+      :dialogType="dialogType" 
+      :orderRefundDialog="orderRefundDialog"
+       ></orderRefund>
     </div>
   </div>
 </template>
 
 <script>
+import invoiceApply from "./common/invoiceApply";
 import processManage from "./common/processManage";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
@@ -379,6 +400,7 @@ export default {
     "process-manage": processManage,
     "remarks-infor": remarksInfor,
     "order-transfer": orderTransfer,
+    "order-invoiceApply": invoiceApply,
     orderRefund
   },
   data() {
@@ -459,7 +481,9 @@ export default {
       total: 0,
       orderpage: [],
       orderId: 0,
-      variable: 0, //设置一个变量展示弹窗
+      variable: 0, //退款
+      a_variable:0,//设置一个变量展示弹窗
+      variable_s:0,//发票申请
       dialogType: 0, //弹窗类型  1：流程管理  2：备注信息 3出团通知书
       orderCode: "", //订单编号
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
@@ -584,7 +608,10 @@ export default {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
-      console.log(item,'叭叭叭')
+       this.variable= 0; //退款
+       this.a_variable=0;//设置一个变量展示弹窗
+       this.variable_s=0;//发票申请
+       this.dialogType= 0; //弹窗类型  1：流程管理  2：备注信息
       if (this.showContent != index) {
         this.showContent = index;
         this.tour = {};
@@ -1156,31 +1183,53 @@ export default {
     },
     operation(item, i) {
       this.orderId = item.id;
-      this.variable++;
       this.dialogType = i;
       this.planID = item.planID;
       if (i == 3) {
         this.dialogAdviceNote = true;
-      }
-      if(i == 5) {
-         this.variable = 0;
+      }else if(i == 5) {
+        //判断订单是否有记录
          this.$http
         .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
          id: this.orderId
          })
         .then(res => {
           if (res.data.isExist == true) {
+              this.variable = 0;
               this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
-              return false;
-           }else{
-               this.variable++;
+               return;
+           } else{
+              this.variable++;
            }
         })
         .catch(err => {
           console.log(err);
         });
-          
-       //this.orderRefundDialog = 1
+         this.a_variable = 0;
+      }else if(i == 6){
+        //判断是否能开发票
+       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
+            "object": {
+              "orderCode":orderCode,
+              "localCompName":"",
+              "collectionID":0,
+            },
+          }).then(res => {
+              if (res.data.isSuccess == false) {
+                  this.variable_s = 0;
+                  this.$message.error(res.data.result.message);
+                  return false;
+              } else{
+                  this.variable_s++;
+              }
+          })
+            .catch(function (res) {
+               console.log(res)
+             })
+            this.a_variable = 0;   
+      }else{
+        this.a_variable++;
+       
       }
     },
     // 出团通知书获取
