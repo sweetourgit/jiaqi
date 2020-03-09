@@ -301,7 +301,7 @@ export default {
             "collectionType": this.tableDate[i].collectionType
           })
          }
-            if(ruleForm.invoicePrice > this.allPrice ){
+          if(ruleForm.invoicePrice > this.allPrice ){
                     this.$message({
                       type: "warning",
                       message: "申请开发票金额大于剩余金额 重新填写开票金额"
@@ -323,6 +323,30 @@ export default {
                   this.$message({
                       type: "warning",
                       message: "请填写正确手机号 "
+                      }); 
+                      return;
+            }else if(ruleForm.taxpayerNumber.length > 40){
+              this.$message({
+                      type: "warning",
+                      message: "请检查纳税人识别号字数 重新填写"
+                      }); 
+                      return;
+            }else if(ruleForm.account.length > 40){
+              this.$message({
+                      type: "warning",
+                      message: "请检查账号字数 重新填写"
+                      }); 
+                      return;
+            }else if(ruleForm.partCardBank.length > 80){
+              this.$message({
+                      type: "warning",
+                      message: "请检查开户行字数 重新填写"
+                      }); 
+                      return;
+            }else if(ruleForm.address.length > 80){
+              this.$message({
+                      type: "warning",
+                      message: "请检查地址字数 重新填写"
                       }); 
                       return;
             }

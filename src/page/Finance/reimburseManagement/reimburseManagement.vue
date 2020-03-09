@@ -455,7 +455,7 @@
       </el-dialog>
       <!--添加报销弹窗end-->
       <!--拆分弹窗-->
-      <el-dialog width="60%" title="添加报销" :visible.sync="dialogFormVisible3" append-to-body @close="t_text_del('joinData')" >
+      <el-dialog width="60%" title="设置拆分" :visible.sync="dialogFormVisible3" append-to-body @close="t_text_del('joinData')" >
          <span class="search_style">供应商：</span>
            <el-input v-model="t_supplier" placeholder="请输入内容" class="search_input"></el-input>
         
