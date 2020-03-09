@@ -159,17 +159,23 @@ export default {
      closeApply(ruleForm){
         let myDate = new Date();
         let mydatas = moment(myDate).format("YYYY-MM-DD HH:mm:ss");
-            if(ruleForm.invoicePrice > this.allPrice ){
+             if(ruleForm.invoicePrice > this.allPrice ){
                     this.$message({
                       type: "warning",
                       message: "申请开发票金额大于剩余金额 重新填写开票金额"
                       }); 
                       return;
-            }else if(ruleForm.invoicePrice =="" || ruleForm.invoiceTitle == ""){
+            }else if(ruleForm.invoicePrice =="" || ruleForm.invoiceTitle == "" ||ruleForm.phone == ""){
                    this.$message({
                       type: "warning",
                       message: "请填写相关信息"
                       });
+                      return;
+            }else if(ruleForm.invoiceTitle.length > 80){
+                  this.$message({
+                      type: "warning",
+                      message: "请检查发票抬头字数 重新填写"
+                      }); 
                       return;
             }
             for(let i in this.tableDate){
@@ -186,7 +192,6 @@ export default {
                 "collectionType": this.tableDate[i].collectionType
               })
             }
-            console.log(this.newtabledate,'大哥大额22222222');
             this.loadingbut = true;
             this.loadingbuttext = '申请中...';
             
