@@ -75,17 +75,23 @@
       <el-table-column prop="create_third_user" label="操作人员" align="center">
       </el-table-column>
       <el-table-column prop="line_status" label="线上状态" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.line_status == 1">上线</span>
+        </template>
       </el-table-column>
       <el-table-column prop="status" label="erp状态" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.line_status == 1 || scope.row.line_status == 2">上线</span>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">预定</el-button>
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">库存</el-button>
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">更改状态</el-button>
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">复制</el-button>
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">退改政策</el-button>
-          <el-button @click="routerToDetail(scope.row)" type="text" size="small" class="table_details">补充完整</el-button>
+          <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">预定</el-button>暂无 -->
+          <el-button @click="inventory(scope.row)" type="text" size="small" class="table_details">库存</el-button>
+          <el-button @click="changeStatus(scope.row)" type="text" size="small" class="table_details">更改状态</el-button>
+          <el-button @click="copyFun(scope.row)" type="text" size="small" class="table_details">复制</el-button>
+          <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">退改政策</el-button>暂时不写 -->
+          <el-button @click="complete(scope.row)" type="text" size="small" class="table_details">补充完整</el-button>
           <el-button @click="edit(scope.row)" type="text" size="small" class="table_details">编辑</el-button>
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
@@ -96,15 +102,15 @@
       </el-pagination>
     </div>
     <!-- 表格 END -->
-    <cruiseShipAdd :dialogFormVisible='dialogFormVisible' :info='info' @close="closeAdd"></cruiseShipAdd>
+    <changeStatus :dialogFormVisible='dialogFormVisible' :info='info' @close="closeAdd"></changeStatus>
   </div>
 </template>
 <script type="text/javascript">
-import cruiseShipAdd from '@/page/contentInfo/cruiseShip/cruiseShipAdd.vue'
+import changeStatus from '@/page/productManagement/liner/changeStatus.vue'
 export default {
   name: "curiseShip",
   components: {
-    cruiseShipAdd
+    changeStatus
   },
   data() {
     return {
@@ -195,25 +201,79 @@ export default {
     // 添加
     addShip(){
       this.$router.push({
-        path: '/productLiner/liner',
-        name: '邮轮/ 添加'
+        path: '/productLinerDo',
+        name: '邮轮/ 添加'
       });
     },
+    // 编辑
     edit(row){
       this.$router.push({
-        path: '/productLiner/liner',
-        name: '邮轮/ 添加',
+        path: '/productLinerDo',
+        name: '邮轮/ 添加',
         query: {
           "id": row.id,
           "step": row.cur_steps
         }
       });
     },
-    // 关闭添加弹框
+    // 补充完整
+    complete(row){
+      this.$router.push({
+        path: '/productLinerDo',
+        name: '邮轮/ 添加',
+        query: {
+          "id": row.id,
+          "step": row.cur_steps
+        }
+      });
+    },
+    // 复制
+    copyFun(row){
+      const that = this;
+      this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/product/product/copy', {
+        "product_id": row.id,
+        "create_uid": sessionStorage.getItem('id'),
+        "org_id": sessionStorage.getItem('orgID')
+      }).then(res => {
+        // console.log(res);
+        if (res.data.code == 200) {
+          that.$message({
+            type: 'success',
+            message: '复制成功!'
+          });
+          that.loadData();
+
+        } else {
+          if(res.data.message){
+            that.$message({
+              type: 'warning',
+              message: res.data.message
+            });
+          }else{
+            that.$message({
+              type: 'warning',
+              message: '修改失败'
+            });
+          }
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // 更改状态
+    changeStatus(row){
+      this.dialogFormVisible = true;
+      this.info = row;
+    },
+    // 关闭弹框
     closeAdd(){
       this.dialogFormVisible = false;
       this.info = '';
       this.loadData();
+    },
+    // 库存
+    inventory(row){
+      alert("库存！暂无router地址");
     },
     // 删除
     deleteFun(row){
@@ -247,16 +307,6 @@ export default {
         });
       });
       
-    },
-    // 查看详情
-    routerToDetail(row){
-      this.$router.push({
-        path: '/cruiseShip/cruiseShipDetail',
-        name: '邮轮管理/详情',
-        query: {
-          "id": row.id
-        }
-      });
     },
     // 改变每页条数
     handleSizeChange(val){
@@ -337,7 +387,7 @@ export default {
       }).then(function(response) {
 
         if (response.data.isSuccess) {
-          console.log('操作人员列表',response.data.objects);
+          // console.log('操作人员列表',response.data.objects);
           let operatorList = [];
           response.data.objects.forEach(function (item, index, arr) {
             const operator = {

@@ -9,17 +9,17 @@
         </div>
         <div>
           <el-form-item label="邮轮公司名称：" prop="company" label-width="140px">
-            <el-input v-model="ruleForm.company" placeholder="请输入" class="inputWidth"></el-input>
+            <el-input v-model="ruleForm.company" placeholder="请输入" class="inputWidth" maxlength="40" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="简介：" prop="introduction" label-width="140px">
-            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea"></el-input>
+            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" maxlength="1000" show-word-limit></el-input>
           </el-form-item>
-          <el-form-item label="LOGO：" label-width="140px" required>
+          <el-form-item label="LOGO：" label-width="140px">
             <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileList" :limit=1>
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-form-item>
-          <el-form-item label="图片：" label-width="140px" required>
+          <el-form-item label="图片：" label-width="140px">
             <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -111,12 +111,20 @@
           if (valid) {
             // console.log(that.fileList);
             // console.log(that.fileList1);
+            let logoFile = [];
             if(that.fileList.length == 0){
-              that.$message.warning("LOGO不能为空！");
+              // that.$message.warning("LOGO不能为空！");
+            }else{
+              logoFile = [
+                  {
+                    "pic_id": this.fileList[0].id,
+                    "pic_url": this.fileList[0].url
+                  }
+                ];
             }
             let fileArr = [];
             if(that.fileList1.length == 0){
-              that.$message.warning("图片不能为空！");
+              // that.$message.warning("图片不能为空！");
             }else{
               that.fileList1.forEach(function (item, index, arr) {
                 fileArr.push({
@@ -130,12 +138,7 @@
               this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-company/addlinercom', {
                 "name": this.ruleForm.company,
                 "introduce": this.ruleForm.introduction,
-                "logo": [
-                  {
-                    "pic_id": this.fileList[0].id,
-                    "pic_url": this.fileList[0].url
-                  }
-                ],
+                "logo": logoFile,
                 "pics": fileArr,
                 "create_uid": sessionStorage.getItem('id'),
                 "org_id": sessionStorage.getItem('orgID')
