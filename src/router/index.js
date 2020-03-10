@@ -312,7 +312,7 @@ export default new Router({
         }
       ]
     }, {
-      path: '/productLiner/liner',
+      path: '/productLinerDo',
       component: () => import('@/page/productManagement/liner/linerAdd'),
       name: '邮轮/ 添加',
       meta: {
