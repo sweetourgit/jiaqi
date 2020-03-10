@@ -272,15 +272,12 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,5)"
               >退款</el-breadcrumb-item>
-<<<<<<< HEAD
-=======
               <el-breadcrumb-item
                 v-if="getListOneMessage.paid > 0"
                 class="breadCrumbPointer"
                 @click.native="operation(item,6,item.orderCode)"
               >发票申请</el-breadcrumb-item>
               
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
@@ -316,11 +313,7 @@
       ></el-pagination>
       <process-manage
         :orderId="orderId"
-<<<<<<< HEAD
-        :variable="variable"
-=======
         :a_variable="a_variable"
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         :dialogType="dialogType"
         :orderCode="orderCode"
         :paid="getListOneMessage.paid"
@@ -333,14 +326,6 @@
       ></process-manage>
       <remarks-infor
         :orderId="orderId"
-<<<<<<< HEAD
-        :variable="variable"
-        :dialogType="dialogType"
-        :orderCodeSon="orderCodeSon"
-      ></remarks-infor>
-      <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></orderRefund>
-=======
         :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCodeSon="orderCodeSon"
@@ -362,17 +347,13 @@
         :dialogType="dialogType"
       ></orderRefund>
      
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     </div>
   </div>
 </template>
 
 <script>
 import processManage from "./common/processManage";
-<<<<<<< HEAD
-=======
 import invoiceApply from "./common/invoiceApply";
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
 import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
@@ -382,19 +363,12 @@ export default {
     "process-manage": processManage,
     "remarks-infor": remarksInfor,
     "order-transfer": orderTransfer,
-<<<<<<< HEAD
-=======
     "order-invoiceApply": invoiceApply,
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     orderRefund,
   },
   data() {
     return {
-<<<<<<< HEAD
-      orderRefundDialog: 0,//退款控制显示隐藏的 
-=======
       // orderRefundDialog: 0,//退款控制显示隐藏的 
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       defaultProps: {
         children: "children",
         label: "label"
@@ -467,13 +441,9 @@ export default {
       total: 0,
       orderpage: [],
       orderId: 0,
-<<<<<<< HEAD
-      variable: 0, //设置一个变量展示弹窗
-=======
       variable: 0, //退款
       a_variable:0,//设置一个变量展示弹窗
       variable_s:0,//发票申请
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       dialogType: 0, //弹窗类型  1：流程管理  2：备注信息
       orderCode: "", //订单编号
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
@@ -481,12 +451,8 @@ export default {
       showContent: null, //list折叠展示的
       businessLists: [], //商户名称下拉列表展示
       isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
-<<<<<<< HEAD
-      enrollDetailShow: "" //报名信息的数量
-=======
       enrollDetailShow: "" ,//报名信息的数量
       salePrice:[],//拼接空数组
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     };
   },
   watch: {
@@ -527,7 +493,6 @@ export default {
           console.log(err);
         });
     },
-
     //商户名称模糊查询
     handleBusinessGet(queryString3, cb) {
       this.businessLists = [];
@@ -550,7 +515,6 @@ export default {
             let results = queryString3
               ? this.businessLists.filter(this.createFilter(queryString3))
               : [];
-
             cb && cb(results);
           } else {
             // this.orgIDValue = "";
@@ -577,17 +541,11 @@ export default {
       this.orgIDValue = "";
       this.orgID = 0;
     },
-
     // 点击list列表中的一个
     handleContentHeader(item, index) {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
-<<<<<<< HEAD
-      if (this.showContent != index) {
-        this.showContent = index;
-        this.axiosListOneInfo(item.id);
-=======
        this.variable= 0; //退款
        this.a_variable=0;//设置一个变量展示弹窗
        this.variable_s=0;//发票申请
@@ -595,29 +553,20 @@ export default {
       if (this.showContent != index) {
         this.showContent = index;
         this.axiosListOneInfo(item.id,item.planID);
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       } else {
         this.showContent = null;
       }
     },
-
     // 请求list中的一个数据
-<<<<<<< HEAD
-    axiosListOneInfo(id) {
-=======
     axiosListOneInfo(id,planID) {
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       this.$http
         .post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
           id: id
         })
         .then(res => {
           // console.log("请求一条数据的",res)
-<<<<<<< HEAD
-=======
           let enrolls=[];//标题
           let guest;//全部数据
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
           this.enrollDetailShow = ""
           this.getListOneMessage = res.data.object;
           // let enrollDetail = this.getListOneMessage.enrollDetail;
@@ -653,7 +602,6 @@ export default {
           // }
           // this.getListOneMessage.enrollDetail = _newArr.toString();
           // }
-
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           this.orderCodeSon = res.data.object.orderCode;
@@ -666,15 +614,12 @@ export default {
           // } else {
           //   this.getListOneMessage.orderChannel = "线下直客";
           // }
-
           // 下单平台
           if (this.getListOneMessage.platform == 1) {
             this.getListOneMessage.platform = "ERP系统";
           } else {
             this.getListOneMessage.platform = "同业系统";
           }
-<<<<<<< HEAD
-=======
            //获取报名类型列表数据
           this.$http
             .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
@@ -690,14 +635,11 @@ export default {
                   }
               
             });
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         })
         .catch(err => {
           console.log(err);
         });
     },
-<<<<<<< HEAD
-=======
     sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect={};
         //console.log(this.salePrice,'8021')
@@ -747,7 +689,6 @@ export default {
         //console.log( this.getListOneMessage.enrollDetail,'最后结果')
         return price;
       },
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     // 整理数据报名信息的格式显示
     // formatData(origindata) {
     //   let data = JSON.parse(origindata);
@@ -783,7 +724,6 @@ export default {
     //       _resultstring.push(resstring);
     //     }
     //   });
-
     //   result = _resultstring.map(res => {
     //     return res.split(splitstring);
     //   });
@@ -794,7 +734,6 @@ export default {
     //   });
     //   return result;
     // },
-
     createFilter(queryString) {
       return restaurant => {
         return restaurant.value;
@@ -850,7 +789,6 @@ export default {
       this.orderPage(val, this.pageSize);
       this.pageIndex = val;
     },
-
     // 重置
     handleReset() {
       this.orderCode = ""; //订单ID
@@ -1161,52 +1099,29 @@ export default {
       //this.dialogType = i;
       //if(i == 5) this.orderRefundDialog = 1
     //},
-<<<<<<< HEAD
-    operation(item, i, orderCode) {
-      this.orderId = item.id;
-      this.variable++;
-=======
     
     operation(item, i, orderCode) {
       this.orderId = item.id;
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       this.dialogType = i;
       this.planID = item.planID;
       if(i == 5) {
         //判断订单是否有记录
-<<<<<<< HEAD
-         this.variable = 0;
-=======
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
          this.$http
         .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
          id: this.orderId
          })
         .then(res => {
           if (res.data.isExist == true) {
-<<<<<<< HEAD
-              this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
-              return false;
-           }else{
-               this.variable++;
-=======
               this.variable = 0;
               this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
                return;
            } else{
               this.variable++;
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
            }
         })
         .catch(err => {
           console.log(err);
         });
-<<<<<<< HEAD
-          
-       //this.orderRefundDialog = 1
-      }
-    },
-=======
          this.a_variable = 0;
       }else if(i == 6){
        this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
@@ -1233,8 +1148,6 @@ export default {
        
       }
    },
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
-
     // 出发日期转换格式显示
     // goDataChangeFun (data) {
     //   console.log(data)
@@ -1278,23 +1191,19 @@ export default {
 .contentHeader {
   position: relative;
 }
-
 .contentHeaderIcon {
   position: absolute;
   right: 10px;
   top: 42%;
   transform: translateY(-50%);
 }
-
 .BodyTableCenter {
   margin: 0 60px 0 73px;
 }
-
 .longWeight {
   width: 160px;
   vertical-align: top;
 }
-
 .demo-input-suffix {
   width: 1150px;
 }
@@ -1398,7 +1307,6 @@ export default {
   margin-top: 46px;
   margin-right: 20px;
 }
-
 .pagination {
   text-align: center;
   margin: 50px 0;

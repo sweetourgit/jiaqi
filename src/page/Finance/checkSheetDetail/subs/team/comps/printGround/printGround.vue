@@ -348,12 +348,8 @@ export default {
 
   methods: {
     init(printData, pageType){
-<<<<<<< HEAD
-      let { incomes, expenses, otherIncomes, ...pdData }= printData;
-=======
       let { incomes, expenses, otherIncomes, finishedList, ...pdData }= printData;
       if(finishedList) this.finishedListStr= this.getFinishedListStr(finishedList);
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       this.pageType= pageType;
       this.pd= pdData;
       this.incomes= incomes;

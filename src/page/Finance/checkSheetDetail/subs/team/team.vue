@@ -144,9 +144,6 @@ export default {
       let { id }= this.$route.query;
       let payload;
       getCheckSheetByID(id)
-<<<<<<< HEAD
-      .then(res => this.$refs.printGround.init(res, this.type))
-=======
       .then(res => {
         payload= res;
         let { guid }= res;
@@ -156,7 +153,6 @@ export default {
         Object.assign(payload, { finishedList: res });
         this.$refs.printGround.init(payload, this.type)
       })
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     },
 
     // 普通
@@ -167,9 +163,6 @@ export default {
         if(id) return resolve(getCheckSheetByID(id));
         if(planID) return resolve(getCheckSheetByPlanID(planID));
       })
-<<<<<<< HEAD
-      .then(res => this.$refs.printGround.init(res, this.type))
-=======
       .then(res => {
         payload= res;
         let { guid }= res;
@@ -179,7 +172,6 @@ export default {
         Object.assign(payload, { finishedList: res });
         this.$refs.printGround.init(payload, this.type)
       })
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     },
 
     /**

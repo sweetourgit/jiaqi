@@ -263,10 +263,6 @@
             'price':130,
           }*/
         ],
-<<<<<<< HEAD
-        keepTabId: [],
-=======
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         tabCount: 0
       }
     },
@@ -399,10 +395,6 @@
           "id": paramsTabId
         }).then( obj =>  {
           this.tabCount--
-<<<<<<< HEAD
-          // console.log(obj.data.objects,'obj')
-=======
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
           this.tablePrint.push(...obj.data.objects)
           if(this.tabCount <= 0){
             // console.log(this.tabCount)
@@ -421,27 +413,6 @@
         .then(obj => {
           let keepData = obj.data.objects
           if(keepData !== null ){
-<<<<<<< HEAD
-            if(this.ifShowOperateBtn){
-              // 先提交拆分、还款记录，成功之后在调用工作流接口
-              this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
-                "object": this.getLsParamsSplitArr
-              }).then( obj =>  {
-                this.keepTabId.length = 0
-                this.keepBackContent.forEach( (item) => {
-                  this.keepTabId.push(item.id)
-                })
-                this.tabCount = this.keepTabId.length
-                this.keepTabId.forEach((item) =>{
-                  this.showPrintTable(item)
-                })
-                this.handlePassApi()
-              }).catch( err => {
-                console.log(err)
-              })
-            } else {
-=======
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
               this.handlePassApi()
           } else {
             this.$message.warning("此报销不是待审批状态，无法进行审批操作");

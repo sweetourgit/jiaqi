@@ -13,11 +13,7 @@
                  <el-table-column  prop="id" label="ID" min-width="100" align="center"></el-table-column>
                  <el-table-column  prop="name" label="姓名" min-width="120" align="center"></el-table-column>
                  <el-table-column  prop="uri" label="职位" min-width="200" align="center"></el-table-column>
-<<<<<<< HEAD
-                 <el-table-column  prop="isLeaf" label="性别" min-width="100" align="center"></el-table-column> 
-=======
                  <el-table-column  prop="sexCN" label="性别" min-width="100" align="center"></el-table-column> 
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
               </el-table>
               <div slot="footer" class="dialog-footer" style="text-align: center">
                 <el-button @click="cenclePer">取消</el-button>
@@ -52,11 +48,7 @@ export default {
        setting: {
           async: {
               enable: true,
-<<<<<<< HEAD
-              url: this.GLOBAL.serverSrc + "/org/menu/api/ztreelist",
-=======
               url: this.GLOBAL.serverSrc + "/org/dept/api/ztreelist",
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
               autoParam: ["id", "name=n", "level=lv"],
               type: 'get',
               checkable: true,
@@ -80,11 +72,7 @@ export default {
           })
           this.dialogFormUser=true;    
         }
-<<<<<<< HEAD
-     }
-=======
      } 
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
   },
   methods: {
       cenclePer(){
@@ -105,19 +93,10 @@ export default {
       },
       // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
-<<<<<<< HEAD
-        if(treeNode.isParent === true){
-          this.parentID = treeNode.id;
-        }else{
-          this.parentID = treeNode.parentID;       
-        }
-        this.menuList();         
-=======
         if(!treeNode.isParent === true){
           this.parentID = treeNode.id;
           this.menuList();         
         } 
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       },
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -141,18 +120,6 @@ export default {
         }
       },
       menuList(type){  //获取菜单列表
-<<<<<<< HEAD
-        this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
-             "object": {
-               "id": this.parentID,
-              }
-            }).then(res => {
-                if(res.data.isSuccess == true){
-                   this.groupList=res.data.objects;
-                   this.showList=true;
-                }else{
-                   this.groupList=[];
-=======
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlistwithorg',{
                "id": this.parentID,
             }).then(res => {
@@ -160,7 +127,6 @@ export default {
                 if(res.data.isSuccess == true){
                    this.groupList=res.data.objects;
                    this.showList=true;
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
                 }
         })
       },
@@ -186,9 +152,5 @@ $(document).ajaxSend(function(event, jqxhr, settings){
      .abow_dialog {margin:-100px 0 0 0}
      .tree-list{float: left;margin-left: 20px}
      .table{border:1px solid #e6e6e6;width:630px;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 30px 8px}
-<<<<<<< HEAD
-     .ztree-bg{float: left;width: 220px;height:600px;margin:20px 0 0 10px;padding: 10px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;}
-=======
      .ztree-bg{float: left;width: 220px;height:600px;margin:20px 0 0 10px;padding: 10px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;overflow:scroll;overflow-x:hidden}
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
 </style>

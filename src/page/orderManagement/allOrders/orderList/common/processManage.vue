@@ -258,11 +258,7 @@ export default {
   
   props: {
     orderId: 0,
-<<<<<<< HEAD
-    variable: 0,
-=======
     a_variable: 0,
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     dialogType: 0,
     orderCode: "",
     paid: 0, //已付金额
@@ -391,11 +387,7 @@ export default {
   created() {},
 
   watch: {
-<<<<<<< HEAD
-    variable() {
-=======
     a_variable() {
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       if (this.dialogType == 1) {
         this.processManage(this.orderId);
         this.dialogFormProcess = true;
@@ -1505,10 +1497,7 @@ export default {
       this.isPricechange = null;
       this.prePayable = 0;
       this.payable = 0;
-<<<<<<< HEAD
-=======
       this.$parent.orderPage();
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     }
   }
 };

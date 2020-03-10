@@ -2,22 +2,6 @@
    <div  class="vivo" style="position:relative; width:100%;">
      <div label="商户欠款订单">
         <!--搜索框-->
-<<<<<<< HEAD
-        <div>
-          <div class="fl">
-            <span class="emptyPlan">订单单号</span>
-            <el-input v-model="orderid" class="empty"   placeholder="订单ID"></el-input>
-          </div>
-          <div class="fl">
-            <span class="emptyPlan">商户名称</span>
-            <el-input v-model="ordertitle" class="empty"   placeholder="请输入商户名称"></el-input>
-          </div>
-          <div class="fl">
-            <span class="emptyPlan">欠款时间</span>
-             <el-date-picker
-                class="planTime"
-                style="width:70%"
-=======
         <div style="width:100%; padding:30px 0 0 0;">
             <span class="emptyPlan">订单单号</span>
             <el-input v-model="orderid" placeholder="订单ID" class="search_input" style='width:200px;'></el-input>
@@ -26,7 +10,6 @@
             <span class="emptyPlan">出团日期</span>
              <el-date-picker
                 class="search_input"
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
                 v-model="planTime"
                 @change="endDateChange()" 
                 type="daterange"
@@ -35,18 +18,6 @@
                 end-placeholder="终止日期"
                 >
               </el-date-picker>
-<<<<<<< HEAD
-          </div>
-        </div>
-        <div style="width:1100px;clear:both; padding:0 0 50px 0;">
-          <div style=" float:left">
-               <span class="emptyPlan">欠款逾期</span>
-             <el-select v-model="typeColl" placeholder="请选择逾期类型" class="empty">
-                     <el-option :label="item.label" :value="item.value" v-for="item in settlement" :key="item.value" /> 
-                   </el-select>
-          </div>
-          <div style="float:right; margin: 0 -50px 0 0;">
-=======
         </div>
         <div style="width:1100px;clear:both; padding:30px 0 50px 0;">
              <span class="emptyPlan">欠款逾期</span>
@@ -59,7 +30,6 @@
             </el-select>
           
           <div style="float:right; margin: 20px -40px 30px 0;">
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
             <el-button type="primary" @click="handleSearch()">搜索</el-button>
             <el-button type="primary" @click="emptyButton()" >重置</el-button>
           </div>
@@ -67,31 +37,6 @@
       <!--搜索框-->
  
         <!--表格-->
-<<<<<<< HEAD
-         <el-table :data="tableData" class="labelTable" border style="width:100%">
-            <el-table-column prop="ID" label="订单单号" width="200" align="center"></el-table-column>
-            <el-table-column prop="name" label="商户名称" width="130" align="center"></el-table-column>
-            <el-table-column prop="moneyType" label="结款方式" width="72" align="center"></el-table-column>
-            <el-table-column prop="productName" label="产品名称" width="160" align="center"></el-table-column>
-            <el-table-column prop="plan" label="团期计划" width="130" align="center"></el-table-column>
-            <el-table-column prop="order" label="订单金额" width="92" align="center"></el-table-column>
-            <el-table-column prop="arrears" label="欠款金额" width="92" align="center"></el-table-column>
-            <el-table-column prop="also" label="已还金额" width="92" align="center"></el-table-column>
-            <el-table-column prop="examine" label="待审批金额" width="92" align="center"></el-table-column>
-            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
-            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="120" align="center"></el-table-column>
-         </el-table>
-         <!-- <el-pagination 
-         class="pageList" 
-         :page-sizes="[10,1,30,50]" 
-         background @size-change="handleSizeChange" 
-         :page-size="pageSize" 
-         :current-page.sync="currentPage" 
-         @current-change="handleCurrentChange" 
-         layout="total, sizes, prev, pager, next, jumper" 
-         :total="total">
-         </el-pagination> -->
-=======
     <div class="table_style">
          <el-table :data="tableData" class="labelTable"  border style="width: 100%;" :row-class-name="tableRowClassName" >
             <el-table-column prop="ID" label="订单单号" width="185" align="center"></el-table-column>
@@ -112,7 +57,6 @@
                          </template>
             </el-table-column>
           </el-table>
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
          <el-pagination
           class="pageList" 
           @size-change="handleSizeChange"
@@ -124,8 +68,6 @@
           :total="total"
           background
         ></el-pagination>
-<<<<<<< HEAD
-=======
 
          <el-dialog title="修改时间" :visible.sync="dialogFormVisible" width="40%" :show-close="false":close-on-click-modal="false" >
              <el-date-picker type="date" placeholder="选择日期" v-model="amendTime" style="width: 100%;"></el-date-picker>
@@ -135,7 +77,6 @@
             </div>
             </el-dialog>
         </div>
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       </div>
       
        
@@ -143,9 +84,6 @@
    
   </div>
 </template>
-<<<<<<< HEAD
-
-=======
 <style lang="stylus">
   /*搜索框*/
   .search_input{ width: 200px;float:left; line-height: 30px;margin: 0 0 0 10px; }
@@ -160,7 +98,6 @@
   .el-table .warning-red-jenny { color: red;}
   
 </style>
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
 <script>
 import commercia from "./commercia";
 import moment from "moment";
@@ -177,10 +114,6 @@ export default {
         orderid:"",//订单id
         ordertitle:'',//商户名称
         planTime:"",//time
-<<<<<<< HEAD
-        typeColl:-1, //欠款逾期
-        settlement:[{
-=======
         amendTime:'',//修改时间
         typeColl:-1, //欠款逾期
         settlement:-1,//结款类型
@@ -196,7 +129,6 @@ export default {
           label: '非月结'
          }],
         settlements:[{
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
           value:  -1,
           label: '全部'
          },{
@@ -227,24 +159,11 @@ export default {
   methods: {
         moment,
       //查询列表
-<<<<<<< HEAD
-       pageList(
-=======
       pageList(
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
             pageIndex = this.pageIndex,
             pageSize = this.pageSize,
             orderCode = this.orderid,//订单id
             localComp = this.ordertitle,//商户名称
-<<<<<<< HEAD
-            startDate= this.planTime[0],//开始时间
-            endDate = this.planTime[1],//结束时间
-            typeColl=this.typeColl//选择逾期
-        ){
-            var that = this;
-            let object={};
-            console.log(endDate);
-=======
             startDate= this.startDate,//开始时间
             endDate = this.endDate,//结束时间
             typeColl=this.typeColl,//选择逾期
@@ -253,26 +172,17 @@ export default {
             var that = this;
             let object={};
             //console.log(endDate);
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
             if(endDate == undefined && startDate == undefined ){
               endDate = 0
               startDate = 0
             }else{
-<<<<<<< HEAD
-               endDate = Date.parse(endDate);
-               startDate = Date.parse(startDate);
-=======
               //  endDate = Date.parse(endDate);
               //  startDate = Date.parse(startDate);
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
             }
               orderCode !== "" ? (object.orderCode = orderCode) : orderCode,
               localComp !== "" ? (object.localComp = localComp) : localComp,
               typeColl !== ""? (object.typeColl = typeColl): typeColl;
-<<<<<<< HEAD
-=======
               settlement !== ""? (object.settlement = settlement): settlement;
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
               startDate !== ""? (object.startDate = startDate): startDate;
               endDate !== ""? (object.endDate = endDate): endDate;
              
@@ -293,17 +203,12 @@ export default {
                   }else if(obj.data.objects[j].settlement == 2){
                       moneyType = "非月结"
                   }
-<<<<<<< HEAD
-                  that.tableData.push({
-                        ID:obj.data.objects[j].orderCode,//id+
-=======
                   let str = obj.data.objects[j].date;
                       str = str.toString();
                   let nawdata = str[0]+str[1]+str[2]+str[3]+"-"+str[4]+str[5]+"-"+str[6]+str[7];
                   that.tableData.push({
                         ID:obj.data.objects[j].orderCode,//id+
                         planid:obj.data.objects[j].id,//id+
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
                         name:obj.data.objects[j].localComp,//商户名称+
                         moneyType:moneyType,//结款方式+
                         productName:obj.data.objects[j].title, //产品名称+
@@ -314,10 +219,7 @@ export default {
                         examine:obj.data.objects[j].approvedPrice,//待审批金额
                         arrearsDate:obj.data.objects[j].createDate,//欠款日期
                         alsoDate:obj.data.objects[j].arrearsDate,//应还日期
-<<<<<<< HEAD
-=======
                         date:nawdata,//出团日期
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
                   })
                 }
               })
@@ -325,9 +227,6 @@ export default {
                 console.log(obj);
               });
         },
-<<<<<<< HEAD
-  
-=======
           tableRowClassName({row, rowIndex}){
             let myDate = new Date();
             let arrearsDate = moment(row.alsoDate).format("YYYYMMDD");
@@ -342,38 +241,20 @@ export default {
               } 
           },
       
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     //重置
     emptyButton(){
       this.orderid ='',
       this.ordertitle ='',
       this.planTime = '';
-<<<<<<< HEAD
-      this.typeColl = -1;
-      this.currentPage4 = 1;
-=======
       this.endDate = null;
       this.startDate = null;
       this.typeColl = -1;
       this.currentPage4 = 1;
       this.settlement = -1;
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
       this.pageList(1, this.pageSize);
     },
     //判断结束时间不能在开始时间之前
     endDateChange() {
-<<<<<<< HEAD
-      console.log(this.planTime);
-      if (this.planTime == null){
-              this.planTime = "";
-              this.pageList();
-          }else{
-            let startDate = moment(this.planTime[0]).format("YYYY-MM-DD hh:mm:ss");
-            let endDate = moment(this.planTime[1]).format("YYYY-MM-DD hh:mm:ss");
-            if(endDate == startDate){
-                this.planTime[1] = moment(this.planTime[1]).format("YYYY-MM-DD 23:59:00");
-            }
-=======
      if (this.planTime == null){
               this.planTime = "";
               this.pageList();
@@ -383,7 +264,6 @@ export default {
             // if(endDate == startDate){
             //     this.planTime[1] = moment(this.planTime[1]).format("YYYY-MM-DD 23:59:00");
             // }
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
          }
     },
     handleSearch() {// 搜索
@@ -393,21 +273,13 @@ export default {
             
     },
     handleSizeChange(val) { //分页
-<<<<<<< HEAD
-    console.log(val,'8585')
-=======
     //console.log(val,'8585')
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
      this.pageSize = val;
             this.currentPage4 = 1
           this.pageList();
         },  
      handleCurrentChange(val) { // 换每页数量
-<<<<<<< HEAD
-      console.log(val,'8787')
-=======
       //console.log(val,'8787')
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
           this.currentPage4 = val;
           this.pageList();
         },
@@ -418,8 +290,6 @@ export default {
           }
           return moment(date).format('YYYY-MM-DD')
         },
-<<<<<<< HEAD
-=======
     dialogchange(id) {  // 修改时间弹窗
          this.planid = id.row.planid 
          this.dialogFormVisible = true;
@@ -490,23 +360,8 @@ export default {
            
         
     }
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
   
   },
 };
 </script>
 
-<<<<<<< HEAD
-<style lang="scss" scoped>
-  /*搜索框*/
-  .empty{ width: 200px; line-height: 30px;margin: 0 0 0 10px; }
-  .fl{float:left; margin: 20px 0 20px 0;}
-  .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
-  .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
-  .time{margin: 0 0 0 10px;}
-  /*表格*/
-  .labelTable{margin: 20px 30px 100px 0;max-width: 90%;overflow: hidden;clear:both;}
-  .pageList{float:right; margin: -70px 0 60px 0;}
-</style>
-=======
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c

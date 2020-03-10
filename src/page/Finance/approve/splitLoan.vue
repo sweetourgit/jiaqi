@@ -303,11 +303,7 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
           "object": {
             "isDeleted": 0,
-<<<<<<< HEAD
-            'orgID': sessionStorage.getItem('topID')
-=======
             'orgID': sessionStorage.getItem('topID'),
->>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
           }
         }).then( obj =>  {
           this.bankAccountData = obj.data.objects
