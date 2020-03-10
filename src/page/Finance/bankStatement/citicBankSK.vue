@@ -1,4 +1,4 @@
-<template>
+itic<template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
     <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
@@ -13,7 +13,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="交易流水号:" prop="code">
+          <el-form-item label="银行流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
           </el-form-item>
         </el-col>
@@ -47,22 +47,34 @@
       <el-button @click="setZCK" type="warning">设置暂存款</el-button>
       <el-upload
         class="upload-demo"
-        :action="UploadUrl()"
+        :action="UploadUrl1()"
         :headers="headers"
-        :on-success="handleSuccess"
-        :on-error="handleError"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
+        :on-success="handleSuccess1"
+        :on-error="handleError1"
+        :on-remove="handleRemove1"
+        :before-remove="beforeRemove1"
         name="excelfile">
-        <el-button type="primary">添加中国银行流水单</el-button>
+        <el-button type="primary">添加建设银行流水单</el-button>
+      </el-upload>
+      <el-upload
+        class="upload-demo"
+        :action="UploadUrl2()"
+        :headers="headers"
+        :on-success="handleSuccess2"
+        :on-error="handleError2"
+        :on-remove="handleRemove2"
+        :before-remove="beforeRemove2"
+        name="excelfile">
+        <el-button type="primary" plain>添加微信支付宝明细</el-button>
       </el-upload>
     </div>
     <!-- 表格 -->
-    <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
-      <el-table-column label="操作" width="100" align="center" fixed>
+    <el-table   :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
+      <el-table-column label="操作" width="140" align="center" fixed>
         <template slot-scope="scope">
-          <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
-          <el-button v-if="scope.row.surplus_Amount == scope.row.trade_Amount" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '中信全付通入账'">查看订单</el-button>
+          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '中信全付通入账'">查看微信支付宝明细</el-button>
+          <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
@@ -73,50 +85,58 @@
           <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
       </el-table-column>
-      <el-table-column prop="purpose_fee" label="手续费" align="center">
+      <el-table-column prop="purpose_fee" label="交易日期" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
+      <el-table-column prop="bank_serial_number" label="交易时间" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="交易日期" align="center">
+      <el-table-column prop="reference" label="对方账号" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Time" label="交易时间" align="center">
+      <el-table-column prop="transaction_Date" label="对方账户名称" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.transaction_Date.split('T')[0]}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="trade_Currency" label="交易货币" align="center">
+      <el-table-column prop="transaction_Date" label="对方账号开户网点名称" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.transaction_Date.split('T')[1]}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="trade_Amount" label="交易金额" align="center">
+      <el-table-column prop="purpose" label="借方发生额" align="center">
       </el-table-column>
-      <el-table-column prop="value_Date" label="起息日期" align="center">
+      <el-table-column prop="credit_amount" label="贷方发生额" align="center">
       </el-table-column>
-      <el-table-column prop="exchange_rate" label="汇率" align="center">
+      <el-table-column prop="account_number" label="账户余额" align="center">
       </el-table-column>
-      <el-table-column prop="record_ID" label="记录标识号" align="center">
+      <el-table-column prop="account_name" label="摘要" align="center">
       </el-table-column>
-      <el-table-column prop="reference" label="摘要" align="center">
+      <el-table-column prop="certificate_code" label="退汇标识" align="center">
       </el-table-column>
-      <el-table-column prop="purpose" label="用途" align="center">
+      <el-table-column prop="currency" label="退汇日期" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="交易附言" align="center">
+      <el-table-column prop="cash_or_transfer" label="柜员交易号" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Type" label="交易类型" align="center">
+      <el-table-column prop="debit_amount" label="附言" align="center">
       </el-table-column>
-      <el-table-column prop="business_type" label="业务类型" align="center">
+      <el-table-column prop="account_number_other" label="币种" align="center">
       </el-table-column>
-      <el-table-column prop="account_holding_bank_number_of_payer" label="付款人开户行号" align="center">
+      <el-table-column prop="account_name_other" label="交易账号" align="center">
       </el-table-column>
-      <el-table-column prop="payer_account_bank" label="付款人开户行名" align="center">
+      <el-table-column prop="bank_other" label="交易账号开户网点名称" align="center">
       </el-table-column>
-      <el-table-column prop="debit_Account_No" label="付款人账号" align="center">
+      <el-table-column prop="bank_other" label="对账编号" align="center">
       </el-table-column>
-      <el-table-column prop="payer_s_Name" label="付款人姓名" align="center">
+      <el-table-column prop="bank_other" label="单位结算卡号" align="center">
       </el-table-column>
-      <el-table-column prop="account_holding_bank_number_of_beneficiary" label="收款人开户行号" align="center">
+      <el-table-column prop="bank_other" label="剩余金额" align="center">
       </el-table-column>
-      <el-table-column prop="beneficiary_account_bank" label="收款人开户行名" align="center">
+      <!-- <el-table-column prop="bank_other" label="暂存款状态" align="center">
+      </el-table-column> -->
+      <!-- <el-table-column prop="bank_other" label="关联订单" align="center">
       </el-table-column>
-      <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center">
-      </el-table-column>
-      <el-table-column prop="payee_s_Name" label="收款人姓名" align="center">
-      </el-table-column>
+      <el-table-column prop="bank_other" label="所属公司" align="center">
+      </el-table-column> -->
+      <!-- <el-table-column prop="remark" label="所属公司" align="center">
+      </el-table-column> -->
     </el-table>
     <div class="block">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
@@ -139,7 +159,7 @@ export default {
     return {
       tableData: [], // 表格数据
       ruleForm: {
-        matchType: '', // 匹配状态 
+        matchType: '', // 匹配状态
         code: '', // 交易流水号
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
@@ -156,6 +176,9 @@ export default {
       endDatePicker: this.processDate()
     }
   },
+  created () {
+    this.loadData()
+  },
   computed: {
     // 计算属性的 getter
     headers(){
@@ -171,16 +194,13 @@ export default {
   watch: {
     countTest:function(newV, oldV){
       const that = this;
-      if(newV.indexOf("bankOfChinaSK") != -1 && newV != oldV){
+      if(newV.indexOf("industrialBankSK") != -1 && newV != oldV){
         setTimeout(function () {
-          // alert('数据改变，执行loadDataSK~')
+          // alert('数据改变，执行loadDataSXF~')
           that.loadData()
         },500)
       }
     },
-  },
-  created () {
-    this.loadData()
   },
   methods: {
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -195,31 +215,53 @@ export default {
         path: '/bankStatement/bankZCK',
         name: '银行流水单管理  /设置暂存款',
         query: {
-          "searchType": 'first'
+          "searchType": 'second'
         }
       });
     },
-    UploadUrl(){
-      return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
+    UploadUrl1(){
+      return this.GLOBAL.serverSrc + '/finance/industrialbank/api/ImportExcel';
     },
-    handleSuccess(response, file, fileList){
-      console.log('response',response);
+    handleSuccess1(response, file, fileList){
+      console.log(response);
       if(response == true){
-        this.$message.success("中国银行流水单上传成功！");
+        this.$message.success("建设银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
+        this.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
       }else{
-        this.$message.warning("中国银行流水单上传失败！");
+        this.$message.warning("建设银行流水单上传失败！");
       }
     },
-    handleError(err, file, fileList){
+    handleError1(err, file, fileList){
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
-    handleRemove(file, fileList) {
+    handleRemove1(file, fileList) {
       console.log(file, fileList);
     },
-    beforeRemove(file, fileList) {
+    beforeRemove1(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
+    },
+    UploadUrl2(){
+      return this.GLOBAL.serverSrc + '/finance/wa_payment/api/ImportExcel';
+    },
+    handleSuccess2(response, file, fileList){
+      console.log(response);
+      if(response == true){
+        this.$message.success("微信支付宝明细上传成功！");
+        this.pageCurrent = 1;
+        this.loadData();
+      }else{
+        this.$message.warning("微信支付宝明细上传失败！");
+      }
+    },
+    handleError2(err, file, fileList){
+      this.$message.warning(`文件上传失败，请重新上传！`);
+    },
+    handleRemove2(file, fileList) {
+      console.log(file, fileList);
+    },
+    beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
     searchHandInside(){
@@ -235,12 +277,22 @@ export default {
       this.dialogFormVisible = true;
       this.info = {
         id: row.id,
-        type: 0
+        type: 1
       };
     },
     close(){
       this.dialogFormVisible = false;
       this.info = '';
+    },
+    payDetail(row){
+      this.$router.push({
+        path: '/bankStatement/citicPayDetails',
+        name: '银行流水单管理  /微信支付宝明细',
+        query: {
+          "purpose_Merchant_code": row.purpose_Merchant_code,
+          "purpose_Date": row.purpose_Date
+        }
+      });
     },
     deleteFun(row){
       const that = this;
@@ -249,13 +301,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/delete", {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/delete", {
           "id": row.id,
         }).then(function(response) {
           if (response.data.isSuccess) {
             that.pageCurrent = 1;
             that.loadData();
-            that.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
+            that.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
             that.$message({
               type: 'info',
               message: '已删除'
@@ -287,14 +339,6 @@ export default {
       this.pageCurrent = val;
       this.loadData();
     },
-    // 起始时间格式转换
-    dateFormat: function(row, column) {
-      let date = row[column.property];
-      if(date == undefined) {
-        return '';
-      }
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
-    },
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
@@ -305,7 +349,7 @@ export default {
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
       
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
         "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
         "object": {
@@ -316,7 +360,7 @@ export default {
           "seachType": 0
         }
       }).then(function (obj) {
-        // console.log('中国银行',obj);
+        // console.log('建设银行',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;
@@ -360,7 +404,7 @@ export default {
 
 </script>
 <style lang="scss">
-  #bankContent.distributor-content{
+  #industrialBank.distributor-content{
     width: 99%;
     margin: 25px auto;
     height: auto;
@@ -382,21 +426,24 @@ export default {
     .buttonsDv{
       width: 98%;
       margin: 5px auto;
+      .el-button{
+        margin-right: 10px;
+      }
     }
     #table-content{
       width: 98%;
       margin: 40px auto 20px;
-      th, td{
-        min-width: 60px;
-      }
     }
     .block{
       width: 100%;
       text-align: center;
       margin: 30px auto;
     }
-    .el-upload-list{
-      display: none!important;
+    .upload-demo{
+      display: inline-block!important;
+      .el-upload-list{
+        display: none!important;
+      }
     }
   }
 

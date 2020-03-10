@@ -54,7 +54,7 @@
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
         name="excelfile">
-        <el-button type="primary">添加中国银行流水单</el-button>
+        <el-button type="primary">添加招商银行流水单</el-button>
       </el-upload>
     </div>
     <!-- 表格 -->
@@ -65,58 +65,78 @@
           <el-button v-if="scope.row.surplus_Amount == scope.row.trade_Amount" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+      <el-table-column prop="" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
           <span v-if="scope.row.is_ZCK == 0">未设置</span>
           <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
+      </el-table-column>    
+      <el-table-column prop="" label="交易流水号" align="center">
       </el-table-column>
-      <el-table-column prop="purpose_fee" label="手续费" align="center">
+       <el-table-column prop="" label="交易日" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
+      <el-table-column prop="" label="交易时间" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="交易日期" align="center">
+       <el-table-column prop="" label="起息日" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Time" label="交易时间" align="center">
+       <el-table-column prop="" label="交易类型" align="center">
       </el-table-column>
-      <el-table-column prop="trade_Currency" label="交易货币" align="center">
+       <el-table-column prop="" label="借方金额" align="center">
       </el-table-column>
-      <el-table-column prop="trade_Amount" label="交易金额" align="center">
+       <el-table-column prop="" label="贷方金额" align="center">
       </el-table-column>
-      <el-table-column prop="value_Date" label="起息日期" align="center">
+       <el-table-column prop="" label="余额" align="center">
       </el-table-column>
-      <el-table-column prop="exchange_rate" label="汇率" align="center">
+       <el-table-column prop="" label="用途" align="center">
       </el-table-column>
-      <el-table-column prop="record_ID" label="记录标识号" align="center">
+        <el-table-column prop="" label="流程实例号" align="center">
       </el-table-column>
-      <el-table-column prop="reference" label="摘要" align="center">
+      <el-table-column prop="" label="业务名称" align="center">
       </el-table-column>
-      <el-table-column prop="purpose" label="用途" align="center">
+      <el-table-column prop="" label="业务参考号" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="交易附言" align="center">
+      <el-table-column prop="" label="业务摘要" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Type" label="交易类型" align="center">
+      <el-table-column prop="" label="其他摘要" align="center">
       </el-table-column>
-      <el-table-column prop="business_type" label="业务类型" align="center">
+      <el-table-column prop="" label="收(付)方分行名" align="center">
       </el-table-column>
-      <el-table-column prop="account_holding_bank_number_of_payer" label="付款人开户行号" align="center">
+      <el-table-column prop="" label="收(付)方名称" align="center">
       </el-table-column>
-      <el-table-column prop="payer_account_bank" label="付款人开户行名" align="center">
+      <el-table-column prop="" label="收(付)方账号" align="center">
       </el-table-column>
-      <el-table-column prop="debit_Account_No" label="付款人账号" align="center">
+      <el-table-column prop="" label="收(付)方开户行行号" align="center">
       </el-table-column>
-      <el-table-column prop="payer_s_Name" label="付款人姓名" align="center">
+      <el-table-column prop="" label="收(付)方开户行名" align="center">
       </el-table-column>
-      <el-table-column prop="account_holding_bank_number_of_beneficiary" label="收款人开户行号" align="center">
+       <el-table-column prop="" label="收(付)方开户行地址" align="center">
       </el-table-column>
-      <el-table-column prop="beneficiary_account_bank" label="收款人开户行名" align="center">
+      <el-table-column prop="" label="收(付)母(子)公司账号分行名" align="center">
       </el-table-column>
-      <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center">
+      <el-table-column prop="" label="母(子)公司账号" align="center">
       </el-table-column>
-      <el-table-column prop="payee_s_Name" label="收款人姓名" align="center">
+      <el-table-column prop="" label="母(子)公司名称" align="center">
       </el-table-column>
+      <el-table-column prop="" label="信息标志" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="有否附件信息" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="冲账标志" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="扩展摘要" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="交易分析码" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="票据号" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="商务支付订单号" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="内部编号" align="center">
+      </el-table-column>
+      <!-- <el-table-column prop="" label="所属公司" align="center">
+      </el-table-column> -->
     </el-table>
     <div class="block">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
@@ -203,14 +223,14 @@ export default {
       return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
     },
     handleSuccess(response, file, fileList){
-      console.log('response',response);
+      console.log(response);
       if(response == true){
-        this.$message.success("中国银行流水单上传成功！");
+        this.$message.success("招商银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
         this.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
       }else{
-        this.$message.warning("中国银行流水单上传失败！");
+        this.$message.warning("招商银行流水单上传失败！");
       }
     },
     handleError(err, file, fileList){

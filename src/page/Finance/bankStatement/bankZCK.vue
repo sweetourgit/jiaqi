@@ -5,6 +5,7 @@
       <el-button @click="closeBtn" type="primary" plain>取消</el-button>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
+       <!-- ++++++中国银行+++++++ -->
       <el-tab-pane label="中国银行" name="first">
         <el-table :data="tableData1" ref="multipleTable1" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content1" @row-click="handleRowClick1" @selection-change="selectionChange1">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
@@ -65,6 +66,7 @@
           </el-pagination>
         </div>
       </el-tab-pane>
+       <!-- ++++++兴业银行+++++++ -->
       <el-tab-pane label="兴业银行" name="second">
         <el-table :data="tableData2" ref="multipleTable2" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content2" @row-click="handleRowClick2" @selection-change="selectionChange2">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
@@ -117,6 +119,130 @@
           </el-table-column>
           <el-table-column prop="remark" label="备注" align="center">
           </el-table-column>
+        </el-table>
+        <div class="block">
+          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="pageCurrent2" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize2" layout="total, sizes, prev, pager, next, jumper" :total='total2'>
+          </el-pagination>
+        </div>
+      </el-tab-pane>
+      <!-- ++++++农业银行+++++++ -->
+       <el-tab-pane label="农业银行" name="third">
+        <el-table :data="tableData2" ref="multipleTable2" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content2" @row-click="handleRowClick2" @selection-change="selectionChange2">
+          <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
+          </el-table-column>
+          <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+          </el-table-column>
+          <el-table-column prop="id" label="暂存款状态" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.is_ZCK == 0">未设置</span>
+              <span v-if="scope.row.is_ZCK == 1">已设置</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="bank_serial_number" label="银行流水号" align="center">
+          </el-table-column>
+          <el-table-column prop="transaction_Date" label="交易时间" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.transaction_Date.split('T')[1]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="purpose" label="收入金额" align="center">
+          </el-table-column>
+          <el-table-column prop="credit_amount" label="支出金额" align="center">
+          </el-table-column>
+          <el-table-column prop="account_number" label="账户余额" align="center">
+          </el-table-column>
+          <el-table-column prop="account_name" label="交易行名" align="center">
+          </el-table-column>
+          <el-table-column prop="certificate_code" label="对方省市" align="center">
+          </el-table-column>
+          <el-table-column prop="currency" label="对方账号" align="center">
+          </el-table-column>
+          <el-table-column prop="cash_or_transfer" label="对方户名" align="center">
+          </el-table-column>
+          <el-table-column prop="debit_amount" label="交易用途" align="center">
+          </el-table-column>
+          
+        </el-table>
+        <div class="block">
+          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="pageCurrent2" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize2" layout="total, sizes, prev, pager, next, jumper" :total='total2'>
+          </el-pagination>
+        </div>
+      </el-tab-pane>
+       <!-- ++++++招商银行+++++++ -->
+          <el-tab-pane label="招商银行" name="forth">
+        <el-table :data="tableData2" ref="multipleTable2" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content2" @row-click="handleRowClick2" @selection-change="selectionChange2">
+          <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
+          </el-table-column>
+          <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+          </el-table-column>
+          <el-table-column prop="id" label="暂存款状态" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.is_ZCK == 0">未设置</span>
+              <span v-if="scope.row.is_ZCK == 1">已设置</span>
+            </template>
+          </el-table-column>
+         <el-table-column prop="" label="交易流水号" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="交易日" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="交易时间" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="起息日" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="交易类型" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="借方金额" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="贷方金额" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="余额" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="用途" align="center">
+      </el-table-column>
+        <el-table-column prop="" label="流程实例号" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="业务名称" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="业务参考号" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="业务摘要" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="其他摘要" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="收(付)方分行名" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="收(付)方名称" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="收(付)方账号" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="收(付)方开户行行号" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="收(付)方开户行名" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="收(付)方开户行地址" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="收(付)母(子)公司账号分行名" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="母(子)公司账号" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="母(子)公司名称" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="信息标志" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="有否附件信息" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="冲账标志" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="扩展摘要" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="交易分析码" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="票据号" align="center">
+      </el-table-column>
+      <el-table-column prop="" label="商务支付订单号" align="center">
+      </el-table-column>
+       <el-table-column prop="" label="内部编号" align="center">
+      </el-table-column>
         </el-table>
         <div class="block">
           <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="pageCurrent2" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize2" layout="total, sizes, prev, pager, next, jumper" :total='total2'>
