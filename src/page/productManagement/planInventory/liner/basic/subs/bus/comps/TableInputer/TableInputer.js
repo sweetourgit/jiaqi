@@ -98,9 +98,15 @@ const TableInputerFactory= function($){
       submitVal(){
         let { pattern, validator, adaptor, message }= this.options;
         let val= this.val;
-        if(pattern && !pattern.test(val)) return this.$message.error(message || '格式错误');
+        if(pattern && !pattern.test(val)){
+          this.$message.error(message || '格式错误');
+          return this.focus();
+        }
         if(adaptor) val= adaptor(val);
-        if(validator && !validator(val)) return this.$message.error(message || '验证失败');
+        if(validator && !validator(val)){
+          this.$message.error(message || '验证失败');
+          return this.focus();
+        }
         this.$emit('input', val);
         this.inEdit= false;
       },
