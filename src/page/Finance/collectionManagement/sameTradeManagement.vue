@@ -193,7 +193,7 @@
                   <tbody>
                   <tr>
                     <td>{{item.payablePrice}}</td>
-                    <td>{{ hasSubjectStatus.length != 0 ? fundamental.collectionNumber : '现金' }}</td>
+                    <td>{{ fundamental.collectionNumber }}</td>
                     <td>{{ item.matchingPrice }}</td>
                   </tr>
                   </tbody>
@@ -280,7 +280,7 @@
                   <tbody>
                     <tr>
                       <td>{{item.payablePrice}}</td>
-                      <td>{{ hasSubjectStatus.length != 0 ? fundamental.collectionNumber : '现金' }}</td>
+                      <td>{{ fundamental.collectionNumber }}</td>
                       <td>{{ item.matchingPrice }}</td>
                     </tr>
                   </tbody>
@@ -359,6 +359,8 @@
           <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
           <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag>
         </div>
+        <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
+        <div>
         <!-- 第一行 -->
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="6">
@@ -432,6 +434,7 @@
           </el-row>
           <!-- 第四行 END -->
           <!-- 基本信息 -->
+        </div>
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
@@ -545,7 +548,6 @@ export default {
       currentRowId: null, // 当前行id
       keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
       ifShowsearch: false,
-      hasSubjectStatus: ''
     }
   },
   created(){
@@ -726,44 +728,31 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() => {
-
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll',{
-          "id":this.currentRowId
-        }).then(res => {
-          console.log(res.data.object.checkType)
-          // 除审批中均可撤销
-          if(res.data.object.checkType != 0){
-            this.$message.warning("财务已经通过/驳回收款，无法撤销")
-            return
+      }).then(() => {this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/delete',{
+        "id":this.currentRowId
+      }).then(res => {
+        if(res.data.isSuccess == true){
+          this.$message.success("撤销成功")
+          this.tableData=res.data.object;
+          this.detailstShow = false;
+          this.getList()
+          if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
+            this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
           }
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/delete',{
-            "id":this.currentRowId
+          // 撤销通过同时工作流通过
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
+            "datetime": moment(new Date().getTime()).format('YYYYMMDD'),
+            "spname": sessionStorage.getItem('name'),
+            "spstate": "通过",
+            "spcontent": "",
+            'checktype': 2,
+            "id": this.pid
           }).then(res => {
-            if(res.data.isSuccess == true){
-              this.$message.success("撤销成功")
-              this.tableData=res.data.object;
-              this.detailstShow = false;
-              this.getList()
-              if(this.$parent.$parent.$parent.$refs.PendingApprovalManagement){
-                this.$parent.$parent.$parent.$refs.PendingApprovalManagement.loadDataTY();
-              }
-              // 撤销通过同时工作流通过
-              this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getCollIDTG', {
-                "datetime": moment(new Date().getTime()).format('YYYYMMDD'),
-                "spname": sessionStorage.getItem('name'),
-                "spstate": "通过",
-                "spcontent": "",
-                'checktype': 2,
-                "id": this.pid
-              }).then(res => {
-                console.log(res,'通过res')
-              }).catch(err => {
-                console.log(err)
-              })
-            }
+          }).catch(err => {
+            console.log(err)
           })
-        })
+        }
+      })
       }).catch(() => {
         this.$message({
           type: "info",
@@ -778,11 +767,10 @@ export default {
       }).then(res => {
         if(res.data.isSuccess == true){
           const resObj = res.data.object
-          this.fundamental=res.data.object;
+           this.fundamental=res.data.object;
           const keepDebtItem = resObj.arrears
           this.tableAudit = res.data.object.spw
-          let acountIdPrint = res.data.object.accountID
-          this.getPrivateAcount(acountIdPrint)
+
           if(res.data.object.spw.length > 0){
             this.printSureTime = res.data.object.spw[0].createTime
             this.printSureState = res.data.object.spw[res.data.object.spw.length - 1].spState
@@ -796,13 +784,6 @@ export default {
           })
         }
      })
-    },
-    getPrivateAcount(printAcountId){
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
-        "id":printAcountId
-      }).then(res => {
-        this.hasSubjectStatus = res.data.object.subject
-      })
     },
     // 添加申请同业收款
     addSameGathering () {

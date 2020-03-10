@@ -183,7 +183,11 @@
       dialogFormVisible: {
         handler:function(){
           if(this.info != '' && this.dialogFormVisible){
+<<<<<<< HEAD
             if(sessionStorage.getItem('orgID') == '542' && sessionStorage.getItem('userCode') == 'TC900071'){
+=======
+            if(sessionStorage.getItem('orgID') == '542' && sessionStorage.getItem('userCode') == 'dy10009862'){
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
               this.passButtonDo = true;
             }
             this.loadData();

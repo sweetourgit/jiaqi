@@ -118,7 +118,7 @@
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
         <div style="position:absolute; top:8px; right:10px;">
           <el-button @click="CloseCheckIncomeShow()">取消</el-button>
-          <el-button type="success" @click="splitRelTable()">拆分关系表</el-button>
+          <el-button @click="splitRelTable()">拆分关系表</el-button>
           <el-button @click="repeal()" type="danger" plain v-if="getRowCheckType == 0">撤销</el-button>
           <el-button
             type="success"
@@ -130,7 +130,7 @@
           </el-button>
         </div>
       <!-- 好像是和无收入借款共用一个 -->
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" ref="printHandle" v-if="checkIncomeShow" :alreadyAcount="alreadyAcount"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" ref="printHandle" v-if="checkIncomeShow"></checkLoanManagement>
     </el-dialog>
     <!-- 付款账户弹窗 -->
     <el-dialog title="选择账户" :visible.sync="SelectAccount" width="1100px" custom-class="city_list" :show-close='false'>
@@ -167,7 +167,6 @@ export default {
   },
   data() {
     return {
-      alreadyAcount: '',
       creatUserOrgID: null, // 用来判断付款账户是否显示
       presentRouter: null, // 当前路由
       ifDY100009: false,
@@ -303,7 +302,11 @@ export default {
         {
           "object": {
             "isDeleted": 0,
+<<<<<<< HEAD
             'orgID': sessionStorage.getItem('topID')
+=======
+            'orgID': sessionStorage.getItem('topID'),
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
           }
         }).then(function (obj) {
         that.tableSelect = obj.data.objects
@@ -457,9 +460,6 @@ export default {
         }
       })
     },
-    splitRelTable(){
-      this.$router.push({ path: "/relationSplitMap", query: { id: this.paymentID } })
-    },
     // 撤销该笔借款
     repeal() {
       this.$confirm("是否需要撤销该笔借款?", "提示", {
@@ -476,11 +476,12 @@ export default {
           }).then(res => {
             this.$message.success("撤销成功");
             this.checkIncomeShow = false;
-            this.searchHand();
-            this.$store.commit('changeAdvance')
+            this.deleteBorrow();
+            // this.history.go(0); // 刷新页面
           })
-          // this.$message.success("撤销成功");
-          // this.checkIncomeShow = false;
+          this.$message.success("撤销成功");
+          this.searchHand();
+          this.checkIncomeShow = false;
         }
       })
       })
@@ -493,7 +494,10 @@ export default {
     },
     CloseCheckIncomeShow() {
       this.checkIncomeShow = false;
-    }
+    },
+    splitRelTable(){
+      this.$router.push({ path: "/relationSplitMap", query: { id: this.paymentID } })
+    },
   }
 }
 

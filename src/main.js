@@ -29,12 +29,14 @@ import '@/style/main.css'
 //global variable
 Vue.prototype.GLOBAL = global
 Vue.config.productionTip = false
+
 import Storage from 'vue-ls';
 Vue.use(Storage, {
   namespace: 'vuejs__', // key prefix
   name: 'ls', // name variable Vue.[ls] or this.[$ls],
   storage: 'local', // storage name session, local, memory
 });
+
  //import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
 //http request 请求拦截器
 axios.interceptors.request.use(//不用获取token的时候可以整段去掉

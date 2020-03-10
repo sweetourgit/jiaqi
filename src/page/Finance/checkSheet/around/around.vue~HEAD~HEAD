@@ -89,8 +89,8 @@
 </template>
 
 <script>
-    import NeedApproval from '@/page/Finance/checkSheet/needApproval';
-    import checkSheetPreview from '@/page/Finance/checkSheet/checkSheetPreview';
+    import NeedApproval from './needApproval';
+    import checkSheetPreview from './checkSheetPreview';
     import {formatDate} from '@/js/libs/publicMethod.js'
     export default {
       name: "checkSheet",

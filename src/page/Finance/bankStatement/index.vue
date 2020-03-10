@@ -10,7 +10,11 @@
           <el-tab-pane  label="手续费">
             <bankOfChinaSXF></bankOfChinaSXF>
           </el-tab-pane>
+<<<<<<< HEAD
           <el-tab-pane  label="付款">暂时不写</el-tab-pane>
+=======
+          <!-- <el-tab-pane label="付款">暂时不写</el-tab-pane> -->
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         </el-tabs>
       </el-tab-pane>
       <el-tab-pane label="兴业银行" name="second">
@@ -22,6 +26,7 @@
           <el-tab-pane  label="手续费">
             <industrialBankSXF></industrialBankSXF>
           </el-tab-pane>
+<<<<<<< HEAD
           <el-tab-pane  label="付款">暂时不写</el-tab-pane>
         </el-tabs>
       </el-tab-pane>
@@ -82,6 +87,9 @@
             <merchantsBankSXF></merchantsBankSXF>
           </el-tab-pane>
           <el-tab-pane label="付款">暂时不写</el-tab-pane>
+=======
+          <!-- <el-tab-pane label="付款">暂时不写</el-tab-pane> -->
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         </el-tabs>
       </el-tab-pane>
     </el-tabs>

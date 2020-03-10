@@ -15,5 +15,8 @@ export default {
   },
   changeAparoveState(state, data){ // 预付款 - 改变需要您审批的状态之后刷新借款记录列表
     state.updatAdvancePaymentData++
-  }
+  },
+  changeBankData(state, data){ // 银行流水单 -- 收款/手续费 数据改变同时刷新另一项
+    state.bankDataUpdate = data;
+  },
 }

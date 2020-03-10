@@ -4,7 +4,6 @@
     <el-row style="margin-top: 20px;">
       <el-col :span="6" :offset="18" style="text-align:center;">
         <el-button type="warning" @click="handleCancel">取消</el-button>
-        <el-button type="primary" @click="handleSplitRepaymentJump" v-show="ifShowOperateBtn">拆分/还款</el-button>
         <el-button type="success" @click="handlePassBtn" :disabled="ShowPassBtn">通过</el-button>
         <el-button type="danger" @click="handleRejectBtn">驳回</el-button>
       </el-col>
@@ -231,12 +230,11 @@
         listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
         ifShowPassBtn: false, // 先从接口获取数据判断下是否有未拆分的数据，没有显示通过按钮
-        ifShowOperateBtn: false, // 若所有项的借款金额 = 报销金额 则隐藏拆分还款按钮
         tabShowWhich: null, // 显示哪个tab
         examineData: [], // 审核
+        keepBackContent: [],
         getApproveListGuid: null, // 获取列表页的的guid
         dialogVisible: false,
-        keepBackContent: null, // 保存详情内容
         workItemIDArr: null, // 保存匹配的WorkItemID 数组
         commentText:'', // 驳回通过内容
         transitShow: false, // 通过驳回弹窗
@@ -265,7 +263,10 @@
             'price':130,
           }*/
         ],
+<<<<<<< HEAD
         keepTabId: [],
+=======
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         tabCount: 0
       }
     },
@@ -333,21 +334,6 @@
         window.open(file.url);
       },
       moment,
-      // 验证是否存在未拆的款项
-      checkNoSplit(){
-        // 进行验证，如果每一个报销都进行了拆分则可以向下自行
-        let paymentsArr = this.keepBackContent.map((item) => {
-          return item.payments
-        })
-        // 拉平数组
-        let flatPaymentsArr = paymentsArr.flat()
-        // 如果每一项都进行了拆分借款则返回true
-        let hasExpenseType = flatPaymentsArr.every((item) => {
-          return item.paymentPrice == item.price;
-        })
-        this.ifShowPassBtn = !hasExpenseType
-        this.ifShowOperateBtn = !hasExpenseType
-      },
       // 获取审核结果
       auditResult(paramsGuid) {
         this.listLoading = true
@@ -373,7 +359,6 @@
           let keepData = obj.data.objects
           this.keepBackContent = keepData
           this.keepStatus = keepData[0].checkType
-          this.checkNoSplit()
           this.listLoading = false
         }).catch(err => {
           console.log(err)
@@ -414,7 +399,10 @@
           "id": paramsTabId
         }).then( obj =>  {
           this.tabCount--
+<<<<<<< HEAD
           // console.log(obj.data.objects,'obj')
+=======
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
           this.tablePrint.push(...obj.data.objects)
           if(this.tabCount <= 0){
             // console.log(this.tabCount)
@@ -433,6 +421,7 @@
         .then(obj => {
           let keepData = obj.data.objects
           if(keepData !== null ){
+<<<<<<< HEAD
             if(this.ifShowOperateBtn){
               // 先提交拆分、还款记录，成功之后在调用工作流接口
               this.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/updateexpensepaymenttype",{
@@ -451,8 +440,9 @@
                 console.log(err)
               })
             } else {
+=======
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
               this.handlePassApi()
-            }
           } else {
             this.$message.warning("此报销不是待审批状态，无法进行审批操作");
           }
@@ -523,25 +513,6 @@
       // 返回到列表页
       backListPage(){
         this.$router.push({ path: "/approve/approveList" })
-      },
-      // 拆分/还款
-      handleSplitRepaymentJump(){
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
-          "object": {
-            guid: this.getApproveListGuid
-          }
-        })
-        .then(obj => {
-          let keepData = obj.data.objects
-          if(keepData !== null ){
-            this.$router.push({ path: "/approve/splitLoan", query: { approveDetailTab: this.tabShowWhich, approveDetailGuid: this.getApproveListGuid, approveList: this.tabShowWhich, queryWorkItemID: this.workItemIDArr } })
-          } else {
-            this.$message.warning("此报销不是待审批状态，无法进行审批操作");
-          }
-          this.listLoading = false
-        }).catch(err => {
-        console.log(err)
-        })
       },
       handleClick(){},
       // 表格表头颜色

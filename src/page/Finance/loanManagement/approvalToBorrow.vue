@@ -58,7 +58,7 @@
     </el-table>
     <!-- 需要审批表格 END-->
     <!-- 借款申请详情 -->
-    <el-dialog title="借款申请详情" :visible.sync="detailstShow" width="1100px" custom-class="city_list" :show-close='false'>
+    <el-dialog title="借款申请详情" :visible.sync="detailstShow" width="1100px" custom-class="city_list" :show-close='false' v-if="detailstShow">
       <!-- <div style="line-height:30px; background:#d2d2d2;padding:0 10px; border-radius:5px; position:absolute; top:13px; left:100px;">审核中</div> -->
       <div style="position:absolute; top:8px; right:10px;">
         <!-- <el-button @click="CloseCheckIncomeShow()">取消</el-button>
@@ -83,16 +83,8 @@
         >
           支付账户
         </el-button>
-        <el-button
-          type="success"
-          @click="touchPrint"
-          plain
-          v-if="(ifDY100009 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID == 490) || ( ifDY100042 && (presentRouter == '无收入借款管理' || presentRouter == '预付款管理') && creatUserOrgID != 490)"
-        >
-          打印本页详情
-        </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow" ref="printHandle" :alreadyAcount="alreadyAcount"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" v-if="detailstShow"></checkLoanManagement>
     </el-dialog>
     <!-- 借款申请详情 END -->
     <!-- 通过、驳回弹框 -->
@@ -159,7 +151,6 @@ import moment from 'moment'
       },
       paymentID:0,
       groupCode:'', //表头切换
-      alreadyAcount: '',
       empty_01:'',
       people_01:'',
       tableData:[], // 需要审批表格数据
@@ -211,7 +202,6 @@ import moment from 'moment'
   },
   watch:{
     countTest:function(newV, oldV){
-      console.log(newV, oldV, 'advinceData')
       let _this = this
       if(newV != oldV) {
         setTimeout(function () {
@@ -230,26 +220,21 @@ import moment from 'moment'
     deep:true
   },
   methods: {
-      // 打印详情
-      touchPrint(){
-        this.$refs.printHandle.printDetails()
-      },
       // 选择账户弹窗，选择对应的选项事件
       addAccount(index, row){
-        var that = this
-        this.alreadyAcount = row.title
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
-          "paymentID": this.paymentID,
-          "accountID": row.id
-        }).then(function (obj) {
-          if(obj.data.isSuccess == true) {
-            that.ifClick = true
-            that.ifPassClick = false
-          }
-          // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
-          // that.getList()
-        }).catch(function (obj) {})
-          this.SelectAccount = false
+      var that = this
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs",{
+        "paymentID": this.paymentID,
+        "accountID": row.id
+      }).then(function (obj) {
+        if(obj.data.isSuccess == true) {
+          that.ifClick = true
+          that.ifPassClick = false
+        }
+        // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+        // that.getList()
+      }).catch(function (obj) {})
+      this.SelectAccount = false
       },
       // 选择账户弹窗
       bankAccount(){
@@ -262,7 +247,11 @@ import moment from 'moment'
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",{
         "object": {
           "isDeleted": 0,
+<<<<<<< HEAD
           'orgID': sessionStorage.getItem('topID')
+=======
+          'orgID': sessionStorage.getItem('topID'),
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         }
       }).then(function (obj) {
         that.tableSelect = obj.data.objects
@@ -325,19 +314,18 @@ import moment from 'moment'
       },
       // 请求工作流接口获取未完成的任务
       pageList(){
-      console.log('请求工作流接口获取未完成的任务')
-      var that = this
-      var arr = []
-      that.tableData  = []
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
-        .then(obj => {
-          let getWorkflowCode
-          if(this.presentRouter == '无收入借款管理') {
-            getWorkflowCode = 'loan_noIncome4'
-          } else if(this.presentRouter == '预付款管理') {
-            getWorkflowCode = 'borrow_Moneys4'
-          }else {}
-          this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
+        var that = this
+        var arr = []
+        that.tableData  = []
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+          .then(obj => {
+            let getWorkflowCode
+            if(this.presentRouter == '无收入借款管理') {
+              getWorkflowCode = 'loan_noIncome4'
+            } else if(this.presentRouter == '预付款管理') {
+              getWorkflowCode = 'borrow_Moneys4'
+            }else {}
+            this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
               //"userCode": sessionStorage.getItem('userCode'),
               "userCode": sessionStorage.getItem('tel'),
               "startTime": this.ruleFormSeach.planTime_01 ?  moment(this.ruleFormSeach.planTime_01).format('YYYY-MM-DD HH:mm:ss') : "1970-07-23T01:30:54.452Z",
@@ -465,14 +453,14 @@ import moment from 'moment'
       },
       // 驳回成功通过guid将checktype修改成2
       rejectedSuccess(){
-      this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
-        /*"guid": this.guid,
-        "checkType": 2*/
-       "object": {
-          "guid": this.guid,
-          "checkType": 2
-        }
-      })
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/savechecktype',{
+          /*"guid": this.guid,
+          "checkType": 2*/
+         "object": {
+            "guid": this.guid,
+            "checkType": 2
+          }
+        })
       },
       // 详情弹窗()
       checkIncome(index, row){

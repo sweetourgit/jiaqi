@@ -10,6 +10,8 @@
         <el-table :data="tableData1" ref="multipleTable1" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content1" @row-click="handleRowClick1" @selection-change="selectionChange1">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
           </el-table-column>
+          <el-table-column prop="id" label="明细ID" align="center">
+          </el-table-column>
           <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
           </el-table-column>
           <el-table-column prop="id" label="暂存款状态" align="center">

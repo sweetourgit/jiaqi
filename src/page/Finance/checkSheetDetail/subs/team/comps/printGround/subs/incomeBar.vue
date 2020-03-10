@@ -36,7 +36,7 @@
         <div class="cell">{{ order.incomePrice | priceFilter }}</div>
       </td>
       <td class="base" style="width:5%;">
-        <div class="cell">{{ order.arrearsPrice | priceFilter }}</div>
+        <div class="cell">{{ order.arrearsPrice | noNegativeFilter | priceFilter }}</div>
       </td>
       <td class="base">
         <div class="cell">{{ order.orderProfit | priceFilter }}</div>
@@ -92,6 +92,10 @@ export default {
     priceFilter(val, noZero){
       if(!val) return noZero? ' ': 0;
       return val.toFixed(2);
+    },
+    noNegativeFilter(val){
+      if(val< 0) return 0;
+      return val;
     }
   },
 

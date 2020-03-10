@@ -27,8 +27,12 @@ module.exports = {
     },
 
     // Various Dev Server settings
+<<<<<<< HEAD
     // host: 'localhost', // can be overwritten by process.env.HOST  有改动，变成局域网内均可访问的ip
     //host: '192.168.1.240', // can be overwritten by process.env.HOST  有改动，变成局域网内均可访问的ip
+=======
+    host: 'localhost', // can be overwritten by process.env.HOST  有改动，变成局域网内均可访问的ip
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     // host: '192.168.1.234', // can be overwritten by process.env.HOST  有改动，变成局域网内均可访问的ip
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,

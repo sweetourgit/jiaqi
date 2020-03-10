@@ -11,6 +11,8 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.surplus_Amount == scope.row.transaction_amount">删除</el-button>
         </template>
       </el-table-column>
+      <el-table-column prop="id" label="明细ID" align="center">
+      </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="transaction_time" label="交易时间" align="center">

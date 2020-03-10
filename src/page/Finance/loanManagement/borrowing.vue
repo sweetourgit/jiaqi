@@ -257,6 +257,14 @@
       </el-form>
     </el-dialog>
     <!-- 申请无收入借款弹窗 END -->
+    <!-- 查看图片文件弹窗 -->
+    <el-dialog style="text-align: left" title="放大图片:" :visible.sync="dialogVisible4" width="50%">
+      <div>
+        <img :src="imgBig" style="width: 95%;" alt="图片" :alt="imgBigName"/>
+        <br /><span>{{imgBigName}}</span>
+      </div>
+    </el-dialog>
+    <!-- 查看图片文件弹窗 END -->
     <!-- 申请无收入借款中团期计划选择弹窗 -->
     <!-- :visible.sync="dialogFormVisible_plan"  原 -->
 	  <el-dialog width="70%" title="团期计划" :visible="dialogFormVisible_plan" :append-to-body="true" :show-close="false">
@@ -367,7 +375,7 @@
     <el-dialog title="借款申请详情" :visible.sync="checkIncomeShow" width="1100px" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
         <el-button @click="CloseCheckIncomeShow()">取消</el-button>
-        <el-button type="success" @click="splitRelTable()">拆分关系表</el-button>
+        <el-button @click="splitRelTable()">拆分关系表</el-button>
         <el-button type="danger" @click="repeal()" v-if="status == '审批中'" plain>撤销借款</el-button>
         <el-button
           type="success"
@@ -378,7 +386,7 @@
           打印本页详情信息
         </el-button>
       </div>
-      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo" ref="printHandle" v-if="checkIncomeShow" :alreadyAcount="alreadyAcount"></checkLoanManagement>
+      <checkLoanManagement :paymentID="paymentID" :groupCode="groupCode" :acoutInfo="acoutInfo" ref="printHandle" v-if="checkIncomeShow"></checkLoanManagement>
     </el-dialog>
     <!-- 查看无收入借款申请详情弹窗 END -->
   </div>
@@ -405,7 +413,6 @@ export default {
       }
     };
     return {
-      alreadyAcount: '',
       creatUserOrgID: null, // 用来判断付款账户是否显示
       presentRouter: null, // 当前路由
       ifDY100009: false,
@@ -458,6 +465,9 @@ export default {
         payment:'',
         accessory:[],
       },
+      dialogVisible4:false, // 查看图片文件弹窗
+      imgBig: '',
+      imgBigName: '',
       upload:{
         accessory:'',
       },
@@ -495,7 +505,7 @@ export default {
         accountBank:[{ required: true, message: '请输入开户行', trigger: 'blur' }],
         accountOpenName:[{ required: true, message: '请输入开户名', trigger: 'blur' }],
         payment:[{ required: true, message: '请选择付款方式', trigger: 'blur' }],
-        // accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],
+        /*accessory:[{ required: true, trigger: 'change', validator: validateVoucher}],*/
       },
       fileList: [],
       dialogFormVisible1:false, // 无收入借款中借款人弹窗
@@ -527,10 +537,11 @@ export default {
       tableData2:[],
       tableDataBorrower:[],
       upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
+      uid: 0, // 上传图片缩略图选中项
       status:"",
       tableSelect:[], // 选择弹窗表格
       pageshow:true,
-      // pid:'',
+      pid:'',
       countItemInfo: null, // 选择账户表格选中行时，行的信息
       querySearchPlanData: [], // 团期计划检索联想数组
       keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
@@ -626,9 +637,9 @@ export default {
     clickRow(row){
       this.$refs.multipleTable.clearSelection(); // 清空用户的选择
       this.$refs.multipleTable.toggleRowSelection(row);
-      // this.paymentID=row.paymentID;
-      // this.guid=row.guid;
-      // this.groupCode = row.groupCode;
+      this.paymentID=row.paymentID;
+      this.guid=row.guid;
+      this.groupCode=row.groupCode;
     },
     rowClass({row, rowIndex}){  // 选中行样式改变
      for(var i=0;i<this.multipleSelection.length;i++){
@@ -666,7 +677,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/supplierlist', {
         "object": {
           name: queryString3,
-          UserState:1,
+          UserState:-1,
           SupplierType:-1,
         }
       }).then(res => {
@@ -1008,16 +1019,13 @@ export default {
     },
     // 查看无收入借款弹窗(列表中的详情)
     checkIncome(row){
-      console.log(row, 'row')
       this.checkIncomeShow = true;
-      // this.pid = row.paymentID;
-      this.guid = row.guid
-      this.paymentID=row.paymentID;
-      this.groupCode = row.groupCode;
+      this.pid = row.paymentID;
       this.acoutInfo = row
       this.status = row.checkTypeEX;
       this.ruleForm = row;
       this.getLabel(row.paymentID)
+      console.log(row.paymentID,'参数错置')
     },
     // 获取一条详情（控制打印按钮）
     getLabel(paramsPaymentID){
@@ -1029,14 +1037,14 @@ export default {
         }
       })
     },
-    splitRelTable(){
-      this.$router.push({ path: "/relationSplitMap", query: { id: this.paymentID } })
-    },
     // 关闭弹窗
     CloseCheckIncomeShow(){
       this.checkIncomeShow = false;
       // this.$refs['ruleForm'].resetFields();
       // this.clearPlan();
+    },
+    splitRelTable(){
+      this.$router.push({ path: "/relationSplitMap", query: { id: this.pid } })
     },
     // 搜索
     search(){
@@ -1048,10 +1056,6 @@ export default {
     ensureIncome(){
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          if(!this.supplier_id && typeof(this.supplier_id)!='undefined' && this.supplier_id!=0 ){
-            this.$message.success("请选择供应商（***选择***）");
-            return
-          }
           let pictureList = [];
 
           this.fileList.forEach(function(item){
@@ -1129,20 +1133,50 @@ export default {
         console.log(err);
       })*/
     },
+    // 文件上传
+    handleChange(file, fileList) {
+      this.fileList = fileList.slice(-3);
+    },
     handleError(err, file) {
       this.fileList = []
     },
     handleSuccess(res, file, fileList) {
-      this.fileList = fileList
       this.fileCheckVal = fileList.length; // 成功时凭证的条数（校验用）
+      // 多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据
+      if (this.time != fileList.length) { // 多张图片情况只在第一次执行数组操作
+        this.time = fileList.length;
+        if (this.fileList.length == 0) {
+          this.fileList = fileList;
+        } else {
+          this.len = this.fileList.length;
+          for (let i = this.len; i < fileList.length; i++) {
+            this.fileList.push(fileList[i]);
+          }
+        }
+      }
+    var paths = null;
+    for (let i = this.len; i < fileList.length; i++) {
+      paths = JSON.parse(fileList[i].response).paths[0];
+      this.$set(this.fileList[i], "width", paths.Width);
+      this.$set(this.fileList[i], "height", paths.Height);
+      this.$set(this.fileList[i], "url1", paths.Url);
+      this.$set(this.fileList[i], "length", paths.Length);
+      this.$set(this.fileList[i], "name", paths.Name);
+    }
+    this.uid = fileList[0].uid;
   },
     handleRemove(file, fileList) {
+      this.uid = fileList[0].uid;
       this.fileList = fileList
       this.fileCheckVal = fileList.length
     },
     handlePreview(file) {
+      // this.dialogVisible4 = true
       let getUrl = JSON.parse(file.response)
+      this.uid = file.uid
       window.open(getUrl.paths[0].Url);
+      this.imgBigName = file.name
+      // this.imgBig = getUrl.paths[0].Url
 
     },
     // 撤销（结束工作流程）预付款要参照这个改，这个是对的
@@ -1160,7 +1194,7 @@ export default {
           this.$message.success("撤销成功");
           this.checkIncomeShow = false;
           this.deleteBorrow();
-          this.$store.commit('changeAdvance') // 更新需要您审批界面
+          // this.history.go(0); // 刷新页面
          })
       })
       .catch(() => {

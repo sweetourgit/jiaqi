@@ -91,7 +91,7 @@
  * 2. 通过 /checkSheetDetail 进入，携带有财务报账单进入此页面时的tab和搜索条件等状态
  */
 
-import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ, endForJQ, saveChcektype } from './api'
+import { getPreCheckSheetByPlanID, getCheckSheetByPlanID, getCheckSheetByID, postCheckSheet, rejectForJQ, agreeForJQ, endForJQ, saveChcektype, getFlowFinishedList } from './api'
 import printGround from './comps/printGround/printGround'
 import approvalForm from './comps/approvalForm'
 import BackupMixin from './BackupMixin.js'
@@ -142,33 +142,62 @@ export default {
     // 需要我审批
     mineInit(){
       let { id }= this.$route.query;
+      let payload;
       getCheckSheetByID(id)
+<<<<<<< HEAD
       .then(res => this.$refs.printGround.init(res, this.type))
+=======
+      .then(res => {
+        payload= res;
+        let { guid }= res;
+        return getFlowFinishedList(guid)
+      })
+      .then(res => {
+        Object.assign(payload, { finishedList: res });
+        this.$refs.printGround.init(payload, this.type)
+      })
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     },
 
     // 普通
     normalInit(){
       let { id, planID }= this.$route.query;
+      let payload;
       new Promise((resolve, reject) => {
         if(id) return resolve(getCheckSheetByID(id));
         if(planID) return resolve(getCheckSheetByPlanID(planID));
       })
+<<<<<<< HEAD
       .then(res => this.$refs.printGround.init(res, this.type))
+=======
+      .then(res => {
+        payload= res;
+        let { guid }= res;
+        return getFlowFinishedList(guid)
+      })
+      .then(res => {
+        Object.assign(payload, { finishedList: res });
+        this.$refs.printGround.init(payload, this.type)
+      })
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     },
 
     /**
      * @type1 : 来自团期计划，会携带 planID 和 isCheckSheet
      * @type2 : 来自报账单，会携带 id:报账单id / tab:来自报账单的all还是mine / conditions:报账单的搜索条件
+     * @type3 : 来自已办，会携带comeFrom
      */
     choosePageType(){
       let { path, query }= this.$route;
-      let { id, planID, isCheckSheet, tab, conditions, workItemID, guid }= query;
+      let { id, planID, isCheckSheet, tab, conditions, workItemID, guid,
+        comeFrom
+      }= query;
       this.cacheConditions= conditions;
       this.isFromCheckSheet= tab? true: false;
-      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID, guid } });
+      this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID, guid, comeFrom } });
       if(isCheckSheet=== '0') return 'add';
       // 如果[ isCheckSheet 不为 undefined ]或者[ tab 是 all ] 只能查看
-      if(!this.$isNull(isCheckSheet) || tab=== 'all') return 'normal';
+      if(!this.$isNull(isCheckSheet) || tab=== 'all' || comeFrom ) return 'normal';
       return 'mine';
     },
 
@@ -212,7 +241,18 @@ export default {
     },
 
     backPage(){
-      let { tab }= this.$route.query;
+      let { 
+        tab,
+        comeFrom
+      }= this.$route.query;
+      
+      // 来自已办的逻辑
+      if(comeFrom){
+        this.$store.commit('doneAll/referDoneAllShowWhichTab', 'sheet'); 
+        this.$store.commit('doneAll/showSheetTab', 'sheetTeam');
+        return this.$router.replace({ path: '/doneAll/list' });
+      }
+      
       this.isFromCheckSheet?
         this.$router.replace({ path: '/checkSheet/team', query: { tab, conditions: this.cacheConditions }})
           : this.$router.replace({ path: '/regimentPlan/teamPlanList' });  
@@ -230,9 +270,9 @@ export default {
       action= isAgree? 
         agreeForJQ({commentText, workItemID, userCode}): 
         rejectForJQ({commentText, workItemID, userCode})
-        .then(() => {
-          return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
-        })
+        // .then(() => {
+        //   return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
+        // })
         .then(() => {
           return saveChcektype({ guid, checkType: 2 })
         })

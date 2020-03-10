@@ -65,8 +65,8 @@
       <!-- 第三行 END -->
       <!-- 支付账户 -->
       <el-row type="flex" class="row-bg print-acount" justify="start">
-        <el-col :span="3" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="18"><div class="grid-del">{{ alreadyAcount.length > 0 ? alreadyAcount : fundamental.accountsName }}</div></el-col>
+        <el-col :span="2" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
+        <el-col :span="18"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
       </el-row>
       <!-- 支付账户 -->
       <!-- 审批人 打印时输出 -->
@@ -97,7 +97,7 @@
           <!-- 打印时隐藏 -->
           <el-col :span="9" class="print-hidden"><div class="grid-del label-color">支付账户:</div></el-col>
           <el-col :span="12" class="print-hidden">
-            <div class="grid-del">{{ alreadyAcount.length > 0 ? alreadyAcount : fundamental.accountsName }}</div>
+            <div class="grid-del">{{ fundamental.accountsName }}</div>
           </el-col>
         </el-col>
         <el-col :span="14">
@@ -227,10 +227,9 @@
 import moment from 'moment'
 export default {
   props: {
-    paymentID:0,
-    groupCode:'',
-    title:'',
-    alreadyAcount: ''
+   paymentID:0,
+   groupCode:'',
+   title:'',
   },
   data(){
     return {

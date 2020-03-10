@@ -500,7 +500,7 @@
             {{baseInfo.createUser}}
           </p>
           <p class="inputLabel">
-            <span>创建时间：</span>
+            <span>申请时间：</span>
             {{baseInfo.createTime}}
           </p>
           <p class="inputLabel" v-if="info.collectionType == 2">
@@ -1028,12 +1028,14 @@ export default {
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/Receipt/api/insert", {
           object: {
-            collectionID: this.info.id
+            collectionID: this.info.id,
+            userCode: sessionStorage.getItem('userCode')
           }
         })
         .then(function(response) {
           // console.log(response);
           // 暂时去掉判断，后期需要和郭哥联调
+<<<<<<< HEAD
           // if (response.data.isSuccess) {
           //   // that.tbEBS();
           //   that.$message.success("提交发票成功~");
@@ -1045,13 +1047,30 @@ export default {
           //     that.$message.warning("提交发票失败~");
           //   }
           // }
+=======
+          if (response.data.isSuccess) {
+            // that.tbEBS();
+            that.$message.success("提交发票成功~");
+            // that.closeAdd();
+          } else {
+            if (response.data.message) {
+              that.$message.warning(response.result.message);
+            } else {
+              that.$message.warning("提交发票失败~");
+            }
+          }
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
         })
         .catch(function(error) {
           console.log(error);
         });
     },
 
+<<<<<<< HEAD
     // 通过insert接口之后还要走这个接口 收款同步EBS
+=======
+    //  收款同步EBS
+>>>>>>> a35c42ae82e46300f6e9d732af3edd0412fe202c
     tbEBS() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collection/api/insertebs", {

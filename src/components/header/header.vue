@@ -16,13 +16,18 @@
           <div style="position:absolute;width:30px;height:30px;top:0;" @click="bugReporter"></div>
         </el-badge>
         <div class="vertical-line"></div>
-        <div class="icon el-icon-user"><span>当前在线人数：{{onlineNumber}}</span></div>
+        <div class="icon el-icon-user"><span @click="onlineList">当前在线人数：{{onlineNumber}}</span></div>
         <div class="vertical-line1"></div>
         <div class="icon el-icon-service"><span id="nameNum" @click="listUser">{{name}}</span></div>
         <div class="vertical-line1"></div>
         <div v-on:click="submit" class="icon1">退出</div>
       </div>
-    </div>
+      <el-dialog title="在线人员" custom-class="city_list" :visible.sync="dialogFormVisible" width="970px" style="margin-top:-70px">
+           <div style="padding-bottom:40px;overflow: hidden">
+             <div class="peo-list" v-for="item in peoList">{{item.orgName}}-{{item.name}}</div>
+           </div>
+      </el-dialog>
+    </div> 
 </template>
 
 <script>
@@ -32,6 +37,8 @@
           name: '',
           timeName:null,
           onlineNumber:0,
+          dialogFormVisible:false,
+          peoList:[],
 	      }
 	    },
       created (){
@@ -76,6 +83,14 @@
             }).catch(err => {
               console.log(err)
             })
+        },
+        onlineList(){
+           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/ollist').then(res => {
+              this.peoList = res.data.objects;
+              this.dialogFormVisible = true;
+            }).catch(err => {
+                console.log(err)
+           })           
         }
       }
     }
@@ -90,11 +105,12 @@
 .vertical-line{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;position: relative; top: 20px; right: 20px;}
 .el-icon-service{float:left; position: relative; top: 20px; right: 20px;}
 .vertical-line1{float: left; width:30px; height:20px; border-left: solid 1px #CCCCCC;margin: 20px 0 0 15px}
-.el-icon-user{float:left; position: relative; top: 20px; right: 20px;}
+.el-icon-user{float:left; position: relative; top: 20px; right: 20px;cursor: pointer;}
 .icon1{float: right; margin: 20px 0 15px 0; cursor:pointer;}
 .icon1:hover{color: #409EFF;}
 .log{float: left; width: 200px; height: 60px; background: #0D142B;color:#fff;}
 span:hover{color: #409EFF;}
 #nameNum{margin:0 0 0 10px; cursor:pointer;}
 .el-icon-bell{float:left;margin: 17px 50px 0 0;font-size:22px;}
+.peo-list{float:left;width:160px;margin:3px 0 3px 25px;}
 </style>
