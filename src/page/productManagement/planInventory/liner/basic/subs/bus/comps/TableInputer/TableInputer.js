@@ -2,9 +2,8 @@ const TableInputerFactory= function($){
   return {
     props: {
       value: [String, Number],
-      // 所属表格
-      table: String,
-      column: String, 
+      table: String,  // 所属表格
+      column: String, // 所属列 
       options: {
         type: Object,
         default: function(){
@@ -12,8 +11,11 @@ const TableInputerFactory= function($){
             placeholder: '',  // String
             pattern: null, // RegExp
             validator: null, // Function
-            adaptor: null, //Function格式化
+            asyncValidator: null, // Function<Promise>
+            adaptor: null, // Function 输入框内容类型适配
             message: null, // String 提示
+            successCb: null, // Function
+            cancelCb: null, // Function
           }
         }
       },
@@ -47,7 +49,7 @@ const TableInputerFactory= function($){
             onClick={ this.submitVal }>
           </el-button>
           <el-button size="mini" type="info" icon="el-icon-close" style="margin: 0;padding: 7px 7px;"
-            onClick={ () => this.inEdit = false }>
+            onClick={ this.close }>
           </el-button>
         </div>
           : 
@@ -68,12 +70,12 @@ const TableInputerFactory= function($){
     },
 
     created(){
-      console.log(this)
-      if($.inited) return $.push(this.block, this);
+      let block= this.block;
+      if($.inited && block) return $.push(this.block, this);
       let { name }= this.$route;
       if($.route!== name) $.reset();
       $.init(name);
-      if(this.block) $.push(this.block, this);
+      if(block) $.push(block, this);
     },
 
     beforeDestroy(){
@@ -96,7 +98,7 @@ const TableInputerFactory= function($){
 
     methods: {
       submitVal(){
-        let { pattern, validator, adaptor, message }= this.options;
+        let { pattern, validator, asyncValidator, adaptor, message, successCb }= this.options;
         let val= this.val;
         if(pattern && !pattern.test(val)){
           this.$message.error(message || '格式错误');
@@ -107,13 +109,30 @@ const TableInputerFactory= function($){
           this.$message.error(message || '验证失败');
           return this.focus();
         }
+        if(asyncValidator) return asyncValidator(val).then(() => {
+          this.$emit('input', val);
+          this.inEdit= false;
+          if(successCb) successCb.call(null, { vm: this });
+        })
+        .catch((err) => {
+          if(err) this.$message.error(err);
+          return this.focus();
+        })
         this.$emit('input', val);
         this.inEdit= false;
+        if(successCb) successCb.call(null, { vm: this });
       },
 
       focus(){
         this.inEdit= true;
         this.$nextTick(() => this.$refs.inputRef.focus());
+      },
+
+      close(){
+        let { cancelCb }= this.options;
+        this.val= this.value;
+        this.inEdit= false;
+        if(cancelCb) cancelCb.call(null, { vm: this });
       }
     }
   }

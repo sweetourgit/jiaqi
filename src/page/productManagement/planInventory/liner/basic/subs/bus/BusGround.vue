@@ -52,7 +52,6 @@
       </el-table>
     </main>
     <footer>
-      {{ tableData }}
       <BusDetailer ref="detailer"></BusDetailer>
     </footer>
   </div>
@@ -74,9 +73,12 @@ export default {
         placeholder: '请输入价格',
         pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,
         message: '价格格式输入错误',
-        adaptor: (val) => {
-          return parseFloat(val);
-        }
+        adaptor: (val) => parseFloat(val),
+        successCb: (payload) => {
+          console.log(this);
+          console.log(payload)
+        },
+        asyncValidator: () => Promise.reject('重复')
       }
     }
   },
