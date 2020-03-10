@@ -73,7 +73,7 @@
       <el-table-column label="操作" width="140" align="center" fixed>
         <template slot-scope="scope">
          
-          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference.indexOf('费')!=-1">查看微信支付宝明细</el-button>
+          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">查看微信支付宝明细</el-button>
            <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-else>查看订单</el-button>
           <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
