@@ -65,7 +65,7 @@
           <el-button v-if="scope.row.surplus_Amount == scope.row.trade_Amount" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="" label="剩余金额" align="center">
+      <el-table-column prop="SYJE" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
@@ -73,67 +73,67 @@
           <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
       </el-table-column>    
-      <el-table-column prop="" label="交易流水号" align="center">
+      <el-table-column prop="JYLSH" label="交易流水号" align="center">
       </el-table-column>
-       <el-table-column prop="" label="交易日" align="center">
+       <el-table-column prop="JYR" label="交易日" align="center">
       </el-table-column>
-      <el-table-column prop="" label="交易时间" align="center">
+      <el-table-column prop="JYSJ" label="交易时间" align="center">
       </el-table-column>
-       <el-table-column prop="" label="起息日" align="center">
+       <el-table-column prop="QXR" label="起息日" align="center">
       </el-table-column>
-       <el-table-column prop="" label="交易类型" align="center">
+       <el-table-column prop="JYLX" label="交易类型" align="center">
       </el-table-column>
-       <el-table-column prop="" label="借方金额" align="center">
+       <el-table-column prop="JFJE" label="借方金额" align="center">
       </el-table-column>
-       <el-table-column prop="" label="贷方金额" align="center">
+       <el-table-column prop="DFJE" label="贷方金额" align="center">
       </el-table-column>
-       <el-table-column prop="" label="余额" align="center">
+       <el-table-column prop="YE" label="余额" align="center">
       </el-table-column>
-       <el-table-column prop="" label="用途" align="center">
+       <el-table-column prop="YT" label="用途" align="center">
       </el-table-column>
-        <el-table-column prop="" label="流程实例号" align="center">
+        <el-table-column prop="LCSLH" label="流程实例号" align="center">
       </el-table-column>
-      <el-table-column prop="" label="业务名称" align="center">
+      <el-table-column prop="YWMC" label="业务名称" align="center">
       </el-table-column>
-      <el-table-column prop="" label="业务参考号" align="center">
+      <el-table-column prop="YWCKH" label="业务参考号" align="center">
       </el-table-column>
-      <el-table-column prop="" label="业务摘要" align="center">
+      <el-table-column prop="YWZY" label="业务摘要" align="center">
       </el-table-column>
-      <el-table-column prop="" label="其他摘要" align="center">
+      <el-table-column prop="QTZY" label="其他摘要" align="center">
       </el-table-column>
-      <el-table-column prop="" label="收(付)方分行名" align="center">
+      <el-table-column prop="SFFFHM" label="收(付)方分行名" align="center">
       </el-table-column>
-      <el-table-column prop="" label="收(付)方名称" align="center">
+      <el-table-column prop="SFFMC" label="收(付)方名称" align="center">
       </el-table-column>
-      <el-table-column prop="" label="收(付)方账号" align="center">
+      <el-table-column prop="SFFZH" label="收(付)方账号" align="center">
       </el-table-column>
-      <el-table-column prop="" label="收(付)方开户行行号" align="center">
+      <el-table-column prop="SFFKHHHH" label="收(付)方开户行行号" align="center">
       </el-table-column>
-      <el-table-column prop="" label="收(付)方开户行名" align="center">
+      <el-table-column prop="SFFKHHM" label="收(付)方开户行名" align="center">
       </el-table-column>
-       <el-table-column prop="" label="收(付)方开户行地址" align="center">
+       <el-table-column prop="SFFKHHDZ" label="收(付)方开户行地址" align="center">
       </el-table-column>
-      <el-table-column prop="" label="收(付)母(子)公司账号分行名" align="center">
+      <el-table-column prop="SFMZGSZHFHM" label="收(付)母(子)公司账号分行名" align="center">
       </el-table-column>
-      <el-table-column prop="" label="母(子)公司账号" align="center">
+      <el-table-column prop="MZGSZH" label="母(子)公司账号" align="center">
       </el-table-column>
-      <el-table-column prop="" label="母(子)公司名称" align="center">
+      <el-table-column prop="MZGSMC" label="母(子)公司名称" align="center">
       </el-table-column>
-      <el-table-column prop="" label="信息标志" align="center">
+      <el-table-column prop="XXBZ" label="信息标志" align="center">
       </el-table-column>
-      <el-table-column prop="" label="有否附件信息" align="center">
+      <el-table-column prop="YFFJXX" label="有否附件信息" align="center">
       </el-table-column>
-      <el-table-column prop="" label="冲账标志" align="center">
+      <el-table-column prop="CZBZ" label="冲账标志" align="center">
       </el-table-column>
-      <el-table-column prop="" label="扩展摘要" align="center">
+      <el-table-column prop="KZZY" label="扩展摘要" align="center">
       </el-table-column>
-      <el-table-column prop="" label="交易分析码" align="center">
+      <el-table-column prop="JYFXM" label="交易分析码" align="center">
       </el-table-column>
-      <el-table-column prop="" label="票据号" align="center">
+      <el-table-column prop="PJH" label="票据号" align="center">
       </el-table-column>
-      <el-table-column prop="" label="商务支付订单号" align="center">
+      <el-table-column prop="SWZFDDH" label="商务支付订单号" align="center">
       </el-table-column>
-       <el-table-column prop="" label="内部编号" align="center">
+       <el-table-column prop="NBBH" label="内部编号" align="center">
       </el-table-column>
       <!-- <el-table-column prop="" label="所属公司" align="center">
       </el-table-column> -->
@@ -255,7 +255,7 @@ export default {
       this.dialogFormVisible = true;
       this.info = {
         id: row.id,
-        type: 0
+        type: 5
       };
     },
     close(){
@@ -324,32 +324,35 @@ export default {
       if(this.ruleForm.dateEnd){
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
-      
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-        "pageIndex": this.pageCurrent - 1,
-        "pageSize": this.pageSize,
-        "object": {
-          "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-          "transaction_reference_number": this.ruleForm.code,
-          "begin": dateStart ? dateStart : "2000-05-16",
-          "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0
-        }
-      }).then(function (obj) {
-        // console.log('中国银行',obj);
-        if(obj.data.isSuccess){
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          // that.tableDataNBSK.forEach(function (item, index, arr) {
-          //   item.collectionTime = item.collectionTime.split('T')[0];
-          // });
-          // that.loadingNBSK = false;
-        }else{
-          // that.loadingNBSK = false;
-          that.total = 0;
-          that.tableData = [];
-        }
+       this.$http.post('mock/zhaoshang', {}).then(function (obj) {
+            that.total = 100;
+          that.tableData = obj.data.data;
       })
+      // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
+      //   "pageIndex": this.pageCurrent - 1,
+      //   "pageSize": this.pageSize,
+      //   "object": {
+      //     "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+      //     "transaction_reference_number": this.ruleForm.code,
+      //     "begin": dateStart ? dateStart : "2000-05-16",
+      //     "end": dateEnd ? dateEnd : "2099-05-16",
+      //     "seachType": 0
+      //   }
+      // }).then(function (obj) {
+      //   // console.log('中国银行',obj);
+      //   if(obj.data.isSuccess){
+      //     that.total = obj.data.total;
+      //     that.tableData = obj.data.objects;
+      //     // that.tableDataNBSK.forEach(function (item, index, arr) {
+      //     //   item.collectionTime = item.collectionTime.split('T')[0];
+      //     // });
+      //     // that.loadingNBSK = false;
+      //   }else{
+      //     // that.loadingNBSK = false;
+      //     that.total = 0;
+      //     that.tableData = [];
+      //   }
+      // })
     },
     beginDate(){
       const that = this;

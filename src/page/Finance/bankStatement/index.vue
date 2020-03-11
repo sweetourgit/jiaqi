@@ -67,7 +67,7 @@
            <citicBankSK></citicBankSK>
           </el-tab-pane>
           <el-tab-pane label="手续费">
-            <merchantsBankSXF></merchantsBankSXF>
+            <citicBankSXF></citicBankSXF>
           </el-tab-pane>
           <el-tab-pane label="付款">暂时不写</el-tab-pane>
         </el-tabs>
@@ -99,6 +99,7 @@ import constructionBankSK from '@/page/Finance/bankStatement/constructionBankSK.
 import constructionBankSXF from '@/page/Finance/bankStatement/constructionBankSXF.vue'
 
 import citicBankSK from '@/page/Finance/bankStatement/citicBankSK.vue'
+import citicBankSXF from '@/page/Finance/bankStatement/citicBankSXF.vue'
 import jilinCiticBankSK from '@/page/Finance/bankStatement/jilinCiticBankSK.vue'
 
 export default {
@@ -112,6 +113,7 @@ export default {
     merchantsBankSK,
     merchantsBankSXF,
     citicBankSK,
+    citicBankSXF,
     jilinCiticBankSK,
     constructionBankSK,
     constructionBankSXF

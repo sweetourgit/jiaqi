@@ -54,7 +54,7 @@ itic<template>
         :on-remove="handleRemove1"
         :before-remove="beforeRemove1"
         name="excelfile">
-        <el-button type="primary">添加建设银行流水单</el-button>
+        <el-button type="primary">添加中信银行流水单</el-button>
       </el-upload>
       <el-upload
         class="upload-demo"
@@ -77,7 +77,7 @@ itic<template>
           <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+      <el-table-column prop="SYJE" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
@@ -85,49 +85,45 @@ itic<template>
           <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
       </el-table-column>
-      <el-table-column prop="purpose_fee" label="交易日期" align="center">
+      <el-table-column prop="JYRQ" label="交易日期" align="center">
       </el-table-column>
-      <el-table-column prop="bank_serial_number" label="交易时间" align="center">
+      <el-table-column prop="JYSJ" label="交易时间" align="center">
       </el-table-column>
-      <el-table-column prop="reference" label="对方账号" align="center">
+      <el-table-column prop="DFZH" label="对方账号" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="对方账户名称" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.transaction_Date.split('T')[0]}}</span>
-        </template>
+      <el-table-column prop="DFZHM" label="对方账户名称" align="center">
+     
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="对方账号开户网点名称" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.transaction_Date.split('T')[1]}}</span>
-        </template>
+      <el-table-column prop="FDZHKHWDMC" label="对方账号开户网点名称" align="center">
+   
       </el-table-column>
-      <el-table-column prop="purpose" label="借方发生额" align="center">
+      <el-table-column prop="JFFSE" label="借方发生额" align="center">
       </el-table-column>
-      <el-table-column prop="credit_amount" label="贷方发生额" align="center">
+      <el-table-column prop="DFFSE" label="贷方发生额" align="center">
       </el-table-column>
-      <el-table-column prop="account_number" label="账户余额" align="center">
+      <el-table-column prop="ZHYE" label="账户余额" align="center">
       </el-table-column>
-      <el-table-column prop="account_name" label="摘要" align="center">
+      <el-table-column prop="ZY" label="摘要" align="center">
       </el-table-column>
-      <el-table-column prop="certificate_code" label="退汇标识" align="center">
+      <el-table-column prop="THBS" label="退汇标识" align="center">
       </el-table-column>
-      <el-table-column prop="currency" label="退汇日期" align="center">
+      <el-table-column prop="THRQ" label="退汇日期" align="center">
       </el-table-column>
-      <el-table-column prop="cash_or_transfer" label="柜员交易号" align="center">
+      <el-table-column prop="GYJYH" label="柜员交易号" align="center">
       </el-table-column>
-      <el-table-column prop="debit_amount" label="附言" align="center">
+      <el-table-column prop="FY" label="附言" align="center">
       </el-table-column>
-      <el-table-column prop="account_number_other" label="币种" align="center">
+      <el-table-column prop="BZ" label="币种" align="center">
       </el-table-column>
-      <el-table-column prop="account_name_other" label="交易账号" align="center">
+      <el-table-column prop="JYZH" label="交易账号" align="center">
       </el-table-column>
-      <el-table-column prop="bank_other" label="交易账号开户网点名称" align="center">
+      <el-table-column prop="JYZHKHWDMC" label="交易账号开户网点名称" align="center">
       </el-table-column>
-      <el-table-column prop="bank_other" label="对账编号" align="center">
+      <el-table-column prop="DZBH" label="对账编号" align="center">
       </el-table-column>
-      <el-table-column prop="bank_other" label="单位结算卡号" align="center">
+      <el-table-column prop="DWJSKH" label="单位结算卡号" align="center">
       </el-table-column>
-      <el-table-column prop="bank_other" label="剩余金额" align="center">
+      <el-table-column prop="" label="剩余金额" align="center">
       </el-table-column>
       <!-- <el-table-column prop="bank_other" label="暂存款状态" align="center">
       </el-table-column> -->
@@ -225,12 +221,12 @@ export default {
     handleSuccess1(response, file, fileList){
       console.log(response);
       if(response == true){
-        this.$message.success("建设银行流水单上传成功！");
+        this.$message.success("中信银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
         this.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
       }else{
-        this.$message.warning("建设银行流水单上传失败！");
+        this.$message.warning("中信银行流水单上传失败！");
       }
     },
     handleError1(err, file, fileList){
@@ -277,7 +273,7 @@ export default {
       this.dialogFormVisible = true;
       this.info = {
         id: row.id,
-        type: 1
+        type: 7
       };
     },
     close(){
@@ -289,6 +285,8 @@ export default {
         path: '/bankStatement/citicPayDetails',
         name: '银行流水单管理  /微信支付宝明细',
         query: {
+           id: row.id,
+        type: 8,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date
         }
@@ -348,32 +346,35 @@ export default {
       if(this.ruleForm.dateEnd){
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
-      
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-        "pageIndex": this.pageCurrent - 1,
-        "pageSize": this.pageSize,
-        "object": {
-          "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-          "transaction_reference_number": this.ruleForm.code,
-          "begin": dateStart ? dateStart : "2000-05-16",
-          "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0
-        }
-      }).then(function (obj) {
-        // console.log('建设银行',obj);
-        if(obj.data.isSuccess){
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          // that.tableDataNBSK.forEach(function (item, index, arr) {
-          //   item.collectionTime = item.collectionTime.split('T')[0];
-          // });
-          // that.loadingNBSK = false;
-        }else{
-          // that.loadingNBSK = false;
-          that.total = 0;
-          that.tableData = [];
-        }
+      this.$http.post('mock/zhongxin', {}).then(function (obj) {
+            that.total = 100;
+          that.tableData = obj.data.data;
       })
+      // this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
+      //   "pageIndex": this.pageCurrent - 1,
+      //   "pageSize": this.pageSize,
+      //   "object": {
+      //     "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+      //     "transaction_reference_number": this.ruleForm.code,
+      //     "begin": dateStart ? dateStart : "2000-05-16",
+      //     "end": dateEnd ? dateEnd : "2099-05-16",
+      //     "seachType": 0
+      //   }
+      // }).then(function (obj) {
+      //   // console.log('中信银行',obj);
+      //   if(obj.data.isSuccess){
+      //     that.total = obj.data.total;
+      //     that.tableData = obj.data.objects;
+      //     // that.tableDataNBSK.forEach(function (item, index, arr) {
+      //     //   item.collectionTime = item.collectionTime.split('T')[0];
+      //     // });
+      //     // that.loadingNBSK = false;
+      //   }else{
+      //     // that.loadingNBSK = false;
+      //     that.total = 0;
+      //     that.tableData = [];
+      //   }
+      // })
     },
     beginDate(){
       const that = this;

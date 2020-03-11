@@ -73,11 +73,11 @@
       <el-table-column label="操作" width="140" align="center" fixed>
         <template slot-scope="scope">
           <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">查看订单</el-button>
-          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信支付宝明细</el-button>
+          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信</br>支付宝明细</el-button>
           <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+      <el-table-column prop="SYJE" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
@@ -85,43 +85,37 @@
           <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
       </el-table-column>
-      <el-table-column prop="purpose_fee" label="交易时间" align="center">
+      <el-table-column prop="JYSJ" label="交易时间" align="center">
       </el-table-column>
-      <el-table-column prop="bank_serial_number" label="借方发生额/元(支取)" align="center">
+      <el-table-column prop="JFFSE" label="借方发生额/元(支取)" align="center">
       </el-table-column>
-      <el-table-column prop="reference" label="贷方发生额/元(收入)" align="center">
+      <el-table-column prop="DFFSE" label="贷方发生额/元(收入)" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="余额" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.transaction_Date.split('T')[0]}}</span>
-        </template>
+      <el-table-column prop="YE" label="余额" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="币种" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.transaction_Date.split('T')[1]}}</span>
-        </template>
+      <el-table-column prop="BZ" label="币种" align="center">
       </el-table-column>
-      <el-table-column prop="purpose" label="对方户名" align="center">
+      <el-table-column prop="DFHM" label="对方户名" align="center">
       </el-table-column>
-      <el-table-column prop="credit_amount" label="对方账号" align="center">
+      <el-table-column prop="DFZH" label="对方账号" align="center">
       </el-table-column>
-      <el-table-column prop="account_number" label="对方开户机构" align="center">
+      <el-table-column prop="DFKHJG" label="对方开户机构" align="center">
       </el-table-column>
-      <el-table-column prop="account_name" label="记账日期" align="center">
+      <el-table-column prop="JZRQ" label="记账日期" align="center">
       </el-table-column>
-      <el-table-column prop="certificate_code" label="摘要" align="center">
+      <el-table-column prop="ZY" label="摘要" align="center">
       </el-table-column>
-      <el-table-column prop="currency" label="备注" align="center">
+      <el-table-column prop="BZ" label="备注" align="center">
       </el-table-column>
-      <el-table-column prop="cash_or_transfer" label="账户明细编号-交易流水号" align="center">
+      <el-table-column prop="ZHMXBH" label="账户明细编号-交易流水号" align="center">
       </el-table-column>
-      <el-table-column prop="debit_amount" label="企业流水号" align="center">
+      <el-table-column prop="QYLSH" label="企业流水号" align="center">
       </el-table-column>
-      <el-table-column prop="account_number_other" label="凭证种类" align="center">
+      <el-table-column prop="PZZL" label="凭证种类" align="center">
       </el-table-column>
-      <el-table-column prop="account_name_other" label="凭证号" align="center">
+      <el-table-column prop="PZH" label="凭证号" align="center">
       </el-table-column>
-      <el-table-column prop="bank_other" label="剩余金额" align="center">
+      <el-table-column  label="剩余金额" align="center">
       </el-table-column>
       <!-- <el-table-column prop="remark" label="所属公司" align="center">
       </el-table-column> -->
@@ -265,7 +259,7 @@ export default {
       this.dialogFormVisible = true;
       this.info = {
         id: row.id,
-        type: 1
+        type: 5
       };
     },
     close(){
@@ -277,6 +271,8 @@ export default {
         path: '/bankStatement/constructionPayDetails',
         name: '银行流水单管理  /微信支付宝明细',
         query: {
+           id: row.id,
+        type: 6,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date
         }
@@ -336,32 +332,36 @@ export default {
       if(this.ruleForm.dateEnd){
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
-      
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-        "pageIndex": this.pageCurrent - 1,
-        "pageSize": this.pageSize,
-        "object": {
-          "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-          "transaction_reference_number": this.ruleForm.code,
-          "begin": dateStart ? dateStart : "2000-05-16",
-          "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0
-        }
-      }).then(function (obj) {
-        // console.log('建设银行',obj);
-        if(obj.data.isSuccess){
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          // that.tableDataNBSK.forEach(function (item, index, arr) {
-          //   item.collectionTime = item.collectionTime.split('T')[0];
-          // });
-          // that.loadingNBSK = false;
-        }else{
-          // that.loadingNBSK = false;
-          that.total = 0;
-          that.tableData = [];
-        }
+      this.$http.post('mock/jianshe', {}).then(function (obj) {
+        console.log('obj',obj)
+            that.total = 100;
+          that.tableData = obj.data.data;
       })
+      // this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
+      //   "pageIndex": this.pageCurrent - 1,
+      //   "pageSize": this.pageSize,
+      //   "object": {
+      //     "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+      //     "transaction_reference_number": this.ruleForm.code,
+      //     "begin": dateStart ? dateStart : "2000-05-16",
+      //     "end": dateEnd ? dateEnd : "2099-05-16",
+      //     "seachType": 0
+      //   }
+      // }).then(function (obj) {
+      //   // console.log('建设银行',obj);
+      //   if(obj.data.isSuccess){
+      //     that.total = obj.data.total;
+      //     that.tableData = obj.data.objects;
+      //     // that.tableDataNBSK.forEach(function (item, index, arr) {
+      //     //   item.collectionTime = item.collectionTime.split('T')[0];
+      //     // });
+      //     // that.loadingNBSK = false;
+      //   }else{
+      //     // that.loadingNBSK = false;
+      //     that.total = 0;
+      //     that.tableData = [];
+      //   }
+      // })
     },
     beginDate(){
       const that = this;

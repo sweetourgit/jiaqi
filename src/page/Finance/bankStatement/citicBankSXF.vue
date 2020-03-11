@@ -54,7 +54,7 @@
         :on-remove="handleRemove1"
         :before-remove="beforeRemove1"
         name="excelfile">
-        <el-button type="primary">添加建设银行流水单</el-button>
+        <el-button type="primary">添加中信银行流水单</el-button>
       </el-upload>
       <el-upload
         class="upload-demo"
@@ -262,19 +262,19 @@ export default {
       this.multipleSelection = val;
     },
 
-    // 上传建设银行
+    // 上传中信银行
     UploadUrl1(){
       return this.GLOBAL.serverSrc + '/finance/industrialbank/api/ImportExcel';
     },
     handleSuccess1(response, file, fileList){
       console.log(response);
       if(response == true){
-        this.$message.success("建设银行流水单上传成功！");
+        this.$message.success("中信银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
         this.$store.commit('changeBankData', 'industrialBankSK' + Math.random());
       }else{
-        this.$message.warning("建设银行流水单上传失败！");
+        this.$message.warning("中信银行流水单上传失败！");
       }
     },
     handleError1(err, file, fileList){
