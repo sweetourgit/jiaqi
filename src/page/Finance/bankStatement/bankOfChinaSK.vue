@@ -155,14 +155,12 @@ export default {
       dialogFormVisible: false,
 
       startDatePicker: this.beginDate(),
-      endDatePicker: this.processDate(),
-      fileName:'' //上传文件名
+      endDatePicker: this.processDate()
     }
   },
   computed: {
     // 计算属性的 getter
     headers(){
-      console.log({'Authorization': 'Bearer ' + localStorage.getItem('token')})
       return {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       }
@@ -204,11 +202,10 @@ export default {
       });
     },
     UploadUrl(){
-      return this.GLOBAL.serverSrc + `/finance/bankofchina/api/ImportExcel?Name=${this.fileName}`;
+      return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
     },
     handleSuccess(response, file, fileList){
-      console.log('response',response);
-      this.fileName=file.name
+      console.log(response);
       if(response == true){
         this.$message.success("中国银行流水单上传成功！");
         this.pageCurrent = 1;
@@ -237,7 +234,7 @@ export default {
       this.loadData();
     },
     orderDetail(row){
-      this.dialogFormVisible  = true;
+      this.dialogFormVisible = true;
       this.info = {
         id: row.id,
         type: 0
@@ -318,17 +315,10 @@ export default {
           "transaction_reference_number": this.ruleForm.code,
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0,
-          "import_State":0,
-          "value_Date":0, //起息日期
-          "payer_s_Name":'', //付款人名称
-          "trade_Amount1":0.00, //交易金额
-          "trade_Amount2":0.00, //交易金额
-          "credit_amount1":0.00, //贷方金额
-          "credit_amount2":0.00 //贷方金额
+          "seachType": 0
         }
       }).then(function (obj) {
-        console.log('中国银行',obj);
+        // console.log('中国银行',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;

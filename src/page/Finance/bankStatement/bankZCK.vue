@@ -5,7 +5,6 @@
       <el-button @click="closeBtn" type="primary" plain>取消</el-button>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
-       <!-- ++++++中国银行+++++++ -->
       <el-tab-pane label="中国银行" name="first">
         <el-table :data="tableData1" ref="multipleTable1" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content1" @row-click="handleRowClick1" @selection-change="selectionChange1">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
@@ -68,7 +67,6 @@
           </el-pagination>
         </div>
       </el-tab-pane>
-       <!-- ++++++兴业银行+++++++ -->
       <el-tab-pane label="兴业银行" name="second">
         <el-table :data="tableData2" ref="multipleTable2" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content2" @row-click="handleRowClick2" @selection-change="selectionChange2">
           <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">

@@ -7,7 +7,7 @@
           <el-tab-pane label="收款">
             <bankOfChinaSK></bankOfChinaSK>
           </el-tab-pane>
-          <el-tab-pane  label="手续费">
+          <el-tab-pane label="手续费">
             <bankOfChinaSXF></bankOfChinaSXF>
           </el-tab-pane>
           <!-- <el-tab-pane label="付款">暂时不写</el-tab-pane> -->
@@ -18,29 +18,6 @@
         <el-tabs type="border-card" @tab-click="handleClick">
           <el-tab-pane label="收款">
             <industrialBankSK></industrialBankSK>
-          </el-tab-pane>
-          <el-tab-pane  label="手续费">
-            <industrialBankSXF></industrialBankSXF>
-          </el-tab-pane>
-          <el-tab-pane  label="付款">暂时不写</el-tab-pane>
-        </el-tabs>
-      </el-tab-pane>
-       <el-tab-pane label="农业银行" name="third">
-        <!-- <industrialBankSK></industrialBankSK> -->
-        <el-tabs type="border-card" @tab-click="handleClick">
-          <el-tab-pane  label="收款">
-            <agriculturalBankSK></agriculturalBankSK>
-          </el-tab-pane>
-          <el-tab-pane v-if="!OnlySK" label="手续费">
-          </el-tab-pane>
-          <el-tab-pane v-if="!OnlySK" label="付款">暂时不写</el-tab-pane>
-        </el-tabs>
-      </el-tab-pane>
-       <el-tab-pane label="招商银行" name="forth">
-        <!-- <industrialBankSK></industrialBankSK> -->
-        <el-tabs type="border-card" @tab-click="handleClick">
-          <el-tab-pane label="收款">
-           <merchantsBankSK></merchantsBankSK>
           </el-tab-pane>
           <el-tab-pane label="手续费">
             <merchantsBankSXF></merchantsBankSXF>
@@ -81,7 +58,7 @@
           <el-tab-pane label="手续费">
             <merchantsBankSXF></merchantsBankSXF>
           </el-tab-pane>
-          <el-tab-pane label="付款">暂时不写</el-tab-pane>
+          <!-- <el-tab-pane label="付款">暂时不写</el-tab-pane> -->
         </el-tabs>
       </el-tab-pane>
     </el-tabs>
@@ -121,18 +98,14 @@ export default {
   data() {
     return {
       activeName: 'first', // 当前tab选项卡默认状态
-      clickTab:'', // 点击切换获取当前值
-      OnlySK:false //控制是否只显示收款(例：农业银行无手续费、付款) 
+      clickTab:'' // 点击切换获取当前值
     }
   },
   computed: {},
   methods: {
     // 获取当前项的标题
     handleClick(tab, event) {// 点击切换获取当前值
-    // 暂时根据label匹配 若是后台接口能返回农业银行唯一标识 则根据唯一表示进行匹配
-      if(tab.label.indexOf('农业')!=-1){
-        this.OnlySK=true
-      }
+      
     },
 
     routerTo1(){

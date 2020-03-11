@@ -493,6 +493,7 @@ export default {
           console.log(err);
         });
     },
+
     //商户名称模糊查询
     handleBusinessGet(queryString3, cb) {
       this.businessLists = [];
@@ -515,6 +516,7 @@ export default {
             let results = queryString3
               ? this.businessLists.filter(this.createFilter(queryString3))
               : [];
+
             cb && cb(results);
           } else {
             // this.orgIDValue = "";
@@ -541,6 +543,7 @@ export default {
       this.orgIDValue = "";
       this.orgID = 0;
     },
+
     // 点击list列表中的一个
     handleContentHeader(item, index) {
       // let temp = this.orderpage;
@@ -557,6 +560,7 @@ export default {
         this.showContent = null;
       }
     },
+
     // 请求list中的一个数据
     axiosListOneInfo(id,planID) {
       this.$http
@@ -602,6 +606,7 @@ export default {
           // }
           // this.getListOneMessage.enrollDetail = _newArr.toString();
           // }
+
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           this.orderCodeSon = res.data.object.orderCode;
@@ -614,6 +619,7 @@ export default {
           // } else {
           //   this.getListOneMessage.orderChannel = "线下直客";
           // }
+
           // 下单平台
           if (this.getListOneMessage.platform == 1) {
             this.getListOneMessage.platform = "ERP系统";
@@ -724,6 +730,7 @@ export default {
     //       _resultstring.push(resstring);
     //     }
     //   });
+
     //   result = _resultstring.map(res => {
     //     return res.split(splitstring);
     //   });
@@ -734,6 +741,7 @@ export default {
     //   });
     //   return result;
     // },
+
     createFilter(queryString) {
       return restaurant => {
         return restaurant.value;
@@ -789,6 +797,7 @@ export default {
       this.orderPage(val, this.pageSize);
       this.pageIndex = val;
     },
+
     // 重置
     handleReset() {
       this.orderCode = ""; //订单ID
@@ -1148,6 +1157,7 @@ export default {
        
       }
    },
+
     // 出发日期转换格式显示
     // goDataChangeFun (data) {
     //   console.log(data)
@@ -1191,19 +1201,23 @@ export default {
 .contentHeader {
   position: relative;
 }
+
 .contentHeaderIcon {
   position: absolute;
   right: 10px;
   top: 42%;
   transform: translateY(-50%);
 }
+
 .BodyTableCenter {
   margin: 0 60px 0 73px;
 }
+
 .longWeight {
   width: 160px;
   vertical-align: top;
 }
+
 .demo-input-suffix {
   width: 1150px;
 }
@@ -1307,6 +1321,7 @@ export default {
   margin-top: 46px;
   margin-right: 20px;
 }
+
 .pagination {
   text-align: center;
   margin: 50px 0;
