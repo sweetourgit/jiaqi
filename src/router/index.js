@@ -657,6 +657,15 @@ export default new Router({
       }
     },
     {
+      path: '/toDo/ILabel',
+      component: () => import('@/page/Finance/toDo/ILabel'),
+      name: '待办',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
       path: '/approve/approveList',
       component: () => import('@/page/Finance/approve/approveList'),
       name: '需要您审批',
