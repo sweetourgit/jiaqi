@@ -155,8 +155,8 @@ export default {
       this.pageCurrent = val;
       this.loadData();
     },
-    loadData(){
-      // console.log(this.info);
+    loadData(){ 
+     console.log('订单明细info',this.info);
       const that = this;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindAssociatedOrders", {
         "pageIndex": this.pageCurrent,
@@ -166,7 +166,7 @@ export default {
           "type": this.info.type // 0 中国银行；1 兴业银行；2 微信支付宝明细；
         }
       }).then(function (obj) {
-        // console.log('关联订单',obj);
+        console.log('关联订单',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;

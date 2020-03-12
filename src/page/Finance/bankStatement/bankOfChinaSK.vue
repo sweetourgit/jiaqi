@@ -53,6 +53,8 @@
         :on-error="handleError"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
+        :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary">添加中国银行流水单</el-button>
       </el-upload>
@@ -146,7 +148,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+      File:{},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -185,6 +187,9 @@ export default {
     this.loadData()
   },
   methods: {
+    beforeUpload(event,file,filelist){
+        this.File.FileName=event.name
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -202,9 +207,10 @@ export default {
       });
     },
     UploadUrl(){
-      return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
+      return this.GLOBAL.serverSrc + `/finance/bankofchina/api/ImportExcel`;
     },
     handleSuccess(response, file, fileList){
+      this.fileName=file.name
       console.log(response);
       if(response == true){
         this.$message.success("中国银行流水单上传成功！");
@@ -300,6 +306,10 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
+      let userID= parseInt(window.sessionStorage.getItem('id'))
+      let orgID=parseInt(window.sessionStorage.getItem('orgID'))
+      let company=window.sessionStorage.getItem('topName')
+      let topID=parseInt(window.sessionStorage.getItem('topID'))
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
@@ -315,7 +325,11 @@ export default {
           "transaction_reference_number": this.ruleForm.code,
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0
+          "seachType": 0,
+          // "userid":userID,
+          // "orgid":orgID,
+          // "topid":topID,
+          "company":company
         }
       }).then(function (obj) {
         // console.log('中国银行',obj);

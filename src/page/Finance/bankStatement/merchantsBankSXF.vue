@@ -53,6 +53,8 @@
         :on-error="handleError1"
         :on-remove="handleRemove1"
         :before-remove="beforeRemove1"
+            :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary">添加招商银行流水单</el-button>
       </el-upload>
@@ -64,6 +66,8 @@
         :on-error="handleError2"
         :on-remove="handleRemove2"
         :before-remove="beforeRemove2"
+            :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary" plain>添加微信支付宝明细</el-button>
       </el-upload>
@@ -77,87 +81,83 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="状态" align="center">
+      <el-table-column prop="STATUS" label="状态" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.is_EBS == 0">未导入</span>
-          <span v-if="scope.row.is_EBS == 1">已导入</span>
+          <span v-if="scope.row.STATUS == 0">未导入</span>
+          <span v-if="scope.row.STATUS == 1">已导入</span>
         </template>
       </el-table-column>
-      <el-table-column prop="purpose_fee" label="手续费" align="center">
+      <el-table-column prop="SXF" label="手续费" align="center">
       </el-table-column>
-      <el-table-column prop="bank_serial_number" label="交易流水号" align="center">
+      <el-table-column prop="JYLSH" label="交易流水号" align="center">
       </el-table-column>
-      <el-table-column prop="reference" label="摘要" align="center">
+      <el-table-column prop="ZY" label="摘要" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="交易日期" align="center">
-        <template slot-scope="scope">
+      <el-table-column prop="JYRQ" label="交易日期" align="center">
+        <!-- <template slot-scope="scope">
           <span>{{scope.row.transaction_Date.split('T')[0]}}</span>
-        </template>
+        </template> -->
       </el-table-column>
-      <el-table-column prop="transaction_Date" label="交易时间" align="center">
-        <template slot-scope="scope">
+      <el-table-column prop="JYSJ" label="交易时间" align="center">
+        <!-- <template slot-scope="scope">
           <span>{{scope.row.transaction_Date.split('T')[1]}}</span>
-        </template>
+        </template> -->
       </el-table-column>
-       <el-table-column prop="purpose" label="交易货币" align="center">
+       <el-table-column prop="JYHB" label="交易货币" align="center">
       </el-table-column>
-      <el-table-column prop="purpose" label="交易金额" align="center">
+      <el-table-column prop="JYJE" label="交易金额" align="center">
       </el-table-column>
-      <el-table-column prop="credit_amount" label="起息日期" align="center">
+      <el-table-column prop="QXRQ" label="起息日期" align="center">
       </el-table-column>
-      <el-table-column prop="account_number" label="交易类型" align="center">
+      <el-table-column prop="JYLX" label="交易类型" align="center">
       </el-table-column>
-      <el-table-column prop="account_name" label="贷方金额" align="center">
+      <el-table-column prop="DFJE" label="贷方金额" align="center">
       </el-table-column>
-      <el-table-column prop="certificate_code" label="余额" align="center">
+      <el-table-column prop="YE" label="余额" align="center">
       </el-table-column>
-      <el-table-column prop="currency" label="用途" align="center">
+      <el-table-column prop="YT" label="用途" align="center">
       </el-table-column>
-      <el-table-column prop="cash_or_transfer" label="流程实例号" align="center">
+      <el-table-column prop="LCSLH" label="流程实例号" align="center">
       </el-table-column>
-      <el-table-column prop="debit_amount" label="业务名称" align="center">
+      <el-table-column prop="YWMC" label="业务名称" align="center">
       </el-table-column>
-      <el-table-column prop="account_number_other" label="业务参考号" align="center">
+      <el-table-column prop="YECKY" label="业务参考号" align="center">
       </el-table-column>
-      <el-table-column prop="account_name_other" label="业务摘要" align="center">
+      <el-table-column prop="YWZY" label="业务摘要" align="center">
       </el-table-column>
-      <el-table-column prop="bank_other" label="收(付)方分行名" align="center">
+      <el-table-column prop="SFFFHM" label="收(付)方分行名" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="收(付)方名称" align="center">
+      <el-table-column prop="SFFMC" label="收(付)方名称" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="收(付)方账号" align="center">
+      <el-table-column prop="SFFZH" label="收(付)方账号" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="收(付)方开户行行号" align="center">
+      <el-table-column prop="SFFKHHHH" label="收(付)方开户行行号" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="收(付)方开户行名" align="center">
+      <el-table-column prop="SFFKHHM" label="收(付)方开户行名" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="收(付)方开户行地址" align="center">
+      <el-table-column prop="SFFKHHDZ" label="收(付)方开户行地址" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="母(子)公司账号分行名" align="center">
+      <el-table-column prop="MZGSZHFHM" label="母(子)公司账号分行名" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="母(子)公司账号" align="center">
+      <el-table-column prop="MZGSZH" label="母(子)公司账号" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="母(子)公司名称" align="center">
+      <el-table-column prop="MZGSMC" label="母(子)公司名称" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="信息标志" align="center">
+      <el-table-column prop="XXBZ" label="信息标志" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="有否附件信息" align="center">
+      <el-table-column prop="YFFJXX" label="有否附件信息" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="冲账标志" align="center">
+      <el-table-column prop="CZBZ" label="冲账标志" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="其它摘要" align="center">
+      <el-table-column prop="QTZY" label="其它摘要" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="交易分析码" align="center">
+      <el-table-column prop="JYFXM" label="交易分析码" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="票据号" align="center">
+      <el-table-column prop="PJH" label="票据号" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="票据号" align="center">
+      <el-table-column prop="SWZFDDH" label="商务支付订单号" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="票据号" align="center">
-      </el-table-column>
-      <el-table-column prop="remark" label="商务支付订单号" align="center">
-      </el-table-column>
-      <el-table-column prop="remark" label="内部编号" align="center">
+      <el-table-column prop="NBBH" label="内部编号" align="center">
       </el-table-column>
       <!-- <el-table-column prop="remark" label="所属公司" align="center">
       </el-table-column> -->
@@ -187,7 +187,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+      File:{},
       multipleSelection: [], // 选择项
 
       pageCurrent: 1,
@@ -228,6 +228,9 @@ export default {
     },
   },
   methods: {
+        beforeUpload(event, file, filelist) {
+      this.File.FileName = event.name;
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -409,31 +412,35 @@ export default {
     },
     loadData(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-        "pageIndex": this.pageCurrent - 1,
-        "pageSize": this.pageSize,
-        "object": {
-          "transaction_reference_number": this.ruleForm.code,
-          "begin": this.ruleForm.dateStart ? moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00') : "2000-05-16",
-          "end": this.ruleForm.dateEnd ? moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59') : "2099-05-16",
-          "seachType": 2,
-          "import_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0
-        }
-      }).then(function (obj) {
-        // console.log('中国银行',obj);
-        if(obj.data.isSuccess){
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          // that.tableDataNBSK.forEach(function (item, index, arr) {
-          //   item.collectionTime = item.collectionTime.split('T')[0];
-          // });
-          // that.loadingNBSK = false;
-        }else{
-          // that.loadingNBSK = false;
-          that.total = 0;
-          that.tableData = [];
-        }
+       this.$http.post('mock/zhaohangSXF', {}).then(function (obj) {
+            that.total = 100;
+          that.tableData = obj.data.data;
       })
+      // this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
+      //   "pageIndex": this.pageCurrent - 1,
+      //   "pageSize": this.pageSize,
+      //   "object": {
+      //     "transaction_reference_number": this.ruleForm.code,
+      //     "begin": this.ruleForm.dateStart ? moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00') : "2000-05-16",
+      //     "end": this.ruleForm.dateEnd ? moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59') : "2099-05-16",
+      //     "seachType": 2,
+      //     "import_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0
+      //   }
+      // }).then(function (obj) {
+      //   // console.log('中国银行',obj);
+      //   if(obj.data.isSuccess){
+      //     that.total = obj.data.total;
+      //     that.tableData = obj.data.objects;
+      //     // that.tableDataNBSK.forEach(function (item, index, arr) {
+      //     //   item.collectionTime = item.collectionTime.split('T')[0];
+      //     // });
+      //     // that.loadingNBSK = false;
+      //   }else{
+      //     // that.loadingNBSK = false;
+      //     that.total = 0;
+      //     that.tableData = [];
+      //   }
+      // })
     },
     // 时间限制
     beginDate(){

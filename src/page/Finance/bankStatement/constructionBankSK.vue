@@ -53,6 +53,8 @@
         :on-error="handleError1"
         :on-remove="handleRemove1"
         :before-remove="beforeRemove1"
+           :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary">添加建设银行流水单</el-button>
       </el-upload>
@@ -64,6 +66,8 @@
         :on-error="handleError2"
         :on-remove="handleRemove2"
         :before-remove="beforeRemove2"
+           :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary" plain>添加微信支付宝明细</el-button>
       </el-upload>
@@ -105,7 +109,7 @@
       </el-table-column>
       <el-table-column prop="ZY" label="摘要" align="center">
       </el-table-column>
-      <el-table-column prop="BZ" label="备注" align="center">
+      <el-table-column prop="BZHU" label="备注" align="center">
       </el-table-column>
       <el-table-column prop="ZHMXBH" label="账户明细编号-交易流水号" align="center">
       </el-table-column>
@@ -146,7 +150,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+    File:{},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -185,6 +189,9 @@ export default {
     },
   },
   methods: {
+      beforeUpload(event, file, filelist) {
+      this.File.FileName = event.name;
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -333,7 +340,6 @@ export default {
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
       this.$http.post('mock/jianshe', {}).then(function (obj) {
-        console.log('obj',obj)
             that.total = 100;
           that.tableData = obj.data.data;
       })

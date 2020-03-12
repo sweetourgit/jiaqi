@@ -53,6 +53,8 @@
         :on-error="handleError"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
+          :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary">添加农业银行流水单</el-button>
       </el-upload>
@@ -127,7 +129,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+      File:{},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -166,6 +168,9 @@ export default {
     this.loadData()
   },
   methods: {
+      beforeUpload(event, file, filelist) {
+      this.File.FileName = event.name;
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'

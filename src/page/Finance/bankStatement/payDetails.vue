@@ -178,14 +178,14 @@ export default {
       const that = this;
       console.log('id',this.$route.que)
       this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindAssociatedOrders", {
+        .post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search", {
           pageIndex: this.pageCurrent,
           pageSize: this.pageSize,
           object: {
             purpose_Merchant_code: this.$route.query.purpose_Merchant_code,
             purpose_Date: this.$route.query.purpose_Date,
-            bankID:this.$route.query.id,
-            type:this.$route.query.type
+            // bankID:this.$route.query.id,
+            // type:this.$route.query.type
           }
         })
         .then(function(obj) {
