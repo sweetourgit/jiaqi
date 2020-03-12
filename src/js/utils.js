@@ -8,6 +8,10 @@ Vue.prototype.$deepCopy= function(obj){
   return JSON.parse(JSON.stringify(obj))
 }
 
+Vue.prototype.$assign= function(obj, source){
+  Object.keys(obj).forEach(key => obj[key]= source[key]);
+}
+
 Vue.prototype.$isNull= function(val){
   val+= '';
   return !val || val=== 'undefined' || val=== 'null' || val=== 'false';
