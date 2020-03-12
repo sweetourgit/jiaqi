@@ -72,8 +72,9 @@
     <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column label="操作" width="140" align="center" fixed>
         <template slot-scope="scope">
-          <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">查看订单</el-button>
-          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信支付宝明细</el-button>
+         
+          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">查看微信</br>支付宝明细</el-button>
+           <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-else>查看订单</el-button>
           <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
@@ -126,6 +127,8 @@
       <el-table-column prop="bank_other" label="对方银行" align="center">
       </el-table-column>
       <el-table-column prop="remark" label="备注" align="center">
+      </el-table-column>
+      <el-table-column prop="remark" label="所属公司" align="center">
       </el-table-column>
     </el-table>
     <div class="block">
@@ -279,8 +282,10 @@ export default {
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',
         query: {
+          id:row.id,
+          type:2,
           "purpose_Merchant_code": row.purpose_Merchant_code,
-          "purpose_Date": row.purpose_Date
+          "purpose_Date": row.purpose_Date,
         }
       });
     },

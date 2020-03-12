@@ -8,13 +8,13 @@
       </div>
       <div>
         <el-form-item label="邮轮名称：" prop="name" label-width="140px">
-          <el-input v-model="ruleForm.name" placeholder="请输入" class="inputWidth"></el-input>
+          <el-input v-model="ruleForm.name" placeholder="请输入" class="inputWidth" maxlength="40" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="亮点词：" prop="word" label-width="140px">
-          <el-input v-model="ruleForm.word1" class="inputWidth marginBtm" placeholder="请输入"></el-input>
-          <el-input v-model="ruleForm.word2" class="inputWidth marginBtm" placeholder="请输入"></el-input>
-          <el-input v-model="ruleForm.word3" class="inputWidth marginBtm" placeholder="请输入"></el-input>
-          <el-input v-model="ruleForm.word4" class="inputWidth marginBtm" placeholder="请输入"></el-input>
+          <el-input v-model="ruleForm.word1" class="inputWidth marginBtm" placeholder="请输入" maxlength="8" show-word-limit></el-input>
+          <el-input v-model="ruleForm.word2" class="inputWidth marginBtm" placeholder="请输入" maxlength="8" show-word-limit></el-input>
+          <el-input v-model="ruleForm.word3" class="inputWidth marginBtm" placeholder="请输入" maxlength="8" show-word-limit></el-input>
+          <el-input v-model="ruleForm.word4" class="inputWidth marginBtm" placeholder="请输入" maxlength="8" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="吨位：" prop="weight" label-width="140px" class="shortItem">
           <el-input v-model="ruleForm.weight" class="inputWidth" placeholder="请输入"></el-input>
@@ -70,7 +70,8 @@
             :before-remove="beforeRemove1" 
             :on-exceed="handleExceed1"
             list-type="picture-card"
-            :on-preview="handlePictureCardPreview">
+            :on-preview="handlePictureCardPreview"
+            :limit="1">
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible">
@@ -220,10 +221,12 @@ export default {
             }
             if(that.fileListVideo.length == 0){
               that.$message.warning("LOGO不能为空！");
+              return;
             }
             let fileArr = [];
             if(that.fileListPic.length == 0){
               that.$message.warning("图片不能为空！");
+              return;
             }else{
               that.fileListPic.forEach(function (item, index, arr) {
                 fileArr.push({

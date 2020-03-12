@@ -262,9 +262,9 @@ export default {
       action= isAgree? 
         agreeForJQ({commentText, workItemID, userCode}): 
         rejectForJQ({commentText, workItemID, userCode})
-        .then(() => {
-          return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
-        })
+        // .then(() => {
+        //   return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
+        // })
         .then(() => {
           return saveChcektype({ guid, checkType: 2 })
         })

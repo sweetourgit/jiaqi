@@ -33,8 +33,8 @@
       <el-table-column prop="refundStateType" label="状态" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.refundStateType=='0'" style="color: #7F7F7F" >申请退款</div>
-          <div v-if="scope.row.refundStateType=='1'" style="color: #7F7F7F" >退款完成</div>
-          <div v-if="scope.row.refundStateType=='2'" style="color: #7F7F7F" >拒绝退款</div>
+          <div v-if="scope.row.refundStateType=='1'" style="color: #33D174" >退款完成</div>
+          <div v-if="scope.row.refundStateType=='2'" style="color: #FF4A3D" >拒绝退款</div>
         </template>
       </el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请时间" width="180" align="center"></el-table-column>

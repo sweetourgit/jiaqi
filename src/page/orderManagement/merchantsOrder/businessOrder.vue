@@ -273,7 +273,7 @@
                 @click.native="operation(item,5)"
               >退款</el-breadcrumb-item>
               <el-breadcrumb-item
-                v-if="item.orderStatus == '订单完成' "
+                v-if="getListOneMessage.paid > 0"
                 class="breadCrumbPointer"
                 @click.native="operation(item,6,item.orderCode)"
               >发票申请</el-breadcrumb-item>
@@ -313,7 +313,7 @@
       ></el-pagination>
       <process-manage
         :orderId="orderId"
-        :variable="variable"
+        :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCode="orderCode"
         :paid="getListOneMessage.paid"
@@ -326,13 +326,26 @@
       ></process-manage>
       <remarks-infor
         :orderId="orderId"
-        :variable="variable"
+        :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
-      <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <order-invoiceApply :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-invoiceApply>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType"></orderRefund>
+      <order-transfer 
+        :orderId="orderId" 
+        :a_variable="a_variable" 
+        :dialogType="dialogType"
+      ></order-transfer>
+      <order-invoiceApply 
+        :orderId="orderId" 
+        :variable_s="variable_s"
+        :dialogType="dialogType"
+        :orderCodeSon="orderCodeSon"
+      ></order-invoiceApply>
+      <orderRefund 
+        :orderRefundID="orderId" 
+        :orderRefund="variable" 
+        :dialogType="dialogType"
+      ></orderRefund>
      
     </div>
   </div>
@@ -428,7 +441,9 @@ export default {
       total: 0,
       orderpage: [],
       orderId: 0,
-      variable: 0, //设置一个变量展示弹窗
+      variable: 0, //退款
+      a_variable:0,//设置一个变量展示弹窗
+      variable_s:0,//发票申请
       dialogType: 0, //弹窗类型  1：流程管理  2：备注信息
       orderCode: "", //订单编号
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
@@ -534,9 +549,13 @@ export default {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
+       this.variable= 0; //退款
+       this.a_variable=0;//设置一个变量展示弹窗
+       this.variable_s=0;//发票申请
+       this.dialogType= 0; //弹窗类型  1：流程管理  2：备注信息
       if (this.showContent != index) {
         this.showContent = index;
-       this.axiosListOneInfo(item.id,item.planID);
+        this.axiosListOneInfo(item.id,item.planID);
       } else {
         this.showContent = null;
       }
@@ -1089,11 +1108,11 @@ export default {
       //this.dialogType = i;
       //if(i == 5) this.orderRefundDialog = 1
     //},
+    
     operation(item, i, orderCode) {
       this.orderId = item.id;
       this.dialogType = i;
       this.planID = item.planID;
-      console.log(this.dialogType);
       if(i == 5) {
         //判断订单是否有记录
          this.$http
@@ -1112,15 +1131,32 @@ export default {
         .catch(err => {
           console.log(err);
         });
-       
+         this.a_variable = 0;
+      }else if(i == 6){
+       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
+            "object": {
+              "orderCode":orderCode,
+              "localCompName":"",
+              "collectionID":0,
+            },
+          }).then(res => {
+              if (res.data.isSuccess == false) {
+                  this.variable_s = 0;
+                  this.$message.error(res.data.result.message);
+                  return false;
+              } else{
+                  this.variable_s++;
+              }
+          })
+            .catch(function (res) {
+               console.log(res)
+             })
+            this.a_variable = 0;   
       }else{
-        this.variable++;
+        this.a_variable++;
+       
       }
-      
-      
-      console.log( this.variable,'+++');
-     
-    },
+   },
 
     // 出发日期转换格式显示
     // goDataChangeFun (data) {

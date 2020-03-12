@@ -690,5 +690,4 @@ export default {
 .cursor {
   cursor: pointer;
 }
-
 </style>

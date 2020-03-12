@@ -270,7 +270,7 @@ export default new Router({
     }, {
       path: '/curiseShipCabin',
       component: () => import('@/page/contentInfo/cruiseShipCabin/curiseShipCabin.vue'),
-      name: '游轮舱房管理',
+      name: '邮轮舱房管理',
       meta: {
         keepAlive: true,
         auth: true
@@ -317,7 +317,7 @@ export default new Router({
         }
       ]
     }, {
-      path: '/productLiner/liner',
+      path: '/productLinerDo',
       component: () => import('@/page/productManagement/liner/linerAdd'),
       name: '邮轮/ 添加',
       meta: {
@@ -656,6 +656,15 @@ export default new Router({
       path: '/doneAll/collectionDetails',
       component: () => import('@/page/Finance/doneAll/collectionDetails'),
       name: '已办/收款详情',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/toDo/ILabel',
+      component: () => import('@/page/Finance/toDo/ILabel'),
+      name: '待办',
       meta: {
         keepAlive: true,
         auth: true
