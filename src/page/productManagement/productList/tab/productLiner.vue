@@ -34,10 +34,10 @@
         <el-col :span="8">
           <el-form-item label="状态:">
             <el-select v-model="ruleForm.status" class="search_input">
-              <el-option value="">全部</el-option>
-              <el-option value="线上上线">线上上线</el-option>
-              <el-option value="仅erp上线">仅erp上线</el-option>
-              <el-option value="下线">下线</el-option>
+              <el-option value="" label="全部">全部</el-option>
+              <el-option value="1" label="线上上线">线上上线</el-option>
+              <el-option value="3" label="仅erp上线">仅erp上线</el-option>
+              <el-option value="2" label="下线">下线</el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -278,15 +278,15 @@ export default {
     // 删除
     deleteFun(row){
       const that = this;
-      this.$confirm("是否删除该公司?", "提示", {
+      this.$confirm("是否删除该产品?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-company/dellinercom", {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/del", {
           "id": row.id
         }, ).then(function(response) {
-          console.log('获取邮轮公司detail',response);
+          // console.log('获取邮轮公司detail',response);
           if (response.data.code == '200') {
             that.$message.success('删除成功！');
             that.loadData();
@@ -294,7 +294,7 @@ export default {
             if(response.data.message){
               that.$message.warning(response.data.message);
             }else{
-              that.$message.warning("加载数据失败~");
+              that.$message.warning("删除数据失败~");
             }
           }
         }).catch(function(error) {

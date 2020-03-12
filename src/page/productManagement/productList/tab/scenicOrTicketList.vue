@@ -229,7 +229,6 @@
         });
       },
       deleteRow(res){
-//        console.log(res);
         var that = this;
         this.$confirm('此操作将删除该跟产品信息', '提示', {
           confirmButtonText: '确定',
@@ -345,7 +344,6 @@
         }).then(function(response) {
 
           if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
             let operatorList = [];
             response.data.objects.forEach(function (item, index, arr) {
               const operator = {
