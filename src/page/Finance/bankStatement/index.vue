@@ -78,7 +78,7 @@ import constructionBankSXF from '@/page/Finance/bankStatement/constructionBankSX
 import citicBankSK from '@/page/Finance/bankStatement/citicBankSK.vue'
 import citicBankSXF from '@/page/Finance/bankStatement/citicBankSXF.vue'
 import jilinCiticBankSK from '@/page/Finance/bankStatement/jilinCiticBankSK.vue'
-
+ 
 export default {
   name: "bankStatement",
   components: {

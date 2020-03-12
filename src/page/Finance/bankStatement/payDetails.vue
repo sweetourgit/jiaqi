@@ -75,7 +75,7 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
-
+ 
 <script type="text/javascript">
 import orderDetail from "@/page/Finance/bankStatement/orderDetails.vue";
 
