@@ -1,4 +1,4 @@
-itic<template>
+<template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
     <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">

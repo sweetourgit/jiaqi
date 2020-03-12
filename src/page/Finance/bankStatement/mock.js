@@ -1,4 +1,4 @@
-let Mock = require('mockjs')
+ let Mock = require('mockjs')
 let Random = Mock.Random
 let data = Mock.mock('mock/nongye', 'post', {
     "data|10": [{

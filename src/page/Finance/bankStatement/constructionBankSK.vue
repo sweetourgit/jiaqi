@@ -132,7 +132,7 @@
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+ 
 export default {
   components: {
     orderDetail
