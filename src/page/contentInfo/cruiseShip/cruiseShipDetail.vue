@@ -153,8 +153,36 @@ export default {
       }
     },
     // 删除
-    deleteFun(){
-
+    deleteFun(row){
+      const that = this;
+      this.$confirm("是否删除该邮轮?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/delliner", {
+          "id": row.id
+        }, ).then(function(response) {
+          // console.log('获取邮轮公司detail',response);
+          if (response.data.code == '200') {
+            that.$message.success('删除成功！');
+            that.loadData();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("加载数据失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }).catch(() => {
+        this.$message({
+          type: "warning",
+          message: "已取消删除"
+        });
+      });
     },
 
     // 改变每页条数

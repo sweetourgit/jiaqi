@@ -1,16 +1,35 @@
 <template>
   <div class="curiseShip">
+    <!-- 搜索表单 -->
+    <el-form label-width="110px" class="form-content">
+      <el-row type="flex" class="row-bg">
+        <el-col :span="8">
+          <el-form-item label="舱房名称:">
+            <el-input v-model="filterText" placeholder="请输入"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8" :offset="8">
+          <el-form-item class="buttonForm">
+            <!-- <el-button @click="searchHandInside()" type="primary">搜索</el-button> -->
+            <el-button @click="emptyButtonInside()" type="primary" plain>重置</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <!-- 搜索表单 END -->
     <div class="buttonDv">
       <el-button type="info" class="topButton" @click="append()">添加顶级</el-button>
     </div>
     <div class="block">
       <!-- <p>使用 scoped slot</p> -->
       <el-tree
+        ref="tree"
         :data="data"
         :node-key="data.id"
         render-after-expand
         :props="defaultProps"
-        :expand-on-click-node="false">
+        :expand-on-click-node="false"
+        :filter-node-method="filterNode">
         <span class="custom-tree-node" slot-scope="{ node, data }">
           <span>{{ data.name }}</span>
           <span>
@@ -55,11 +74,25 @@ export default {
         children: 'child',
       },
       dialogFormVisible: false,
-      info: ''
+      info: '',
+
+      filterText: ''
     }
   },
   computed: {},
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    }
+  },
   methods: {
+    filterNode(value, data){
+      if (!value) return true;
+      return data.name.indexOf(value) !== -1;
+    },
+    emptyButtonInside(){
+      this.filterText = "";
+    },
     closeAdd(){
       this.dialogFormVisible = false;
       this.info = "";
@@ -150,6 +183,14 @@ export default {
 
 </script>
 <style lang="scss" scoped>
+  .form-content{
+    background: #f7f7f7;
+    padding: 20px 10px;
+    margin: 20px 10px;
+    .buttonForm{
+      text-align: center;
+    }
+  }
   .buttonDv{
     overflow: hidden;
   }

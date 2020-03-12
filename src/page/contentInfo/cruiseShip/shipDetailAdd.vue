@@ -73,10 +73,11 @@ export default {
         }
         
       }else{
-        for(let i = 0; i < index; i++){
-          this.$set(this.status, i, 'success');
-        }
-        if(this.status[index] == 'success'){
+        
+        if(this.status[index] != 'wait'){
+          for(let i = 0; i < index; i++){
+            this.$set(this.status, i, 'success');
+          }
           this.activeIndex = index;
           this.$set(this.status, this.activeIndex, 'finish');
         }

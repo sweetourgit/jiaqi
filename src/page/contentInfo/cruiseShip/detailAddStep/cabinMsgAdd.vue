@@ -15,7 +15,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="名称：" prop="name" label-width="140px">
-            <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
+            <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入" maxlength="40" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="容纳人数：" prop="person" label-width="140px">
             <el-input v-model="ruleForm.person" class="inputWidth" placeholder="请输入"></el-input>
@@ -64,7 +64,7 @@
         rules: {
           cabinType: [{ required: true, message: '舱房类型不能为空!', trigger: 'change' }],
           name: [{ required: true, message: '舱房名称不能为空!', trigger: 'blur' }],
-          person: [{ required: true, message: '舱房容纳人数不能为空!', trigger: 'blur' }]
+          // person: [{ required: true, message: '舱房容纳人数不能为空!', trigger: 'blur' }]
         },
         fileList1: [], // 图片文件
         topTitle: '添加',

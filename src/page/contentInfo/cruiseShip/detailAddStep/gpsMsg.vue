@@ -4,7 +4,7 @@
       <el-button class="el-button" type="primary" @click="saveFun(1)">保 存</el-button>
       <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
     </div>
-    <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
+    <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1" :limit="1">
       <el-button size="small" type="primary">点击上传</el-button>
     </el-upload>
   </div>

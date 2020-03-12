@@ -15,7 +15,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="名称：" prop="name" label-width="140px">
-            <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
+            <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入" maxlength="80" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="容纳人数：" prop="person" label-width="140px">
             <el-input v-model="ruleForm.person" class="inputWidth" placeholder="请输入"></el-input>
