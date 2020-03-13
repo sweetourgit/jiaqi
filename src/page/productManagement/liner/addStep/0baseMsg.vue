@@ -8,7 +8,7 @@
       </div>
       <div>
         <el-form-item label="产品名称：" prop="name" label-width="140px">
-          <el-input v-model="ruleForm.name" placeholder="请输入" class="inputWidth" maxlength="40" show-word-limit></el-input>
+          <el-input v-model="ruleForm.name" placeholder="请输入" class="inputWidth" maxlength="30" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="亮点词：" prop="word" label-width="140px">
           <el-input v-model="ruleForm.word1" class="inputWidth marginBtm" placeholder="请输入" maxlength="8" show-word-limit></el-input>
@@ -40,7 +40,7 @@
             closable
             @close="tagClose1"
             type="info">
-            {{tag.value}}
+            {{tag.departure_name}}
           </el-tag>
         </el-form-item>
         <el-form-item label="目的地：" prop="destination" label-width="140px">
@@ -59,7 +59,7 @@
             closable
             @close="tagClose2"
             type="info">
-            {{tag.value}}
+            {{tag.destination_name}}
           </el-tag>
         </el-form-item>
         <el-form-item label="返回地：" prop="returnDes" label-width="140px">
@@ -78,7 +78,7 @@
             closable
             @close="tagClose3"
             type="info">
-            {{tag.value}}
+            {{tag.returnplace_name}}
           </el-tag>
         </el-form-item>
         <el-form-item label="订单确认类型：" prop="orderType" label-width="140px">
@@ -93,7 +93,7 @@
             closable
             :disable-transitions="false"
             @close="handleClose(tag)">
-            {{tag}}
+            {{tag.lable_name}}
           </el-tag>
           <el-input
             class="input-new-tag"
@@ -147,10 +147,16 @@
           <span>轮播图3-6张</span>
         </el-form-item>
         <el-form-item label="出游人群：" prop="person" label-width="140px">
-          <el-checkbox v-model="ruleForm.person" v-for="item in personList" :key="item.id">{{item.name}}</el-checkbox>
+          <el-checkbox-group v-model="ruleForm.person">
+            <el-checkbox v-for="item in personList" :key="item.id" :label="item.id" :value="item.id">{{item.name}}</el-checkbox>
+          </el-checkbox-group>
+          
         </el-form-item>
         <el-form-item label="主题：" prop="theme" label-width="140px">
-          <el-checkbox v-model="ruleForm.theme" v-for="item in themeList" :key="item.id">{{item.name}}</el-checkbox>
+          <el-checkbox-group v-model="ruleForm.theme">
+            <el-checkbox v-for="item in themeList" :key="item.id" :label="item.id" :value="item.id">{{item.name}}</el-checkbox>
+          </el-checkbox-group>
+          
         </el-form-item>
         <el-form-item label="提前报名天数：" prop="days" label-width="140px">
           <el-input v-model="ruleForm.days" placeholder="请输入" class="inputWidth" ></el-input>
@@ -312,7 +318,10 @@ export default {
         this.$message.warning("最多添加10个地点")
       }else{
         this.destinationList = [];
-        this.originTag.push(item);
+        this.originTag.push({
+          "departure_id": item.id,
+          "departure_name": item.value
+        });
         this.ruleForm.origin = '';
       }
     },
@@ -327,7 +336,10 @@ export default {
         this.$message.warning("最多添加10个地点")
       }else{
         this.destinationList = [];
-        this.destinationTag.push(item);
+        this.destinationTag.push({
+          "destination_id": item.id,
+          "destination_name": item.value
+        });
         this.ruleForm.destination = '';
       }
     },
@@ -342,7 +354,10 @@ export default {
         this.$message.warning("最多添加10个地点")
       }else{
         this.destinationList = [];
-        this.returnDesTag.push(item);
+        this.returnDesTag.push({
+          "returnplace_id": item.id,
+          "returnplace_name": item.value
+        });
         this.ruleForm.returnDes = '';
       }
     },
@@ -365,7 +380,9 @@ export default {
     handleInputConfirm() {
       let inputValue = this.ruleForm.operationLabel;
       if (inputValue) {
-        this.labelTag.push(inputValue);
+        this.labelTag.push({
+          "lable_name": inputValue
+        });
       }
       this.inputVisible = false;
       this.ruleForm.operationLabel = '';
@@ -467,39 +484,63 @@ export default {
                 "strength": this.ruleForm.word4
               })
             }
-            if(that.fileListVideo.length == 0){
-              that.$message.warning("LOGO不能为空！");
-            }
-            let fileArr = [];
+            let filePic = [];
             if(that.fileListPic.length == 0){
-              that.$message.warning("图片不能为空！");
+              that.$message.warning("头图不能为空！");
+              return;
             }else{
               that.fileListPic.forEach(function (item, index, arr) {
+                filePic.push({
+                  pic_id: item.id,
+                  pic_url: item.urlCopy
+                });
+              })
+            }
+            let fileArr = [];
+            if(that.fileListVideo.length < 3){
+              that.$message.warning("轮播图最少上传3张！");
+              return;
+            }else{
+              that.fileListVideo.forEach(function (item, index, arr) {
                 fileArr.push({
                   pic_id: item.id,
                   pic_url: item.urlCopy
                 });
               })
             }
-            this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/savelinerbasic", {
+
+            // console.log(this.ruleForm.person);
+            let personArr = [];
+            this.ruleForm.person.forEach(function(item, index, arr){
+              personArr.push({
+                crowd_id: item
+              })
+            })
+            // console.log(this.ruleForm.theme);
+            let themeArr = [];
+            this.ruleForm.theme.forEach(function(item, index, arr){
+              themeArr.push({
+                theme_id: item
+              })
+            })
+            this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/saveproductbasic", {
+              "product_id": this.$route.query.id,
               "button_type": type,
-              "company_id": this.$route.query.id,
-              "id": localStorage.getItem('liner_id'),
-              "name": this.ruleForm.name,
-              "strengths": strengthArr,
-              "tonnage": this.ruleForm.weight,
-              "passenger": this.ruleForm.passenger,
-              "maiden_voyage": this.ruleForm.firstDate,
-              "floor": this.ruleForm.floor,
-              "length": this.ruleForm.length,
-              "width": this.ruleForm.width,
-              "pics": fileArr,
-              "videos": [
-                {
-                  "video_id": that.fileListVideo[0].id,
-                  "video_url": that.fileListVideo[0].urlCopy
-                }
-              ],
+              "product_name": this.ruleForm.name,
+              "strength": strengthArr,
+              "company_id": this.ruleForm.company_id,
+              "liner_id": this.ruleForm.liner_id,
+              "departure": this.originTag,
+              "destination": this.destinationTag,
+              "returnplace": this.returnDesTag,
+              "confirm_type": this.ruleForm.orderType,
+              "lable": this.labelTag,
+              "head_image": filePic,
+              "carousel_image": fileArr,
+              "crowd": personArr,
+              "theme": themeArr,
+              "advance_enroll_day": this.ruleForm.days,
+              "product_overview": this.ruleForm.introduce,
               "create_uid": sessionStorage.getItem('id'),
               "org_id": sessionStorage.getItem('orgID')
             }).then(res => {
@@ -512,18 +553,15 @@ export default {
                 if(type == '1'){
                   // alert('保存');
                   // that.$router.back();
-                  localStorage.removeItem('liner_id');
+                  // localStorage.removeItem('liner_id');
                   that.$router.push({
-                    path: '/cruiseShip/cruiseShipDetail',
-                    name: '邮轮管理/详情',
-                    query: {
-                      "id": that.$route.query.id
-                    }
+                    path: '/productList/productLiner',
+                    name: '邮轮'
                   });
                 }else if(type == '2'){
                   // alert('下一步');
                   // console.log(that.$parent);
-                  localStorage.setItem('liner_id', res.data.data.liner_id);
+                  // localStorage.setItem('liner_id', res.data.data.liner_id);
                   that.$parent.next();
                 }
               } else {
@@ -563,14 +601,11 @@ export default {
       }).catch( action => {
         // console.log(action)
         if(action === 'cancel'){
-          this.$router.push({
-            path: '/cruiseShip/cruiseShipDetail',
-            name: '邮轮管理/详情',
-            query: {
-              "id": this.$route.query.id
-            }
+          that.$router.push({
+            path: '/productList/productLiner',
+            name: '邮轮'
           });
-          localStorage.removeItem('liner_id');
+          // localStorage.removeItem('liner_id');
         }
         
       });
@@ -585,31 +620,41 @@ export default {
 
     loadData(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/viewlinerbasic", {
-        "id": localStorage.getItem('liner_id')
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/getproductbasic", {
+        "product_id": this.$route.query.id
       }, ).then(function(response) {
-        console.log('基础信息',response);
+        // console.log('基础信息',response);
         if (response.data.code == '200') {
           that.ruleForm = {
-            name: response.data.data.name,
-            word1: response.data.data.strength[0] ? response.data.data.strength[0].strength : '',
-            word2: response.data.data.strength[1] ? response.data.data.strength[1].strength : '',
-            word3: response.data.data.strength[2] ? response.data.data.strength[2].strength : '',
-            word4: response.data.data.strength[3] ? response.data.data.strength[3].strength : '',
-            weight: response.data.data.tonnage,
-            passenger: response.data.data.passenger,
-            firstDate: response.data.data.maiden_voyage,
-            floor: response.data.data.floor,
-            length: response.data.data.length,
-            width: response.data.data.width
+            name: response.data.data.info.product_name,
+            word1: response.data.data.info.strength[0] ? response.data.data.info.strength[0].strength : '',
+            word2: response.data.data.info.strength[1] ? response.data.data.info.strength[1].strength : '',
+            word3: response.data.data.info.strength[2] ? response.data.data.info.strength[2].strength : '',
+            word4: response.data.data.info.strength[3] ? response.data.data.info.strength[3].strength : '',
+            company_id: response.data.data.info.company_id,
+            liner_id: response.data.data.info.liner_id,
+            orderType: response.data.data.info.confirm_type,
+            operationLabel: response.data.data.info.lable,
+            person: [],
+            theme: [],
+            days: response.data.data.info.advance_enroll_day,
+            introduce: response.data.data.info.product_overview
           };
-
-          that.fileListPic = response.data.data.pics;
+          response.data.data.info.crowd.forEach(function(item, index, arr){
+            that.ruleForm.person.push(item.crowd_id);
+          })
+          response.data.data.info.theme.forEach(function(item, index, arr){
+            that.ruleForm.theme.push(item.theme_id);
+          })
+          that.originTag = response.data.data.info.departure;
+          that.destinationTag = response.data.data.info.destination;
+          that.returnDesTag = response.data.data.info.returnplace;
+          that.fileListPic = response.data.data.info.head_image;
           that.fileListPic.forEach(function(item, index, arr){
             item.url = 'http://yl.dayuntong.com' + item.pic_url;
             item.urlCopy = item.pic_url;
           })
-          that.fileListVideo = response.data.data.videos;
+          that.fileListVideo = response.data.data.info.carousel_image;
           that.fileListVideo.forEach(function(item, index, arr){
             item.url = 'http://yl.dayuntong.com' + item.pic_url;
             item.urlCopy = item.pic_url;
@@ -635,6 +680,9 @@ export default {
         console.log('邮轮公司',response);
         if (response.data.code == '200') {
           that.companyList = response.data.data.list;
+          if(that.$route.query.id){
+            that.loadLiner()
+          }
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);
@@ -648,8 +696,11 @@ export default {
     },
     loadLiner(){
       const that = this;
-      this.linerList = [];
-      this.ruleForm.liner_id = '';
+      if(this.$route.query.id){
+        this.linerList = [];
+        this.ruleForm.liner_id = '';
+      }
+      
       this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/listall", {
         "company_id": this.ruleForm.company_id,
         "name": "",
@@ -672,7 +723,7 @@ export default {
   },
   created() {
     this.loadCompany();
-    if(localStorage.getItem('liner_id')){
+    if(this.$route.query.id){
       this.loadData();
     }
   },
