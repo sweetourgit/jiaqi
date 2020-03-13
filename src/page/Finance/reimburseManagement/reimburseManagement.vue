@@ -1200,7 +1200,7 @@ export default {
         },
         Amenddel(){ // 关闭隐藏
           this.AmendOpenVisble = false;
-          this.disabled_style = false;
+          this.disabled_style =  true;
           this.AmendNull();
 
         },
