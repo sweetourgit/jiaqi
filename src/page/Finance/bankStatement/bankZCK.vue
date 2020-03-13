@@ -8,7 +8,7 @@
       <!-- 改天再拆 -->
       <!-- <el-tab-pane label="中国银行" name="first">
         <BankOfChinaZCK  @updateSelectionChange="updateSelectionChange1"></BankOfChinaZCK>
-      </el-tab-pane> -->
+      </el-tab-pane>-->
 
       <el-tab-pane label="中国银行" name="first">
         <el-table
@@ -346,42 +346,47 @@
       <el-tab-pane label="吉林中信银行" name="seventh">
         <el-table
           :data="tableDataForJLZX"
-          ref="multipleTable2"
+          ref="multipleTableForJLZX"
           border
           :highlight-current-row="true"
           :header-cell-style="getRowClass"
           :stripe="true"
           id="table-content2"
-          @row-click="handleRowClick2"
-          @selection-change="selectionChange2"
+          @row-click="handleRowClickForJLZX"
+          @selection-change="selectionChangeForJLZX"
         >
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
-          <el-table-column prop="SYJE" label="剩余金额" align="center"></el-table-column>
-          <el-table-column prop="STATUS" label="暂存款状态" align="center">
+          <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+          <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
+          <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.STATUS == 0">未设置</span>
-              <span v-if="scope.row.STATUS == 1">已设置</span>
+              <span v-if="scope.row.is_ZCK == 0">未设置</span>
+              <span v-if="scope.row.is_ZCK == 1">已设置</span>
             </template>
           </el-table-column>
-          <el-table-column prop="JYRQ" label="交易日期" align="center"></el-table-column>
-          <el-table-column prop="SRJE" label="收入金额" align="center"></el-table-column>
-          <el-table-column prop="ZCJE" label="支出金额" align="center"></el-table-column>
-          <el-table-column prop="ZHYE" label="账户余额" align="center"></el-table-column>
-          <el-table-column prop="DFMC" label="对方名称" align="center"></el-table-column>
-          <el-table-column prop="DFZH" label="对方账号" align="center"></el-table-column>
-          <el-table-column prop="SLJG" label="受理机构" align="center"></el-table-column>
-          <el-table-column prop="ZY" label="摘要" align="center"></el-table-column>
-          <el-table-column prop="JYLSH" label="交易流水号" align="center"></el-table-column>
-          <el-table-column prop="JYKH" label="交易卡号" align="center"></el-table-column>
-          <el-table-column prop="ZT" label="状态" align="center"></el-table-column>
+          <el-table-column label="交易时间" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.transaction_time.split('T')[0]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="amount_of_income" label="收入金额" align="center"></el-table-column>
+          <el-table-column prop="amount_of_expenditure" label="支出金额" align="center"></el-table-column>
+          <el-table-column prop="account_balance" label="账户余额" align="center"></el-table-column>
+          <el-table-column prop="other_Name" label="对方名称" align="center"></el-table-column>
+          <el-table-column prop="other_Account" label="对方账号" align="center"></el-table-column>
+          <el-table-column prop="receiving_body" label="受理机构" align="center"></el-table-column>
+          <el-table-column prop="abstract" label="摘要" align="center"></el-table-column>
+          <el-table-column prop="transaction_serial_number" label="交易流水号" align="center"></el-table-column>
+          <el-table-column prop="transaction_card_number" label="交易卡号" align="center"></el-table-column>
+          <el-table-column prop="state" label="交易状态" align="center"></el-table-column>
         </el-table>
         <div class="block">
           <el-pagination
-            @size-change="handleSizeChange2"
-            @current-change="handleCurrentChange2"
-            :current-page.sync="pageCurrent2"
+            @size-change="handleSizeChangeForJLZX"
+            @current-change="handleCurrentChangeForJLZX"
+            :current-page.sync="pageCurrentForJLZX"
             :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSize2"
+            :page-size="pageSizeForJLZX"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalForJLZX"
           ></el-pagination>
@@ -413,15 +418,30 @@ export default {
       pageSize2: 10,
       total2: 0,
       multipleSelection2: [],
+
       totalForNY: 0,
       tableDataForNY: [],
+      pageCurrentForNY: 1,
+      pageSizeForNY: 10,
+
       totalForZS: 0,
+      pageCurrentForZS: 1,
+      pageSizeForZS: 10,
       tableDataForZS: [],
+
       totalForJS: 0,
+      pageCurrentForJS: 1,
+      pageSizeForJS: 10,
       tableDataForJS: [],
+
       totalForZX: 0,
+      pageCurrentForZX: 1,
+      pageSizeForZX: 10,
       tableDataForZX: [],
+
       totalForJLZX: 0,
+      pageCurrentForJLZX: 1,
+      pageSizeForJLZX: 10,
       tableDataForJLZX: []
     };
   },
@@ -444,7 +464,7 @@ export default {
       }
     },
     handleClick(tab, event) {
-      console.log('执行了tab点击')
+      console.log("执行了tab点击");
       if (tab.name == "first") {
         if (this.multipleSelection1.length > 0) {
           this.clickable = false;
@@ -475,7 +495,7 @@ export default {
     },
     // 选择项更改
     selectionChange1(val) {
-      console.log('执行了选项更改')
+      console.log("执行了选项更改");
       // console.log(val);
       if (val.length > 0 && this.activeName == "first") {
         this.clickable = false;
@@ -515,26 +535,15 @@ export default {
 
     //---------------------------------------
 
-
-  //修改选择项更改    拆分bankOfChina 2020 3.13 拆不动了 
-    updateSelectionChange1(clickable,multipleSelection){
-      console.log('clickable',clickable)
-        console.log('multipleSelection',multipleSelection)
-      this.clickable=clickable
-      this.multipleSelection1=multipleSelection
+    //修改选择项更改    拆分bankOfChina 2020 3.13 拆不动了
+    updateSelectionChange1(clickable, multipleSelection) {
+      console.log("clickable", clickable);
+      console.log("multipleSelection", multipleSelection);
+      this.clickable = clickable;
+      this.multipleSelection1 = multipleSelection;
     },
 
-
-
-
-
-
-
-
-
-
     //---------------------------------------
-
 
     // 提交暂存款选择项
     submitBtn() {
@@ -602,6 +611,38 @@ export default {
             console.log(error);
             that.$message.warning("提交暂存款失败~");
           });
+      } else if (this.activeName == "seventh") {
+      //此处功能暂时没有接口
+        // 吉林中信银行暂存款提交
+        this.multipleSelectionForJLZX.forEach(function(item, index, arr) {
+          idsArr.push(item.id);
+        });
+        this.$http
+          .post(
+            this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
+            {
+              ids: idsArr,
+              type: 10
+            }
+          )
+          .then(function(response) {
+            // console.log(response)
+            if (response.status == 200) {
+              that.$message.success("提交暂存款成功！");
+              that.loadDataForJLZX();
+            } else {
+              if (response.statusText) {
+                that.$message.warning(response.data.statusText);
+              } else {
+                that.$message.warning("提交暂存款失败~");
+              }
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+            that.$message.warning("提交暂存款失败~");
+          });
       }
     },
 
@@ -642,7 +683,6 @@ export default {
 
     handleSizeChange2(val) {
       this.pageSize2 = val;
-      this.pageCurrent1 = 2;
       this.loadData2();
     },
     handleCurrentChange2(val) {
@@ -727,11 +767,66 @@ export default {
     },
     loadDataForJLZX() {
       const that = this;
-      this.$http.post("mock/jilinzhongxinZCK", {}).then(function(obj) {
-        that.totalForJLZX = 100;
-        that.tableDataForJLZX = obj.data.data;
-      });
-    }
+      console.log("size", this.pageSizeForJLZX);
+      // this.$http.post("mock/jilinzhongxinZCK", {}).then(function(obj) {
+      //   that.totalForJLZX = 100;
+      //   that.tableDataForJLZX = obj.data.data;
+      // });
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
+          pageIndex: this.pageCurrentForJLZX - 1,
+          pageSize: this.pageSizeForJLZX,
+          object: {
+            matching_State: 0,
+            begin: "2000-05-16",
+            end: "2099-05-16",
+            seachType: 3,
+            // "userid":userID,
+            // "orgid":orgID,
+            // "topid":topID,
+            company: ""
+          }
+        })
+        .then(function(obj) {
+          console.log("吉林中信银行", obj);
+          if (obj.data.isSuccess) {
+            that.totalForJLZX = obj.data.total;
+            that.tableDataForJLZX = obj.data.objects;
+            // that.tableDataNBSK.forEach(function (item, index, arr) {
+            //   item.collectionTime = item.collectionTime.split('T')[0];
+            // });
+            // that.loadingNBSK = false;
+          } else {
+            // that.loadingNBSK = false;
+            that.totalForJLZX = 0;
+            that.tableDataForJLZX = [];
+          }
+        });
+    },
+    handleSizeChangeForJLZX(val) {
+      this.pageSizeForJLZX = val;
+      this.loadDataForJLZX();
+    },
+    handleCurrentChangeForJLZX(val) {
+      this.pageCurrentForJLZX = val;
+      this.loadDataForJLZX();
+    },
+        // 整行点击 -- 吉林吉林中信银行
+    handleRowClickForJLZX(row, column, event) {
+      if (row.is_ZCK == 0) {
+        this.$refs.multipleTableForJLZX.toggleRowSelection(row);
+      }
+    },
+    // 选择项更改
+    selectionChangeForJLZX(val) {
+      // console.log(val);
+      if (val.length > 0 && this.activeName == "seventh") {
+        this.clickable = false;
+      } else {
+        this.clickable = true;
+      }
+      this.multipleSelectionForJLZX = val;
+    },
   }
 };
 </script>
