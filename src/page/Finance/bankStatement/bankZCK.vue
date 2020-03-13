@@ -5,6 +5,11 @@
       <el-button @click="closeBtn" type="primary" plain>取消</el-button>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
+      <!-- 改天再拆 -->
+      <!-- <el-tab-pane label="中国银行" name="first">
+        <BankOfChinaZCK  @updateSelectionChange="updateSelectionChange1"></BankOfChinaZCK>
+      </el-tab-pane> -->
+
       <el-tab-pane label="中国银行" name="first">
         <el-table
           :data="tableData1"
@@ -308,10 +313,8 @@
           <el-table-column prop="JYRQ" label="交易日期" align="center"></el-table-column>
           <el-table-column prop="JYSJ" label="交易时间" align="center"></el-table-column>
           <el-table-column prop="DFZH" label="对方账号" align="center"></el-table-column>
-          <el-table-column prop="DFZHMC" label="对方账户名称" align="center">
-          </el-table-column>
-          <el-table-column prop="DFZHKHWDMC" label="对方账号开户网点名称" align="center">
-          </el-table-column>
+          <el-table-column prop="DFZHMC" label="对方账户名称" align="center"></el-table-column>
+          <el-table-column prop="DFZHKHWDMC" label="对方账号开户网点名称" align="center"></el-table-column>
           <el-table-column prop="JFFSE" label="借方发生额" align="center"></el-table-column>
           <el-table-column prop="DFFSE" label="贷方发生额" align="center"></el-table-column>
           <el-table-column prop="ZHYE" label="账户余额" align="center"></el-table-column>
@@ -380,7 +383,7 @@
             :page-sizes="[5, 10, 50, 100]"
             :page-size="pageSize2"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="totalForJXZX"
+            :total="totalForJLZX"
           ></el-pagination>
         </div>
       </el-tab-pane>
@@ -389,8 +392,11 @@
 </template>
  
 <script type="text/javascript">
+import BankOfChinaZCK from "./componentsZCK/bankOfChinaZCK.vue";
 export default {
-  components: {},
+  components: {
+    BankOfChinaZCK
+  },
   data() {
     return {
       activeName: "first",
@@ -412,11 +418,11 @@ export default {
       totalForZS: 0,
       tableDataForZS: [],
       totalForJS: 0,
-      tableForJS: [],
-      totalForZX:0,
-      tableForZX:[],
-      totalForJLZX:0,
-      tableForJLZX:[]
+      tableDataForJS: [],
+      totalForZX: 0,
+      tableDataForZX: [],
+      totalForJLZX: 0,
+      tableDataForJLZX: []
     };
   },
   created() {
@@ -438,6 +444,7 @@ export default {
       }
     },
     handleClick(tab, event) {
+      console.log('执行了tab点击')
       if (tab.name == "first") {
         if (this.multipleSelection1.length > 0) {
           this.clickable = false;
@@ -468,6 +475,7 @@ export default {
     },
     // 选择项更改
     selectionChange1(val) {
+      console.log('执行了选项更改')
       // console.log(val);
       if (val.length > 0 && this.activeName == "first") {
         this.clickable = false;
@@ -504,6 +512,30 @@ export default {
         }
       });
     },
+
+    //---------------------------------------
+
+
+  //修改选择项更改    拆分bankOfChina 2020 3.13 拆不动了 
+    updateSelectionChange1(clickable,multipleSelection){
+      console.log('clickable',clickable)
+        console.log('multipleSelection',multipleSelection)
+      this.clickable=clickable
+      this.multipleSelection1=multipleSelection
+    },
+
+
+
+
+
+
+
+
+
+
+    //---------------------------------------
+
+
     // 提交暂存款选择项
     submitBtn() {
       const that = this;
@@ -681,7 +713,7 @@ export default {
     loadDataForJS() {
       const that = this;
       this.$http.post("mock/jiansheZCK", {}).then(function(obj) {
-        console.log('建设obj',obj)
+        console.log("建设obj", obj);
         that.totalForJS = 100;
         that.tableDataForJS = obj.data.data;
       });
@@ -693,7 +725,7 @@ export default {
         that.tableDataForZX = obj.data.data;
       });
     },
-      loadDataForJLZX() {
+    loadDataForJLZX() {
       const that = this;
       this.$http.post("mock/jilinzhongxinZCK", {}).then(function(obj) {
         that.totalForJLZX = 100;

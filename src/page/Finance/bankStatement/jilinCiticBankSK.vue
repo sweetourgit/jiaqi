@@ -115,7 +115,7 @@
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -286,17 +286,18 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
+      let data4D=utils.getSession4D()
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
       if(this.ruleForm.dateEnd){
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
-      this.$http.post('mock/jilinzhongxin', {}).then(function (obj) {
-            that.total = 100;
-          that.tableData = obj.data.data;
-      })
-      // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
+      // this.$http.post('mock/jilinzhongxin', {}).then(function (obj) {
+      //       that.total = 100;
+      //     that.tableData = obj.data.data;
+      // })
+      // this.$http.post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
       //   "pageIndex": this.pageCurrent - 1,
       //   "pageSize": this.pageSize,
       //   "object": {
@@ -304,10 +305,14 @@ export default {
       //     "transaction_reference_number": this.ruleForm.code,
       //     "begin": dateStart ? dateStart : "2000-05-16",
       //     "end": dateEnd ? dateEnd : "2099-05-16",
-      //     "seachType": 0
+      //     "seachType": 0,
+      //      // "userid":userID,
+      //     // "orgid":orgID,
+      //     // "topid":topID,
+      //     "company":data4D.company
       //   }
       // }).then(function (obj) {
-      //   // console.log('中国银行',obj);
+      //   console.log('吉林中信银行',obj);
       //   if(obj.data.isSuccess){
       //     that.total = obj.data.total;
       //     that.tableData = obj.data.objects;

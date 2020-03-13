@@ -134,7 +134,7 @@
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
- 
+ import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -306,17 +306,14 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
-      let userID= parseInt(window.sessionStorage.getItem('id'))
-      let orgID=parseInt(window.sessionStorage.getItem('orgID'))
-      let company=window.sessionStorage.getItem('topName')
-      let topID=parseInt(window.sessionStorage.getItem('topID'))
+      let data4D=utils.getSession4D()
+      console
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
       if(this.ruleForm.dateEnd){
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
-      
       this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
         "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
@@ -329,7 +326,7 @@ export default {
           // "userid":userID,
           // "orgid":orgID,
           // "topid":topID,
-          "company":company
+          "company":data4D.company
         }
       }).then(function (obj) {
         // console.log('中国银行',obj);
