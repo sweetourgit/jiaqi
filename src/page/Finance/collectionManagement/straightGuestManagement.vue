@@ -818,6 +818,7 @@ export default {
             this.$http.post(
               this.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
                 orderCode: res.data.object.orderNumber,
+                ProductType:1
               }
             )
             .then(res => {

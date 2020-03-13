@@ -471,6 +471,7 @@ export default {
             that.$http.post(
               that.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
                 orderCode: that.indent,
+                ProductType:1
               })
               .then(function(obj) {
                 // obj.data.object.collectedMoney = that.collectedMoney 暂时没用上

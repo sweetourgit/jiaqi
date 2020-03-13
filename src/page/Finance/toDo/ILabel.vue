@@ -103,7 +103,7 @@
     },
     methods: {
       handleClickILabel(){
-        con
+
       },
       handleClickIILabel(){
 

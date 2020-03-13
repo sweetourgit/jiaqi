@@ -245,7 +245,7 @@
         getLsParamsSplitArr: null,
         keepStatus: null,
         tablePrint: [
-          /*{
+          {
           'parentID':482,
           'id':486,
           'supplierTypeEX':1,
@@ -261,9 +261,10 @@
             'createUser':1,
             'mark':1,
             'price':130,
-          }*/
+          }
         ],
-        tabCount: 0
+        tabCount: 0,
+        keepTabId: [],
       }
     },
     // 关于时间的过滤
@@ -394,15 +395,19 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
           "id": paramsTabId
         }).then( obj =>  {
-          this.tabCount--
-          this.tablePrint.push(...obj.data.objects)
-          if(this.tabCount <= 0){
-            // console.log(this.tabCount)
-            this.ifShowPrintTable = true
+          let keepObjLength = obj.data.objects
+          if (keepObjLength && keepObjLength.length > 0){
+            this.tabCount--
+            this.tablePrint.push(...obj.data.objects)
+            if(this.tabCount <= 0){
+              // console.log(this.tabCount)
+              this.ifShowPrintTable = true
+            }
+            // console.log(this.tablePrint,'this.tablePrint')
           }
-          // console.log(this.tablePrint,'this.tablePrint')
         })
       },
+
       // 审批通过弹窗-确定
       handlePassFn(){
         this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
@@ -412,6 +417,20 @@
         })
         .then(obj => {
           let keepData = obj.data.objects
+
+          this.keepTabId.length = 0
+          this.keepBackContent.forEach( (item) => {
+            this.keepTabId.push(item.id)
+          })
+          this.tabCount = this.keepTabId.length
+          this.keepTabId.forEach((item) =>{
+            this.showPrintTable(item)
+          })
+
+          return
+
+          this.handlePassApi()
+
           if(keepData !== null ){
               this.handlePassApi()
           } else {
