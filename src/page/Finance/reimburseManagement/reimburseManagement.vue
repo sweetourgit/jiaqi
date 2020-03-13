@@ -1867,7 +1867,7 @@ export default {
                                           submitForm_list.payments[n].expenseType = 1;
                                         }else if(submitForm_list.payments[n].expenseType == "还款"){
                                           submitForm_list.payments[n].expenseType = 2;
-                                        }else if(submitForm_list.payments[n].expenseType == -1){
+                                        }else{
                                            submitForm_list.payments[n].expenseType = 0;
                                         }
                                 }
