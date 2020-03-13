@@ -19,32 +19,33 @@
       :data="tableData" 
       :highlight-current-row="false"
       header-row-class-name="row-header">
-        <el-table-column label="标题" prop="id" header-align="center" align="center" width="150"></el-table-column>
-        <el-table-column label="城市" prop="sign" header-align="center" align="center"></el-table-column>
-        <el-table-column label="集合地点" prop="uptoDay" header-align="center" align="center" width="150"></el-table-column>
-        <el-table-column label="价格说明" prop="uptoDay" header-align="center" align="center" width="150"></el-table-column>
-        <el-table-column label="售卖价格" prop="quota" header-align="center" align="center" width="300">
+        <el-table-column label="标题" prop="title" header-align="center" align="center"></el-table-column>
+        <el-table-column label="城市" prop="city" header-align="center" align="center" width="150"></el-table-column>
+        <el-table-column label="集合地点" prop="resort" header-align="center" align="center" width="150"></el-table-column>
+        <el-table-column label="价格说明" prop="price" header-align="center" align="center" width="150"></el-table-column>
+        <el-table-column label="售卖价格" prop="sale_price" header-align="center" align="center" width="200">
           <template slot-scope="scope">
             <TableInputer
-              v-model="scope.row.name"
+              v-model="scope.row.sale_price"
               :options="priceOptions"
               table="bus"
-              column="price">
-              {{ scope.row }}
+              column="sale_price">
+              {{ scope.row.sale_price | priceFilter }}
             </TableInputer>
           </template>
         </el-table-column>
-        <el-table-column label="操作" prop="quota" header-align="center" align="center" width="150">
+        <el-table-column label="操作" header-align="center" align="center" width="150">
           <template slot-scope="scope">
             <el-button type="text"
               @click="openDetailer(scope.row)">
               详情
             </el-button>
             <el-button type="text"
-              @click="openPrice('bus', 'price', scope.$index)">
+              @click="openPrice('bus', 'sale_price', scope.$index)">
               价格
             </el-button>
-            <el-button type="text">
+            <el-button type="text"
+              v-show="scope.row.sale_price">
               上线
             </el-button>
           </template>
@@ -66,6 +67,13 @@ export default {
 
   components: { TableInputer, BusDetailer },
 
+  filters: {
+    priceFilter(val){
+      if(!val) return '';
+      return val.toFixed(2);
+    }
+  },
+
   data(){
     return {
       tableData: [{ id: 123, name: 32 }],
@@ -73,7 +81,10 @@ export default {
         placeholder: '请输入价格',
         pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,
         message: '价格格式输入错误',
-        adaptor: (val) => parseFloat(val)
+        adaptor: (val) => parseFloat(val),
+        successCb: ({ index }) => {
+          console.log(index)
+        }
       }
     }
   },
@@ -82,6 +93,9 @@ export default {
     openPrice(table, column, index){
       let vm= TableInputerManager.getVm(table, column, index);
       vm.focus();
+    },
+    openDetailer(bus){
+      this.$refs.detailer.open(bus)
     }
   }
 

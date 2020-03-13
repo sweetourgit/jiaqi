@@ -31,9 +31,14 @@ class TableInputerManager {
     store.splice(index, 1);
   }
 
-  // 对外方法，获得tableInputer实例
+  // 根据table数组中的位置获得tableInputer实例
   getVm(table, column, index){
     return this.store[table+ '_'+ column][index]
+  }
+
+  // 根据tableInputer实例获得在table数组中的下标
+  getIndex(block, vm){
+    return this.store[block].findIndex(el => el=== vm);
   }
 }
 

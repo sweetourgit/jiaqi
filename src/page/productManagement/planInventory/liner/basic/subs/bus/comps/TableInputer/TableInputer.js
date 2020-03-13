@@ -112,7 +112,7 @@ const TableInputerFactory= function($){
         if(asyncValidator) return asyncValidator(val).then(() => {
           this.$emit('input', val);
           this.inEdit= false;
-          if(successCb) successCb.call(null, { vm: this });
+          if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this) });
         })
         .catch((err) => {
           if(err) this.$message.error(err);
@@ -120,7 +120,7 @@ const TableInputerFactory= function($){
         })
         this.$emit('input', val);
         this.inEdit= false;
-        if(successCb) successCb.call(null, { vm: this });
+        if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this) });
       },
 
       focus(){

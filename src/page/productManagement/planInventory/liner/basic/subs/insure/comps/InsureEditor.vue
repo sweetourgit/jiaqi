@@ -1,7 +1,3 @@
-<style>
-
-</style>
-
 <template>
   <el-dialog width="750px" 
     :title="isSave?'修改':'添加'"
@@ -14,19 +10,19 @@
         ref="submitForm"
         :model="submitForm"
         :rules="rules">
-        <el-form-item label="标题：" prop="codePrefix">
+        <el-form-item label="标题：" prop="title">
           <el-input placeholder="标题" size="small" maxlength="40" show-word-limit
-            v-model="submitForm.codePrefix">
+            v-model="submitForm.title">
           </el-input>
         </el-form-item>
-        <el-form-item label="售卖价格：" prop="codePrefix">
+        <el-form-item label="售卖价格：" prop="sale_price">
           <el-input placeholder="售卖价格" size="small"
-            v-model="submitForm.codePrefix">
+            v-model="submitForm.sale_price">
           </el-input>
         </el-form-item>
-        <el-form-item label="保险说明：" prop="codePrefix">
+        <el-form-item label="保险说明：" prop="remark">
           <el-input type="textarea" rows="10" placeholder="保险说明" maxlength="1000" show-word-limit
-            v-model="submitForm.textarea">
+            v-model="submitForm.remark">
           </el-input>
         </el-form-item>
       </el-form>

@@ -10,7 +10,7 @@
     }
     .add-btn{
       position: absolute;
-      top: 0;
+      bottom: 0;
       right: 0;
     }
   }
@@ -21,7 +21,7 @@
   <div class="insure-ground">
     <header>
       <span class="title">保险</span>
-      <el-button class="add-btn" type="primary"
+      <el-button class="add-btn" type="primary" size="small"
         @click="openEditor()">
         添加
       </el-button>
