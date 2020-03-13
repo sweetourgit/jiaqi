@@ -451,8 +451,8 @@
                       <span class="Numbers">库存：{{Amend.Newnumber}}</span>
                     </el-form-item>
                     <el-form-item label="拆分/还款：" prop="state" >
-                      <el-radio v-model="Amend.state" label="1"  :disabled="disabled_style">拆分</el-radio>
-                      <el-radio v-model="Amend.state" label="2"  :disabled="disabled_style" >还款</el-radio>
+                      <el-radio v-model="Amend.state" :label="1"  :disabled="disabled_style">拆分</el-radio>
+                      <el-radio v-model="Amend.state" :label="2"  :disabled="disabled_style" >还款</el-radio>
                     </el-form-item>
                     <el-form-item label="选择账号："  prop="states"  v-if="Amend.state == 2">
                       <el-table 
@@ -1143,7 +1143,7 @@ export default {
                                         payments_box[i].swcount = Amend.money;
                                         payments_box[i].price = Amend.money;
                                         payments_box[i].peopled =Amend.number;
-                                        payments_box[i].peopleCount = Amend.number
+                                       // payments_box[i].peopleCount = Amend.number
                                         payments_box[i].accountID = Amend.cardNum;
                                         payments_box[i].expenseType = "还款";
                              
@@ -1163,7 +1163,7 @@ export default {
                                   payments_box[i].swcount = Amend.money;
                                   payments_box[i].price = Amend.money;
                                   payments_box[i].peopled =Amend.number;
-                                  payments_box[i].peopleCount = Amend.number
+                                  //payments_box[i].peopleCount = Amend.number
                                   payments_box[i].accountID = Amend.cardNum;
                                   payments_box[i].expenseType = "拆分";
                              }
@@ -1182,7 +1182,7 @@ export default {
                       if(payments_box[i].paymentID == Amend.paymentID){
                             payments_box[i].swcount = Amend.money;
                             payments_box[i].peopled =Amend.number;
-                            payments_box[i].peopleCount = Amend.number
+                            //payments_box[i].peopleCount = Amend.number
                             payments_box[i].price = Amend.money;
                             payments_box[i].accountID = Amend.cardNum;
                             payments_box[i].expenseType = "";
@@ -1204,25 +1204,51 @@ export default {
           this.AmendNull();
 
         },
-        AmendOpen(paymentID){ // 设置拆分
+        AmendOpen(paymentID){ // 打开设置拆分
             this.AmendOpenVisble = true;
             this.subscript();
             let payments_box = this.s_content.payments;
             for(let i in payments_box){
-                if(payments_box[i].expenseType == 1){
-                    payments_box[i].expenseType = "拆分"
-                  }else if(payments_box[i].expenseType == 2){
-                    payments_box[i].expenseType = "还款"
-                  } 
+              
               if(payments_box[i].paymentID == paymentID){
+
+                if(payments_box[i].swcount != "" ){
+                   if(payments_box[i].expenseType == "拆分"){
+                    payments_box[i].expenseType = 1
+                  }else if(payments_box[i].expenseType == "还款"){
+                    payments_box[i].expenseType = 2
+                  } 
+                
+                   this.Amend.money = payments_box[i].swcount;
+                   this.Amend.number = payments_box[i].peopled;
+                   this.Amend.Newmoney = payments_box[i].paymentPrice;
+                   this.Amend.Newnumber = payments_box[i].peopleCount;
+                   this.Amend.state = payments_box[i].expenseType;
+                 
+                }else{
                   this.Amend.Newmoney = payments_box[i].paymentPrice;
                   this.Amend.Newnumber = payments_box[i].peopleCount;
                   this.Amend.money = payments_box[i].paymentPrice;
                   this.Amend.number = payments_box[i].peopleCount;
                   this.Amend.paymentID = paymentID;
                   this.statetype = payments_box[i].expenseType;
+                  if(payments_box[i].expenseType == 1){
+                    payments_box[i].expenseType = "拆分"
+                  }else if(payments_box[i].expenseType == 2){
+                    payments_box[i].expenseType = "还款"
+                  } 
+
+                }
+                 if(this.Amend.money >= this.Amend.Newmoney){
+                      this.disabled_style = true;
+                  }else{
+                      this.disabled_style = false;
+                  }
+                  
               }
+               
             }
+           
             
 
             this.$http
@@ -1829,6 +1855,7 @@ export default {
                                   }    
                            if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
+                                submitForm_list.payments[n].peopleCount = submitForm_list.payments[n].peopled
                                 if(submitForm_list.payments[n].price == "0" || submitForm_list.payments[n].price == ""){
                                    this.$message({
                                                 message:'请填写本次报销金额',
@@ -2088,6 +2115,6 @@ export default {
 }
 .cancel{
   float: right;
-  margin-top: -30px;
+  margin-top: -20px;
 }
 </style>
