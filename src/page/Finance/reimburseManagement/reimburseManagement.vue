@@ -1143,6 +1143,7 @@ export default {
                                         payments_box[i].swcount = Amend.money;
                                         payments_box[i].price = Amend.money;
                                         payments_box[i].peopled =Amend.number;
+                                        payments_box[i].peopleCount = Amend.number
                                         payments_box[i].accountID = Amend.cardNum;
                                         payments_box[i].expenseType = "还款";
                              
@@ -1162,6 +1163,7 @@ export default {
                                   payments_box[i].swcount = Amend.money;
                                   payments_box[i].price = Amend.money;
                                   payments_box[i].peopled =Amend.number;
+                                  payments_box[i].peopleCount = Amend.number
                                   payments_box[i].accountID = Amend.cardNum;
                                   payments_box[i].expenseType = "拆分";
                              }
@@ -1180,9 +1182,10 @@ export default {
                       if(payments_box[i].paymentID == Amend.paymentID){
                             payments_box[i].swcount = Amend.money;
                             payments_box[i].peopled =Amend.number;
+                            payments_box[i].peopleCount = Amend.number
                             payments_box[i].price = Amend.money;
                             payments_box[i].accountID = Amend.cardNum;
-                            payments_box[i].expenseType = -1;
+                            payments_box[i].expenseType = "";
                         }
                         this.s_content.t_price_box.push(payments_box[i].swcount);
                     }
@@ -1197,6 +1200,7 @@ export default {
         },
         Amenddel(){ // 关闭隐藏
           this.AmendOpenVisble = false;
+          this.disabled_style = false;
           this.AmendNull();
 
         },
@@ -1825,8 +1829,6 @@ export default {
                                   }    
                            if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
-                                console.log(submitForm_list.payments[n].expenseType,'8080');
-
                                 if(submitForm_list.payments[n].price == "0" || submitForm_list.payments[n].price == ""){
                                    this.$message({
                                                 message:'请填写本次报销金额',
@@ -1854,7 +1856,7 @@ export default {
                                         //       verify = 0
                                         //       return;
                                         //    }
-                                         if(submitForm_list.payments[n].expenseType == ""){
+                                         if(submitForm_list.payments[n].swcount == ""){
                                            this.$message({
                                                 message:'请设置 报销金额/人数',
                                                 type: 'warning' 
