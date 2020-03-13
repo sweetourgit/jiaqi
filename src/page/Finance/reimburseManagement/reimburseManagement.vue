@@ -208,37 +208,41 @@
                 </div>
                 <div v-if="radio==1">
                    <div class="re_style">
-                    <el-table :data="item.content.payments" border style="width: 100%; margin-top: 30px"> 
-                      
-                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="160" align="center" v-if="find==1"></el-table-column>
-                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="60" align="center" v-if="find==0"></el-table-column>
+                    <el-table :data="item.content.payments" border style="margin-top: 30px;width: 100%"> 
+                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="85" align="center" v-if="find==1"></el-table-column>
+                      <el-table-column prop="paymentID" label="无收入借款或预付款ID" width="80" align="center" v-if="find==0"></el-table-column>
                       <el-table-column prop="supplierTypeEX" label="借款类型" width="100" align="center"></el-table-column>
                       <el-table-column prop="supplierName" label="供应商" width="110" align="center"></el-table-column>
-                      <el-table-column prop="createUser" label="申请人" width="115" align="center"></el-table-column>
+                      <el-table-column prop="createUser" label="申请人" width="96" align="center"></el-table-column>
                       <el-table-column prop="paymentMark" label="摘要" width="130" align="center"></el-table-column>
                       <el-table-column prop="paymentPrice" label="借款金额" width="108" align="center"></el-table-column>
                       <!-- <el-table-column prop="wcount" label="未报销金额" width="100"></el-table-column> -->
-                      <el-table-column prop="wcount" label="报销金额"   width="140"   align="center" v-if="find==0">
-                        <!-- <template slot-scope="scope">
+                      <!-- <el-table-column prop="wcount" label="报销金额"   width="140"   align="center" v-if="find==0">
+                        <template slot-scope="scope">
                           <el-input @input='addressChange(scope.row.price)' v-model="scope.row.price" style="width:100px;"></el-input>
-                        </template> -->
+                        </template>
                       </el-table-column>
-                      <el-table-column prop="peopleCount" label="人数" width="130"  v-if="find==0"   align="center">
-                        <!-- <template slot-scope="scope">
+                      <el-table-column prop="" label="人数" width="140"  v-if="find==0"   align="center">
+                        <template slot-scope="scope">
                           <el-input v-model="scope.row.peopleCount" style="width:100px;"></el-input>
-                        </template> -->
-                      </el-table-column>
-                      <el-table-column  prop="expenseType" label="还款/拆分" width="90" align="center"></el-table-column>
-                      <el-table-column prop="paymentID" label="操作" width="104"  v-if="find==0" align="center">
-                          <template slot-scope="scope">
-                             <span @click="AmendOpen(scope.row.paymentID)" style="color: #f5a142">设置</span> |
-                             <span @click="t_delete(scope.row.paymentID)" style="color: #f5a142">删除</span>
-                         </template>
-                      </el-table-column>
-                    
-                      <!-- 不能改的 -->
+                        </template>
+                      </el-table-column> -->
+                      <!-- 不能改的 --> 
+                      <el-table-column prop="swcount" label="报销金额" width="142" align="center" v-if="find==0">  </el-table-column>
+                      <el-table-column prop="peopled" label="人数" width="144" align="center" v-if="find==0"> </el-table-column>
+
+
                        <el-table-column prop="price" label="报销金额" width="140" align="center" v-if="find==1">  </el-table-column>
                        <el-table-column prop="peopleCount" label="人数" width="144" align="center"  v-if="find==1"> </el-table-column>
+
+                       <el-table-column prop="expenseType" label="还款/拆分" width="90" align="center"></el-table-column>
+                       <el-table-column prop="paymentID"  disabled  label="操作" width="104"   align="center">
+                          <template slot-scope="scope">
+                             <span @click="AmendOpen(scope.row.paymentID)" style="color: #f5a142" v-if="find==0">设置 |</span> 
+                             <span @click="t_delete(scope.row.paymentID)" style="color: #f5a142" v-if="find==0">删除</span>
+                             <span @click="AmendOpen(scope.row.paymentID)" style="color: #f5a142" v-if="find==1">查看</span>
+                         </template>
+                       </el-table-column>
                        
                     </el-table>
                   </div>
@@ -435,22 +439,22 @@
       <!--添加报销弹窗end-->
 
       <!--拆分弹窗-->
-      <el-dialog width="60%" title="设置拆分" :visible.sync="AmendOpenVisble" append-to-body @close="Amenddel()" >
-           <el-form :model="Amend" :rules="rules" ref="Amend" label-width="110px" class="demo-ruleForm invoice">
+      <el-dialog width="60%" title="拆分/还款" :visible.sync="AmendOpenVisble" append-to-body @close="Amenddel()" >
+           <el-form :model="Amend" :rules="rules" ref="Amend" label-width="110px" class="demo-ruleForm invoice"  v-if="find==0" >
                 <div class="w500">
-                   <el-form-item label="报销金额：" prop="money">
-                      <el-input v-model="Amend.money" type='number' class="Words" placeholder="请输入 报销金额"></el-input>
+                   <el-form-item label="报销金额：" prop="money"  >
+                      <el-input v-model="Amend.money" type='number' @input='addressChange()' class="Words"  placeholder="请输入 报销金额"></el-input>
                       <span class="Numbers">借款金额：{{Amend.Newmoney}}</span>
                     </el-form-item>
-                    <el-form-item label="人数：" prop="number">
-                      <el-input v-model="Amend.number"  type='number' class="Words" placeholder="请输入 人数"></el-input>
+                    <el-form-item label="人数：" prop="number"   >
+                      <el-input v-model="Amend.number"  type='number' class="Words"  placeholder="请输入 人数"></el-input>
                       <span class="Numbers">库存：{{Amend.Newnumber}}</span>
                     </el-form-item>
-                    <el-form-item label="拆分/还款：" prop="state">
-                      <el-radio v-model="Amend.state" label="1">拆分</el-radio>
-                      <el-radio v-model="Amend.state" label="2">还款</el-radio>
+                    <el-form-item label="拆分/还款：" prop="state" >
+                      <el-radio v-model="Amend.state" label="1"  :disabled="disabled_style">拆分</el-radio>
+                      <el-radio v-model="Amend.state" label="2"  :disabled="disabled_style" >还款</el-radio>
                     </el-form-item>
-                    <el-form-item label="选择账号："  v-if="Amend.state == 2">
+                    <el-form-item label="选择账号："  prop="states"  v-if="Amend.state == 2">
                       <el-table 
                         :data="AmendData" 
                         :highlight-current-row="true"
@@ -474,9 +478,15 @@
             </el-form>
         <!-- @row-click="joinData_btn" -->
         
-          <div class="cancel">
+          <div class="cancel"  v-if="find==0">
               <el-button  @click="Amenddel()">取 消</el-button>
               <el-button  type="primary" @click="AmendApply(Amend)" >保存</el-button>
+          </div>
+          <div v-if="find==1" class="statetype_style">
+            拆分/还款：{{statetype}}
+          </div>
+          <div class="cancel" v-if="find==1">
+            <el-button  @click="Amenddel()">取 消</el-button>
           </div>
       </el-dialog>
       <!--拆分弹窗end-->
@@ -539,7 +549,9 @@ export default {
         state:0,//拆分状态
         cardNum:'',//拆分还款账户
         paymentID:0,//订单id
-       },
+        },
+      statetype:"",
+      disabled_style:true,//单选隐藏
       split_show:0,
       AmendData:[],//选择账户
       // beginDate: "",//报销开始时间+
@@ -624,7 +636,11 @@ export default {
             message: "摘要字数不能超过80字",
             trigger: "change"
           }
-        ]
+        ],
+        money: [{ required: true,  message: "请输入报销金额",}],
+        number: [{ required: true, message: "请输入报销人数"}],
+        state: [{ required: true, }],
+        states: [{ required: true, }],
       },
       reimData: [{  //审批意见
           reier: "",
@@ -821,7 +837,9 @@ export default {
                           orgName:object[i].orgName,
                           wcount: object[i].price - object[i].expensePrice,
                           accountID:0,
-                          expenseType:0,
+                          expenseType:"",
+                          peopled:'',
+                          swcount:'',
 
                            
                       });
@@ -1056,7 +1074,7 @@ export default {
                  for(let k in joinData){
                     this.s_content.payments.push(joinData[k]);
                     this.alljoinData.push(joinData[k]);
-                    this.s_content.t_price_box.push(joinData[k].wcount);
+                    this.s_content.t_price_box.push(joinData[k].swcount);
                    }
                 this.t_price_sum();
                 this.dialogFormVisible3 = false;
@@ -1078,7 +1096,22 @@ export default {
            this.Amend.cardNum = row.id; 
        },
         AmendApply(Amend){//提交申请
-         if( Amend.number > Amend.Newnumber){
+         this.subscript();
+         let payments_box = this.s_content.payments;
+         this.s_content.t_price_box=[];
+        if(Amend.money == ""){
+           this.$message({
+                          type: "warning",
+                          message: "金额不能为空 请重新填写"
+                          }); 
+                         return;
+        }else if( Amend.number == ""){
+           this.$message({
+                          type: "warning",
+                          message: "人数不能为空 请重新填写"
+                          }); 
+                         return
+      }else if( Amend.number > Amend.Newnumber){
              this.$message({
                           type: "warning",
                           message: "人数不能大于库存 请重新填写内容"
@@ -1105,52 +1138,58 @@ export default {
                                         });
                                           return;
                             }else{
-                                this.subscript();
-                                let payments_box = this.s_content.payments;
-                                this.s_content.t_price_box=[];
-
                                 for(let i in payments_box){
                                   if(payments_box[i].paymentID == Amend.paymentID){
-                                        payments_box[i].wcount = Amend.money;
+                                        payments_box[i].swcount = Amend.money;
                                         payments_box[i].price = Amend.money;
-                                        payments_box[i].peopleCount =Amend.number;
+                                        payments_box[i].peopled =Amend.number;
                                         payments_box[i].accountID = Amend.cardNum;
                                         payments_box[i].expenseType = "还款";
                              
                                    }
-                                   this.s_content.t_price_box.push(payments_box[i].wcount);
+                                   this.s_content.t_price_box.push(payments_box[i].swcount);
                                 }
                                
                                 this.AmendOpenVisble = false;
+                                this.disabled_style =false;
                                 this.t_price_sum();
                                 this.AmendNull();
                                    }
                     }else if(Amend.state == 1){
                           Amend.cardNum = 0;
-                          this.subscript();
-                          let payments_box = this.s_content.payments;
-                          this.s_content.t_price_box=[];
                           for(let i in payments_box){
                             if(payments_box[i].paymentID == Amend.paymentID){
-                                  payments_box[i].wcount = Amend.money;
+                                  payments_box[i].swcount = Amend.money;
                                   payments_box[i].price = Amend.money;
-                                  payments_box[i].peopleCount =Amend.number;
+                                  payments_box[i].peopled =Amend.number;
                                   payments_box[i].accountID = Amend.cardNum;
                                   payments_box[i].expenseType = "拆分";
                              }
-                              this.s_content.t_price_box.push(payments_box[i].wcount);
+                              this.s_content.t_price_box.push(payments_box[i].swcount);
                           }
                          
                          this.AmendOpenVisble = false;
+                         this.disabled_style =false;
                          this.t_price_sum();
                          this.AmendNull();
                     }
              
           }else if(Amend.money == Amend.Newmoney){
-              this.$message({
-                    type: "warning",
-                    message: "报销金额等于借款金额，不可以进行拆分/还款"
-                    });
+                  Amend.cardNum = 0;
+                   for(let i in payments_box){
+                      if(payments_box[i].paymentID == Amend.paymentID){
+                            payments_box[i].swcount = Amend.money;
+                            payments_box[i].peopled =Amend.number;
+                            payments_box[i].price = Amend.money;
+                            payments_box[i].accountID = Amend.cardNum;
+                            payments_box[i].expenseType = -1;
+                        }
+                        this.s_content.t_price_box.push(payments_box[i].swcount);
+                    }
+                         this.AmendOpenVisble = false;
+                        
+                         this.t_price_sum();
+                         this.AmendNull();
 
           }
           
@@ -1158,6 +1197,7 @@ export default {
         },
         Amenddel(){ // 关闭隐藏
           this.AmendOpenVisble = false;
+          this.AmendNull();
 
         },
         AmendOpen(paymentID){ // 设置拆分
@@ -1165,12 +1205,21 @@ export default {
             this.subscript();
             let payments_box = this.s_content.payments;
             for(let i in payments_box){
+                if(payments_box[i].expenseType == 1){
+                    payments_box[i].expenseType = "拆分"
+                  }else if(payments_box[i].expenseType == 2){
+                    payments_box[i].expenseType = "还款"
+                  } 
               if(payments_box[i].paymentID == paymentID){
-                  this.Amend.Newmoney = payments_box[i].wcount;
+                  this.Amend.Newmoney = payments_box[i].paymentPrice;
                   this.Amend.Newnumber = payments_box[i].peopleCount;
+                  this.Amend.money = payments_box[i].paymentPrice;
+                  this.Amend.number = payments_box[i].peopleCount;
                   this.Amend.paymentID = paymentID;
+                  this.statetype = payments_box[i].expenseType;
               }
             }
+            
 
             this.$http
                 .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
@@ -1179,13 +1228,12 @@ export default {
                     }
                   })
                   .then(res => {
-                      console.log(res.data.objects,'dara');
                       for(let i in res.data.objects){
-                       if(res.data.objects[i].cardType == 1){
-                         res.data.objects[i].cardType = "收款"
-                    }else if(res.data.objects[i].cardType == 2){
-                          res.data.objects[i].cardType = "付款"
-                       }
+                        if(res.data.objects[i].cardType == 1){
+                          res.data.objects[i].cardType = "收款"
+                          }else if(res.data.objects[i].cardType == 2){
+                                res.data.objects[i].cardType = "付款"
+                          }
                       }
                       this.AmendData = res.data.objects;
                   })
@@ -1193,6 +1241,14 @@ export default {
                     console.log(err);
                   });
          },
+         
+        addressChange() { //绑定报销金额文本框
+           if(this.Amend.money >= this.Amend.Newmoney){
+              this.disabled_style = true;
+          }else{
+              this.disabled_style = false;
+          }
+          },
         t_delete(paymentID){// 添加数据删除
           this.subscript();
           let payments_box = this.s_content.payments;
@@ -1244,18 +1300,6 @@ export default {
          this.s_content.t_sum = this.s_content.payments.length;//多少项
          this.s_content.t_price= sss //多少钱
         },
-        // addressChange() { 绑定报销金额文本框
-          
-        //     this.subscript();
-        //     this.s_content.t_price_box=[];
-        //     let payments_change = this.s_content.payments;
-        //     for(var t in payments_change){
-        //            this.s_content.t_price_box.push(payments_change[t].price);
-        //         }
-                
-        //   this.t_price_sum();
-        //   },
-       
         dialogchange() {  // 报销弹窗
           this.payments = [];
           this.find = 0;
@@ -1302,8 +1346,10 @@ export default {
                                 d_objects[i].payments[s].wcount = d_objects[i].payments[s].paymentPrice -  d_objects[i].payments[s].price;
                                 if(d_objects[i].payments[s].expenseType == 1){
                                   d_objects[i].payments[s].expenseType= "拆分"
-                                }else{
+                                }else if(d_objects[i].payments[s].expenseType == 2){
                                  d_objects[i].payments[s].expenseType= "还款"
+                               }else{
+                                  d_objects[i].payments[s].expenseType= ""
                                }
                               }
                       
@@ -1779,6 +1825,8 @@ export default {
                                   }    
                            if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
+                                console.log(submitForm_list.payments[n].expenseType,'8080');
+
                                 if(submitForm_list.payments[n].price == "0" || submitForm_list.payments[n].price == ""){
                                    this.$message({
                                                 message:'请填写本次报销金额',
@@ -1806,10 +1854,19 @@ export default {
                                         //       verify = 0
                                         //       return;
                                         //    }
-                                        if(submitForm_list.payments[n].expenseType=="拆分"){
-                                          submitForm_list.payments[n].expenseType = 1
-                                        }else{
-                                          submitForm_list.payments[n].expenseType = 2
+                                         if(submitForm_list.payments[n].expenseType == ""){
+                                           this.$message({
+                                                message:'请设置 报销金额/人数',
+                                                type: 'warning' 
+                                              });
+                                              this.submitformBtn=false;
+                                              return;
+                                        }else if(submitForm_list.payments[n].expenseType == "拆分"){
+                                          submitForm_list.payments[n].expenseType = 1;
+                                        }else if(submitForm_list.payments[n].expenseType == "还款"){
+                                          submitForm_list.payments[n].expenseType = 2;
+                                        }else if(submitForm_list.payments[n].expenseType == -1){
+                                           submitForm_list.payments[n].expenseType = 0;
                                         }
                                 }
                               for(var i=0; i<this.alljoinData.length; i++){
@@ -1848,7 +1905,7 @@ export default {
                     }
               }
              if(verify !== 0){
-                 this.add_form(this.object_lisr)//调用提交接口
+                this.add_form(this.object_lisr)//调用提交接口
                
               }
           },
@@ -2022,5 +2079,13 @@ export default {
   float: left;
   width: 30%;
   /* margin-left: 250px; */
+}
+.statetype_style{
+  width: 100%;
+  height: 400px;
+}
+.cancel{
+  float: right;
+  margin-top: -30px;
 }
 </style>
