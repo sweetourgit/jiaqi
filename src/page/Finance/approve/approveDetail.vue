@@ -385,7 +385,7 @@
           });
           this.loadingBtn = false
           this.transitShow = false;
-          // this.backListPage()
+          this.backListPage()
         }).catch( (err) => {
           this.$message.warning("审批通过失败 ");
           this.loadingBtn = false
@@ -417,7 +417,6 @@
         })
         .then(obj => {
           let keepData = obj.data.objects
-
           this.keepTabId.length = 0
           this.keepBackContent.forEach( (item) => {
             this.keepTabId.push(item.id)
@@ -426,11 +425,6 @@
           this.keepTabId.forEach((item) =>{
             this.showPrintTable(item)
           })
-
-          return
-
-          this.handlePassApi()
-
           if(keepData !== null ){
               this.handlePassApi()
           } else {
