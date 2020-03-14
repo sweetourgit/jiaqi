@@ -5,7 +5,7 @@
       <el-tab-pane :label="'无收入借款管理(' + approveDataNum +')'" name="borrow">
         <el-tabs v-model="IITabNoInShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameNoInTeam">
-
+            <borrow-list></borrow-list>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameNoInShip">
 
@@ -16,7 +16,7 @@
         <!-- @handlePassVal="handleGetAlreadyNumAdvance" -->
         <el-tabs v-model="IITabNoInShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameNoInTeam">
-
+            <borrow-list></borrow-list>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameNoInShip">
 
@@ -85,6 +85,7 @@
 </template>
 
 <script>
+  import borrowList from "./borrow/borrowList";
   export default {
     name: "ILabel",
     data(){
@@ -100,6 +101,9 @@
         allCount: 1,
         whereITab: ''
       }
+    },
+    components: {
+      borrowList
     },
     methods: {
       handleClickILabel(){
