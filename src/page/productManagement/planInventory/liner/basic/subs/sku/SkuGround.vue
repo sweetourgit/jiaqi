@@ -44,12 +44,13 @@
               修改
             </el-button>
             <el-button type="text"
-              v-show="scope.row.sku_status >= SKU_STATUS.CAN_PRICE">
+              v-show="scope.row.sku_status >= SKU_PROCESS_STATUS.CAN_PRICE">
               价格
             </el-button>
             <el-button type="text"
-              v-show="scope.row.sku_status >= SKU_STATUS.CAN_LINE">
-              上线
+              v-show="scope.row.sku_status >= SKU_PROCESS_STATUS.CAN_LINE"
+              @click="changeSkuLineStatus(scope.row)">
+              {{ scope.row.line_status=== SKU_LINI_STATUS.UP_LINE? '下线': '上线' }}
             </el-button>
           </template>
         </el-table-column>
@@ -62,7 +63,8 @@
 </template>
 
 <script>
-import { SKU_STATUS, CLEARANCE_TIME_OPTIONS } from '@/page/productManagement/planInventory/liner/dictionary'
+import { SKU_PROCESS_STATUS, CLEARANCE_TIME_OPTIONS, SKU_LINI_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
+import { skuOnlineOfflineAction } from '@/page/productManagement/planInventory/liner/api'
 import SkuEditor from './comps/SkuEditor'
 
 export default {
@@ -86,28 +88,41 @@ export default {
       {
         tableData: []
       },
-      { SKU_STATUS }
+      { SKU_PROCESS_STATUS, SKU_LINI_STATUS }
     )
   },
 
   methods: Object.assign(
     {
       init(skuArr){
-        this.tableData.push(...skuArr.map(this.skuAdaptor));
+        this.tableData= skuArr.map(this.skuAdaptor);
       },
 
       openEditor(sku){
         this.$refs.editor.open(sku);
+      },
+
+      changeSkuLineStatus(sku){
+        let { id, line_status }= sku;
+        let find= SKU_LINI_STATUS.find(el => el.value!== line_status);
+        this.$confirm(`是否${find.label}该SKU?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          skuOnlineOfflineAction({ id, line_status: find.value }).then(() => {
+            sku.line_status= find.value;
+          })
+        })
       }
     },
     // 工具函数
     {
       skuAdaptor(sku){
-        let sku_status;
         let { tour_no_prefix, tour_no_suffix, is_price, ...others }= sku;
-        if(is_price=== 1) sku_status= SKU_STATUS.CAN_LINE;
-        if(tour_no_prefix && tour_no_suffix && is_price=== 0) sku_status= SKU_STATUS.CAN_PRICE;
-        sku_status= SKU_STATUS.UN_INITED;
+        let sku_status= SKU_PROCESS_STATUS.UN_INITED;
+        if(is_price=== 1) sku_status= SKU_PROCESS_STATUS.CAN_LINE;
+        if(tour_no_prefix && tour_no_suffix && is_price=== 0) sku_status= SKU_PROCESS_STATUS.CAN_PRICE;
         return { tour_no_prefix, tour_no_suffix, is_price, sku_status, ...others }
       }
     }

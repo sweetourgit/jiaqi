@@ -33,6 +33,21 @@ export const saveSkuAttributeAction= function(payload){
   })
 }
 
+// SKU上下线
+export const skuOnlineOfflineAction= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku/onlineoffline", payload)
+    .then(res => {
+      let { code, message }= res.data;
+      if(code!== 200) throw ('操作失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 判断SKU团号是否存在
 export const getTourAroundAction= function(payload){
   return new Promise((resolve, reject) => {

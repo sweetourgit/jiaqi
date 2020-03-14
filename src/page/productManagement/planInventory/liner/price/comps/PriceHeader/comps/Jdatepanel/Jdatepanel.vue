@@ -7,18 +7,6 @@ $fontHeight: 32px;
   display: inline-block;
   user-select: none;
   cursor: pointer;
-  .test {
-    position: relative;
-    &::before{
-      position: absolute;
-      content: '';
-      width: 10px;
-      height: 10px;
-      border-radius: 5px;
-      background-color: red;
-      transform: translateX(-50%) translateY(-50%);
-    }
-  }
   .selector{
     line-height: 32px;
     .control-btns{
@@ -116,7 +104,7 @@ $fontHeight: 32px;
         <i class="el-icon-d-arrow-left" @click="monthHandler(-1)"></i>
       </span>
       <div style="display:inline-block; min-width: 140px; text-align: center;"
-        @click="vm.state= !vm.state"
+        @click="state= !state"
       >
         <span style="padding:0 5px;">{{ current[0] }}</span><span>年</span>
         <span style="padding:0 5px;">{{ current[1]+ 1 }}</span><span>月</span>
@@ -126,44 +114,40 @@ $fontHeight: 32px;
       </span>
     </div>
     <div class="panel" 
-      v-if="vm.state"
-      v-loading="vm.inAsync"
-    >
+      v-if="state"
+      v-loading="inAsync"
+      @mouseleave="mouseleaveHandler">
       <div class="content">
         <ul>
-          <li>全月</li>
-          <li>周六、日</li>
-          <li>周一至五</li>
+          <li @click="multiSelecte([-1, -1])">全月</li>
+          <li @click="multiSelecte([-1, 1], [-1, 7])">周六、日</li>
+          <li @click="multiSelecte([-1, 2], [-1, 3], [-1, 4], [-1, 5], [-1, 6])">周一至五</li>
+          <li @click="$emit('clear-select')">清除选中</li>
         </ul>
         <table cellspacing="0" cellpadding="0">
           <tbody>
             <tr>
-              <th>
-                <span class="test">日</span>
+              <th v-for="(el, index) in weekText" :key="el"
+                @click="multiSelecte([-1, index+ 1])">
+                {{ el }}
               </th>
-              <th>一</th>
-              <th>二</th>
-              <th>三</th>
-              <th>四</th>
-              <th>五</th>
-              <th>六</th>
             </tr>
-            <tr v-for="week in 6" :key="week">
-              <td v-for="day in 7" :key="day">
-                <Jdateday
-                  :current="currentInt"
-                  :proto="findDayDate(week, day)"
-                  @select-day="emitSelectDay">
-                </Jdateday>
+            <tr :key="week" 
+              v-for="week in 6">
+              <td :key="day"
+                v-for="day in 7"
+                @click="singleSelect(week, day)">
+                <slot :week="week" :day="day" :proto="findDayDate(week, day)"></slot>
               </td>
             </tr>
           </tbody>
         </table>
         <footer>
           <el-button type="text" size="mini"
-            @click="init()" 
-          >今天</el-button>
-          <el-button type="text" size="mini" @click="vm.state= false">收起</el-button>
+            @click="init()">
+            今天
+          </el-button>
+          <el-button type="text" size="mini" @click="state= false">收起</el-button>
         </footer>
       </div>
     </div>
@@ -175,6 +159,19 @@ import Jdateday from './comps/Jdateday.vue'
 
 export default {
   components: { Jdateday },
+
+  props: {
+    /**
+     * @description: options
+     * @param {Function} dayDtoSupplier: 返回一个对象，用来给dayDto添加属性
+     */
+    options: {
+      type: Object,
+      default: function(){
+        return {}
+      }
+    },
+  },
 
   computed: {
     // 当前选择日期的int表达
@@ -189,78 +186,84 @@ export default {
 
   data(){
     return {
-      vm: {
-        inAsync: false,
-        state: false
-      },
+      inAsync: false,
+      state: false,
       // 长度为3的数组，依次存放年月日
       current: [],
-      dayArray: []
+      dayArray: [],
+      weekText: ['日', '一', '二', '三', '四', '五', '六']
     }
   },
 
   methods: {
     init(date){
-      this.changeInAsync(true);
-      this.changeCurrent(...this.getDateArr(date));
-      inventorylistAction.bind(this)(
-        this.getDateInt(date)
-      ).then(res => {
-        this.$emit('submit-inventory', this.dayArrayMaker(res));
-      }).catch(err => {
-        this.$message.error(err);
-        this.$emit('submit-inventory', null);
-      }).finally(() => {
-        this.changeInAsync(false);
-      })
+      this.current= this.getDateArr(date);
+      this.dayArray= this.fullfill();
+      return this.dayArray;
     },
 
     /**
-     * @param {type} : dayDTO
+     * @description: 获得日历中每个day的数据原型
+     * @param {Number} date: 月中几号
+     * @param {Boolean} isPassed: 是否是过去时间
+     * @param {Boolean} isToday: 是否是今天
+     * @param {Date} Date: 日期对象
+     * @param {Number} dateInt: 日期的数字形式，月份从1开始
+     * @param {Number} col
+     * @param {Number} row
      */
-    dayArrayMaker(list){
-      let object= this.inventoryListToObject(list);
-      return this.dayArrayPreFull(object);
+    getDayDto(){
+      let { dayDtoSupplier }= this.options;
+      return Object.assign({
+        date: null,
+        Date: null,
+        dateInt: null,
+        isPassed: false,
+        isToday: false,
+      }, dayDtoSupplier? dayDtoSupplier(): undefined);
     },
-
-    // 遍历结果，将
-    inventoryListToObject(list){
-      let result= {};
-      list.forEach(el => {
-        if(!(el.date in result)) result[el.date]= [];
-        result[el.date].push(el);
-      })
+    
+    // 填充日历
+    fullfill(){
+      let result, max, begin, total, todayInt;
+      result= new Array(42);
+      begin= new Date(this.current[0], this.current[1], 1).getDay();
+      begin= (begin=== 0? 7: begin);
+      max= this.currentMax;
+      todayInt= this.getDateInt(new Date(), true);
+      for(let i= 1+ begin; i<= max+ begin; i++){
+        let dto= this.getDayDto();
+        dto.row= ~~(i/ 7)+ 1;
+        dto.col= 1+ ((i- 1)% 7);
+        dto.date= i- begin;
+        dto.Date= new Date(this.current[0], this.current[1], dto.date);
+        dto.dateInt= this.getDateInt(dto.Date, true);
+        if(dto.dateInt< todayInt) dto.isPassed= true;
+        if(dto.dateInt=== todayInt) dto.isToday= true;
+        result[i]= dto;
+      }
       return result;
     },
 
-    // 预先填满dayArray
-    dayArrayPreFull(finder){
+    multiSelecte(){
+      let filterArr= [...arguments];
       let result;
-      // 今天的int形式
-      let todayInt= this.getDateInt(new Date(), true);
-      let begin= new Date(this.current[0], this.current[1], 1).getDay();
-      // 参见eui 2019年9月
-      begin= (begin=== 0? 7: begin);
-      let total= this.currentMax;
-      let currentMonthInt= this.getDateInt(
-        new Date(this.current[0], this.current[1], this.current[2]), false);
-      this.dayArray.splice(0);
-      for(let i= 0; i<= begin; i++){
-        this.dayArray.push(void 0);
-      }
-      for(let i= 1; i<= total; i++){
-        let dto= getDayDTO();
-        if((currentMonthInt+ i)< todayInt) dto.previous= true;
-        if((currentMonthInt+ i)=== todayInt) dto.today= true;
-        dto.day= i;
-        dto.dayInt= currentMonthInt+ i;
-        dto.date= new Date(this.current[0], this.current[1], dto.day),
-        dto.children= finder[dto.dayInt];
-        dto.count= dto.children && dto.children.length;
-        this.dayArray.push(dto);
-        if((currentMonthInt+ i)=== this.currentInt) result= dto;
-      }
-      return result; 
+      result= this.dayArray.filter(day => {
+        let bol= false;
+        if(!day) return bol;
+        filterArr.forEach(filter => {
+          if(bol) return;
+          let { col, row }= day;
+          bol= ( filter[0]=== row || filter[0]=== -1) && ( filter[1]=== col || filter[1]=== -1);
+        })
+        return bol;
+      })
+      this.$emit('multi-select', result);
+    },
+
+    singleSelect(week, day){
+      let result= this.findDayDate(week, day);
+      if(result) this.$emit('single-select', result);
     },
 
     /**
@@ -325,7 +328,7 @@ export default {
       let max= new Date(this.current[0], monthVal- 1, 0).getDate();
       max= (dayVal> max? max: dayVal);
       let newDate= new Date(this.current[0], monthVal, max);
-      this.init(newDate);
+      this.$emit('date-change', newDate);
     },
 
     // day组件点击提交
@@ -336,6 +339,8 @@ export default {
       this.$emit('submit-inventory', day);
       this.vm.state= false;
     },
+
+    mouseleaveHandler(){},
 
     /**
      * @description: 更改当前current的值
@@ -350,8 +355,8 @@ export default {
      * @description: 根据是否弹开执行emit
      */
     changeInAsync(bol){
-      this.vm.inAsync= bol;
-      !this.vm.state && this.$emit('in-async', bol); 
+      this.inAsync= bol;
+      !this.state && this.$emit('in-async', bol); 
     },
   }
 }

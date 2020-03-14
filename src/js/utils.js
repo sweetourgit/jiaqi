@@ -8,8 +8,12 @@ Vue.prototype.$deepCopy= function(obj){
   return JSON.parse(JSON.stringify(obj))
 }
 
-Vue.prototype.$assign= function(obj, source){
-  Object.keys(obj).forEach(key => obj[key]= source[key]);
+/**
+ * @description: 浅复制
+ * @param {Boolean} isOpposite: 为true时，从source读取key
+ */
+Vue.prototype.$assign= function(obj, source, isOpposite){
+  Object.keys(isOpposite? obj: source).forEach(key => obj[key]= source[key]);
 }
 
 Vue.prototype.$isNull= function(val){
@@ -211,4 +215,29 @@ Vue.prototype.$dateFormate= function (date, fmt) {
     }
   }
   return fmt
+}
+
+
+/**
+ * @description: 将对象 
+  {
+    UN_INITED: { label: '修改', value: 1 },
+    CAN_PRICE: { label: '价格', value: 2 },
+    CAN_LINE: { label: '上线', value: 3 }
+  }
+ * 转化成数组，读取数组的 UN_INITED 属性返回 value
+ */
+export const dictionaryMaker= function(source){
+  let result= [];
+  Object.keys(source).forEach(attr => {
+    result.push(source[attr]);
+    Object.defineProperty(result, attr, {
+      get : function(){
+        return source[attr].value;
+      },
+      enumerable: false,
+      configurable: true
+    })
+  })
+  return result;
 }

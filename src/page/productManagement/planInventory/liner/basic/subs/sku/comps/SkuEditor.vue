@@ -14,7 +14,7 @@
             <el-form-item ref="prefixRef" label="团期计划：" prop="tour_no_prefix">
               <el-input placeholder="团号前缀" size="small"
                 v-model="submitForm.tour_no_prefix"
-                :disabled="sku_status=== SKU_STATUS.CAN_LINE">
+                :disabled="sku_status=== SKU_PROCESS_STATUS.CAN_LINE">
               </el-input>
             </el-form-item>
           </el-col>
@@ -25,7 +25,7 @@
             <el-form-item ref="suffixRef" label-width="0" prop="tour_no_suffix">
               <el-input placeholder="团号后缀" size="small"
                 v-model="submitForm.tour_no_suffix"
-                :disabled="sku_status=== SKU_STATUS.CAN_LINE">
+                :disabled="sku_status=== SKU_PROCESS_STATUS.CAN_LINE">
               </el-input>
             </el-form-item>
           </el-col>
@@ -72,8 +72,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import { CLEARANCE_TIME_OPTIONS, SKU_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
+import { CLEARANCE_TIME_OPTIONS, SKU_PROCESS_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
 import { saveSkuAttributeAction, getTourAroundAction } from '@/page/productManagement/planInventory/liner/api'
 
 let cache;
@@ -90,7 +89,7 @@ export default {
   data(){
     return {
       state: false,
-      sku_status: SKU_STATUS.UN_INITED,
+      sku_status: SKU_PROCESS_STATUS.UN_INITED,
       submitForm: getSkuProto(),
       rules: {
         tour_no_prefix: [
@@ -104,7 +103,7 @@ export default {
         clearance_time: { required: true, message: '请选择清位时间', trigger: 'blur'}
       },
       CLEARANCE_TIME_OPTIONS,
-      SKU_STATUS
+      SKU_PROCESS_STATUS
     }
   },
 
@@ -119,7 +118,7 @@ export default {
 
     handleClose(){
       cache= null;
-      this.sku_status= SKU_STATUS.UN_INITED;
+      this.sku_status= SKU_PROCESS_STATUS.UN_INITED;
       this.$assign(this.submitForm,  getSkuProto());
       this.$refs.submitForm.clearValidate();
       this.state= false;
@@ -128,9 +127,8 @@ export default {
     submitAction(){
       this.$refs.submitForm.validate(bol => {
         if(!bol) return;
-        console.log(123)
         saveSkuAttributeAction(this.submitForm).then(() => {
-          this.$message.success('保存成功');
+          this.$assign(cache, this.submitForm, true);
           this.handleClose();
         })
       })
