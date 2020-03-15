@@ -104,10 +104,8 @@ $fontHeight: 32px;
         <i class="el-icon-d-arrow-left" @click="monthHandler(-1)"></i>
       </span>
       <div style="display:inline-block; min-width: 140px; text-align: center;"
-        @click="state= !state"
-      >
-        <span style="padding:0 5px;">{{ current[0] }}</span><span>年</span>
-        <span style="padding:0 5px;">{{ current[1]+ 1 }}</span><span>月</span>
+        @click="state= !state">
+        <slot name="show" :year="current[0]" :month="current[1]+ 1"></slot>
       </div>
       <span class="control-btns">
         <i class="el-icon-d-arrow-right" @click="monthHandler(1)"></i>
@@ -137,7 +135,7 @@ $fontHeight: 32px;
               <td :key="day"
                 v-for="day in 7"
                 @click="singleSelect(week, day)">
-                <slot :week="week" :day="day" :proto="findDayDate(week, day)"></slot>
+                <slot name="day" :week="week" :day="day" :proto="findDayDate(week, day)"></slot>
               </td>
             </tr>
           </tbody>

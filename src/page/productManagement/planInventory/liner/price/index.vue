@@ -17,6 +17,9 @@
       <PriceHeader></PriceHeader>
       <el-button type="info" size="mini">返回</el-button>
     </header>
+    <main>
+      
+    </main>
   </div>
 </template>
 
