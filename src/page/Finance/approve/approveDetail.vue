@@ -79,6 +79,18 @@
                 </el-table-column>-->
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
+                <el-table-column prop="expenseType" label="还款/拆分" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.expenseType == 1">拆分</div>
+                    <div v-if="scope.row.expenseType == 2">还款</div>
+                  </template>
+                </el-table-column>
+                <!-- 1-拆分，2-还款 -->
+                <el-table-column prop="expenseType" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button @click="handleExpenseType(scope.$index, scope.row)" type="primary" plain size="small">查看</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-row>
           </el-tab-pane>
@@ -213,6 +225,12 @@
         </el-col>
       </el-row>
     </div>
+    <!-- 参看拆分/还款弹窗 -->
+    <el-dialog :title="title" :visible.sync="expenseType" width="40%" custom-class="city_list">
+      <p v-show="this.showExpenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
+      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showRemitOfCash }}</strong ></span></p>
+    </el-dialog>
   </div>
 </template>
 
@@ -225,6 +243,9 @@
     data(){
       return {
         fundamental:{},
+        expenseType: false, // 显示拆分、还款弹窗
+        showExpenseType: false,
+        showRemitOfCash: null,
         isShowPrintContent: false,
         ifShowPrintTable: false,
         listLoading: false,
@@ -245,7 +266,7 @@
         getLsParamsSplitArr: null,
         keepStatus: null,
         tablePrint: [
-          {
+         /* {
           'parentID':482,
           'id':486,
           'supplierTypeEX':1,
@@ -261,7 +282,7 @@
             'createUser':1,
             'mark':1,
             'price':130,
-          }
+          }*/
         ],
         tabCount: 0,
         keepTabId: [],
@@ -300,6 +321,11 @@
       }
     },
     methods: {
+      handleExpenseType(index, row){
+        this.showExpenseType = row.expenseType
+        this.expenseType = true
+        console.log(row)
+      },
       // 打印详情
       printDetails(){
         this.$nextTick(() => {

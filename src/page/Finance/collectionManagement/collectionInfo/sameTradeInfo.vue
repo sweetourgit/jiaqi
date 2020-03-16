@@ -738,7 +738,7 @@ export default {
       var that =this
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getArrearsList', {
         lcID: item.id,
-        proeuctType: 1
+        ProductType: 1
       }).then(obj => {
         if(obj.data.objects == null){
           this.ifShowApply = true

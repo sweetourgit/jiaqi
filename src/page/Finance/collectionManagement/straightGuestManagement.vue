@@ -818,7 +818,7 @@ export default {
             this.$http.post(
               this.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
                 orderCode: res.data.object.orderNumber,
-                proeuctType:1
+                ProeuctType:1
               }
             )
             .then(res => {
