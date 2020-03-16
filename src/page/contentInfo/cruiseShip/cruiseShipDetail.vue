@@ -103,7 +103,7 @@ export default {
     // 编辑
     edit(row){
       this.dialogFormVisible = true;
-      this.info = 'id';
+      this.info = this.$route.query.id;
     },
     // 关闭添加弹框
     closeAdd(){
@@ -212,10 +212,10 @@ export default {
           },
           that.fileList = response.data.data.logo;
           that.fileList1 = response.data.data.pics;
-          that.fileList[0].pic_url = "http://yl.dayuntong.com" + response.data.data.logo[0].pic_url;
-          that.fileList1.forEach(function(item, index, arr){
-            item.pic_url = "http://yl.dayuntong.com" + response.data.data.pics[index].pic_url;
-          })
+          // that.fileList[0].pic_url = "http://yl.dayuntong.com" + response.data.data.logo[0].pic_url;
+          // that.fileList1.forEach(function(item, index, arr){
+          //   item.pic_url = "http://yl.dayuntong.com" + response.data.data.pics[index].pic_url;
+          // })
 
         } else {
           if(response.data.message){

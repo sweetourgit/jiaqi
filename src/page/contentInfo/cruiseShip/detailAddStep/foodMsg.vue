@@ -8,8 +8,8 @@
     <el-button type="warning" @click='addCabin' class="addBtn">添加</el-button>
     <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column prop="id" label="类型" align="center">
-        <template slot-scope="scope"> 
-          <div v-for='item in typeArr'>
+        <template slot-scope="scope">
+          <div v-for='item in typeArr' :key="item.id">
             <span v-if='item.id == scope.row.type'>{{item.name}}</span>
           </div>
         </template>
@@ -211,10 +211,11 @@ export default {
           that.tableData = response.data.data.list;
           that.total = response.data.data.list.length;
           that.tableData.forEach(function(item, index, arr){
-            item.opening_hours = formatDate(new Date(item.opening_hours)).split(" ")[1];
-            
+            if(item.opening_hours){
+              item.opening_hours = formatDate(new Date(item.opening_hours)).split(" ")[1];
+            }
             item.pics.forEach(function(item, index, arr){
-              item.url = that.GLOBAL.serverSrcYL + item.pic_url;
+              item.url = item.pic_url;
             })
           })
         } else {

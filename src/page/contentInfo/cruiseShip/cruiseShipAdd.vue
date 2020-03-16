@@ -28,7 +28,7 @@
           <el-form-item label="图片：" label-width="140px">
             <image-input
               :list="ruleForm.pic"
-              :numLimit="10"
+              :numLimit="100"
               @wakeup-material="picSelectHandler"
               @remove-handler="removePicHandler"
             ></image-input>
@@ -97,9 +97,9 @@
         this.ruleForm = {
           company: '',
           introduction: '',
+          pic: [],
+          logoPic: []
         };
-        this.fileList = [];
-        this.fileList1 = [];
         this.$emit('close', false);
       },
       // 取消按钮事件
@@ -130,15 +130,15 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // console.log(that.fileList);
-            // console.log(that.fileList1);
+            console.log(that.ruleForm.logoPic);
             let logoFile = [];
             if(that.ruleForm.logoPic.length == 0){
               // that.$message.warning("LOGO不能为空！");
             }else{
               logoFile = [
                   {
-                    "pic_id": this.ruleForm.logoPic.id,
-                    "pic_url": this.ruleForm.logoPic.url
+                    "pic_id": that.ruleForm.logoPic[0].id,
+                    "pic_url": that.ruleForm.logoPic[0].url
                   }
                 ];
             }
@@ -261,8 +261,9 @@
 
     // 图片删除
     removePicHandler(i){
-      console.log(this.ruleForm.pic);
+      console.log(this.ruleForm.pic, i);
       this.ruleForm.pic.splice(i, 1);
+      console.log(this.ruleForm.pic);
     },
 
       getPictureFun(obj, list){
@@ -271,7 +272,7 @@
         list.forEach(el => {
           // console.log(el);
           getPictureAction.bind(this)(el).then(res => {
-            // console.log(res);
+            console.log(res);
             const item = {
               id: el,
               url: res.url
@@ -299,15 +300,22 @@
           if (response.data.code == '200') {
             that.ruleForm = {
               company: response.data.data.name,
-              introduction: response.data.data.introduce
+              introduction: response.data.data.introduce,
+              pic: [],
+              logoPic: []
             };
-            that.ruleForm.logoPic = response.data.data.logo;
-            that.ruleForm.pic = response.data.data.pics;
-            that.ruleForm.logoPic[0].id = response.data.data.logo[0].pic_id;
-            that.ruleForm.logoPic[0].url = response.data.data.logo[0].pic_url;
-            that.fileList1.forEach(function(item, index, arr){
-              item.id = response.data.data.pics[index].pic_id;
-              item.url = response.data.data.pics[index].pic_url;
+            if(response.data.data.logo.length > 0){
+              that.ruleForm.logoPic.push({
+                id: response.data.data.logo[0].pic_id,
+                url: response.data.data.logo[0].pic_url
+              });
+            }
+
+            response.data.data.pics.forEach(function(item, index, arr){
+              that.ruleForm.pic.push({
+                id: item.pic_id,
+                url: item.pic_url
+              })
             })
 
           } else {
