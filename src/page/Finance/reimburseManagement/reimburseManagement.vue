@@ -238,9 +238,9 @@
                        <el-table-column prop="expenseType" label="还款/拆分" align="center"></el-table-column>
                        <el-table-column prop="paymentID"  disabled  label="操作"    align="center">
                           <template slot-scope="scope">
-                             <span @click="AmendOpen(scope.$index,scope.row.paymentID)" style="color: #f5a142" v-if="find==0">设置 |</span> 
+                             <span @click="AmendOpen(scope.$index,scope.row.paymentID,0)" style="color: #f5a142" v-if="find==0">设置 |</span> 
                              <span @click="t_delete(scope.row.paymentID)" style="color: #f5a142" v-if="find==0">删除</span>
-                             <span @click="AmendOpen(scope.$index,scope.row.paymentID)" style="color: #f5a142" v-if="find==1">查看</span>
+                             <span @click="AmendOpen(scope.$index,scope.row.paymentID,1)" style="color: #f5a142" v-if="find==1">查看</span>
                          </template>
                        </el-table-column>
                        
@@ -757,6 +757,7 @@ export default {
                 cardNum:'',//拆分还款账户
                 paymentID:0,//订单id
             }
+            this.statetype_Data=[];
          },
         ruleNull(){ // 清空内容
             this.ruleForm= {
@@ -1189,7 +1190,7 @@ export default {
                                 }
                           }else if(Amend.state == 1){
                                 Amend.cardNum = 0;
-                                console.log(Amend,'拆分1');
+                                //console.log(Amend,'拆分1');
                                 for(let i in payments_box){
                                   if(payments_box[i].paymentID == Amend.paymentID){
                                         payments_box[i].swcount = Amend.money;
@@ -1237,27 +1238,32 @@ export default {
           this.AmendNull();
 
         },
-        AmendOpen(index,paymentID){ // 打开设置拆分
+        AmendOpen(index,paymentID,condition){ // 打开设置拆分
+
             this.AmendOpenVisble = true;
             this.subscript();
             let payments_box = this.s_content.payments;
             for(let i in payments_box){
-              
+              console.log(payments_box,'叭叭叭')
               if(payments_box[index].paymentID == paymentID){
-
+                this.statetype = payments_box[index].expenseType;
+                let oid = payments_box[i].accountID;
+                this.collectionaccount(oid);
+               
                 if(payments_box[index].swcount != "" ){
-                   if(payments_box[index].expenseType == "拆分"){
-                    payments_box[index].expenseType = 1
-                  }else if(payments_box[index].expenseType == "还款"){
-                    payments_box[index].expenseType = 2
-                  } 
-                
+                   if(condition == 0){
+                      if(payments_box[index].expenseType == "拆分"){
+                        payments_box[index].expenseType = 1
+                      }else if(payments_box[index].expenseType == "还款"){
+                        payments_box[index].expenseType = 2
+                      } 
+                    }
                    this.Amend.money = payments_box[index].swcount;
                    this.Amend.number = payments_box[index].peopled;
                    this.Amend.Newmoney = payments_box[index].paymentPrice;
                    this.Amend.Newnumber = payments_box[index].peopleCount;
                    this.Amend.state = payments_box[index].expenseType;
-                  this.Amend.paymentID = payments_box[index].paymentID;
+                   this.Amend.paymentID = payments_box[index].paymentID;
                  
                 }else{
                   this.Amend.Newmoney = payments_box[index].paymentPrice;
@@ -1266,23 +1272,21 @@ export default {
                   this.Amend.number = payments_box[index].peopleCount;
                   this.Amend.paymentID = payments_box[index].paymentID;
                   }
+
                  
                  if(this.Amend.money >= this.Amend.Newmoney){
                       this.disabled_style = true;
                   }else{
                       this.disabled_style = false;
                   }
-                  if(payments_box[i].expenseType == 1){
-                    payments_box[i].expenseType = "拆分"
-                  }else if(payments_box[i].expenseType == 2){
-                    payments_box[i].expenseType = "还款"
-                  } 
-                  this.statetype = payments_box[i].expenseType;
+                      
+
+                  
+                 
                
                   
-              }
-                 let oid = payments_box[i].accountID;
-                 this.collectionaccount(oid);
+              } 
+                
                
             }
            
@@ -1301,13 +1305,13 @@ export default {
                     for(let i in res.data.objects){
                         if(res.data.objects[i].cardType == 1){
                           res.data.objects[i].cardType = "收款"
-                          }else if(res.data.objects[i].cardType == 2){
+                        }else if(res.data.objects[i].cardType == 2){
                                 res.data.objects[i].cardType = "付款"
                           }
-                           if(res.data.objects[i].id == oid){
-                              this.statetype_Data.push(res.data.objects[i]);
-                              return;
-                           }
+                        if(res.data.objects[i].id == oid){
+                          this.statetype_Data.push(res.data.objects[i]);
+                          return;
+                        }
 
                       }
                       this.AmendData = res.data.objects;
@@ -1899,8 +1903,7 @@ export default {
                                   }    
                            if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
                                 for(var n in submitForm_list.payments){//判断填写的报销金额
-                                submitForm_list.payments[n].peopleCount = submitForm_list.payments[n].peopled
-                                if(submitForm_list.payments[n].price == "0" || submitForm_list.payments[n].price == ""){
+                                if(submitForm_list.payments[n].price === "0" || submitForm_list.payments[n].price === ""){
                                    this.$message({
                                                 message:'请填写本次报销金额',
                                                 type: 'warning' 
@@ -1908,7 +1911,7 @@ export default {
                                               this.submitformBtn=false;
                                               verify = 0
                                               return;
-                                }else if(submitForm_list.payments[n].peopleCount === 0 || submitForm_list.payments[n].peopleCount === ""){
+                                }else if(submitForm_list.payments[n].peopled === 0 || submitForm_list.payments[n].peopled === ""){
                                           this.$message({
                                                 message:'人数不能为空',
                                                 type: 'warning' 
@@ -1916,8 +1919,9 @@ export default {
                                               this.submitformBtn=false;
                                               verify = 0
                                               return;
-                                        }
-
+                                 }
+                                submitForm_list.payments[n].peopleCount = submitForm_list.payments[n].peopled;
+                                console.log(submitForm_list.payments[n],'fasfas');
                                         // else if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
                                         //     this.$message({
                                         //         message:'本次报销金额不得大于借款金额',
