@@ -480,7 +480,7 @@
          <div v-if="find==1" class="statetype_style">
             <div>拆分/还款：{{statetype}}</div> 
             <div v-if="statetype=='还款'">
-                汇款/现金：对公账户
+                还款账号：
                        <el-table 
                         :data="statetype_Data" 
                         :highlight-current-row="true"
@@ -1236,6 +1236,17 @@ export default {
           this.AmendOpenVisble = false;
           this.disabled_style =  true;
           this.AmendNull();
+            this.subscript();
+            let payments_box = this.s_content.payments;
+             for(let i in payments_box){
+                if(payments_box[i].expenseType == 1){
+                  payments_box[i].expenseType = "拆分"
+                }else if(payments_box[i].expenseType == 2){
+                  payments_box[i].expenseType = "还款"
+                } 
+
+             }
+
 
         },
         AmendOpen(index,paymentID,condition){ // 打开设置拆分
@@ -1244,7 +1255,7 @@ export default {
             this.subscript();
             let payments_box = this.s_content.payments;
             for(let i in payments_box){
-              console.log(payments_box,'叭叭叭')
+              //console.log(payments_box,'叭叭叭')
               if(payments_box[index].paymentID == paymentID){
                 this.statetype = payments_box[index].expenseType;
                 let oid = payments_box[i].accountID;
