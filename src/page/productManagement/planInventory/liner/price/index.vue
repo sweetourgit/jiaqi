@@ -13,22 +13,40 @@
 
 <template>
   <div class="page">
-    <header>
-      <PriceHeader></PriceHeader>
-      <el-button type="info" size="mini">返回</el-button>
+    <header @click="test= !test">
+      <PriceHeader ref="priceHeader"></PriceHeader>
+      <div>
+        <el-button v-move-btn type="info" size="mini" v-if="test">返回2</el-button>
+        <el-button v-move-btn type="info" size="mini">返回</el-button>
+      </div>
     </header>
-    <main>
-      
-    </main>
+    <PriceMain ref="priceMain"></PriceMain>
   </div>
 </template>
 
 <script>
-import PriceHeader from './comps/PriceHeader/PriceHeader.vue'
+import PriceHeader from './comps/PriceHeader/PriceHeader'
+import PriceMain from './comps/PriceMain/PriceMain'
+import MoveBtn from './moveBtn'
 
+let moveBtn= new MoveBtn();
 export default {
 
-  components: { PriceHeader }
+  components: { PriceHeader, PriceMain },
+
+  directives: { 
+    moveBtn: {
+      inserted: moveBtn.inserted.bind(moveBtn),
+      componentUpdated: moveBtn.componentUpdated.bind(moveBtn),
+      unbind: moveBtn.unbind.bind(moveBtn),
+    }
+  },
+
+  data(){
+    return {
+      test: false,
+    }
+  }
 
 }
 </script>

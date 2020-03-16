@@ -88,3 +88,17 @@ export const deliverListAllAction= function(payload){
     })
   })
 }
+
+export const getLinerId= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product/getproductbasic", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('查询产品下接送列表失败'+ (message || ''));
+      resolve(data.list);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
