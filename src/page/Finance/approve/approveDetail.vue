@@ -228,8 +228,9 @@
     <!-- 参看拆分/还款弹窗 -->
     <el-dialog :title="title" :visible.sync="expenseType" width="40%" custom-class="city_list">
       <p v-show="this.showExpenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+      <p v-show="this.showExpenseType == 0"><span>没有进行相关操作</span></p>
       <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
-      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showRemitOfCash }}</strong ></span></p>
+      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showAccountName }}</strong ></span></p>
     </el-dialog>
   </div>
 </template>
@@ -245,7 +246,7 @@
         fundamental:{},
         expenseType: false, // 显示拆分、还款弹窗
         showExpenseType: false,
-        showRemitOfCash: null,
+        showAccountName: '', // 对公账户名称
         isShowPrintContent: false,
         ifShowPrintTable: false,
         listLoading: false,
@@ -322,9 +323,20 @@
     },
     methods: {
       handleExpenseType(index, row){
+        let _this = this
         this.showExpenseType = row.expenseType
+        let getAccountID = row.accountID
         this.expenseType = true
-        console.log(row)
+        if(this.showExpenseType == 2){
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
+            "id": getAccountID
+          }).then(res => {
+            let keepRes = res.data
+            if(keepRes.isSuccess === true){
+              _this.showAccountName = keepRes.object.title
+            }
+          })
+        }
       },
       // 打印详情
       printDetails(){
@@ -411,7 +423,7 @@
           });
           this.loadingBtn = false
           this.transitShow = false;
-          this.backListPage()
+          // this.backListPage()
         }).catch( (err) => {
           this.$message.warning("审批通过失败 ");
           this.loadingBtn = false
@@ -421,10 +433,12 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
           "id": paramsTabId
         }).then( obj =>  {
+          // 124 这个 obj 为空
           let keepObjLength = obj.data.objects
           if (keepObjLength && keepObjLength.length > 0){
             this.tabCount--
             this.tablePrint.push(...obj.data.objects)
+            console.log(this.tablePrint)
             if(this.tabCount <= 0){
               // console.log(this.tabCount)
               this.ifShowPrintTable = true
@@ -443,16 +457,19 @@
         })
         .then(obj => {
           let keepData = obj.data.objects
-          this.keepTabId.length = 0
-          this.keepBackContent.forEach( (item) => {
-            this.keepTabId.push(item.id)
-          })
-          this.tabCount = this.keepTabId.length
-          this.keepTabId.forEach((item) =>{
-            this.showPrintTable(item)
-          })
+          // 如果存在拆分
           if(keepData !== null ){
-              this.handlePassApi()
+            this.keepTabId.length = 0
+            this.keepBackContent.forEach( (item) => {
+              this.keepTabId.push(item.id)
+            })
+            this.tabCount = this.keepTabId.length
+            this.keepTabId.forEach((item) =>{
+              this.showPrintTable(item)
+            })
+            console.log(this.keepTabId)
+            // 这块有一个问题，拆分要弹出打印弹窗，this.handlePassApi()也运行这个函数但是不跳转页面，打印弹窗关闭时返回到列表；不拆分直接调用 this.handlePassApi() 然后返回列表页
+            // this.handlePassApi()
           } else {
             this.$message.warning("此报销不是待审批状态，无法进行审批操作");
           }
