@@ -1913,7 +1913,20 @@ export default {
                                     return;
                                   }    
                            if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
-                                for(var n in submitForm_list.payments){//判断填写的报销金额
+                               for(var i=0; i<this.alljoinData.length; i++){
+                                  for(var j=i+1; j<this.alljoinData.length; j++){
+                                    if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
+                                        this.$message({
+                                                message:'关联单据重复，请重新选择',
+                                                type: 'warning' 
+                                              });
+                                             this.submitformBtn=false;
+                                              verify = 0
+                                              return;
+                                        }
+                                     }
+                                }                              
+                               for(var n in submitForm_list.payments){//判断填写的报销金额
                                 if(submitForm_list.payments[n].price === "0" || submitForm_list.payments[n].price === ""){
                                    this.$message({
                                                 message:'请填写本次报销金额',
@@ -1956,19 +1969,6 @@ export default {
                                         }else{
                                            submitForm_list.payments[n].expenseType = 0;
                                         }
-                                }
-                              for(var i=0; i<this.alljoinData.length; i++){
-                                  for(var j=i+1; j<this.alljoinData.length; j++){
-                                    if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
-                                        this.$message({
-                                                message:'关联单据重复，请重新选择',
-                                                type: 'warning' 
-                                              });
-                                             this.submitformBtn=false;
-                                              verify = 0
-                                              return;
-                                        }
-                                     }
                                 }
                               
                                 this.object_lisr.push({//给数组赋值
