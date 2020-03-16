@@ -55,7 +55,7 @@ import moment from "moment"
 export default {
   props: {
     orderId: 0,
-    variable: 0,
+    a_variable: 0,
     dialogType: 0,
     orderCodeSon:""
   },
@@ -79,7 +79,7 @@ export default {
   created() {
   },
   watch: {
-    variable: function() {
+    a_variable: function() {
       if (this.dialogType == 2) {
         this.orderGetFun(this.orderId,this.orderCodeSon);
         this.dialogFormMark = true;
@@ -91,7 +91,7 @@ export default {
     close() {
       this.dialogFormMark = false;
       this.$refs["markFormAdd"].resetFields();
-    },
+   },
     orderGetFun(orderId,orderCode) {
 
       //查询一条订单信息 /orderquery/get/api/SIOrders

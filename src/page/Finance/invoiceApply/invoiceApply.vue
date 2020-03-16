@@ -1,6 +1,6 @@
 <template>
   <div style="border:1px solid #e6e6e6; max-width:1420px; overflow:hidden;margin:0 0 80px 0;">
-    <!--搜索框 2020/03/16-->
+    <!--搜索框-->
     <div class="demo-input-suffix">
       <div>
         <span class="search-title" style="margin:0 0 0 35px;">发票号码</span>
@@ -15,7 +15,7 @@
       <div>
         <span class="search-title" style="margin:0 0 0 62px;">状态</span>
         <el-select v-model="states" placeholder="请选择" class="group-no" style="width:200px">
-          <el-option v-for="item in statesType" :key="item.value" :label="item.label":value="item.value" style="width:200px;"></el-option>
+          <el-option v-for="item in statesType" :key="item.value" :label="item.label" :value="item.value" style="width:200px;"></el-option>
         </el-select>
         <span class="search-title">发票抬头</span>
         <el-input placeholder="请输入" v-model="invoiceTitle" class="group-no" style="width:200px;"></el-input>
@@ -27,16 +27,17 @@
       <div>
         <span class="search-title" style="margin:0 0 0 27px;">直客/商户</span>
         <el-select v-model="types" placeholder="请选择" class="group-no" style="width:200px">
-          <el-option v-for="item in typeList" :key="item.value" :label="item.label":value="item.value" style="width:200px;"></el-option>
+          <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value" style="width:200px;"></el-option>
         </el-select>
-        <span class="search-title">收款单号</span>
-        <el-input placeholder="请输入" v-model="collectionNumber" class="group-no" style="width:200px;"></el-input>
+        <!--<span class="search-title">收款单号</span>
+        <el-input placeholder="请输入" v-model="collectionNumber" class="group-no" style="width:200px;"></el-input>-->
         <el-button type="primary" class="search-but" @click="search()">搜索</el-button>
         <el-button type="primary" plain @click="reset()">重置</el-button>
       </div>
       
     </div>
     <div class="main">
+      <el-button type="primary" class="apply" @click="addInvoiceApply(1)">申请</el-button>
       <!--列表表格-->
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun">
         <el-table-column prop="id" label="发票ID" align="center"></el-table-column>
@@ -64,15 +65,10 @@
           </template>
         </el-table-column>
         <el-table-column prop="ordNum" label="关联订单数" align="center"></el-table-column>
+        <el-table-column prop="userName" label="申请人" align="center"></el-table-column>
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
-            <span class="cursor blue"@click="operation(1)">详情</span>
-            <span class="em" v-if="scope.row.state =='待开票'">|</span>
-            <span class="cursor blue" v-if="scope.row.state =='待开票'"@click="operation(3)">开票</span>
-            <span class="em" v-if="scope.row.state =='已开票'">|</span>
-            <span class="cursor blue" v-if="scope.row.state =='已开票'"@click="operation(4)">换发票</span>
-            <span class="em" v-if="scope.row.state !='开票驳回'">|</span>
-            <span class="cursor blue" v-if="scope.row.state !='开票驳回'"@click="operation(2)">驳回</span>
+            <span class="cursor blue" @click="operation(1)">详情</span>
           </template>
         </el-table-column>
       </el-table>
@@ -80,24 +76,29 @@
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
-      <invoice-details :invoiceID="invoiceID" :variable="variable" :dialogType="dialogType"></invoice-details>
+      <invoiceApply-details :invoiceID="invoiceID" :variable="variable" :dialogType="dialogType"></invoiceApply-details>
+      <addInvoiceApply :variableInvoice="variableInvoice" ></addInvoiceApply>
     </div>
   </div>
 </template>
 
 <script>
 import moment from "moment";
-import invoiceDetails from "./invoiceDetails/invoiceDetails";
+import invoiceApplyDetails from "./invoiceApplyDetails/invoiceApplyDetails";//详情
+import addInvoiceApply from "./invoiceApplyDetails/addInvoiceApply";
 export default {
-  name: "invoiceManagement",
+  name: "invoiceApply",
   components: {
-    invoiceDetails
+    invoiceApplyDetails,
+    addInvoiceApply
   },
   data() {
     return {
       invoiceID:0,
       variable: 0, //设置一个变量展示弹窗
       dialogType: 0, //弹窗类型  1：详情
+      variableInvoice:0, // 申请发票开关
+      
       //搜索框
       invoiceNumber:'',//发票号码
       merchantsName:'',//商户名称
@@ -178,6 +179,7 @@ export default {
       this.current = curPage;
       this.pageList();
     },
+    
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -252,9 +254,13 @@ export default {
       this.pageIndex = val;
       this.pageList(val,this.pageSize);
     },
-    operation(i) {// 显示详情、开票、换票弹窗
+    operation(i) {// 显示详情
       this.variable++;
       this.dialogType = i;
+    },
+    addInvoiceApply(i){
+      this.variableInvoice++;
+   
     },
     changeFun(val) {
       //保存选中项的数据
@@ -299,8 +305,11 @@ export default {
   text-align:right;
 }
 .search-but {
-  margin: 0 0 0 327px;
+  margin: 0 0 0 630px;
   overflow: hidden;
+}
+.apply{
+  margin:0 0 0 10px;
 }
 /*表格*/
 .table {

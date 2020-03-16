@@ -272,6 +272,12 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,5)"
               >退款</el-breadcrumb-item>
+              <el-breadcrumb-item
+                v-if="getListOneMessage.paid > 0"
+                class="breadCrumbPointer"
+                @click.native="operation(item,6,item.orderCode)"
+              >发票申请</el-breadcrumb-item>
+              
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
@@ -307,7 +313,7 @@
       ></el-pagination>
       <process-manage
         :orderId="orderId"
-        :variable="variable"
+        :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCode="orderCode"
         :paid="getListOneMessage.paid"
@@ -320,18 +326,34 @@
       ></process-manage>
       <remarks-infor
         :orderId="orderId"
-        :variable="variable"
+        :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
-      <order-transfer :orderId="orderId" :variable="variable" :dialogType="dialogType"></order-transfer>
-      <orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></orderRefund>
+      <order-transfer 
+        :orderId="orderId" 
+        :a_variable="a_variable" 
+        :dialogType="dialogType"
+      ></order-transfer>
+      <order-invoiceApply 
+        :orderId="orderId" 
+        :variable_s="variable_s"
+        :dialogType="dialogType"
+        :orderCodeSon="orderCodeSon"
+      ></order-invoiceApply>
+      <orderRefund 
+        :orderRefundID="orderId" 
+        :orderRefund="variable" 
+        :dialogType="dialogType"
+      ></orderRefund>
+     
     </div>
   </div>
 </template>
 
 <script>
 import processManage from "./common/processManage";
+import invoiceApply from "./common/invoiceApply";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
 import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
@@ -341,11 +363,12 @@ export default {
     "process-manage": processManage,
     "remarks-infor": remarksInfor,
     "order-transfer": orderTransfer,
+    "order-invoiceApply": invoiceApply,
     orderRefund,
   },
   data() {
     return {
-      orderRefundDialog: 0,//退款控制显示隐藏的 
+      // orderRefundDialog: 0,//退款控制显示隐藏的 
       defaultProps: {
         children: "children",
         label: "label"
@@ -418,7 +441,9 @@ export default {
       total: 0,
       orderpage: [],
       orderId: 0,
-      variable: 0, //设置一个变量展示弹窗
+      variable: 0, //退款
+      a_variable:0,//设置一个变量展示弹窗
+      variable_s:0,//发票申请
       dialogType: 0, //弹窗类型  1：流程管理  2：备注信息
       orderCode: "", //订单编号
       orderStateAllNum: {}, //订单状态 每个按钮的数量下标
@@ -426,7 +451,8 @@ export default {
       showContent: null, //list折叠展示的
       businessLists: [], //商户名称下拉列表展示
       isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
-      enrollDetailShow: "" //报名信息的数量
+      enrollDetailShow: "" ,//报名信息的数量
+      salePrice:[],//拼接空数组
     };
   },
   watch: {
@@ -523,22 +549,28 @@ export default {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
+       this.variable= 0; //退款
+       this.a_variable=0;//设置一个变量展示弹窗
+       this.variable_s=0;//发票申请
+       this.dialogType= 0; //弹窗类型  1：流程管理  2：备注信息
       if (this.showContent != index) {
         this.showContent = index;
-        this.axiosListOneInfo(item.id);
+        this.axiosListOneInfo(item.id,item.planID);
       } else {
         this.showContent = null;
       }
     },
 
     // 请求list中的一个数据
-    axiosListOneInfo(id) {
+    axiosListOneInfo(id,planID) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
           id: id
         })
         .then(res => {
           // console.log("请求一条数据的",res)
+          let enrolls=[];//标题
+          let guest;//全部数据
           this.enrollDetailShow = ""
           this.getListOneMessage = res.data.object;
           // let enrollDetail = this.getListOneMessage.enrollDetail;
@@ -594,11 +626,75 @@ export default {
           } else {
             this.getListOneMessage.platform = "同业系统";
           }
+           //获取报名类型列表数据
+          this.$http
+            .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
+              id: planID
+            })
+            .then(res => {
+              if (res.data.isSuccess == true) {
+                    enrolls = res.data.objects;
+                    guest= this.getListOneMessage.guests;
+                    console.log(enrolls);
+                    this.sourceMaker(enrolls,guest);
+                    this.enrollDetailMaker();
+                  }
+              
+            });
         })
         .catch(err => {
           console.log(err);
         });
     },
+    sourceMaker(enrolls, guests){
+        let salePriceReflect= this.salePriceReflect={};
+        //console.log(this.salePrice,'8021')
+        this.salePrice.splice(0);
+        this.salePrice.push(
+          ...enrolls.map((enroll, index) => {
+            let result= [];
+            result.enroll= enroll;
+            // 收集所有相同报名类型的实例，只有当前存在的报名类型需要这个属性，不存在的报名类型肯定不可以新增实例了
+            enroll.children= [];
+            salePriceReflect[this.enrollKeyMaker(enroll)]= result;
+            return result;
+          })
+        )
+        guests.forEach(guest => {
+          let { enrollName, singlePrice }= guest;
+          let key= `${enrollName}_${singlePrice}`;
+          // 不知道存不存在这个情况，过去有一个报名类型，但是现在没有了，这个时候hitEnroll为undefined
+          // guest的报名类型不存在于当前enrolls
+          salePriceReflect[key].push(guest); 
+        })
+        // 这里的el就是上边的salePriceReflect[key]
+        this.salePrice.forEach(el => {
+          el.enroll && el.enroll.children.push(el);
+        });
+      },
+      //根据报名类型和价格类型返回key
+      enrollKeyMaker(enroll){
+         let { enrollName, price_01, price_02 }= enroll;
+        return `${enrollName}_${price_01}`
+      },
+        // 报名信息
+      enrollDetailMaker(){
+        let str= '';
+        let singlePrice;
+        let count= 0;
+        let price= 0;
+        this.salePrice.forEach(el => {
+          let { enrollName, price_01 }= el.enroll;
+          singlePrice= price_01;
+          str+= el.length? `[ ${enrollName} ${this.toDecimal2(singlePrice)} ] x ${el.length}\n`: '';
+          price+= singlePrice* el.length;
+          count+= el.length;
+        })
+        this.guestTotal= count;
+        this.getListOneMessage.enrollDetail= str;
+        //console.log( this.getListOneMessage.enrollDetail,'最后结果')
+        return price;
+      },
     // 整理数据报名信息的格式显示
     // formatData(origindata) {
     //   let data = JSON.parse(origindata);
@@ -1012,33 +1108,55 @@ export default {
       //this.dialogType = i;
       //if(i == 5) this.orderRefundDialog = 1
     //},
+    
     operation(item, i, orderCode) {
       this.orderId = item.id;
-      this.variable++;
       this.dialogType = i;
       this.planID = item.planID;
       if(i == 5) {
         //判断订单是否有记录
-         this.variable = 0;
          this.$http
         .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
          id: this.orderId
          })
         .then(res => {
           if (res.data.isExist == true) {
+              this.variable = 0;
               this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
-              return false;
-           }else{
-               this.variable++;
+               return;
+           } else{
+              this.variable++;
            }
         })
         .catch(err => {
           console.log(err);
         });
-          
-       //this.orderRefundDialog = 1
+         this.a_variable = 0;
+      }else if(i == 6){
+       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
+            "object": {
+              "orderCode":orderCode,
+              "localCompName":"",
+              "collectionID":0,
+            },
+          }).then(res => {
+              if (res.data.isSuccess == false) {
+                  this.variable_s = 0;
+                  this.$message.error(res.data.result.message);
+                  return false;
+              } else{
+                  this.variable_s++;
+              }
+          })
+            .catch(function (res) {
+               console.log(res)
+             })
+            this.a_variable = 0;   
+      }else{
+        this.a_variable++;
+       
       }
-    },
+   },
 
     // 出发日期转换格式显示
     // goDataChangeFun (data) {

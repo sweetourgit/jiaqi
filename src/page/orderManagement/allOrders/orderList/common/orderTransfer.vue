@@ -254,7 +254,7 @@ export default {
     orderId: {
       type: Number
     },
-    variable: 0,
+    a_variable: 0,
     dialogType: 0
   },
   data() {
@@ -378,7 +378,7 @@ export default {
   },
   created() {},
   watch: {
-    variable: function() {
+    a_variable: function() {
       if (this.dialogType == 4) {
         console.log();
         // this.teamEnrolls(9); //this.planId?
