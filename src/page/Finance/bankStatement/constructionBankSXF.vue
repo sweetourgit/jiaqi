@@ -104,30 +104,35 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="STATUS" label="状态" align="center">
+       <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+      <el-table-column prop="is_EBS" label="状态" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.STATUS == 0">未导入</span>
-          <span v-if="scope.row.STATUS == 1">已导入</span>
+          <span v-if="scope.row.is_EBS == 0">未导入</span>
+          <span v-if="scope.row.is_EBS == 1">已导入</span>
         </template>
       </el-table-column>
-      <el-table-column prop="JYSJ" label="交易时间" align="center"></el-table-column>
-      <el-table-column prop="JFFSE" label="借方发生额/元(支取)" align="center"></el-table-column>
-      <el-table-column prop="DFFSE" label="贷方发生额/元(收入) " align="center"></el-table-column>
-      <el-table-column prop="YE" label="余额" align="center">
+      <el-table-column prop="transactionTime" label="交易时间" align="center">
+        <template slot-scope="scope">
+            <span> {{scope.row.transactionTime.split('T')[0]}}<br/>{{scope.row.transactionTime.split('T')[1]}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="BZ" label="币种" align="center">
+      <el-table-column prop="debitAmount" label="借方发生额/元(支取)" align="center"></el-table-column>
+      <el-table-column prop="creditAmount" label="贷方发生额/元(收入) " align="center"></el-table-column>
+      <el-table-column prop="balance" label="余额" align="center">
       </el-table-column>
-      <el-table-column prop="DFHM" label="对方户名" align="center"></el-table-column>
-      <el-table-column prop="DFZH" label="对方账号" align="center"></el-table-column>
-      <el-table-column prop="DFKHJG" label="对方开户机构" align="center"></el-table-column>
-      <el-table-column prop="JZRQ" label="记账日期" align="center"></el-table-column>
-      <el-table-column prop="ZY" label="摘要" align="center"></el-table-column>
-      <el-table-column prop="BZHU" label="备注" align="center"></el-table-column>
-      <el-table-column prop="ZHMXBH" label="账户明细编号-交易流水号" align="center"></el-table-column>
-      <el-table-column prop="QYLSH" label="企业流水号" align="center"></el-table-column>
-      <el-table-column prop="PZZL" label="凭证种类" align="center"></el-table-column>
-      <el-table-column prop="PZH" label="凭证号" align="center"></el-table-column>
-      <el-table-column prop="SXF" label="手续费" align="center"></el-table-column>
+      <el-table-column prop="currency" label="币种" align="center">
+      </el-table-column>
+      <el-table-column prop="accountNameOther" label="对方户名" align="center"></el-table-column>
+      <el-table-column prop="accountNumberOther" label="对方账号" align="center"></el-table-column>
+      <el-table-column prop="accountAgencyOther" label="对方开户机构" align="center"></el-table-column>
+      <el-table-column prop="accountingDate" label="记账日期" align="center"></el-table-column>
+      <el-table-column prop="reference" label="摘要" align="center"></el-table-column>
+      <el-table-column prop="remark" label="备注" align="center"></el-table-column>
+      <el-table-column prop="transactionReferenceNumber" label="账户明细编号-交易流水号" align="center"></el-table-column>
+      <el-table-column prop="enterpriseReferenceNumber" label="企业流水号" align="center"></el-table-column>
+      <el-table-column prop="certificateType" label="凭证种类" align="center"></el-table-column>
+      <el-table-column prop="certificateCode" label="凭证号" align="center"></el-table-column>
+      <el-table-column prop="purpose_fee" label="手续费" align="center"></el-table-column>
       <!-- <el-table-column prop="remark" label="所属公司" align="center">
       </el-table-column>-->
     </el-table>
@@ -148,7 +153,7 @@
 
 <script type="text/javascript">
 import moment from "moment";
-
+import * as utils from './utils.js'
 export default {
   components: {},
   data() {
@@ -203,7 +208,12 @@ export default {
   },
   methods: {
     beforeUpload(event, file, filelist) {
+       let data4D=utils.getSession4D()
       this.File.FileName = event.name;
+      this.File.userid=data4D.userID
+      this.File.orgid=data4D.orgID
+      this.File.topid=data4D.topID
+      this.File.company=''//测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -225,17 +235,15 @@ export default {
           this.multipleSelection.forEach(function(item, index, arr) {
             idArr.push(item.id);
           });
-          // console.log(idArr);
           this.$http
             .post(
               this.GLOBAL.serverSrc + "/finance/bankofchina/api/ImportEBS",
               {
                 ids: idArr,
-                type: 1
+                type: 6
               }
             )
             .then(function(response) {
-              // console.log(response)
               if (response.status == 200) {
                 that.$message.success("导入成功！");
                 that.loadData();
@@ -277,7 +285,6 @@ export default {
 
     // 选择项更改
     selectionChange(val) {
-      console.log(val);
       if (val.length > 0) {
         this.clickable = false;
       } else {
@@ -288,7 +295,7 @@ export default {
 
     // 上传建设银行
     UploadUrl1() {
-      return this.GLOBAL.serverSrc + "/finance/industrialbank/api/ImportExcel";
+      return this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/importexcel";
     },
     handleSuccess1(response, file, fileList) {
       console.log(response);
@@ -315,7 +322,7 @@ export default {
     },
     // 上传微信支付宝明细
     UploadUrl2() {
-      return this.GLOBAL.serverSrc + "/finance/wa_payment/api/ImportExcel";
+      return this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/importexcel";
     },
     handleSuccess2(response, file, fileList) {
       console.log(response);
@@ -348,7 +355,7 @@ export default {
         .then(() => {
           this.$http
             .post(
-              this.GLOBAL.serverSrc + "/finance/industrialbank/api/delete",
+              this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/delete",
               {
                 id: row.id
               }
@@ -359,7 +366,7 @@ export default {
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "industrialBankSK" + Math.random()
+                  "constructionBankSXF" + Math.random()
                 );
                 that.$message({
                   type: "info",
@@ -408,41 +415,40 @@ export default {
     },
     loadData() {
       const that = this;
-      this.$http.post('mock/jiansheSXF', {}).then(function (obj) {
-            that.total = 100;
-          that.tableData = obj.data.data;
-      })
-      // this.$http
-      //   .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-      //     pageIndex: this.pageCurrent - 1,
-      //     pageSize: this.pageSize,
-      //     object: {
-      //       transaction_reference_number: this.ruleForm.code,
-      //       begin: this.ruleForm.dateStart
-      //         ? moment(this.ruleForm.dateStart).format("YYYY-MM-DD 00:00:00")
-      //         : "2000-05-16",
-      //       end: this.ruleForm.dateEnd
-      //         ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
-      //         : "2099-05-16",
-      //       seachType: 2,
-      //       import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0
-      //     }
-      //   })
-      //   .then(function(obj) {
-      //     // console.log('中国银行',obj);
-      //     if (obj.data.isSuccess) {
-      //       that.total = obj.data.total;
-      //       that.tableData = obj.data.objects;
-      //       // that.tableDataNBSK.forEach(function (item, index, arr) {
-      //       //   item.collectionTime = item.collectionTime.split('T')[0];
-      //       // });
-      //       // that.loadingNBSK = false;
-      //     } else {
-      //       // that.loadingNBSK = false;
-      //       that.total = 0;
-      //       that.tableData = [];
-      //     }
-      //   });
+      // this.$http.post('mock/jiansheSXF', {}).then(function (obj) {
+      //       that.total = 100;
+      //     that.tableData = obj.data.data;
+      // })
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
+          pageIndex: this.pageCurrent - 1,
+          pageSize: this.pageSize,
+          object: {
+            transaction_reference_number: this.ruleForm.code,
+            begin: this.ruleForm.dateStart
+              ? moment(this.ruleForm.dateStart).format("YYYY-MM-DD 00:00:00")
+              : "2000-05-16",
+            end: this.ruleForm.dateEnd
+              ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
+              : "2099-05-16",
+            seachType: 2,
+            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0
+          }
+        })
+        .then(function(obj) {
+          if (obj.data.isSuccess) {
+            that.total = obj.data.total;
+            that.tableData = obj.data.objects;
+            // that.tableDataNBSK.forEach(function (item, index, arr) {
+            //   item.collectionTime = item.collectionTime.split('T')[0];
+            // });
+            // that.loadingNBSK = false;
+          } else {
+            // that.loadingNBSK = false;
+            that.total = 0;
+            that.tableData = [];
+          }
+        });
     },
     // 时间限制
     beginDate() {

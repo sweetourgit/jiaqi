@@ -13,9 +13,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="交易流水号:" prop="code">
+          <!-- <el-form-item label="交易流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
@@ -68,35 +68,37 @@
           <el-button v-if="scope.row.surplus_Amount == scope.row.trade_Amount" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
+       <el-table-column prop="id" label="明细ID" align="center">
+      </el-table-column>
       <el-table-column prop="SYJE" label="剩余金额" align="center">
       </el-table-column>
-      <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+      <el-table-column prop="abcBank_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.is_ZCK == 0">未设置</span>
-          <span v-if="scope.row.is_ZCK == 1">已设置</span>
+          <span v-if="scope.row.abcBank_ZCK == 0">未设置</span>
+          <span v-if="scope.row.abcBank_ZCK == 1">已设置</span>
         </template>
       </el-table-column>
-      <el-table-column prop="JYLSH" label="交易流水号" align="center">
+      <el-table-column prop="code" label="交易流水号" align="center">
       </el-table-column>
-      <el-table-column prop="JYSJ" label="交易时间" align="center">
+      <el-table-column prop="createTime" label="交易时间" align="center">
       </el-table-column>
-        <el-table-column prop="SRJE" label="收入金额" align="center">
+        <el-table-column prop="incomePrice" label="收入金额" align="center">
       </el-table-column>
-      <el-table-column prop="ZCJE" label="支出金额" align="center">
+      <el-table-column prop="expensesPrice" label="支出金额" align="center">
       </el-table-column>
-      <el-table-column prop="ZHYE" label="账户余额" align="center">
+      <el-table-column prop="accountBalance" label="账户余额" align="center">
       </el-table-column>
-      <el-table-column prop="JYHM" label="交易行名" align="center">
+      <el-table-column prop="bankName" label="交易行名" align="center">
       </el-table-column>
-      <el-table-column prop="DFSS" label="对方省市" align="center">
+      <el-table-column prop="customerCity" label="对方省市" align="center">
       </el-table-column>
-      <el-table-column prop="DFZH" label="对方账号" align="center">
+      <el-table-column prop="accountNumber" label="对方账号" align="center">
       </el-table-column>
-      <el-table-column prop="DFHM" label="对方户名" align="center">
+      <el-table-column prop="accountName" label="对方户名" align="center">
       </el-table-column>
-      <el-table-column prop="JYYT" label="交易用途" align="center">
+      <el-table-column prop="use" label="交易用途" align="center">
       </el-table-column>
-      <el-table-column prop="GLJE" label="关联金额" align="center">
+      <el-table-column prop="surplusPrice" label="关联金额" align="center">
       </el-table-column>
        <!-- <el-table-column prop="" label="所属公司" align="center">
       </el-table-column> -->
@@ -114,7 +116,7 @@
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -285,6 +287,7 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
+       let data4D=utils.getSession4D()
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
@@ -295,27 +298,26 @@ export default {
             that.total = 100;
           that.tableData = obj.data.data;
       })
-      // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
+      // this.$http.post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
       //   "pageIndex": this.pageCurrent - 1,
       //   "pageSize": this.pageSize,
       //   "object": {
-      //     "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-      //     "transaction_reference_number": this.ruleForm.code,
-      //     "begin": dateStart ? dateStart : "2000-05-16",
-      //     "end": dateEnd ? dateEnd : "2099-05-16",
-      //     "seachType": 0
+      //     "seachType": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+      //     "startTime": dateStart ? dateStart : "2000-05-16",
+      //     "endTime": dateEnd ? dateEnd : "2099-05-16",
+      //     "seachType": 0,
+      //     "userid":data4D.userID,
+      //     "orgid":data4D.orgID,
+      //     "topid":data4D.topID,
+      //     "company":'' ,
+      //     "type":''
       //   }
       // }).then(function (obj) {
-      //   // console.log('中国银行',obj);
+      //   console.log('农业银行',obj);
       //   if(obj.data.isSuccess){
       //     that.total = obj.data.total;
       //     that.tableData = obj.data.objects;
-      //     // that.tableDataNBSK.forEach(function (item, index, arr) {
-      //     //   item.collectionTime = item.collectionTime.split('T')[0];
-      //     // });
-      //     // that.loadingNBSK = false;
       //   }else{
-      //     // that.loadingNBSK = false;
       //     that.total = 0;
       //     that.tableData = [];
       //   }

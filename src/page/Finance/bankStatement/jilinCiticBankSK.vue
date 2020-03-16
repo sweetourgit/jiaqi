@@ -12,11 +12,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="7">
-          <el-form-item label="交易流水号:" prop="code">
+        <el-col :span="7">
+          <!-- <el-form-item label="交易流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item>
-        </el-col> -->
+          </el-form-item> -->
+        </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
             <el-col :span="11">
@@ -255,7 +255,7 @@ export default {
           if (response.data.isSuccess) {
             that.pageCurrent = 1;
             that.loadData();
-            that.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
+            // that.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
             that.$message({
               type: 'info',
               message: '已删除'
@@ -318,7 +318,6 @@ export default {
           "transaction_reference_number": this.ruleForm.code,
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0,
            // "userid":userID,
           // "orgid":orgID,
           // "topid":topID,
