@@ -10,7 +10,7 @@
       <el-tab-pane :label="'无收入借款管理(' + approveDataNum +')'" name="nameINoIn">
         <el-tabs v-model="tabIINoInShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameIINoInTeam">
-            <team-table :whichTab="whichTab" ref="teamDom"></team-table>
+            <team-table :whichTab="whichTab" ref="noInDom"></team-table>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIINoInShip">
 
@@ -22,7 +22,7 @@
       <el-tab-pane :label="'预付款管理(' + approveDataNumAdvance +')'" name="nameIAdvance">
         <el-tabs v-model="tabIIAdvanceShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameIIAdvanceTeam">
-            <team-table :whichTab="whichTab"></team-table>
+            <team-table :whichTab="whichTab" ref="advanceDom"></team-table>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIAdvanceShip">
 
@@ -34,7 +34,7 @@
       <el-tab-pane :label="'报销管理(' + approveDataNumReimburse +')'" name="nameIReimburse">
         <el-tabs v-model="tabIIReimburseShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameIIReimburseTeam">
-            <team-table :whichTab="whichTab"></team-table>
+            <team-table :whichTab="whichTab" ref="reimburseDom"></team-table>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIReimburseShip">
 
@@ -46,7 +46,7 @@
       <el-tab-pane :label="'退款管理(' + approveDataNumRefund +')'" name="nameIRefund">
         <el-tabs v-model="tabIIRefundShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameIIRefundTeam">
-            <team-table :whichTab="whichTab"></team-table>
+            <team-table :whichTab="whichTab" ref="refundDom">></team-table>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIRefundShip">
 
@@ -58,7 +58,7 @@
       <el-tab-pane :label="'报账单管理(' + 0 +')'" name="nameISheet">
         <el-tabs v-model="tabIISheetShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameIISheetTeam">
-            <team-table :whichTab="whichTab"></team-table>
+            <team-table :whichTab="whichTab" ref="sheetDom"></team-table>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIISheetShip">
 
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-  import teamTable from "./borrow/teamTable";
+  import teamTable from "./team/teamTable";
 
   export default {
     name: "ILabel",
@@ -125,8 +125,11 @@
     },
     mounted() {
       // 初始化加载所有tab下的表格数据，不能写在teamTable里面，否则会被调用多次
-      let moduleArray = ['nameIINoInTeam', 'nameIIAdvanceTeam', 'nameIIReimburseTeam', 'nameIIRefundTeam', 'nameIISheetTeam']
-      moduleArray.forEach(item => this.$refs.teamDom.pendingApprovalTable(item))
+      this.$refs.noInDom.pendingApprovalTable('nameIINoInTeam')
+      this.$refs.advanceDom.pendingApprovalTable('nameIIAdvanceTeam')
+      this.$refs.reimburseDom.pendingApprovalTable('nameIIReimburseTeam')
+      this.$refs.refundDom.pendingApprovalTable('nameIIRefundTeam')
+      this.$refs.sheetDom.pendingApprovalTable('nameIISheetTeam')
     },
     methods: {
       handleClickILabel(tab, event){

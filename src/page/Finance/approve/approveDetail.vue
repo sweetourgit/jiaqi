@@ -378,6 +378,7 @@
       auditResult(paramsGuid) {
         this.listLoading = true
         let that =this
+        // GetOpinions
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: paramsGuid,
           jQ_Type: 3,
@@ -426,6 +427,7 @@
           "workItemID": this.getParamsWorkItemId,
           "commentText": this.commentText
         }).then((res) =>{
+          console.log('1 SubmitWorkAssignmentsForJQ_InsertOpinion')
           this.$message({
             message: '审批通过已完成',
             type: 'success'
@@ -442,20 +444,20 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
           "id": paramsTabId
         }).then( obj =>  {
+          console.log('3 payment/api/listforexpense')
           let keepObjLength = obj.data.objects
           // 如果没有需要打印的数据则返回列表页
-          if(!keepObjLength){
-            this.backListPage()
-          }
           if (keepObjLength && keepObjLength.length > 0){
             this.tabCount--
+            // 组合数据 用来遍历tab组件 形成多个tab页
             this.tablePrint.push(...obj.data.objects)
             console.log(this.tablePrint)
             if(this.tabCount <= 0){
-              // console.log(this.tabCount)
               this.ifShowPrintTable = true
             }
-            // console.log(this.tablePrint,'this.tablePrint')
+          } else {
+            // console.log(keepObjLength)
+            // this.backListPage()
           }
         })
       },
@@ -468,6 +470,7 @@
             }
           })
           .then(obj => {
+            console.log('2 expense/api/list')
             let keepData = obj.data.objects
             if(keepData !== null){
               this.keepTabId.length = 0

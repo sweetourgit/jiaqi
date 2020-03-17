@@ -1,20 +1,31 @@
 /* 待审批表格数据（借款，报销，退款，报账单） */
 import moment from 'moment'
 
+// 通过父组件传过来的属性进行转换，搜索用
+let changeComName = {
+  nameINoIn: 'nameIINoInTeam', // 无收入
+  nameIAdvance: 'nameIIAdvanceTeam', // 预付款
+  nameIReimburse: 'nameIIReimburseTeam', // 报销
+  nameIRefund: 'nameIIRefundTeam', // 退款
+  nameISheet: 'nameIISheetTeam', // 报账单
+}
+
 export default {
   data(){
     return {
       listLoading: false,
     }
   },
+  mounted() {
+  },
   methods: {
     moment,
     HandleSearchPendingApprove (paramsModule) {
-      this.pendingApprovalTable(paramsModule)
+      this.pendingApprovalTable(changeComName[paramsModule])
     },
     HandleResetPendingApproval (paramsFrom, paramsModule){
       this.$refs[paramsFrom].resetFields()
-      this.pendingApprovalTable(paramsModule);
+      this.pendingApprovalTable(changeComName[paramsModule]);
     },
     pendingApprovalTable(paramsTab){
       let arr = []
@@ -47,7 +58,11 @@ export default {
               that.$http.post(that.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
                 "guid": arr
               }).then(obj =>{
-                that.approvalBorrowData = obj.data.objects;
+                if(paramsTab === 'nameIINoInTeam'){
+                  that.approvalNoInData = obj.data.objects;
+                } else {
+                  that.approvalAdvanceData = obj.data.objects
+                }
                 that.listLoading = false
               }).catch(obj => {
                 console.log(obj)

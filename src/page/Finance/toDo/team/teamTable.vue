@@ -1,4 +1,4 @@
-<!-- 无收入，预付款共用页面 -->
+<!-- 无收入，预付款，退款，报销，报账 共用页面 -->
 <template>
   <div class="distributor-content">
     <!-- 检索 -->
@@ -23,8 +23,8 @@
             </el-col>
             <el-col :span="8" style="text-align: right">
               <el-form-item>
-                <el-button @click="HandleSearchPendingApprove()" type="primary">搜索</el-button>
-                <el-button type="primary" plain @click="HandleResetPendingApproval('ruleFormSearch')">重置</el-button>
+                <el-button @click="HandleSearchPendingApprove(getWhichTab)" type="primary">搜索</el-button>
+                <el-button type="primary" plain @click="HandleResetPendingApproval('ruleFormSearch', getWhichTab)">重置</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -32,8 +32,8 @@
       </el-row>
     </div>
     <!-- 检索 END -->
-    <!-- 需要审批表格-借款 -->
-    <el-table :data="approvalBorrowData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameINoIn' || getWhichTab === 'nameIAdvance'">
+    <!-- 需要审批表格-无收入款 -->
+    <el-table :data="approvalNoInData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameINoIn'">
       <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -47,7 +47,22 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 需要审批表格-借款 END -->
+    <!-- 需要审批表格-预付款 END -->
+    <el-table :data="approvalAdvanceData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameIAdvance'">
+      <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
+      <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" align="center"></el-table-column>
+      <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+      <el-table-column prop="supplierName" label="供应商名称" align="center"></el-table-column>
+      <el-table-column prop="supplierTypeEX" label="类型" align="center"></el-table-column>
+      <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
+      <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+      <el-table-column label="审批" width="150" align="center">
+        <template slot-scope="scope">
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small">详情</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 需要审批表格-预付款 END -->
     <!-- 需要审批表格-报销管理 -->
     <el-table :data="approvalReimburseData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameIReimburse'">
       <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
@@ -67,7 +82,9 @@
       <el-table-column prop="refundCode" label="退款单号" align="center"></el-table-column>
       <el-table-column prop="refundStateType" label="状态" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.refundStateType=='申请退款'" style="color: #7F7F7F" >{{ scope.row.refundStateType }}</div>
+          <div v-if="scope.row.refundStateType === 0" style="color: #7F7F7F" >申请退款</div>
+          <div v-if="scope.row.refundStateType === 1" style="color: #33D174" >退款完成</div>
+          <div v-if="scope.row.refundStateType === 2" style="color: #FF4A3D" >拒绝退款</div>
         </template>
       </el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请日期" align="center"></el-table-column>
@@ -106,7 +123,7 @@
 </template>
 
 <script>
-  import requestListData from '../requestListData'
+  import requestTeamTableData from '../mixins/requestTeamTableData'
   export default {
     name: "borrowList",
     data(){
@@ -116,7 +133,8 @@
           endTime:'',
         },
         approvalReimburseData:[],
-        approvalBorrowData:[],
+        approvalNoInData:[],
+        approvalAdvanceData:[],
         approvalRefundData:[],
         approvalSheetData:[],
       }
@@ -127,7 +145,7 @@
         default: 'nameINoIn'
       }
     },
-    mixins: [requestListData],
+    mixins: [requestTeamTableData],
     mounted() {
 
     },
