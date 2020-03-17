@@ -29,36 +29,63 @@
           >删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
-      <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
-      <el-table-column prop="transaction_time" label="交易时间" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="transaction_amount" label="交易金额" align="center"></el-table-column>
-      <el-table-column prop="preferential_amount" label="优惠金额" align="center"></el-table-column>
-      <el-table-column prop="actual_amount" label="实收金额" align="center"></el-table-column>
-      <el-table-column prop="refund_amount" label="退款金额" align="center"></el-table-column>
-      <el-table-column prop="merchant_order_number" label="商户订单号" align="center"></el-table-column>
-      <el-table-column prop="platform_order_number" label="平台订单号" align="center"></el-table-column>
-      <el-table-column prop="channel" label="所属渠道" align="center"></el-table-column>
-      <el-table-column prop="merchant_code" label="商户编号" align="center"></el-table-column>
-      <el-table-column prop="merchant_name" label="商户名称" align="center"></el-table-column>
-      <el-table-column prop="payment_type" label="支付类型" align="center"></el-table-column>
-      <el-table-column prop="trading_status" label="交易状态" align="center"></el-table-column>
-      <el-table-column prop="currency" label="币种" align="center"></el-table-column>
-      <el-table-column prop="transaction_type" label="交易类型" align="center"></el-table-column>
-      <el-table-column prop="transaction_issuer" label="交易发卡行" align="center"></el-table-column>
-      <el-table-column prop="terminal_type" label="终端类型" align="center"></el-table-column>
-      <el-table-column prop="trade_name" label="商品名称" align="center"></el-table-column>
-      <el-table-column prop="operator_number" label="操作员编号" align="center"></el-table-column>
-      <el-table-column prop="device_number" label="设备号" align="center"></el-table-column>
-      <el-table-column prop="shop_number" label="门店编号" align="center"></el-table-column>
-      <el-table-column prop="third_party_merchant_number" label="第三方商户号" align="center"></el-table-column>
-      <el-table-column prop="apPid" label="appID" align="center"></el-table-column>
-      <el-table-column prop="third_party_order_number" label="第三方订单号" align="center"></el-table-column>
-      <el-table-column prop="remark" label="付款备注" align="center"></el-table-column>
+      <template v-if="this.$route.query.company=='辽宁大运通'">
+        <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+        <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
+        <el-table-column prop="transaction_time" label="交易时间" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="transaction_amount" label="交易金额" align="center"></el-table-column>
+        <el-table-column prop="preferential_amount" label="优惠金额" align="center"></el-table-column>
+        <el-table-column prop="actual_amount" label="实收金额" align="center"></el-table-column>
+        <el-table-column prop="refund_amount" label="退款金额" align="center"></el-table-column>
+        <el-table-column prop="merchant_order_number" label="商户订单号" align="center"></el-table-column>
+        <el-table-column prop="platform_order_number" label="平台订单号" align="center"></el-table-column>
+        <el-table-column prop="channel" label="所属渠道" align="center"></el-table-column>
+        <el-table-column prop="merchant_code" label="商户编号" align="center"></el-table-column>
+        <el-table-column prop="merchant_name" label="商户名称" align="center"></el-table-column>
+        <el-table-column prop="payment_type" label="支付类型" align="center"></el-table-column>
+        <el-table-column prop="trading_status" label="交易状态" align="center"></el-table-column>
+        <el-table-column prop="currency" label="币种" align="center"></el-table-column>
+        <el-table-column prop="transaction_type" label="交易类型" align="center"></el-table-column>
+        <el-table-column prop="transaction_issuer" label="交易发卡行" align="center"></el-table-column>
+        <el-table-column prop="terminal_type" label="终端类型" align="center"></el-table-column>
+        <el-table-column prop="trade_name" label="商品名称" align="center"></el-table-column>
+        <el-table-column prop="operator_number" label="操作员编号" align="center"></el-table-column>
+        <el-table-column prop="device_number" label="设备号" align="center"></el-table-column>
+        <el-table-column prop="shop_number" label="门店编号" align="center"></el-table-column>
+        <el-table-column prop="third_party_merchant_number" label="第三方商户号" align="center"></el-table-column>
+        <el-table-column prop="apPid" label="appID" align="center"></el-table-column>
+        <el-table-column prop="third_party_order_number" label="第三方订单号" align="center"></el-table-column>
+        <el-table-column prop="remark" label="付款备注" align="center"></el-table-column>
+      </template>
+      <template v-if="this.$route.query.company=='吉林大运通'">
+        <el-table-column prop="transaction_time" label="交易时间" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="merchant_code" label="商户编号" align="center"></el-table-column>
+        <el-table-column prop="merchant_name" label="商户名称" align="center"></el-table-column>
+        <el-table-column prop="payment_type" label="支付类型" align="center"></el-table-column>
+        <el-table-column prop="trading_status" label="交易状态" align="center"></el-table-column>
+        <el-table-column prop="currency" label="币种" align="center"></el-table-column>
+        <el-table-column prop="transaction_type" label="交易类型" align="center"></el-table-column>
+        <el-table-column prop="transaction_amount" label="交易金额" align="center"></el-table-column>
+        <el-table-column prop="refund_amount" label="退款金额" align="center"></el-table-column>
+        <el-table-column prop="transaction_issuer" label="交易发卡行" align="center"></el-table-column>
+        <el-table-column prop="terminal_type" label="终端类型" align="center"></el-table-column>
+        <el-table-column prop="trade_name" label="商品名称" align="center"></el-table-column>
+        <el-table-column prop="operator_number" label="操作员编号" align="center"></el-table-column>
+        <el-table-column prop="device_number" label="设备号" align="center"></el-table-column>
+        <el-table-column prop="shop_number" label="门店编号" align="center"></el-table-column>
+        <el-table-column prop="third_party_merchant_number" label="第三方商户号" align="center"></el-table-column>
+        <el-table-column prop="apPid" label="appID" align="center"></el-table-column>
+        <el-table-column prop="third_party_order_number" label="第三方订单号" align="center"></el-table-column>
+        <el-table-column prop="remark" label="付款备注" align="center"></el-table-column>
+      </template>
     </el-table>
     <div class="block">
       <el-pagination
@@ -176,20 +203,20 @@ export default {
     },
     loadData() {
       const that = this;
-      console.log('id',this.$route.que)
+      console.log("id", this.$route.query);
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search", {
           pageIndex: this.pageCurrent,
           pageSize: this.pageSize,
           object: {
             purpose_Merchant_code: this.$route.query.purpose_Merchant_code,
-            purpose_Date: this.$route.query.purpose_Date,
+            purpose_Date: this.$route.query.purpose_Date
             // bankID:this.$route.query.id,
             // type:this.$route.query.type
           }
         })
         .then(function(obj) {
-          console.log('微信支付宝明细',obj);
+          console.log("微信支付宝明细", obj);
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;

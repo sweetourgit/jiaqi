@@ -13,21 +13,33 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="交易流水号:" prop="code">
+          <!-- <el-form-item label="交易流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item>
+          </el-form-item>-->
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
             <el-col :span="11">
               <el-form-item prop="dateStart">
-                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.dateStart" :picker-options="startDatePicker" style="width: 100%;"></el-date-picker>
+                <el-date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="ruleForm.dateStart"
+                  :picker-options="startDatePicker"
+                  style="width: 100%;"
+                ></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col class="line" :span="2">-</el-col>
             <el-col :span="11">
               <el-form-item prop="dateEnd">
-                <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.dateEnd" :picker-options="endDatePicker" style="width: 100%;"></el-date-picker>
+                <el-date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="ruleForm.dateEnd"
+                  :picker-options="endDatePicker"
+                  style="width: 100%;"
+                ></el-date-picker>
               </el-form-item>
             </el-col>
           </el-form-item>
@@ -53,96 +65,99 @@
         :on-error="handleError"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
-            :before-upload="beforeUpload"
+        :before-upload="beforeUpload"
         :data="File"
-        name="excelfile">
+        name="excelfile"
+      >
         <el-button type="primary">添加招商银行流水单</el-button>
       </el-upload>
     </div>
     <!-- 表格 -->
-    <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
+    <el-table
+      :data="tableData"
+      border
+      :highlight-current-row="true"
+      :header-cell-style="getRowClass"
+      :stripe="true"
+      id="table-content"
+    >
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
-          <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
-          <el-button v-if="scope.row.surplus_Amount == scope.row.trade_Amount" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button
+            @click="orderDetail(scope.row)"
+            type="text"
+            size="small"
+            class="table_details"
+          >查看订单</el-button>
+          <el-button
+            v-if="scope.row.surplusAmount == scope.row.creditAmount"
+            @click="deleteFun(scope.row)"
+            type="text"
+            size="small"
+            class="table_details"
+          >删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="SYJE" label="剩余金额" align="center">
-      </el-table-column>
+      <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+      <el-table-column prop="surplusAmount" label="剩余金额" align="center"></el-table-column>
       <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
           <span v-if="scope.row.is_ZCK == 0">未设置</span>
           <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
-      </el-table-column>    
-      <el-table-column prop="JYLSH" label="交易流水号" align="center">
       </el-table-column>
-       <el-table-column prop="JYR" label="交易日" align="center">
+      <el-table-column prop="referenceNumber" label="交易流水号" align="center"></el-table-column>
+      <el-table-column prop label="交易日" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.transactionDateTime.split('T')[0]}}</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="JYSJ" label="交易时间" align="center">
+      <el-table-column prop label="交易时间" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.transactionDateTime.split('T')[1]}}</span>
+        </template>
       </el-table-column>
-       <el-table-column prop="QXR" label="起息日" align="center">
-      </el-table-column>
-       <el-table-column prop="JYLX" label="交易类型" align="center">
-      </el-table-column>
-       <el-table-column prop="JFJE" label="借方金额" align="center">
-      </el-table-column>
-       <el-table-column prop="DFJE" label="贷方金额" align="center">
-      </el-table-column>
-       <el-table-column prop="YE" label="余额" align="center">
-      </el-table-column>
-       <el-table-column prop="YT" label="用途" align="center">
-      </el-table-column>
-        <el-table-column prop="LCSLH" label="流程实例号" align="center">
-      </el-table-column>
-      <el-table-column prop="YWMC" label="业务名称" align="center">
-      </el-table-column>
-      <el-table-column prop="YWCKH" label="业务参考号" align="center">
-      </el-table-column>
-      <el-table-column prop="YWZY" label="业务摘要" align="center">
-      </el-table-column>
-      <el-table-column prop="QTZY" label="其他摘要" align="center">
-      </el-table-column>
-      <el-table-column prop="SFFFHM" label="收(付)方分行名" align="center">
-      </el-table-column>
-      <el-table-column prop="SFFMC" label="收(付)方名称" align="center">
-      </el-table-column>
-      <el-table-column prop="SFFZH" label="收(付)方账号" align="center">
-      </el-table-column>
-      <el-table-column prop="SFFKHHHH" label="收(付)方开户行行号" align="center">
-      </el-table-column>
-      <el-table-column prop="SFFKHHM" label="收(付)方开户行名" align="center">
-      </el-table-column>
-       <el-table-column prop="SFFKHHDZ" label="收(付)方开户行地址" align="center">
-      </el-table-column>
-      <el-table-column prop="SFMZGSZHFHM" label="收(付)母(子)公司账号分行名" align="center">
-      </el-table-column>
-      <el-table-column prop="MZGSZH" label="母(子)公司账号" align="center">
-      </el-table-column>
-      <el-table-column prop="MZGSMC" label="母(子)公司名称" align="center">
-      </el-table-column>
-      <el-table-column prop="XXBZ" label="信息标志" align="center">
-      </el-table-column>
-      <el-table-column prop="YFFJXX" label="有否附件信息" align="center">
-      </el-table-column>
-      <el-table-column prop="CZBZ" label="冲账标志" align="center">
-      </el-table-column>
-      <el-table-column prop="KZZY" label="扩展摘要" align="center">
-      </el-table-column>
-      <el-table-column prop="JYFXM" label="交易分析码" align="center">
-      </el-table-column>
-      <el-table-column prop="PJH" label="票据号" align="center">
-      </el-table-column>
-      <el-table-column prop="SWZFDDH" label="商务支付订单号" align="center">
-      </el-table-column>
-       <el-table-column prop="NBBH" label="内部编号" align="center">
-      </el-table-column>
+      <el-table-column prop="valueDate" label="起息日" align="center"></el-table-column>
+      <el-table-column prop="transactionType" label="交易类型" align="center"></el-table-column>
+      <el-table-column prop="debitAmount" label="借方金额" align="center"></el-table-column>
+      <el-table-column prop="creditAmount" label="贷方金额" align="center"></el-table-column>
+      <el-table-column prop="balance" label="余额" align="center"></el-table-column>
+      <el-table-column prop="purpose" label="用途" align="center"></el-table-column>
+      <el-table-column prop="processInstanceNumber" label="流程实例号" align="center"></el-table-column>
+      <el-table-column prop="businessName" label="业务名称" align="center"></el-table-column>
+      <el-table-column prop="businessReferenceNumber" label="业务参考号" align="center"></el-table-column>
+      <el-table-column prop="businessSummary" label="业务摘要" align="center"></el-table-column>
+      <el-table-column prop="otherSummary" label="其他摘要" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBank" label="收(付)方分行名" align="center"></el-table-column>
+      <el-table-column prop="payerDebitName" label="收(付)方名称" align="center"></el-table-column>
+      <el-table-column prop="payerDebitAccount" label="收(付)方账号" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBankNumber" label="收(付)方开户行行号" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBankName" label="收(付)方开户行名" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBankAddress" label="收(付)方开户行地址" align="center"></el-table-column>
+      <el-table-column prop="parentSubAccountBank" label="收(付)母(子)公司账号分行名" align="center"></el-table-column>
+      <el-table-column prop="parentSubAccount" label="母(子)公司账号" align="center"></el-table-column>
+      <el-table-column prop="parentSubName" label="母(子)公司名称" align="center"></el-table-column>
+      <el-table-column prop="informationSign" label="信息标志" align="center"></el-table-column>
+      <el-table-column prop="attachmentInformation" label="有否附件信息" align="center"></el-table-column>
+      <el-table-column prop="rushMark" label="冲账标志" align="center"></el-table-column>
+      <el-table-column prop="extendedAbstract" label="扩展摘要" align="center"></el-table-column>
+      <el-table-column prop="transactionAnalysisCode" label="交易分析码" align="center"></el-table-column>
+      <el-table-column prop="billNumber" label="票据号" align="center"></el-table-column>
+      <el-table-column prop="businesPayOrderNum" label="商务支付订单号" align="center"></el-table-column>
+      <el-table-column prop="internalNumber" label="内部编号" align="center"></el-table-column>
       <!-- <el-table-column prop="" label="所属公司" align="center">
-      </el-table-column> -->
+      </el-table-column>-->
     </el-table>
     <div class="block">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
-      </el-pagination>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="pageCurrent"
+        :page-sizes="[5, 10, 50, 100]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </div>
     <!-- 表格 END -->
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
@@ -150,9 +165,9 @@
 </template>
  
 <script type="text/javascript">
-import moment from 'moment'
-import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+import moment from "moment";
+import orderDetail from "@/page/Finance/bankStatement/orderDetails.vue";
+import * as utils from "./utils.js";
 export default {
   components: {
     orderDetail
@@ -161,271 +176,300 @@ export default {
     return {
       tableData: [], // 表格数据
       ruleForm: {
-        matchType: '', // 匹配状态 
-        code: '', // 交易流水号
-        dateStart: '', // 开始时间
-        dateEnd: '', // 结束时间
+        matchType: "", // 匹配状态
+        code: "", // 交易流水号
+        dateStart: "", // 开始时间
+        dateEnd: "" // 结束时间
       },
-    File:{},
+      File: {},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
 
-      info: '',
+      info: "",
       dialogFormVisible: false,
 
       startDatePicker: this.beginDate(),
       endDatePicker: this.processDate()
-    }
+    };
   },
   computed: {
     // 计算属性的 getter
-    headers(){
+    headers() {
       return {
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      }
+        Authorization: "Bearer " + localStorage.getItem("token")
+      };
     },
 
-    countTest:function () {
-      return this.$store.state.bankDataUpdate
+    countTest: function() {
+      return this.$store.state.bankDataUpdate;
     }
   },
   watch: {
-    countTest:function(newV, oldV){
+    countTest: function(newV, oldV) {
       const that = this;
-      if(newV.indexOf("bankOfChinaSK") != -1 && newV != oldV){
-        setTimeout(function () {
+      if (newV.indexOf("bankOfChinaSK") != -1 && newV != oldV) {
+        setTimeout(function() {
           // alert('数据改变，执行loadDataSK~')
-          that.loadData()
-        },500)
+          that.loadData();
+        }, 500);
       }
-    },
+    }
   },
-  created () {
-    this.loadData()
+  created() {
+    this.loadData();
   },
   methods: {
-       beforeUpload(event, file, filelist) {
+    beforeUpload(event, file, filelist) {
+      let data4D = utils.getSession4D();
       this.File.FileName = event.name;
+      this.File.userid = data4D.userID;
+      this.File.orgid = data4D.orgID;
+      this.File.topid = data4D.topID;
+      this.File.company = ""; //测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
-        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+        return "background:#F7F7F7;color:rgb(85, 85, 85);";
       } else {
-        return ''
+        return "";
       }
     },
-    setZCK(){
+    setZCK() {
       this.$router.push({
-        path: '/bankStatement/bankZCK',
-        name: '银行流水单管理  /设置暂存款',
+        path: "/bankStatement/bankZCK",
+        name: "银行流水单管理  /设置暂存款",
         query: {
-          "searchType": 'first'
+          searchType: "forth"
         }
       });
     },
-    UploadUrl(){
-      return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
+    UploadUrl() {
+      return (
+        this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/importexcel"
+      );
     },
-    handleSuccess(response, file, fileList){
+    handleSuccess(response, file, fileList) {
       console.log(response);
-      if(response == true){
+      if (response == true) {
         this.$message.success("招商银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
-      }else{
+        this.$store.commit("changeBankData", "bankOfChinaSXF" + Math.random());
+      } else {
         this.$message.warning("招商银行流水单上传失败！");
       }
     },
-    handleError(err, file, fileList){
+    handleError(err, file, fileList) {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
     beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+      return this.$confirm(`确定移除 ${file.name}？`);
     },
-    searchHandInside(){
+    searchHandInside() {
       this.pageCurrent = 1;
       this.loadData();
     },
-    emptyButtonInside(){
-      this.$refs['ruleForm'].resetFields();
+    emptyButtonInside() {
+      this.$refs["ruleForm"].resetFields();
       this.pageCurrent = 1;
       this.loadData();
     },
-    orderDetail(row){
+    orderDetail(row) {
       this.dialogFormVisible = true;
       this.info = {
         id: row.id,
         type: 5
       };
     },
-    close(){
+    close() {
       this.dialogFormVisible = false;
-      this.info = '';
+      this.info = "";
     },
-    deleteFun(row){
+    deleteFun(row) {
       const that = this;
-      this.$confirm('是否需要删除', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/delete", {
-          "id": row.id,
-        }).then(function(response) {
-          if (response.data.isSuccess) {
-            that.pageCurrent = 1;
-            that.loadData();
-            that.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
-            that.$message({
-              type: 'info',
-              message: '已删除'
-            });
-          } else {
-            if(response.data.message){
-              that.$message.warning(response.data.result.message);
-            }else{
-              that.$message.warning("删除失败~");
-            }
-          }
-        }).catch(function(error) {
-          console.log(error);
-          that.$message.warning("删除失败~");
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
+      this.$confirm("是否需要删除", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
+        .then(() => {
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/delete",
+              {
+                id: row.id
+              }
+            )
+            .then(function(response) {
+              if (response.data.isSuccess) {
+                that.pageCurrent = 1;
+                that.loadData();
+                that.$store.commit(
+                  "changeBankData",
+                  "merchantsBankSK" + Math.random()
+                );
+                that.$message({
+                  type: "info",
+                  message: "已删除"
+                });
+              } else {
+                if (response.data.message) {
+                  that.$message.warning(response.data.result.message);
+                } else {
+                  that.$message.warning("删除失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("删除失败~");
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     },
-    handleSizeChange(val){
+    handleSizeChange(val) {
       this.pageSize = val;
       this.pageCurrent = 1;
       this.loadData();
     },
-    handleCurrentChange(val){
+    handleCurrentChange(val) {
       this.pageCurrent = val;
       this.loadData();
     },
     // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
-      if(date == undefined) {
-        return '';
+      if (date == undefined) {
+        return "";
       }
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+      return moment(date).format("YYYY-MM-DD HH:mm:ss");
     },
-    loadData(){
+    loadData() {
       const that = this;
-      let dateStart = '', dateEnd = '';
-      if(this.ruleForm.dateStart){
-        dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
+      let dateStart = "",
+        dateEnd = "";
+      if (this.ruleForm.dateStart) {
+        dateStart = moment(this.ruleForm.dateStart).format(
+          "YYYY-MM-DD 00:00:00"
+        );
       }
-      if(this.ruleForm.dateEnd){
-        dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
+      if (this.ruleForm.dateEnd) {
+        dateEnd = moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59");
       }
-       this.$http.post('mock/zhaoshang', {}).then(function (obj) {
-            that.total = 100;
-          that.tableData = obj.data.data;
-      })
-      // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-      //   "pageIndex": this.pageCurrent - 1,
-      //   "pageSize": this.pageSize,
-      //   "object": {
-      //     "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-      //     "transaction_reference_number": this.ruleForm.code,
-      //     "begin": dateStart ? dateStart : "2000-05-16",
-      //     "end": dateEnd ? dateEnd : "2099-05-16",
-      //     "seachType": 0
-      //   }
-      // }).then(function (obj) {
-      //   // console.log('中国银行',obj);
-      //   if(obj.data.isSuccess){
-      //     that.total = obj.data.total;
-      //     that.tableData = obj.data.objects;
-      //     // that.tableDataNBSK.forEach(function (item, index, arr) {
-      //     //   item.collectionTime = item.collectionTime.split('T')[0];
-      //     // });
-      //     // that.loadingNBSK = false;
-      //   }else{
-      //     // that.loadingNBSK = false;
-      //     that.total = 0;
-      //     that.tableData = [];
-      //   }
+      //  this.$http.post('mock/zhaoshang', {}).then(function (obj) {
+      //       that.total = 100;
+      //     that.tableData = obj.data.data;
       // })
-    },
-    beginDate(){
-      const that = this;
-      return {
-        disabledDate(time){
-          if (that.ruleForm.dateEnd) {  //如果结束时间不为空，则小于结束时间
-            return new Date(that.ruleForm.dateEnd).getTime() < time.getTime()
-          } else {
-            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
+          {
+            pageIndex: this.pageCurrent - 1,
+            pageSize: this.pageSize,
+            object: {
+              matching_State: this.ruleForm.matchType
+                ? this.ruleForm.matchType
+                : 0,
+              transaction_reference_number: this.ruleForm.code,
+              begin: dateStart ? dateStart : "2000-05-16",
+              end: dateEnd ? dateEnd : "2099-05-16",
+              seachType: 0
+            }
           }
-        }
-      }
+        )
+        .then(function(obj) {
+          console.log("中国招商银行", obj);
+          if (obj.data.isSuccess) {
+            that.total = obj.data.total;
+            that.tableData = obj.data.objects;
+            // that.tableDataNBSK.forEach(function (item, index, arr) {
+            //   item.collectionTime = item.collectionTime.split('T')[0];
+            // });
+            // that.loadingNBSK = false;
+          } else {
+            // that.loadingNBSK = false;
+            that.total = 0;
+            that.tableData = [];
+          }
+        });
     },
-    processDate(){
+    beginDate() {
       const that = this;
       return {
         disabledDate(time) {
-          if (that.ruleForm.dateStart) {  //如果开始时间不为空，则结束时间大于开始时间
-            return new Date(that.ruleForm.dateStart).getTime() > time.getTime()
+          if (that.ruleForm.dateEnd) {
+            //如果结束时间不为空，则小于结束时间
+            return new Date(that.ruleForm.dateEnd).getTime() < time.getTime();
           } else {
             // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
           }
         }
-      }
+      };
     },
+    processDate() {
+      const that = this;
+      return {
+        disabledDate(time) {
+          if (that.ruleForm.dateStart) {
+            //如果开始时间不为空，则结束时间大于开始时间
+            return new Date(that.ruleForm.dateStart).getTime() > time.getTime();
+          } else {
+            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+          }
+        }
+      };
+    }
   }
-}
-
+};
 </script>
 <style lang="scss">
-  #bankContent.distributor-content{
-    width: 99%;
-    margin: 25px auto;
-    height: auto;
-    border: 1px solid #e6e6e6;
-    .form-content{
-      background: #f7f7f7;
-      padding: 20px 10px;
-      margin: 20px 10px;
-      .buttonForm{
-        text-align: end;
-      }
-      .el-select{
-        width: 100% !important;
-      }
-      .line{
-        text-align: center;
-      }
+#bankContent.distributor-content {
+  width: 99%;
+  margin: 25px auto;
+  height: auto;
+  border: 1px solid #e6e6e6;
+  .form-content {
+    background: #f7f7f7;
+    padding: 20px 10px;
+    margin: 20px 10px;
+    .buttonForm {
+      text-align: end;
     }
-    .buttonsDv{
-      width: 98%;
-      margin: 5px auto;
+    .el-select {
+      width: 100% !important;
     }
-    #table-content{
-      width: 98%;
-      margin: 40px auto 20px;
-      th, td{
-        min-width: 60px;
-      }
-    }
-    .block{
-      width: 100%;
+    .line {
       text-align: center;
-      margin: 30px auto;
-    }
-    .el-upload-list{
-      display: none!important;
     }
   }
-
+  .buttonsDv {
+    width: 98%;
+    margin: 5px auto;
+  }
+  #table-content {
+    width: 98%;
+    margin: 40px auto 20px;
+    th,
+    td {
+      min-width: 60px;
+    }
+  }
+  .block {
+    width: 100%;
+    text-align: center;
+    margin: 30px auto;
+  }
+  .el-upload-list {
+    display: none !important;
+  }
+}
 </style>

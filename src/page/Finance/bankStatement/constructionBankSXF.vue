@@ -101,10 +101,16 @@
       <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button
+            @click="deleteFun(scope.row)"
+            v-if="scope.row.surplusAmount == scope.row.creditAmount&&scope.row.is_EBS==0&&!/^\d{4}-\d{4}费\d*\.\d{2}元$/.test(scope.row.remark)"
+            type="text"
+            size="small"
+            class="table_details"
+          >删除</el-button>
         </template>
       </el-table-column>
-       <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+      <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
       <el-table-column prop="is_EBS" label="状态" align="center">
         <template slot-scope="scope">
           <span v-if="scope.row.is_EBS == 0">未导入</span>
@@ -113,15 +119,17 @@
       </el-table-column>
       <el-table-column prop="transactionTime" label="交易时间" align="center">
         <template slot-scope="scope">
-            <span> {{scope.row.transactionTime.split('T')[0]}}<br/>{{scope.row.transactionTime.split('T')[1]}}</span>
+          <span>
+            {{scope.row.transactionTime.split('T')[0]}}
+            <br />
+            {{scope.row.transactionTime.split('T')[1]}}
+          </span>
         </template>
       </el-table-column>
       <el-table-column prop="debitAmount" label="借方发生额/元(支取)" align="center"></el-table-column>
       <el-table-column prop="creditAmount" label="贷方发生额/元(收入) " align="center"></el-table-column>
-      <el-table-column prop="balance" label="余额" align="center">
-      </el-table-column>
-      <el-table-column prop="currency" label="币种" align="center">
-      </el-table-column>
+      <el-table-column prop="balance" label="余额" align="center"></el-table-column>
+      <el-table-column prop="currency" label="币种" align="center"></el-table-column>
       <el-table-column prop="accountNameOther" label="对方户名" align="center"></el-table-column>
       <el-table-column prop="accountNumberOther" label="对方账号" align="center"></el-table-column>
       <el-table-column prop="accountAgencyOther" label="对方开户机构" align="center"></el-table-column>
@@ -153,7 +161,7 @@
 
 <script type="text/javascript">
 import moment from "moment";
-import * as utils from './utils.js'
+import * as utils from "./utils.js";
 export default {
   components: {},
   data() {
@@ -208,12 +216,12 @@ export default {
   },
   methods: {
     beforeUpload(event, file, filelist) {
-       let data4D=utils.getSession4D()
+      let data4D = utils.getSession4D();
       this.File.FileName = event.name;
-      this.File.userid=data4D.userID
-      this.File.orgid=data4D.orgID
-      this.File.topid=data4D.topID
-      this.File.company=''//测试 暂时写死
+      this.File.userid = data4D.userID;
+      this.File.orgid = data4D.orgID;
+      this.File.topid = data4D.topID;
+      this.File.company = ""; //测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {

@@ -290,13 +290,14 @@ export default {
       this.info = '';
     },
     payDetail(row){
-      console.log('兴业row',row.purpose_Merchant_code)
+      console.log('兴业row',row.company)
       this.$router.push({
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',
         query: {
           id:row.id,
           type:2,
+          company:row.company,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date,
         }

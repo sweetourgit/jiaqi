@@ -135,41 +135,42 @@
       <el-tab-pane label="农业银行" name="third">
         <el-table
           :data="tableDataForNY"
-          ref="multipleTable2"
+          ref="multipleTableForNY"
           border
           :highlight-current-row="true"
           :header-cell-style="getRowClass"
           :stripe="true"
-          id="table-content2"
-          @row-click="handleRowClick2"
-          @selection-change="selectionChange2"
+          id="table-contentForNY"
+          @row-click="handleRowClickForNY"
+          @selection-change="selectionChangeForNY"
         >
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
-          <el-table-column prop="SYJE" label="剩余金额" align="center"></el-table-column>
-          <el-table-column prop="STATUS" label="暂存款状态" align="center">
+           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+          <el-table-column prop="surplusPrice" label="剩余金额" align="center"></el-table-column>
+          <el-table-column prop="abcBank_ZCK" label="暂存款状态" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.STATUS == 0">未设置</span>
-              <span v-if="scope.row.STATUS == 1">已设置</span>
+              <span v-if="scope.row.abcBank_ZCK == 0">未设置</span>
+              <span v-if="scope.row.abcBank_ZCK == 1">已设置</span>
             </template>
           </el-table-column>
-          <el-table-column prop="YHLSH" label="银行流水号" align="center"></el-table-column>
-          <el-table-column prop="JYSJ" label="交易时间" align="center"></el-table-column>
-          <el-table-column prop="SRJE" label="收入金额" align="center"></el-table-column>
-          <el-table-column prop="ZCJE" label="支出金额" align="center"></el-table-column>
-          <el-table-column prop="ZHYE" label="账户余额" align="center"></el-table-column>
-          <el-table-column prop="JYHM" label="交易行名" align="center"></el-table-column>
-          <el-table-column prop="DFSS" label="对方省市" align="center"></el-table-column>
-          <el-table-column prop="DFZH" label="对方账号" align="center"></el-table-column>
-          <el-table-column prop="DFHM" label="对方户名" align="center"></el-table-column>
-          <el-table-column prop="JYYT" label="交易用途" align="center"></el-table-column>
+          <el-table-column prop="code" label="银行流水号" align="center"></el-table-column>
+          <el-table-column prop="createTime" label="交易时间" align="center"></el-table-column>
+          <el-table-column prop="incomePrice" label="收入金额" align="center"></el-table-column>
+          <el-table-column prop="expensesPrice" label="支出金额" align="center"></el-table-column>
+          <el-table-column prop="accountBalance" label="账户余额" align="center"></el-table-column>
+          <el-table-column prop="bankName" label="交易行名" align="center"></el-table-column>
+          <el-table-column prop="customerCity" label="对方省市" align="center"></el-table-column>
+          <el-table-column prop="accountNumber" label="对方账号" align="center"></el-table-column>
+          <el-table-column prop="accountName" label="对方户名" align="center"></el-table-column>
+          <el-table-column prop="use" label="交易用途" align="center"></el-table-column>
         </el-table>
         <div class="block">
           <el-pagination
-            @size-change="handleSizeChange2"
-            @current-change="handleCurrentChange2"
-            :current-page.sync="pageCurrent2"
+            @size-change="handleSizeChangeForNY"
+            @current-change="handleCurrentChangeForNY"
+            :current-page.sync="pageCurrentForNY"
             :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSize2"
+            :page-size="pageSizeForNY"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalForNY"
           ></el-pagination>
@@ -179,62 +180,71 @@
       <el-tab-pane label="招商银行" name="forth">
         <el-table
           :data="tableDataForZS"
-          ref="multipleTable2"
+          ref="multipleTableForZS"
           border
           :highlight-current-row="true"
           :header-cell-style="getRowClass"
           :stripe="true"
-          id="table-content2"
-          @row-click="handleRowClick2"
-          @selection-change="selectionChange2"
+          id="table-contentForZS"
+          @row-click="handleRowClickForZS"
+          @selection-change="selectionChangeForZS"
         >
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
-          <el-table-column prop="SYJE" label="剩余金额" align="center"></el-table-column>
-          <el-table-column prop="STATUS" label="暂存款状态" align="center">
+          <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+          <el-table-column prop="surplusAmount" label="剩余金额" align="center"></el-table-column>
+          <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.STATUS == 0">未设置</span>
-              <span v-if="scope.row.STATUS == 1">已设置</span>
+              <span v-if="scope.row.is_ZCK == 0">未设置</span>
+              <span v-if="scope.row.is_ZCK == 1">已设置</span>
             </template>
           </el-table-column>
-          <el-table-column prop="JYLSH" label="交易流水号" align="center"></el-table-column>
-          <el-table-column prop="JYR" label="交易日" align="center"></el-table-column>
-          <el-table-column prop="JYSJ" label="交易时间" align="center"></el-table-column>
-          <el-table-column prop="QXR" label="起息日" align="center"></el-table-column>
-          <el-table-column prop="JYLX" label="交易类型" align="center"></el-table-column>
-          <el-table-column prop="JFJE" label="借方金额" align="center"></el-table-column>
-          <el-table-column prop="DFJE" label="贷方金额" align="center"></el-table-column>
-          <el-table-column prop="YE" label="余额" align="center"></el-table-column>
-          <el-table-column prop="YT" label="用途" align="center"></el-table-column>
-          <el-table-column prop="LCSLH" label="流程实例号" align="center"></el-table-column>
-          <el-table-column prop="YWMC" label="业务名称" align="center"></el-table-column>
-          <el-table-column prop="YWCKH" label="业务参考号" align="center"></el-table-column>
-          <el-table-column prop="YWZY" label="业务摘要" align="center"></el-table-column>
-          <el-table-column prop="QTZY" label="其他摘要" align="center"></el-table-column>
-          <el-table-column prop="SFFFHM" label="收(付)方分行名" align="center"></el-table-column>
-          <el-table-column prop="SFFMC" label="收(付)方名称" align="center"></el-table-column>
-          <el-table-column prop="SFFZH" label="收(付)方账号" align="center"></el-table-column>
-          <el-table-column prop="SFFKHHHH" label="收(付)方开户行行号" align="center"></el-table-column>
-          <el-table-column prop="SFFKHHM" label="收(付)方开户行名" align="center"></el-table-column>
-          <el-table-column prop="SFFKHHDZ" label="收(付)方开户行地址" align="center"></el-table-column>
-          <el-table-column prop="SFMZGSZHFHM" label="收(付)母(子)公司账号分行名" align="center"></el-table-column>
-          <el-table-column prop="MZGSZH" label="母(子)公司账号" align="center"></el-table-column>
-          <el-table-column prop="MZGSMC" label="母(子)公司名称" align="center"></el-table-column>
-          <el-table-column prop="XXBZ" label="信息标志" align="center"></el-table-column>
-          <el-table-column prop="YFFJXX" label="有否附件信息" align="center"></el-table-column>
-          <el-table-column prop="CZBZ" label="冲账标志" align="center"></el-table-column>
-          <el-table-column prop="KZZY" label="扩展摘要" align="center"></el-table-column>
-          <el-table-column prop="JYFXM" label="交易分析码" align="center"></el-table-column>
-          <el-table-column prop="PJH" label="票据号" align="center"></el-table-column>
-          <el-table-column prop="SWZFDDH" label="商务支付订单号" align="center"></el-table-column>
-          <el-table-column prop="NBBH" label="内部编号" align="center"></el-table-column>
+          <el-table-column prop="referenceNumber" label="交易流水号" align="center"></el-table-column>
+          <el-table-column prop="JYR" label="交易日" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.transactionDateTime.split('T')[0]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="JYSJ" label="交易时间" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.transactionDateTime.split('T')[1]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="valueDate" label="起息日" align="center"></el-table-column>
+          <el-table-column prop="transactionType" label="交易类型" align="center"></el-table-column>
+          <el-table-column prop="debitAmount" label="借方金额" align="center"></el-table-column>
+          <el-table-column prop="creditAmount" label="贷方金额" align="center"></el-table-column>
+          <el-table-column prop="balance" label="余额" align="center"></el-table-column>
+          <el-table-column prop="purpose" label="用途" align="center"></el-table-column>
+          <el-table-column prop="processInstanceNumber" label="流程实例号" align="center"></el-table-column>
+          <el-table-column prop="businessName" label="业务名称" align="center"></el-table-column>
+          <el-table-column prop="businessReferenceNumber" label="业务参考号" align="center"></el-table-column>
+          <el-table-column prop="businessSummary" label="业务摘要" align="center"></el-table-column>
+          <el-table-column prop="otherSummary" label="其他摘要" align="center"></el-table-column>
+          <el-table-column prop="payerDebitBank" label="收(付)方分行名" align="center"></el-table-column>
+          <el-table-column prop="payerDebitName" label="收(付)方名称" align="center"></el-table-column>
+          <el-table-column prop="payerDebitAccount" label="收(付)方账号" align="center"></el-table-column>
+          <el-table-column prop="payerDebitBankNumber" label="收(付)方开户行行号" align="center"></el-table-column>
+          <el-table-column prop="payerDebitBankName" label="收(付)方开户行名" align="center"></el-table-column>
+          <el-table-column prop="payerDebitBankAddress" label="收(付)方开户行地址" align="center"></el-table-column>
+          <el-table-column prop="parentSubAccountBank" label="收(付)母(子)公司账号分行名" align="center"></el-table-column>
+          <el-table-column prop="parentSubAccount" label="母(子)公司账号" align="center"></el-table-column>
+          <el-table-column prop="parentSubName" label="母(子)公司名称" align="center"></el-table-column>
+          <el-table-column prop="informationSign" label="信息标志" align="center"></el-table-column>
+          <el-table-column prop="attachmentInformation" label="有否附件信息" align="center"></el-table-column>
+          <el-table-column prop="rushMark" label="冲账标志" align="center"></el-table-column>
+          <el-table-column prop="extendedAbstract" label="扩展摘要" align="center"></el-table-column>
+          <el-table-column prop="transactionAnalysisCode" label="交易分析码" align="center"></el-table-column>
+          <el-table-column prop="billNumber" label="票据号" align="center"></el-table-column>
+          <el-table-column prop="businesPayOrderNum" label="商务支付订单号" align="center"></el-table-column>
+          <el-table-column prop="internalNumber" label="内部编号" align="center"></el-table-column>
         </el-table>
         <div class="block">
           <el-pagination
-            @size-change="handleSizeChange2"
-            @current-change="handleCurrentChange2"
-            :current-page.sync="pageCurrent2"
+            @size-change="handleSizeChangeForZS"
+            @current-change="handleCurrentChangeForZS"
+            :current-page.sync="pageCurrentForZS"
             :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSize2"
+            :page-size="pageSizeForZS"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalForZS"
           ></el-pagination>
@@ -249,7 +259,7 @@
           :highlight-current-row="true"
           :header-cell-style="getRowClass"
           :stripe="true"
-          id="table-content2"
+          id="table-contentForJS"
           @row-click="handleRowClickForJS"
           @selection-change="selectionChangeForJS"
         >
@@ -262,9 +272,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="transactionTime" label="交易时间" align="center">
-              <template slot-scope="scope">
+            <!-- <template slot-scope="scope">
               <span>{{scope.row.transactionTime.replace("T",' ')}}</span>
-            </template>
+            </template> -->
           </el-table-column>
           <el-table-column prop="debitAmount" label="借方发生额/元(支取)" align="center"></el-table-column>
           <el-table-column prop="creditAmount" label="贷方发生额/元(收入)" align="center"></el-table-column>
@@ -302,7 +312,7 @@
           :highlight-current-row="true"
           :header-cell-style="getRowClass"
           :stripe="true"
-          id="table-content2"
+          id="table-contentForZX"
           @row-click="handleRowClick2"
           @selection-change="selectionChange2"
         >
@@ -355,7 +365,7 @@
           :highlight-current-row="true"
           :header-cell-style="getRowClass"
           :stripe="true"
-          id="table-content2"
+          id="table-contentJLZX"
           @row-click="handleRowClickForJLZX"
           @selection-change="selectionChangeForJLZX"
         >
@@ -451,7 +461,7 @@ export default {
       pageCurrentForJLZX: 1,
       pageSizeForJLZX: 10,
       tableDataForJLZX: [],
-      multipleSelectionForJLZX:[]
+      multipleSelectionForJLZX: []
     };
   },
   created() {
@@ -613,7 +623,7 @@ export default {
             that.$message.warning("提交暂存款失败~");
           });
       } else if (this.activeName == "seventh") {
-      //此处功能暂时没有接口
+        //此处功能暂时没有接口
         // 吉林中信银行暂存款提交
         this.multipleSelectionForJLZX.forEach(function(item, index, arr) {
           idsArr.push(item.id);
@@ -643,8 +653,8 @@ export default {
             console.log(error);
             that.$message.warning("提交暂存款失败~");
           });
-      }else if (this.activeName == "fifth") {
-      //此处功能暂时没有接口
+      } else if (this.activeName == "fifth") {
+        //此处功能暂时没有接口
         // 吉林中信银行暂存款提交
         this.multipleSelectionForJS.forEach(function(item, index, arr) {
           idsArr.push(item.id);
@@ -662,6 +672,68 @@ export default {
             if (response.status == 200) {
               that.$message.success("提交暂存款成功！");
               that.loadDataForJS();
+            } else {
+              if (response.statusText) {
+                that.$message.warning(response.data.statusText);
+              } else {
+                that.$message.warning("提交暂存款失败~");
+              }
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+            that.$message.warning("提交暂存款失败~");
+          });
+      } else if (this.activeName == "forth") {
+        //此处功能暂时没有接口
+        // 吉林中信银行暂存款提交
+        this.multipleSelectionForZS.forEach(function(item, index, arr) {
+          idsArr.push(item.id);
+        });
+        this.$http
+          .post(
+            this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
+            {
+              ids: idsArr,
+              type: 5
+            }
+          )
+          .then(function(response) {
+            if (response.status == 200) {
+              that.$message.success("提交暂存款成功！");
+              that.loadDataForZS();
+            } else {
+              if (response.statusText) {
+                that.$message.warning(response.data.statusText);
+              } else {
+                that.$message.warning("提交暂存款失败~");
+              }
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+            that.$message.warning("提交暂存款失败~");
+          });
+      } else if (this.activeName == "third") {
+        //此处功能暂时没有接口
+        // 吉林中信银行暂存款提交
+        this.multipleSelectionForNY.forEach(function(item, index, arr) {
+          idsArr.push(item.id);
+        });
+        this.$http
+          .post(
+            this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
+            {
+              ids: idsArr,
+              type: 4
+            }
+          )
+          .then(function(response) {
+            if (response.status == 200) {
+              that.$message.success("提交暂存款成功！");
+              that.loadDataForNY();
             } else {
               if (response.statusText) {
                 that.$message.warning(response.data.statusText);
@@ -743,42 +815,111 @@ export default {
           }
         });
     },
+    // 农业银行暂存款逻辑
     loadDataForNY() {
       const that = this;
-      this.$http.post("mock/nongyeZCK", {}).then(function(obj) {
-        that.totalForNY = 100;
-        that.tableDataForNY = obj.data.data;
-      });
-      // this.$http
-      //   .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-      //     pageIndex: this.pageCurrent2 - 1,
-      //     pageSize: this.pageSize2,
-      //     object: {
-      //       matching_State: 0,
-      //       transaction_reference_number: "",
-      //       begin: "2000-05-16",
-      //       end: "2099-05-16",
-      //       seachType: 3
-      //     }
-      //   })
-      //   .then(function(obj) {
-      //     // console.log('兴业银行',obj);
-      //     if (obj.data.isSuccess) {
-      //       that.total2 = obj.data.total;
-      //       that.tableData2 = obj.data.objects;
-      //     } else {
-      //       that.total2 = 0;
-      //       that.tableData2 = [];
-      //     }
-      //   });
+      // this.$http.post("mock/nongyeZCK", {}).then(function(obj) {
+      //   that.totalForNY = 100;
+      //   that.tableDataForNY = obj.data.data;
+      // });
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
+          pageIndex: this.pageCurrentForNY - 1,
+          pageSize: this.pageSizeForNY,
+          object: {
+            type: 1,
+            // transaction_reference_number: "",
+            begin: "2000-05-16",
+            end: "2099-05-16",
+            seachType: 3
+          }
+        })
+        .then(function(obj) {
+          // console.log('兴业银行',obj);
+          if (obj.data.isSuccess) {
+            that.totalForNY = obj.data.total;
+            that.tableDataForNY = obj.data.objects;
+          } else {
+            that.totalForNY = 0;
+            that.tableDataForNY = [];
+          }
+        });
     },
+      handleSizeChangeForNY(val) {
+      this.pageSizeForNY = val;
+      this.loadDataForNY();
+    },
+    handleCurrentChangeForNY(val) {
+      this.pageCurrentForNY = val;
+      this.loadDataForNY();
+    },
+    handleRowClickForNY(row, column, event) {
+      if (row.is_ZCK == 0) {
+        this.$refs.multipleTableForNY.toggleRowSelection(row);
+      }
+    },
+    // 选择项更改
+    selectionChangeForNY(val) {
+      if (val.length > 0 && this.activeName == "third") {
+        this.clickable = false;
+      } else {
+        this.clickable = true;
+      }
+      this.multipleSelectionForNY = val;
+    },
+    //+++++++++++++++++++++招商银行暂存款逻辑+++++++++++++++++++++
     loadDataForZS() {
       const that = this;
-      this.$http.post("mock/zhaoshangZCK", {}).then(function(obj) {
-        that.totalForZS = 100;
-        that.tableDataForZS = obj.data.data;
-      });
+      this.$http
+        .post(
+          this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
+          {
+            pageIndex: this.pageCurrentForZS - 1,
+            pageSize: this.pageSizeForZS,
+            object: {
+              type: 1,
+              transaction_reference_number: "",
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              seachType: 3
+            }
+          }
+        )
+        .then(function(obj) {
+          // console.log('兴业银行',obj);
+          if (obj.data.isSuccess) {
+            that.totalForZS = obj.data.total;
+            that.tableDataForZS = obj.data.objects;
+          } else {
+            that.totalForZS = 0;
+            that.tableDataForZS = [];
+          }
+        });
     },
+    handleSizeChangeForZS(val) {
+      this.pageSizeForZS = val;
+      this.loadDataForZS();
+    },
+    handleCurrentChangeForZS(val) {
+      this.pageCurrentForZS = val;
+      this.loadDataForZS();
+    },
+    // 整行点击 -- 吉林吉林中信银行
+    handleRowClickForZS(row, column, event) {
+      if (row.is_ZCK == 0) {
+        this.$refs.multipleTableForZS.toggleRowSelection(row);
+      }
+    },
+    // 选择项更改
+    selectionChangeForZS(val) {
+      if (val.length > 0 && this.activeName == "forth") {
+        this.clickable = false;
+      } else {
+        this.clickable = true;
+      }
+      this.multipleSelectionForZS = val;
+    },
+    //+++++++++++++++++++++建设银行暂存款逻辑+++++++++++++++++++++
     loadDataForJS() {
       const that = this;
       this.$http
@@ -811,7 +952,7 @@ export default {
           }
         });
     },
-       handleSizeChangeForJS(val) {
+    handleSizeChangeForJS(val) {
       this.pageSizeForJS = val;
       this.loadDataForJS();
     },
@@ -819,7 +960,7 @@ export default {
       this.pageCurrentForJS = val;
       this.loadDataForJS();
     },
-        // 整行点击 -- 吉林吉林中信银行
+    // 整行点击 -- 吉林吉林中信银行
     handleRowClickForJS(row, column, event) {
       if (row.is_ZCK == 0) {
         this.$refs.multipleTableForJS.toggleRowSelection(row);
@@ -834,6 +975,7 @@ export default {
       }
       this.multipleSelectionForJS = val;
     },
+    //+++++++++++++++++++++中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForZX() {
       const that = this;
       this.$http.post("mock/zhongxinZCK", {}).then(function(obj) {
@@ -841,6 +983,7 @@ export default {
         that.tableDataForZX = obj.data.data;
       });
     },
+    //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForJLZX() {
       const that = this;
       this.$http
@@ -880,7 +1023,7 @@ export default {
       this.pageCurrentForJLZX = val;
       this.loadDataForJLZX();
     },
-        // 整行点击 -- 吉林吉林中信银行
+    // 整行点击 -- 吉林吉林中信银行
     handleRowClickForJLZX(row, column, event) {
       if (row.is_ZCK == 0) {
         this.$refs.multipleTableForJLZX.toggleRowSelection(row);
@@ -894,7 +1037,7 @@ export default {
         this.clickable = true;
       }
       this.multipleSelectionForJLZX = val;
-    },
+    }
   }
 };
 </script>

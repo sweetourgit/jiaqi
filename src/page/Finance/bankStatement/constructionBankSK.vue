@@ -213,7 +213,7 @@ export default {
         path: '/bankStatement/bankZCK',
         name: '银行流水单管理  /设置暂存款',
         query: {
-          "searchType": 'second'
+          "searchType": 'fifth'
         }
       });
     },

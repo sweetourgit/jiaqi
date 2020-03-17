@@ -65,7 +65,7 @@
       </el-table-column>
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button @click="deleteFun(scope.row)" v-if="scope.row.surplus_Amount == scope.row.trade_Amount&&scope.row.is_EBS==0" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="id" label="明细ID" align="center">
