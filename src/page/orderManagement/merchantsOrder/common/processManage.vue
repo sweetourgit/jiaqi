@@ -627,7 +627,18 @@ export default {
                   // this.isChangeNumber = true;
                   return;
                 } else {
-                  url = "/order/stat/api/econtract";
+                  //url = "/order/stat/api/econtract"; 下部分代码2020/03/17 添加 跳转合同页面 唐爱妮
+                    let result= {};
+                    let token= localStorage.getItem('token');
+                    let attrArr= ['userCode', 'name', 'topName', 'orgName'];
+                    let orderCode_j = this.orderget.orderCode;
+                    attrArr.reduce((total, current, index) => {
+                      let val= sessionStorage.getItem(current);
+                      total[current]= val;
+                      return total;
+                    }, result);
+                    let { userCode, name: userName, topName: company, orgName: deptName  }= result;
+                    window.open(`http://118.25.222.233:8000/#/agreement/agreement-type?orderCode=${orderCode_j}&userCode=${userCode}&userName=${userName}&company=${company}&deptName=${deptName}&token=${token}`); 
                 }
               }
             }
