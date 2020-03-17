@@ -585,6 +585,8 @@ export default {
     },
 
     orderModification(status, cancle) {
+      console.log(status,'扎实发');
+        console.log(cancle,'扎实发dfas');
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -629,7 +631,20 @@ export default {
                   // this.isChangeNumber = true;
                   return;
                 } else {
-                  url = "/order/stat/api/econtract";
+
+                    //url = "/order/stat/api/econtract"; 下部分代码2020/03/17 添加 跳转合同页面 唐爱妮
+                    let result= {};
+                    let token= localStorage.getItem('token');
+                    let attrArr= ['userCode', 'name', 'topName', 'orgName'];
+                    let orderCode_j = this.orderget.orderCode;
+                    attrArr.reduce((total, current, index) => {
+                      let val= sessionStorage.getItem(current);
+                      total[current]= val;
+                      return total;
+                    }, result);
+                    let { userCode, name: userName, topName: company, orgName: deptName  }= result;
+                    window.open(`http://118.25.222.233:8000/#/agreement/agreement-type?orderCode=${orderCode_j}&userCode=${userCode}&userName=${userName}&company=${company}&deptName=${deptName}&token=${token}`); 
+
                 }
               }
             }
@@ -646,42 +661,42 @@ export default {
           // url = "/order/all/api/orderdelete";
         }
 
-        this.$http
-          .post(this.GLOBAL.serverSrc + url, {
-            object: {
-              id: this.orderget.id,
-              occupyStatus: this.orderget.occupyStatus
-            }
-          })
-          .then(res => {
-            if (res.data.isSuccess == true) {
-              this.$message({
-                message: "提交成功",
-                type: "success"
-              });
-              if (status === 1) {
-                this.ordersave(3);
-              }
-              if (status === 10) {
-                this.ordersave(1);
-              }
-              // 取消订单按钮
-              if (cancle === 0) {
-                this.$http
-                  .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
-                    id: this.orderget.id
-                  })
-                  .then(res => {
-                    console.log(res);
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
-              }
-              this.$emit("orderPage");
-              this.cancle();
-            }
-          });
+        // this.$http
+        //   .post(this.GLOBAL.serverSrc + url, {
+        //     object: {
+        //       id: this.orderget.id,
+        //       occupyStatus: this.orderget.occupyStatus
+        //     }
+        //   })
+        //   .then(res => {
+        //     if (res.data.isSuccess == true) {
+        //       this.$message({
+        //         message: "提交成功",
+        //         type: "success"
+        //       });
+        //       if (status === 1) {
+        //         this.ordersave(3);
+        //       }
+        //       if (status === 10) {
+        //         this.ordersave(1);
+        //       }
+        //       // 取消订单按钮
+        //       if (cancle === 0) {
+        //         this.$http
+        //           .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
+        //             id: this.orderget.id
+        //           })
+        //           .then(res => {
+        //             console.log(res);
+        //           })
+        //           .catch(err => {
+        //             console.log(err);
+        //           });
+        //       }
+        //       this.$emit("orderPage");
+        //       this.cancle();
+        //     }
+        //   });
       }
     },
     //列表订单状态显示

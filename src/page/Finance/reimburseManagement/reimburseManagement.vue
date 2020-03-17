@@ -312,7 +312,7 @@
       <!--报销弹窗end-->
       <!--团期计划弹窗-->
       <el-dialog
-        width="66%"
+        width="68%"
         title="获取团期计划"
         :visible.sync="dialogFormVisible2"
         append-to-body
@@ -468,7 +468,7 @@
                         <el-table-column prop="openingName" label="开户人"  align="center"></el-table-column>
                         <el-table-column prop="createUser" label="操作"  align="center">
                           <template slot-scope="scope">
-                              <span @click="AmendDataClick()" style="color: #f5a142">选择</span> 
+                              <span style="color: #f5a142">选择</span> 
                           </template>
                         </el-table-column>
                       </el-table>
@@ -480,8 +480,8 @@
          <div v-if="find==1" class="statetype_style">
             <div>拆分/还款：{{statetype}}</div> 
             <div v-if="statetype=='还款'">
-                还款账号：
-                       <el-table 
+                还款账号：{{statetype_Data}}
+                       <!-- <el-table 
                         :data="statetype_Data" 
                         :highlight-current-row="true"
                         border 
@@ -492,7 +492,7 @@
                         <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
                         <el-table-column prop="openingName" label="开户人"  align="center"></el-table-column>
                         
-                      </el-table>
+                      </el-table> -->
                     
                   
                
@@ -574,7 +574,7 @@ export default {
       disabled_style:true,//单选隐藏
       split_show:0,
       AmendData:[],//选择账户
-      statetype_Data:[],//展示账户
+      statetype_Data:'',//展示账户
       // beginDate: "",//报销开始时间+
       // endDate: "",//报销结束时间+
       plan_data:"",//选择时间
@@ -757,7 +757,7 @@ export default {
                 cardNum:'',//拆分还款账户
                 paymentID:0,//订单id
             }
-            this.statetype_Data=[];
+            this.statetype_Data="";
          },
         ruleNull(){ // 清空内容
             this.ruleForm= {
@@ -1320,7 +1320,7 @@ export default {
                                 res.data.objects[i].cardType = "付款"
                           }
                         if(res.data.objects[i].id == oid){
-                          this.statetype_Data.push(res.data.objects[i]);
+                          this.statetype_Data = res.data.objects[i].title;
                           return;
                         }
 
