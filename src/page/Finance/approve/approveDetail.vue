@@ -1,4 +1,8 @@
-<!-- 审批详情 -->
+<!--
+  审批详情
+  流程：先审批通过 -> 然后传入报销id，api/listforexpense -> 若不为空则进行打印，为空返回列表页 -> 关闭打印窗口返回列表页
+
+-->
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
@@ -339,7 +343,7 @@
           })
         }
       },
-      // 打印详情
+      // 打印详情,当有拆分时会进行打印
       printDetails(){
         this.$nextTick(() => {
           this.$print(this.$refs.print)
@@ -373,7 +377,7 @@
       // 获取审核结果
       auditResult(paramsGuid) {
         this.listLoading = true
-        var that =this
+        let that =this
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: paramsGuid,
           jQ_Type: 3,
@@ -395,14 +399,9 @@
           let keepData = obj.data.objects
           this.keepBackContent = keepData
           // 筛选出拆分的数据，筛选出expenseID并重组新数组
-          let keepChangeExpense = []
-          keepData.forEach( item => {
-            keepChangeExpense.push(...item.payments)
+          this.keepExpense = keepData.map( item => {
+            return item.id
           })
-          this.keepExpense = keepChangeExpense.filter( item => {
-            return item.expenseType == 1
-          })
-          console.log(this.keepExpense)
           this.keepStatus = keepData[0].checkType
           this.listLoading = false
         }).catch(err => {
@@ -413,7 +412,7 @@
       handlePassConfirm(){
         this.loadingBtn = true
         if(this.title == "审批通过"){
-          this.handlePassFn();
+          this.handlePassApi();
         }else{
           this.handleRejectFn();
         }
@@ -431,6 +430,7 @@
             message: '审批通过已完成',
             type: 'success'
           });
+          this.handlePassFn()
           this.loadingBtn = false
           this.transitShow = false;
         }).catch( (err) => {
@@ -442,8 +442,11 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
           "id": paramsTabId
         }).then( obj =>  {
-          // paramsTabId 为 124 返回obj 为空
           let keepObjLength = obj.data.objects
+          // 如果没有需要打印的数据则返回列表页
+          if(!keepObjLength){
+            this.backListPage()
+          }
           if (keepObjLength && keepObjLength.length > 0){
             this.tabCount--
             this.tablePrint.push(...obj.data.objects)
@@ -456,10 +459,8 @@
           }
         })
       },
-
       // 审批通过弹窗-确定
       handlePassFn(){
-        this.handlePassApi()
         if(this.keepExpense.length > 0){
           this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
             "object": {
@@ -468,11 +469,10 @@
           })
           .then(obj => {
             let keepData = obj.data.objects
-            // 如果存在拆分
             if(keepData !== null){
               this.keepTabId.length = 0
               this.keepExpense.forEach( (item) => {
-                this.keepTabId.push(item.expenseID)
+                this.keepTabId.push(item)
               })
               this.tabCount = this.keepTabId.length
               this.keepTabId.forEach((item) =>{
