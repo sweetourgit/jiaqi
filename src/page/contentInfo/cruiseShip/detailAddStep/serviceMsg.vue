@@ -184,7 +184,7 @@ export default {
 
           that.tableData.forEach(function(item, index, arr){
             item.pics.forEach(function(item, index, arr){
-              item.url = that.GLOBAL.serverSrcYL + item.pic_url;
+              item.url = item.pic_url;
             })
           })
         } else {
