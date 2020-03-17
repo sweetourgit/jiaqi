@@ -1,4 +1,4 @@
-/* 借款的列表数据 */
+/* 待审批表格数据（借款，报销，退款，报账单） */
 import moment from 'moment'
 
 export default {
@@ -19,17 +19,17 @@ export default {
     pendingApprovalTable(paramsTab){
       let arr = []
       let that = this
+      // 依据tab点击事件传入的模块名称，取对应的字段传给接口
+      let moduleArrayMapped = {
+        nameIINoInTeam: 'loan_noIncome4',
+        nameIIAdvanceTeam: 'borrow_Moneys4',
+        nameIIReimburseTeam: 'Reimbursement_noIncome4',
+        nameIIRefundTeam: 'refund4',
+        nameIISheetTeam: 'reimbursement4',
+      }
       this.listLoading = true
-      this.pendingApprovalTableData = []
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
         .then(obj => {
-          let moduleArrayMapped = {
-            nameIINoInTeam: 'loan_noIncome4',
-            nameIIAdvanceTeam: 'borrow_Moneys4',
-            nameIIReimburseTeam: 'Reimbursement_noIncome4',
-            nameIIRefundTeam: 'refund4',
-            nameIISheetTeam: 'reimbursement4',
-          }
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
             //"userCode": sessionStorage.getItem('userCode'),
             "userCode": sessionStorage.getItem('tel'),
@@ -42,13 +42,58 @@ export default {
             obj.data.forEach(v=>{
               arr.push(v.jq_ID)
             })
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', { // 通过GUID查找无收入/预付款列表
-            "guid": arr
-          }).then(obj =>{
-            that.pendingApprovalTableData = obj.data.objects;
-            that.listLoading = false
+            // 减少判断逻辑（通过guid获取相关未审批的数据）
+            let ApprovalApiPayment = function () {
+              that.$http.post(that.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                that.approvalBorrowData = obj.data.objects;
+                that.listLoading = false
+              }).catch(obj => {
+                console.log(obj)
+              })
+            }
+            let ApprovalApiExpense = function () {
+              that.$http.post(that.GLOBAL.serverSrc + '/finance/expense/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                that.approvalReimburseData = obj.data.objects;
+                that.listLoading = false
+              }).catch(obj => {
+                console.log(obj)
+              })
+            }
+            let ApprovalApiRefund = function () {
+              that.$http.post(that.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                that.approvalRefundData = obj.data.objects;
+                that.listLoading = false
+              }).catch(obj => {
+                console.log(obj)
+              })
+            }
+            let ApprovalApiSheet = function () {
+              that.$http.post(that.GLOBAL.serverSrc + '/finance/checksheet/api/listforguid', {
+                "guid": arr
+              }).then(obj =>{
+                that.approvalSheetData = obj.data.objects;
+                that.listLoading = false
+              }).catch(obj => {
+                console.log(obj)
+              })
+            }
+            let listApi = {
+              nameIINoInTeam: ApprovalApiPayment, // 无收入
+              nameIIAdvanceTeam: ApprovalApiPayment, // 预付款
+              nameIIReimburseTeam: ApprovalApiExpense, // 报销
+              nameIIRefundTeam: ApprovalApiRefund, // 退款
+              nameIISheetTeam: ApprovalApiSheet, // 报账单
+            }
+            listApi[paramsTab]()
+          }).catch(obj => {
+            console.log(obj)
           })
-        })
       })
     },
     dateFormat: function(row, column) {

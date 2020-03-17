@@ -746,7 +746,8 @@ export default {
             "spstate": "通过",
             "spcontent": "",
             'checktype': 2,
-            "id": this.pid
+            "id": this.pid,
+            'SpCode': sessionStorage.getItem('userCode')
           }).then(res => {
           }).catch(err => {
             console.log(err)

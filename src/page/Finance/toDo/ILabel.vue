@@ -10,7 +10,7 @@
       <el-tab-pane :label="'无收入借款管理(' + approveDataNum +')'" name="nameINoIn">
         <el-tabs v-model="tabIINoInShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + 0 +')'" name="nameIINoInTeam">
-            <team-table :whichTab="whichTab"></team-table>
+            <team-table :whichTab="whichTab" ref="teamDom"></team-table>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIINoInShip">
 
@@ -122,6 +122,11 @@
     },
     created() {
 
+    },
+    mounted() {
+      // 初始化加载所有tab下的表格数据，不能写在teamTable里面，否则会被调用多次
+      let moduleArray = ['nameIINoInTeam', 'nameIIAdvanceTeam', 'nameIIReimburseTeam', 'nameIIRefundTeam', 'nameIISheetTeam']
+      moduleArray.forEach(item => this.$refs.teamDom.pendingApprovalTable(item))
     },
     methods: {
       handleClickILabel(tab, event){

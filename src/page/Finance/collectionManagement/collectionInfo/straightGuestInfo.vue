@@ -741,6 +741,7 @@ export default {
         that.$http.post(
             that.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
               "id": that.pid,
+              'SpCode': sessionStorage.getItem('userCode')
             }, {
               headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')

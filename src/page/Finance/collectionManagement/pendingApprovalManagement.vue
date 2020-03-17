@@ -265,7 +265,8 @@ export default {
           "spname": sessionStorage.getItem('name'),
           "spstate": "通过",
           "spcontent": "审批意见",
-          "id": this.selId
+          "id": this.selId,
+          'SpCode': sessionStorage.getItem('userCode')
         }
       }).then(res => {
         console.log(res,'通过res')

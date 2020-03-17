@@ -1301,7 +1301,8 @@ export default {
           spstate: "认款",
           spcontent: "",
           checktype: 3,
-          id: item.id
+          id: item.id,
+          'SpCode': sessionStorage.getItem('userCode')
         })
         .then(function(response) {
           if (response.data.isSuccess) {

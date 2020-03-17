@@ -433,7 +433,7 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
           "id": paramsTabId
         }).then( obj =>  {
-          // 124 这个 obj 为空
+          // paramsTabId 为 124 返回obj 为空
           let keepObjLength = obj.data.objects
           if (keepObjLength && keepObjLength.length > 0){
             this.tabCount--
