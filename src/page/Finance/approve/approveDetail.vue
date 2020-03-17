@@ -255,6 +255,7 @@
         tabShowWhich: null, // 显示哪个tab
         examineData: [], // 审核
         keepBackContent: [],
+        keepExpense: [], //
         getApproveListGuid: null, // 获取列表页的的guid
         dialogVisible: false,
         workItemIDArr: null, // 保存匹配的WorkItemID 数组
@@ -393,6 +394,15 @@
         .then(obj => {
           let keepData = obj.data.objects
           this.keepBackContent = keepData
+          // 筛选出拆分的数据，筛选出expenseID并重组新数组
+          let keepChangeExpense = []
+          keepData.forEach( item => {
+            keepChangeExpense.push(...item.payments)
+          })
+          this.keepExpense = keepChangeExpense.filter( item => {
+            return item.expenseType == 1
+          })
+          console.log(this.keepExpense)
           this.keepStatus = keepData[0].checkType
           this.listLoading = false
         }).catch(err => {
@@ -423,7 +433,6 @@
           });
           this.loadingBtn = false
           this.transitShow = false;
-          // this.backListPage()
         }).catch( (err) => {
           this.$message.warning("审批通过失败 ");
           this.loadingBtn = false
@@ -450,33 +459,36 @@
 
       // 审批通过弹窗-确定
       handlePassFn(){
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
-          "object": {
-            guid: this.getApproveListGuid
-          }
-        })
-        .then(obj => {
-          let keepData = obj.data.objects
-          // 如果存在拆分
-          if(keepData !== null ){
-            this.keepTabId.length = 0
-            this.keepBackContent.forEach( (item) => {
-              this.keepTabId.push(item.id)
-            })
-            this.tabCount = this.keepTabId.length
-            this.keepTabId.forEach((item) =>{
-              this.showPrintTable(item)
-            })
-            console.log(this.keepTabId)
-            // 这块有一个问题，拆分要弹出打印弹窗，this.handlePassApi()也运行这个函数但是不跳转页面，打印弹窗关闭时返回到列表；不拆分直接调用 this.handlePassApi() 然后返回列表页
-            // this.handlePassApi()
-          } else {
-            this.$message.warning("此报销不是待审批状态，无法进行审批操作");
-          }
-          this.listLoading = false
-        }).catch(err => {
+        this.handlePassApi()
+        if(this.keepExpense.length > 0){
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+            "object": {
+              guid: this.getApproveListGuid
+            }
+          })
+          .then(obj => {
+            let keepData = obj.data.objects
+            // 如果存在拆分
+            if(keepData !== null){
+              this.keepTabId.length = 0
+              this.keepExpense.forEach( (item) => {
+                this.keepTabId.push(item.expenseID)
+              })
+              this.tabCount = this.keepTabId.length
+              this.keepTabId.forEach((item) =>{
+                this.showPrintTable(item)
+              })
+              console.log(this.keepTabId)
+            } else {
+              this.$message.warning("此报销不是待审批状态，无法进行审批操作");
+            }
+            this.listLoading = false
+          }).catch(err => {
           console.log(err)
         })
+      } else {
+        this.backListPage()
+      }
       },
       // 驳回之后走工作流
       handleRejectFn(){
