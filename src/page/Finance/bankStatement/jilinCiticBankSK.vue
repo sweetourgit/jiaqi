@@ -318,10 +318,11 @@ export default {
           "transaction_reference_number": this.ruleForm.code,
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
-           // "userid":userID,
-          // "orgid":orgID,
-          // "topid":topID,
-          "company":''
+           //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
         }
       }).then(function (obj) {
         if(obj.data.isSuccess){

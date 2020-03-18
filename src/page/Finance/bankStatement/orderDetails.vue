@@ -2,7 +2,7 @@
   <div class="vivo" style="position:relative">
     <!--申请预付款-->
     <el-dialog title="查看订单" :visible="dialogFormVisible" width="70%" @close="closeAdd">
-      <div class="totalMoney">
+      <div v-if="isOrder" class="totalMoney">
         <i class="el-icon-info"></i>
         总收款金额：{{totalMoney}}元
       </div>
@@ -16,7 +16,7 @@
           @row-click="clickBanle"
           :header-cell-style="getRowClass"
         >
-          <template v-if="false">
+          <template v-if="isOrder">
             <el-table-column prop="orderCode" label="订单ID" align="center"></el-table-column>
             <el-table-column prop="proName" label="产品名称" align="center"></el-table-column>
             <el-table-column prop="number" label="数量" align="center"></el-table-column>
@@ -145,7 +145,8 @@ export default {
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
-      tableData: []
+      tableData: [],
+      isOrder:true,
     };
   },
   computed: {
@@ -208,12 +209,16 @@ export default {
           }
         )
         .then(function(obj) {
-          console.log("关联订单", obj);
           if (obj.data.isSuccess) {
+         
             that.total = obj.data.total;
             that.tableData = obj.data.objects;
+          
             let totalM = 0;
             that.tableData.forEach(function(item, index, arr) {
+              if(index==0){
+              that.isOrder=item.collectionType==6?false:true
+              }
               item.createTime_dt =
                 item.createTime_dt.split("T")[0] +
                 " " +

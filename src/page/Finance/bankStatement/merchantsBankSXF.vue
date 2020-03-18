@@ -436,6 +436,7 @@ export default {
     },
     loadData() {
       const that = this;
+      let data4D=utils.getSession4D
       // this.$http.post("mock/zhaohangSXF", {}).then(function(obj) {
       //   that.total = 100;
       //   that.tableData = obj.data.data;
@@ -457,7 +458,12 @@ export default {
               seachType: 2,
               import_State: this.ruleForm.matchType
                 ? this.ruleForm.matchType
-                : 0
+                : 0,
+                   //若传入4D则无数据 测试暂时先不传
+              //   userid: data4D.userID, // 暂无数据 想看改成0,
+              // orgid: data4D.orgID, // 暂无数据 想看改成0,
+              // topid: data4D.topID, // 暂无数据 想看改成0,
+              // company: "",
             }
           }
         )

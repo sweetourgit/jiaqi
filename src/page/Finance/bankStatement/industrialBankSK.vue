@@ -147,7 +147,7 @@
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -248,7 +248,16 @@ export default {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
     UploadUrl2(){
-      return this.GLOBAL.serverSrc + '/finance/wa_payment/api/ImportExcel';
+      let upURL=''
+      let data4D=utils.getSession4D;
+      switch(data4D.company){
+        case '辽宁大运通' :
+          upURL=this.GLOBAL.serverSrc + '/finance/wa_payment/api/ImportExcel'
+          break;
+        case '吉林大运通' :
+          upURL=this.GLOBAL.serverSrc + '/finance/wa_payment_jl/api/ImportExcel'
+      }
+      return upURL;
     },
     handleSuccess2(response, file, fileList){
       console.log(response);
@@ -297,6 +306,7 @@ export default {
         query: {
           id:row.id,
           type:2,
+          creditAmount:row.credit_amount,
           company:row.company,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date,
@@ -351,6 +361,7 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
+      let data4D=utils.getSession4D
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
@@ -366,7 +377,12 @@ export default {
           "transaction_reference_number": this.ruleForm.code,
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0
+          "seachType": 0,
+            //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
         }
       }).then(function (obj) {
         // console.log('兴业银行',obj);

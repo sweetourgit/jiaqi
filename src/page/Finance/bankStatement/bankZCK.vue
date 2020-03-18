@@ -145,7 +145,7 @@
           @selection-change="selectionChangeForNY"
         >
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
-           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+          <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
           <el-table-column prop="surplusPrice" label="剩余金额" align="center"></el-table-column>
           <el-table-column prop="abcBank_ZCK" label="暂存款状态" align="center">
             <template slot-scope="scope">
@@ -274,7 +274,7 @@
           <el-table-column prop="transactionTime" label="交易时间" align="center">
             <!-- <template slot-scope="scope">
               <span>{{scope.row.transactionTime.replace("T",' ')}}</span>
-            </template> -->
+            </template>-->
           </el-table-column>
           <el-table-column prop="debitAmount" label="借方发生额/元(支取)" align="center"></el-table-column>
           <el-table-column prop="creditAmount" label="贷方发生额/元(收入)" align="center"></el-table-column>
@@ -412,6 +412,7 @@
  
 <script type="text/javascript">
 import BankOfChinaZCK from "./componentsZCK/bankOfChinaZCK.vue";
+import * as utils from './utils.js'
 export default {
   components: {
     BankOfChinaZCK
@@ -760,6 +761,7 @@ export default {
     },
     loadData1() {
       const that = this;
+      let data4D=utils.getSession4D
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
           pageIndex: this.pageCurrent1 - 1,
@@ -769,7 +771,12 @@ export default {
             transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3
+            seachType: 3,
+              //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
           }
         })
         .then(function(obj) {
@@ -793,6 +800,7 @@ export default {
     },
     loadData2() {
       const that = this;
+      // let data4D=utils.getSession4D
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
           pageIndex: this.pageCurrent2 - 1,
@@ -802,7 +810,12 @@ export default {
             transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3
+            seachType: 3,
+            //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
           }
         })
         .then(function(obj) {
@@ -818,10 +831,7 @@ export default {
     // 农业银行暂存款逻辑
     loadDataForNY() {
       const that = this;
-      // this.$http.post("mock/nongyeZCK", {}).then(function(obj) {
-      //   that.totalForNY = 100;
-      //   that.tableDataForNY = obj.data.data;
-      // });
+       let data4D = utils.getSession4D();
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
           pageIndex: this.pageCurrentForNY - 1,
@@ -831,6 +841,10 @@ export default {
             // transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
+            // userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
             seachType: 3
           }
         })
@@ -845,7 +859,7 @@ export default {
           }
         });
     },
-      handleSizeChangeForNY(val) {
+    handleSizeChangeForNY(val) {
       this.pageSizeForNY = val;
       this.loadDataForNY();
     },
@@ -870,6 +884,7 @@ export default {
     //+++++++++++++++++++++招商银行暂存款逻辑+++++++++++++++++++++
     loadDataForZS() {
       const that = this;
+      let data4D=utils.getSession4D
       this.$http
         .post(
           this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
@@ -881,7 +896,12 @@ export default {
               transaction_reference_number: "",
               begin: "2000-05-16",
               end: "2099-05-16",
-              seachType: 3
+              seachType: 3,
+                //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
             }
           }
         )
@@ -922,6 +942,7 @@ export default {
     //+++++++++++++++++++++建设银行暂存款逻辑+++++++++++++++++++++
     loadDataForJS() {
       const that = this;
+      let data4D=utils.getSession4D
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
           pageIndex: this.pageCurrentForJS - 1,
@@ -931,10 +952,11 @@ export default {
             begin: "2000-05-16",
             end: "2099-05-16",
             seachType: 3,
-            // "userid":userID,
-            // "orgid":orgID,
-            // "topid":topID,
-            company: ""
+            //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
           }
         })
         .then(function(obj) {
@@ -986,6 +1008,7 @@ export default {
     //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForJLZX() {
       const that = this;
+      let data4D=utils.getSession4D
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
           pageIndex: this.pageCurrentForJLZX - 1,
@@ -994,10 +1017,11 @@ export default {
             matching_State: 0,
             begin: "2000-05-16",
             end: "2099-05-16",
-            // "userid":userID,
-            // "orgid":orgID,
-            // "topid":topID,
-            company: ""
+            //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
           }
         })
         .then(function(obj) {

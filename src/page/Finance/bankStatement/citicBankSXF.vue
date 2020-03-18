@@ -151,7 +151,7 @@
 
 <script type="text/javascript">
 import moment from "moment";
-
+import * as utils from './utils.js'
 export default {
   components: {},
   data() {
@@ -207,7 +207,12 @@ export default {
   },
   methods: {
     beforeUpload(event, file, filelist) {
+     let data4D=utils.getSession4D()
       this.File.FileName = event.name;
+      this.File.userid=data4D.userID
+      this.File.orgid=data4D.orgID
+      this.File.topid=data4D.topID
+      this.File.company='辽宁大运通'//测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {

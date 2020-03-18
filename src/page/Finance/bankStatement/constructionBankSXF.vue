@@ -427,6 +427,7 @@ export default {
       //       that.total = 100;
       //     that.tableData = obj.data.data;
       // })
+      let data4D = utils.getSession4D;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
           pageIndex: this.pageCurrent - 1,
@@ -441,6 +442,11 @@ export default {
               : "2099-05-16",
             seachType: 2,
             import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0
+            //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
           }
         })
         .then(function(obj) {
