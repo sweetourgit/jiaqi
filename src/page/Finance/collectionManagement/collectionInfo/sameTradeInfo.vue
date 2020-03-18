@@ -737,7 +737,8 @@ export default {
       this.originPlace = item.value;
       var that =this
       this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/getArrearsList', {
-        lcID: item.id
+        lcID: item.id,
+        ProductType: 1
       }).then(obj => {
         if(obj.data.objects == null){
           this.ifShowApply = true

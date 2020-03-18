@@ -25,6 +25,27 @@
           <el-tab-pane label="付款">暂时不写</el-tab-pane>
         </el-tabs>
       </el-tab-pane>
+       <el-tab-pane label="农业银行" name="third">
+        <!-- <industrialBankSK></industrialBankSK> -->
+        <el-tabs type="border-card" @tab-click="handleClick">
+          <el-tab-pane label="收款">
+            <agriculturalBankSK></agriculturalBankSK>
+          </el-tab-pane>
+          <el-tab-pane label="付款">暂时不写</el-tab-pane>
+        </el-tabs>
+      </el-tab-pane>
+      <el-tab-pane label="招商" name="forth">
+        <!-- <industrialBankSK></industrialBankSK> -->
+        <el-tabs type="border-card" @tab-click="handleClick">
+          <el-tab-pane label="收款">
+            <merchantsBankSK></merchantsBankSK>
+          </el-tab-pane>
+          <el-tab-pane label="手续费">
+            <merchantsBankSXF></merchantsBankSXF>
+          </el-tab-pane>
+          <el-tab-pane label="付款">暂时不写</el-tab-pane>
+        </el-tabs>
+      </el-tab-pane>
       <el-tab-pane label="建设银行" name="fivth">
         <!-- <industrialBankSK></industrialBankSK> -->
         <el-tabs type="border-card" @tab-click="handleClick">
@@ -55,9 +76,6 @@
           <el-tab-pane label="收款">
            <jilinCiticBankSK></jilinCiticBankSK>
           </el-tab-pane>
-          <el-tab-pane label="手续费">
-            <merchantsBankSXF></merchantsBankSXF>
-          </el-tab-pane>
           <!-- <el-tab-pane label="付款">暂时不写</el-tab-pane> -->
         </el-tabs>
       </el-tab-pane>
@@ -78,7 +96,7 @@ import constructionBankSXF from '@/page/Finance/bankStatement/constructionBankSX
 import citicBankSK from '@/page/Finance/bankStatement/citicBankSK.vue'
 import citicBankSXF from '@/page/Finance/bankStatement/citicBankSXF.vue'
 import jilinCiticBankSK from '@/page/Finance/bankStatement/jilinCiticBankSK.vue'
-
+ 
 export default {
   name: "bankStatement",
   components: {

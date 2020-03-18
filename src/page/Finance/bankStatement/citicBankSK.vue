@@ -1,4 +1,4 @@
-itic<template>
+<template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
     <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
@@ -53,6 +53,8 @@ itic<template>
         :on-error="handleError1"
         :on-remove="handleRemove1"
         :before-remove="beforeRemove1"
+         :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary">添加中信银行流水单</el-button>
       </el-upload>
@@ -64,6 +66,8 @@ itic<template>
         :on-error="handleError2"
         :on-remove="handleRemove2"
         :before-remove="beforeRemove2"
+           :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary" plain>添加微信支付宝明细</el-button>
       </el-upload>
@@ -146,7 +150,7 @@ itic<template>
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -160,7 +164,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+      File:{},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -199,6 +203,14 @@ export default {
     },
   },
   methods: {
+       beforeUpload(event,file,filelist){
+       let data4D=utils.getSession4D()
+      this.File.FileName = event.name;
+      this.File.userid=data4D.userID
+      this.File.orgid=data4D.orgID
+      this.File.topid=data4D.topID
+      this.File.company='辽宁大运通'//测试 暂时写死
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'

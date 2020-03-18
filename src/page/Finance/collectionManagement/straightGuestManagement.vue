@@ -668,7 +668,8 @@ export default {
             "spstate": "通过",
             "spcontent": "",
             'checktype': 2,
-            "id": this.pid
+            "id": this.pid,
+            'SpCode': sessionStorage.getItem('userCode')
           }).then(res => {
             console.log(res,'通过res')
           }).catch(err => {
@@ -818,6 +819,7 @@ export default {
             this.$http.post(
               this.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
                 orderCode: res.data.object.orderNumber,
+                ProeuctType:1
               }
             )
             .then(res => {

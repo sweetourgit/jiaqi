@@ -21,7 +21,7 @@ Vue.use(Print) // 打印
 
 //axios
 import axios from 'axios'
-import qs from 'qs'
+import qs from 'qs' 
 
 Vue.prototype.$http = axios
 Vue.prototype.qs = qs

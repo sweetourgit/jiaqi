@@ -53,6 +53,8 @@
         :on-error="handleError"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
+        :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary">添加中国银行流水单</el-button>
       </el-upload>
@@ -132,7 +134,7 @@
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+ import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -146,7 +148,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+      File:{},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -185,6 +187,14 @@ export default {
     this.loadData()
   },
   methods: {
+    beforeUpload(event,file,filelist){
+       let data4D=utils.getSession4D()
+      this.File.FileName = event.name;
+      this.File.userid=data4D.userID
+      this.File.orgid=data4D.orgID
+      this.File.topid=data4D.topID
+      this.File.company='辽宁大运通'//测试 暂时写死
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -202,9 +212,10 @@ export default {
       });
     },
     UploadUrl(){
-      return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
+      return this.GLOBAL.serverSrc + `/finance/bankofchina/api/ImportExcel`;
     },
     handleSuccess(response, file, fileList){
+      this.fileName=file.name
       console.log(response);
       if(response == true){
         this.$message.success("中国银行流水单上传成功！");
@@ -300,13 +311,14 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
+      let data4D=utils.getSession4D()
+      console
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
       if(this.ruleForm.dateEnd){
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
-      
       this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
         "pageIndex": this.pageCurrent - 1,
         "pageSize": this.pageSize,
@@ -315,7 +327,12 @@ export default {
           "transaction_reference_number": this.ruleForm.code,
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0
+          "seachType": 0,
+           //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
         }
       }).then(function (obj) {
         // console.log('中国银行',obj);

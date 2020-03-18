@@ -13,9 +13,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="交易流水号:" prop="code">
+          <!-- <el-form-item label="交易流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
@@ -53,8 +53,10 @@
         :on-error="handleError"
         :on-remove="handleRemove"
         :before-remove="beforeRemove"
+          :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
-        <el-button type="primary">添加农业银行流水单</el-button>
+        <el-button type="primary">添加吉林中信银行流水单</el-button>
       </el-upload>
     </div>
     <!-- 表格 -->
@@ -62,10 +64,12 @@
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
           <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">查看订单</el-button>
-          <el-button v-if="scope.row.surplus_Amount == scope.row.trade_Amount" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button v-if="scope.row.surplus_Amount == scope.row.amount_of_income" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="SYJE" label="剩余金额" align="center">
+        <el-table-column prop="id" label="明细ID" align="center">
+      </el-table-column>
+      <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
       <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
@@ -73,27 +77,30 @@
           <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
       </el-table-column>
-      <el-table-column prop="JYLSH" label="交易流水号" align="center">
+      <el-table-column prop="transaction_serial_number" label="交易流水号" align="center">
       </el-table-column>
-      <el-table-column prop="JYSJ" label="交易时间" align="center">
+      <el-table-column  label="交易日期" align="center">
+          <template slot-scope="scope">
+          <span>{{scope.row.transaction_time.split('T')[0]}}</span>
+        </template>
       </el-table-column>
-        <el-table-column prop="SRJE" label="收入金额" align="center">
+        <el-table-column prop="amount_of_income" label="收入金额" align="center">
       </el-table-column>
-      <el-table-column prop="ZCJE" label="支出金额" align="center">
+      <el-table-column prop="amount_of_expenditure" label="支出金额" align="center">
       </el-table-column>
-      <el-table-column prop="ZHYE" label="账户余额" align="center">
+      <el-table-column prop="account_balance" label="账户余额" align="center">
       </el-table-column>
-      <el-table-column prop="JYHM" label="交易行名" align="center">
+      <el-table-column prop="other_Name" label="对方名称" align="center">
       </el-table-column>
-      <el-table-column prop="DFSS" label="对方省市" align="center">
+      <el-table-column prop="other_Account" label="对方账号" align="center">
       </el-table-column>
-      <el-table-column prop="DFZH" label="对方账号" align="center">
+      <el-table-column prop="receiving_body" label="受理机构" align="center">
       </el-table-column>
-      <el-table-column prop="DFHM" label="对方户名" align="center">
+      <el-table-column prop="abstract" label="摘要" align="center">
       </el-table-column>
-      <el-table-column prop="JYYT" label="交易用途" align="center">
+      <el-table-column prop="transaction_card_number" label="交易卡号" align="center">
       </el-table-column>
-      <el-table-column prop="" label="剩余金额" align="center">
+      <el-table-column prop="state" label="状态" align="center">
       </el-table-column>
       <el-table-column prop="GLJE" label="关联金额" align="center">
       </el-table-column>
@@ -109,11 +116,11 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
-
+ 
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -127,7 +134,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+      File:{},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -166,6 +173,14 @@ export default {
     this.loadData()
   },
   methods: {
+      beforeUpload(event, file, filelist) {
+      let data4D=utils.getSession4D()
+      this.File.FileName = event.name;
+      this.File.userid=data4D.userID
+      this.File.orgid=data4D.orgID
+      this.File.topid=data4D.topID
+      this.File.company='吉林大运通'//测试 暂时写死
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -178,12 +193,12 @@ export default {
         path: '/bankStatement/bankZCK',
         name: '银行流水单管理  /设置暂存款',
         query: {
-          "searchType": 'first'
+          "searchType": 'seventh'
         }
       });
     },
     UploadUrl(){
-      return this.GLOBAL.serverSrc + '/finance/bankofchina/api/ImportExcel';
+      return this.GLOBAL.serverSrc + '/finance/citic_bank_jl/api/ImportExcel';
     },
     handleSuccess(response, file, fileList){
       console.log(response);
@@ -206,6 +221,7 @@ export default {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
     searchHandInside(){
+      // debugger;
       this.pageCurrent = 1;
       this.loadData();
     },
@@ -225,6 +241,7 @@ export default {
       this.dialogFormVisible = false;
       this.info = '';
     },
+    //delete未改
     deleteFun(row){
       const that = this;
       this.$confirm('是否需要删除', '提示', {
@@ -232,13 +249,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/delete", {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/delete", {
           "id": row.id,
         }).then(function(response) {
           if (response.data.isSuccess) {
             that.pageCurrent = 1;
             that.loadData();
-            that.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
+            // that.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
             that.$message({
               type: 'info',
               message: '已删除'
@@ -281,41 +298,46 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
+      let data4D=utils.getSession4D()
+     
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
       if(this.ruleForm.dateEnd){
         dateEnd = moment(this.ruleForm.dateEnd).format('YYYY-MM-DD 23:59:59')
       }
-      this.$http.post('mock/jilinzhongxin', {}).then(function (obj) {
-            that.total = 100;
-          that.tableData = obj.data.data;
-      })
-      // this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-      //   "pageIndex": this.pageCurrent - 1,
-      //   "pageSize": this.pageSize,
-      //   "object": {
-      //     "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-      //     "transaction_reference_number": this.ruleForm.code,
-      //     "begin": dateStart ? dateStart : "2000-05-16",
-      //     "end": dateEnd ? dateEnd : "2099-05-16",
-      //     "seachType": 0
-      //   }
-      // }).then(function (obj) {
-      //   // console.log('中国银行',obj);
-      //   if(obj.data.isSuccess){
-      //     that.total = obj.data.total;
-      //     that.tableData = obj.data.objects;
-      //     // that.tableDataNBSK.forEach(function (item, index, arr) {
-      //     //   item.collectionTime = item.collectionTime.split('T')[0];
-      //     // });
-      //     // that.loadingNBSK = false;
-      //   }else{
-      //     // that.loadingNBSK = false;
-      //     that.total = 0;
-      //     that.tableData = [];
-      //   }
+      // this.$http.post('mock/jilinzhongxin', {}).then(function (obj) {
+      //       that.total = 100;
+      //     that.tableData = obj.data.data;
       // })
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
+        "pageIndex": this.pageCurrent - 1,
+        "pageSize": this.pageSize,
+        "object": {
+          "matching_State": this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+          "transaction_reference_number": this.ruleForm.code,
+          "begin": dateStart ? dateStart : "2000-05-16",
+          "end": dateEnd ? dateEnd : "2099-05-16",
+           //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
+        }
+      }).then(function (obj) {
+        if(obj.data.isSuccess){
+          that.total = obj.data.total;
+          that.tableData = obj.data.objects;
+          // that.tableDataNBSK.forEach(function (item, index, arr) {
+          //   item.collectionTime = item.collectionTime.split('T')[0];
+          // });
+          // that.loadingNBSK = false;
+        }else{
+          // that.loadingNBSK = false;
+          that.total = 0;
+          that.tableData = [];
+        }
+      })
     },
     beginDate(){
       const that = this;

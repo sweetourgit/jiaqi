@@ -103,7 +103,7 @@ export default {
     // 编辑
     edit(row){
       this.dialogFormVisible = true;
-      this.info = 'id';
+      this.info = this.$route.query.id;
     },
     // 关闭添加弹框
     closeAdd(){
@@ -153,8 +153,36 @@ export default {
       }
     },
     // 删除
-    deleteFun(){
-
+    deleteFun(row){
+      const that = this;
+      this.$confirm("是否删除该邮轮?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner/delliner", {
+          "id": row.id
+        }, ).then(function(response) {
+          // console.log('获取邮轮公司detail',response);
+          if (response.data.code == '200') {
+            that.$message.success('删除成功！');
+            that.loadData();
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("加载数据失败~");
+            }
+          }
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }).catch(() => {
+        this.$message({
+          type: "warning",
+          message: "已取消删除"
+        });
+      });
     },
 
     // 改变每页条数
@@ -184,10 +212,10 @@ export default {
           },
           that.fileList = response.data.data.logo;
           that.fileList1 = response.data.data.pics;
-          that.fileList[0].pic_url = "http://yl.dayuntong.com" + response.data.data.logo[0].pic_url;
-          that.fileList1.forEach(function(item, index, arr){
-            item.pic_url = "http://yl.dayuntong.com" + response.data.data.pics[index].pic_url;
-          })
+          // that.fileList[0].pic_url = "http://yl.dayuntong.com" + response.data.data.logo[0].pic_url;
+          // that.fileList1.forEach(function(item, index, arr){
+          //   item.pic_url = "http://yl.dayuntong.com" + response.data.data.pics[index].pic_url;
+          // })
 
         } else {
           if(response.data.message){

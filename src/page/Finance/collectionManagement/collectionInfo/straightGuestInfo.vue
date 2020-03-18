@@ -471,6 +471,7 @@ export default {
             that.$http.post(
               that.GLOBAL.serverSrc + "/teamquery/get/api/receiptorder", {
                 orderCode: that.indent,
+                ProeuctType:1
               })
               .then(function(obj) {
                 // obj.data.object.collectedMoney = that.collectedMoney 暂时没用上
@@ -740,6 +741,7 @@ export default {
         that.$http.post(
             that.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
               "id": that.pid,
+              'SpCode': sessionStorage.getItem('userCode')
             }, {
               headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')

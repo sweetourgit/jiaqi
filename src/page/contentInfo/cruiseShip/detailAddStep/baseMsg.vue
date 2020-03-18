@@ -41,7 +41,13 @@
           <span>米</span>
         </el-form-item>
         <el-form-item label="图片：" prop="width" label-width="140px">
-          <el-upload
+          <image-input
+            :list="fileListPic"
+            :numLimit="3"
+            @wakeup-material="picSelectHandler"
+            @remove-handler="removePicHandler"
+          ></image-input>
+          <!-- <el-upload
             :file-list="fileListPic"
             :action="UploadUrl()"
             :headers="headers"
@@ -57,7 +63,7 @@
           </el-upload>
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
+          </el-dialog> -->
         </el-form-item>
         <el-form-item label="视频：" prop="width" label-width="140px">
           <el-upload
@@ -81,14 +87,18 @@
         
       </div>
     </el-form>
+    <material-list
+      ref="materialListRef">
+    </material-list>
   </div>
 </template>
 <script type="text/javascript">
+import imageInput from '../comp/image-input'
+import materialList from '../comp/material-list'
+import { getPictureAction } from '@/page/productManagement/listInfo/api.js'
 export default {
   name: "curiseShipBaseMsg",
-  components: {
-    
-  },
+  components: { imageInput, materialList },
   data() {
     return {
       ruleForm: {
@@ -123,39 +133,47 @@ export default {
     }
   },
   methods: {
-    // 上传凭证 function 图片
-    UploadUrl(){
-      return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-    },
-    handleSuccess(response, file, fileList){
-      console.log(fileList);
-      // console.log(file);
-      if(response.code == 200){
-        this.fileListPic.push(response.data);
-        this.fileListPic.forEach(function(item, index, arr){
-          item.urlCopy = item.url;
-          item.url = fileList[index].url;
-        })
-      }else{
-        if(response.message){
-          this.$message.warning(response.message);
-        }else{
-          this.$message.warning('文件上传失败');
+    // 图片选择
+    picSelectHandler(idList){
+      let cb= (list) => {
+        console.log(list);
+        if((this.fileListPic.length + list.length) > 3){
+          this.$message.warning("最多支持三张图片上传！");
+          list = list.splice(0, (3 - this.fileListPic.length));
         }
+        this.getPictureFun(this.fileListPic, list);
       }
+      this.$refs.materialListRef.wakeup(idList, cb);
     },
-    handleError(err, file, fileList){
-      this.$message.warning(`文件上传失败，请重新上传！`);
+
+    // 图片删除
+    removePicHandler(i){
+      console.log(this.fileListPic, i);
+      this.fileListPic.splice(i, 1);
+      console.log(this.fileListPic);
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-      this.fileListPic = fileList;
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`平台订单只支持一个附件上传！`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+
+    getPictureFun(obj, list){
+      // console.log(list);
+      // let imgArr = [];
+      list.forEach(el => {
+        // console.log(el);
+        getPictureAction.bind(this)(el).then(res => {
+          console.log(res);
+          const item = {
+            id: el,
+            url: res.url
+          }
+          obj.push(item);
+        }).catch(err => {
+          const item = {
+            id: el,
+            url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+          }
+          obj.push(item);
+        })
+      })
+      
     },
 
     // 上传凭证 function 视频
@@ -219,19 +237,25 @@ export default {
                 "strength": this.ruleForm.word4
               })
             }
+            let videoArr = [];
             if(that.fileListVideo.length == 0){
-              that.$message.warning("LOGO不能为空！");
-              return;
+              // that.$message.warning("视频不能为空！");
+              // return;
+            }else{
+              videoArr.push({
+                "video_id": that.fileListVideo[0].id,
+                "video_url": that.fileListVideo[0].urlCopy
+              })
             }
             let fileArr = [];
             if(that.fileListPic.length == 0){
-              that.$message.warning("图片不能为空！");
-              return;
+              // that.$message.warning("图片不能为空！");
+              // return;
             }else{
               that.fileListPic.forEach(function (item, index, arr) {
                 fileArr.push({
                   pic_id: item.id,
-                  pic_url: item.urlCopy
+                  pic_url: item.url
                 });
               })
             }
@@ -248,12 +272,7 @@ export default {
               "length": this.ruleForm.length,
               "width": this.ruleForm.width,
               "pics": fileArr,
-              "videos": [
-                {
-                  "video_id": that.fileListVideo[0].id,
-                  "video_url": that.fileListVideo[0].urlCopy
-                }
-              ],
+              "videos": videoArr,
               "create_uid": sessionStorage.getItem('id'),
               "org_id": sessionStorage.getItem('orgID')
             }).then(res => {
@@ -358,10 +377,12 @@ export default {
             width: response.data.data.width
           };
 
-          that.fileListPic = response.data.data.pics;
-          that.fileListPic.forEach(function(item, index, arr){
-            item.url = 'http://yl.dayuntong.com' + item.pic_url;
-            item.urlCopy = item.pic_url;
+          // that.fileListPic = response.data.data.pics;
+          response.data.data.pics.forEach(function(item, index, arr){
+            that.fileListPic.push({
+              id: item.id,
+              url: item.url
+            })
           })
           that.fileListVideo = response.data.data.videos;
           that.fileListVideo.forEach(function(item, index, arr){

@@ -13,9 +13,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="银行流水号:" prop="code">
+          <!-- <el-form-item label="银行流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
@@ -53,6 +53,8 @@
         :on-error="handleError1"
         :on-remove="handleRemove1"
         :before-remove="beforeRemove1"
+              :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary">添加兴业银行流水单</el-button>
       </el-upload>
@@ -64,6 +66,8 @@
         :on-error="handleError2"
         :on-remove="handleRemove2"
         :before-remove="beforeRemove2"
+              :before-upload="beforeUpload"
+        :data="File"
         name="excelfile">
         <el-button type="primary" plain>添加微信支付宝明细</el-button>
       </el-upload>
@@ -73,7 +77,7 @@
       <el-table-column label="操作" width="140" align="center" fixed>
         <template slot-scope="scope">
          
-          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">查看微信</br>支付宝明细</el-button>
+          <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信</br>支付宝明细</el-button>
            <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-else>查看订单</el-button>
           <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
@@ -139,11 +143,11 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
-
+ 
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
-
+import * as utils from './utils.js'
 export default {
   components: {
     orderDetail
@@ -157,7 +161,7 @@ export default {
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
       },
-
+      File:{},
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -196,6 +200,14 @@ export default {
     },
   },
   methods: {
+      beforeUpload(event, file, filelist) {
+      let data4D=utils.getSession4D()
+      this.File.FileName = event.name;
+      this.File.userid=data4D.userID
+      this.File.orgid=data4D.orgID
+      this.File.topid=data4D.topID
+      this.File.company='辽宁大运通'//测试 暂时写死
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -236,7 +248,16 @@ export default {
       return this.$confirm(`确定移除 ${ file.name }？`);
     },
     UploadUrl2(){
-      return this.GLOBAL.serverSrc + '/finance/wa_payment/api/ImportExcel';
+      let upURL=''
+      let data4D=utils.getSession4D;
+      switch(data4D.company){
+        case '辽宁大运通' :
+          upURL=this.GLOBAL.serverSrc + '/finance/wa_payment/api/ImportExcel'
+          break;
+        case '吉林大运通' :
+          upURL=this.GLOBAL.serverSrc + '/finance/wa_payment_jl/api/ImportExcel'
+      }
+      return upURL;
     },
     handleSuccess2(response, file, fileList){
       console.log(response);
@@ -278,12 +299,15 @@ export default {
       this.info = '';
     },
     payDetail(row){
+      console.log('兴业row',row.company)
       this.$router.push({
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',
         query: {
           id:row.id,
           type:2,
+          creditAmount:row.credit_amount,
+          company:row.company,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date,
         }
@@ -337,6 +361,7 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
+      let data4D=utils.getSession4D
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
@@ -352,7 +377,12 @@ export default {
           "transaction_reference_number": this.ruleForm.code,
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
-          "seachType": 0
+          "seachType": 0,
+            //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
         }
       }).then(function (obj) {
         // console.log('兴业银行',obj);

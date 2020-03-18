@@ -15,24 +15,42 @@
             <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" maxlength="1000" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="LOGO：" label-width="140px">
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileList" :limit=1>
+            <!-- <el-upload ref="upload1" class="upload-demo" :action="UploadUrl()" :headers="headers" :on-success="handleSuccess" :on-error="handleError" :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :file-list="fileList" :limit=1>
               <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
+            </el-upload> -->
+            <image-input
+              :list="ruleForm.logoPic"
+              :numLimit="1"
+              @wakeup-material="logoSelectHandler"
+              @remove-handler="removeLogoHandler"
+            ></image-input>
           </el-form-item>
           <el-form-item label="图片：" label-width="140px">
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
+            <image-input
+              :list="ruleForm.pic"
+              :numLimit="100"
+              @wakeup-material="picSelectHandler"
+              @remove-handler="removePicHandler"
+            ></image-input>
+            <!-- <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
               <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
+            </el-upload> -->
           </el-form-item>
         </div>
       </el-form>
+      <material-list
+        ref="materialListRef">
+      </material-list>
     </el-dialog>
   </div>
 </template>
 <script type="text/javascript">
+  import imageInput from './comp/image-input'
+  import materialList from './comp/material-list'
+  import { getPictureAction } from '@/page/productManagement/listInfo/api.js'
   export default {
     name: "newTour",
-    components: {},
+    components: { imageInput, materialList },
     props: {
       dialogFormVisible: false,
       info: ''
@@ -42,6 +60,8 @@
         ruleForm: {
           company: '',
           introduction: '',
+          logoPic: [],
+          pic: []
         },
         rules: {
           company: [{ required: true, message: '邮轮公司不能为空!', trigger: 'change' }]
@@ -77,9 +97,9 @@
         this.ruleForm = {
           company: '',
           introduction: '',
+          pic: [],
+          logoPic: []
         };
-        this.fileList = [];
-        this.fileList1 = [];
         this.$emit('close', false);
       },
       // 取消按钮事件
@@ -110,23 +130,23 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // console.log(that.fileList);
-            // console.log(that.fileList1);
+            console.log(that.ruleForm.logoPic);
             let logoFile = [];
-            if(that.fileList.length == 0){
+            if(that.ruleForm.logoPic.length == 0){
               // that.$message.warning("LOGO不能为空！");
             }else{
               logoFile = [
                   {
-                    "pic_id": this.fileList[0].id,
-                    "pic_url": this.fileList[0].url
+                    "pic_id": that.ruleForm.logoPic[0].id,
+                    "pic_url": that.ruleForm.logoPic[0].url
                   }
                 ];
             }
             let fileArr = [];
-            if(that.fileList1.length == 0){
+            if(that.ruleForm.pic.length == 0){
               // that.$message.warning("图片不能为空！");
             }else{
-              that.fileList1.forEach(function (item, index, arr) {
+              that.ruleForm.pic.forEach(function (item, index, arr) {
                 fileArr.push({
                   pic_id: item.id,
                   pic_url: item.url
@@ -172,12 +192,7 @@
                 "id": this.info,
                 "name": this.ruleForm.company,
                 "introduce": this.ruleForm.introduction,
-                "logo": [
-                  {
-                    "pic_id": this.fileList[0].id,
-                    "pic_url": this.fileList[0].url
-                  }
-                ],
+                "logo": logoFile,
                 "pics": fileArr,
                 "create_uid": sessionStorage.getItem('id'),
                 "org_id": sessionStorage.getItem('orgID')
@@ -216,65 +231,62 @@
         });
       },
 
-      // 上传凭证 function logo
-      UploadUrl(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-      },
-      handleSuccess(response, file, fileList){
-        // console.log(response);
-        // console.log(file);
-        if(response.code == 200){
-          this.fileList.push(response.data);
-        }else{
-          if(response.message){
-            this.$message.warning(response.message);
-          }else{
-            this.$message.warning('文件上传失败');
+      // 头图选择
+      logoSelectHandler(idList){
+        let cb= (list) => {
+          if(list.length > 1){
+            this.$message.error(`头图数量限制为1张，当前选择${list.length}张，将截取第一张`);
+            list= list.splice(0, 1);
           }
+          console.log(list);
+          this.getPictureFun(this.ruleForm.logoPic, list);
+          console.log(this.ruleForm.logoPic);
         }
+        this.$refs.materialListRef.wakeup(idList, cb);
       },
-      handleError(err, file, fileList){
-        this.$message.warning(`文件上传失败，请重新上传！`);
-      },
-      handleRemove(file, fileList) {
-        console.log(file, fileList);
-        this.fileList = fileList;
-      },
-      handleExceed(files, fileList) {
-        this.$message.warning(`平台订单只支持一个附件上传！`);
-      },
-      beforeRemove(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
+      
+      // 头图删除
+      removeLogoHandler(){
+        this.ruleForm.logoPic= [];
       },
 
-      // 上传凭证 function  图片
-      UploadUrl1(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-      },
-      handleSuccess1(response, file, fileList){
-        console.log(response);
-        if(response.code == 200){
-          this.fileList1.push(response.data);
-        }else{
-          if(response.message){
-            this.$message.warning(response.message);
-          }else{
-            this.$message.warning('文件上传失败');
-          }
-        }
-      },
-      handleError1(err, file, fileList){
-        this.$message.warning(`文件上传失败，请重新上传！`);
-      },
-      handleRemove1(file, fileList) {
-        console.log(file, fileList);
-        this.fileList1 = fileList;
-      },
-      handleExceed1(files, fileList) {
-        this.$message.warning(`平台订单只支持一个附件上传！`);
-      },
-      beforeRemove1(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
+      // 图片选择
+      picSelectHandler(idList){
+      let cb= (list) => {
+        console.log(list);
+        this.getPictureFun(this.ruleForm.pic, list);
+      }
+      this.$refs.materialListRef.wakeup(idList, cb);
+    },
+
+    // 图片删除
+    removePicHandler(i){
+      console.log(this.ruleForm.pic, i);
+      this.ruleForm.pic.splice(i, 1);
+      console.log(this.ruleForm.pic);
+    },
+
+      getPictureFun(obj, list){
+        // console.log(list);
+        // let imgArr = [];
+        list.forEach(el => {
+          // console.log(el);
+          getPictureAction.bind(this)(el).then(res => {
+            console.log(res);
+            const item = {
+              id: el,
+              url: res.url
+            }
+            obj.push(item);
+          }).catch(err => {
+            const item = {
+              id: el,
+              url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+            }
+            obj.push(item);
+          })
+        })
+        
       },
 
       // 加载编辑数据
@@ -288,17 +300,22 @@
           if (response.data.code == '200') {
             that.ruleForm = {
               company: response.data.data.name,
-              introduction: response.data.data.introduce
+              introduction: response.data.data.introduce,
+              pic: [],
+              logoPic: []
             };
-            that.fileList = response.data.data.logo;
-            that.fileList1 = response.data.data.pics;
-            that.fileList[0].name = response.data.data.logo[0].pic_name;
-            that.fileList[0].id = response.data.data.logo[0].pic_id;
-            that.fileList[0].url = response.data.data.logo[0].pic_url;
-            that.fileList1.forEach(function(item, index, arr){
-              item.name = response.data.data.pics[index].pic_name;
-              item.id = response.data.data.pics[index].pic_id;
-              item.url = response.data.data.pics[index].pic_url;
+            if(response.data.data.logo.length > 0){
+              that.ruleForm.logoPic.push({
+                id: response.data.data.logo[0].pic_id,
+                url: response.data.data.logo[0].pic_url
+              });
+            }
+
+            response.data.data.pics.forEach(function(item, index, arr){
+              that.ruleForm.pic.push({
+                id: item.pic_id,
+                url: item.pic_url
+              })
             })
 
           } else {

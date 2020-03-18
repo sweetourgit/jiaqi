@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    name: "IILabel"
+    name: "borrowDetails"
   }
 </script>
 

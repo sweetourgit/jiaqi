@@ -11,69 +11,63 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.surplus_Amount == scope.row.transaction_amount">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="surplus_Amount" label="清算日期" align="center">
+       <el-table-column prop="id" label="明细ID" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_time" label="交易日期" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
-        </template>
+      <el-table-column prop="settlementDate" label="清算日期" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_time" label="交易时间" align="center">
-        <template slot-scope="scope">
-          <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
-        </template>
+      <el-table-column prop="transactionDate" label="交易日期" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_amount" label="交易金额" align="center">
+      <el-table-column prop="transactionTime" label="交易时间" align="center">
       </el-table-column>
-      <el-table-column prop="preferential_amount" label="终端号" align="center">
+      <el-table-column prop="transactionAmount" label="交易金额" align="center">
       </el-table-column>
-      <el-table-column prop="actual_amount" label="清算金额" align="center">
+      <el-table-column prop="terminalNumber" label="终端号" align="center">
       </el-table-column>
-      <el-table-column prop="refund_amount" label="手续费" align="center">
+      <el-table-column prop="settlementAmount" label="清算金额" align="center">
       </el-table-column>
-      <el-table-column prop="merchant_order_number" label="流水号" align="center">
+      <el-table-column prop="purpose_fee" label="手续费" align="center">
       </el-table-column>
-      <el-table-column prop="platform_order_number" label="交易类型" align="center">
+      <el-table-column prop="referenceNumber" label="流水号" align="center">
       </el-table-column>
-      <el-table-column prop="channel" label="参考号" align="center">
+      <el-table-column prop="transactionType" label="交易类型" align="center">
       </el-table-column>
-      <el-table-column prop="merchant_code" label="卡号" align="center">
+      <el-table-column prop="refNumber" label="参考号" align="center">
       </el-table-column>
-      <el-table-column prop="merchant_name" label="发卡行" align="center">
+      <el-table-column prop="cardNum" label="卡号" align="center">
       </el-table-column>
-      <el-table-column prop="payment_type" label="卡类型" align="center">
+      <el-table-column prop="cardBank" label="发卡行" align="center">
       </el-table-column>
-      <el-table-column prop="trading_status" label="商户订单号" align="center">
+      <el-table-column prop="cardType" label="卡类型" align="center">
       </el-table-column>
-      <el-table-column prop="currency" label="银商订单号" align="center">
+      <el-table-column prop="merchantOrderNumber" label="商户订单号" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_type" label="子订单号" align="center">
+      <el-table-column prop="silverMerchantOrdNum" label="银商订单号" align="center">
       </el-table-column>
-      <el-table-column prop="transaction_issuer" label="退货订单号" align="center">
+      <el-table-column prop="subOrdNum" label="子订单号" align="center">
       </el-table-column>
-      <el-table-column prop="terminal_type" label="支付类型" align="center">
+      <el-table-column prop="refundOrdNum" label="退货订单号" align="center">
       </el-table-column>
-      <el-table-column prop="trade_name" label="实际支付金额" align="center">
+      <el-table-column prop="paymentType" label="支付类型" align="center">
       </el-table-column>
-      <el-table-column prop="operator_number" label="备注" align="center">
+      <el-table-column prop="actualAmount" label="实际支付金额" align="center">
       </el-table-column>
-      <el-table-column prop="device_number" label="付款附言" align="center">
+      <el-table-column prop="remark	" label="备注" align="center">
       </el-table-column>
-      <el-table-column prop="shop_number" label="钱包优惠金额" align="center">
+      <el-table-column prop="paymentPostscript" label="付款附言" align="center">
       </el-table-column>
-      <el-table-column prop="third_party_merchant_number" label="商户优惠金额" align="center">
+      <el-table-column prop="preferentialAmount" label="钱包优惠金额" align="center">
       </el-table-column>
-      <el-table-column prop="apPid" label="其他优惠金额" align="center">
+      <el-table-column prop="merchantPreferentialAmount" label="商户优惠金额" align="center">
       </el-table-column>
-      <el-table-column prop="third_party_order_number" label="分期期数" align="center">
+      <el-table-column prop="otherPreferentialAmount" label="其他优惠金额" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="分期手续费" align="center">
+      <el-table-column prop="installmentNumber" label="分期期数" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="分期服务方" align="center">
+      <el-table-column prop="installmentFee" label="分期手续费" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="分期付息方" align="center">
+      <el-table-column prop="installmentServer" label="分期服务方" align="center">
       </el-table-column>
-      <el-table-column prop="remark" label="剩余金额" align="center">
+      <el-table-column prop="installmentPayFee" label="分期付息方" align="center">
       </el-table-column>
       <!-- <el-table-column prop="remark" label="所属公司" align="center">
       </el-table-column> -->
@@ -130,7 +124,7 @@ export default {
       this.dialogFormVisible = true;
       this.info = {
         id: row.id,
-        type: 2
+        type: 7
       };
       
     },
@@ -145,7 +139,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/delete", {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/delete", {
           "id": row.id,
         }).then(function(response) {
           if (response.data.isSuccess) {
@@ -183,16 +177,20 @@ export default {
     },
     loadData(){
       const that = this;
+      console.log('执行建设银行明细')
       // console.log(this.$route.query)
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search", {
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/search", {
         "pageIndex": this.pageCurrent,
         "pageSize": this.pageSize,
         "object": {
-          "purpose_Merchant_code": this.$route.query.purpose_Merchant_code,
-          "purpose_Date": this.$route.query.purpose_Date
+          "purpose_Merchant_cod": this.$route.query.purpose_Merchant_code,
+          // "purpose_Date": this.$route.query.purpose_Date,
+          "creditAmount":this.$route.query.creditAmount,
+          "remarkStartDate":this.$route.query.remarkStartDate,
+          "remarkEndDate":this.$route.query.remarkEndDate
         }
       }).then(function (obj) {
-        // console.log('微信支付宝明细',obj);
+        console.log('微信支付宝明细',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;

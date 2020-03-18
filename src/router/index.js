@@ -351,7 +351,7 @@ export default new Router({
     },{
       path: '/visaProducts',
       component: () => import('@/page/productManagement/visa/addVisa/visaProducts'),
-      name: '添加签证',
+      name: '添加签证基础信息',
       meta: {
         keepAlive: true,
         auth: true
@@ -359,7 +359,7 @@ export default new Router({
     },{
       path: '/visaMessage', // 添加签证信息
       component: () => import('@/page/productManagement/visa/addVisa/visaMessage'),
-      name: '添加签证',
+      name: '添加签证签证信息',
       meta: {
         keepAlive: true,
         auth: true
@@ -367,7 +367,7 @@ export default new Router({
     },{
       path: '/visaImportant', // 添加重要信息
       component: () => import('@/page/productManagement/visa/addVisa/visaImportant'),
-      name: '添加签证',
+      name: '添加签证重要信息',
       meta: {
         keepAlive: true,
         auth: true

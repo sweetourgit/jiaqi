@@ -1,4 +1,8 @@
-<!-- 审批详情 -->
+<!--
+  审批详情
+  流程：先审批通过 -> 然后传入报销id，api/listforexpense -> 若不为空则进行打印，为空返回列表页 -> 关闭打印窗口返回列表页
+
+-->
 <template>
   <div class="loan-management">
     <el-row style="margin-top: 20px;">
@@ -79,6 +83,18 @@
                 </el-table-column>-->
                 <el-table-column prop="price" label="报销金额" align="center"></el-table-column>
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
+                <el-table-column prop="expenseType" label="还款/拆分" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.expenseType == 1">拆分</div>
+                    <div v-if="scope.row.expenseType == 2">还款</div>
+                  </template>
+                </el-table-column>
+                <!-- 1-拆分，2-还款 -->
+                <el-table-column prop="expenseType" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button @click="handleExpenseType(scope.$index, scope.row)" type="primary" plain size="small">查看</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-row>
           </el-tab-pane>
@@ -213,6 +229,13 @@
         </el-col>
       </el-row>
     </div>
+    <!-- 参看拆分/还款弹窗 -->
+    <el-dialog :title="title" :visible.sync="expenseType" width="40%" custom-class="city_list">
+      <p v-show="this.showExpenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+      <p v-show="this.showExpenseType == 0"><span>没有进行相关操作</span></p>
+      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
+      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showAccountName }}</strong ></span></p>
+    </el-dialog>
   </div>
 </template>
 
@@ -225,6 +248,9 @@
     data(){
       return {
         fundamental:{},
+        expenseType: false, // 显示拆分、还款弹窗
+        showExpenseType: false,
+        showAccountName: '', // 对公账户名称
         isShowPrintContent: false,
         ifShowPrintTable: false,
         listLoading: false,
@@ -233,6 +259,7 @@
         tabShowWhich: null, // 显示哪个tab
         examineData: [], // 审核
         keepBackContent: [],
+        keepExpense: [], //
         getApproveListGuid: null, // 获取列表页的的guid
         dialogVisible: false,
         workItemIDArr: null, // 保存匹配的WorkItemID 数组
@@ -245,7 +272,7 @@
         getLsParamsSplitArr: null,
         keepStatus: null,
         tablePrint: [
-          /*{
+         /* {
           'parentID':482,
           'id':486,
           'supplierTypeEX':1,
@@ -263,7 +290,8 @@
             'price':130,
           }*/
         ],
-        tabCount: 0
+        tabCount: 0,
+        keepTabId: [],
       }
     },
     // 关于时间的过滤
@@ -299,7 +327,23 @@
       }
     },
     methods: {
-      // 打印详情
+      handleExpenseType(index, row){
+        let _this = this
+        this.showExpenseType = row.expenseType
+        let getAccountID = row.accountID
+        this.expenseType = true
+        if(this.showExpenseType == 2){
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
+            "id": getAccountID
+          }).then(res => {
+            let keepRes = res.data
+            if(keepRes.isSuccess === true){
+              _this.showAccountName = keepRes.object.title
+            }
+          })
+        }
+      },
+      // 打印详情,当有拆分时会进行打印
       printDetails(){
         this.$nextTick(() => {
           this.$print(this.$refs.print)
@@ -333,7 +377,8 @@
       // 获取审核结果
       auditResult(paramsGuid) {
         this.listLoading = true
-        var that =this
+        let that =this
+        // GetOpinions
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: paramsGuid,
           jQ_Type: 3,
@@ -354,6 +399,10 @@
         .then(obj => {
           let keepData = obj.data.objects
           this.keepBackContent = keepData
+          // 筛选出拆分的数据，筛选出expenseID并重组新数组
+          this.keepExpense = keepData.map( item => {
+            return item.id
+          })
           this.keepStatus = keepData[0].checkType
           this.listLoading = false
         }).catch(err => {
@@ -364,7 +413,7 @@
       handlePassConfirm(){
         this.loadingBtn = true
         if(this.title == "审批通过"){
-          this.handlePassFn();
+          this.handlePassApi();
         }else{
           this.handleRejectFn();
         }
@@ -378,13 +427,14 @@
           "workItemID": this.getParamsWorkItemId,
           "commentText": this.commentText
         }).then((res) =>{
+          console.log('1 SubmitWorkAssignmentsForJQ_InsertOpinion')
           this.$message({
             message: '审批通过已完成',
             type: 'success'
           });
+          this.handlePassFn()
           this.loadingBtn = false
           this.transitShow = false;
-          // this.backListPage()
         }).catch( (err) => {
           this.$message.warning("审批通过失败 ");
           this.loadingBtn = false
@@ -394,33 +444,54 @@
         this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
           "id": paramsTabId
         }).then( obj =>  {
-          this.tabCount--
-          this.tablePrint.push(...obj.data.objects)
-          if(this.tabCount <= 0){
-            // console.log(this.tabCount)
-            this.ifShowPrintTable = true
+          console.log('3 payment/api/listforexpense')
+          let keepObjLength = obj.data.objects
+          // 如果没有需要打印的数据则返回列表页
+          if (keepObjLength && keepObjLength.length > 0){
+            this.tabCount--
+            // 组合数据 用来遍历tab组件 形成多个tab页
+            this.tablePrint.push(...obj.data.objects)
+            console.log(this.tablePrint)
+            if(this.tabCount <= 0){
+              this.ifShowPrintTable = true
+            }
+          } else {
+            // console.log(keepObjLength)
+            // this.backListPage()
           }
-          // console.log(this.tablePrint,'this.tablePrint')
         })
       },
       // 审批通过弹窗-确定
       handlePassFn(){
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
-          "object": {
-            guid: this.getApproveListGuid
-          }
-        })
-        .then(obj => {
-          let keepData = obj.data.objects
-          if(keepData !== null ){
-              this.handlePassApi()
-          } else {
-            this.$message.warning("此报销不是待审批状态，无法进行审批操作");
-          }
-          this.listLoading = false
-        }).catch(err => {
+        if(this.keepExpense.length > 0){
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+            "object": {
+              guid: this.getApproveListGuid
+            }
+          })
+          .then(obj => {
+            console.log('2 expense/api/list')
+            let keepData = obj.data.objects
+            if(keepData !== null){
+              this.keepTabId.length = 0
+              this.keepExpense.forEach( (item) => {
+                this.keepTabId.push(item)
+              })
+              this.tabCount = this.keepTabId.length
+              this.keepTabId.forEach((item) =>{
+                this.showPrintTable(item)
+              })
+              console.log(this.keepTabId)
+            } else {
+              this.$message.warning("此报销不是待审批状态，无法进行审批操作");
+            }
+            this.listLoading = false
+          }).catch(err => {
           console.log(err)
         })
+      } else {
+        this.backListPage()
+      }
       },
       // 驳回之后走工作流
       handleRejectFn(){

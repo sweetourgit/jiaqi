@@ -4,17 +4,28 @@
       <el-button class="el-button" type="primary" @click="saveFun(1)">保 存</el-button>
       <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
     </div>
-    <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
+    <!-- <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1" :limit="1">
       <el-button size="small" type="primary">点击上传</el-button>
-    </el-upload>
+    </el-upload> -->
+    <p>甲板导航图片上传：</p>
+    <image-input
+      :list="fileList1"
+      :numLimit="1"
+      @wakeup-material="picSelectHandler"
+      @remove-handler="removePicHandler"
+    ></image-input>
+    <material-list
+      ref="materialListRef">
+    </material-list>
   </div>
 </template>
 <script type="text/javascript">
+import imageInput from '../comp/image-input'
+import materialList from '../comp/material-list'
+import { getPictureAction } from '@/page/productManagement/listInfo/api.js'
 export default {
   name: "curiseShip",
-  components: {
-    
-  },
+  components: { imageInput, materialList },
   data() {
     return {
       fileList1: []
@@ -103,35 +114,47 @@ export default {
           console.log(err)
         })
       },
-     // 上传凭证 function logo
-      UploadUrl1(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-      },
-      handleSuccess1(response, file, fileList){
-        // console.log(response);
-        // console.log(file);
-        if(response.code == 200){
-          this.fileList1.push(response.data);
-        }else{
-          if(response.message){
-            this.$message.warning(response.message);
-          }else{
-            this.$message.warning('文件上传失败');
-          }
+      // 图片选择
+      picSelectHandler(idList){
+        let cb= (list) => {
+          console.log(list);
+          if(list.length > 1){
+          this.$message.warning("最多支持一张图片上传！");
+          list = list.splice(0, 1);
         }
+          this.getPictureFun(this.fileList1, list);
+        }
+        this.$refs.materialListRef.wakeup(idList, cb);
       },
-      handleError1(err, file, fileList){
-        this.$message.warning(`文件上传失败，请重新上传！`);
+
+      // 图片删除
+      removePicHandler(i){
+        console.log(this.fileList1, i);
+        this.fileList1.splice(i, 1);
+        console.log(this.fileList1);
       },
-      handleRemove1(file, fileList) {
-        console.log(file, fileList);
-        this.fileList1 = fileList;
-      },
-      handleExceed1(files, fileList) {
-        this.$message.warning(`平台订单只支持一个附件上传！`);
-      },
-      beforeRemove1(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
+
+      getPictureFun(obj, list){
+        // console.log(list);
+        // let imgArr = [];
+        list.forEach(el => {
+          // console.log(el);
+          getPictureAction.bind(this)(el).then(res => {
+            console.log(res);
+            const item = {
+              id: el,
+              url: res.url
+            }
+            obj.push(item);
+          }).catch(err => {
+            const item = {
+              id: el,
+              url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+            }
+            obj.push(item);
+          })
+        })
+        
       },
       loadData(){
         // alert(this.info);
