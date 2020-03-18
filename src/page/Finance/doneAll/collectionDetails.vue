@@ -215,7 +215,7 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-else="keepComponentName == 'reimburse'">
+      <div v-else-if="keepComponentName == 'reimburse'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
@@ -263,7 +263,8 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-if="keepComponentName !== 'collectionReimburse'">
+      <div v-else></div>
+      <div v-if="keepComponentName !== 'reimburse'">
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
@@ -361,6 +362,7 @@
     created(){
       let passPaymentID = this.$route.query.doneDetailPaymentID
       this.keepComponentName = this.$route.query.componentName
+      console.log(this.keepComponentName)
       this.keepPaymentId = passPaymentID
       this.getLabel(passPaymentID);
       //    this.getOrder(this.refundList.orderID);
