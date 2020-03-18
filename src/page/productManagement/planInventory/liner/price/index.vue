@@ -17,7 +17,7 @@
       <PriceHeader ref="priceHeader"></PriceHeader>
       <div>
         <el-button v-move-btn type="info" size="mini" v-if="test">返回2</el-button>
-        <el-button v-move-btn type="info" size="mini">返回</el-button>
+        <el-button type="info" size="mini">返回</el-button>
       </div>
     </header>
     <PriceMain ref="priceMain"></PriceMain>
@@ -36,6 +36,7 @@ export default {
 
   directives: { 
     moveBtn: {
+      bind: moveBtn.bind.bind(moveBtn),
       inserted: moveBtn.inserted.bind(moveBtn),
       componentUpdated: moveBtn.componentUpdated.bind(moveBtn),
       unbind: moveBtn.unbind.bind(moveBtn),

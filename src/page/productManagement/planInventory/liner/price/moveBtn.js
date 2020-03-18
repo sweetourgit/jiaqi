@@ -2,16 +2,29 @@ class MoveBtn {
   constructor(){
     this.store= [];
     this.contaier= null;
+    this.scrollCbBind= null;
     this.init();
   }
 
+  bind(el, binding, vnode) {
+    console.log('bind');
+    console.log(el.getBoundingClientRect().left)
+    let { top, bottom, right, left, position }= window.getComputedStyle(el);
+    console.log(top, bottom, right, left, position)
+    this.push(el);
+  }
+
   inserted(el, binding, vnode) {
-    this.push.call(this, (this.getStoreEl(el)))
+    console.log('inserted');
+    console.log(el.getBoundingClientRect().left)
+    let { top, bottom, right, left, position }= window.getComputedStyle(el);
+    console.log(top, bottom, right, left, position)
+    this.push(el);
   }
 
   componentUpdated(el, binding, vnode) {
-    console.log(el)
-    this.push(this.getStoreEl(el));
+    console.log(el.getBoundingClientRect().left)
+    this.push(el);
   }
 
   unbind(el, binding, vnode) {
@@ -20,7 +33,8 @@ class MoveBtn {
 
   init(){
     this.contaier= document.querySelector('.el-main');
-    this.contaier.addEventListener('scroll', this.scrollCb.bind(this)); 
+    this.scrollCbBind= this.scrollCb.bind(this);
+    // this.contaier.addEventListener('scroll', ); 
   }
 
   destroy(){
@@ -50,17 +64,19 @@ class MoveBtn {
 
   getStoreEl(el){
     let { top, left, height, width }= el.getBoundingClientRect();
-    return { dom: el, top, left, height, width, hidden: false };
+    let { top: styleTop, bottom:styleBottom, right:styleRight, left:styleLeft, position }= window.getComputedStyle(el);
+    return { dom: el, top, left, height, width, inFixed: false, styleTop, styleBottom, styleRight, styleLeft, position };
   }
 
-  push(storeEl){
-    let index= this.store.findIndex(el => el.dom=== storeEl.dom);
+  push(el){
+    let index= this.store.findIndex(storeEl => storeEl.dom=== el);
+    let storeEl= this.getStoreEl(el);
     if(index=== -1) return this.store.push(storeEl);
     this.store.splice(index, 1, storeEl);
   }
 
-  pop(dom){
-    let index= this.store.findIndex(el => el.dom=== dom);
+  pop(el){
+    let index= this.store.findIndex(storeEl => storeEl.dom=== el);
     this.store.splice(index, 1);
   }
 }
