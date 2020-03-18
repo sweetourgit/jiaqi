@@ -1,14 +1,14 @@
 <template>
-  <div class="distributor-content" id="industrialBank">
+  <div class="distributor-content" id="industrialBankSXF">
     <!-- 搜索表单 -->
     <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
       <el-row type="flex" class="row-bg">
         <el-col :span="7">
           <el-form-item label="状态:" class="status-length" prop="matchType">
             <el-select v-model="ruleForm.matchType" placeholder="请选择状态">
-              <el-option label="全部" value="0"></el-option>
-              <el-option label="未导入" value="1"></el-option>
-              <el-option label="已导入" value="2"></el-option>
+              <el-option label="全部" value=2></el-option>
+              <el-option label="未导入" value=0></el-option>
+              <el-option label="已导入" value=1></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -332,7 +332,16 @@ export default {
     },
     // 上传微信支付宝明细
     UploadUrl2() {
-      return this.GLOBAL.serverSrc + "/finance/wa_payment/api/ImportExcel";
+      let upURL=''
+      let data4D=utils.getSession4D();
+      switch(data4D.company){
+        case '辽宁大运通' :
+          upURL=this.GLOBAL.serverSrc + '/finance/wa_payment/api/ImportExcel'
+          break;
+        case '吉林大运通' :
+          upURL=this.GLOBAL.serverSrc + '/finance/wa_payment_jl/api/ImportExcel'
+      }
+      return upURL;
     },
     handleSuccess2(response, file, fileList) {
       console.log(response);
@@ -494,7 +503,7 @@ export default {
 };
 </script>
 <style lang="scss">
-#industrialBank.distributor-content {
+#industrialBankSXF.distributor-content {
   width: 99%;
   margin: 25px auto;
   height: auto;

@@ -249,7 +249,7 @@ export default {
     },
     UploadUrl2(){
       let upURL=''
-      let data4D=utils.getSession4D;
+      let data4D=utils.getSession4D();
       switch(data4D.company){
         case '辽宁大运通' :
           upURL=this.GLOBAL.serverSrc + '/finance/wa_payment/api/ImportExcel'
@@ -257,6 +257,7 @@ export default {
         case '吉林大运通' :
           upURL=this.GLOBAL.serverSrc + '/finance/wa_payment_jl/api/ImportExcel'
       }
+    
       return upURL;
     },
     handleSuccess2(response, file, fileList){

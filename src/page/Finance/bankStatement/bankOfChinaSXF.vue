@@ -6,9 +6,9 @@
         <el-col :span="7">
           <el-form-item label="状态:" class="status-length" prop="matchType">
             <el-select v-model="ruleForm.matchType" placeholder="请选择状态">
-              <el-option label="全部" value="0"></el-option>
-              <el-option label="未导入" value="1"></el-option>
-              <el-option label="已导入" value="2"></el-option>
+              <el-option label="全部" value="2"></el-option>
+              <el-option label="未导入" value="0"></el-option>
+              <el-option label="已导入" value="1"></el-option>
             </el-select>
           </el-form-item>
         </el-col>

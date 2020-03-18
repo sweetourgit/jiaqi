@@ -20,7 +20,7 @@
             <industrialBankSK></industrialBankSK>
           </el-tab-pane>
           <el-tab-pane label="手续费">
-            <merchantsBankSXF></merchantsBankSXF>
+            <industrialBankSXF></industrialBankSXF>
           </el-tab-pane>
           <el-tab-pane label="付款">暂时不写</el-tab-pane>
         </el-tabs>

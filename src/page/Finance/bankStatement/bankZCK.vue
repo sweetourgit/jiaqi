@@ -85,7 +85,8 @@
           @row-click="handleRowClick2"
           @selection-change="selectionChange2"
         >
-          <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
+          <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>、
+          <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
           <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
           <el-table-column prop="id" label="暂存款状态" align="center">
             <template slot-scope="scope">
@@ -412,7 +413,7 @@
  
 <script type="text/javascript">
 import BankOfChinaZCK from "./componentsZCK/bankOfChinaZCK.vue";
-import * as utils from './utils.js'
+import * as utils from "./utils.js";
 export default {
   components: {
     BankOfChinaZCK
@@ -761,7 +762,7 @@ export default {
     },
     loadData1() {
       const that = this;
-      let data4D=utils.getSession4D
+      let data4D = utils.getSession4D;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
           pageIndex: this.pageCurrent1 - 1,
@@ -771,8 +772,8 @@ export default {
             transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3,
-              //若传入4D则无数据 测试暂时先不传
+            seachType: 3
+            //若传入4D则无数据 测试暂时先不传
             //   userid: data4D.userID, // 暂无数据 想看改成0,
             // orgid: data4D.orgID, // 暂无数据 想看改成0,
             // topid: data4D.topID, // 暂无数据 想看改成0,
@@ -810,7 +811,7 @@ export default {
             transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3,
+            seachType: 3
             //若传入4D则无数据 测试暂时先不传
             //   userid: data4D.userID, // 暂无数据 想看改成0,
             // orgid: data4D.orgID, // 暂无数据 想看改成0,
@@ -831,7 +832,7 @@ export default {
     // 农业银行暂存款逻辑
     loadDataForNY() {
       const that = this;
-       let data4D = utils.getSession4D();
+      let data4D = utils.getSession4D();
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
           pageIndex: this.pageCurrentForNY - 1,
@@ -884,7 +885,7 @@ export default {
     //+++++++++++++++++++++招商银行暂存款逻辑+++++++++++++++++++++
     loadDataForZS() {
       const that = this;
-      let data4D=utils.getSession4D
+      let data4D = utils.getSession4D;
       this.$http
         .post(
           this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
@@ -896,12 +897,12 @@ export default {
               transaction_reference_number: "",
               begin: "2000-05-16",
               end: "2099-05-16",
-              seachType: 3,
-                //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+              seachType: 3
+              //若传入4D则无数据 测试暂时先不传
+              //   userid: data4D.userID, // 暂无数据 想看改成0,
+              // orgid: data4D.orgID, // 暂无数据 想看改成0,
+              // topid: data4D.topID, // 暂无数据 想看改成0,
+              // company: "",
             }
           }
         )
@@ -942,7 +943,7 @@ export default {
     //+++++++++++++++++++++建设银行暂存款逻辑+++++++++++++++++++++
     loadDataForJS() {
       const that = this;
-      let data4D=utils.getSession4D
+      let data4D = utils.getSession4D;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
           pageIndex: this.pageCurrentForJS - 1,
@@ -951,7 +952,7 @@ export default {
             matching_State: 0,
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3,
+            seachType: 3
             //若传入4D则无数据 测试暂时先不传
             //   userid: data4D.userID, // 暂无数据 想看改成0,
             // orgid: data4D.orgID, // 暂无数据 想看改成0,
@@ -1008,7 +1009,7 @@ export default {
     //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForJLZX() {
       const that = this;
-      let data4D=utils.getSession4D
+      let data4D = utils.getSession4D;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
           pageIndex: this.pageCurrentForJLZX - 1,
@@ -1016,7 +1017,7 @@ export default {
           object: {
             matching_State: 0,
             begin: "2000-05-16",
-            end: "2099-05-16",
+            end: "2099-05-16"
             //若传入4D则无数据 测试暂时先不传
             //   userid: data4D.userID, // 暂无数据 想看改成0,
             // orgid: data4D.orgID, // 暂无数据 想看改成0,
