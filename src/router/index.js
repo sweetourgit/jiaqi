@@ -346,7 +346,7 @@ export default new Router({
     },{
       path: '/visaProducts',
       component: () => import('@/page/productManagement/visa/addVisa/visaProducts'),
-      name: '添加签证',
+      name: '添加签证基础信息',
       meta: {
         keepAlive: true,
         auth: true
@@ -354,7 +354,7 @@ export default new Router({
     },{
       path: '/visaMessage', // 添加签证信息
       component: () => import('@/page/productManagement/visa/addVisa/visaMessage'),
-      name: '添加签证',
+      name: '添加签证签证信息',
       meta: {
         keepAlive: true,
         auth: true
@@ -362,7 +362,7 @@ export default new Router({
     },{
       path: '/visaImportant', // 添加重要信息
       component: () => import('@/page/productManagement/visa/addVisa/visaImportant'),
-      name: '添加签证',
+      name: '添加签证重要信息',
       meta: {
         keepAlive: true,
         auth: true
@@ -597,6 +597,15 @@ export default new Router({
       path: '/planInventory',
       component: () => import('@/page/productManagement/planInventory/index'),
       name: '团期/库存',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/approve/approveList',
+      component: () => import('@/page/Finance/approve/approveList'),
+      name: '需要您审批',
       meta: {
         keepAlive: true,
         auth: true
@@ -1006,17 +1015,7 @@ export default new Router({
         keepAlive: true,
         auth: true
       }
-    },
-    // 建设银行单独微信支付宝明细(建行的微信支付宝明细与其他微信支付宝明细字段不同)
-    {
-      path: '/bankStatement/constructionPayDetails',
-      component: () => import('@/page/Finance/bankStatement/constructionPayDetails.vue'),
-      name: '建设银行流水单管理  /微信支付宝明细',
-      meta: {
-        keepAlive: true,
-        auth: true
-      }
-    },{
+    }, {
       path: '/bankStatement/bankZCK',
       component: () => import('@/page/Finance/bankStatement/bankZCK.vue'),
       name: '银行流水单管理  /设置暂存款',
