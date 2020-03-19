@@ -382,6 +382,66 @@ export default {
       }
     },
     // 轮播图上传END=========
+    // nextMessage(formName){ // 点击下一步进入签证信息页面
+    //   if(this.ruleForm.avatarImages.length !== 1){
+    //     this.isInfoImg = true;
+    //   }
+    //   if(this.ruleForm.shuffling.length < 3 || this.ruleForm.shuffling.length > 6){
+    //     this.isInfo = true;
+    //     return;
+    //   }
+      // let strengths=[]; // 亮点词
+      // if(this.ruleForm.highlightWords!=""){
+      //     strengths.push({"strength":this.ruleForm.highlightWords})
+      // }
+      // if(this.ruleForm.highlightWords1!=""){
+      //     strengths.push({"strength":this.ruleForm.highlightWords1})
+      // }
+      // if(this.ruleForm.highlightWords2!=""){
+      //     strengths.push({"strength":this.ruleForm.highlightWords2})
+      // }
+      // if(this.ruleForm.highlightWords3!=""){
+      //     strengths.push({"strength":this.ruleForm.highlightWords3})
+      // };
+    //   let basis = [{ 
+    //     name:this.ruleForm.name
+    //   },{
+    //     highlightWords:strengths
+    //   },{
+    //     region:this.areaID
+    //   },{
+    //     pictureID:this.pictureID
+    //   },{
+    //     shuffling:this.ruleForm.shuffling
+    //   },{
+    //     sendVisa:this.ruleForm.sendVisa
+    //   },{
+    //     visaRegion:this.ruleForm.visaRegion
+    //   },{
+    //     visaType:this.ruleForm.visaType
+    //   },{
+    //     visaProcessType:this.ruleForm.visaProcessType
+    //   },{
+    //     interview:this.ruleForm.interview
+    //   },{
+    //     visaDate:this.ruleForm.visaDate
+    //   },{
+    //     entryNumber:this.ruleForm.entryNumber
+    //   },{
+    //     stayDays:this.ruleForm.stayDays
+    //   },{
+    //     content:this.ruleForm.content
+    //   }];
+    //   this.$refs[formName].validate((valid) => {
+    //     if (valid) {
+    //       let basisInformation = JSON.stringify(basis)
+    //       sessionStorage.setItem('message',basisInformation);
+    //       this.$router.push({ path: "/visaMessage" }); // 基本信息添加完跳转到签证信息页面
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
     nextMessage(formName){
       let sendAdrress = []; // 送签地
       sendAdrress.push(this.ruleForm.sendVisa)

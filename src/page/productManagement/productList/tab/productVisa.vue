@@ -15,7 +15,8 @@
       <br />
       <div>
         <span class="search-title" style="margin:0 0 0 22px;">国家地区</span>
-        <el-input placeholder="请输入" v-model="countriesArea" class="group-no" style="width:200px;"></el-input>
+        <el-autocomplete class="group-no" v-model="countriesArea" :fetch-suggestions="querySearch" placeholder="请输入" :trigger-on-focus="false" @select="departure" style="width:200px;"></el-autocomplete>
+        <!-- <el-input placeholder="请输入" v-model="countriesArea" class="group-no" style="width:200px;"></el-input> -->
         <span class="search-title">签证类型</span>
         <el-select v-model="visaTypes" placeholder="请选择" class="group-no" style="width:200px">
           <el-option v-for="item in visaList" :key="item.value" :label="item.label":value="item.value" style="width:200px;"></el-option>
@@ -42,11 +43,11 @@
       <el-button :disabled="forbidden">更改状态</el-button>
       <el-button :disabled="forbidden">复制</el-button>
       <el-button :disabled="forbidden">退改政策</el-button>
-      <el-button :disabled="forbidden" type="danger" plain>删除</el-button>
+      <el-button :disabled="forbidden" type="danger" plain @click="deleteProducts()">删除</el-button>
     </div>
     <!--列表表格-->
     <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun" :row-style="rowClass">
-      <el-table-column prop="ID" label="产品ID" align="center" width="120"></el-table-column>
+      <el-table-column prop="id" label="产品ID" align="center" width="120"></el-table-column>
       <el-table-column prop="visaTitle" label="产品名称" align="center" width="278"></el-table-column>
       <el-table-column prop="country" label="国家地区" align="center" width="120"></el-table-column>
       <el-table-column prop="visaType" label="签证类型" align="center" width="120"></el-table-column>
@@ -56,8 +57,8 @@
       <el-table-column prop="erpType" label="erp状态" align="center" width="140"></el-table-column>
     </el-table>
     <!--分页-->
-    <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
-      :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
+    <el-pagination style="margin:0 0 60px 0;" v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
+      :current-page.sync="currentPage" :page-size="pageSize" :page-sizes="[10, 30, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="total"
     ></el-pagination>
   </div>
 </template>
@@ -112,10 +113,11 @@ export default {
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
       total: 0,
-      current:1,
+      currentPage:1,
       multipleSelection: [], //选中的list
       forbidden:true, 
       pid:"",
+      countriesID:'',
     };
 
   },
@@ -124,7 +126,15 @@ export default {
   },
   methods: {     
     search(){ // 搜索
-      this.pageList();
+      if(this.op == ''){
+        this.currentPage = 1;
+        this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
+      } else {
+        this.currentPage = 1;
+        this.pageIndex = 1;
+        this.getUserCode();
+      }
+      //this.pageList();
     },
     reset(){ // 重置
       this.productID = '';//产品ID
@@ -159,17 +169,110 @@ export default {
       //选中行复选框勾选
       this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
       this.$refs.multipleTable.toggleRowSelection(row);
-      this.pid = row["productID"];
+      this.pid = this.multipleSelection[0].id;
     },
     rowClass({row, rowIndex}){  //选中行样式改变
      for(var i=0;i<this.multipleSelection.length;i++){
-        if(this.multipleSelection[i].productID==row.productID){
+        if(this.multipleSelection[i].id==row.id){
            return { "background-color": "#ecf5ff" }
         }
       }
     },
-    pageList(){
+    querySearch(queryString1, cb) { // 搜索国家地区模糊查询
+      this.vague = [];
+      this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
+        object: {
+          areaName: queryString1
+        }
+      })
+      .then(res => {
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.vague.push({
+            id: res.data.objects[i].id,
+            value: res.data.objects[i].areaName
+          });
+        }
+        var results = queryString1 ? this.vague.filter(this.createFilter(queryString1)): [];
+        cb(results);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    },
+    departure(item) { // 搜索国家地区模糊查询获取ID
+      this.countriesID = item.id;
+    },
+    createFilter(queryString1) {
+      return restaurant => {
+        return restaurant.value;
+      };
+    },
+    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,id = this.productID,visaTitle = this.productName,floorPrice = this.minPrice,ceilingPrice = this.maxPrice,visaPod = this.countriesArea,visaType = this.visaTypes,onlineTypeAndErpType = this.state,userCode = this.op) {
+      this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/pagevisadisplay",{
+        "object": {
+          "id":this.productID == "" ? 0 : this.productID,
+          "visaTitle":this.productName,
+          "floorPrice":this.minPrice == "" ? 0 : this.minPrice,
+          "ceilingPrice":this.maxPrice == "" ? 0 : this.maxPrice,
+          "visaPod":this.countriesID == "" ? 0 : this.countriesID,
+          "visaType":this.visaTypes == ""  ? 0 : this.visaTypes,
+          "onlineTypeAndErpType":this.state == ""  ? 0 : this.state,
+          "userCode":this.op
+        },
+        "pageSize":this.pageSize,
+        "pageIndex":this.currentPage,
+      })
+      .then(res =>{
+        this.total = res.data.total;
+        this.tableDate = res.data.objects;
+        this.tableDate.forEach(function (v,k,arr) {
+          if(arr[k]['erpType'] == 0){
+            arr[k]['erpType'] = '上线'
+          }else if(arr[k]['erpType'] == 1) {
+            arr[k]['erpType'] = '下线'
+          }
+          if(arr[k]['onlineType'] == 0){
+            arr[k]['onlineType'] = '上线'
+          }else if(arr[k]['onlineType'] == 1) {
+            arr[k]['onlineType'] = '下线'
+          }
+          if(arr[k]['visaType'] == 1){
+            arr[k]['visaType'] = '单次旅游签'
+          }else if(arr[k]['visaType'] == 2) {
+            arr[k]['visaType'] = '5年旅游签'
+          }else if(arr[k]['visaType'] == 3) {
+            arr[k]['visaType'] = '10年多次旅游签'
+          }else if(arr[k]['visaType'] == 4) {
+            arr[k]['visaType'] = '探亲访友签'
+          }else if(arr[k]['visaType'] == 5) {
+            arr[k]['visaType'] = '商务签证'
+          }
+        })
+      })
+      .catch(res =>{
 
+      })
+    },
+    getUserCode(){//op输入名字获取usercode
+      var that = this
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
+          object: {
+            name: this.op
+          }
+        }).then(res => {
+            if (res.data.objects.length !=0) {
+              var getUserCode='';
+              getUserCode = res.data.objects[0].userCode;
+              this.pageList(this.pageIndex,this.pageSize,this.productID,this.productName,this.minPrice,this.maxPrice,getUserCode,this.countriesArea,this.visaTypes,this.state,this.op);
+            } else {
+              that.tableDate = [];
+            }
+          }).catch(function(error) {
+            console.log(error);
+          })
+        this.$nextTick(() => {
+          this.pageshow = true;
+        });
     },
     handleSizeChange(val) {
       this.pageSize = val;
@@ -185,6 +288,30 @@ export default {
     },
     visaInventory(){ // 团期库存
       this.$router.push({ path: "/visaInventory?id="+this.pid });
+    },
+    deleteProducts(){ // 删除一条产品
+      this.$confirm("是否删除该产品?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      })
+      .then(() => {
+        this.$http.post(this.GLOBAL.serverSrc + '/visa/visapro/api/delete',{
+          "id": this.pid
+        })
+        .then(res => {
+          if(res.data.isSuccess == true){
+             this.$message.success("删除成功");
+             this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
+            }
+         })
+      })
+      .catch(() => {
+        this.$message({
+          type: "info",
+          message: "已取消"
+        });
+      });
     },
   }
 };

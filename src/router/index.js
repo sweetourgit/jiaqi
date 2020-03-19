@@ -368,6 +368,30 @@ export default new Router({
         auth: true
       }
     },{
+      path: '/editVisaProducts', // 编辑签证基础信息
+      component: () => import('@/page/productManagement/visa/editVisa/editVisaProducts'),
+      name: '编辑签证基础信息',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/editVisaMessage', // 编辑签证签证信息
+      component: () => import('@/page/productManagement/visa/editVisa/editVisaMessage'),
+      name: '编辑签证签证信息',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
+      path: '/editVisaImportant', // 编辑签证重要信息
+      component: () => import('@/page/productManagement/visa/editVisa/editVisaImportant'),
+      name: '编辑签证重要信息',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },{
       path: '/visaInventory',
       component: () => import('@/page/productManagement/visa/visaInventory/visaInventory'),
       name: '团期/签证库存',
@@ -597,6 +621,15 @@ export default new Router({
       path: '/planInventory',
       component: () => import('@/page/productManagement/planInventory/index'),
       name: '团期/库存',
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    },
+    {
+      path: '/approve/approveList',
+      component: () => import('@/page/Finance/approve/approveList'),
+      name: '需要您审批',
       meta: {
         keepAlive: true,
         auth: true
