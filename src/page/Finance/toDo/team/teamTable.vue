@@ -46,7 +46,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,7 +61,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -75,7 +75,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,7 +97,7 @@
       <el-table-column prop="name" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -117,7 +117,7 @@
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请时间" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -129,34 +129,35 @@
   import requestTeamTableData from '../mixins/requestTeamTableData'
   export default {
     name: "borrowList",
-    data(){
+    data () {
       return {
         ruleFormSearch: {
           startTime:'',
           endTime:'',
         },
-        approvalReimburseData:[], // 报销
-        approvalNoInData:[], // 无收入
-        approvalAdvanceData:[], // 预付款
-        approvalRefundData:[], // 退款
-        approvalSheetData:[], // 报账单
+        approvalReimburseData: [], // 报销
+        approvalNoInData: [], // 无收入
+        approvalAdvanceData: [], // 预付款
+        approvalRefundData: [], // 退款
+        approvalSheetData: [], // 报账单
       }
     },
     props: {
+      // 通过tabName来控制组件显示，数据加载
       whichTab: {
         type: String,
         default: 'nameINoIn'
       }
     },
     mixins: [requestTeamTableData],
-    mounted() {
+    mounted () {
 
     },
-    created(){
+    created (){
 
     },
     computed: {
-      getWhichTab: function(){
+      getWhichTab: function () {
         return this.whichTab
       }
     },
@@ -166,7 +167,7 @@
       }
     },
     methods: {
-      handleJumpDetail(index, row){
+      handleJumpDetail (index, row) {
         let getCurrentPaymentID = row.paymentID
         let getCurrentGuid = row.guid
         this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance', optionsGuid: getCurrentGuid} })

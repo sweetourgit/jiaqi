@@ -110,7 +110,7 @@
 
   export default {
     name: "ILabel",
-    data(){
+    data () {
       return {
         tabIShowWhich: 'nameINoIn', // 一级tab预设值为无收入
         tabIINoInShowWhich: 'nameIINoInTeam', // 无收入二级tab预设值（跟团）

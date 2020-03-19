@@ -5,11 +5,36 @@
   通过点击其父组件传组件名称来显示对应的表格;
 -->
 <template>
-  <div>
+  <div class="distributor-content">
     <!-- 检索 -->
-    <div class="plan">
+    <div class="plan" v-show="!(whichCollectTeamTab === 'nameIIICollectionTeamInner' || whichCollectTeamTab === 'nameIIICollectionTeamReimburse')">
       <el-form :model="ruleFormSearch" ref="ruleFormSearch" label-width="80px" style="margin-top: 20px">
         <el-row type="flex" class="row-bg">
+          <el-col :span="8">
+            <el-form-item label="团期计划:" prop="plan">
+              <el-input placeholder="请输入团期计划" v-model="ruleFormSearch.plan" class="group-no" style="width: 100%;"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="状态:" prop="checkType">
+              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" class="status-length" style="width: 100%;">
+                <el-option :label="item.label" :value="item.value" v-for="(item,index) of searchStatusGather" :key="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="申请人:" prop="create">
+              <el-autocomplete
+                style="width: 100%;"
+                v-model="ruleFormSearch.create"
+                :fetch-suggestions="queryCreate"
+                placeholder="请输入申请人"
+                @select="handleSelect"
+              ></el-autocomplete>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="收款时间:">
               <el-col :span="11">
@@ -25,36 +50,10 @@
               </el-col>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="团期计划:" prop="plan">
-              <el-input placeholder="请输入团期计划" v-model="ruleFormSearch.plan" class="group-no" style="width: 100%;"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="状态:" prop="checkType">
-              <el-select v-model="ruleFormSearch.checkType" placeholder="请选择状态" style="width: 100%;">
-                <el-option label="驳回" value="6"></el-option>
-                <el-option label="通过" value="5"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="申请人:" prop="create">
-              <el-autocomplete
-                v-model="ruleFormSearch.create"
-                :fetch-suggestions="queryCreate"
-                placeholder="请输入内容"
-                @select="handleSelect"
-                class="searchInput"
-              ></el-autocomplete>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6" style="text-align: left">
+          <el-col :span="8" style="text-align: left">
             <el-form-item>
-              <el-button @click="HandleSearchApproveCollect()" type="primary">搜索</el-button>
-              <el-button type="primary" plain @click="HandleResetApprovalCollect()">重置</el-button>
+              <el-button @click="HandleSearchApproveCollect(whichCollectTeamTab)" type="primary">搜索</el-button>
+              <el-button type="primary" plain @click="HandleResetApprovalCollect('ruleFormSearch', whichCollectTeamTab)">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -74,7 +73,7 @@
     </div>
     <!-- 检索 END -->
     <!-- 直客表格 -->
-    <el-table :data="approvalTeamDirectData" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamDirect'">
+    <el-table class="table-content" :data="approvalTeamDirectData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamDirect'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -105,15 +104,15 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column prop="createTime" label="申请时间" align="center">
       </el-table-column>
-      <el-table-column label="操作" width="100" align="center">
+      <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 直客表格 END -->
     <!-- 同业表格 -->
-    <el-table :data="approvalTeamSameData" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamSame'">
+    <el-table class="table-content" :data="approvalTeamSameData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamSame'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -146,13 +145,13 @@
       </el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 同业表格 END -->
     <!-- 内部收款 -->
-    <el-table :data="approvalTeamInnerData" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamInner'">
+    <el-table class="table-content" :data="approvalTeamInnerData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamInner'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -183,13 +182,13 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 内部收款 END -->
     <!-- 报销还款 -->
-    <el-table :data="approvalTeamReimburseData" border class="tableData" :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamReimburse'">
+    <el-table class="table-content" :data="approvalTeamReimburseData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamReimburse'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -206,7 +205,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <el-button @click="approvalBXHK(scope.row)" type="text" size="small">审批</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -245,14 +244,25 @@
     data () {
       return {
         ruleFormSearch: {
-          endTime:'',
+          endTime: '',
           startTime: '',
           plan: '',
           create: '',
+          checkType: '',
           collectionAccountSel: [] // 哪个银行
         },
+        searchStatusGather: [{ // 筛选状态集合
+          value: '0',
+          label: '审批中'
+        }, {
+          value: '1',
+          label: '通过'
+        }, {
+          value: '2',
+          label: '驳回'
+        }],
         approvalTeamDirectData: [],
-        approvalTeamSameData  : [],
+        approvalTeamSameData: [],
         approvalTeamInnerData: [],
         approvalTeamReimburseData: [],
         collectionAccountInfos: [], // 账户信息（筛选用）
@@ -319,7 +329,6 @@
     .plan{
       background: #f7f7f7;
       padding: 20px 10px;
-      margin: 20px 10px;
       .time{
         margin: 0 0 0 10px;
       }
@@ -328,7 +337,7 @@
         margin: 20px 0 20px 0;
       }
     }
-    #table-content{
+    .table-content{
       width: 98%;
       margin: 40px auto 10px;
     }

@@ -28,11 +28,11 @@ export default {
     HandleSearchPendingApprove (paramsModule) {
       this.pendingApprovalTable(changeComName[paramsModule])
     },
-    HandleResetPendingApproval (paramsFrom, paramsModule){
+    HandleResetPendingApproval (paramsFrom, paramsModule) {
       this.$refs[paramsFrom].resetFields()
       this.pendingApprovalTable(changeComName[paramsModule]);
     },
-    pendingApprovalTable(paramsTab){
+    pendingApprovalTable (paramsTab) {
       let arr = []
       let _this = this
       // 依据tab点击事件传入的模块名称，取对应的字段传给接口
@@ -128,7 +128,7 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {
+    getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
       } else {

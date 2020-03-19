@@ -6,6 +6,12 @@
 
 import moment from 'moment'
 
+// 通过父组件传过来的属性进行转换，搜索用（在请求数据方法里面再次转换）
+let changeComName = {
+  nameIIICollectionTeamDirect: 'nameIIICollectionTeamDirect', // 无收入
+  nameIIICollectionTeamSame: 'nameIIICollectionTeamSame', // 预付款
+}
+
 export default {
   data () {
     return {
@@ -21,12 +27,13 @@ export default {
   },
   methods: {
     moment,
+    //whichCollectTeamTab
     HandleSearchApproveCollect (paramsModule) {
-      this.pendingApprovalTable (changeComName[paramsModule])
+      this.approvalCollectTeamTable (changeComName[paramsModule])
     },
     HandleResetApprovalCollect (paramsFrom, paramsModule){
       this.$refs[paramsFrom].resetFields()
-      this.pendingApprovalTable(changeComName[paramsModule]);
+      this.approvalCollectTeamTable(changeComName[paramsModule]);
     },
     // 申请人查询方法
     queryCreate (queryString, cb) {
@@ -88,8 +95,7 @@ export default {
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
         object: {
-          id: 0,
-          checkType: 0,
+          checkType: this.ruleFormSearch.checkType ? this.ruleFormSearch.checkType : -1,
           collectionTime: "2019-05-16",
           startTime: this.ruleFormSearch.startTime ? moment(this.ruleFormSearch.startTime).format('YYYY-MM-DD 00:00:00') : "2000-05-16",
           endTime: this.ruleFormSearch.endTime ? moment(this.ruleFormSearch.endTime).format('YYYY-MM-DD 23:59:59') : '2099-05-16',
@@ -113,13 +119,13 @@ export default {
         // 依据传入的参数赋值数据给相应的组件
         let selCollectTableFn = {
           nameIIICollectionTeamDirect (param) {
-            return param ? _this.approvalTeamDirectData = obj.data.objects : _this.approvalTeamDirectData = []
+            return param ? _this.approvalTeamDirectData = obj.data.objects : _this.approvalTeamDirectData = [];
           },
           nameIIICollectionTeamSame (param) {
-            return param ? _this.approvalTeamSameData = obj.data.objects : _this.approvalTeamSameData = []
+            return param ? _this.approvalTeamSameData = obj.data.objects : _this.approvalTeamSameData = [];
           },
           nameIIICollectionTeamInner (param) {
-            return param ? _this.approvalTeamInnerData = obj.data.objects : _this.approvalTeamInnerData = []
+            return param ? _this.approvalTeamInnerData = obj.data.objects : _this.approvalTeamInnerData = [];
           },
           nameIIICollectionTeamReimburse (param) {
             return param ? _this.approvalTeamReimburseData = obj.data.objects : _this.approvalTeamReimburseData = [];
