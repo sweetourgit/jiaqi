@@ -127,6 +127,7 @@
 
 <script>
   import requestTeamTableData from '../mixins/requestTeamTableData'
+
   export default {
     name: "borrowList",
     data () {
@@ -149,7 +150,7 @@
         default: 'nameINoIn'
       }
     },
-    mixins: [requestTeamTableData],
+    mixins: [ requestTeamTableData ],
     mounted () {
 
     },
@@ -158,19 +159,19 @@
     },
     computed: {
       getWhichTab: function () {
-        return this.whichTab
+        return this.whichTab;
       }
     },
     watch: {
       getWhichTab: function (val, oldValue) {
-        console.log(val)
+        console.log(val);
       }
     },
     methods: {
       handleJumpDetail (index, row) {
-        let getCurrentPaymentID = row.paymentID
-        let getCurrentGuid = row.guid
-        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance', optionsGuid: getCurrentGuid} })
+        let getCurrentPaymentID = row.paymentID;
+        let getCurrentGuid = row.guid;
+        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance', optionsGuid: getCurrentGuid} });
       },
     }
   }
