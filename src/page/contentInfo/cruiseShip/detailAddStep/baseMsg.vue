@@ -248,6 +248,7 @@ export default {
               })
             }
             let fileArr = [];
+            // console.log(that.fileListPic);
             if(that.fileListPic.length == 0){
               // that.$message.warning("图片不能为空！");
               // return;
@@ -380,10 +381,11 @@ export default {
           // that.fileListPic = response.data.data.pics;
           response.data.data.pics.forEach(function(item, index, arr){
             that.fileListPic.push({
-              id: item.id,
-              url: item.url
+              id: item.pic_id,
+              url: item.pic_url
             })
           })
+          // console.log(that.fileListPic);
           that.fileListVideo = response.data.data.videos;
           that.fileListVideo.forEach(function(item, index, arr){
             item.url = 'http://yl.dayuntong.com' + item.pic_url;
