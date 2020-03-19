@@ -15,8 +15,8 @@
   <div class="page">
     <header @click="test= !test">
       <PriceHeader ref="priceHeader"></PriceHeader>
-      <div>
-        <el-button v-move-btn type="info" size="mini" v-if="test">返回2</el-button>
+      <div v-move-btn style="display:flex;justify-content: flex-end;width: 150px;">
+        <el-button type="info" size="mini" v-show="test">保存</el-button>
         <el-button type="info" size="mini">返回</el-button>
       </div>
     </header>
@@ -27,25 +27,15 @@
 <script>
 import PriceHeader from './comps/PriceHeader/PriceHeader'
 import PriceMain from './comps/PriceMain/PriceMain'
-import MoveBtn from './moveBtn'
+import './moveBtn'
 
-let moveBtn= new MoveBtn();
 export default {
 
   components: { PriceHeader, PriceMain },
 
-  directives: { 
-    moveBtn: {
-      bind: moveBtn.bind.bind(moveBtn),
-      inserted: moveBtn.inserted.bind(moveBtn),
-      componentUpdated: moveBtn.componentUpdated.bind(moveBtn),
-      unbind: moveBtn.unbind.bind(moveBtn),
-    }
-  },
-
   data(){
     return {
-      test: false,
+      test: true,
     }
   }
 
