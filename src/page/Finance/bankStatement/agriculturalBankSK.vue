@@ -338,8 +338,6 @@ export default {
       if (this.ruleForm.dateEnd) {
         dateEnd = moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59");
       }
-      console.log('dateStart',dateStart)
-       console.log('dateEnd',dateEnd)
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
           pageIndex: this.pageCurrent - 1,

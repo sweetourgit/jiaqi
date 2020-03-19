@@ -177,7 +177,6 @@ export default {
     },
     loadData(){
       const that = this;
-      console.log('执行建设银行明细')
       // console.log(this.$route.query)
       this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/search", {
         "pageIndex": this.pageCurrent,
@@ -190,7 +189,6 @@ export default {
           "remarkEndDate":this.$route.query.remarkEndDate
         }
       }).then(function (obj) {
-        console.log('微信支付宝明细',obj);
         if(obj.data.isSuccess){
           that.total = obj.data.total;
           that.tableData = obj.data.objects;

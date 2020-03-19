@@ -300,7 +300,6 @@ export default {
       this.info = '';
     },
     payDetail(row){
-      console.log('兴业row',row.company)
       this.$router.push({
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',

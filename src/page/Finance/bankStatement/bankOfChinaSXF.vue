@@ -281,7 +281,6 @@ export default {
 
     // 选择项更改
     selectionChange(val) {
-      console.log(val);
       if (val.length > 0) {
         this.clickable = false;
       } else {
