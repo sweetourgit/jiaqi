@@ -329,13 +329,7 @@
     .plan{
       background: #f7f7f7;
       padding: 20px 10px;
-      .time{
-        margin: 0 0 0 10px;
-      }
-      .fl{
-        float:left;
-        margin: 20px 0 20px 0;
-      }
+      margin: 20px 10px;
     }
     .table-content{
       width: 98%;
