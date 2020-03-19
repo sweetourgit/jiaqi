@@ -585,8 +585,8 @@ export default {
     },
 
     orderModification(status, cancle) {
-      console.log(status,'扎实发');
-        console.log(cancle,'扎实发dfas');
+      console.log(status,'司法所');
+      console.log(cancle,'司法所333');
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -597,7 +597,7 @@ export default {
         status !== 9
       ) {
         this.$message.error("总价超过剩余预存款和额度");
-      } else {
+      }else{
         // console.log(status)
         //订单修改保存
         let url = "/order/stat/api";
@@ -661,42 +661,42 @@ export default {
           // url = "/order/all/api/orderdelete";
         }
 
-        // this.$http
-        //   .post(this.GLOBAL.serverSrc + url, {
-        //     object: {
-        //       id: this.orderget.id,
-        //       occupyStatus: this.orderget.occupyStatus
-        //     }
-        //   })
-        //   .then(res => {
-        //     if (res.data.isSuccess == true) {
-        //       this.$message({
-        //         message: "提交成功",
-        //         type: "success"
-        //       });
-        //       if (status === 1) {
-        //         this.ordersave(3);
-        //       }
-        //       if (status === 10) {
-        //         this.ordersave(1);
-        //       }
-        //       // 取消订单按钮
-        //       if (cancle === 0) {
-        //         this.$http
-        //           .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
-        //             id: this.orderget.id
-        //           })
-        //           .then(res => {
-        //             console.log(res);
-        //           })
-        //           .catch(err => {
-        //             console.log(err);
-        //           });
-        //       }
-        //       this.$emit("orderPage");
-        //       this.cancle();
-        //     }
-        //   });
+        this.$http
+          .post(this.GLOBAL.serverSrc + url, {
+            object: {
+              id: this.orderget.id,
+              occupyStatus: this.orderget.occupyStatus
+            }
+          })
+          .then(res => {
+            if (res.data.isSuccess == true) {
+              this.$message({
+                message: "提交成功",
+                type: "success"
+              });
+              if (status === 1) {
+                this.ordersave(3);
+              }
+              if (status === 10) {
+                this.ordersave(1);
+              }
+              // 取消订单按钮
+              if (cancle === 0) {
+                this.$http
+                  .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
+                    id: this.orderget.id
+                  })
+                  .then(res => {
+                    console.log(res);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              }
+              this.$emit("orderPage");
+              this.cancle();
+            }
+          });
       }
     },
     //列表订单状态显示
@@ -1222,6 +1222,8 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
+      console.log(id,'asfa');
+      console.log(occupyStatus,'asfas');
       
       //更新订单，补充游客信息
       this.$refs["ruleForm"].validate(valid => {

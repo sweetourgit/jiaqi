@@ -1,14 +1,14 @@
 <template>
   <div>
-    <!-- 搜索begin -->
+    <!-- 游轮列表搜索begin -->
     <div class="boatSearch">
       <span class="searchName">订单ID</span>
       <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
       <span class="searchName">产品名称</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
+      <el-input v-model="name" class="searchInput" @blur="nameBlur()"></el-input>
       <span class="searchName">下单日期</span>
       <el-date-picker
-        v-model="orderCode"
+        v-model="beginDate"
         type="date"
         placeholder="开始日期"
         class="startTime"
@@ -17,7 +17,7 @@
       ></el-date-picker>
       <div class="dateLine"></div>
       <el-date-picker
-        v-model="orderCode"
+        v-model="endDate"
         type="date"
         placeholder="终止日期"
         class="startTime"
@@ -26,19 +26,30 @@
       ></el-date-picker>
       <br />
       <span class="searchName">团期计划</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
-      <span class="searchName">出发地</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
-      <span class="searchName">目的地</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
-      <br />
-      <span class="searchName">商户名称</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
-      <span class="searchName">销售</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
+      <el-input v-model="groupCode" class="searchInput" @blur="groupCodeBlur()"></el-input>
+      <span class="searchName">
+          商户名称
+          <span v-if="isToast" class="poa">没有该商户名称</span>
+      </span>
+       <el-autocomplete
+        class="input"
+        v-model="orgIDValue"
+        :fetch-suggestions="handleBusinessGet"
+        :trigger-on-focus="false"
+        @select="handleChooseOrgID"
+        ref="orgIDValue"
+        @blur="isToastFun"
+      ></el-autocomplete>
       <span class="searchName">订单联系人</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="orderCodeBlur()"></el-input>
+      <el-input v-model="orderCode" class="searchInput" @blur="contactBlur()"></el-input>
       <br />
+      <!-- <span class="searchName">出发地</span> 2020/3/17隐藏暂时用不到 唐爱妮
+      <el-input v-model="orderCode" class="searchInput" ></el-input>
+      <span class="searchName">目的地</span>
+      <el-input v-model="orderCode" class="searchInput"></el-input>
+      <span class="searchName">销售</span>
+      <el-input v-model="orderCode" class="searchInput" ></el-input>
+      <br /> -->
       <ul class="orderStatus">
         <span class="searchName poa">订单状态</span>
         <li
@@ -49,32 +60,33 @@
         >{{item.name}}</li>
       </ul>
       <br />
-      <el-button type="primary" style="margin-left: 16px;">搜索</el-button>
-      <el-button type="primary" @click="handleReset">重置</el-button>
+       <el-button type="primary" class="search-but" @click="orderPage(1,pageSize)">搜索</el-button>
+      <el-button type="primary" class="search-but" @click="handleReset">重置</el-button>
     </div>
-    <!-- 搜索end -->
-    <!-- 列表begin -->
-    <div class="orderLists" v-for="(item,index) in arrDemo" :key="index">
-      <h3>游轮游轮游轮</h3>
+    
+    <!-- 列表end -->
+     <!-- 列表begin -->
+    <div class="orderLists" v-for="(item,index) in orderpage" :key="index">
+      <h3>{{item.product_name}}</h3>
       <!-- 固定的table begin -->
-      <div class="contentHeader" @click="handleOpen(index)">
+      <div class="contentHeader" @click="handleOpen(item,index)">
         <table>
           <tr>
             <td class="tr">订单ID&nbsp;&nbsp;</td>
-            <td>15770783028823700467</td>
+            <td>{{item.order_code}}</td>
             <div class="tableCenter">
               <td class="tr">团期计划&nbsp;&nbsp;</td>
-              <td>212-20200501-1212</td>
+              <td>{{item.created_at}}</td>
             </div>
             <td class="tr">下单时间&nbsp;&nbsp;</td>
-            <td></td>
+            <td>{{formatDate(new Date(item.created_at))}}</td>
           </tr>
           <tr>
             <td class="tr">联系人&nbsp;&nbsp;</td>
-            <td valign="top"></td>
+            <td valign="top">{{item.name}}</td>
             <div class="tableCenter">
               <td class="tr">电话&nbsp;&nbsp;</td>
-              <td valign="top"></td>
+              <td valign="top">{{item.tel}}</td>
             </div>
           </tr>
         </table>
@@ -84,8 +96,9 @@
       </div>
       <!-- 固定的table end -->
 
+
       <!-- 列表折叠begin -->
-      <transition name="el-fade-in" v-if="isShowContent == index">
+      <!-- <transition name="el-fade-in" v-if="isShowContent == index">
         <div class="contentBody">
           <table>
             <tr>
@@ -155,7 +168,7 @@
             </tr>
           </table>
 
-          <!-- 操作菜单begin -->
+         
           <el-breadcrumb separator="|" class="confirmTime">
             <el-breadcrumb-item
               v-for="(item,index) in breadCrumbs"
@@ -163,11 +176,13 @@
               class="breadCrumbPointer"
               @click.native="operation(item,index)"
             >{{item}}</el-breadcrumb-item>
-            <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item,index)">流程管理</el-breadcrumb-item>
-          </el-breadcrumb>
-          <!-- 操作菜单end -->
+            <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item,index)">流程管理
 
-          <!-- 订单状态begin -->
+</el-breadcrumb-item>
+          </el-breadcrumb>
+          
+
+        
           <div class="butRow">
             <span class="dotFather">
               <span class="dot"></span>
@@ -178,12 +193,131 @@
               <span class="moneyColor">1天22:33:33</span>
             </span>
           </div>
-          <!-- 订单状态end -->
+        
         </div>
-      </transition>
-      <!-- 列表折叠end -->
+      </transition> 
+       -->
+      <!-- 折叠开始 -->
+        <transition name="el-fade-in">
+          <div class="contentBody" v-show="isShowContent == index">
+            <table>
+              <tr>
+                <td class="tr">套餐名称&nbsp;&nbsp;</td>
+                <td class="longWeight">{{getListOneMessage.product_name}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">出发地&nbsp;&nbsp;</td>
+                  <td class="longWeight">{{getListOneMessage.departure}}</td>
+                </div>
+                <td class="tr">目的地&nbsp;&nbsp;</td>
+                <td class="longWeight">{{getListOneMessage.destination}}</td>
+              </tr>
+              <tr>
+                <td class="tr">出发日期&nbsp;&nbsp;</td>
+                <td class="longWeight">{{formatDate(new Date(getListOneMessage.created_at))}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">数量&nbsp;&nbsp;</td>
+                  <td class="longWeight" valign="top">{{getListOneMessage.enrollDetail}}</td>
+                </div>
+                <td class="tr">产品类型&nbsp;&nbsp;</td>
+                <td class="longWeight">跟团游</td>
+              </tr>
+              <tr>
+                <td class="tr">整体优惠&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.entiretyFav)}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">其他费用</td>
+                  <td class="longWeight" valign="top">
+                    {{item.otherTitle}} &nbsp;
+                    <span>{{toDecimal2(getListOneMessage.otherPrice)}}</span>
+                  </td>
+                </div>
+                <td class="tr">订单来源&nbsp;&nbsp;</td>
+                <td class="longWeight">{{getListOneMessage.order_status}}</td>
+              </tr>
+              <tr>
+                <td class="tr">支付方式&nbsp;&nbsp;</td>
+                <td class="longWeight"></td>
+                <div class="BodyTableCenter">
+                  <td class="tr">操作&nbsp;&nbsp;</td>
+                  <td class="longWeight" valign="top">{{getListOneMessage.op}}</td>
+                </div>
+                <td class="tr">商户销售&nbsp;&nbsp;</td>
+                <td
+                  class="longWeight"
+                  valign="top"
+                  v-if="getListOneMessage.orderChannel == 1"
+                >{{getListOneMessage.saler}}</td>
+                <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel !== 1"></td>
+              </tr>
+              <tr>
+                <td class="tr">平台&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top">{{getListOneMessage.platform}}</td>
+                <div class="BodyTableCenter">
+                  <td class="tr">销售&nbsp;&nbsp;</td>
+                  <td
+                    class="longWeight"
+                    valign="top"
+                    v-html="getListOneMessage.orderChannel !== 1 ? getListOneMessage.saler : getListOneMessage.indirectSale"
+                  ></td>
+                  <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel == 1"></td>
+                </div>
+                <td class="tr">订单总额&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.payable)}}</td>
+              </tr>
+              <tr>
+                <td class="tr">已付金额&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.paid)}}</td>
+              </tr>
+            </table>
+            <el-breadcrumb separator="|" class="confirm-time">
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item> -->
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item,2,item.orderCode)"
+              >备注</el-breadcrumb-item>
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item> -->
+              <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item,1,item.orderCode)"
+              >流程管理</el-breadcrumb-item>
+              <!-- <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item,3)"
+              >出团通知书</el-breadcrumb-item> -->
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item,5)"
+              >退款</el-breadcrumb-item>
+               <el-breadcrumb-item
+                v-if="getListOneMessage.paid > 0"
+                class="breadCrumbPointer"
+                @click.native="operation(item,6,item.orderCode)"
+              >发票申请</el-breadcrumb-item>
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
+              <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
+            </el-breadcrumb>
+            <div class="but-row">
+              <span class="dotFather">
+                <span class="dot"></span>
+                <span>{{item.order_status}}</span>
+              </span>
+              <!--  -->
+              <span v-if="item.occupy_status == '预订不占' || item.occupy_status == '预订占位'">
+                待确认剩余 &nbsp;
+                <span class="moneyColor">1天22:33:33</span>
+              </span>
+              <!--退款状态-->
+              <span class="dotFather01" v-if="getListOneMessage.refund_status !=0">
+                <span class="dot"></span>
+                <span>{{getrefundStatus(getListOneMessage.refund_status)}}</span>
+              </span>
+            </div>
+          </div>
+        </transition>
+
     </div>
-    <!-- 列表end -->
+     <!-- 订单end -->
 
     <!-- 分页begin -->
     <el-pagination
@@ -261,11 +395,29 @@ export default {
         { status: 2, name: "拒绝退款", type: 2 }
       ], //搜索的订单状态集合  联系客人先不做
       breadCrumbs: ["备注", "收款", "换舱", "退款", "出团通知书", "客人信息"], //折叠列表里面的操作集合
-      isShowContent: null //折叠列表是否显示
+      isShowContent: null, //折叠列表是否显示
+      isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
+      orderCode: "", // 搜索订单ID
+      name: "", //搜索产品名称
+      beginDate: "",//搜索开始时间
+      endDate: "",//搜索结束时间
+      groupCode: "", //搜索团期计划ID
+      orgIDValue: "", //商户名称 搜索时显示的字段
+      businessLists: [], //商户名称下拉列表展示
+      contact:"",// 搜索订单联系人
+      orderpage: [],//订单列表
+      getListOneMessage: {},//订单列表下拉后详情
+      priceType: null, //价格类型  1直客  2同业价格
+      orderCodeSon: null, //传给子组件
+      order_status: 0,//订单状态
+
     };
   },
 
-  created() {},
+  created() {
+     this.handleBusinessGet();
+     this.orderPage();
+  },
 
   methods: {
     //   点击订单状态筛选
@@ -287,12 +439,66 @@ export default {
     },
 
     // 折叠表格显示
-    handleOpen(index) {
-      this.isShowContent == index
-        ? (this.isShowContent = -1)
-        : (this.isShowContent = index);
+    // handleOpen(item,index) {
+    //   this.isShowContent == index
+    //     ? (this.isShowContent = -1)
+    //     : (this.isShowContent = index);
+    // },
+    handleOpen(item, index) { // 点击list列表中的一个
+       this.variable= 0; //退款
+       this.a_variable=0;//设置一个变量展示弹窗
+       this.variable_s=0;//发票申请
+       this.dialogType= 0; //弹窗类型  1：流程管理  2：备注信息
+      if (this.isShowContent != index) {
+          this.isShowContent = index;
+          this.tour = {};
+          this.axiosListOneInfo(item.id,item.planID);
+        } else {
+          this.isShowContent = null;
+        }
+    }, 
+    axiosListOneInfo(id,planID) { // 请求list中的一个数据
+      this.$http
+        .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/pageinfo", {
+          id: id
+        })
+        .then(res => {
+          // console.log("请求一条数据的",res)
+          //let enrolls=[];//标题
+          //let guest;//全部数据
+        
+          this.getListOneMessage = res.data.data; 
+          let date = res.data.data.created_at.toString();
+          this.getListOneMessage.created_at = moment(date).format("YYYY-MM-DD");
+          this.orderCodeSon = res.data.data.order_code;
+          this.priceType = res.data.data.price_type;
+          //订单来源
+          // 下单平台
+          if (this.getListOneMessage.platform == 1) {
+            this.getListOneMessage.platform = "ERP系统";
+          } else {
+            this.getListOneMessage.platform = "同业系统";
+          }
+           //获取报名类型列表数据
+          // this.$http
+          //   .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
+          //     id: planID
+          //   })
+          //   .then(res => {
+          //     if (res.data.isSuccess == true) {
+          //           enrolls = res.data.objects;
+          //           guest= this.getListOneMessage.guests;
+          //           this.sourceMaker(enrolls,guest);
+          //           this.enrollDetailMaker();
+          //         }
+              
+          //   });
+           
+         })
+        .catch(err => {
+          console.log(err);
+        });
     },
-
     // 操作
     operation(val, index) {
       this.propsObj = {
@@ -308,7 +514,356 @@ export default {
     // 重置按钮
     handleReset() {
       this.isShowContent = null;
-    }
+    },
+    orderCodeBlur() { //搜索订单文本
+      if (this.orderCode == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    nameBlur() {
+      if (this.name == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    beginDateBlur() {
+      if (this.beginDate == "" && this.endDate == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    endDateBlur() {
+      if (this.beginDate == "" && this.endDate == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    //判断结束时间不能在开始时间之前
+    endDateChange() {
+      let beginTime = moment(this.beginDate).format("YYYYMMDD");
+      let entTime = moment(this.endDate).format("YYYYMMDD");
+      if (this.beginDate !== "") {
+        if (entTime < beginTime) {
+          this.$message.error("结束时间不能早于开始时间");
+          this.endDate = "";
+        }
+      }
+    },
+    groupCodeBlur() {
+      if (this.groupCode == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    podBlur() {
+      if (this.cdestination == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    // destinationBlur() { //出发地
+    //   if (this.destination == "") {
+    //     this.orderPage(1, this.pageSize);
+    //   }
+    // },
+    localCompNameBlur() {
+      if (this.orgIDValue == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    salerBlur() {
+      if (this.saler == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    contactBlur() {
+      if (this.contact == "") {
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    isToastFun() {  // 商户名称input失去焦点的时候隐藏提示语 没有数据
+      this.isToast = false;
+      this.orgIDValue = "";
+      this.orgID = 0;
+    },
+    handleBusinessGet(queryString3, cb) {  //商户名称模糊查询
+      this.businessLists = [];
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+          object: {
+            name: queryString3,
+            isDeleted: 0
+          }
+        })
+        .then(res => {
+          if (res.data.isSuccess == true) {
+            this.isToast = false;
+            for (let i = 0; i < res.data.objects.length; i++) {
+              this.businessLists.push({
+                value: res.data.objects[i].name,
+                id: res.data.objects[i].id
+              });
+            }
+            let results = queryString3
+              ? this.businessLists.filter(this.createFilter(queryString3))
+              : [];
+
+            cb && cb(results);
+          } else {
+            // this.orgIDValue = "";
+            this.isToast = true;
+            cb && cb([]);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    handleChooseOrgID(item) {   // 搜索商户名称下拉选择事件
+      this.orgID = item.id;
+    },
+    statusTab(num, index, status) {
+      if (num == 1) {
+        this.refundNum = 7; //为7 只要不等于索引值不等于退款状态号就行
+        this.refundStatus = 0;
+        this.whichStateTab = num;
+        this.orderNum = index;
+        this.order_status = status;
+        this.orderPage(1, this.pageSize);
+      }
+      if (num == 2) {
+        this.whichStateTab = num;
+        this.refundNum = index;
+        this.refundStatus = status;
+        this.orderNum = null;
+        this.order_status = 0;
+        this.orderPage(1, this.pageSize);
+      }
+    },
+    orderPage( // 搜索订单
+      pageIndex = this.pageIndex,
+      pageSize = this.pageSize,
+      orderCode = this.orderCode, //订单id
+      name = this.name, //产品名称
+      groupCode = this.groupCode, //团期计划
+      beginDate = this.beginDate,
+      endDate = this.endDate,
+      saler = this.saler,
+      orgID = this.orgID, //商户名称 搜索时的字段
+      orderStatus = this.order_status,
+      refundStatus = this.refundStatus,
+      destinationID = this.destinationID, //目的地
+      contact = this.contact, //订单联系人
+      pod = this.pod,
+      podID = this.podID //出发地
+    ){
+      // 每次搜索都折叠 要不折叠的数据显示不对 因为点击折叠的位置需要调取另一个接口
+      this.showContent = null;
+      if (beginDate) {
+        let y = beginDate.getFullYear();
+        let m =
+          beginDate.getMonth() + 1 > 9
+            ? beginDate.getMonth() + 1
+            : "0" + (beginDate.getMonth() + 1);
+        let d =
+          beginDate.getDate() > 9
+            ? beginDate.getDate()
+            : "0" + beginDate.getDate();
+        beginDate = "" + y + m + d;
+      } else {
+        beginDate = 0;
+      }
+      if (endDate) {
+        let y = endDate.getFullYear();
+        let m =
+          endDate.getMonth() + 1 > 9
+            ? endDate.getMonth() + 1
+            : "0" + (endDate.getMonth() + 1);
+        let d =
+          endDate.getDate() > 9 ? endDate.getDate() : "0" + endDate.getDate();
+        endDate = "" + y + m + d;
+      } else {
+        endDate = 0;
+      }
+      this.orderpage = [];
+   
+      if (endDate !== 0 && beginDate !== 0) {
+        beginDate = moment(beginDate).format("YYYY-MM-DD");
+        endDate = moment(endDate).format("YYYY-MM-DD");
+      }
+      this.$http
+        .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/listpage", {
+          pageIndex: pageIndex,//多少页
+          pageSize: pageSize,//多少内容
+          order_code: orderCode,//订单id
+          product_name: name,//产品名称
+          create_at_begin:beginDate,//开始时间
+          create_at_end:endDate,//结束时间
+          tour_no: groupCode,//团期计划
+          departure:"",//粗发地
+          destination:'',//目的地
+          sale:saler,//销售
+          contact_name:'',//订单联系人
+          order_status:this.orderStatus,//订单状态
+          refund_status:this.refundStatus,//退款状态
+       })
+        .then(res => {
+         this.total = res.data.data.total;
+        
+          if (res.data.code == 200) {
+            this.orderpage = res.data.data.list;
+            if (res.data.data.list.length !== 0) {
+              this.orderStateAllNum = res.data.data.list[0];
+              this.receiveDataJudgeShow(this.orderpage);
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+     toDecimal2(x) { //周边信息 整数转浮点数
+      let f = Math.round(x * 100) / 100;
+      var s = f.toString();
+      var rs = s.indexOf(".");
+      if (rs < 0) {
+        rs = s.length;
+        s += ".";
+      }
+      while (s.length <= rs + 2) {
+        s += "0";
+      }
+      return s;
+    },
+       // 接收数据 判断显示
+    receiveDataJudgeShow(orderpage) {
+      orderpage.forEach(item => {
+        // 订单状态
+        if (item.order_status == 0) {
+          // 占位状态
+          if (item.occupy_status == 3) {
+            item.occupy_status = "确认占位";
+          } else if (item.occupy_status == 2) {
+            item.occupy_status = "预订占位";
+          } else {
+            item.occupy_status = "预订不占";
+          }
+          item.order_status = item.occupy_status;
+        } else if (item.order_status == 1) {
+          item.order_status = "补充资料";
+        } else if (item.order_status == 2) {
+          // item.orderStatus = "电子合同";
+          item.order_status = "待出行";
+        } else if (item.order_status == 3) {
+          item.order_status = "待出行";
+        } else if (item.order_status == 4) {
+          item.order_status = "出行中";
+        } else if (item.order_status == 5) {
+          item.order_status = "待评价";
+        } else if (item.order_status == 6) {
+          item.order_status = "订单完成";
+        } else if (item.order_status == 7) {
+          item.order_status = "未确认";
+        } else if (item.order_status == 8) {
+          item.order_status = "签署合同";
+        } else if (item.order_status == 9) {
+          item.order_status = "作废订单";
+        } else if (item.order_status == 10) {
+           if (item.refundStatus != 0) {
+              item.order_status = "确定占位";
+           }else{
+              item.order_status = "确认订单";
+           }
+
+        }
+        if (item.refundStatus == 1) {
+          item.refundStatus = "退款中";
+        }else if (item.refundStatus == 2) {
+          item.refundStatus = "拒绝退款";
+        }else if (item.refundStatus == 3) {
+          item.refundStatus = "已退款";
+        }else if (item.refundStatus == 4) {
+          item.refundStatus = "无退款";
+        }else if (item.refundStatus == 5) {
+          item.refundStatus = "申请退款";
+        }else if (item.refundStatus == 6) {
+          item.refundStatus = "完成退款";
+        }
+        //产品类型
+        // if (item.productType == 1) {
+        //   item.productType = "跟团游";
+        // } else {
+        //   item.productType = "自由行";
+        // }
+      });
+    },
+    //列表订单状态显示
+    getOrderStatus(status) {
+      switch (status) {
+        case 1:
+          return "补充游客材料";
+          break;
+        case 2:
+          return "签订电子合同";
+          break;
+        case 3:
+          return "待出行";
+          break;
+        case 4:
+          return "旅行中";
+          break;
+        case 5:
+          return "待评价";
+          break;
+        case 6:
+          return "已完成";
+          break;
+        case 7:
+          return "未确认";
+          break;
+        case 8:
+          return "签署合同"; //？
+          break;
+        case 9:
+          return "订单作废";
+          break;
+        case 10:
+          return "订单确认";
+          break;
+      }
+    },
+    //列表退款状态显示
+    getrefundStatus(status) {
+      switch (status) {
+        case 1:
+          return "退款中";
+          break;
+        case 2:
+          return "拒绝退款";
+          break;
+        case 3:
+          return "已退款";
+          break;
+        case 4:
+          return "无退款";
+          break;
+        case 5:
+          return "申请退款";
+          break;
+        case 6:
+          return "完成退款";
+          break;
+      }
+    },
+     formatDate(date) { //日期转换  
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      var h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = date.getSeconds();
+      second = second < 10 ? "0" + second : second;
+      return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
+    },
   }
 };
 </script>
