@@ -1222,10 +1222,95 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
+    
+       console.log(this.orderget.orderStatus,'this.orderget.orderStatus');
+        console.log(this.isChangeNumber,'this.isChangeNumber');
      //更新订单，补充游客信息
+          let obj = JSON.parse(JSON.stringify(this.orderget));
+      if ( this.isChangeNumber === true && this.orderget.orderStatus === 3){
+             this.$confirm("更改信息后合同将作废", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+              .then(() => {
+                   obj.orderStatus = 10;
+                   this.ordersave_data(id, occupyStatus);
+                 
+            })
+              .catch(() => {
+                this.$message({
+                  type: "info",
+                  message: "已取消"
+                });
+             });
+        }else{
+           this.ordersave_data(id, occupyStatus);
+        }
+      
+          // get的总价不等于更改后的总价时 补充资料待出行都要跳转回到确认中占位状态
+          // if (this.orderget.payable !== this.payable) {
+          //   if (
+          //     this.orderget.orderStatus === 1 ||
+          //     this.orderget.orderStatus === 3 ||
+          //     this.orderget.orderStatus === 2
+          //   ) {
+          //     // this.isChangeNumber = true;
+          //     this.orderget.orderStatus = 10;
+          //     this.orderget.occupyStatus = 3;
+          //   }
+          // }
+
+          /*
+          //获取报名总人数
+          obj.number = this.number;
+          for (let i = 0; i < this.enrolNum.length; i++) {
+            if (this.enrolNum[i]) {
+              obj.number += parseInt(this.enrolNum[i]);
+            }
+          }
+
+          let t_num =
+            this.teampreviewData.count - this.teampreviewData.remaining;
+          let n_num = obj.number - t_num;
+          if (obj.number == 0) {
+            (this.enrolNumsWarn = "报名人数不能为空"), (this.enrolNums = true);
+            return false;
+          } else if (n_num > this.teampreviewData.remaining) {
+            (this.enrolNumsWarn = "报名总人数不能超过余位"),
+              (this.enrolNums = true);
+            return false;
+          } else {
+            this.enrolNums = false;
+          }
+          //出游人信息
+          let guest = [];
+          for (let i = 0; i < this.tour.length; i++) {
+            for (let j = 0; j < this.tour[i].length; j++) {
+              guest.push(this.tour[i][j]);
+            }
+          }
+          // 补充资料前未填写出行人信息是可以点击动态按钮和保存更改的
+          for (let i = 0; i < guest.length; i++) {
+            if (this.occupyStatus == 3 && this.orderget.orderStatus === 1) {
+              if (guest[i].cnName == "点击填写") {
+                this.$message.error("请补全游客资料");
+                return;
+              }
+            }
+            guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
+            if (guest[i].sex == null) guest[i].sex = 2; //出行人没有填写时传值性别为2 要不报错  正确的 0 男  1 女
+            // // guest[i].credTOV = new Date(guest[i].credTOV).getTime();
+          }
+          */
+
+        
+    },
+    ordersave_data(id, occupyStatus){ // 便于提醒是否作废合同新增客人
+      let obj = JSON.parse(JSON.stringify(this.orderget));
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
-          let obj = JSON.parse(JSON.stringify(this.orderget));
+        
           obj.contact =
             '{"Name":"' +
             this.ruleForm.contactName +
@@ -1239,31 +1324,12 @@ export default {
             obj.occupyStatus = 3;
           } 
             // 补充资料和待出行 信息更改跳转回到确认占位状态
-          if (
-            this.isChangeNumber === true &&
+          if ( this.isChangeNumber === true &&
             (this.orderget.orderStatus === 1 ||
-              this.orderget.orderStatus === 2 ||
-              this.orderget.orderStatus === 3)
+              this.orderget.orderStatus === 2 )
           ) {
-             this.$confirm("更改信息后合同将作废", "提示", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-              })
-              .then(() => {
-                   obj.orderStatus = 10;
-                 
-            })
-              .catch(() => {
-                this.$message({
-                  type: "info",
-                  message: "已取消"
-                });
-                return;
-              });
-
-           
-          }
+              obj.orderStatus = 10;
+           }
 
           // enrollDetail拼接
           // this.getEnrollDetailPj();
@@ -1338,66 +1404,6 @@ export default {
               }
             });
       //++++++
-
-
-
-          // get的总价不等于更改后的总价时 补充资料待出行都要跳转回到确认中占位状态
-          // if (this.orderget.payable !== this.payable) {
-          //   if (
-          //     this.orderget.orderStatus === 1 ||
-          //     this.orderget.orderStatus === 3 ||
-          //     this.orderget.orderStatus === 2
-          //   ) {
-          //     // this.isChangeNumber = true;
-          //     this.orderget.orderStatus = 10;
-          //     this.orderget.occupyStatus = 3;
-          //   }
-          // }
-
-          /*
-          //获取报名总人数
-          obj.number = this.number;
-          for (let i = 0; i < this.enrolNum.length; i++) {
-            if (this.enrolNum[i]) {
-              obj.number += parseInt(this.enrolNum[i]);
-            }
-          }
-
-          let t_num =
-            this.teampreviewData.count - this.teampreviewData.remaining;
-          let n_num = obj.number - t_num;
-          if (obj.number == 0) {
-            (this.enrolNumsWarn = "报名人数不能为空"), (this.enrolNums = true);
-            return false;
-          } else if (n_num > this.teampreviewData.remaining) {
-            (this.enrolNumsWarn = "报名总人数不能超过余位"),
-              (this.enrolNums = true);
-            return false;
-          } else {
-            this.enrolNums = false;
-          }
-          //出游人信息
-          let guest = [];
-          for (let i = 0; i < this.tour.length; i++) {
-            for (let j = 0; j < this.tour[i].length; j++) {
-              guest.push(this.tour[i][j]);
-            }
-          }
-          // 补充资料前未填写出行人信息是可以点击动态按钮和保存更改的
-          for (let i = 0; i < guest.length; i++) {
-            if (this.occupyStatus == 3 && this.orderget.orderStatus === 1) {
-              if (guest[i].cnName == "点击填写") {
-                this.$message.error("请补全游客资料");
-                return;
-              }
-            }
-            guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
-            if (guest[i].sex == null) guest[i].sex = 2; //出行人没有填写时传值性别为2 要不报错  正确的 0 男  1 女
-            // // guest[i].credTOV = new Date(guest[i].credTOV).getTime();
-          }
-          */
-
-        
     },
 
     // 出行人信息表单中的删除
