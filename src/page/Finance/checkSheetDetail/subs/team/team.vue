@@ -170,6 +170,7 @@ export default {
       })
       .then(res => {
         Object.assign(payload, { finishedList: res });
+        console.log('payload',payload.finishedList)
         this.$refs.printGround.init(payload, this.type)
       })
     },
