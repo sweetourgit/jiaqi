@@ -1,4 +1,7 @@
-<!-- 无收入，预付款，退款，报销，报账 共用页面 -->
+<!--
+  无收入，预付款，退款，报销，报账 共用组件
+  依据父组件tab触发传入当前tab的name来控制组件的显示
+ -->
 <template>
   <div class="distributor-content">
     <!-- 检索 -->
@@ -132,11 +135,11 @@
           startTime:'',
           endTime:'',
         },
-        approvalReimburseData:[],
-        approvalNoInData:[],
-        approvalAdvanceData:[],
-        approvalRefundData:[],
-        approvalSheetData:[],
+        approvalReimburseData:[], // 报销
+        approvalNoInData:[], // 无收入
+        approvalAdvanceData:[], // 预付款
+        approvalRefundData:[], // 退款
+        approvalSheetData:[], // 报账单
       }
     },
     props: {

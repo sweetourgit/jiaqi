@@ -1,4 +1,9 @@
-/* 待审批表格数据（借款，报销，退款，报账单） */
+/*
+*
+* 借款、报销、退款、报账单相关的表格请求方法、通用方法；
+*
+* */
+
 import moment from 'moment'
 
 // 通过父组件传过来的属性进行转换，搜索用
@@ -29,7 +34,7 @@ export default {
     },
     pendingApprovalTable(paramsTab){
       let arr = []
-      let that = this
+      let _this = this
       // 依据tab点击事件传入的模块名称，取对应的字段传给接口
       let moduleArrayMapped = {
         nameIINoInTeam: 'loan_noIncome4',
@@ -39,13 +44,13 @@ export default {
         nameIISheetTeam: 'reimbursement4',
       }
       this.listLoading = true
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')
         .then(obj => {
           this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
             //"userCode": sessionStorage.getItem('userCode'),
             "userCode": sessionStorage.getItem('tel'),
-            "startTime": that.ruleFormSearch.startTime ? moment(that.ruleFormSearch.startTime).format('YYYY-MM-DD 00:00:00') : "1970-07-23T01:30:54.452Z",
-            "endTime": that.ruleFormSearch.endTime ? moment(that.ruleFormSearch.endTime).format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+            "startTime": _this.ruleFormSearch.startTime ? moment(_this.ruleFormSearch.startTime).format('YYYY-MM-DD 00:00:00') : "1970-07-23T01:30:54.452Z",
+            "endTime": _this.ruleFormSearch.endTime ? moment(_this.ruleFormSearch.endTime).format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
             "startIndex": -1,
             "endIndex": -1 ,
             "workflowCode": moduleArrayMapped[paramsTab]
@@ -55,45 +60,49 @@ export default {
             })
             // 减少判断逻辑（通过guid获取相关未审批的数据）
             let ApprovalApiPayment = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
                 "guid": arr
               }).then(obj =>{
+                // 区分同业和直客
                 if(paramsTab === 'nameIINoInTeam'){
-                  that.approvalNoInData = obj.data.objects;
+                  _this.approvalNoInData = obj.data.objects;
                 } else {
-                  that.approvalAdvanceData = obj.data.objects
+                  _this.approvalAdvanceData = obj.data.objects
                 }
-                that.listLoading = false
+                _this.listLoading = false
               }).catch(obj => {
+                _this.listLoading = false
                 console.log(obj)
               })
             }
             let ApprovalApiExpense = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/expense/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/expense/api/listforguid', {
                 "guid": arr
               }).then(obj =>{
-                that.approvalReimburseData = obj.data.objects;
-                that.listLoading = false
+                _this.approvalReimburseData = obj.data.objects;
+                _this.listLoading = false
               }).catch(obj => {
+                _this.listLoading = false
                 console.log(obj)
               })
             }
             let ApprovalApiRefund = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
                 "guid": arr
               }).then(obj =>{
-                that.approvalRefundData = obj.data.objects;
-                that.listLoading = false
+                _this.approvalRefundData = obj.data.objects;
+                _this.listLoading = false
               }).catch(obj => {
+                _this.listLoading = false
                 console.log(obj)
               })
             }
             let ApprovalApiSheet = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/checksheet/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/checksheet/api/listforguid', {
                 "guid": arr
               }).then(obj =>{
-                that.approvalSheetData = obj.data.objects;
-                that.listLoading = false
+                _this.approvalSheetData = obj.data.objects;
+                _this.listLoading = false
               }).catch(obj => {
                 console.log(obj)
               })
@@ -107,6 +116,7 @@ export default {
             }
             listApi[paramsTab]()
           }).catch(obj => {
+            _this.listLoading = false
             console.log(obj)
           })
       })
