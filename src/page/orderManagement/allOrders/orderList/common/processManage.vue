@@ -1222,10 +1222,7 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
-      console.log(id,'asfa');
-      console.log(occupyStatus,'asfas');
-      
-      //更新订单，补充游客信息
+     //更新订单，补充游客信息
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
           let obj = JSON.parse(JSON.stringify(this.orderget));
@@ -1240,7 +1237,109 @@ export default {
             obj.occupyStatus = 2;
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
-          } //++++++
+          } 
+            // 补充资料和待出行 信息更改跳转回到确认占位状态
+          if (
+            this.isChangeNumber === true &&
+            (this.orderget.orderStatus === 1 ||
+              this.orderget.orderStatus === 2 ||
+              this.orderget.orderStatus === 3)
+          ) {
+             this.$confirm("更改信息后合同将作废", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+              })
+              .then(() => {
+                   obj.orderStatus = 10;
+                 
+            })
+              .catch(() => {
+                this.$message({
+                  type: "info",
+                  message: "已取消"
+                });
+                return;
+              });
+
+           
+          }
+
+          // enrollDetail拼接
+          // this.getEnrollDetailPj();
+          // 签署订单按钮
+          if (id === 3) {
+            obj.orderStatus = 3;
+          }
+
+          // 补充资料按钮
+          if (id === 1) {
+            obj.orderStatus = 1;
+          }
+
+          // 保存的时候用的直客价格还是同业的价格 swatch
+          if (this.propPriceType == 1) {
+            obj.priceType = 1;
+          } else {
+            obj.priceType = 2;
+          }
+
+          // 在加层判断 输入框中的数量与出行人信息的数量不符时 给提示报名人数与出行人信息不符
+          let sum = 0;
+          this.enrolNum.forEach(item => {
+            sum += item;
+          });
+
+          
+          let guest = [];
+          for (let i = 0; i < this.salePrice.length; i++) {
+            for (let j = 0; j < this.salePrice[i].length; j++) {
+              guest.push(this.salePrice[i][j]);
+            }
+          }
+          obj.number= guest.length;
+          // 第一次保存，赋值时间错
+          if(typeof id=== 'object' && 'altKey' in id){
+            let timestamp= Date.now();
+            this.newEnrollList.forEach(el => {
+              el.createTime= timestamp;
+            })
+          }
+
+          //console.log(obj,'那来的1')
+          // if (sum !== guest.length ) {
+          if (0) {
+            this.$message.error("报名人数与出行人信息不符，请修改出行人信息");
+          } else {
+            obj.enrollDetail = JSON.stringify(this.enrollDetail);
+            obj.enrollDetail= this.enrollsDetailStr;
+            // obj.payable = this.prePayable + (this.payable - this.prePayable);
+            obj.payable= this.totalPrice+ this.changedPrice;
+            console.log("RefundStatus",guest)
+            obj.guests = guest;
+            obj.teamID = this.orderget.teamID
+            obj.planID = this.orderget.planID
+            this.$http
+                    .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
+                      object: obj
+                    })
+                    .then(res => {
+                      if (res.data.isSuccess == true) {
+                        this.$message({
+                          message: "更改成功",
+                          type: "success"
+                        });
+                        this.$emit("orderPage");
+                        this.$emit("childByValue", this.showContent);
+                        this.cancle();
+                      }
+                    });
+                }
+              }
+            });
+      //++++++
+
+
 
           // get的总价不等于更改后的总价时 补充资料待出行都要跳转回到确认中占位状态
           // if (this.orderget.payable !== this.payable) {
@@ -1298,88 +1397,7 @@ export default {
           }
           */
 
-          // 补充资料和待出行 信息更改跳转回到确认占位状态
-          if (
-            this.isChangeNumber === true &&
-            (this.orderget.orderStatus === 1 ||
-              this.orderget.orderStatus === 2 ||
-              this.orderget.orderStatus === 3)
-          ) {
-            obj.orderStatus = 10;
-          }
-
-          // enrollDetail拼接
-          // this.getEnrollDetailPj();
-          // 签署订单按钮
-          if (id === 3) {
-            obj.orderStatus = 3;
-          }
-
-          // 补充资料按钮
-          if (id === 1) {
-            obj.orderStatus = 1;
-          }
-
-          // 保存的时候用的直客价格还是同业的价格 swatch
-          if (this.propPriceType == 1) {
-            obj.priceType = 1;
-          } else {
-            obj.priceType = 2;
-          }
-
-          // 在加层判断 输入框中的数量与出行人信息的数量不符时 给提示报名人数与出行人信息不符
-          let sum = 0;
-          this.enrolNum.forEach(item => {
-            sum += item;
-          });
-
-          
-          let guest = [];
-          for (let i = 0; i < this.salePrice.length; i++) {
-            for (let j = 0; j < this.salePrice[i].length; j++) {
-              guest.push(this.salePrice[i][j]);
-            }
-          }
-          obj.number= guest.length;
-          // 第一次保存，赋值时间错
-          if(typeof id=== 'object' && 'altKey' in id){
-            let timestamp= Date.now();
-            this.newEnrollList.forEach(el => {
-              el.createTime= timestamp;
-            })
-          }
-
-          console.log(obj,'那来的1')
-          // if (sum !== guest.length ) {
-          if (0) {
-            this.$message.error("报名人数与出行人信息不符，请修改出行人信息");
-          } else {
-            // obj.enrollDetail = JSON.stringify(this.enrollDetail);
-            obj.enrollDetail= this.enrollsDetailStr;
-            // obj.payable = this.prePayable + (this.payable - this.prePayable);
-            obj.payable= this.totalPrice+ this.changedPrice;
-            console.log("RefundStatus",guest)
-            obj.guests = guest;
-            obj.teamID = this.orderget.teamID
-            obj.planID = this.orderget.planID
-            this.$http
-              .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
-                object: obj
-              })
-              .then(res => {
-                if (res.data.isSuccess == true) {
-                  this.$message({
-                    message: "更改成功",
-                    type: "success"
-                  });
-                  this.$emit("orderPage");
-                  this.$emit("childByValue", this.showContent);
-                  this.cancle();
-                }
-              });
-          }
-        }
-      });
+        
     },
 
     // 出行人信息表单中的删除
