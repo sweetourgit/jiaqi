@@ -265,14 +265,15 @@ export default {
       let result;
       result= this.dayArray.filter(day => {
         let bol= false;
-        if(!day) return bol;
+        if(!day) return false;
         filterArr.forEach(filter => {
           if(bol) return;
           let { col, row }= day;
           bol= ( filter[0]=== row || filter[0]=== -1) && ( filter[1]=== col || filter[1]=== -1);
         })
-        return bol;
+        return this.inReverse? !bol: bol;
       })
+      console.log(result)
       this.$emit('multi-select', result);
     },
 
