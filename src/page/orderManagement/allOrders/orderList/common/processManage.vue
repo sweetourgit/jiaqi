@@ -1222,7 +1222,7 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
-      if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true){
+       if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true){
                   this.$confirm("更改信息后合同将作废", "提示", {
                   confirmButtonText: "确定",
                   cancelButtonText: "取消",
@@ -1238,6 +1238,8 @@ export default {
                     message: "已取消"
                   });
               });
+           }else{
+              this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
            }
       },
     ordersave_data(id, occupyStatus){ // 便于提醒是否作废合同新增客人
