@@ -116,7 +116,7 @@ export default {
         path: '/bankStatement',
         name: '银行流水单管理',
         params: {
-          tabStatus: 'second'
+          tabStatus: 'fifth'
         }
       });
     },

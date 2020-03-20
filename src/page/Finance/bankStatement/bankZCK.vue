@@ -308,52 +308,53 @@
       <el-tab-pane label="中信银行" name="sixth">
         <el-table
           :data="tableDataForZX"
-          ref="multipleTable2"
+          ref="multipleTableForZX"
           border
           :highlight-current-row="true"
           :header-cell-style="getRowClass"
           :stripe="true"
           id="table-contentForZX"
-          @row-click="handleRowClick2"
-          @selection-change="selectionChange2"
+          @row-click="handleRowClickForZX"
+          @selection-change="selectionChangeForZX"
         >
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
-          <el-table-column prop="SYJE" label="剩余金额" align="center"></el-table-column>
-          <el-table-column prop="STATUS" label="暂存款状态" align="center">
+          <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+
+          <el-table-column prop="surplusPrice" label="剩余金额" align="center"></el-table-column>
+          <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.STATUS == 0">未设置</span>
-              <span v-if="scope.row.STATUS == 1">已设置</span>
+              <span v-if="scope.row.is_ZCK == 0">未设置</span>
+              <span v-if="scope.row.is_ZCK == 1">已设置</span>
             </template>
           </el-table-column>
-          <el-table-column prop="JYRQ" label="交易日期" align="center"></el-table-column>
-          <el-table-column prop="JYSJ" label="交易时间" align="center"></el-table-column>
-          <el-table-column prop="DFZH" label="对方账号" align="center"></el-table-column>
-          <el-table-column prop="DFZHMC" label="对方账户名称" align="center"></el-table-column>
-          <el-table-column prop="DFZHKHWDMC" label="对方账号开户网点名称" align="center"></el-table-column>
-          <el-table-column prop="JFFSE" label="借方发生额" align="center"></el-table-column>
-          <el-table-column prop="DFFSE" label="贷方发生额" align="center"></el-table-column>
-          <el-table-column prop="ZHYE" label="账户余额" align="center"></el-table-column>
-          <el-table-column prop="ZY" label="摘要" align="center"></el-table-column>
-          <el-table-column prop="THBS" label="退汇标识" align="center"></el-table-column>
-          <el-table-column prop="THRQ" label="退汇日期" align="center"></el-table-column>
-          <el-table-column prop="GYJYH" label="柜员交易号" align="center"></el-table-column>
-          <el-table-column prop="FY" label="附言" align="center"></el-table-column>
-          <el-table-column prop="BZ" label="币种" align="center"></el-table-column>
-          <el-table-column prop="JYZH" label="交易账号" align="center"></el-table-column>
-          <el-table-column prop="JYZHKHWDMC" label="交易账号开户网点名称" align="center"></el-table-column>
-          <el-table-column prop="DZBH" label="对账编号" align="center"></el-table-column>
-          <el-table-column prop="DWJSKH" label="单位结算卡号" align="center"></el-table-column>
-          <el-table-column prop="SYJE" label="剩余金额" align="center"></el-table-column>
+          <el-table-column prop="citiC_Day" label="交易日期" align="center"></el-table-column>
+          <el-table-column prop="citiC_Time" label="交易时间" align="center"></el-table-column>
+          <el-table-column prop="guestAccount" label="对方账号" align="center"></el-table-column>
+          <el-table-column prop="accountName" label="对方账户名称" align="center"></el-table-column>
+          <el-table-column prop="openAccountBankName" label="对方账号开户网点名称" align="center"></el-table-column>
+          <el-table-column prop="jF_Price" label="借方发生额" align="center"></el-table-column>
+          <el-table-column prop="dF_Price" label="贷方发生额" align="center"></el-table-column>
+          <el-table-column prop="accountSurplus" label="账户余额" align="center"></el-table-column>
+          <el-table-column prop="reference" label="摘要" align="center"></el-table-column>
+          <el-table-column prop="tK_Sign" label="退汇标识" align="center"></el-table-column>
+          <el-table-column prop="tK_DateTime" label="退汇日期" align="center"></el-table-column>
+          <el-table-column prop="gyjY_Number" label="柜员交易号" align="center"></el-table-column>
+          <el-table-column prop="postscript" label="附言" align="center"></el-table-column>
+          <el-table-column prop="currency" label="币种" align="center"></el-table-column>
+          <el-table-column prop="jY_Number" label="交易账号" align="center"></el-table-column>
+          <el-table-column prop="jY_AccountBankName" label="交易账号开户网点名称" align="center"></el-table-column>
+          <el-table-column prop="dzbh" label="对账编号" align="center"></el-table-column>
+          <el-table-column prop="jskh" label="单位结算卡号" align="center"></el-table-column>
         </el-table>
         <div class="block">
           <el-pagination
-            @size-change="handleSizeChangeForJLZX"
-            @current-change="handleCurrentChangeForJLZX"
-            :current-page.sync="pageCurrentForJLZX"
+            @size-change="handleSizeChangeForZX"
+            @current-change="handleCurrentChangeForZX"
+            :current-page.sync="pageCurrentForZX"
             :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSizeForJLZX"
+            :page-size="pageSizeForZX"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="totalForJLZX"
+            :total="totalForZX"
           ></el-pagination>
         </div>
       </el-tab-pane>
@@ -493,6 +494,36 @@ export default {
         }
       } else if (tab.name == "second") {
         if (this.multipleSelection2.length > 0) {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+      } else if (tab.name == "third") {
+        if (this.multipleSelectionForNY.length > 0) {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+      } else if (tab.name == "forth") {
+        if (this.multipleSelectionForZS.length > 0) {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+      } else if (tab.name == "fifth") {
+        if (this.multipleSelectionForJS.length > 0) {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+      } else if (tab.name == "sixth") {
+        if (this.multipleSelectionForZX.length > 0) {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+      } else if (tab.name == "seventh") {
+        if (this.multipleSelectionForJLZX.length > 0) {
           this.clickable = false;
         } else {
           this.clickable = true;
@@ -736,6 +767,35 @@ export default {
             if (response.status == 200) {
               that.$message.success("提交暂存款成功！");
               that.loadDataForNY();
+            } else {
+              if (response.statusText) {
+                that.$message.warning(response.data.statusText);
+              } else {
+                that.$message.warning("提交暂存款失败~");
+              }
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+            that.$message.warning("提交暂存款失败~");
+          });
+      } else if (this.activeName == "sixth") {
+        this.multipleSelectionForZX.forEach(function(item, index, arr) {
+          idsArr.push(item.id);
+        });
+        this.$http
+          .post(
+            this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
+            {
+              ids: idsArr,
+              type: 8
+            }
+          )
+          .then(function(response) {
+            if (response.status == 200) {
+              that.$message.success("提交暂存款成功！");
+              that.loadDataForZX();
             } else {
               if (response.statusText) {
                 that.$message.warning(response.data.statusText);
@@ -1001,10 +1061,59 @@ export default {
     //+++++++++++++++++++++中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForZX() {
       const that = this;
-      this.$http.post("mock/zhongxinZCK", {}).then(function(obj) {
-        that.totalForZX = 100;
-        that.tableDataForZX = obj.data.data;
-      });
+      let data4D = utils.getSession4D;
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/citic_bank/api/search", {
+          pageIndex: this.pageCurrentForJS - 1,
+          pageSize: this.pageSizeForJS,
+          object: {
+            matching_State: 0,
+            begin: "2000-05-16",
+            end: "2099-05-16",
+            seachType: 3
+            //若传入4D则无数据 测试暂时先不传
+            //   userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
+          }
+        })
+        .then(function(obj) {
+          if (obj.data.isSuccess) {
+            that.totalForZX = obj.data.total;
+            that.tableDataForZX = obj.data.objects;
+            // that.tableDataNBSK.forEach(function (item, index, arr) {
+            //   item.collectionTime = item.collectionTime.split('T')[0];
+            // });
+            // that.loadingNBSK = false;
+          } else {
+            // that.loadingNBSK = false;
+            that.totalForZX = 0;
+            that.tableDataForZX = [];
+          }
+        });
+    },
+    handleSizeChangeForZX(val) {
+      this.pageSizeForZX = val;
+      this.loadDataForZX();
+    },
+    handleCurrentChangeForZX(val) {
+      this.pageCurrentForZX = val;
+      this.loadDataForZX();
+    },
+    handleRowClickForZX(row, column, event) {
+      if (row.is_ZCK == 0) {
+        this.$refs.multipleTableForZX.toggleRowSelection(row);
+      }
+    },
+    // 选择项更改
+    selectionChangeForZX(val) {
+      if (val.length > 0 && this.activeName == "sixth") {
+        this.clickable = false;
+      } else {
+        this.clickable = true;
+      }
+      this.multipleSelectionForZX = val;
     },
     //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForJLZX() {
