@@ -330,7 +330,7 @@ export default {
     },
 
     finishedListStr(){
-      return finishedList.map(finished => finished.participantName).join(" >> ");
+      return this.finishedList.map(finished => finished.participantName).join(" >> ");
     }
   },
 
