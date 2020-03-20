@@ -505,12 +505,6 @@ export default {
           path:this.img_Url,
         })
       }
-      console.log(pathUrl)
-      for(var i =0; i<this.editableTabs.length; i++){
-        if(i== this.editableTabsValue){
-          this.sid = this.editableTabs[i].id
-        }
-      }
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$http.post(this.GLOBAL.serverSrc + "/visa/crowd/api/insert",
@@ -523,7 +517,7 @@ export default {
                 "description": this.addVisa.describe, // 描述
                 "must": this.addVisa.must, // 必须
                 "crowdFile":pathUrl,// 附件
-                "visaInfoID": this.sid, // 签证说明ID
+                "visaInfoID": this.editableTabs[this.editableTabsValue].id, // 签证说明ID
               }
             })
             .then(res => {

@@ -5,12 +5,13 @@
 * */
 
 import moment from 'moment'
+import { mapMutations } from 'vuex'
 
 // 通过父组件传过来的属性进行转换，搜索用（在请求数据方法里面再次转换）
 let changeComName = {
   nameIIICollectionTeamDirect: 'nameIIICollectionTeamDirect', // 无收入
   nameIIICollectionTeamSame: 'nameIIICollectionTeamSame', // 预付款
-}
+};
 
 export default {
   data () {
@@ -18,22 +19,28 @@ export default {
       listLoading: false,
       pageSize: 10,
       pageIndex: 1,
-      totalCount: 0,
+      totalCount: 0, // 翻页-数据总量
       applyPeopleChoose: {}, //选择搜索的申请人
     }
   },
   mounted () {
-
   },
   methods: {
     moment,
-    //whichCollectTeamTab
+    ...mapMutations('toDo', [
+      'showCountCollectTeamDirect',
+      'showCountCollectTeamSame',
+      'showCountCollectTeamInner',
+      'showCountCollectTeamReimburse',
+    ]),
+    // 搜索
     HandleSearchApproveCollect (paramsModule) {
-      this.approvalCollectTeamTable (changeComName[paramsModule])
+      this.approvalCollectTeamTable (changeComName[ paramsModule ]);
     },
+    // 重置
     HandleResetApprovalCollect (paramsFrom, paramsModule){
-      this.$refs[paramsFrom].resetFields()
-      this.approvalCollectTeamTable(changeComName[paramsModule]);
+      this.$refs[ paramsFrom ].resetFields();
+      this.approvalCollectTeamTable(changeComName[ paramsModule ]);
     },
     // 申请人查询方法
     queryCreate (queryString, cb) {
@@ -63,25 +70,21 @@ export default {
         return state.value;
       };
     },
+    // 申请人下拉框选中返回的数据
     handleSelect (item) {
-      // this.applyPeopleChoose = item;
-      this.ruleFormSearch.userCode = item
-      // this.applyPeopleChoose = item;
+      this.ruleFormSearch.userCode = item;
     },
-    // table size change
+    // size改变
     handleSizeChange (val) {
       this.pageSize = val;
-      this.approvalCollectTeamTable();
+      this.approvalCollectTeamTable(this.whichCollectTeamTab);
     },
+    // 翻页
     handleCurrentChange (val) {
       this.pageIndex = val;
-      this.approvalCollectTeamTable();
+      this.approvalCollectTeamTable(this.whichCollectTeamTab);
     },
-/*    // 直客搜索
-    HandleSearchApprove () {
-      this.pageIndex = 1;
-      this.approvalCollectTeamTable();
-    },*/
+    // 请求收款跟团下所有表格的数据
     approvalCollectTeamTable (paramsTab) {
       // 根组件调用时会传过来tab的名字，依次为直客、同业、内部收款、报销还款
       let selCollectType = {
@@ -112,28 +115,35 @@ export default {
           serialNumber: "",
           abstract: "",
           isDeleted: 0,
-          collectionType: selCollectType[paramsTab],
+          collectionType: selCollectType[ paramsTab ],
           localCompID: 0 // 直客0, 同业变成同业社id
         }
       }).then( obj => {
+        let keepObj = obj.data.objects;
+        let keepTotal = obj.data.total;
         // 依据传入的参数赋值数据给相应的组件
         let selCollectTableFn = {
           nameIIICollectionTeamDirect (param) {
-            return param ? _this.approvalTeamDirectData = obj.data.objects : _this.approvalTeamDirectData = [];
+            _this.totalCount = keepTotal;
+            _this.showCountCollectTeamDirect(keepTotal); // 直客计数
+            return param ? _this.approvalTeamDirectData = keepObj : _this.approvalTeamDirectData = [];
           },
           nameIIICollectionTeamSame (param) {
-            return param ? _this.approvalTeamSameData = obj.data.objects : _this.approvalTeamSameData = [];
+            _this.totalCount = keepTotal;
+            _this.showCountCollectTeamSame(keepTotal); // 同业计数
+            return param ? _this.approvalTeamSameData = keepObj : _this.approvalTeamSameData = [];
           },
           nameIIICollectionTeamInner (param) {
-            return param ? _this.approvalTeamInnerData = obj.data.objects : _this.approvalTeamInnerData = [];
+            _this.showCountCollectTeamInner(keepObj ? keepObj.length : 0); // 内部收款计数
+            return param ? _this.approvalTeamInnerData = keepObj : _this.approvalTeamInnerData = [];
           },
           nameIIICollectionTeamReimburse (param) {
-            return param ? _this.approvalTeamReimburseData = obj.data.objects : _this.approvalTeamReimburseData = [];
+            _this.showCountCollectTeamReimburse(keepObj ? keepObj.length : 0); // 内部收款计数
+            return param ? _this.approvalTeamReimburseData = keepObj : _this.approvalTeamReimburseData = [];
           },
-        }
+        };
         if (obj.data.isSuccess) {
-          _this.totalCount = obj.data.total;
-          selCollectTableFn[paramsTab](true)
+          selCollectTableFn[ paramsTab ](true);
           /*_this.approvalTeamDirectData.forEach(function(item, index, arr) {
             item.collectionTime = item.collectionTime.split("T")[0];
             item.createTime = item.createTime.split("T")[0];
@@ -142,18 +152,19 @@ export default {
         } else {
           _this.totalCount = 0;
           _this.listLoading = false;
-          selCollectTableFn[paramsTab](false)
+          selCollectTableFn[ paramsTab ](false);
         }
       })
       .catch( obj => {
-        console.log(obj)
+        console.log(obj);
       });
     },
+    // 表格行样式
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
-        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
+        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px';
       } else {
-        return ''
+        return '';
       }
     },
   }
