@@ -90,7 +90,7 @@ $fontHeight: 32px;
       footer{
         display: flex;
         justify-content: flex-end;
-        padding: 10px 20px 0 20px;
+        padding: 10px 0 0 0;
       }
     }
   }
@@ -100,7 +100,6 @@ $fontHeight: 32px;
 <template>
   <div class="shared-header">
     <div class="selector">
-      {{ inReverse }}
       <span class="control-btns">
         <i class="el-icon-d-arrow-left" @click="monthHandler(-1)"></i>
       </span>
@@ -141,12 +140,19 @@ $fontHeight: 32px;
             </tr>
           </tbody>
         </table>
-        <footer>
-          <el-button type="text" size="mini"
-            @click="init()">
-            今天
-          </el-button>
-          <el-button type="text" size="mini" @click="state= false">收起</el-button>
+        <footer style="display: flex; justify-content: space-between;">
+          <div>
+            <div style="font-size: 12px; line-height: 14px; padding: 7px 0;" :class="[inReverse?'el-button--text':'']">
+              {{ inReverse? '反选中': '按住ctrl反选' }}
+            </div>
+          </div>
+          <div>
+            <el-button type="text" size="mini"
+              @click="init()">
+              今天
+            </el-button>
+            <el-button type="text" size="mini" @click="state= false">收起</el-button>
+          </div>
         </footer>
       </div>
     </div>
@@ -271,10 +277,9 @@ export default {
           let { col, row }= day;
           bol= ( filter[0]=== row || filter[0]=== -1) && ( filter[1]=== col || filter[1]=== -1);
         })
-        return this.inReverse? !bol: bol;
+        return bol;
       })
-      console.log(result)
-      this.$emit('multi-select', result);
+      this.$emit('multi-select', { selected: result, isReverse: this.inReverse });
     },
 
     singleSelect(week, day){

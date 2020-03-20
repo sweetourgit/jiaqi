@@ -89,12 +89,19 @@ export default {
       day.selected= !day.selected;
     },
 
-    emitMultiSelect(arr){
-      let selected= arr.filter(el => !el.selected && el.plan_status=== SKU_PLAN_STATUS.MULTIPLE);
-      if(selected.length=== 0) return;
-      this.setPlanStatus(SKU_PLAN_STATUS.MULTIPLE);
-      this.selectedCalendar= [...this.selectedCalendar, ...selected];
-      selected.forEach(el => el.selected= true);
+    emitMultiSelect({ selected, isReverse }){
+      let result;
+      if(isReverse){
+        selected.forEach(el => el.selected= false);
+        if(selected.length=== this.selectedCalendar) return this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
+        this.selectedCalendar= this.selectedCalendar.filter(el => el.selected=== true);
+      } else {
+        result= selected.filter(el => !el.selected && el.plan_status=== SKU_PLAN_STATUS.MULTIPLE);
+        if(result.length=== 0) return;
+        this.setPlanStatus(SKU_PLAN_STATUS.MULTIPLE);
+        this.selectedCalendar= [...this.selectedCalendar, ...result];
+        result.forEach(el => el.selected= true);
+      }
     },
 
     emitClearSelect(){
@@ -122,6 +129,7 @@ export default {
       this.selectedCalendar.forEach(el => el.selected= false);
       this.selectedCalendar.splice(0);
       this.planStatus= status;
+      this.$emit('plan-status', status);
     }
   }
 
