@@ -170,7 +170,6 @@ export default {
       })
       .then(res => {
         Object.assign(payload, { finishedList: res });
-        console.log('payload',payload.finishedList)
         this.$refs.printGround.init(payload, this.type)
       })
     },
@@ -255,20 +254,27 @@ export default {
       this.$refs.approvalForm.wakeup({ isAgree });
     },
 
+    /**
+     * @description: 
+     * @bug 1587: 驳回由驳回到上一步，变为驳回的最开始 
+     */
     approvalSaveHandler(payload){
       let { commentText, isAgree }= payload;
       let { guid, workItemID }= this.$route.query;
+      // 1587
+      let rejectWorkItemID= this.$refs.printGround.finishedList[0].ObjectId;
+
       let userCode= sessionStorage.getItem('tel');
       let action;
       action= isAgree? 
         agreeForJQ({commentText, workItemID, userCode}): 
-        rejectForJQ({commentText, workItemID, userCode})
-        // .then(() => {
-        //   return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
-        // })
-        .then(() => {
-          return saveChcektype({ guid, checkType: 2 })
-        })
+          rejectForJQ({commentText, workItemID: rejectWorkItemID, userCode})
+          .then(() => {
+            return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
+          })
+          .then(() => {
+            return saveChcektype({ guid, checkType: 2 })
+          })
       action.then(() => {
         // 重置页面按钮 防止点击
         this.type= 'normal';

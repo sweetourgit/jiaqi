@@ -327,6 +327,10 @@ export default {
         totalPrice+= orderPrice;
       })
       return { people, price, totalPrice };
+    },
+
+    finishedListStr(){
+      return finishedList.map(finished => finished.participantName).join(" >> ");
     }
   },
 
@@ -337,7 +341,7 @@ export default {
         expenseSum: 0, // 总支出
         profitSum: 0, // 毛利额
         profitRate: 0, // 毛利率
-        finishedListStr: ''
+        finishedList: []
       },
       {
         pd: {},  // printData缩写
@@ -349,7 +353,7 @@ export default {
   methods: {
     init(printData, pageType){
       let { incomes, expenses, otherIncomes, finishedList, ...pdData }= printData;
-      if(finishedList) this.finishedListStr= this.getFinishedListStr(finishedList);
+      if(finishedList) this.finishedList= finishedList;
       this.pageType= pageType;
       this.pd= pdData;
       this.incomes= incomes;
@@ -454,11 +458,6 @@ export default {
         this.expenses.push(...result);
         this.changeHandler();
       })
-    },
-
-    getFinishedListStr(finishedList){
-      console.log(finishedList.map(finished => finished.participantName).join(" >> "))
-      return finishedList.map(finished => finished.participantName).join(" >> ");
     }
   }
 }
