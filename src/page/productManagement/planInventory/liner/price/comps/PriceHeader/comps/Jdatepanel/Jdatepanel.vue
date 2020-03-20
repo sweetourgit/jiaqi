@@ -100,6 +100,7 @@ $fontHeight: 32px;
 <template>
   <div class="shared-header">
     <div class="selector">
+      {{ inReverse }}
       <span class="control-btns">
         <i class="el-icon-d-arrow-left" @click="monthHandler(-1)"></i>
       </span>
@@ -155,6 +156,8 @@ $fontHeight: 32px;
 <script>
 import Jdateday from './comps/Jdateday.vue'
 
+let ctrlDownHandler;
+let ctrlUpHandler;
 export default {
   components: { Jdateday },
 
@@ -171,6 +174,18 @@ export default {
     },
   },
 
+  mounted(){
+    ctrlDownHandler= (event) => event.keyCode=== 17 && (this.inReverse= true);
+    ctrlUpHandler= (event) => event.keyCode=== 17 && (this.inReverse= false);
+    window.addEventListener('keydown', ctrlDownHandler);
+    window.addEventListener('keyup', ctrlUpHandler);
+  },
+
+  beforeDestroy(){
+    window.removeEventListener('keydown', ctrlDownHandler);
+    window.removeEventListener('keyup', ctrlUpHandler);
+  },
+
   computed: {
     // 当前选择日期的int表达
     currentInt(){
@@ -185,6 +200,8 @@ export default {
   data(){
     return {
       inAsync: false,
+      // 是否反选
+      inReverse: false,
       state: false,
       // 长度为3的数组，依次存放年月日
       current: [],

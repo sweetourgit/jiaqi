@@ -15,7 +15,7 @@
   <div class="page">
     <header @click="test= !test">
       <PriceHeader ref="priceHeader"></PriceHeader>
-      <div v-move-btn style="display:flex;justify-content: flex-end;width: 150px;">
+      <div v-move-btn style="display:flex;justify-content: flex-end;width: auto;">
         <el-button type="info" size="mini" v-show="test">保存</el-button>
         <el-button type="info" size="mini">返回</el-button>
       </div>
