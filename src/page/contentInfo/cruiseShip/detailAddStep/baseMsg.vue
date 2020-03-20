@@ -205,7 +205,7 @@ export default {
       this.fileListVideo = fileList;
     },
     handleExceed1(files, fileList) {
-      this.$message.warning(`平台订单只支持一个上传视频！`);
+      this.$message.warning(`平台只支持一个上传视频！`);
     },
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
