@@ -8,7 +8,7 @@
     <el-row style="margin-top: 20px;">
       <el-col :span="6" :offset="18" style="text-align:center;">
         <el-button type="warning" @click="handleCancel">取消</el-button>
-        <el-button type="success" @click="handlePassBtn" :disabled="ShowPassBtn">通过</el-button>
+        <el-button type="success" @click="handlePassBtn">通过</el-button>
         <el-button type="danger" @click="handleRejectBtn">驳回</el-button>
       </el-col>
     </el-row>
@@ -16,7 +16,7 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
     <el-row class="row-content">
       <el-col :span="24">
-        <el-tabs v-model="tabShowWhich" @tab-click="handleClick">
+        <el-tabs v-model="tabShowWhich">
           <el-tab-pane v-for="tabItem in keepBackContent" :key="tabItem.id" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
             <el-row class="item-content">
                 <el-tag type="warning" v-if="tabItem.checkType=='0'" class="distributor-status">审批中</el-tag>
@@ -123,23 +123,25 @@
       </el-row>
     </el-dialog>
     <!-- 通过、驳回弹框 END -->
-    <el-dialog width="45%" title="打印" :visible="ifShowPrintTable" :before-close="handlePrintClose">
-      <div class="indialog">
-        <el-table :data="tablePrint" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
-          <el-table-column prop="parentID" label="拆分前借款单ID" width="150" align="center"></el-table-column>
-          <el-table-column prop="id" label="新无收入借款单ID" align="center"></el-table-column>
-          <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
-          <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-          <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-          <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
-          <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
-          <el-table-column prop="opinion" label="操作" align="center">
-            <template slot-scope="scope">
-              <el-button @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+    <el-dialog width="60%" title="打印" :visible="ifShowPrintTable" :before-close="handlePrintClose">
+      <el-tabs>
+        <el-tab-pane v-for="item in changeData" :key="item.id" :label="'报销 - '+String(item.id)">
+            <el-table :data="item.arr" border style=" width:90%; margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
+              <el-table-column prop="parentID" label="拆分前借款单ID" width="150" align="center"></el-table-column>
+              <el-table-column prop="id" label="新无收入借款单ID" align="center"></el-table-column>
+              <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
+              <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+              <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+              <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
+              <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
+              <el-table-column prop="opinion" label="操作" align="center">
+                <template slot-scope="scope">
+                  <el-button @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+        </el-tab-pane>
+      </el-tabs>
     </el-dialog>
     <!-- 打印信息 -->
     <div ref="print" v-if="isShowPrintContent">
@@ -247,7 +249,8 @@
     name: "approveDetail",
     data(){
       return {
-        fundamental:{},
+        fundamental: {}, // 打印详情数据
+        changeData: [], // 打印数据整合
         expenseType: false, // 显示拆分、还款弹窗
         showExpenseType: false,
         showAccountName: '', // 对公账户名称
@@ -255,43 +258,19 @@
         ifShowPrintTable: false,
         listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
-        ifShowPassBtn: false, // 先从接口获取数据判断下是否有未拆分的数据，没有显示通过按钮
         tabShowWhich: null, // 显示哪个tab
         examineData: [], // 审核
-        keepBackContent: [],
-        keepExpense: [], //
+        keepBackContent: [], // 保存tab列表页数据
+        keepExpense: [], // 从详情获取到报销id
         getApproveListGuid: null, // 获取列表页的的guid
-        dialogVisible: false,
         workItemIDArr: null, // 保存匹配的WorkItemID 数组
-        commentText:'', // 驳回通过内容
+        commentText: '', // 驳回通过内容
         transitShow: false, // 通过驳回弹窗
         title: '', // 通过驳回弹窗标题切换
         getParamsWorkItemId: null, // 工作流接口参数
-        getApproveSource: null, //   如果路由是从拆分借款页跳过来的会有个来源参数。当拆分借款保存之后，详情页通过可以取消置灰状态
-        getKeepBtnStatus: false,
-        getLsParamsSplitArr: null,
         keepStatus: null,
-        tablePrint: [
-         /* {
-          'parentID':482,
-          'id':486,
-          'supplierTypeEX':1,
-          'supplierName':1,
-          'createUser':1,
-          'mark':1,
-          'price':13,
-        },{
-            'parentID':484,
-            'id':474,
-            'supplierTypeEX':1,
-            'supplierName':1,
-            'createUser':1,
-            'mark':1,
-            'price':130,
-          }*/
-        ],
-        tabCount: 0,
         keepTabId: [],
+        tabCount: [], // 计数开关
       }
     },
     // 关于时间的过滤
@@ -301,160 +280,154 @@
       }
     },
     created(){
-      this.getLsParamsSplitArr =  Vue.ls.get('lsParamsSplitArr');
-      this.getApproveListGuid = this.$route.query.approveDetailGuid
-      this.getKeepBtnStatus = this.$route.query.ifClickKeepBtn ? this.$route.query.ifClickKeepBtn : false
-      this.getApproveSource = this.$route.query.source
-      this.workItemIDArr = this.$route.query.queryWorkItemID
-      this.getApproveDetail(this.getApproveListGuid)
-      this.tabShowWhich = String(this.$route.query.queryApproveExpenseID)
-      this.auditResult(this.getApproveListGuid)
+      this.getApproveListGuid = this.$route.query.approveDetailGuid;
+      this.workItemIDArr = this.$route.query.queryWorkItemID;
+      this.getApproveDetail(this.getApproveListGuid);
+      this.tabShowWhich = String(this.$route.query.queryApproveExpenseID);
+      this.auditResult(this.getApproveListGuid);
       if(this.workItemIDArr){
         this.workItemIDArr.forEach((item) => {
-          if (this.getApproveListGuid == item.jq_ID){
+          if (this.getApproveListGuid === item.jq_ID){
             this.getParamsWorkItemId = item.workItemID
           }
         })
       }
     },
-    computed:{
-      ShowPassBtn(){
-        if(this.getApproveSource == 'splitLoan' && this.getKeepBtnStatus){
-          return false
-        } else {
-          return this.ifShowPassBtn
-        }
-      }
-    },
     methods: {
-      handleExpenseType(index, row){
-        let _this = this
-        this.showExpenseType = row.expenseType
-        let getAccountID = row.accountID
-        this.expenseType = true
-        if(this.showExpenseType == 2){
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get',{
+      handleExpenseType (index, row) {
+        let _this = this;
+        this.showExpenseType = row.expenseType;
+        let getAccountID = row.accountID;
+        this.expenseType = true;
+        if (this.showExpenseType === 2) {
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get', {
             "id": getAccountID
           }).then(res => {
-            let keepRes = res.data
-            if(keepRes.isSuccess === true){
-              _this.showAccountName = keepRes.object.title
+            let keepRes = res.data;
+            if (keepRes.isSuccess === true) {
+              _this.showAccountName = keepRes.object.title;
             }
           })
         }
       },
       // 打印详情,当有拆分时会进行打印
-      printDetails(){
+      printDetails () {
         this.$nextTick(() => {
           this.$print(this.$refs.print)
         })
       },
       // 获取一条信息
-      getLabel(paramPaymentID){
+      getLabel (paramPaymentID) {
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
           "id":paramPaymentID
         }).then(res => {
-          if(res.data.isSuccess == true){
-            this.fundamental = {}
-            this.isShowPrintContent = true
+          if (res.data.isSuccess === true) {
+            this.fundamental = {};
+            this.isShowPrintContent = true;
             this.fundamental=res.data.object;
-            this.printDetails()
+            this.printDetails();
           }
         })
       },
-      handlePrintClose(){
-        this.ifShowPrintTable = false
-        this.backListPage()
+      // 弹窗关闭回调
+      handlePrintClose () {
+        this.$confirm('确认关闭？')
+          .then(res => {
+            this.ifShowPrintTable = false;
+            this.backListPage();
+          })
+          .catch(res => {});
       },
-      handlePrint(index, row){
-        this.getLabel(row.id)
+      handlePrint (index, row) {
+        this.getLabel(row.id);
       },
       // 点击图片钩子
-      handlePreview(file) {
+      handlePreview (file) {
         window.open(file.url);
       },
       moment,
       // 获取审核结果
-      auditResult(paramsGuid) {
-        this.listLoading = true
-        let that =this
-        // GetOpinions
+      auditResult (paramsGuid) {
+        let that = this;
+        this.listLoading = true;
+        // GetOpinions;
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jQ_ID: paramsGuid,
           jQ_Type: 3,
         }).then(obj => {
-          that.examineData = []
+          that.examineData = [];
           that.examineData = obj.data.extend.instanceLogInfo;
-          this.listLoading = false
-        }).catch(obj => {})
+          this.listLoading = false;
+        }).catch(obj => {
+          console.log(obj);
+        })
       },
       // 获取详情
-      getApproveDetail(guidParams){
-        this.listLoading = true
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+      getApproveDetail (guidParams) {
+        this.listLoading = true;
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list', {
           "object": {
             guid: guidParams
           }
         })
         .then(obj => {
-          let keepData = obj.data.objects
-          this.keepBackContent = keepData
+          let keepData = obj.data.objects;
+          this.keepBackContent = keepData;
           // 筛选出拆分的数据，筛选出expenseID并重组新数组
           this.keepExpense = keepData.map( item => {
             return item.id
-          })
-          this.keepStatus = keepData[0].checkType
+          });
+          this.keepStatus = keepData[0].checkType;
           this.listLoading = false
         }).catch(err => {
-          console.log(err)
+          console.log(err);
         })
       },
       // 通过审批/驳回，弹窗确定按钮
-      handlePassConfirm(){
-        this.loadingBtn = true
-        if(this.title == "审批通过"){
+      handlePassConfirm () {
+        this.loadingBtn = true;
+        if (this.title === "审批通过") {
           this.handlePassApi();
-        }else{
+        } else {
           this.handleRejectFn();
         }
       },
       // 工作流通过方法
-      handlePassApi(){
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion',{
-          "jQ_ID":this.getApproveListGuid,
+      handlePassApi () {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
+          "jQ_ID": this.getApproveListGuid,
           "jQ_Type": 3,
-          "userCode":sessionStorage.getItem('tel'),
+          "userCode": sessionStorage.getItem('tel'),
           "workItemID": this.getParamsWorkItemId,
           "commentText": this.commentText
-        }).then((res) =>{
-          console.log('1 SubmitWorkAssignmentsForJQ_InsertOpinion')
+        }).then(res => {
           this.$message({
             message: '审批通过已完成',
             type: 'success'
           });
-          this.handlePassFn()
-          this.loadingBtn = false
+          this.handlePassFn();
+          this.loadingBtn = false;
           this.transitShow = false;
-        }).catch( (err) => {
+        }).catch( err => {
+          console.log(err);
           this.$message.warning("审批通过失败 ");
-          this.loadingBtn = false
+          this.loadingBtn = false;
         })
       },
-      showPrintTable(paramsTabId){
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense",{
+      // 打印表格
+      showPrintTable (paramsTabId) {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/listforexpense", {
           "id": paramsTabId
         }).then( obj =>  {
-          console.log('3 payment/api/listforexpense')
-          let keepObjLength = obj.data.objects
+          let keepObjLength = obj.data.objects;
           // 如果没有需要打印的数据则返回列表页
-          if (keepObjLength && keepObjLength.length > 0){
-            this.tabCount--
+          if (keepObjLength && keepObjLength.length > 0)  {
             // 组合数据 用来遍历tab组件 形成多个tab页
-            this.tablePrint.push(...obj.data.objects)
-            console.log(this.tablePrint)
-            if(this.tabCount <= 0){
-              this.ifShowPrintTable = true
+            this.changeData.push({ id: paramsTabId, arr: obj.data.objects });
+            if (this.tabCount <= 0) {
+              this.ifShowPrintTable = true;
             }
+            console.log(this.changeData, '/api/listforexpense 进入打印方法')
           } else {
             // console.log(keepObjLength)
             // this.backListPage()
@@ -462,52 +435,65 @@
         })
       },
       // 审批通过弹窗-确定
-      handlePassFn(){
-        if(this.keepExpense.length > 0){
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list',{
+      handlePassFn () {
+        if (this.keepExpense.length > 0) {
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list', {
             "object": {
               guid: this.getApproveListGuid
             }
           })
           .then(obj => {
-            console.log('2 expense/api/list')
-            let keepData = obj.data.objects
-            if(keepData !== null){
-              this.keepTabId.length = 0
-              this.keepExpense.forEach( (item) => {
-                this.keepTabId.push(item)
+            let keepData = obj.data.objects;
+            if (keepData !== null) {
+              this.keepTabId.length = 0;
+              this.keepExpense.forEach(item => {
+                this.keepTabId.push(item);
+              });
+              this.tabCount = this.keepTabId.length; // 计数开关
+              console.log(this.tabCount, '计数开关初始化');
+              this.keepTabId.forEach(item => {
+                // 获取一条审批状态 checkType = 1 方可打印
+                this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/getchecktype', {
+                  id: item // 报销ID
+                })
+                .then(obj => {
+                  if  (obj.data.object.checkType === 1) {
+                    this.tabCount--;
+                    this.showPrintTable(item);
+                    console.log(this.tabCount,'checkType 已经等于 1 了，/api/getchecktype')
+                  } else {
+                    this.handlePassFn();
+                  }
+                }).catch(obj => {
+                  console.log(obj);
+                })
               })
-              this.tabCount = this.keepTabId.length
-              this.keepTabId.forEach((item) =>{
-                this.showPrintTable(item)
-              })
-              console.log(this.keepTabId)
             } else {
               this.$message.warning("此报销不是待审批状态，无法进行审批操作");
             }
-            this.listLoading = false
+            this.listLoading = false;
           }).catch(err => {
-          console.log(err)
+          console.log(err);
         })
       } else {
-        this.backListPage()
+        this.backListPage();
       }
       },
       // 驳回之后走工作流
-      handleRejectFn(){
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion',{
+      handleRejectFn () {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion', {
           "jQ_ID": this.getApproveListGuid,
           "jQ_Type": 3,
-          "userCode":sessionStorage.getItem('tel'),
+          "userCode": sessionStorage.getItem('tel'),
           "workItemID": this.getParamsWorkItemId,
           "commentText": this.commentText
-        }).then(res =>{
+        }).then(res => {
           // 结束工作流
-          this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess',{
-            "jq_id":this.getApproveListGuid,
+          this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', {
+            "jq_id": this.getApproveListGuid,
             "jQ_Type": 3
           }).then(res => {
-            this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/savechecktype',{
+            this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/savechecktype', {
               "object": {
                 "guid": this.getApproveListGuid,
                 "checkType": 2
@@ -517,26 +503,26 @@
                 message: '审批驳回已完成',
                 type: 'success'
               });
-              this.loadingBtn = false
+              this.loadingBtn = false;
               this.transitShow = false;
-              this.backListPage()
+              this.backListPage();
             }).catch(err => {
-              this.loadingBtn = false
-              console.log(err)
+              this.loadingBtn = false;
+              console.log(err);
             })
           }).catch(err => {
-            console.log(err)
+            console.log(err);
           })
         })
       },
       // 通过
-      handlePassBtn(){
-        this.title="审批通过";
+      handlePassBtn () {
+        this.title = "审批通过";
         this.transitShow = true;
       },
       // 驳回成功通过guid将checktype修改成2
-      rejectedSuccess(){
-        this.$http.post(this.GLOBAL.serverSrc + 'finance/expense/api/savechecktype',{
+      rejectedSuccess () {
+        this.$http.post(this.GLOBAL.serverSrc + 'finance/expense/api/savechecktype', {
           "object": {
             "guid": this.getApproveListGuid,
             "checkType": 2
@@ -544,25 +530,24 @@
         })
       },
       // 驳回
-      handleRejectBtn(){
-        this.title="审批驳回";
+      handleRejectBtn () {
+        this.title = "审批驳回";
         this.transitShow = true;
       },
       // 取消
-      handleCancel(){
-        this.backListPage()
+      handleCancel () {
+        this.backListPage();
       },
       // 返回到列表页
-      backListPage(){
-        this.$router.push({ path: "/approve/approveList" })
+      backListPage () {
+        this.$router.push({ path: "/approve/approveList" });
       },
-      handleClick(){},
       // 表格表头颜色
-      getRowClass({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
+        if (rowIndex === 0) {
           return 'background:#f5f7fa;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
-          return ''
+          return '';
         }
       },
     }
