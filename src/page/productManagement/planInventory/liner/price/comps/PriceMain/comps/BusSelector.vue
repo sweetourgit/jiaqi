@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { deliverListAll } from '@/page/productManagement/planInventory/liner/api'
+
 export default {
 
   filters: {
@@ -29,10 +31,21 @@ export default {
     }
   },
 
+  mounted(){
+    let { product_id }= this.$route.query;
+    deliverListAll({ product_id }).then(res => this.tableData= res.map(el => (el.selected= false) && el));
+  },
+
   data(){
     return {
       tableData: [{ title: 123, sale_price: 32, radio: false }],
       radio: '1'
+    }
+  },
+
+  methods: {
+    init(selected){
+
     }
   }
 

@@ -84,11 +84,12 @@ export default {
         // 如果只有一个元素，则置为空选
         if(this.selectedCalendar.length=== 1) return this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
         day.selected= false;
-        return this.selectedCalendar= this.selectedCalendar.filter(el => el!== day);
+        return this.selectedCalendar= this.selectedCalendar.filter(el => el.selected=== true);
       }
       this.setPlanStatus(day.plan_status);
       this.selectedCalendar.push(day);
-      day.selected= !day.selected;
+      day.selected= true;
+      this.$emit('select-day', day);
     },
 
     emitMultiSelect({ selected, isReverse }){
@@ -98,7 +99,7 @@ export default {
         this.selectedCalendar= this.selectedCalendar.filter(el => el.selected=== true);
         if(this.selectedCalendar.length=== 0) return this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
       } else {
-        result= selected.filter(el => !el.selected && el.plan_status=== SKU_PLAN_STATUS.MULTIPLE);
+        result= selected.filter(el => !el.selected && el.isPassed=== false && el.plan_status=== SKU_PLAN_STATUS.MULTIPLE);
         if(result.length=== 0) return;
         this.setPlanStatus(SKU_PLAN_STATUS.MULTIPLE);
         this.selectedCalendar= [...this.selectedCalendar, ...result];
@@ -138,7 +139,7 @@ export default {
       this.selectedCalendar.forEach(el => el.selected= false);
       this.selectedCalendar.splice(0);
       this.planStatus= status;
-      this.$emit('plan-status', status);
+      this.$emit('set-plan-status', status);
     },
 
     getCalendarAction(date){

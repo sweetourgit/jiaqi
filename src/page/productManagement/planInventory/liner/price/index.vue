@@ -21,7 +21,8 @@
   <div class="page">
     <header>
       <PriceHeader ref="priceHeader"
-        @plan-status="planStatus= $event">
+        @set-plan-status="planStatus= $event"
+        @select-day="emitSelectDay">
       </PriceHeader>
       <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;">
         <el-button type="info" size="mini"
@@ -35,7 +36,9 @@
         <el-button type="info" size="mini">返回</el-button>
       </div>
     </header>
-    <PriceMain ref="priceMain"></PriceMain>
+    <PriceMain ref="priceMain"
+      v-show="planStatus!== SKU_PLAN_STATUS.UNDO">
+    </PriceMain>
     
   </div>
 </template>
@@ -50,12 +53,23 @@ export default {
 
   components: { PriceHeader, PriceMain },
 
+  mounted(){
+    this.$refs.priceHeader.init(new Date());
+  },
+
   data(){
     return {
-      planStatus: 0,
+      planStatus: SKU_PLAN_STATUS.UNDO,
       SKU_PLAN_STATUS
     }
-  }
+  },
 
+  methods: {
+    // 选中一天
+    emitSelectDay(day){
+      let { plan }= day;
+      this.$refs.priceMain.init(plan);
+    }
+  }
 }
 </script>

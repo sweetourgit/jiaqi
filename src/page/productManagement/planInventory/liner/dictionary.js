@@ -22,3 +22,29 @@ export const SKU_PLAN_STATUS= dictionaryMaker({
   SHARE: { label: '共享', value: 1},
   NOT_SHARE: { label: '非共享', value: 2},
 })
+
+export const getSkuPlanDTO= function(payload){
+  let { product_id, sku_id }= payload;
+  return {
+    set_out_year: '',
+    set_out_month: '',
+    set_out_day: '',
+    reserved_time: 24,
+    sku_plan_deliver: [],
+    sku_plan_insure: [],
+    sku_price: []
+  }
+}
+
+export const getSkuPriceDTO= function(payload){
+  return {
+    cabin_id: null,
+    title: '',
+    min_stay: null,
+    max_stay: null,
+    stock: null,
+    adult_same_price: null,
+    adult_straight_price: null,
+    line_status: 1
+  }
+}

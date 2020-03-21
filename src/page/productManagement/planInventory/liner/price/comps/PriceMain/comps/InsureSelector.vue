@@ -16,7 +16,14 @@
 </template>
 
 <script>
+import { insureListAll } from '@/page/productManagement/planInventory/liner/api'
+
 export default {
+
+  mounted(){
+    let { product_id }= this.$route.query;
+    insureListAll({ product_id }).then(res => this.tableData= res.map(el => (el.selected= false) && el));
+  },
 
   data(){
     return {
