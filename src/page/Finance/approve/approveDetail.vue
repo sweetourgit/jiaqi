@@ -17,7 +17,7 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
     <el-row class="row-content">
       <el-col :span="24">
-        <el-tabs>
+        <el-tabs v-model="tabShowWhich">
           <el-tab-pane v-for="tabItem in keepBackContent" :key="tabItem.id" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
             <el-row class="item-content">
                 <el-tag type="warning" v-if="tabItem.checkType=='0'" class="distributor-status">审批中</el-tag>
@@ -259,6 +259,7 @@
         ifShowPrintTable: false, // 打印弹窗显示开关
         listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
+        tabShowWhich: null, // 显示哪个tab
         examineData: [], // 审核
         keepBackContent: [], // 保存tab列表页数据
         keepExpense: [], // 从详情获取到报销id
@@ -282,6 +283,7 @@
       this.getApproveListGuid = this.$route.query.approveDetailGuid;
       this.workItemIDArr = this.$route.query.queryWorkItemID;
       this.getApproveDetail(this.getApproveListGuid);
+      this.tabShowWhich = String(this.$route.query.queryApproveExpenseID);
       this.auditResult(this.getApproveListGuid);
       if (this.workItemIDArr) {
         this.workItemIDArr.forEach((item) => {
