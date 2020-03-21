@@ -446,18 +446,19 @@
             let keepData = obj.data.objects;
             if (keepData !== null) {
               this.keepTabId.length = 0;
+              // 装换下，存到keepTabId里
               this.keepExpense.forEach(item => {
                 this.keepTabId.push(item);
               });
-              this.tabCount = this.keepTabId.length; // 计数开关
-              console.log(this.tabCount, '计数开关初始化');
               this.keepTabId.forEach(item => {
+                this.tabCount = this.keepTabId.length; // 计数开关
+                console.log(this.tabCount, '计数开关初始化');
                 // 获取一条审批状态 checkType = 1 方可打印
                 this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/getchecktype', {
                   id: item // 报销ID
                 })
                 .then(obj => {
-                  if  (obj.data.object.checkType === 1) {
+                  if (obj.data.object.checkType === 1) {
                     this.tabCount--;
                     this.showPrintTable(item);
                     console.log(this.tabCount,'checkType 已经等于 1 了，/api/getchecktype')
