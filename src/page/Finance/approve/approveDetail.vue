@@ -1,6 +1,7 @@
 <!--
   审批详情
   流程：先审批通过 -> 然后传入报销id，api/listforexpense -> 若不为空则进行打印，为空返回列表页 -> 关闭打印窗口返回列表页
+  打印：打印时可能拿不到借款数据，因为后端返给我的也是通过调用工作流的接口拿到返回状态，异步，前端拿不到状态，加了获取状态的接口
 
 -->
 <template>
@@ -16,7 +17,7 @@
     <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
     <el-row class="row-content">
       <el-col :span="24">
-        <el-tabs v-model="tabShowWhich">
+        <el-tabs>
           <el-tab-pane v-for="tabItem in keepBackContent" :key="tabItem.id" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
             <el-row class="item-content">
                 <el-tag type="warning" v-if="tabItem.checkType=='0'" class="distributor-status">审批中</el-tag>
@@ -125,7 +126,7 @@
     <!-- 通过、驳回弹框 END -->
     <el-dialog width="60%" title="打印" :visible="ifShowPrintTable" :before-close="handlePrintClose">
       <el-tabs>
-        <el-tab-pane v-for="item in changeData" :key="item.id" :label="'报销 - '+String(item.id)">
+        <el-tab-pane v-for="item in changeData" :key="item.id" :label="'报销 - ' + String(item.id)">
             <el-table :data="item.arr" border style=" width:90%; margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
               <el-table-column prop="parentID" label="拆分前借款单ID" width="150" align="center"></el-table-column>
               <el-table-column prop="id" label="新无收入借款单ID" align="center"></el-table-column>
@@ -255,10 +256,9 @@
         showExpenseType: false,
         showAccountName: '', // 对公账户名称
         isShowPrintContent: false,
-        ifShowPrintTable: false,
+        ifShowPrintTable: false, // 打印弹窗显示开关
         listLoading: false,
         loadingBtn: false, // 审批、驳回，请求数据接口
-        tabShowWhich: null, // 显示哪个tab
         examineData: [], // 审核
         keepBackContent: [], // 保存tab列表页数据
         keepExpense: [], // 从详情获取到报销id
@@ -268,7 +268,6 @@
         transitShow: false, // 通过驳回弹窗
         title: '', // 通过驳回弹窗标题切换
         getParamsWorkItemId: null, // 工作流接口参数
-        keepStatus: null,
         keepTabId: [],
         tabCount: [], // 计数开关
       }
@@ -276,16 +275,15 @@
     // 关于时间的过滤
     filters: {
       formatDate: function (value) {
-        return moment(value).format('YYYY-MM-DD HH:mm:ss')
+        return moment(value).format('YYYY-MM-DD HH:mm:ss');
       }
     },
-    created(){
+    created () {
       this.getApproveListGuid = this.$route.query.approveDetailGuid;
       this.workItemIDArr = this.$route.query.queryWorkItemID;
       this.getApproveDetail(this.getApproveListGuid);
-      this.tabShowWhich = String(this.$route.query.queryApproveExpenseID);
       this.auditResult(this.getApproveListGuid);
-      if(this.workItemIDArr){
+      if (this.workItemIDArr) {
         this.workItemIDArr.forEach((item) => {
           if (this.getApproveListGuid === item.jq_ID){
             this.getParamsWorkItemId = item.workItemID
@@ -294,6 +292,7 @@
       }
     },
     methods: {
+      // 列表查看详情报销方式
       handleExpenseType (index, row) {
         let _this = this;
         this.showExpenseType = row.expenseType;
@@ -377,7 +376,6 @@
           this.keepExpense = keepData.map( item => {
             return item.id
           });
-          this.keepStatus = keepData[0].checkType;
           this.listLoading = false
         }).catch(err => {
           console.log(err);
