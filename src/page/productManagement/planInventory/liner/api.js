@@ -1,10 +1,10 @@
 // /linerapi/v1/product/product-deliver/saveprice 邮轮产品接送设置售卖价格
-
+import mock from 'mockjs'
 import Vue from 'vue'
 let { $http, GLOBAL, $message }= Vue.prototype;
 
 // 获取产品下所有sku
-export const skuListAllAction= function(payload){
+export const skuListAll= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku/listall", payload)
     .then(res => {
@@ -19,7 +19,7 @@ export const skuListAllAction= function(payload){
 }
 
 // 保存SKU属性
-export const saveSkuAttributeAction= function(payload){
+export const saveSkuAttribute= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku/saveskuattribute", payload)
     .then(res => {
@@ -34,7 +34,7 @@ export const saveSkuAttributeAction= function(payload){
 }
 
 // SKU上下线
-export const skuOnlineOfflineAction= function(payload){
+export const skuOnlineOffline= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku/onlineoffline", payload)
     .then(res => {
@@ -49,7 +49,7 @@ export const skuOnlineOfflineAction= function(payload){
 }
 
 // 判断SKU团号是否存在
-export const getTourAroundAction= function(payload){
+export const getTourAround= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-plan/gettouraround", payload)
     .then(res => {
@@ -60,8 +60,23 @@ export const getTourAroundAction= function(payload){
   })
 }
 
+// 获取日历信息
+export const getCalendar= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-stock/listall", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('查询团期库存日历失败'+ (message || ''));
+      resolve(data.list);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 获取产品下保险李彪
-export const insureListAllAction= function(payload){
+export const insureListAll= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/listall", payload)
     .then(res => {
@@ -75,7 +90,7 @@ export const insureListAllAction= function(payload){
   })
 }
 
-export const deliverListAllAction= function(payload){
+export const deliverListAll= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-deliver/listall", payload)
     .then(res => {
@@ -89,6 +104,7 @@ export const deliverListAllAction= function(payload){
   })
 }
 
+// 删
 export const getLinerId= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product/getproductbasic", payload)
@@ -101,4 +117,22 @@ export const getLinerId= function(payload){
       err && $message.error(err.toString());
     })
   })
+}
+
+export const getLinerCabinType= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-cabin/listall", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('查询产品下接送列表失败'+ (message || ''));
+      resolve(data.list);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+  // console.warn('fake getLinerCabinType');
+  // return Promise.resolve({
+
+  // });
 }

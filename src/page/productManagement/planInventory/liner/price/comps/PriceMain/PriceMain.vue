@@ -12,7 +12,7 @@
       </div>
 
       <BusSelector ref="busSelector"></BusSelector>
-      <InsureSelector ref="InsureSelector"></InsureSelector>
+      <InsureSelector ref="insureSelector"></InsureSelector>
       <PriceGround ref="priceGround"></PriceGround> 
     </div>
     
@@ -23,14 +23,26 @@
 import BusSelector from './comps/BusSelector'
 import InsureSelector from './comps/InsureSelector'
 import PriceGround from './comps/PriceGround/PriceGround'
+import { getLinerCabinType } from '../../../api'
 
 export default {
 
   components: { BusSelector, InsureSelector, PriceGround },
 
+  mounted(){ getLinerCabinType({ liner_id: 1, limit: 100 }) },
+
   data(){
     return {
       reserved_time: 24,
+    }
+  },
+
+  methods: {
+    reset(){
+      this.reserved_time= 24;
+      this.$refs.busSelector.reset();
+      this.$refs.insureSelector.reset();
+      this.$refs.priceGround.reset();
     }
   }
 

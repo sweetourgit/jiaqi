@@ -19,7 +19,7 @@
 
 <template>
   <div class="page">
-    <header @click="test= !test">
+    <header>
       <PriceHeader ref="priceHeader"
         @plan-status="planStatus= $event">
       </PriceHeader>

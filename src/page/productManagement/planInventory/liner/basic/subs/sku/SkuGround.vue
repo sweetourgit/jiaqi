@@ -64,7 +64,7 @@
 
 <script>
 import { SKU_PROCESS_STATUS, CLEARANCE_TIME_OPTIONS, SKU_LINI_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
-import { skuOnlineOfflineAction } from '@/page/productManagement/planInventory/liner/api'
+import { skuOnlineOffline } from '@/page/productManagement/planInventory/liner/api'
 import SkuEditor from './comps/SkuEditor'
 
 export default {
@@ -110,7 +110,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          skuOnlineOfflineAction({ id, line_status: find.value }).then(() => {
+          skuOnlineOffline({ id, line_status: find.value }).then(() => {
             sku.line_status= find.value;
           })
         })

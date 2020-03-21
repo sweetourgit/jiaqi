@@ -29,13 +29,14 @@
 import Jdatepanel from './comps/Jdatepanel/Jdatepanel'
 import PriceDay from './comps/PriceDay'
 import { SKU_PLAN_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
+import { getCalendar } from '@/page/productManagement/planInventory/liner/api.js'
 
 export default {
 
   components: { Jdatepanel, PriceDay },
 
   mounted(){
-    this.init();
+    // this.init();
   },
 
   computed: {
@@ -50,15 +51,20 @@ export default {
   data(){
     return {
       currentDate: null,
+      // 日历集合
+      priceCalendar: null,
       selectedCalendar: [],
       planStatus: SKU_PLAN_STATUS.UNDO,
       panelOptions: {
-        dayDtoSupplier: function(){
-          return {
+        dayDtoSupplier: (date) => {
+          let result= {
             selected: false,
             plan: null,
             plan_status: SKU_PLAN_STATUS.MULTIPLE
           }
+          result.plan= this.getSkuPlan(result);
+          result.plan_status= this.getSkuPlanStatus(result);
+          return result;
         }
       },
       
@@ -67,13 +73,9 @@ export default {
 
   methods: {
     init(date){
+      this.currentDate= date;
+      this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
       let calendarArr= this.$refs.datePanel.init(date || new Date());
-      this.initCalendarArrPlanStatus(calendarArr);
-      this.selectedCalendar.splice(0);
-    },
-
-    initCalendarArrPlanStatus(calendarArr){
-      calendarArr.forEach(el => el.plan_status= this.getSkuPlanStatus(el));
     },
 
     emitSelect(day){
@@ -93,8 +95,8 @@ export default {
       let result;
       if(isReverse){
         selected.forEach(el => el.selected= false);
-        if(selected.length=== this.selectedCalendar) return this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
         this.selectedCalendar= this.selectedCalendar.filter(el => el.selected=== true);
+        if(this.selectedCalendar.length=== 0) return this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
       } else {
         result= selected.filter(el => !el.selected && el.plan_status=== SKU_PLAN_STATUS.MULTIPLE);
         if(result.length=== 0) return;
@@ -109,11 +111,18 @@ export default {
     },
 
     emitDateChange(date){
-      this.init(date);
+      this.getCalendarAction(date).then(list => {
+        this.priceCalendar= list;
+        this.init(date);
+      })
     },
 
     emitClose(){
       this.$emit('close', this.selectedCalendar.map(el => el.date));
+    },
+
+    getSkuPlan(day){
+      return null;
     },
 
     getSkuPlanStatus(day){
@@ -130,6 +139,16 @@ export default {
       this.selectedCalendar.splice(0);
       this.planStatus= status;
       this.$emit('plan-status', status);
+    },
+
+    getCalendarAction(date){
+      let year= date.getFullYear();
+      let month= date.getMonth()+ 1;
+      return getCalendar({
+        product_id: null,
+        sku_id: null,
+        year, month
+      })
     }
   }
 

@@ -73,7 +73,7 @@
 
 <script>
 import { CLEARANCE_TIME_OPTIONS, SKU_PROCESS_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
-import { saveSkuAttributeAction, getTourAroundAction } from '@/page/productManagement/planInventory/liner/api'
+import { saveSkuAttribute, getTourAround } from '@/page/productManagement/planInventory/liner/api'
 
 let cache;
 let getSkuProto= function(){
@@ -127,7 +127,7 @@ export default {
     submitAction(){
       this.$refs.submitForm.validate(bol => {
         if(!bol) return;
-        saveSkuAttributeAction(this.submitForm).then(() => {
+        saveSkuAttribute(this.submitForm).then(() => {
           this.$assign(cache, this.submitForm, true);
           this.handleClose();
         })
@@ -141,7 +141,7 @@ export default {
       if(!tour_no_prefix || !tour_no_suffix) return cb();
       this.$refs.prefixRef.clearValidate();
       this.$refs.suffixRef.clearValidate();
-      getTourAroundAction({ tour_no_prefix, tour_no_suffix }).then(() => {
+      getTourAround({ tour_no_prefix, tour_no_suffix }).then(() => {
         cb();
       }).catch((err) => {
         cb(new Error('团号重复'))
