@@ -317,13 +317,13 @@
       },
       // 获取一条信息
       getLabel (paramPaymentID) {
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-          "id":paramPaymentID
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get', {
+          "id": paramPaymentID
         }).then(res => {
           if (res.data.isSuccess === true) {
             this.fundamental = {};
             this.isShowPrintContent = true;
-            this.fundamental=res.data.object;
+            this.fundamental = res.data.object;
             this.printDetails();
           }
         })
@@ -427,8 +427,8 @@
             }
             console.log(this.changeData, '/api/listforexpense 进入打印方法')
           } else {
-            // console.log(keepObjLength)
-            // this.backListPage()
+            console.log(keepObjLength);
+            this.backListPage();
           }
         })
       },
