@@ -562,7 +562,10 @@ export default {
                   // alert('下一步');
                   // console.log(that.$parent);
                   // localStorage.setItem('liner_id', res.data.data.liner_id);
-                  that.$router.query.id = res.data.data.id
+                  // that.$router.query.id = res.data.data.id
+                  that.$router.push({
+                    query:{'id': res.data.data.id}
+                  })
                   that.$parent.next();
                 }
               } else {
