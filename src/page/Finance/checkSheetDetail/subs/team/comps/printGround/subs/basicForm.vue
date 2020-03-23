@@ -45,10 +45,10 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-popconfirm title="这是一段内容确定删除吗？">
+        <!-- <el-popconfirm title="这是一段内容确定删除吗？">
           <el-button slot="reference">删除</el-button>
-        </el-popconfirm>
-        <el-button size="small" @click="changeDraft(true)">取 消</el-button>
+        </el-popconfirm> -->
+        <el-button size="small" @click="handleClose(true)">取 消</el-button>
         <el-button type="primary" size="small" @click="saveAction">保 存</el-button>
       </span>
       <!-- <Draft
