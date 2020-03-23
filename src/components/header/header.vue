@@ -13,7 +13,7 @@
         
         <!-- <el-badge :value="100" :max="99" class="icon el-icon-bell"> -->
         <el-badge class="icon el-icon-bell">
-          <div style="position:absolute;width:30px;height:30px;top:0;" @click="bugReporter"></div>
+          <div style="position:absolute;width:30px;height:30px;top:0;" @click="bugReporter"></div>
         </el-badge>
         <div class="vertical-line"></div>
         <div class="icon el-icon-user"><span @click="onlineList">当前在线人数：{{onlineNumber}}</span></div>
@@ -50,7 +50,6 @@
         this.play();
         this.getonlineNumber();
       },
-
 	    methods: {
         submit:function() {
           this.$router.push({ path: '/login' })
@@ -94,7 +93,6 @@
         }
       }
     }
-
 </script>
 
 <style scoped>
