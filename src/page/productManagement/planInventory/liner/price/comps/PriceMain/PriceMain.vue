@@ -53,6 +53,17 @@ export default {
       this.$refs.insureSelector.init(sku_plan_insure);
       this.$refs.priceGround.init(sku_price);
     },
+
+    notChange(){
+      // 如果没有cache，说明还没初始化
+      if(!cache) return true;
+      let bol= true;
+      bol= (this.reserved_time=== cache.reserved_time);
+      if(bol) bol= this.$refs.busSelector.notChange();
+      if(bol) bol= this.$refs.insureSelector.notChange();
+      if(bol) bol= this.$refs.priceGround.notChange(cache.sku_price);
+      return bol;
+    },
   }
 
 }

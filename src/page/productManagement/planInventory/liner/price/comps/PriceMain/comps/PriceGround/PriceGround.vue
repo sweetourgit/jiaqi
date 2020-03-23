@@ -40,14 +40,16 @@
         <el-table-column label="销售价" prop="adult_straight_price" header-align="center" align="center"></el-table-column>
         <el-table-column label="库存" prop="stock" header-align="center" align="center"></el-table-column>
         <el-table-column label="上线/下线" prop="line_status" header-align="center" align="center"></el-table-column>
-        <el-table-column label="操作" prop="adult_straight_price" header-align="center" align="center">
-          <template>
+        <el-table-column label="操作" header-align="center" align="center">
+          <template slot-scope="scope">
             <el-button type="text" size="small"
-              :disabled="parentState=== 'readonly'">
+              :disabled="parentState=== 'readonly'"
+              @click="awakeEditor(scope.row)">
               编辑
             </el-button>
             <el-button type="text" size="small"
-              :disabled="parentState=== 'readonly'">
+              :disabled="parentState=== 'readonly'"
+              @click="removePrice(scope.row)">
               删除
             </el-button>
           </template>
@@ -55,7 +57,8 @@
       </el-table>
     </main>
     <PriceEditor ref="editor"
-      :cabin-type-options="cabinTypeOptions">
+      :cabin-type-options="cabinTypeOptions"
+      @submit="emitPrice">
     </PriceEditor>
   </div>
 </template>
@@ -64,16 +67,6 @@
 import PriceEditor from './comps/PriceEditor'
 import { getLinerCabinType } from '@/page/productManagement/planInventory/liner/api'
 
-/**
-cabin_id: null,
-    title: '',
-    min_stay: null,
-    max_stay: null,
-    stock: null,
-    adult_same_price: null,
-    adult_straight_price: null,
-    line_status: 1
- */
 let priceArrCache= null;
 export default {
   components: { PriceEditor },
@@ -101,12 +94,17 @@ export default {
   },
 
   methods: {
-    init(priceArr){
+    init(priceArr, cabin_name){
       this.cabinTypePromise.then(() => {
-        priceArrCache= priceArr;
+        priceArrCache= this.$deepCopy(priceArr);
         this.priceMap= this.makePriceMap(priceArr);
-        this.title= this.priceMapKeys[0];
+        this.changeTableData(cabin_name || this.priceMapKeys[0]);
       })
+    },
+
+    changeTableData(title){
+      this.title= title;
+      this.tableData= this.priceMap[title];
     },
 
     makeCabinTypeOptions(){
@@ -116,25 +114,19 @@ export default {
       });
     },
 
-    // 分类price
+    getCabinName(cabin_id){
+      let { name }= this.$refs.editor.findCabin(cabin_id);
+      return name;
+    },
+
+    // 分类price， price的title是自己的title，而分类用的title，是price.cabin_id对应的title
     makePriceMap(priceArr){
-      priceArr= [
-        {
-          "cabin_id": 1,
-          "title": "string",
-          "min_stay": 0,
-          "max_stay": 0,
-          "stock": 0,
-          "adult_same_price": 0,
-          "adult_straight_price": 0,
-          "line_status": 0
-        }
-      ]
       let result= {};
       priceArr.forEach(price => {
-        let { title }= price;
-        if(!(title in result)) result[title]= [];
-        result[title].push(price);
+        let { cabin_id }= price;
+        let { name }= this.$refs.editor.findCabin(cabin_id);
+        if(!(name in result)) result[name]= [];
+        result[name].push(price);
       })
       return result;
     },
@@ -142,6 +134,29 @@ export default {
     awakeEditor(price){
       this.$refs.editor.init(price, { title: this.title });
     },
+
+    removePrice(price){
+      let { name }= this.$refs.editor.findCabin(price.cabin_id);
+      let index= priceArrCache.find(el => el=== price);
+      priceArrCache.splice(index, 1);
+      this.init(priceArrCache, name);
+    },
+
+    /**
+     * @description: 修改新增通用
+     */
+    emitPrice({ price, isAdd }){
+      let { name }= this.$refs.editor.findCabin(price.cabin_id);
+      if(isAdd) priceArrCache.push(price);
+      this.init(priceArrCache, name);
+    },
+
+    notChange(originData){
+      let bol= true;
+      bol= (priceArrCache.length=== originData.length);
+      if(bol) bol= this.$checkLooseEqual(priceArrCache, originData);
+      return bol;
+    }
   }
 
 }

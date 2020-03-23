@@ -51,6 +51,10 @@ export default {
   methods: {
     init(selected){
 
+    },
+
+    notChange(){
+      return true;
     }
   }
 

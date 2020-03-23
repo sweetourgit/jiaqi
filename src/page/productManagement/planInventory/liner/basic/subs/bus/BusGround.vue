@@ -60,6 +60,7 @@
 
 <script>
 // import TableInputer from './comps/TableInputer'
+import { deliverListAll } from '@/page/productManagement/planInventory/liner/api'
 import { TableInputer, manager as TableInputerManager } from './comps/TableInputer/index'
 import BusDetailer from './comps/BusDetailer'
 
@@ -72,6 +73,10 @@ export default {
       if(!val) return '';
       return val.toFixed(2);
     }
+  },
+
+  mounted(){
+    this.init();
   },
 
   data(){
@@ -90,6 +95,11 @@ export default {
   },
 
   methods: {
+    init(){
+      let { product_id }= this.$route.query;
+      deliverListAll({ product_id })
+      .then(deliverList => this.tableData= deliverList);
+    },
     openPrice(table, column, index){
       let vm= TableInputerManager.getVm(table, column, index);
       vm.focus();

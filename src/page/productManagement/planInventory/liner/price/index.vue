@@ -21,23 +21,25 @@
   <div class="page">
     <header>
       <PriceHeader ref="priceHeader"
-        @set-plan-status="planStatus= $event"
+        :options="options"
+        @set-parent-status="editState= $event"
         @select-day="emitSelectDay">
       </PriceHeader>
       <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;z-index: 1999;">
         <el-button type="info" size="mini"
-          v-show="planStatus=== 'edit'">
+          v-show="editState=== 'edit'">
           保存
         </el-button>
         <el-button type="info" size="mini"
-          v-show="planStatus=== 'add'">
+          v-show="editState=== 'add'"
+          @click="addHandler">
           提交
         </el-button>
         <el-button type="info" size="mini">返回</el-button>
       </div>
     </header>
     <PriceMain ref="priceMain"
-      :state="planStatus">
+      :state="editState">
     </PriceMain>
     
   </div>
@@ -46,7 +48,6 @@
 <script>
 import PriceHeader from './comps/PriceHeader/PriceHeader'
 import PriceMain from './comps/PriceMain/PriceMain'
-import { SKU_PLAN_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
 import './moveBtn'
 
 export default {
@@ -59,8 +60,10 @@ export default {
 
   data(){
     return {
-      planStatus: SKU_PLAN_STATUS.UNDO,
-      SKU_PLAN_STATUS
+      editState: null,
+      options: {
+        notChange: this.notChange
+      }
     }
   },
 
@@ -69,6 +72,12 @@ export default {
     emitSelectDay(day){
       let { plan }= day;
       this.$refs.priceMain.init(plan);
+    },
+
+    addHandler(){},
+
+    notChange(){
+      return this.$refs.priceMain.notChange();
     }
   }
 }

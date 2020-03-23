@@ -44,7 +44,8 @@
               修改
             </el-button>
             <el-button type="text"
-              v-show="scope.row.sku_status >= SKU_PROCESS_STATUS.CAN_PRICE">
+              v-show="scope.row.sku_status >= SKU_PROCESS_STATUS.CAN_PRICE"
+              @click="toPricePage(scope.row.id)">
               价格
             </el-button>
             <el-button type="text"
@@ -64,7 +65,7 @@
 
 <script>
 import { SKU_PROCESS_STATUS, CLEARANCE_TIME_OPTIONS, SKU_LINI_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
-import { skuOnlineOffline } from '@/page/productManagement/planInventory/liner/api'
+import { skuListAll, skuOnlineOffline } from '@/page/productManagement/planInventory/liner/api'
 import SkuEditor from './comps/SkuEditor'
 
 export default {
@@ -83,6 +84,10 @@ export default {
     }
   },
 
+  mounted(){
+    this.init();
+  },
+
   data(){
     return Object.assign(
       {
@@ -94,8 +99,10 @@ export default {
 
   methods: Object.assign(
     {
-      init(skuArr){
-        this.tableData= skuArr.map(this.skuAdaptor);
+      init(){
+        let { product_id }= this.$route.query;
+        skuListAll({ product_id })
+        .then(skuList => this.tableData= skuList.map(this.skuAdaptor));
       },
 
       openEditor(sku){
@@ -114,7 +121,12 @@ export default {
             sku.line_status= find.value;
           })
         })
-      }
+      },
+
+      toPricePage(sku_id){
+        let { product_id, liner_id }= this.$route.query;
+        this.$router.push({ path: '/product/planInventory/liner/price', query: { product_id, sku_id, liner_id } });
+      }      
     },
     // 工具函数
     {
