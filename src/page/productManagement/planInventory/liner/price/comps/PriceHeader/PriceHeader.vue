@@ -79,35 +79,39 @@ export default {
       let calendarArr= this.$refs.datePanel.init(date || new Date());
     },
 
-    emitSelect(day){
-      // 如果是取消选择
-      if(day.selected){
-        // 如果只有一个元素，则置为空选
-        if(this.selectedCalendar.length=== 1) return this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
-        day.selected= false;
-        return this.selectedCalendar= this.selectedCalendar.filter(el => el.selected=== true);
+    /**
+     * @param {Array<day>} selected 
+     * @param {Boolean} isReverse: 是否反选 
+     * @return: 
+     */
+    setSelectedCalendar(selected, isReverse){
+      let result;
+      let oldState= this.parentState;
+      let newState;
+      if(this.$isArray(selected)){
+        selected.forEach(el => el.selected= !isReverse)
+        // 正选且之前不是多选状态，则清空目前的已选
+        if(!isReverse && oldState!== 'add') this.selectedCalendar.splice(0).forEach(el => el.selected= false);
+        this.selectedCalendar= [...selected.filter(el => el.selected), ...this.selectedCalendar.filter(el => el.selected)];
+        newState= this.selectedCalendar.length=== 0? null: 'add';
+      } else {
+        selected.selected= !isReverse;
+        if(!isReverse) this.selectedCalendar.splice(0).forEach(el => el.selected= false);
+        this.selectedCalendar= [...[selected].filter(el => el.selected), ...this.selectedCalendar.filter(el => el.selected)];
+        newState= this.selectedCalendar.length=== 0? null: (this.selectedCalendar[0].isPassed? 'readonly': 'edit');
       }
-      this.setPlanStatus(day.plan_status, day.isPassed);
-      this.selectedCalendar.push(day);
-      day.selected= true;
-      // 如果当前已经是添加界面，且新点击的是多选day，直接返回，这样就不会重置已经编辑的内容
-      if(this.parentState=== 'add' && day.plan_status=== SKU_PLAN_STATUS.MULTIPLE) return;
-      this.$emit('select-day', day);
+      this.parentState= newState;
+    },
+
+    emitSelect(day){
+      if(day.plan_status=== SKU_PLAN_STATUS.MULTIPLE) return this.setSelectedCalendar([day], day.selected);
+      this.setSelectedCalendar(day, day.selected);
     },
 
     emitMultiSelect({ selected, isReverse }){
       let result;
-      if(isReverse){
-        selected.forEach(el => el.selected= false);
-        this.selectedCalendar= this.selectedCalendar.filter(el => el.selected=== true);
-        if(this.selectedCalendar.length=== 0) return this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
-      } else {
-        result= selected.filter(el => !el.selected && el.isPassed=== false && el.plan_status=== SKU_PLAN_STATUS.MULTIPLE);
-        if(result.length=== 0) return;
-        this.setPlanStatus(SKU_PLAN_STATUS.MULTIPLE);
-        this.selectedCalendar= [...this.selectedCalendar, ...result];
-        result.forEach(el => el.selected= true);
-      }
+      result= selected.filter(el => !el.isPassed && el.plan_status=== SKU_PLAN_STATUS.MULTIPLE && el.selected=== !!isReverse);
+      this.setSelectedCalendar(result, !!isReverse);
     },
 
     emitClearSelect(){
