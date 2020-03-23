@@ -134,8 +134,7 @@ export const saveChcektype = function (object) {
   })
 }
 
-export const getFlowFinishedList = function (jq_id) {
-  console.log('jqUrl', GLOBAL.jqUrl)
+export const getFlowFinishedList= function(jq_id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.jqUrl + '/JQ/GetWorkItemFinishedList',
       {

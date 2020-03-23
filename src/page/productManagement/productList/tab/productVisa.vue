@@ -37,7 +37,7 @@
     <!--按钮-->
     <div class="productbut">
       <el-button type="primary" @click="addProducts()">添加</el-button>
-      <el-button :disabled="forbidden">编辑</el-button>
+      <el-button :disabled="forbidden" @click="editProducts()">编辑</el-button>
       <el-button :disabled="forbidden">预订</el-button>
       <el-button :disabled="forbidden" @click="visaInventory()">库存</el-button>
       <el-button :disabled="forbidden">更改状态</el-button>
@@ -285,6 +285,10 @@ export default {
     },
     addProducts(){
       this.$router.push({ path: "/visaProducts" });
+    },
+    editProducts(){
+      sessionStorage.setItem('commodityID',this.pid);
+      this.$router.push({ path: "/editVisaProducts" });
     },
     visaInventory(){ // 团期库存
       this.$router.push({ path: "/visaInventory?id="+this.pid });
