@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-show="state">
     <div style="padding-top: 50px;">
       <span style="font-size: 14px;">订单预留时长：</span>
       <span>
@@ -9,10 +9,15 @@
         </el-select>
       </span>
     </div>
-
-    <BusSelector ref="busSelector"></BusSelector>
-    <InsureSelector ref="insureSelector"></InsureSelector>
-    <PriceGround ref="priceGround"></PriceGround>
+    <BusSelector ref="busSelector"
+      :parent-state="parentState">
+    </BusSelector>
+    <InsureSelector ref="insureSelector"
+      :parent-state="parentState">
+    </InsureSelector>
+    <PriceGround ref="priceGround"
+      :parent-state="parentState">
+    </PriceGround>
   </main>
 </template>
 
@@ -25,7 +30,13 @@ import { getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dict
 let cache;
 export default {
 
+  props: ['state'],
+
   components: { BusSelector, InsureSelector, PriceGround },
+
+  computed: {
+    parentState(){ return this.state },
+  },
 
   data(){
     return {

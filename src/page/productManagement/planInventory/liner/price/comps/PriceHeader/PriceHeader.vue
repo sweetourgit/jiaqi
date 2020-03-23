@@ -56,15 +56,12 @@ export default {
       selectedCalendar: [],
       planStatus: SKU_PLAN_STATUS.UNDO,
       panelOptions: {
-        dayDtoSupplier: (date) => {
-          let result= {
+        mixinHandler: (dto) => {
+          Object.assign(dto, {
             selected: false,
-            plan: null,
-            plan_status: SKU_PLAN_STATUS.MULTIPLE
-          }
-          result.plan= this.getSkuPlan(result);
-          result.plan_status= this.getSkuPlanStatus(result);
-          return result;
+            plan: this.getSkuPlan(dto),
+            plan_status: this.getSkuPlanStatus(dto)
+          })
         }
       },
       
@@ -86,7 +83,7 @@ export default {
         day.selected= false;
         return this.selectedCalendar= this.selectedCalendar.filter(el => el.selected=== true);
       }
-      this.setPlanStatus(day.plan_status);
+      this.setPlanStatus(day.plan_status, day.isPassed);
       this.selectedCalendar.push(day);
       day.selected= true;
       this.$emit('select-day', day);
@@ -133,13 +130,17 @@ export default {
       return SKU_PLAN_STATUS.MULTIPLE;
     },
 
-    setPlanStatus(status){
+    /**
+     * @description: 多选对应面板的添加状态，无选对应隐藏，单选要判断选择的一天是否过时，过时则只读状态，不过时则编辑状态
+     */
+    setPlanStatus(status, isPassed){
       // 如果前后都是多选
-      if(this.planStatus=== status && status=== SKU_PLAN_STATUS.MULTIPLE) return;
+      if(this.planStatus===status && status=== SKU_PLAN_STATUS.MULTIPLE) return this.$emit('set-plan-status', 'add');
       this.selectedCalendar.forEach(el => el.selected= false);
       this.selectedCalendar.splice(0);
       this.planStatus= status;
-      this.$emit('set-plan-status', status);
+      if(status=== SKU_PLAN_STATUS.UNDO) return this.$emit('set-plan-status');
+      this.$emit('set-plan-status', isPassed? 'readonly': 'edit')
     },
 
     getCalendarAction(date){

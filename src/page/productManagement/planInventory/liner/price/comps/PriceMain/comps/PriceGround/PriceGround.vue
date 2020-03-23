@@ -1,13 +1,30 @@
 <style lang="scss" scoped>
 .price-ground{
   margin-top: 50px;
+  &>header{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+  }
 }
 </style>
 
 <template>
   <div class="price-ground">
     <header>
-
+      <el-button-group>
+        <el-button size="mini" type="info"
+          v-for="el in priceMapKeys" 
+          :key="el"
+          @click="title= el">
+          {{ el }}
+        </el-button>
+      </el-button-group>
+      <el-button type="primary" size="mini"
+        :disabled="parentState=== 'readonly'"
+        @click="awakeEditor(null)">
+        新增报名类型
+      </el-button>
     </header>
     <main>
       <el-table border size="mini" style="width: 100%"
@@ -25,13 +42,21 @@
         <el-table-column label="上线/下线" prop="line_status" header-align="center" align="center"></el-table-column>
         <el-table-column label="操作" prop="adult_straight_price" header-align="center" align="center">
           <template>
-            <el-button type="text" size="small">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small"
+              :disabled="parentState=== 'readonly'">
+              编辑
+            </el-button>
+            <el-button type="text" size="small"
+              :disabled="parentState=== 'readonly'">
+              删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </main>
-    <PriceEditor ref="editor"></PriceEditor>
+    <PriceEditor ref="editor"
+      :cabin-type-options="cabinTypeOptions">
+    </PriceEditor>
   </div>
 </template>
 
@@ -49,12 +74,20 @@ cabin_id: null,
     adult_straight_price: null,
     line_status: 1
  */
-
+let priceArrCache= null;
 export default {
   components: { PriceEditor },
 
+  props: ['parentState'],
+
   mounted(){
     this.makeCabinTypeOptions();
+  },
+
+  computed: {
+    priceMapKeys(){
+      return this.priceMap && Object.keys(this.priceMap);
+    }
   },
 
   data(){
@@ -63,13 +96,16 @@ export default {
       cabinTypeOptions: [],
       priceMap: null,
       tableData: [],
+      title: null
     }
   },
 
   methods: {
     init(priceArr){
       this.cabinTypePromise.then(() => {
+        priceArrCache= priceArr;
         this.priceMap= this.makePriceMap(priceArr);
+        this.title= this.priceMapKeys[0];
       })
     },
 
@@ -80,12 +116,32 @@ export default {
       });
     },
 
+    // 分类price
     makePriceMap(priceArr){
+      priceArr= [
+        {
+          "cabin_id": 1,
+          "title": "string",
+          "min_stay": 0,
+          "max_stay": 0,
+          "stock": 0,
+          "adult_same_price": 0,
+          "adult_straight_price": 0,
+          "line_status": 0
+        }
+      ]
       let result= {};
       priceArr.forEach(price => {
-        
+        let { title }= price;
+        if(!(title in result)) result[title]= [];
+        result[title].push(price);
       })
-    }
+      return result;
+    },
+
+    awakeEditor(price){
+      this.$refs.editor.init(price, { title: this.title });
+    },
   }
 
 }

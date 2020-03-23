@@ -170,7 +170,7 @@ export default {
   props: {
     /**
      * @description: options
-     * @param {Function} dayDtoSupplier: 返回一个对象，用来给dayDto添加属性
+     * @param {Function} mixinHandler: 用来给dayDto混入属性
      */
     options: {
       type: Object,
@@ -235,19 +235,19 @@ export default {
      * @param {Number} row
      */
     getDayDto(){
-      let { dayDtoSupplier }= this.options;
-      return Object.assign({
+      return {
         date: null,
-        Date: null,
+        _date: null,
         dateInt: null,
         isPassed: false,
         isToday: false,
-      }, dayDtoSupplier? dayDtoSupplier(): undefined);
+      }
     },
     
     // 填充日历
     fullfill(){
       let result, max, begin, total, todayInt, monthInt;
+      let { mixinHandler }= this.options; 
       result= new Array(42);
       begin= new Date(this.current[0], this.current[1], 1).getDay();
       begin= (begin=== 0? 7: begin);
@@ -255,7 +255,7 @@ export default {
       todayInt= this.getDateInt(new Date(), true);
       for(let i= 1+ begin; i<= max+ begin; i++){
         let _date= new Date(this.current[0], this.current[1], i- begin);
-        let dto= this.getDayDto(_date);
+        let dto= this.getDayDto();
         dto._date= _date;
         dto.date= i- begin;
         dto.dateInt= this.getDateInt(dto._date, true);
@@ -263,6 +263,7 @@ export default {
         dto.col= 1+ ((i- 1)% 7);
         if(dto.dateInt< todayInt) dto.isPassed= true;
         if(dto.dateInt=== todayInt) dto.isToday= true;
+        if(mixinHandler) mixinHandler(dto);
         result[i]= dto;
       }
       return result;

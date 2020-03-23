@@ -13,7 +13,11 @@
     </el-table-column>
     <el-table-column label="操作" header-align="center" align="center" width="150">
       <template slot-scope="scope">
-        <el-checkbox v-model="scope.row.radio">选中</el-checkbox>
+        <el-checkbox 
+          v-model="scope.row.radio"
+          :disabled="parentState=== 'readonly'">
+          选定
+        </el-checkbox>
       </template>
     </el-table-column>
   </el-table>
@@ -23,6 +27,7 @@
 import { deliverListAll } from '@/page/productManagement/planInventory/liner/api'
 
 export default {
+  props: ['parentState'],
 
   filters: {
     priceFilter(val){

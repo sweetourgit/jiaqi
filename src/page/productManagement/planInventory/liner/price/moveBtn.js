@@ -6,6 +6,5 @@ Vue.directive('move-btn', {
     el.style.position= 'fixed';
     el.style.top= top+ 'px';
     el.style.left= left+ 'px';
-    el.style.zIndex= 3000;
   }
 })

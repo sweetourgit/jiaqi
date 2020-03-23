@@ -24,20 +24,20 @@
         @set-plan-status="planStatus= $event"
         @select-day="emitSelectDay">
       </PriceHeader>
-      <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;">
+      <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;z-index: 1999;">
         <el-button type="info" size="mini"
-          v-show="planStatus> SKU_PLAN_STATUS.UNDO">
+          v-show="planStatus=== 'edit'">
           保存
         </el-button>
         <el-button type="info" size="mini"
-          v-show="planStatus=== SKU_PLAN_STATUS.MULTIPLE">
+          v-show="planStatus=== 'add'">
           提交
         </el-button>
         <el-button type="info" size="mini">返回</el-button>
       </div>
     </header>
     <PriceMain ref="priceMain"
-      v-show="planStatus!== SKU_PLAN_STATUS.UNDO">
+      :state="planStatus">
     </PriceMain>
     
   </div>

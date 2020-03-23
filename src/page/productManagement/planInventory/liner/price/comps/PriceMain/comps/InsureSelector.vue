@@ -29,6 +29,10 @@ export default {
     return {
       tableData: []
     }
+  },
+
+  methods: {
+    init(){}
   }
 
 }
