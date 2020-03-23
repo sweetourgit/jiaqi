@@ -129,6 +129,7 @@ export default {
         if(!bol) return;
         saveSkuAttribute(this.submitForm).then(() => {
           this.$assign(cache, this.submitForm, true);
+          cache.SKU_PROCESS_STATUS.CAN_PRICE;
           this.handleClose();
         })
       })

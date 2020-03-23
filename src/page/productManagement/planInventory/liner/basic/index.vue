@@ -17,22 +17,7 @@ import SkuGround from './subs/sku/SkuGround'
 import BusGround from './subs/bus/BusGround'
 import InsureGround from './subs/insure/InsureGround'
 
-import { skuListAll, insureListAll, deliverListAll } from '../api'
-
 export default {
   components: { SkuGround, BusGround, InsureGround },
-
-  mounted(){
-    let payload= this.$route.query;
-    Promise.all([
-      skuListAll(payload),
-      deliverListAll(payload),
-      insureListAll(payload)
-    ]).then(res => {
-      this.$refs.skuGround.init(res[0]);
-      this.$refs.busGround.init(res[1]);
-      this.$refs.insureGround.init(res[2]);
-    })
-  }
 }
 </script>

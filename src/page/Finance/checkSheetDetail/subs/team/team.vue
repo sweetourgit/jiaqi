@@ -270,12 +270,8 @@ export default {
       action= isAgree? 
         agreeForJQ({commentText, workItemID, userCode}): 
           rejectForJQ({commentText, workItemID: rejectWorkItemID, userCode})
-          .then(() => {
-            return endForJQ({ jQ_ID: guid, jQ_Type: 5 });
-          })
-          .then(() => {
-            return saveChcektype({ guid, checkType: 2 })
-          })
+          .then(() => endForJQ({ jQ_ID: guid, jQ_Type: 5 }))
+          .then(() => saveChcektype({ guid, checkType: 2 }))
       action.then(() => {
         // 重置页面按钮 防止点击
         this.type= 'normal';

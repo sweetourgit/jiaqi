@@ -32,7 +32,10 @@ export default {
   },
 
   methods: {
-    init(){}
+    init(){},
+    notChange(){
+      return true;
+    }
   }
 
 }

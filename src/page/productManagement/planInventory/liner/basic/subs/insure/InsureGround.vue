@@ -56,11 +56,16 @@
 </template>
 
 <script>
+import { insureListAll } from '@/page/productManagement/planInventory/liner/api'
 import insureEditor from './comps/InsureEditor'
 
 export default {
 
   components: { insureEditor },
+
+  mounted(){
+    this.init();
+  },
 
   data(){
     return {
@@ -71,6 +76,11 @@ export default {
   },
 
   methods: {
+    init(){
+      let { product_id }= this.$route.query;
+      insureListAll({ product_id })
+      .then(insureList => this.tableData= insureList);
+    },
     openEditor(insure){
       this.$refs.editor.open(insure);
     }

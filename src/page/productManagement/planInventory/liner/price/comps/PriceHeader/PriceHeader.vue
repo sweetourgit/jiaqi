@@ -35,6 +35,8 @@ export default {
 
   components: { Jdatepanel, PriceDay },
 
+  props: ['options'],
+
   mounted(){
     // this.init();
   },
@@ -54,6 +56,8 @@ export default {
       // 日历集合
       priceCalendar: null,
       selectedCalendar: [],
+      // null, readonly, edit, add
+      parentState: null,
       planStatus: SKU_PLAN_STATUS.UNDO,
       panelOptions: {
         mixinHandler: (dto) => {
@@ -86,6 +90,8 @@ export default {
       this.setPlanStatus(day.plan_status, day.isPassed);
       this.selectedCalendar.push(day);
       day.selected= true;
+      // 如果当前已经是添加界面，且新点击的是多选day，直接返回，这样就不会重置已经编辑的内容
+      if(this.parentState=== 'add' && day.plan_status=== SKU_PLAN_STATUS.MULTIPLE) return;
       this.$emit('select-day', day);
     },
 
@@ -135,12 +141,28 @@ export default {
      */
     setPlanStatus(status, isPassed){
       // 如果前后都是多选
-      if(this.planStatus===status && status=== SKU_PLAN_STATUS.MULTIPLE) return this.$emit('set-plan-status', 'add');
+      if(this.planStatus===status && status=== SKU_PLAN_STATUS.MULTIPLE) return this.setParentStatus('add');
       this.selectedCalendar.forEach(el => el.selected= false);
       this.selectedCalendar.splice(0);
       this.planStatus= status;
-      if(status=== SKU_PLAN_STATUS.UNDO) return this.$emit('set-plan-status');
-      this.$emit('set-plan-status', isPassed? 'readonly': 'edit')
+      if(status=== SKU_PLAN_STATUS.UNDO) return this.setParentStatus();
+      return this.setParentStatus(isPassed? 'readonly': 'edit');
+      this.setParentStatus(isPassed? 'readonly': 'edit');
+    },
+
+    setParentStatus(state){
+      // // 如果当前父组件是新增或者编辑状态，且数据发生过变动
+      // if((this.parentState=== 'edit' || this.parentState=== 'add') && this.options.notChange())
+      //   this.$confirm('存在数据变动，是否保存?', '提示', {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     type: 'warning'
+      //   }).then(() => {
+
+      //   }).catch(() => {
+          this.parentState= state;
+          this.$emit('set-parent-status', state);        
+        // });
     },
 
     getCalendarAction(date){
