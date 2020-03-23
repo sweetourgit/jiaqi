@@ -1,14 +1,14 @@
 <template>
-  <div class="distributor-content" id="industrialBank">
+  <div class="distributor-content" id="merchantsBankSXF">
     <!-- 搜索表单 -->
     <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
       <el-row type="flex" class="row-bg">
         <el-col :span="7">
           <el-form-item label="状态:" class="status-length" prop="matchType">
             <el-select v-model="ruleForm.matchType" placeholder="请选择状态">
-              <el-option label="全部" value="0"></el-option>
-              <el-option label="未导入" value="1"></el-option>
-              <el-option label="已导入" value="2"></el-option>
+              <el-option label="全部" value="2"></el-option>
+              <el-option label="未导入" value="0"></el-option>
+              <el-option label="已导入" value="1"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -514,7 +514,7 @@ export default {
 };
 </script>
 <style lang="scss">
-#industrialBank.distributor-content {
+#merchantsBankSXF.distributor-content {
   width: 99%;
   margin: 25px auto;
   height: auto;

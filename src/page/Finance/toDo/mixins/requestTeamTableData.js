@@ -1,5 +1,11 @@
-/* 待审批表格数据（借款，报销，退款，报账单） */
+/*
+*
+* 借款、报销、退款、报账单相关的表格请求方法、通用方法；
+*
+* */
+
 import moment from 'moment'
+import { mapMutations } from 'vuex'
 
 // 通过父组件传过来的属性进行转换，搜索用
 let changeComName = {
@@ -20,16 +26,23 @@ export default {
   },
   methods: {
     moment,
+    ...mapMutations('toDo', [
+      'showCountNoInTeam',
+      'showCountAdvanceTeam',
+      'showCountReimburseTeam',
+      'showCountRefundTeam',
+      'showCountSheetTeam'
+    ]),
     HandleSearchPendingApprove (paramsModule) {
-      this.pendingApprovalTable(changeComName[paramsModule])
-    },
-    HandleResetPendingApproval (paramsFrom, paramsModule){
-      this.$refs[paramsFrom].resetFields()
       this.pendingApprovalTable(changeComName[paramsModule]);
     },
-    pendingApprovalTable(paramsTab){
-      let arr = []
-      let that = this
+    HandleResetPendingApproval (paramsFrom, paramsModule) {
+      this.$refs[paramsFrom].resetFields();
+      this.pendingApprovalTable(changeComName[paramsModule]);
+    },
+    pendingApprovalTable (paramsTab) {
+      let arr = [];
+      let _this = this;
       // 依据tab点击事件传入的模块名称，取对应的字段传给接口
       let moduleArrayMapped = {
         nameIINoInTeam: 'loan_noIncome4',
@@ -37,92 +50,105 @@ export default {
         nameIIReimburseTeam: 'Reimbursement_noIncome4',
         nameIIRefundTeam: 'refund4',
         nameIISheetTeam: 'reimbursement4',
-      }
-      this.listLoading = true
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')  // workflowCode获取FlowModel传递（工作流模型名称）
+      };
+      this.listLoading = true;
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')
         .then(obj => {
-          this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ",{
+          this.$http.post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ", {
             //"userCode": sessionStorage.getItem('userCode'),
             "userCode": sessionStorage.getItem('tel'),
-            "startTime": that.ruleFormSearch.startTime ? moment(that.ruleFormSearch.startTime).format('YYYY-MM-DD 00:00:00') : "1970-07-23T01:30:54.452Z",
-            "endTime": that.ruleFormSearch.endTime ? moment(that.ruleFormSearch.endTime).format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+            "startTime": _this.ruleFormSearch.startTime ? moment(_this.ruleFormSearch.startTime).format('YYYY-MM-DD 00:00:00') : "1970-07-23T01:30:54.452Z",
+            "endTime": _this.ruleFormSearch.endTime ? moment(_this.ruleFormSearch.endTime).format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
             "startIndex": -1,
             "endIndex": -1 ,
-            "workflowCode": moduleArrayMapped[paramsTab]
+            "workflowCode": moduleArrayMapped[ paramsTab ]
           }).then(obj => {
-            obj.data.forEach(v=>{
-              arr.push(v.jq_ID)
+            obj.data.forEach(v => {
+              arr.push(v.jq_ID);
             })
             // 减少判断逻辑（通过guid获取相关未审批的数据）
             let ApprovalApiPayment = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/payment/api/listforguid', {
                 "guid": arr
-              }).then(obj =>{
+              }).then(obj => {
+                let keepObj = obj.data.objects
                 if(paramsTab === 'nameIINoInTeam'){
-                  that.approvalNoInData = obj.data.objects;
+                  _this.approvalNoInData = keepObj;
+                  _this.showCountNoInTeam(keepObj ? keepObj.length : 0); // 计数无收入
                 } else {
-                  that.approvalAdvanceData = obj.data.objects
+                  _this.approvalAdvanceData = keepObj;
+                  _this.showCountAdvanceTeam(keepObj ? keepObj.length : 0); // 计数预付款
                 }
-                that.listLoading = false
+                _this.listLoading = false;
               }).catch(obj => {
-                console.log(obj)
+                _this.listLoading = false;
+                console.log(obj);
               })
-            }
+            };
             let ApprovalApiExpense = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/expense/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/expense/api/listforguid', {
                 "guid": arr
-              }).then(obj =>{
-                that.approvalReimburseData = obj.data.objects;
-                that.listLoading = false
+              }).then(obj => {
+                let keepObj = obj.data.objects;
+                _this.approvalReimburseData = keepObj;
+                _this.showCountReimburseTeam(keepObj ? keepObj.length : 0); // 计数报销
+                _this.listLoading = false;
               }).catch(obj => {
-                console.log(obj)
+                _this.listLoading = false;
+                console.log(obj);
               })
-            }
+            };
             let ApprovalApiRefund = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
                 "guid": arr
-              }).then(obj =>{
-                that.approvalRefundData = obj.data.objects;
-                that.listLoading = false
+              }).then(obj => {
+                let keepObj = obj.data.objects;
+                _this.approvalRefundData = keepObj;
+                _this.showCountRefundTeam(keepObj ? keepObj.length : 0); // 计算退款
+                _this.listLoading = false;
               }).catch(obj => {
-                console.log(obj)
+                _this.listLoading = false;
+                console.log(obj);
               })
-            }
+            };
             let ApprovalApiSheet = function () {
-              that.$http.post(that.GLOBAL.serverSrc + '/finance/checksheet/api/listforguid', {
+              _this.$http.post(_this.GLOBAL.serverSrc + '/finance/checksheet/api/listforguid', {
                 "guid": arr
-              }).then(obj =>{
-                that.approvalSheetData = obj.data.objects;
-                that.listLoading = false
+              }).then(obj => {
+                let keepObj = obj.data.objects;
+                _this.approvalSheetData = keepObj;
+                _this.showCountSheetTeam(keepObj ? keepObj.length : 0); // 报账单计数
+                _this.listLoading = false;
               }).catch(obj => {
-                console.log(obj)
+                console.log(obj);
               })
-            }
+            };
             let listApi = {
               nameIINoInTeam: ApprovalApiPayment, // 无收入
               nameIIAdvanceTeam: ApprovalApiPayment, // 预付款
               nameIIReimburseTeam: ApprovalApiExpense, // 报销
               nameIIRefundTeam: ApprovalApiRefund, // 退款
               nameIISheetTeam: ApprovalApiSheet, // 报账单
-            }
-            listApi[paramsTab]()
+            };
+            listApi[ paramsTab ]();
           }).catch(obj => {
-            console.log(obj)
+            _this.listLoading = false;
+            console.log(obj);
           })
       })
     },
     dateFormat: function(row, column) {
-      let date = row[column.property];
-      if(date == undefined) {
+      let date = row[column.property]
+      if(date === undefined) {
         return '';
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex == 0) {
-        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
+    getRowClass ({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex === 0) {
+        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px';
       } else {
-        return ''
+        return '';
       }
     },
   }

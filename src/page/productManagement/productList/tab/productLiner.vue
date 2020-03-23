@@ -202,7 +202,10 @@ export default {
     addShip(){
       this.$router.push({
         path: '/productLinerDo',
-        name: '邮轮/ 添加'
+        name: '邮轮/ 添加',
+        query: {
+          "id": ''
+        }
       });
     },
     // 编辑

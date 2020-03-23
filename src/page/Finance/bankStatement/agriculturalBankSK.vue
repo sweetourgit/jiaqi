@@ -109,7 +109,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="code" label="交易流水号" align="center"></el-table-column>
-      <el-table-column prop="createTime" label="交易时间" align="center"></el-table-column>
+      <el-table-column prop="createTime" label="交易时间" align="center">
+          <template slot-scope="scope">
+          <span> {{scope.row.createTime.split('T')[0]}}<br/>{{scope.row.createTime.split('T')[1]}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="incomePrice" label="收入金额" align="center"></el-table-column>
       <el-table-column prop="expensesPrice" label="支出金额" align="center"></el-table-column>
       <el-table-column prop="accountBalance" label="账户余额" align="center"></el-table-column>
@@ -334,8 +338,6 @@ export default {
       if (this.ruleForm.dateEnd) {
         dateEnd = moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59");
       }
-      console.log('dateStart',dateStart)
-       console.log('dateEnd',dateEnd)
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
           pageIndex: this.pageCurrent - 1,
@@ -344,10 +346,10 @@ export default {
             type: this.ruleForm.matchType ? this.ruleForm.matchType : 1,
             startTime: dateStart ? dateStart : "2000-05-16",
             endTime: dateEnd ? dateEnd : "2099-05-16",
-            userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: "",
+            // userid: data4D.userID, // 暂无数据 想看改成0,
+            // orgid: data4D.orgID, // 暂无数据 想看改成0,
+            // topid: data4D.topID, // 暂无数据 想看改成0,
+            // company: "",
             seachType: 0
           }
         })

@@ -1,11 +1,12 @@
 import product from './product'
 import doneAll from './doneAll'
+import toDo from './toDo'
 
 const modules= {
   ...product,
   doneAll,
+  toDo,
 }
 
-console.log(modules)
 
 export default modules

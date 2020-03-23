@@ -1,4 +1,7 @@
-<!-- 无收入，预付款，退款，报销，报账 共用页面 -->
+<!--
+  无收入，预付款，退款，报销，报账 共用组件
+  依据父组件tab触发传入当前tab的name来控制组件的显示
+ -->
 <template>
   <div class="distributor-content">
     <!-- 检索 -->
@@ -43,7 +46,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -58,7 +61,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="text" size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,7 +75,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,7 +97,7 @@
       <el-table-column prop="name" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -114,7 +117,7 @@
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请时间" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">详情</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -124,49 +127,51 @@
 
 <script>
   import requestTeamTableData from '../mixins/requestTeamTableData'
+
   export default {
     name: "borrowList",
-    data(){
+    data () {
       return {
         ruleFormSearch: {
           startTime:'',
           endTime:'',
         },
-        approvalReimburseData:[],
-        approvalNoInData:[],
-        approvalAdvanceData:[],
-        approvalRefundData:[],
-        approvalSheetData:[],
+        approvalReimburseData: [], // 报销
+        approvalNoInData: [], // 无收入
+        approvalAdvanceData: [], // 预付款
+        approvalRefundData: [], // 退款
+        approvalSheetData: [], // 报账单
       }
     },
     props: {
+      // 通过tabName来控制组件显示，数据加载
       whichTab: {
         type: String,
         default: 'nameINoIn'
       }
     },
-    mixins: [requestTeamTableData],
-    mounted() {
+    mixins: [ requestTeamTableData ],
+    mounted () {
 
     },
-    created(){
+    created (){
 
     },
     computed: {
-      getWhichTab: function(){
-        return this.whichTab
+      getWhichTab: function () {
+        return this.whichTab;
       }
     },
     watch: {
       getWhichTab: function (val, oldValue) {
-        console.log(val)
+        console.log(val);
       }
     },
     methods: {
-      handleJumpDetail(index, row){
-        let getCurrentPaymentID = row.paymentID
-        let getCurrentGuid = row.guid
-        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance', optionsGuid: getCurrentGuid} })
+      handleJumpDetail (index, row) {
+        let getCurrentPaymentID = row.paymentID;
+        let getCurrentGuid = row.guid;
+        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance', optionsGuid: getCurrentGuid} });
       },
     }
   }

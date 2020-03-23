@@ -109,6 +109,7 @@ export default {
     closeAdd(){
       this.dialogFormVisible = false;
       this.info = '';
+      this.loadData();
     },
     cancal(){
       this.$router.push({

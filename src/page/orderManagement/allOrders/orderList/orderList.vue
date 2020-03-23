@@ -145,12 +145,6 @@
       <div class="pro-info" v-for="(item,index) in orderpage" :key="index">
         <!-- 后加的折叠begin -->
         <h3>{{item.name}}</h3>
-        <!-- <p class="tr moneyColor">
-          订单总额&nbsp;&nbsp;
-          <span class="normal">{{toDecimal2(item.payable)}}</span>
-          已付金额 &nbsp;&nbsp;
-          <span class="normal">{{toDecimal2(item.paid)}}</span>
-        </p>-->
         <div class="contentHeader" @click="handleContentHeader(item,index)">
           <table>
             <tr>

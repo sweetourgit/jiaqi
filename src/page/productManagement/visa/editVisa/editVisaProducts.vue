@@ -252,13 +252,53 @@ export default {
       teamID:0, // 进入签证信息传值teamID
       variable: 0, //设置一个变量展示弹窗
       visaID:0, // 添加成功后获取的产品ID
+      region:'',
     };
   },
   created() {
   	this.getSendVisa();
   	this.getVisaRegion();
+    this.getProduct();
   },
   methods: {
+    getProduct(){ // 获取一条产品信息
+      this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/get",{
+        id:sessionStorage.getItem('commodityID')
+      }).then(res => {
+          if (res.data.isSuccess == true) {
+            let data = res.data.object;
+            this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforget",{
+              id:data.visaPod
+            }).then(res => {
+              if(res.data.isSuccess == true){
+                this.region = res.data.object.areaName
+              }
+            })
+            this.ruleForm.name = data.visaTitle; // 产品名称
+            this.ruleForm.highlightWords = data.strengths[0].strength; // 亮点词
+            this.ruleForm.highlightWords1 = data.strengths[1].strength; // 亮点词
+            this.ruleForm.highlightWords2 = data.strengths[2].strength; // 亮点词
+            this.ruleForm.highlightWords3 = data.strengths[3].strength; // 亮点词
+            this.ruleForm.region = this.region; // 签证国家地区
+            //this.ruleForm.sendVisa = data.signature[0].visaHandleID + ''; // 送签地
+            this.ruleForm.sendVisa = [];
+            this.ruleForm.sendVisa.push(data.signature[0].visaHandleID + '')
+            this.ruleForm.visaRegion = []; // 受理地区
+            for(let i=0; i < data.reception.length;i++){
+             this.ruleForm.visaRegion.push(data.reception[i].visaHandleID + '')
+            }
+            this.ruleForm.visaType =data.visaType + ''; // 签证类型
+            this.ruleForm.visaProcessType = data.technologicalType + ''; // 签证流程类型
+            this.ruleForm.interview = data.interview + '' ; // 是否面试
+            this.ruleForm.visaDate = data.validity; // 签证有效期
+            this.ruleForm.entryNumber = data.entry; // 入境次数
+            this.ruleForm.stayDays = data.staydays; // 停留天数
+            this.ruleForm.content = data.overview; // 产品概括
+
+
+          }
+      })
+    },
     querySearch(queryString1, cb) { // 搜索国家地区模糊查询
       this.vague = [];
       this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
@@ -381,7 +421,6 @@ export default {
         this.$refs.shuffling.clearValidate();
       }
     },
-    // 轮播图上传END=========
     nextMessage(formName){
       let sendAdrress = []; // 送签地
       sendAdrress.push(this.ruleForm.sendVisa)
@@ -403,7 +442,6 @@ export default {
           picturePath:this.ruleForm.shuffling[i].img_url,
         })
       }
-      console.log(shuffling)
       if(this.ruleForm.avatarImages.length !== 1){
         this.isInfoImg = true;
       }
@@ -424,78 +462,41 @@ export default {
       if(this.ruleForm.highlightWords3!=""){
           strengths.push({"strength":this.ruleForm.highlightWords3})
       };
-      let basis = [{ 
-        name:this.ruleForm.name
-      },{
-        highlightWords:strengths
-      },{
-        region:this.areaID
-      },{
-        pictureID:this.pictureID
-      },{
-        shuffling:shuffling
-      },{
-        signature:visaSend
-      },{
-        reception:acceptRegion
-      },{
-        visaType:this.ruleForm.visaType
-      },{
-        technologicalType:this.ruleForm.visaProcessType
-      },{
-        interview:this.ruleForm.interview
-      },{
-        validity:this.ruleForm.visaDate
-      },{
-        entry:this.ruleForm.entryNumber
-      },{
-        staydays:this.ruleForm.stayDays
-      },{
-        overview:this.ruleForm.content
-      }];
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/insert",
-            {
-              object: {
-                "id": 0,
-                "visaTitle": this.ruleForm.name, // 签证名称
-                "strengths": strengths, // 产品亮点词
-                "visaPod": this.areaID, // 签证国家地区传ID
-                "pictureID": this.pictureID, // 头图ID
-                "pepeatpic": shuffling, // 轮播图传ID和URL
-                "signature": visaSend, // 送签地
-                "reception": acceptRegion, // 签证受理地区
-                "visaType": this.ruleForm.visaType, // 签证类型
-                "technologicalType": this.ruleForm.visaProcessType, // 签证流程类型
-                "interview": this.ruleForm.interview, // 是否面试
-                "validity": this.ruleForm.visaDate, // 签证有效期
-                "entry": this.ruleForm.entryNumber, // 入境次数
-                "staydays": this.ruleForm.stayDays, // 停留天数
-                "overview": this.ruleForm.content, // 产品概况
-                "important": "string",
-                "cost": "string",
-                "notCost": "string",
-                "onlineType": 0,
-                "erpType": 0,
-                "isDeleted": 0,
-                "createTime": "2020-03-12T06:38:40.753Z",
-                "code": "string",
-                "copyNum": 0,
-                "createUser": "string"
-              }
-            })
-            .then(res => {
-              if(res.data.isSuccess == true){
-                 let basisInformation = JSON.stringify(basis)
-                 sessionStorage.setItem('message',basisInformation);
-                 sessionStorage.setItem('productID',res.data.result.id);
-                 this.$router.push({ path: "/visaMessage" }); // 基本信息添加完跳转到签证信息页面
-                 this.$refs[formName].resetFields();
-              }else{
-                 this.$message.success("添加失败");
-              }
-          })
+          let basis = [{ 
+            name:this.ruleForm.name
+          },{
+            highlightWords:strengths
+          },{
+            region:this.areaID
+          },{
+            pictureID:this.pictureID
+          },{
+            shuffling:shuffling
+          },{
+            signature:visaSend
+          },{
+            reception:acceptRegion
+          },{
+            visaType:this.ruleForm.visaType
+          },{
+            technologicalType:this.ruleForm.visaProcessType
+          },{
+            interview:this.ruleForm.interview
+          },{
+            validity:this.ruleForm.visaDate
+          },{
+            entry:this.ruleForm.entryNumber
+          },{
+            staydays:this.ruleForm.stayDays
+          },{
+            overview:this.ruleForm.content
+          }];
+          let basisInformation = JSON.stringify(basis)
+          sessionStorage.setItem('message',basisInformation);
+          this.$router.push({ path: "/editVisaMessage" }); // 基本信息添加完跳转到签证信息页面
+          this.$refs[formName].resetFields();
         } else {
           return false;
         }

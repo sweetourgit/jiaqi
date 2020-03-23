@@ -63,6 +63,7 @@
         <el-table-column prop="remark" label="付款备注" align="center"></el-table-column>
       </template>
       <template v-if="this.$route.query.company=='吉林大运通'">
+        <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
         <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
         <el-table-column prop="transaction_time" label="交易时间" align="center">
           <!-- <template slot-scope="scope">
@@ -137,10 +138,19 @@ export default {
       });
     },
     orderDetail(row) {
+      let type=0
+      switch(this.$route.query.company){
+        case '辽宁大运通' :
+          type=2;
+          break;
+          case '吉林大运通' :
+            type=3
+
+      }
       this.dialogFormVisible = true;
       this.info = {
         id: row.id,
-        type: 2
+        type: type
       };
     },
     close() {

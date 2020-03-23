@@ -16,7 +16,7 @@
           <el-input v-model="ruleForm.word3" class="inputWidth marginBtm" placeholder="请输入" maxlength="8" show-word-limit></el-input>
           <el-input v-model="ruleForm.word4" class="inputWidth marginBtm" placeholder="请输入" maxlength="8" show-word-limit></el-input>
         </el-form-item>
-        <el-form-item label="邮轮：" prop="word" label-width="140px">
+        <el-form-item label="邮轮：" prop="liner_id" label-width="140px">
           <el-select v-model="ruleForm.company_id" class="search_input" placeholder="请选择邮轮公司" @change="loadLiner()">
             <el-option v-for="item in companyList" :key="item.id" :label="item.company_name" :value="item.id" :disabled="item.linernums == 0">{{item.company_name}}</el-option>
           </el-select>
@@ -562,6 +562,10 @@ export default {
                   // alert('下一步');
                   // console.log(that.$parent);
                   // localStorage.setItem('liner_id', res.data.data.liner_id);
+                  // that.$router.query.id = res.data.data.id
+                  that.$router.push({
+                    query:{'id': res.data.data.id}
+                  })
                   that.$parent.next();
                 }
               } else {
@@ -643,9 +647,11 @@ export default {
           response.data.data.info.crowd.forEach(function(item, index, arr){
             that.ruleForm.person.push(item.crowd_id);
           })
+          console.log(that.ruleForm.person)
           response.data.data.info.theme.forEach(function(item, index, arr){
             that.ruleForm.theme.push(item.theme_id);
           })
+          console.log(that.ruleForm.theme)
           that.originTag = response.data.data.info.departure;
           that.destinationTag = response.data.data.info.destination;
           that.returnDesTag = response.data.data.info.returnplace;

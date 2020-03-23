@@ -169,6 +169,7 @@ export default {
         return getFlowFinishedList(guid)
       })
       .then(res => {
+        console.log('res',res)
         Object.assign(payload, { finishedList: res });
         this.$refs.printGround.init(payload, this.type)
       })

@@ -1,76 +1,76 @@
 import Vue from 'vue'
-let { $http, GLOBAL, $message, $isArray }= Vue.prototype;
+let { $http, GLOBAL, $message, $isArray } = Vue.prototype;
 
 // 获取未报账的报账单
-export const getPreCheckSheetByPlanID= function(id){
+export const getPreCheckSheetByPlanID = function (id) {
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/getforother", { id })
-    .then(res => {
-      let { isSuccess, object, result }= res.data;
-      if(!isSuccess) return reject('获取报账信息失败'+ (result.message || ''));
-      resolve(object);
-    })
-    .catch(err => {
-      if(typeof err=== 'string') return $message.error(err);
-    })
+      .then(res => {
+        let { isSuccess, object, result } = res.data;
+        if (!isSuccess) return reject('获取报账信息失败' + (result.message || ''));
+        resolve(object);
+      })
+      .catch(err => {
+        if (typeof err === 'string') return $message.error(err);
+      })
   })
 }
 
 // 获取已报账的报账单
-export const getCheckSheetByPlanID= function(id){
+export const getCheckSheetByPlanID = function (id) {
   console.log('getCheckSheetByPlanID')
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/getforplan", { id })
-    .then(res => {
-      let { isSuccess, object, result }= res.data;
-      if(!isSuccess) return reject('获取报账信息失败'+ (result.message || ''));
-      resolve(object);
-    })
-    .catch(err => {
-      if(typeof err=== 'string') return $message.error(err);
-    })
+      .then(res => {
+        let { isSuccess, object, result } = res.data;
+        if (!isSuccess) return reject('获取报账信息失败' + (result.message || ''));
+        resolve(object);
+      })
+      .catch(err => {
+        if (typeof err === 'string') return $message.error(err);
+      })
   })
 }
 
-export const getCheckSheetByID= function(id){
+export const getCheckSheetByID = function (id) {
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/get", { id })
-    .then(res => {
-      let { isSuccess, object, result }= res.data;
-      if(!isSuccess) return reject('获取报账信息失败'+ (result.message || ''));
-      resolve(object);
-    })
-    .catch(err => {
-      if(typeof err=== 'string') return $message.error(err);
-    })
+      .then(res => {
+        let { isSuccess, object, result } = res.data;
+        if (!isSuccess) return reject('获取报账信息失败' + (result.message || ''));
+        resolve(object);
+      })
+      .catch(err => {
+        if (typeof err === 'string') return $message.error(err);
+      })
   })
 }
 
-export const postCheckSheet= function(object){
+export const postCheckSheet = function (object) {
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/insert", { 
+    $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/insert", {
       object
     })
-    .then(res => {
-      let { isSuccess }= res.data;
-      if(!isSuccess) throw '新增报账信息失败';
-      resolve(object);
-    })
-    .catch(err => {
-      if(typeof err=== 'string') return $message.error(err);
-    })
+      .then(res => {
+        let { isSuccess } = res.data;
+        if (!isSuccess) throw '新增报账信息失败';
+        resolve(object);
+      })
+      .catch(err => {
+        if (typeof err === 'string') return $message.error(err);
+      })
   })
 }
 
 
 // 模糊查询供应商
-export const getSupplierlist= function(object){
+export const getSupplierlist = function (object) {
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.serverSrc + "/universal/supplier/api/supplierlist",{
+    $http.post(GLOBAL.serverSrc + "/universal/supplier/api/supplierlist", {
       object
     }).then((res) => {
-      let { isSuccess, objects }= res.data;
-      if(!isSuccess) return reject('模糊查询供应商失败');
+      let { isSuccess, objects } = res.data;
+      if (!isSuccess) return reject('模糊查询供应商失败');
       return resolve(objects);
     }).catch((err) => {
       reject(err);
@@ -78,13 +78,13 @@ export const getSupplierlist= function(object){
   })
 }
 
-export const agreeForJQ= function(object){
+export const agreeForJQ = function (object) {
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.jqUrl+ '/JQ/SubmitWorkAssignmentsForJQ',
+    $http.post(GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ',
       { ...object }
     ).then((res) => {
-      let { code }= JSON.parse(res.data);
-      if(code!== 0) throw '通过审批失败';
+      let { code } = JSON.parse(res.data);
+      if (code !== 0) throw '通过审批失败';
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -92,13 +92,13 @@ export const agreeForJQ= function(object){
   })
 }
 
-export const rejectForJQ= function(object){
+export const rejectForJQ = function (object) {
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.jqUrl+ '/JQ/RejectionOfWorkTasksForJQ',
+    $http.post(GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ',
       { ...object }
     ).then((res) => {
-      let { code }= JSON.parse(res.data);
-      if(code!== 0) throw '驳回审批失败';
+      let { code } = JSON.parse(res.data);
+      if (code !== 0) throw '驳回审批失败';
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -106,13 +106,13 @@ export const rejectForJQ= function(object){
   })
 }
 
-export const endForJQ= function(object){
+export const endForJQ = function (object) {
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.jqUrl+ '/JQ/EndProcess',
+    $http.post(GLOBAL.jqUrl + '/JQ/EndProcess',
       { ...object }
     ).then((res) => {
-      let { code }= JSON.parse(res.data);
-      if(code!== 0) throw '驳回审批失败';
+      let { code } = JSON.parse(res.data);
+      if (code !== 0) throw '驳回审批失败';
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -120,13 +120,13 @@ export const endForJQ= function(object){
   })
 }
 
-export const saveChcektype= function(object){
+export const saveChcektype = function (object) {
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.serverSrc+ '/finance/checksheet/api/savechecktype',
+    $http.post(GLOBAL.serverSrc + '/finance/checksheet/api/savechecktype',
       { object }
     ).then((res) => {
-      let { isSuccess }= res.data;
-      if(!isSuccess) throw '驳回审批失败';
+      let { isSuccess } = res.data;
+      if (!isSuccess) throw '驳回审批失败';
       return resolve();
     }).catch((err) => {
       reject(err);
@@ -136,16 +136,46 @@ export const saveChcektype= function(object){
 
 export const getFlowFinishedList= function(jq_id){
   return new Promise((resolve, reject) => {
-    $http.post(GLOBAL.jqUrl+ '/JQ/GetWorkItemFinishedList',
+    $http.post(GLOBAL.jqUrl + '/JQ/GetWorkItemFinishedList',
       {
         jq_id, jq_Type: 5
       }
     ).then((res) => {
-      let { statusText, data }= res;
-      if(statusText!== "OK") throw '获取审批列表失败';
+      let { statusText, data } = res;
+      if (statusText !== "OK") throw '获取审批列表失败';
       return resolve(data);
     }).catch((err) => {
       reject(err);
     })
-  }) 
+  })
+}
+
+export const upLoadDraft = function (userID, guid, data, vm) {
+  console.log('data',data)
+  const loading = vm.$loading({
+    lock: true,
+    text: 'Loading',
+    spinner: 'el-icon-loading',
+    background: 'rgba(0, 0, 0, 0.7)'
+  });
+  setTimeout(() => {
+    loading.close();
+  }, 2000);
+  // return new Promise((resolve, reject) => {
+  //   $http.post(GLOBAL.serverSrc + '/draft/tsa/api/insert',
+  //     {
+  //       userID:'',
+  //       guid:'',
+  //       data:data
+  //     }
+  //   ).then((res) => {
+  //     let { statusText, data } = res;
+  //     if (statusText !== "OK") throw '获取审批列表失败';
+  //     vm.fullscreenLoading = false
+  //     return resolve(data);
+  //   }).catch((err) => {
+  //     vm.fullscreenLoading = false
+  //     reject(err);
+  //   })
+  // })
 }

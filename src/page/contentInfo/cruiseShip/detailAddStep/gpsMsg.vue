@@ -95,7 +95,13 @@ export default {
               type: 'success',
               message: '创建成功!'
               });
-              that.$router.back();
+              that.$router.push({
+                path: '/cruiseShip/cruiseShipDetail',
+                name: '邮轮管理/详情',
+                query: {
+                  "id": that.$route.query.id
+                }
+              });
               localStorage.removeItem('liner_id');
           } else {
               if(res.data.message){

@@ -6,16 +6,16 @@
         <el-col :span="7">
           <el-form-item label="状态:" class="status-length" prop="matchType">
             <el-select v-model="ruleForm.matchType" placeholder="请选择状态">
-              <el-option label="全部" value="0"></el-option>
-              <el-option label="未导入" value="1"></el-option>
-              <el-option label="已导入" value="2"></el-option>
+              <el-option label="全部" value=""></el-option>
+              <el-option label="未导入" value="0"></el-option>
+              <el-option label="已导入" value="1"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="银行流水号:" prop="code">
+          <!-- <el-form-item label="银行流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
@@ -104,33 +104,36 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="STATUS" label="状态" align="center">
+      <el-table-column prop="is_EBS" label="状态" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.STATUS == 0">未导入</span>
-          <span v-if="scope.row.STATUS == 1">已导入</span>
+          <span v-if="scope.row.is_EBS == 0">未导入</span>
+          <span v-if="scope.row.is_EBS == 1">已导入</span>
         </template>
       </el-table-column>
-      <el-table-column prop="JYRQ" label="交易日期" align="center"></el-table-column>
-      <el-table-column prop="JYSJ" label="交易时间" align="center"></el-table-column>
-      <el-table-column prop="DFZH" label="对方账号" align="center"></el-table-column>
-      <el-table-column prop="DFZHMC" label="对方账户名称 " align="center"></el-table-column>
-      <el-table-column prop="DFZHKHWDMC" label="对方账号开户网点名称" align="center">
+                  <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+
+            <el-table-column prop="sxf" label="手续费" align="center"></el-table-column>
+
+      <el-table-column prop="citiC_Day" label="交易日期" align="center"></el-table-column>
+      <el-table-column prop="citiC_Time" label="交易时间" align="center"></el-table-column>
+      <el-table-column prop="guestAccount" label="对方账号" align="center"></el-table-column>
+      <el-table-column prop="accountName" label="对方账户名称 " align="center"></el-table-column>
+      <el-table-column prop="openAccountBankName" label="对方账号开户网点名称" align="center">
       </el-table-column>
-      <el-table-column prop="JFFSE" label="借方发生额" align="center">
+      <el-table-column prop="jF_Price" label="借方发生额" align="center">
       </el-table-column>
-      <el-table-column prop="DFFSE" label="贷方发生额" align="center"></el-table-column>
-      <el-table-column prop="ZHYE" label="账户余额" align="center"></el-table-column>
-      <el-table-column prop="ZY" label="摘要" align="center"></el-table-column>
-      <el-table-column prop="THBS" label="退汇标识" align="center"></el-table-column>
-      <el-table-column prop="THRQ" label="退汇日期" align="center"></el-table-column>
-      <el-table-column prop="GYJYH" label="柜员交易号" align="center"></el-table-column>
-      <el-table-column prop="FY" label="附言" align="center"></el-table-column>
-      <el-table-column prop="BZ" label="币种" align="center"></el-table-column>
-      <el-table-column prop="JYZH" label="交易账号" align="center"></el-table-column>
-      <el-table-column prop="JYZHKHWDMC" label="交易账号开户网点名称" align="center"></el-table-column>
-      <el-table-column prop="DZBH" label="对账编号" align="center"></el-table-column>
-      <el-table-column prop="DWJSKH" label="单位结算卡号" align="center"></el-table-column>
-      <el-table-column prop="SXF" label="手续费" align="center"></el-table-column>
+      <el-table-column prop="dF_Price" label="贷方发生额" align="center"></el-table-column>
+      <el-table-column prop="accountSurplus" label="账户余额" align="center"></el-table-column>
+      <el-table-column prop="reference" label="摘要" align="center"></el-table-column>
+      <el-table-column prop="tK_Sign" label="退汇标识" align="center"></el-table-column>
+      <el-table-column prop="tK_DateTime" label="退汇日期" align="center"></el-table-column>
+      <el-table-column prop="gyjY_Number" label="柜员交易号" align="center"></el-table-column>
+      <el-table-column prop="postscript" label="附言" align="center"></el-table-column>
+      <el-table-column prop="currency" label="币种" align="center"></el-table-column>
+      <el-table-column prop="jY_Number" label="交易账号" align="center"></el-table-column>
+      <el-table-column prop="jY_AccountBankName" label="交易账号开户网点名称" align="center"></el-table-column>
+      <el-table-column prop="dzbh" label="对账编号" align="center"></el-table-column>
+      <el-table-column prop="jskh" label="单位结算卡号" align="center"></el-table-column>
       <!-- <el-table-column prop="remark" label="所属公司" align="center">
       </el-table-column>-->
     </el-table>
@@ -286,7 +289,6 @@ export default {
 
     // 选择项更改
     selectionChange(val) {
-      console.log(val);
       if (val.length > 0) {
         this.clickable = false;
       } else {
@@ -297,7 +299,7 @@ export default {
 
     // 上传中信银行
     UploadUrl1() {
-      return this.GLOBAL.serverSrc + "/finance/industrialbank/api/ImportExcel";
+      return this.GLOBAL.serverSrc + "/finance/citic_bank/api/importexcel";
     },
     handleSuccess1(response, file, fileList) {
       console.log(response);
@@ -307,7 +309,7 @@ export default {
         this.loadData();
         this.$store.commit(
           "changeBankData",
-          "industrialBankSK" + Math.random()
+          "citicBankSXF" + Math.random()
         );
       } else {
         this.$message.warning("中信银行流水单上传失败！");
@@ -324,7 +326,7 @@ export default {
     },
     // 上传微信支付宝明细
     UploadUrl2() {
-      return this.GLOBAL.serverSrc + "/finance/wa_payment/api/ImportExcel";
+      return this.GLOBAL.serverSrc + "/finance/wa_payment_citic/api/importexcel";
     },
     handleSuccess2(response, file, fileList) {
       console.log(response);
@@ -357,7 +359,7 @@ export default {
         .then(() => {
           this.$http
             .post(
-              this.GLOBAL.serverSrc + "/finance/industrialbank/api/delete",
+              this.GLOBAL.serverSrc + "/finance/citic_bank/api/delete",
               {
                 id: row.id
               }
@@ -368,7 +370,7 @@ export default {
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "industrialBankSK" + Math.random()
+                  "citicBankSXF" + Math.random()
                 );
                 that.$message({
                   type: "info",
@@ -417,41 +419,41 @@ export default {
     },
     loadData() {
       const that = this;
-        this.$http.post('mock/zhongxinSXF', {}).then(function (obj) {
-            that.total = 100;
-          that.tableData = obj.data.data;
-      })
-      // this.$http
-      //   .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-      //     pageIndex: this.pageCurrent - 1,
-      //     pageSize: this.pageSize,
-      //     object: {
-      //       transaction_reference_number: this.ruleForm.code,
-      //       begin: this.ruleForm.dateStart
-      //         ? moment(this.ruleForm.dateStart).format("YYYY-MM-DD 00:00:00")
-      //         : "2000-05-16",
-      //       end: this.ruleForm.dateEnd
-      //         ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
-      //         : "2099-05-16",
-      //       seachType: 2,
-      //       import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0
-      //     }
-      //   })
-      //   .then(function(obj) {
-      //     // console.log('中国银行',obj);
-      //     if (obj.data.isSuccess) {
-      //       that.total = obj.data.total;
-      //       that.tableData = obj.data.objects;
-      //       // that.tableDataNBSK.forEach(function (item, index, arr) {
-      //       //   item.collectionTime = item.collectionTime.split('T')[0];
-      //       // });
-      //       // that.loadingNBSK = false;
-      //     } else {
-      //       // that.loadingNBSK = false;
-      //       that.total = 0;
-      //       that.tableData = [];
-      //     }
-      //   });
+      //   this.$http.post('mock/zhongxinSXF', {}).then(function (obj) {
+      //       that.total = 100;
+      //     that.tableData = obj.data.data;
+      // })
+      this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/citic_bank/api/search", {
+          pageIndex: this.pageCurrent - 1,
+          pageSize: this.pageSize,
+          object: {
+            transaction_reference_number: this.ruleForm.code,
+            begin: this.ruleForm.dateStart
+              ? moment(this.ruleForm.dateStart).format("YYYY-MM-DD 00:00:00")
+              : "2000-05-16",
+            end: this.ruleForm.dateEnd
+              ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
+              : "2099-05-16",
+            seachType: 2,
+            is_EBS: this.ruleForm.matchType ? this.ruleForm.matchType : 0
+          }
+        })
+        .then(function(obj) {
+          console.log('中信银行',obj);
+          if (obj.data.isSuccess) {
+            that.total = obj.data.total;
+            that.tableData = obj.data.objects;
+            // that.tableDataNBSK.forEach(function (item, index, arr) {
+            //   item.collectionTime = item.collectionTime.split('T')[0];
+            // });
+            // that.loadingNBSK = false;
+          } else {
+            // that.loadingNBSK = false;
+            that.total = 0;
+            that.tableData = [];
+          }
+        });
     },
     // 时间限制
     beginDate() {
