@@ -31,6 +31,8 @@ import PriceDay from './comps/PriceDay'
 import { SKU_PLAN_STATUS, getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
 import { getCalendar } from '@/page/productManagement/planInventory/liner/api.js'
 
+let plans;
+let panelCalendar;
 export default {
 
   components: { Jdatepanel, PriceDay },
@@ -38,7 +40,7 @@ export default {
   props: ['options'],
 
   mounted(){
-    this.getCalendarAction(new Date())
+    this.init();
   },
 
   computed: {
@@ -73,10 +75,20 @@ export default {
   },
 
   methods: {
-    init(date){
-      this.currentDate= date;
-      this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
-      let calendarArr= this.$refs.datePanel.init(date || new Date());
+    /**
+     * @description: autoSelect会自动选定当前日期的day
+     */
+    init(date, autoSelect){
+      if(!date) date= new Date();
+      this.getCalendarAction(date).then(list => {
+        this.currentDate= date;
+        this.priceCalendar= list;
+        this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
+        let calendarArr= this.$refs.datePanel.init(date);
+        if(!autoSelect) return;
+        let find= calendarArr.find(day => day.dateInt=== this.$refs.datePanel.getDateInt(date, true));
+        this.emitSelect(find);
+      })
     },
 
     /**
@@ -163,10 +175,7 @@ export default {
           this.selectedCalendar= oldCalendar;
         }, 
         cancelCb: () => {
-          this.getCalendarAction(date).then(list => {
-            this.priceCalendar= list;
-            this.init(date);
-          })
+          this.init(date);
         }
       })
     },

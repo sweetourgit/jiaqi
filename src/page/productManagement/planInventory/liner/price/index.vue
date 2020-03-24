@@ -86,7 +86,12 @@ export default {
           set_out_day: el._date.getDate()
         }
       })
-      saveSkuStocks(result)
+      saveSkuStocks(result).then(() => {
+        this.$message.success('计划新增成功');
+        let day= result.plan[0];
+        this.$refs.priceHeader.init(
+          new Date(day.set_out_year, day.set_out_month- 1, day.set_out_day), true)
+      });
     },
 
     notChange(){
