@@ -41,7 +41,7 @@
         @blur="isToastFun"
       ></el-autocomplete>
       <span class="searchName">订单联系人</span>
-      <el-input v-model="orderCode" class="searchInput" @blur="contactBlur()"></el-input>
+      <el-input v-model="contact" class="searchInput" @blur="contactBlur()"></el-input>
       <br />
       <!-- <span class="searchName">出发地</span> 2020/3/17隐藏暂时用不到 唐爱妮
       <el-input v-model="orderCode" class="searchInput" ></el-input>
@@ -76,17 +76,17 @@
             <td>{{item.order_code}}</td>
             <div class="tableCenter">
               <td class="tr">团期计划&nbsp;&nbsp;</td>
-              <td>{{item.created_at}}</td>
+              <td>{{item.tour_no}}</td>
             </div>
             <td class="tr">下单时间&nbsp;&nbsp;</td>
             <td>{{formatDate(new Date(item.created_at))}}</td>
           </tr>
           <tr>
             <td class="tr">联系人&nbsp;&nbsp;</td>
-            <td valign="top">{{item.name}}</td>
+            <td valign="top">{{item.contact_name}}</td>
             <div class="tableCenter">
               <td class="tr">电话&nbsp;&nbsp;</td>
-              <td valign="top">{{item.tel}}</td>
+              <td valign="top">{{item.contct_tel}}</td>
             </div>
           </tr>
         </table>
@@ -95,207 +95,116 @@
         ></i>
       </div>
       <!-- 固定的table end -->
-
-
-      <!-- 列表折叠begin -->
-      <!-- <transition name="el-fade-in" v-if="isShowContent == index">
-        <div class="contentBody">
-          <table>
-            <tr>
-              <td class="tr">舱房&nbsp;&nbsp;</td>
-              <td class="longWeight">未命名套餐1</td>
-              <div class="BodyTableCenter">
-                <td class="tr">出发地&nbsp;&nbsp;</td>
-                <td class="longWeight"></td>
-              </div>
-              <td class="tr">目的地&nbsp;&nbsp;</td>
-              <td class="longWeight"></td>
-            </tr>
-            <tr>
-              <td class="tr">出发日期&nbsp;&nbsp;</td>
-              <td class="longWeight"></td>
-              <div class="BodyTableCenter">
-                <td class="tr">数量&nbsp;&nbsp;</td>
-                <td
-                  class="longWeight"
-                  valign="top"
-                >[成人中铺1009.00]*2,[成人中铺1009.00]*2[成人中铺1009.00]*2[成人中铺1009.00]*2</td>
-              </div>
-              <td class="tr">产品类型&nbsp;&nbsp;</td>
-              <td class="longWeight">跟团游</td>
-            </tr>
-            <tr>
-              <td class="tr">整体优惠&nbsp;&nbsp;</td>
-              <td class="longWeight" valign="top"></td>
-              <div class="BodyTableCenter">
-                <td class="tr">其他费用</td>
-                <td class="longWeight" valign="top">
-                  &nbsp;
-                  <span></span>
-                </td>
-              </div>
-              <td class="tr">订单来源&nbsp;&nbsp;</td>
-              <td class="longWeight"></td>
-            </tr>
-            <tr>
-              <td class="tr">支付方式&nbsp;&nbsp;</td>
-              <td class="longWeight"></td>
-              <div class="BodyTableCenter">
-                <td class="tr">操作&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top"></td>
-              </div>
-              <td class="tr">商户销售&nbsp;&nbsp;</td>
-              <td class="longWeight" valign="top"></td>
-              <td class="longWeight" valign="top"></td>
-            </tr>
-            <tr>
-              <td class="tr">平台&nbsp;&nbsp;</td>
-              <td class="longWeight" valign="top"></td>
-              <div class="BodyTableCenter">
-                <td class="tr">销售&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top"></td>
-              </div>
-              <td class="tr">整间/拼住&nbsp;&nbsp;</td>
-              <td class="longWeight" valign="top"></td>
-            </tr>
-            <tr>
-              <td class="tr">订单总价&nbsp;&nbsp;</td>
-              <td class="longWeight" valign="top"></td>
-              <div class="BodyTableCenter">
-                <td class="tr">已付金额&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top"></td>
-              </div>
-            </tr>
-          </table>
-
-         
-          <el-breadcrumb separator="|" class="confirmTime">
-            <el-breadcrumb-item
-              v-for="(item,index) in breadCrumbs"
-              :key="index"
-              class="breadCrumbPointer"
-              @click.native="operation(item,index)"
-            >{{item}}</el-breadcrumb-item>
-            <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item,index)">流程管理
-
-</el-breadcrumb-item>
-          </el-breadcrumb>
-          
-
-        
-          <div class="butRow">
-            <span class="dotFather">
-              <span class="dot"></span>
-              <span></span>
-            </span>
-            <span>
-              待确认剩余 &nbsp;
-              <span class="moneyColor">1天22:33:33</span>
-            </span>
-          </div>
-        
-        </div>
-      </transition> 
-       -->
-      <!-- 折叠开始 -->
+     <!-- 折叠开始 -->
         <transition name="el-fade-in">
           <div class="contentBody" v-show="isShowContent == index">
             <table>
-              <tr>
-                <td class="tr">套餐名称&nbsp;&nbsp;</td>
-                <td class="longWeight">{{getListOneMessage.product_name}}</td>
+              <tr  >
+                <td class="tr">出发日期&nbsp;&nbsp;</td>
+                <td class="longWeight" v-for="(item,index) in getListOneMessage.skuplan" :key="'set-'+index">{{momentDate(new Date(item.set_out_time))}}</td>
                 <div class="BodyTableCenter">
                   <td class="tr">出发地&nbsp;&nbsp;</td>
-                  <td class="longWeight">{{getListOneMessage.departure}}</td>
+                  <td class="longWeight" >
+                    <span v-for="(item,index) in getListOneMessage.departure" :key="'departure-'+index">{{item.departure_name}}</span>
+                  </td>
                 </div>
                 <td class="tr">目的地&nbsp;&nbsp;</td>
-                <td class="longWeight">{{getListOneMessage.destination}}</td>
+                <td class="longWeight"  v-for="(item,index) in getListOneMessage.destination" :key="'destination-'+index">
+                  {{item.destination_name}}
+                  </td>
               </tr>
+
               <tr>
-                <td class="tr">出发日期&nbsp;&nbsp;</td>
-                <td class="longWeight">{{formatDate(new Date(getListOneMessage.created_at))}}</td>
+                <td class="tr">产品类型&nbsp;&nbsp;</td>
+                <td class="longWeight">邮轮游</td>
                 <div class="BodyTableCenter">
                   <td class="tr">数量&nbsp;&nbsp;</td>
-                  <td class="longWeight" valign="top">{{getListOneMessage.enrollDetail}}</td>
+                  <td class="longWeight" valign="top">{{getListOneMessage.number}}</td>
                 </div>
-                <td class="tr">产品类型&nbsp;&nbsp;</td>
-                <td class="longWeight">跟团游</td>
+                  <td class="tr">整体优惠&nbsp;&nbsp;</td>
+                  <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.entiretyFav)}}</td>
               </tr>
+
               <tr>
-                <td class="tr">整体优惠&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.entiretyFav)}}</td>
-                <div class="BodyTableCenter">
                   <td class="tr">其他费用</td>
                   <td class="longWeight" valign="top">
                     {{item.otherTitle}} &nbsp;
-                    <span>{{toDecimal2(getListOneMessage.otherPrice)}}</span>
+                    <span>{{toDecimal2(getListOneMessage. orderotherfee)}}</span>
                   </td>
+                <div class="BodyTableCenter">
+                   <td class="tr">优惠活动&nbsp;&nbsp;</td>
+                   <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.entiretyFav)}}</td>
                 </div>
+                  <td class="tr">销售&nbsp;&nbsp;</td>
+                  <td class="longWeight" valign="top" > {{getListOneMessage.replacesale}}</td>
+              </tr>
+
+              <tr>
                 <td class="tr">订单来源&nbsp;&nbsp;</td>
                 <td class="longWeight">{{getListOneMessage.order_status}}</td>
-              </tr>
-              <tr>
-                <td class="tr">支付方式&nbsp;&nbsp;</td>
-                <td class="longWeight"></td>
                 <div class="BodyTableCenter">
-                  <td class="tr">操作&nbsp;&nbsp;</td>
-                  <td class="longWeight" valign="top">{{getListOneMessage.op}}</td>
+                   <td class="tr">平台&nbsp;&nbsp;</td>
+                   <td class="longWeight" valign="top">{{getListOneMessage.platform}}</td>
                 </div>
-                <td class="tr">商户销售&nbsp;&nbsp;</td>
-                <td
-                  class="longWeight"
-                  valign="top"
-                  v-if="getListOneMessage.orderChannel == 1"
-                >{{getListOneMessage.saler}}</td>
-                <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel !== 1"></td>
+                <td class="tr">操作&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top">{{getListOneMessage.create_uid}}</td>
               </tr>
+
               <tr>
-                <td class="tr">平台&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top">{{getListOneMessage.platform}}</td>
+                <td class="tr">同业销售&nbsp;&nbsp;</td>
+                <td class="longWeight" valign="top" >{{getListOneMessage.indirectsale}}</td>
                 <div class="BodyTableCenter">
-                  <td class="tr">销售&nbsp;&nbsp;</td>
-                  <td
-                    class="longWeight"
-                    valign="top"
-                    v-html="getListOneMessage.orderChannel !== 1 ? getListOneMessage.saler : getListOneMessage.indirectSale"
-                  ></td>
-                  <td class="longWeight" valign="top" v-if="getListOneMessage.orderChannel == 1"></td>
+                   <td class="tr">整间/拼住&nbsp;&nbsp;</td>
+                   <td class="longWeight">{{getListOneMessage.product_name}}</td>
                 </div>
-                <td class="tr">订单总额&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.payable)}}</td>
-              </tr>
+                  <td class="tr">支付方式&nbsp;&nbsp;</td>
+                  <td class="longWeight"></td>
+               </tr>
+
               <tr>
-                <td class="tr">已付金额&nbsp;&nbsp;</td>
-                <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.paid)}}</td>
+                 <td class="tr">订单总额&nbsp;&nbsp;</td>
+                 <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.payable)}}</td>
+                 <div class="BodyTableCenter">
+                  <td class="tr">已付金额&nbsp;&nbsp;</td>
+                  <td class="longWeight" valign="top">{{toDecimal2(getListOneMessage.paid_price)}}</td>
+                 </div>
               </tr>
             </table>
             <el-breadcrumb separator="|" class="confirm-time">
-              <!-- <el-breadcrumb-item class="breadCrumbPointer">联系客人</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,2,item.orderCode)"
+                @click.native="operation(item,0,item.orderCode)"
               >备注</el-breadcrumb-item>
-              <!-- <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item> -->
-              <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
+              <el-breadcrumb-item 
+              class="breadCrumbPointer"
+              @click.native="operation(item,1,item.orderCode)"
+              >收款</el-breadcrumb-item>
+              <el-breadcrumb-item 
+              class="breadCrumbPointer"
+               @click.native="operation(item,2,item.orderCode)"
+              >换仓</el-breadcrumb-item> 
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,1,item.orderCode)"
+                @click.native="operation(item,7,item.orderCode)"
               >流程管理</el-breadcrumb-item>
-              <!-- <el-breadcrumb-item
+              <el-breadcrumb-item
                 class="breadCrumbPointer"
                 @click.native="operation(item,3)"
-              >出团通知书</el-breadcrumb-item> -->
-              <el-breadcrumb-item
-                class="breadCrumbPointer"
-                @click.native="operation(item,5)"
               >退款</el-breadcrumb-item>
+              <!-- v-if="getListOneMessage.paid > 0" -->
                <el-breadcrumb-item
-                v-if="getListOneMessage.paid > 0"
                 class="breadCrumbPointer"
-                @click.native="operation(item,6,item.orderCode)"
+                @click.native="operation(item,4,item.orderCode)"
               >发票申请</el-breadcrumb-item>
-              <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
-              <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
+              <el-breadcrumb-item 
+                class="breadCrumbPointer"
+                @click.native="operation(item,4)"
+              >出团通知书</el-breadcrumb-item>
+              <el-breadcrumb-item
+               class="breadCrumbPointer"
+              @click.native="operation(item,5)"
+               >客人信息</el-breadcrumb-item>
+             
             </el-breadcrumb>
             <div class="but-row">
               <span class="dotFather">
@@ -341,12 +250,14 @@
     <boatExchangeShip :propsObj.sync="propsObj"></boatExchangeShip>
     <!-- 退款 -->
     <boatRefundMoney :propsObj.sync="propsObj"></boatRefundMoney>
+    <!-- 发票申请 -->
+    <boatInvoiceApply :propsObj.sync="propsObj"></boatInvoiceApply>
     <!-- 出团通知书 -->
     <boatAppearBook :propsObj.sync="propsObj"></boatAppearBook>
     <!-- 客人信息 -->
     <boatGuestsInfo :propsObj.sync="propsObj"></boatGuestsInfo>
-    <!-- 流程管理
-    <boatProcessManage :propsObj.sync="propsObj"></boatProcessManage>-->
+    <!-- 流程管理-->
+    <boatProcessManage :propsObj.sync="propsObj"></boatProcessManage>
   </div>
 </template>
 
@@ -357,7 +268,9 @@ import boatExchangeShip from "./common/boatExchangeShip";
 import boatRefundMoney from "./common/boatRefundMoney";
 import boatAppearBook from "./common/boatAppearBook";
 import boatGuestsInfo from "./common/boatGuestsInfo";
-// import boatProcessManage from "./common/boatProcessManage";
+import boatInvoiceApply from './common/boatInvoiceApply'; 
+import boatProcessManage from "./common/boatProcessManage";
+import moment from "moment";
 
 export default {
   
@@ -367,8 +280,9 @@ export default {
     boatExchangeShip,
     boatRefundMoney,
     boatAppearBook,
-    boatGuestsInfo
-    // boatProcessManage,
+    boatGuestsInfo,
+    boatInvoiceApply,
+    boatProcessManage,
   },
 
   data() {
@@ -407,7 +321,7 @@ export default {
       contact:"",// 搜索订单联系人
       orderpage: [],//订单列表
       getListOneMessage: {},//订单列表下拉后详情
-      priceType: null, //价格类型  1直客  2同业价格
+      
       orderCodeSon: null, //传给子组件
       order_status: 0,//订单状态
 
@@ -420,8 +334,8 @@ export default {
   },
 
   methods: {
-    //   点击订单状态筛选
-    statusTab(item, index) {
+    moment,
+    statusTab(item, index) { //   点击订单状态筛选
       this.orderNum = index;
     },
 
@@ -468,31 +382,25 @@ export default {
           //let guest;//全部数据
         
           this.getListOneMessage = res.data.data; 
-          let date = res.data.data.created_at.toString();
-          this.getListOneMessage.created_at = moment(date).format("YYYY-MM-DD");
-          this.orderCodeSon = res.data.data.order_code;
-          this.priceType = res.data.data.price_type;
-          //订单来源
-          // 下单平台
-          if (this.getListOneMessage.platform == 1) {
+            // 下单平台
+          if (this.getListOneMessage.platform == 1) { //订单来源
             this.getListOneMessage.platform = "ERP系统";
-          } else {
+          }else if(this.getListOneMessage.platform == 2){
             this.getListOneMessage.platform = "同业系统";
+          }else if(this.getListOneMessage.platform == 3){
+            this.getListOneMessage.platform = "门户网站";
+          }else if(this.getListOneMessage.platform == 4){
+            this.getListOneMessage.platform = "H5";
+          }else if(this.getListOneMessage.platform == 5){
+            this.getListOneMessage.platform = "小程序";
+          }else if(this.getListOneMessage.platform == 6){
+            this.getListOneMessage.platform = "App";
           }
-           //获取报名类型列表数据
-          // this.$http
-          //   .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
-          //     id: planID
-          //   })
-          //   .then(res => {
-          //     if (res.data.isSuccess == true) {
-          //           enrolls = res.data.objects;
-          //           guest= this.getListOneMessage.guests;
-          //           this.sourceMaker(enrolls,guest);
-          //           this.enrollDetailMaker();
-          //         }
-              
-          //   });
+          this.orderCodeSon = res.data.data.order_code;     
+         
+      
+        
+        
            
          })
         .catch(err => {
@@ -501,6 +409,8 @@ export default {
     },
     // 操作
     operation(val, index) {
+      console.log(val,'val');
+      console.log(index,'index');
       this.propsObj = {
         dialogType: index
       };
@@ -864,6 +774,20 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
+     momentDate(date) { //日期转换  
+      var y = date.getFullYear();
+      var m = date.getMonth() + 1;
+      m = m < 10 ? "0" + m : m;
+      var d = date.getDate();
+      d = d < 10 ? "0" + d : d;
+      var h = date.getHours();
+      h = h < 10 ? "0" + h : h;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = date.getSeconds();
+      second = second < 10 ? "0" + second : second;
+      return y + "-" + m + "-" + d;
+    },
   }
 };
 </script>
@@ -996,16 +920,14 @@ export default {
       margin-right: 6px;
     }
   }
-
-  .confirmTime {
-    float: right;
-    margin-top: 46px;
-    margin-right: 20px;
-
-    .breadCrumbPointer {
+  .breadCrumbPointer {
       cursor: pointer;
-    }
   }
+ .confirm-time {
+  float: right;
+  //margin-top: 46px;
+  margin-right: 20px;
+}
 }
 // 列表end
 
