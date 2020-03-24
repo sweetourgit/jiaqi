@@ -95,7 +95,6 @@ export default {
 
   methods: {
     init(priceArr, cabin_name){
-      console.log('init')
       this.cabinTypePromise.then(() => {
         priceArrCache= priceArr;
         this.priceMap= this.makePriceMap(this.$deepCopy(priceArr));
@@ -109,7 +108,6 @@ export default {
     },
 
     makeCabinTypeOptions(){
-      console.log('make')
       this.cabinTypePromise= getLinerCabinType({ liner_id: 1, limit: 100 }).then(res => {
         this.cabinTypeOptions= res
         return Promise.resolve();
@@ -158,6 +156,10 @@ export default {
       bol= (priceArrCache.length=== originData.length);
       if(bol) bol= this.$checkLooseEqual(priceArrCache, originData);
       return bol;
+    },
+
+    getData(){
+      return [...priceArrCache];
     }
   }
 

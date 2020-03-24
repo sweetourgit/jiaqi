@@ -138,11 +138,12 @@ export default {
         this.$refs.submitForm.clearValidate();
         if(this.isAdd){
           this.$emit('submit', { 
-            price: this.$deepCopy(this.submitForm), 
+            price: this.adaptor(this.$deepCopy(this.submitForm)), 
             isAdd: this.isAdd 
           });
         } else {
           this.$assign(cache, this.submitForm, true);
+          this.adaptor(cache);
           this.$emit('submit', { 
             price: cache, 
             isAdd: this.isAdd 
@@ -168,7 +169,8 @@ export default {
     },
 
     adaptor(price){
-
+      ['stock', 'adult_same_price', 'adult_straight_price'].forEach(attr => price[attr]= parseFloat(price[attr]));
+      return price;
     },
 
     stockValidator(rule, value, cb){

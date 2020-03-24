@@ -35,6 +35,10 @@ export default {
     init(){},
     notChange(){
       return true;
+    },
+
+    getData(){
+      return [];
     }
   }
 

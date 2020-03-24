@@ -55,6 +55,10 @@ export default {
 
     notChange(){
       return true;
+    },
+
+    getData(){
+      return [];
     }
   }
 

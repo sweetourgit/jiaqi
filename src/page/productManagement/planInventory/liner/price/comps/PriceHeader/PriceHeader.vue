@@ -38,7 +38,7 @@ export default {
   props: ['options'],
 
   mounted(){
-    // this.init();
+    this.getCalendarAction(new Date())
   },
 
   computed: {
@@ -178,6 +178,7 @@ export default {
     // 过期的默认给一个统一plan
     getSkuPlan(day){
       return null;
+      // if(day.isPassed) return getSkuPlanDTO();
     },
 
     getSkuPlanStatus(day){
@@ -208,12 +209,11 @@ export default {
     },
 
     getCalendarAction(date){
+      let { product_id, sku_id }= this.$route.query;
       let year= date.getFullYear();
       let month= date.getMonth()+ 1;
       return getCalendar({
-        product_id: null,
-        sku_id: null,
-        year, month
+        product_id, sku_id, year, month
       })
     }
   }

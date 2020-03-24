@@ -3,6 +3,21 @@ import mock from 'mockjs'
 import Vue from 'vue'
 let { $http, GLOBAL, $message }= Vue.prototype;
 
+// 保存sku库存价格多个
+export const saveSkuStocks= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "​/linerapi​/v1​/sku​/sku-stock​/saveskustock", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('查询产品下SKU列表失败'+ (message || ''));
+      resolve(data.list);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 获取产品下所有sku
 export const skuListAll= function(payload){
   return new Promise((resolve, reject) => {

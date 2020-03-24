@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { saveSkuStocks } from '@/page/productManagement/planInventory/liner/api'
 import { getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
 import PriceHeader from './comps/PriceHeader/PriceHeader'
 import PriceMain from './comps/PriceMain/PriceMain'
@@ -70,7 +71,23 @@ export default {
 
   methods: {
 
-    addHandler(){},
+    addHandler(){
+      if(this.notChange()) return this.$message.info('数据无变化');
+      let { product_id, sku_id }= this.$route.query;
+      let create_uid= sessionStorage.getItem('id');
+      let org_id= sessionStorage.getItem('orgID');
+      let data= this.$refs.priceMain.getData();
+      let result= { product_id, sku_id, create_uid, org_id, plan: null }
+      result.plan= this.$refs.priceHeader.selectedCalendar.map(el => {
+        return {
+          ...data,
+          set_out_year: el._date.getFullYear(),
+          set_out_month: el._date.getMonth()+ 1,
+          set_out_day: el._date.getDate()
+        }
+      })
+      saveSkuStocks(result)
+    },
 
     notChange(){
       let bol= this.$refs.priceMain.notChange();
@@ -79,8 +96,8 @@ export default {
 
     emitParentStatus({ state, selected }){
       this.editState= state;
-      if(selected) return this.$refs.priceMain.init(selected.plan);
-      this.$refs.priceMain.init(getSkuPlanDTO(this.$route.query));
+      if(selected) return this.$refs.priceMain.init(selected.plan || getSkuPlanDTO());
+      this.$refs.priceMain.init(getSkuPlanDTO());
     }
   }
 }

@@ -46,7 +46,7 @@ export default {
   methods: {
     init(plan){
       cache= plan;
-      let { reserved_time, sku_plan_deliver, sku_plan_insure, sku_price }= plan;
+      let { reserved_time, sku_plan_deliver, sku_plan_insure, sku_price }= this.$deepCopy(plan);
       this.reserved_time= reserved_time;
       this.$refs.busSelector.init(sku_plan_deliver);
       this.$refs.insureSelector.init(sku_plan_insure);
@@ -61,6 +61,16 @@ export default {
       if(bol) bol= this.$refs.priceGround.notChange(cache.sku_price);
       return bol;
     },
+
+    getData(){
+      let reserved_time= this.reserved_time;
+      let sku_plan_deliver= this.$refs.busSelector.getData();
+      let sku_plan_insure= this.$refs.insureSelector.getData();
+      let sku_price= this.$refs.priceGround.getData();
+      let result= { reserved_time, sku_plan_deliver, sku_plan_insure, sku_price }
+      if(cache.id) result.id= cache.id;
+      return result;
+    }
   }
 
 }
