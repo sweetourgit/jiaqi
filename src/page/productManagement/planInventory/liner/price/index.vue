@@ -9,7 +9,8 @@
     box-sizing: border-box;
   }
   & >>> .row-header{
-    background-color: rgb(247, 247, 247);
+    color: #333;
+    background-color: #f2f2f2;
   }
   & >>> th{
     background-color: transparent;
@@ -22,8 +23,7 @@
     <header>
       <PriceHeader ref="priceHeader"
         :options="options"
-        @set-parent-status="editState= $event"
-        @select-day="emitSelectDay">
+        @set-parent-status="emitParentStatus">
       </PriceHeader>
       <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;z-index: 1999;">
         <el-button type="info" size="mini"
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
 import PriceHeader from './comps/PriceHeader/PriceHeader'
 import PriceMain from './comps/PriceMain/PriceMain'
 import './moveBtn'
@@ -68,16 +69,18 @@ export default {
   },
 
   methods: {
-    // 选中一天
-    emitSelectDay(day){
-      let { plan }= day;
-      this.$refs.priceMain.init(plan);
-    },
 
     addHandler(){},
 
     notChange(){
-      return this.$refs.priceMain.notChange();
+      let bol= this.$refs.priceMain.notChange();
+      return bol;
+    },
+
+    emitParentStatus({ state, selected }){
+      this.editState= state;
+      if(selected) return this.$refs.priceMain.init(selected.plan);
+      this.$refs.priceMain.init(getSkuPlanDTO(this.$route.query));
     }
   }
 }

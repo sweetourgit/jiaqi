@@ -25,7 +25,6 @@
 import BusSelector from './comps/BusSelector'
 import InsureSelector from './comps/InsureSelector'
 import PriceGround from './comps/PriceGround/PriceGround'
-import { getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
 
 let cache;
 export default {
@@ -46,19 +45,17 @@ export default {
 
   methods: {
     init(plan){
-      if(!plan) plan= getSkuPlanDTO(this.$route.query);
       cache= plan;
       let { reserved_time, sku_plan_deliver, sku_plan_insure, sku_price }= plan;
+      this.reserved_time= reserved_time;
       this.$refs.busSelector.init(sku_plan_deliver);
       this.$refs.insureSelector.init(sku_plan_insure);
       this.$refs.priceGround.init(sku_price);
     },
 
     notChange(){
-      // 如果没有cache，说明还没初始化
-      if(!cache) return true;
       let bol= true;
-      bol= (this.reserved_time=== cache.reserved_time);
+      bol= this.reserved_time=== cache.reserved_time;
       if(bol) bol= this.$refs.busSelector.notChange();
       if(bol) bol= this.$refs.insureSelector.notChange();
       if(bol) bol= this.$refs.priceGround.notChange(cache.sku_price);

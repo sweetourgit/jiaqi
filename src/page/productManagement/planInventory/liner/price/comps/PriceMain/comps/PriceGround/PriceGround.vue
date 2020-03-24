@@ -95,9 +95,10 @@ export default {
 
   methods: {
     init(priceArr, cabin_name){
+      console.log('init')
       this.cabinTypePromise.then(() => {
-        priceArrCache= this.$deepCopy(priceArr);
-        this.priceMap= this.makePriceMap(priceArr);
+        priceArrCache= priceArr;
+        this.priceMap= this.makePriceMap(this.$deepCopy(priceArr));
         this.changeTableData(cabin_name || this.priceMapKeys[0]);
       })
     },
@@ -108,6 +109,7 @@ export default {
     },
 
     makeCabinTypeOptions(){
+      console.log('make')
       this.cabinTypePromise= getLinerCabinType({ liner_id: 1, limit: 100 }).then(res => {
         this.cabinTypeOptions= res
         return Promise.resolve();
