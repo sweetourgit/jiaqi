@@ -6,7 +6,7 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
-    ...foolseward,  
+    ...foolseward,
   {
     path: '/',
     redirect: 'login',
@@ -693,9 +693,9 @@ export default new Router({
     }
   },
   {
-    path: '/approve/approveList',
-    component: () => import('@/page/Finance/approve/approveList'),
-    name: '需要您审批',
+    path: '/borrow/borrowDetails',
+    component: () => import('@/page/Finance/toDo/team/borrow/borrowDetails'),
+    name: '待办/借款详情',
     meta: {
       keepAlive: true,
       auth: true
