@@ -55,9 +55,9 @@
       ref="draft"
       v-bind:subForm="submitForm"
       v-show="showDraft"
-      @change-draft="showDraft=$event"
+      @change-draft="handleClose"
       :form="$refs.submitForm"
-      ></Draft>-->
+      ></Draft> -->
     </el-dialog>
   </div>
 </template>
@@ -112,6 +112,7 @@ export default {
     handleClose(type) {
       this.state = false;
       this.$refs.submitForm.resetFields();
+       this.showDraft = status;
     },
     saveAction() {
       this.$refs.submitForm.validate(result => {
@@ -138,8 +139,8 @@ export default {
     },
     changeDraft(status, saved) {
       this.showDraft = status;
-      // this.state=false
     }
+    
   }
 };
 </script>

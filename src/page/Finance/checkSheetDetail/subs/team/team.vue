@@ -134,6 +134,7 @@ export default {
       let { planID }= this.$route.query;
       getPreCheckSheetByPlanID(planID)
       .then(res => {
+        console.log('res',res)
         this.getCacheCheckSheet(planID, res);
         this.$refs.printGround.init(res, this.type);
       })
@@ -164,12 +165,13 @@ export default {
         if(planID) return resolve(getCheckSheetByPlanID(planID));
       })
       .then(res => {
+        console.log('res',res)
         payload= res;
         let { guid }= res;
         return getFlowFinishedList(guid)
       })
       .then(res => {
-        console.log('res',res)
+        // console.log('res',res)
         Object.assign(payload, { finishedList: res });
         this.$refs.printGround.init(payload, this.type)
       })
@@ -185,6 +187,7 @@ export default {
       let { id, planID, isCheckSheet, tab, conditions, workItemID, guid,
         comeFrom
       }= query;
+      console.log('query',query)
       this.cacheConditions= conditions;
       this.isFromCheckSheet= tab? true: false;
       this.$router.replace({ path, query: { id, planID, isCheckSheet, tab, workItemID, guid, comeFrom } });
