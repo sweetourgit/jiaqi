@@ -1,6 +1,6 @@
+
 <template>
   <el-dialog
-  
     top="40vh"
     :close-on-press-escape="true"
     :center="true"
@@ -20,7 +20,7 @@
 
 <script>
 // 草稿组件
-import { upLoadDraft } from "../../../../api.js";
+import { upLoadDraft, deleteDraft } from "../../../../api.js";
 export default {
   data() {
     return {};
@@ -31,17 +31,24 @@ export default {
     },
     form: {
       type: Object
+    },
+    groupCode: {
+      type: String
     }
   },
-
+  created() {},
   methods: {
-    // 关闭当前模态框 并关闭父组件模态框 重置表单数据
+    // 关闭当前草稿组件
     closeDraft() {
       this.$emit("change-draft", false);
+      //关闭组件时同时清除缓存(针对第二次打开表单，此时已有草稿缓存的情况)
+      this.$el.remove(this.groupCode)
     },
     // 确定保存草稿 接口传参 JSON字符串
     saveDraft(data) {
-      upLoadDraft("", "", JSON.stringify(this.subForm), this);
+      //保存草稿
+      this.$ls.set(this.groupCode,JSON.stringify(this.subForm));
+      // upLoadDraft(315, this.groupCode, JSON.stringify(this.subForm), this);
       this.closeDraft();
     }
   }
