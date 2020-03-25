@@ -1,3 +1,8 @@
+/*
+ * @Author: WZJ 
+ * @Last Modified by:   WZJ 
+ */
+
 
 <template>
   <el-dialog
@@ -46,8 +51,8 @@ export default {
     },
     // 确定保存草稿 接口传参 JSON字符串
     saveDraft(data) {
-      //保存草稿
-      this.$ls.set(this.groupCode,JSON.stringify(this.subForm));
+      //保存草稿到缓存 有效时间为12小时
+      this.$ls.set(this.groupCode,JSON.stringify(this.subForm),60 * 60 * 1000*12);
       // upLoadDraft(315, this.groupCode, JSON.stringify(this.subForm), this);
       this.closeDraft();
     }

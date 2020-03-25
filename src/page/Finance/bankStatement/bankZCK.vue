@@ -1,3 +1,9 @@
+/*
+ * @Author: WZJ 
+ * @Date: 2020-03-25 14:54:48 
+ * @Last Modified by:   WZJ 
+ * @Last Modified time: 2020-03-25 14:54:48 
+ */
 <template>
   <div class="distributor-content">
     <div class="buttonsDv">

@@ -1,3 +1,8 @@
+/*
+ * @Author: WZJ 
+ * @Last Modified by:   WZJ 
+ */
+
 <style lang="scss" scoped>
 .check-sheet-detail {
   width: 1120px;
@@ -107,7 +112,7 @@ export default {
     addInit() {
       let { planID } = this.$route.query;
       getPreCheckSheetByPlanID(planID).then(res => {
-        this.groupCode = res.groupCode; //用于拼接生成随机字符串 作为草稿唯一标识
+        this.groupCode = res.groupCode; // 作为草稿唯一标识
         this.getCacheCheckSheet(planID, res);
         this.$refs.printGround.init(res, this.type);
       });
