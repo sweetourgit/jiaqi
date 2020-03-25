@@ -104,7 +104,7 @@ export default {
   methods: {
     open() {
       let that = this;
-      //遍历所有表单 若为已填则弹出确认框
+      //遍历所有表单组件 若为已填则弹出确认框
       for (let item in this.submitForm) {
         if (this.submitForm[item] != null) {
           this.$confirm("是否需要保存草稿?", "提示", {
@@ -123,13 +123,12 @@ export default {
             .catch(() => {
               //若是未保存 则清除缓存 并关闭当前模态框
               this.$el.remove(this.groupCode);
-               this.handleClose();
               this.$message({
                 type: "info",
                 message: "已取消保存"
               });
             });
-         
+          this.handleClose();
           return false;
         }
       }
