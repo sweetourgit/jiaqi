@@ -12,6 +12,7 @@
     :visible="state"
     :close-on-click-modal="false"
     :before-close="handleClose"
+    :append-to-body="true"
   >
     <el-form label-width="120px" ref="submitForm" :model="submitForm" :rules="rules">
       <el-form-item label="供应商：" prop="supplier" ref="supplierRef">
@@ -59,7 +60,6 @@
 <script>
 import { getSupplierlist } from "../../../api";
 export default {
-
   data() {
     return Object.assign(
       {
@@ -103,6 +103,7 @@ export default {
 
   methods: {
     open() {
+      let that = this;
       //遍历所有表单 若为已填则弹出确认框
       for (let item in this.submitForm) {
         if (this.submitForm[item] != null) {
@@ -114,7 +115,6 @@ export default {
             .then(() => {
               //保存草稿到缓存 有效时间为12小时
               this.$ls.set(this.groupCode, JSON.stringify(this.submitForm));
-              this.handleClose()
               this.$message({
                 type: "success",
                 message: "保存成功!"
@@ -123,12 +123,13 @@ export default {
             .catch(() => {
               //若是未保存 则清除缓存 并关闭当前模态框
               this.$el.remove(this.groupCode);
-              this.handleClose();
+               this.handleClose();
               this.$message({
                 type: "info",
                 message: "已取消保存"
               });
             });
+         
           return false;
         }
       }
@@ -248,7 +249,7 @@ export default {
     supplierValidator(rule, value, cb) {
       if (this.supplierSelected && this.submitForm.supplier) return cb();
       cb(new Error(rule.message));
-    },
+    }
   }
 };
 </script>
