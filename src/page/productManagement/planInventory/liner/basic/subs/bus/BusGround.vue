@@ -71,7 +71,7 @@ export default {
   filters: {
     priceFilter(val){
       if(!val) return '';
-      return val.toFixed(2);
+      return typeof val=== "string"? val: val.toFixed(2);
     }
   },
 
@@ -81,14 +81,14 @@ export default {
 
   data(){
     return {
-      tableData: [{ id: 123, name: 32 }],
+      tableData: [],
       priceOptions: {
         placeholder: '请输入价格',
         pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,
         message: '价格格式输入错误',
         adaptor: (val) => parseFloat(val),
         successCb: ({ index }) => {
-          console.log(index)
+          console.log(this, index)
         }
       }
     }
@@ -99,6 +99,7 @@ export default {
       let { product_id }= this.$route.query;
       deliverListAll({ product_id })
       .then(deliverList => this.tableData= deliverList);
+      console.log(this.tableData)
     },
     openPrice(table, column, index){
       let vm= TableInputerManager.getVm(table, column, index);

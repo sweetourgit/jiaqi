@@ -133,6 +133,20 @@ export const deliverListAll= function(payload){
   })
 }
 
+export const saveDeliverPrice= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-deliver/saveprice", payload)
+    .then(res => {
+      let { code, message }= res.data;
+      if(code!== 200) throw ('查询产品下接送列表失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 删
 export const getLinerId= function(payload){
   return new Promise((resolve, reject) => {
