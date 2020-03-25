@@ -89,7 +89,7 @@
           <!-- 跟团tab END -->
           <!-- 游轮tab -->
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIICollectionShip">
-            <el-tabs v-model="tabIIICollectionShipShowWhich" @tab-click="handleClickILabel" style="width: 98%;margin: 20px auto;">
+            <el-tabs v-model="tabIIICollectionShipShowWhich" style="width: 98%;margin: 20px auto;">
               <el-tab-pane :label="'直客(' + 0 +')'" name="nameIIICollectionShipDirect">
               </el-tab-pane>
               <el-tab-pane :label="'同业(' + 0 +')'" name="nameIIICollectionShipSame">
@@ -167,15 +167,44 @@
       this.$refs.collectTeamReimburseDom.approvalCollectTeamTable('nameIIICollectionTeamReimburse'); // 跟团下收款的报销还款
     },
     methods: {
+      // 一级标签切换时触发事件
       handleClickILabel (tab, event) {
-        this.whichTab = tab.name;
+        let keepTabName = tab.name;
+        this.whichTab = keepTabName;
+        if (keepTabName === 'nameINoIn') {
+          this.$refs.noInTeamDom.pendingApprovalTable('nameIINoInTeam');
+        } else if (keepTabName === 'nameIAdvance') {
+          this.$refs.advanceTeamDom.pendingApprovalTable('nameIIAdvanceTeam');
+        } else if (keepTabName === 'nameIReimburse') {
+          this.$refs.reimburseTeamDom.pendingApprovalTable('nameIIReimburseTeam');
+        } else if (keepTabName === 'nameIRefund') {
+          this.$refs.refundTeamDom.pendingApprovalTable('nameIIReimburseTeam');
+        } else if (keepTabName === 'nameISheet') {
+          this.$refs.sheetTeamDom.pendingApprovalTable('nameIISheetTeam');
+        } else if (keepTabName === 'nameICollection') {
+          this.$refs.collectTeamDirectDom.approvalCollectTeamTable('nameIIICollectionTeamDirect');
+          this.$refs.collectTeamSameDom.approvalCollectTeamTable('nameIIICollectionTeamSame');
+          this.$refs.collectTeamInnerDom.approvalCollectTeamTable('nameIIICollectionTeamInner');
+          this.$refs.collectTeamReimburseDom.approvalCollectTeamTable('nameIIICollectionTeamReimburse');
+        } else {
+        }
       },
       handleClickIILabel () {
 
       },
-      // 三级tab（收款下的跟团上的tab）
+      // 三级tab（收款下的跟团上的tab）   nameIIICollectionTeamReimburse
       handleClickIIITeamLabel (tab, event) {
-        this.whichCollectTeamTab = tab.name;
+        let keepTabName = tab.name;
+        this.whichCollectTeamTab = keepTabName;
+        if (keepTabName === 'nameIIICollectionTeamDirect') {
+          this.$refs.collectTeamDirectDom.approvalCollectTeamTable('nameIIICollectionTeamDirect');
+        } else if (keepTabName === 'nameIIICollectionTeamSame') {
+          this.$refs.collectTeamSameDom.approvalCollectTeamTable('nameIIICollectionTeamSame');
+        } else if (keepTabName === 'nameIIICollectionTeamInner') {
+          this.$refs.collectTeamInnerDom.approvalCollectTeamTable('nameIIICollectionTeamInner');
+        } else if (keepTabName === 'nameIIICollectionTeamReimburse') {
+          this.$refs.collectTeamReimburseDom.approvalCollectTeamTable('nameIIICollectionTeamReimburse');
+        }
       }
     }
   }

@@ -276,7 +276,13 @@ export default {
     },
     // 库存
     inventory(row){
-      alert("库存！暂无router地址");
+      this.$router.push({
+        path: '/product/planInventory/liner/basic',
+        query: {
+          "product_id": row.id,
+          "liner_id": row.liner_id
+        }
+      });
     },
     // 删除
     deleteFun(row){

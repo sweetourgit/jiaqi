@@ -46,7 +46,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row, 'nameINoIn')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,7 +61,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row, 'nameIAdvance')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -128,6 +128,15 @@
 <script>
   import requestTeamTableData from '../mixins/requestTeamTableData'
 
+  // 详情跳转时依据传参进行跳转到匹配的路由
+  let sourceMapJump = {
+    nameINoIn: '/borrow/borrowDetails',
+    nameIAdvance: '/borrow/borrowDetails',
+    nameIReimburse: '/borrow/borrowDetails',
+    nameIRefund: '/borrow/borrowDetails',
+    nameISheet: '/borrow/borrowDetails',
+  };
+
   export default {
     name: "borrowList",
     data () {
@@ -141,6 +150,7 @@
         approvalAdvanceData: [], // 预付款
         approvalRefundData: [], // 退款
         approvalSheetData: [], // 报账单
+        noTaskArr: [], // 未完成的任务返回的数据，缓存返回来Json
       }
     },
     props: {
@@ -164,14 +174,21 @@
     },
     watch: {
       getWhichTab: function (val, oldValue) {
-        console.log(val);
+        // console.log(val);
       }
     },
     methods: {
-      handleJumpDetail (index, row) {
-        let getCurrentPaymentID = row.paymentID;
-        let getCurrentGuid = row.guid;
-        this.$router.push({ path: "/doneAll/advanceAndNoInDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'advance', optionsGuid: getCurrentGuid} });
+      handleJumpDetail (index, row, source) {
+        let { paymentID, guid, instanceID } = row;
+        let keepWorkItemId = null;
+        // 取出当前选中的 workItemID 与后端返回的做比较
+        this.noTaskArr.forEach(item => {
+          if (row.guid === item.jq_ID) {
+            keepWorkItemId = item.workItemID
+          }
+        });
+
+        this.$router.push({ path: sourceMapJump[source], query: { pendingDetailPaymentID: paymentID, componentName: this.getWhichTab, optionsGuid: guid, instanceID: instanceID, workItemID: keepWorkItemId, whichTabName: this.whichTab } });
       },
     }
   }

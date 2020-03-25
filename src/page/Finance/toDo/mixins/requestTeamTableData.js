@@ -65,6 +65,7 @@ export default {
           }).then(obj => {
             obj.data.forEach(v => {
               arr.push(v.jq_ID);
+              _this.noTaskArr.push(v)
             })
             // 减少判断逻辑（通过guid获取相关未审批的数据）
             let ApprovalApiPayment = function () {
@@ -138,7 +139,7 @@ export default {
       })
     },
     dateFormat: function(row, column) {
-      let date = row[column.property]
+      let date = row[column.property];
       if(date === undefined) {
         return '';
       }
