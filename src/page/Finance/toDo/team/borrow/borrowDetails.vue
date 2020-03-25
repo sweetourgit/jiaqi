@@ -249,8 +249,7 @@
     </el-dialog>
     <!-- 审批过程-查看弹窗 END -->
     <!-- 通过、驳回弹框 -->
-    <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list" :show-close='false'>
-      <div @click="handleApproveDialogCancel">×</div>
+    <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list">
       <textarea rows="8" v-model="approvalOpinion" style="overflow: hidden; width: 99%; margin: 0 0 20px 0;"></textarea>
       <el-row type="flex" class="row-bg">
         <el-col :span="8" :offset="18">
