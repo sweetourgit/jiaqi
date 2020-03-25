@@ -26,6 +26,7 @@
 <script>
 import { deliverListAll } from '@/page/productManagement/planInventory/liner/api'
 
+let deliverPromise;
 export default {
   props: ['parentState'],
 
@@ -38,7 +39,7 @@ export default {
 
   mounted(){
     let { product_id }= this.$route.query;
-    deliverListAll({ product_id }).then(res => this.tableData= res.map(el => (el.selected= false) && el));
+    deliverPromise= deliverListAll({ product_id }).then(res => Promise.resolve(res))
   },
 
   data(){

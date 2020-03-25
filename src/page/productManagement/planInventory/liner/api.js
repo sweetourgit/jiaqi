@@ -18,6 +18,20 @@ export const saveSkuStocks= function(payload){
   })
 }
 
+export const singleSkuInfo= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-stock/info", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('保存计划失败'+ (message || ''));
+      resolve(data);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 获取产品下所有sku
 export const skuListAll= function(payload){
   return new Promise((resolve, reject) => {

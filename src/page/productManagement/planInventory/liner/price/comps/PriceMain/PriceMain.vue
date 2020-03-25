@@ -25,6 +25,8 @@
 import BusSelector from './comps/BusSelector'
 import InsureSelector from './comps/InsureSelector'
 import PriceGround from './comps/PriceGround/PriceGround'
+import { getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
+import { singleSkuInfo } from '@/page/productManagement/planInventory/liner/api'
 
 let cache;
 export default {
@@ -45,8 +47,13 @@ export default {
 
   methods: {
     init(plan){
+      if(plan) return singleSkuInfo({ id: plan.id }).then(this.initSuffix);
+      this.initSuffix(getSkuPlanDTO());
+    },
+
+    initSuffix(plan){
       cache= plan;
-      let { reserved_time, sku_plan_deliver, sku_plan_insure, sku_price }= this.$deepCopy(plan);
+      let { reserved_time, sku_plan_deliver, sku_plan_insure, sku_price }= plan;
       this.reserved_time= reserved_time;
       this.$refs.busSelector.init(sku_plan_deliver);
       this.$refs.insureSelector.init(sku_plan_insure);

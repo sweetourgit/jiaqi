@@ -108,6 +108,7 @@ export default {
     },
 
     makeCabinTypeOptions(){
+      // let { liner_id }= this.$route.query;
       this.cabinTypePromise= getLinerCabinType({ liner_id: 1, limit: 100 }).then(res => {
         this.cabinTypeOptions= res
         return Promise.resolve();

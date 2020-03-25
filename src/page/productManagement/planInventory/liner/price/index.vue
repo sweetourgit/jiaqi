@@ -47,7 +47,6 @@
 
 <script>
 import { saveSkuStocks } from '@/page/productManagement/planInventory/liner/api'
-import { getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
 import PriceHeader from './comps/PriceHeader/PriceHeader'
 import PriceMain from './comps/PriceMain/PriceMain'
 import './moveBtn'
@@ -101,8 +100,8 @@ export default {
 
     emitParentStatus({ state, selected }){
       this.editState= state;
-      if(selected) return this.$refs.priceMain.init(selected.plan || getSkuPlanDTO());
-      this.$refs.priceMain.init(getSkuPlanDTO());
+      if(state=== 'edit') return this.$refs.priceMain.init(selected.plan);
+      this.$refs.priceMain.init();
     }
   }
 }

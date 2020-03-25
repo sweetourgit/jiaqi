@@ -31,8 +31,6 @@ import PriceDay from './comps/PriceDay'
 import { SKU_PLAN_STATUS, getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
 import { getCalendar } from '@/page/productManagement/planInventory/liner/api.js'
 
-let plans;
-let panelCalendar;
 export default {
 
   components: { Jdatepanel, PriceDay },
@@ -63,11 +61,9 @@ export default {
       planStatus: SKU_PLAN_STATUS.UNDO,
       panelOptions: {
         mixinHandler: (dto) => {
-          Object.assign(dto, {
-            selected: false,
-            plan: this.getSkuPlan(dto),
-            plan_status: this.getSkuPlanStatus(dto)
-          })
+          dto.selected= false;
+          dto.plan= this.getSkuPlan(dto);
+          dto.plan_status= this.getSkuPlanStatus(dto);
         }
       },
       
@@ -150,6 +146,7 @@ export default {
     },
 
     emitSelect(day){
+      console.log(day.plan_status)
       if(day.plan_status=== SKU_PLAN_STATUS.MULTIPLE) return this.setSelectedCalendar([day], day.selected);
       this.setSelectedCalendar(day, day.selected);
     },
@@ -186,8 +183,7 @@ export default {
 
     // 过期的默认给一个统一plan
     getSkuPlan(day){
-      return null;
-      // if(day.isPassed) return getSkuPlanDTO();
+      return this.priceCalendar.find((el) => day.dateInt== el.format_set_out_time);
     },
 
     getSkuPlanStatus(day){
