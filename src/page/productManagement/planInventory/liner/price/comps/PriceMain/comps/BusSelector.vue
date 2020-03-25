@@ -42,16 +42,20 @@ export default {
     deliverPromise= deliverListAll({ product_id }).then(res => Promise.resolve(res))
   },
 
+  beforeDestroy(){
+    deliverPromise= null;
+  },
+
   data(){
     return {
-      tableData: [{ title: 123, sale_price: 32, radio: false }],
+      tableData: [],
       radio: '1'
     }
   },
 
   methods: {
     init(selected){
-
+      deliverPromise.then(list => console.log(list));
     },
 
     notChange(){

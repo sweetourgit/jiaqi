@@ -31,7 +31,7 @@
   // const jqUrl="http://test.dayuntong.com/h3wf";
   // const serverSrcPhp="http://www.around.com";
   const serverSrcPhp="http://zb.dayuntong.com";
-  const serverSrcYL="http://web.17lvju.com/app/jialv";
+  const serverSrcYL="http://192.168.1.253";
   const token="";
   const userId="";
   const hasEnter=false;
