@@ -87,11 +87,14 @@ export default {
         pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,
         message: '价格格式输入错误',
         adaptor: (val) => parseFloat(val),
-        successCb: ({ index }) => {
+        successCb: ({ index, oldVal }) => {
           let { id, sale_price }= this.tableData[index];
           saveDeliverPrice({ id, sale_price })
           .then(() => this.$message.success('售卖价格修改成功'))
-          .catch(() => this.$message.error('售卖价格修改失败'));
+          .catch(() => {
+            this.$message.error('售卖价格修改失败');
+            this.tableData[index].sale_price= oldVal;
+          });
         }
       }
     }
@@ -101,7 +104,7 @@ export default {
     init(){
       let { product_id }= this.$route.query;
       deliverListAll({ product_id })
-      .then(deliverList => this.tableData= deliverList);
+      .then(deliverList => this.tableData= deliverList.map(this.deliverAdaptor));
     },
 
     openPrice(table, column, index){
@@ -111,6 +114,11 @@ export default {
 
     openDetailer(bus){
       this.$refs.detailer.open(bus)
+    },
+
+    deliverAdaptor(deliver){
+      deliver.isPriced= isNaN(deliver.sale_price)
+      return true;
     }
   }
 

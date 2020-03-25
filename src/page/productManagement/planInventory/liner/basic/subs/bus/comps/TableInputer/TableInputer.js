@@ -99,6 +99,7 @@ const TableInputerFactory= function($){
     methods: {
       submitVal(){
         let { pattern, validator, asyncValidator, adaptor, message, successCb }= this.options;
+        let oldVal= this.value;
         let val= this.val;
         if(pattern && !pattern.test(val)){
           this.$message.error(message || '格式错误');
@@ -112,7 +113,7 @@ const TableInputerFactory= function($){
         if(asyncValidator) return asyncValidator(val).then(() => {
           this.$emit('input', val);
           this.inEdit= false;
-          if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this) });
+          if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this), oldVal });
         })
         .catch((err) => {
           if(err) this.$message.error(err);
@@ -120,7 +121,7 @@ const TableInputerFactory= function($){
         })
         this.$emit('input', val);
         this.inEdit= false;
-        if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this) });
+        if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this), oldVal });
       },
 
       focus(){
