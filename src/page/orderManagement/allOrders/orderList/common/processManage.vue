@@ -215,7 +215,7 @@
           @click="orderModification(orderget.orderStatus,orderget.occupyStatus)"
           :disabled="isChangeNumber || isLowPrice"
           class="confirm fr"
-        >{{statusNext}}</el-button>
+        >{{statusBtn}}</el-button>
         <!--保存游客信息按钮-->
         <el-button
           type="primary"
@@ -278,6 +278,7 @@ export default {
       teampreviewData: {}, //团期计划订单信息预览
       statusNow: "",
       statusNext: "",
+      statusBtn: "", // 点击文字
       statusEnd: "",
       ruleForm: {
         //流程管理
@@ -585,8 +586,8 @@ export default {
     },
 
     orderModification(status, cancle) {
-      console.log(status,'司法所');
-      console.log(cancle,'司法所333');
+      //console.log(status,'司法所');
+      //console.log(cancle,'司法所333');
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -712,17 +713,20 @@ export default {
               this.statusNow = "预定不占";
               this.statusNext = "预定占位";
               this.statusEnd = "确认占位";
+              this.statusBtn = '预定占位';
               break;
             case 2: // 预定占位
               this.statusNow = "预定占位";
               this.statusNext = "确定占位";
               this.statusEnd = "补充资料";
+              this.statusBtn = '确定占位'
               break;
             case 3: // 确定占位
               this.statusNow = "确定占位";
               this.replenishInfoToastFun(this.orderget.orderChannel);
               this.statusNext = "补充资料";
               this.statusEnd = "签订合同";
+              this.statusBtn = '补充资料'
               break;
           }
           break;
@@ -744,11 +748,13 @@ export default {
           this.statusNow = "补充材料";
           this.statusNext = "签订合同";
           this.statusEnd = "待出行";
+          this.statusBtn = '提交资料';
           break;
         case 2:
           this.statusNow = "签订合同";
           this.statusNext = "待出行";
           this.statusEnd = "出行中";
+          this.statusBtn = '查看合同';
           break;
         case 3:
           switch (orderChannel) {
@@ -1312,12 +1318,14 @@ export default {
             obj.guests = guest;
             obj.teamID = this.orderget.teamID;
             obj.planID = this.orderget.planID;
+
             this.$http
                     .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                       object: obj
                     })
                     .then(res => {
                       if (res.data.isSuccess == true) {
+                        this.ExistContract(obj.orderCode)
                         this.$message({
                           message: "更改成功",
                           type: "success"
@@ -1332,6 +1340,21 @@ export default {
             });
       
       //++++++
+    },
+    ExistContract(orderCode){
+              this.$http
+                    .post(this.GLOBAL.serverSrc + "/orderquery/get/api/ExistContract", {
+                      orderCode: orderCode
+                    })
+                    .then(res => {
+                      if (res.data.isSuccess == true) {
+                        this.$message({
+                          message: "合同作废",
+                          type: "success"
+                        });
+                         
+                      }
+                    });
     },
 
     // 出行人信息表单中的删除

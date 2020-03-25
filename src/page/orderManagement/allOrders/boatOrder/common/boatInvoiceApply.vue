@@ -3,7 +3,7 @@
     <!--备注信息弹窗-->
     <el-dialog
       title="申请发票"
-      :visible.sync="dialogFormMark"
+      :visible.sync="propsObj.dialogType === 6"
       :close-on-click-modal="false"
       class="city_list"
       width="620px"
@@ -68,8 +68,10 @@ export default {
     orderId: 0,
     variable_s: 0,
     dialogType: 0,
-    orderCodeSon:""
+    orderCodeSon:"",
+    propsObj: { type: Object }
   },
+    
   data() {
     return {
       name: localStorage.getItem("name"),
@@ -131,7 +133,8 @@ export default {
   methods: {
     moment,
     close() {
-      this.dialogFormMark = false;
+       this.$parent.resetDialogType();
+      //this.dialogFormMark = false;
      // this.$refs["markFormAdd"].resetFields();
       this.ruleNull();
       this.loadingbut = false;
