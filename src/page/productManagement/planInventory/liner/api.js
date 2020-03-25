@@ -138,11 +138,8 @@ export const saveDeliverPrice= function(payload){
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-deliver/saveprice", payload)
     .then(res => {
       let { code, message }= res.data;
-      if(code!== 200) throw ('查询产品下接送列表失败'+ (message || ''));
+      if(code!== 200) return reject();
       resolve();
-    })
-    .catch(err => {
-      err && $message.error(err.toString());
     })
   })
 }

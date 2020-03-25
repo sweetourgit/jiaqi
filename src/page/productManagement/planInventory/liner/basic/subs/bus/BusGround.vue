@@ -60,7 +60,7 @@
 
 <script>
 // import TableInputer from './comps/TableInputer'
-import { deliverListAll } from '@/page/productManagement/planInventory/liner/api'
+import { deliverListAll, saveDeliverPrice } from '@/page/productManagement/planInventory/liner/api'
 import { TableInputer, manager as TableInputerManager } from './comps/TableInputer/index'
 import BusDetailer from './comps/BusDetailer'
 
@@ -88,7 +88,10 @@ export default {
         message: '价格格式输入错误',
         adaptor: (val) => parseFloat(val),
         successCb: ({ index }) => {
-          console.log(this, index)
+          let { id, sale_price }= this.tableData[index];
+          saveDeliverPrice({ id, sale_price })
+          .then(() => this.$message.success('售卖价格修改成功'))
+          .catch(() => this.$message.error('售卖价格修改失败'));
         }
       }
     }
@@ -99,12 +102,13 @@ export default {
       let { product_id }= this.$route.query;
       deliverListAll({ product_id })
       .then(deliverList => this.tableData= deliverList);
-      console.log(this.tableData)
     },
+
     openPrice(table, column, index){
       let vm= TableInputerManager.getVm(table, column, index);
       vm.focus();
     },
+
     openDetailer(bus){
       this.$refs.detailer.open(bus)
     }
