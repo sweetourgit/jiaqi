@@ -150,6 +150,7 @@
         approvalAdvanceData: [], // 预付款
         approvalRefundData: [], // 退款
         approvalSheetData: [], // 报账单
+        noTaskArr: [], // 未完成的任务返回的数据，缓存返回来Json
       }
     },
     props: {
@@ -178,10 +179,16 @@
     },
     methods: {
       handleJumpDetail (index, row, source) {
-        let getCurrentPaymentID = row.paymentID; // 查看审批详情用
-        let getCurrentGuid = row.guid;
-        let getInstanceID = row.instanceID;
-        this.$router.push({ path: sourceMapJump[source], query: { pendingDetailPaymentID: getCurrentPaymentID, componentName: this.getWhichTab, optionsGuid: getCurrentGuid, instanceID: getInstanceID } });
+        let { paymentID, guid, instanceID } = row;
+        let keepWorkItemId = null;
+        // 取出当前选中的 workItemID 与后端返回的做比较
+        this.noTaskArr.forEach(item => {
+          if (row.guid === item.jq_ID) {
+            keepWorkItemId = item.workItemID
+          }
+        });
+
+        this.$router.push({ path: sourceMapJump[source], query: { pendingDetailPaymentID: paymentID, componentName: this.getWhichTab, optionsGuid: guid, instanceID: instanceID, workItemID: keepWorkItemId, whichTabName: this.whichTab } });
       },
     }
   }

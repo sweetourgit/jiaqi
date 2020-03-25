@@ -59,7 +59,6 @@ const ProcessManageMixin= {
           ])
           .then(res => {
             let [enrollsRes, teampreviewRes]= res;
-            
             contact= JSON.parse(contact);
             this.ruleForm.contactName= contact.Name;
             this.ruleForm.contactPhone= contact.Tel;
