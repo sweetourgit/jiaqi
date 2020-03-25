@@ -50,34 +50,22 @@
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button size="small" @click="changeDraft(true)">取 消</el-button>
+      <el-button size="small" @click="open()">取 消</el-button>
       <el-button type="primary" size="small" @click="saveAction()">保 存</el-button>
     </span>
-    <Draft
-      ref="draft"
-      v-bind:subForm="submitForm"
-      :groupCode="groupCode"
-      v-show="showDraft"
-      @change-draft="handleClose"
-      :form="this.expenseCache"
-    ></Draft>
   </el-dialog>
 </template>
 
 <script>
 import { getSupplierlist } from "../../../api";
-import Draft from "./comps/draft.vue";
 export default {
-  components: {
-    Draft
-  },
+
   data() {
     return Object.assign(
       {
         state: false,
         isSave: false,
         supplierSelected: false,
-        showDraft: false,
         groupCode: "",
         expenseCache: ""
       },
@@ -114,6 +102,39 @@ export default {
   },
 
   methods: {
+    open() {
+      //遍历所有表单 若为已填则弹出确认框
+      for (let item in this.submitForm) {
+        if (this.submitForm[item] != null) {
+          this.$confirm("是否需要保存草稿?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          })
+            .then(() => {
+              //保存草稿到缓存 有效时间为12小时
+              this.$ls.set(this.groupCode, JSON.stringify(this.submitForm));
+              this.handleClose()
+              this.$message({
+                type: "success",
+                message: "保存成功!"
+              });
+            })
+            .catch(() => {
+              //若是未保存 则清除缓存 并关闭当前模态框
+              this.$el.remove(this.groupCode);
+              this.handleClose();
+              this.$message({
+                type: "info",
+                message: "已取消保存"
+              });
+            });
+          return false;
+        }
+      }
+      //若未填 则关闭当前
+      this.handleClose();
+    },
     wakeup(expense, { groupCode }) {
       this.groupCode = groupCode;
       this.isSave = !!expense;
@@ -121,7 +142,6 @@ export default {
       this.state = true;
       //判断当前是否通过编辑进入(isSave=true通过编辑进入;isSave=false通过新增进入)
       this.expenseCache = this.isSave ? expense : this.getDraft();
-
       Object.keys(this.submitForm).forEach(
         attr => (this.submitForm[attr] = this.expenseCache[attr])
       );
@@ -172,11 +192,10 @@ export default {
       });
     },
 
-    handleClose() {
+    handleClose(status) {
       this.$refs.submitForm.resetFields();
       this.temporaryVariable();
       this.state = false;
-      this.showDraft = status;
     },
 
     getExpenseDTO() {
@@ -230,19 +249,6 @@ export default {
       if (this.supplierSelected && this.submitForm.supplier) return cb();
       cb(new Error(rule.message));
     },
-    //修改草稿组件显示状态  status无参默认为false基本上没传过参数
-    changeDraft(status) {
-      let that = this;
-      //循环表单 其中若是有已填想 则弹出是否保存草稿
-      for (let item in this.submitForm) {
-        if (this.submitForm[item] != null) {
-          that.showDraft = status;
-          return false;
-        }
-      }
-      //若是未填表单则直接关闭表单
-      this.handleClose();
-    }
   }
 };
 </script>

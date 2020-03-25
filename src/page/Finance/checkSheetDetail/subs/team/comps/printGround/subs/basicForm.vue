@@ -56,22 +56,12 @@
         <el-button size="small" @click="handleClose(true)">取 消</el-button>
         <el-button type="primary" size="small" @click="saveAction">保 存</el-button>
       </span>
-      <!-- <Draft
-      ref="draft"
-      v-bind:subForm="submitForm"
-      v-show="showDraft"
-      @change-draft="handleClose"
-      :form="$refs.submitForm"
-      ></Draft>-->
     </el-dialog>
   </div>
 </template>
 
 <script>
-import Draft from "./comps/draft.vue";
 export default {
-  components: { Draft },
-
   data() {
     return Object.assign(
       {
@@ -143,9 +133,6 @@ export default {
       // 价格title都填写了
       if (price && title) return cb();
       return cb(error);
-    },
-    changeDraft(status, saved) {
-      this.showDraft = status;
     }
   }
 };
