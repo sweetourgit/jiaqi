@@ -1,6 +1,7 @@
 <!--
-  待办 -> 借款详情（无收入、预付款）
-  含有打印部分
+  待办 -> 借款详情（无收入、预付款）；
+  含有打印部分；
+  通过，驳回的一些方法在common.js里；
 -->
 
 <template>
@@ -9,21 +10,21 @@
     <div style="text-align: right;">
       <el-button type="warning" plain @click="handleCancel()">取消</el-button>
       <el-button
-        @click="handlePass()"
+        @click="handlePass"
         type="danger"
         plain
         :disabled="ifPassClick"
-        v-if="(ifDY100009 && creatUserOrgID == 490) || ( ifDY100042 && creatUserOrgID != 490)"
+        v-if="(ifDY100009 && creatUserOrgID === 490) || ( ifDY100042 && creatUserOrgID !== 490)"
       >
         通过
       </el-button>
-      <el-button type="primary" @click="handlePass()" plain v-else>通过</el-button>
-      <el-button @click="handleRejected()" type="danger" plain>驳回</el-button>
+      <el-button @click="handlePass" type="primary" plain v-else>通过</el-button>
+      <el-button @click="handleRejected" type="danger" plain>驳回</el-button>
       <el-button
         type="danger"
         :disabled="ifClick"
         @click="handleBankAccount(acoutInfo)"
-        v-if="(ifDY100009 && creatUserOrgID == 490) || (ifDY100042 && creatUserOrgID != 490)"
+        v-if="(ifDY100009 && creatUserOrgID === 490) || (ifDY100042 && creatUserOrgID !== 490)"
       >
         支付账户
       </el-button>
@@ -184,7 +185,7 @@
       <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
       <el-table-column prop="process" label="审批过程" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,2)">查看</el-button>
+          <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -242,7 +243,7 @@
     <!-- 通过、驳回弹框 -->
     <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list" :show-close='false'>
       <div @click="handleApproveDialogCancel">×</div>
-      <textarea rows="8" v-model="approvalOpinion" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
+      <textarea rows="8" v-model="approvalOpinion" style="overflow: hidden; width: 99%; margin: 0 0 20px 0;"></textarea>
       <el-row type="flex" class="row-bg">
         <el-col :span="8" :offset="18">
           <el-button @click="handleApproveDialogCancel">取消</el-button>
@@ -263,6 +264,7 @@
       return {
         ifDY100009: false,
         ifDY100042: false,
+        creatUserOrgID: 0,
         ifClick: false, // 如果点击选择账户之后这个按钮会禁止点击
         ifPassClick: true, // 点击选择账户之后才可以点击通过
         printAuditingContent: null, // 打印审核结果的内容拼接
@@ -278,28 +280,23 @@
         keepPaymentType: null, // 弹窗中调用获取一条详情，保存paymentType类型
         getTopName: '', // 部门
         approveDialogTitle: '', // 审批弹窗标题设置
-        ifShowApproveDialog: false, // 通过驳回弹窗
         approvalOpinion: '', // 审批意见
-        keepInstanceID: '', // 流程id，审批意见接口用
+        guid: '', // 接口用的guid
+        getWorkItemId: '', // 保存匹配的 workItemId
       }
     },
     mixins: [ common ],
     created () {
       let keepPaymentID = this.$route.query.pendingDetailPaymentID; // 查看详情用
-      this.keepInstanceID = this.$route.query.instanceID; // 工作流审批意见用
+      let getUserCode = sessionStorage.getItem('userCode');
+      this.getWorkItemId = this.$route.query.workItemID; // 工作流接口用
       this.whichComponentName = this.$route.query.componentName; // 来自无收入还是预付款
-      this.getLabel(keepPaymentID);
       this.getTopName = sessionStorage.getItem('topName');
-      if (sessionStorage.getItem('userCode') === 'DY100009') {
-        this.ifDY100009 = true
-      } else {
-        this.ifDY100009 = false
-      }
-      if (sessionStorage.getItem('userCode') === 'DY100042') {
-        this.ifDY100042 = true
-      } else {
-        this.ifDY100042 = false
-      }
+      // 打印相关（目前两个人可以进行打印）
+      getUserCode === 'DY100009' ? this.ifDY100009 = true : this.ifDY100009 = false;
+      getUserCode === 'DY100042' ? this.ifDY100042 = true : this.ifDY100042 = false;
+      // 详情方法
+      this.getLabel(keepPaymentID);
     },
     methods: {
       // 打印详情
@@ -310,25 +307,26 @@
       handlePreview (file) {
         window.open(file.url);
       },
-      // 审批过程-查看（ GetInstanceActityInfoListForJQ_Lite_BY_InstanceID -> 这是参看审批之后的流程日子 ）
-      handleLookApprovalProcess () {
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ_Lite_BY_InstanceID', {
-          instanceId: this.keepInstanceID
+      // 审批过程-查看按钮触发（ GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType -> 这是查看审批之后的流程日子 ）
+      handleLookApprovalProcess (index, row, type) {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType', {
+          jq_id:	row.guid,
+          jQ_Type: type,
         }).then(obj => {
-          // this.tableIncomeCheck = obj.data.extend.instanceLogInfo;
           this.ifLookApproveProcess = true;
         }).catch(err => {
           console.log( err );
         })
       },
       // 审核结果
-      auditResult () {
+      auditResult (result, paramJqType) {
         let _this = this;
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ_Lite_BY_InstanceID', {
-          instanceId: this.keepInstanceID
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType', {
+          jq_id:	result,
+          jQ_Type: paramJqType, // 无收入1 预付款2,
         }).then(obj => {
           _this.tableCourse = [];
-          _this.tableCourse = obj.data.extend.instanceLogInfo;
+          _this.tableCourse = obj.data.data;
           if (_this.tableCourse.length > 0) {
             _this.printAuditingContent = '<b>开始</b> -> ';
             _this.tableCourse.forEach(function (item) {
@@ -349,11 +347,12 @@
             this.tableIncome = [];
             this.tableMoney = [];
             this.tableEarning = [];
+            this.guid = res.data.object.guid;
             let createUserCode = res.data.object.creatUserCode;
-            let getPaymentType = res.data.object.paymentType
+            let getPaymentType = res.data.object.paymentType;
             this.keepPaymentType = getPaymentType;
             this.fundamental = res.data.object;
-            this.auditResult();
+            this.auditResult(res.data.object.guid, getPaymentType);
             if (res.data.object.planID > 0) {
               this.apiSomeTableDel(res.data.object.planID);
             } else {
@@ -364,11 +363,11 @@
       },
       // 无收入没有订单号根据登录人员查询无收入借款明细
       apiBorrowDel (params) {
-        let _this = this
+        let _this = this;
         this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
           "object": {
-            "paymentType": 1, // 1 无收入 2 预付款
-            "createUser": params, // sessionStorage.getItem('userCode')
+            "paymentType": 1,
+            "createUser": params,
           }
         }).then(res => {
           if (res.data.isSuccess === true) {
@@ -394,6 +393,7 @@
         }).catch(err => {
           console.log( err )
         });
+
         // 预付付款明细
         this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
           "object": {
@@ -407,6 +407,7 @@
         }).catch(err => {
           console.log(err)
         });
+
         // 无收入借款明细
         this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
           "object": {
@@ -420,7 +421,8 @@
         }).catch(err => {
           console.log( err )
         });
-        // 根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
+
+        // 根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额
         this.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
           "id": val
         }).then(res => {
@@ -431,6 +433,7 @@
         }).catch(err => {
           console.log( err );
         });
+
         // 收入明细
         _this.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
           "id": val,

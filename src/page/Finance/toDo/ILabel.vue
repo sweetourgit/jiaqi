@@ -194,7 +194,7 @@
       },
       // 三级tab（收款下的跟团上的tab）   nameIIICollectionTeamReimburse
       handleClickIIITeamLabel (tab, event) {
-        let keepTabName = tab.name
+        let keepTabName = tab.name;
         this.whichCollectTeamTab = keepTabName;
         if (keepTabName === 'nameIIICollectionTeamDirect') {
           this.$refs.collectTeamDirectDom.approvalCollectTeamTable('nameIIICollectionTeamDirect');

@@ -9,14 +9,25 @@ import moment from 'moment'
 export default {
   data () {
     return {
-
+      ifShowApproveDialog: false, // 通过驳回弹窗
+      setjQType: null, // 接口用取分借款类型
+      getUserTel: null // 获取登录用户电话
     }
+  },
+  mounted () {
+    this.getUserTel = sessionStorage.getItem('tel');
+    let getWhichTabName = this.$route.query.whichTabName; // 区分tab类别
+    // 借款接口用
+    let mapTabName = {
+      nameINoIn: 1,
+      nameIAdvance: 2,
+    };
+    this.setjQType = mapTabName[ getWhichTabName ];
   },
   filters: {
     numFilter (value) {
       // 截取当前数据到小数点后两位
-      let realVal = parseFloat(value).toFixed(2);
-      return realVal;
+      return parseFloat(value).toFixed(2);
     },
     // 截取详情时间格式
     formatDate (value) {
@@ -35,15 +46,15 @@ export default {
   },
   methods: {
     moment,
-    // 通过
+    // 通过弹窗显示
     handlePass () {
       this.approveDialogTitle = "审批通过";
       this.ifShowApproveDialog = true;
     },
-    // 驳回
+    // 驳回弹窗显示
     handleRejected () {
       this.approveDialogTitle = "审批驳回";
-      this.apiAuditApprovedShow = true;
+      this.ifShowApproveDialog = true;
     },
     // 支付账户
     handleBankAccount (paramsAcountInfo) {
@@ -54,72 +65,55 @@ export default {
       if (paramsTabName === 'collection') {
 
       }
-      this.$router.go(-1);
+      this.handleGoBack();
     },
     // 审批弹窗确定回调
-    handleApproveDialogConfirm (formName) {
+    handleApproveDialogConfirm () {
       if (this.approveDialogTitle === '审批通过') {
-        this.apiAuditApproved(formName);
+        this.apiAuditApproved();
       } else {
-        this.rejected_01(formName);
+        this.apiReject();
       }
     },
+    // 返回上一页
+    handleGoBack () {
+      this.$router.go(-1);
+    },
     // 审核通过时调用
-    apiAuditApproved (formName) {
+    apiAuditApproved () {
       let _this = this;
-      let getWorkflowCode
-      if(this.presentRouter == '无收入借款管理') {
-        getWorkflowCode = 1
-      } else if(this.presentRouter == '预付款管理') {
-        getWorkflowCode = 2
-      }else {}
-
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
         "jQ_ID": _this.guid,
-        "jQ_Type": getWorkflowCode,
-        "userCode": sessionStorage.getItem('tel'),
+        "jQ_Type": this.setjQType,
+        "userCode": this.getUserTel,
         "workItemID": _this.getWorkItemId,
         "approvalOpinion": _this.approvalOpinion
       }).then(res => {
-        _this.apiAuditApprovedShow = false;
+        _this.ifShowApproveDialog = false;
         _this.detailstShow = false;
-        _this.pageList();
+        this.handleGoBack();
       })
     },
     // 驳回
-    rejected_01 (formName) {
+    apiReject () {
       let _this = this;
-      let getWorkflowCode
-      if (this.presentRouter == '无收入借款管理') {
-        getWorkflowCode = 1
-      } else if(this.presentRouter == '预付款管理') {
-        getWorkflowCode = 2
-      } else {}
-
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion', {
         "jQ_ID": _this.guid,
-        "jQ_Type": getWorkflowCode,
-        "userCode":sessionStorage.getItem('tel'),
+        "jQ_Type": this.setjQType,
+        "userCode":this.getUserTel,
         "workItemID": _this.getWorkItemId,
         "approvalOpinion": _this.approvalOpinion
       }).then(res => {
-        _this.apiAuditApprovedShow = false;
+        _this.ifShowApproveDialog = false;
         _this.detailstShow = false;
         _this.rejectedSuccess();
 
-        let getWorkflowCode
-        if (this.presentRouter == '无收入借款管理') {
-          getWorkflowCode = 1;
-        } else if (this.presentRouter == '预付款管理') {
-          getWorkflowCode = 2;
-        } else {}
         // 结束工作流
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', {
           "jq_id": this.guid,
-          "jQ_Type": getWorkflowCode
+          "jQ_Type": this.setjQType
         }).then(res => {
-          _this.pageList();
-          _this.$store.commit('changeAparoveState');
+          this.handleGoBack()
         })
       })
     },
@@ -143,6 +137,7 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss');
     },
+    // 表格行样式
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
         return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px';

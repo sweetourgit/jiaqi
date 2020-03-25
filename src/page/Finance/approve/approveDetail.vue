@@ -271,6 +271,7 @@
         getParamsWorkItemId: null, // 工作流接口参数
         keepTabId: [],
         tabCount: [], // 计数开关
+        ifExpenseType: false, // 是否有拆分类型的数据
       }
     },
     // 关于时间的过滤
@@ -294,7 +295,7 @@
       }
     },
     methods: {
-      // 列表查看详情报销方式
+      // 列表查看报销方式
       handleExpenseType (index, row) {
         let _this = this;
         this.showExpenseType = row.expenseType;
@@ -374,10 +375,23 @@
         .then(obj => {
           let keepData = obj.data.objects;
           this.keepBackContent = keepData;
-          // 筛选出拆分的数据，筛选出expenseID并重组新数组
+          // 筛选出拆分的数据，筛选出expenseID（报销id）并重组新数组
           this.keepExpense = keepData.map( item => {
             return item.id
           });
+
+          // 检测报销信息里是否存在拆分类型
+          let getPaymentsData = keepData.map( item => {
+            return item.payments
+          });
+          let changePaymentsData = getPaymentsData.flat()
+          changePaymentsData.forEach( item => {
+            if (item.expenseType === 1) {
+              this.ifExpenseType = true  // 存在拆分类型的数据
+            }
+          });
+          console.log(changePaymentsData)
+
           this.listLoading = false
         }).catch(err => {
           console.log(err);
@@ -394,6 +408,7 @@
       },
       // 工作流通过方法
       handlePassApi () {
+        // this.$message.warning("此报销不是待审批状态，无法进行审批操作");
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
           "jQ_ID": this.getApproveListGuid,
           "jQ_Type": 3,
@@ -405,7 +420,12 @@
             message: '审批通过已完成',
             type: 'success'
           });
-          this.handlePassFn();
+          // 如果存在拆分类型的数据则执行打印相关方法
+          if (this.ifExpenseType) {
+            this.handlePassFn();
+          } else {
+            this.backListPage()
+          }
           this.loadingBtn = false;
           this.transitShow = false;
         }).catch( err => {
@@ -434,51 +454,45 @@
           }
         })
       },
-      // 审批通过弹窗-确定
+      // 审批通过成功时回调
       handlePassFn () {
-        if (this.keepExpense.length > 0) {
-          this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/list', {
-            "object": {
-              guid: this.getApproveListGuid
-            }
+        this.keepTabId.length = 0;
+        console.log(this.keepTabId)
+        // 转换下，存到keepTabId里
+        this.keepExpense.forEach(item => {
+          this.keepTabId.push(item);
+        });
+
+        console.log(this.keepTabId, '一共有多少个报销id')
+
+        this.keepTabId.forEach(item => {
+
+          this.tabCount = this.keepTabId.length; // 计数开关
+
+          console.log(this.tabCount, '计数开关初始化');
+
+          // 获取一条审批状态 checkType = 1 方可打印
+          this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/getchecktype', {
+            id: item // 报销ID
           })
           .then(obj => {
-            let keepData = obj.data.objects;
-            if (keepData !== null) {
-              this.keepTabId.length = 0;
-              // 装换下，存到keepTabId里
-              this.keepExpense.forEach(item => {
-                this.keepTabId.push(item);
-              });
-              this.keepTabId.forEach(item => {
-                this.tabCount = this.keepTabId.length; // 计数开关
-                console.log(this.tabCount, '计数开关初始化');
-                // 获取一条审批状态 checkType = 1 方可打印
-                this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/getchecktype', {
-                  id: item // 报销ID
-                })
-                .then(obj => {
-                  if (obj.data.object.checkType === 1) {
-                    this.tabCount--;
-                    this.showPrintTable(item);
-                    console.log(this.tabCount,'checkType 已经等于 1 了，/api/getchecktype')
-                  } else {
-                    this.handlePassFn();
-                  }
-                }).catch(obj => {
-                  console.log(obj);
-                })
-              })
+            if (obj.data.object.isEBS === 1) {
+              this.tabCount--;
+              this.showPrintTable(item);  // 只有拆分时才会调打印方法
+              if (this.tabCount < 0) {
+                this.tabCount = 0
+              }
+              console.log(this.tabCount,'checkType 已经等于 1 了，/api/getchecktype')
             } else {
-              this.$message.warning("此报销不是待审批状态，无法进行审批操作");
+              setTimeout(function () {
+                this.handlePassFn()
+              }, 200)
             }
-            this.listLoading = false;
-          }).catch(err => {
-          console.log(err);
-        })
-      } else {
-        this.backListPage();
-      }
+          }).catch(obj => {
+            console.log(obj);
+          })
+        });
+
       },
       // 驳回之后走工作流
       handleRejectFn () {
