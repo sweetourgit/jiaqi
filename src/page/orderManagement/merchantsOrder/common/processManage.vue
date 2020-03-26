@@ -584,6 +584,7 @@ export default {
     },
 
     orderModification(status, cancle) {
+      console.log(status,'orderModification');
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -618,9 +619,6 @@ export default {
             }
             break;
           case 10:
-            url += "/material";
-            break;
-          case 1:
             for (let i = 0; i < this.salePrice.length; i++) {
               for (let j = 0; j < this.salePrice[i].length; j++) {
                 if (this.salePrice[i][j].cnName == "") {
@@ -633,6 +631,10 @@ export default {
                 }
               }
             }
+            url += "/material";
+            break;
+          case 1:
+             this.ordersave(1);
               url += "/signcontract";
             // url += "/econtract";
             break;
@@ -670,8 +672,9 @@ export default {
                 message: "提交成功",
                 type: "success"
               });
-              if (status === 1) {
-                //this.ordersave(1);
+            
+              if (status === 1){
+                //this.ordersave(8);
               }
               if (status === 10) {
                 this.ordersave(1);
@@ -1242,6 +1245,7 @@ export default {
                 .then(() => {
                     this.orderget.orderStatus = 10;
                     this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+                    this.ExistContract(this.orderget.orderCode)
                 })
                 .catch(() => {
                   this.$message({
@@ -1304,6 +1308,12 @@ export default {
               guest.push(this.salePrice[i][j]);
             }
           }
+          for(let j in guest){
+            if(guest[j].sxe == -1){
+              guest[j].sxe = 3
+            }
+
+          }
           obj.number= guest.length;
           // 第一次保存，赋值时间错
           if(typeof id=== 'object' && 'altKey' in id){
@@ -1329,9 +1339,6 @@ export default {
                     })
                     .then(res => {
                       if (res.data.isSuccess == true) {
-                        if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true){
-                              this.ExistContract(obj.orderCode)
-                        }
                         this.$message({
                           message: "更改成功",
                           type: "success"

@@ -142,7 +142,7 @@
               <el-tab-pane label="预付款" name="2"></el-tab-pane>
             
         </el-tabs> -->
-      <el-tabs v-model="activebox" type="card"  @tab-click=" ">
+      <el-tabs v-model="activebox" type="card"  @tab-click="GetCabinbtn">
         <el-tab-pane
           :key="item.name"
           v-for="(item,index) in GetCabinData"
@@ -152,7 +152,7 @@
           
         </el-tab-pane>
       </el-tabs>
-      
+
        <el-tabs v-model="activebox" @tab-click="joinClick"   style="float:left;width: 100%;">
               <el-tab-pane label="预付款" name="2"></el-tab-pane>
               <el-tab-pane label="无收入" name="1"></el-tab-pane>
@@ -380,6 +380,9 @@ export default {
           console.log(err);
         });
         
+    },
+    GetCabinbtn(id){//房型切换
+
     },
     ordersave(id, occupyStatus) { // 保存订单
         
