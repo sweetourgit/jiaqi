@@ -67,16 +67,18 @@ export default {
         isSave: false,
         supplierSelected: false,
         groupCode: "",
-        expenseCache: ""
-      },
-      {
-        type: "地接款",
+        expenseCache: "",
+        changed: false,
         submitForm: {
           supplierID: null,
           supplier: null,
           arrearsPrice: null,
           peopleCount: null
-        },
+        }
+      },
+      {
+        type: "地接款",
+
         rules: {
           supplier: {
             required: true,
@@ -106,7 +108,8 @@ export default {
       let that = this;
       //遍历所有表单组件 若为已填则弹出确认框
       for (let item in this.submitForm) {
-        if (this.submitForm[item] != null) {
+        // if (this.submitForm[item] != null&&this.changed) {
+        if (this.submitForm[item] != null && this.changed) {
           this.$confirm("是否需要保存草稿?", "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
@@ -248,6 +251,23 @@ export default {
     supplierValidator(rule, value, cb) {
       if (this.supplierSelected && this.submitForm.supplier) return cb();
       cb(new Error(rule.message));
+    }
+  },
+  watch: {
+    submitForm: {
+      handler(val, oldVal) {
+        for (let item in this.submitForm) {
+          //当点击新增或编辑时 supplierID 已自动获取有值
+          if (item != "supplierID") {
+            if (this.submitForm[item]) {
+              this.changed = true;
+              return false;
+            }
+          }
+        }
+        this.changed = false;
+      },
+      deep: true
     }
   }
 };
