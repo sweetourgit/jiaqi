@@ -45,8 +45,9 @@
               价格
             </el-button>
             <el-button type="text"
-              v-show="scope.row.sale_price">
-              上线
+              v-show="scope.row.isPriced"
+              @click="deliverOnOffLineAction(scope.row)">
+              {{ scope.row.line_status=== 1? '下线': '上线' }}
             </el-button>
           </template>
         </el-table-column>
@@ -60,7 +61,7 @@
 
 <script>
 // import TableInputer from './comps/TableInputer'
-import { deliverListAll, saveDeliverPrice } from '@/page/productManagement/planInventory/liner/api'
+import { deliverListAll, saveDeliverPrice, deliverOnOffLine } from '@/page/productManagement/planInventory/liner/api'
 import { TableInputer, manager as TableInputerManager } from './comps/TableInputer/index'
 import BusDetailer from './comps/BusDetailer'
 
@@ -88,12 +89,16 @@ export default {
         message: '价格格式输入错误',
         adaptor: (val) => parseFloat(val),
         successCb: ({ index, oldVal }) => {
-          let { id, sale_price }= this.tableData[index];
+          let deliver= this.tableData[index];
+          let { id, sale_price }= deliver;
           saveDeliverPrice({ id, sale_price })
-          .then(() => this.$message.success('售卖价格修改成功'))
+          .then(() => {
+            deliver= this.deliverAdaptor(deliver);
+            this.$message.success('售卖价格修改成功');
+          })
           .catch(() => {
+            deliver.sale_price= oldVal;
             this.$message.error('售卖价格修改失败');
-            this.tableData[index].sale_price= oldVal;
           });
         }
       }
@@ -117,8 +122,22 @@ export default {
     },
 
     deliverAdaptor(deliver){
-      deliver.isPriced= isNaN(deliver.sale_price)
-      return true;
+      deliver.isPriced= !!deliver.sale_price;
+      return deliver;
+    },
+
+    deliverOnOffLineAction(deliver){
+      let { id, line_status: oldStatus, isPriced }= deliver;
+      let line_status= oldStatus=== 2? 1: 2;
+      if(line_status=== 1 && !isPriced) return this.$message.error('未设置价格不能上线');
+      this.$confirm(`是否${line_status=== 1? '上线': '下线'}该大巴车信息?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => {
+        deliverOnOffLine({ id, line_status }).then(() => deliver.line_status= line_status);
+      })
     }
   }
 

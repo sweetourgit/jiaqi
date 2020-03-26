@@ -146,7 +146,6 @@ export default {
     },
 
     emitSelect(day){
-      console.log(day.plan_status)
       if(day.plan_status=== SKU_PLAN_STATUS.MULTIPLE) return this.setSelectedCalendar([day], day.selected);
       this.setSelectedCalendar(day, day.selected);
     },

@@ -104,6 +104,35 @@ export const getCalendar= function(payload){
   })
 }
 
+// 保存保险
+export const saveInsure= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/saveinsure", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('保存保险失败'+ (message || ''));
+      resolve(data.insure_id);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+export const insureOnOffLine= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/onlineoffline", payload)
+    .then(res => {
+      let { code, message }= res.data;
+      if(code!== 200) throw ('更改保险上/下线状态失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 获取产品下保险李彪
 export const insureListAll= function(payload){
   return new Promise((resolve, reject) => {
@@ -126,6 +155,20 @@ export const deliverListAll= function(payload){
       let { code, message, data }= res.data;
       if(code!== 200) throw ('查询产品下接送列表失败'+ (message || ''));
       resolve(data.list);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+export const deliverOnOffLine= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-deliver/onlineoffline", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('更改接送上/下线状态失败'+ (message || ''));
+      resolve();
     })
     .catch(err => {
       err && $message.error(err.toString());

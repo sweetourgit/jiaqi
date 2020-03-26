@@ -5,15 +5,21 @@
     :before-close="handleClose">
     <div style="width: 550px; min-height: 486px;">
       <el-form  label-width="120px">
-        <el-form-item label="标题：" prop="title">123123123</el-form-item>
-        <el-form-item label="城市：" prop="city">123123123</el-form-item>
-        <el-form-item label="集合地点：" prop="resort">123123123</el-form-item>
-        <el-form-item label="价格说明：" prop="price">123123123</el-form-item>
-        <el-form-item label="预定须知：" prop="reservation_notes">123123123</el-form-item>
-        <el-form-item label="温馨提示：" prop="reminder">123123123</el-form-item>
-        <el-form-item label="去程返程：" prop="tour_no_prefix">123123123</el-form-item>
-        <el-form-item label="售卖价格：" prop="sale_price">123123123</el-form-item>
+        <el-form-item label="标题：" prop="title">{{ bus.title }}</el-form-item>
+        <el-form-item label="城市：" prop="city">{{ bus.city }}</el-form-item>
+        <el-form-item label="集合地点：" prop="resort">{{ bus.resort }}</el-form-item>
+        <el-form-item label="价格说明：" prop="price">{{ bus.price }}</el-form-item>
+        <el-form-item label="预定须知：" prop="reservation_notes">{{ bus.reservation_notes }}</el-form-item>
+        <el-form-item label="温馨提示：" prop="reminder">{{ bus.reminder }}</el-form-item>
+        <el-form-item label="去程返程：" prop="tour_no_prefix">{{ bus.go_destination+ ' / '+ bus.return_place_departure }}</el-form-item>
+        <el-form-item label="售卖价格：" prop="sale_price">{{ bus.sale_price }}</el-form-item>
       </el-form> 
+    </div>
+    <div slot="footer">
+      <el-button type="info" size="small"
+        @click="handleClose">
+        关闭
+      </el-button>
     </div>
   </el-dialog>
 </template>
@@ -24,12 +30,14 @@ export default {
   data(){
     return {
       state: false,
+      bus: {}
     }
   },
 
   methods: {
     open(bus){
       this.state= true;
+      this.bus= bus;
     },
 
     handleClose(){

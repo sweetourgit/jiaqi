@@ -1,3 +1,5 @@
+import style from './index.scss';
+
 const TableInputerFactory= function($){
   return {
     props: {
@@ -24,6 +26,9 @@ const TableInputerFactory= function($){
     render: function (h) {
       const show= this.inEdit? 
         <div style="display: flex;padding: 0 20px;">
+          <el-button size="mini" type="info" icon="el-icon-close" style="margin: 0;padding: 7px 7px;border-radius: 0;"
+            onClick={ this.close }>
+          </el-button>
           { 
             h('el-input', {
               ref: 'inputRef',
@@ -42,14 +47,12 @@ const TableInputerFactory= function($){
                   let { keyCode }= event;
                   if(keyCode && keyCode=== 13) this.submitVal();
                 }
-              }
+              },
+              'class': 'table-inputer'
             }) 
           }
-          <el-button size="mini" type="success" icon="el-icon-check" style="padding: 7px 7px;"
+          <el-button size="mini" type="success" icon="el-icon-check" style="padding: 7px 7px;border-radius: 0;"
             onClick={ this.submitVal }>
-          </el-button>
-          <el-button size="mini" type="info" icon="el-icon-close" style="margin: 0;padding: 7px 7px;"
-            onClick={ this.close }>
           </el-button>
         </div>
           : 
