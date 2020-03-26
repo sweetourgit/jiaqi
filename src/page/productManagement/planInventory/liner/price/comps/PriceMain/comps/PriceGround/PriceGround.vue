@@ -96,8 +96,8 @@ export default {
   methods: {
     init(priceArr, cabin_name){
       this.cabinTypePromise.then(() => {
-        priceArrCache= priceArr;
-        this.priceMap= this.makePriceMap(this.$deepCopy(priceArr));
+        priceArrCache= this.$deepCopy(priceArr);
+        this.priceMap= this.makePriceMap(priceArrCache);
         this.changeTableData(cabin_name || this.priceMapKeys[0]);
       })
     },

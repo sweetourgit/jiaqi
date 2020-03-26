@@ -2,7 +2,7 @@
   <el-table border size="small" header-row-class-name="row-header" style="width: 100%; margin-top: 50px;"
     :data="tableData" 
     :highlight-current-row="false">
-    <el-table-column label="标题" prop="title" header-align="center" align="center"></el-table-column>
+    <el-table-column label="接送巴士" prop="title" header-align="center" align="center"></el-table-column>
     <el-table-column label="城市" prop="city" header-align="center" align="center" width="150"></el-table-column>
     <el-table-column label="集合地点" prop="resort" header-align="center" align="center" width="150"></el-table-column>
     <el-table-column label="价格说明" prop="price" header-align="center" align="center" width="150"></el-table-column>

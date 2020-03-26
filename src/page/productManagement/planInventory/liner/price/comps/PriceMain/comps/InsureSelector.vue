@@ -3,7 +3,7 @@
     :data="tableData" 
     :highlight-current-row="false"
     header-row-class-name="row-header">
-    <el-table-column label="标题" prop="title" header-align="center" align="center"></el-table-column>
+    <el-table-column label="保险" prop="title" header-align="center" align="center"></el-table-column>
     <el-table-column label="售卖价格" prop="sale_price" header-align="center" align="center" width="200"></el-table-column>
     <el-table-column label="操作" prop="quota" header-align="center" align="center" width="150">
       <template slot-scope="scope">

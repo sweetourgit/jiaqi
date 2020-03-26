@@ -9,8 +9,22 @@ export const saveSkuStocks= function(payload){
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-stock/saveskustock", payload)
     .then(res => {
       let { code, message, data }= res.data;
-      if(code!== 200) throw ('保存计划失败'+ (message || ''));
-      resolve(data.list);
+      if(code!== 200) throw ('新增计划失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+export const editSkuStock= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-stock/editskustock", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('修改计划失败'+ (message || ''));
+      resolve();
     })
     .catch(err => {
       err && $message.error(err.toString());

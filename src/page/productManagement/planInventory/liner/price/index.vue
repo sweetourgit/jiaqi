@@ -28,7 +28,7 @@
       <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;z-index: 1999;">
         <el-button type="info" size="mini"
           v-show="editState=== 'edit'"
-          @click="addHandler">
+          @click="saveHandler">
           保存
         </el-button>
         <el-button type="info" size="mini"
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { saveSkuStocks } from '@/page/productManagement/planInventory/liner/api'
+import { saveSkuStocks, editSkuStock } from '@/page/productManagement/planInventory/liner/api'
 import PriceHeader from './comps/PriceHeader/PriceHeader'
 import PriceMain from './comps/PriceMain/PriceMain'
 import './moveBtn'
@@ -77,6 +77,7 @@ export default {
       let { id: create_uid, orgID: org_id }= this.$storageLoader({ loader: sessionStorage, attrs: [ 'id', 'orgID' ] });
       let data= this.$refs.priceMain.getData();
       let result= { product_id, sku_id, create_uid, org_id, plan: null }
+      let date= this.$refs.priceHeader.selectedCalendar[0]._date;
       result.plan= this.$refs.priceHeader.selectedCalendar.map(el => {
         return {
           ...data,
@@ -87,15 +88,24 @@ export default {
       })
       saveSkuStocks(result).then(() => {
         this.$message.success('计划新增成功');
-        let day= result.plan[0];
-        this.$refs.priceHeader.init(
-          new Date(day.set_out_year, day.set_out_month- 1, day.set_out_day), true)
+        this.$refs.priceHeader.init(date, true);
+        this.$refs.priceMain.init();
       });
     },
 
     saveHandler(){
       if(this.notChange()) return this.$message.info('数据无变化');
-      console.log(this.$refs.priceHeader.selectedCalendar)
+      let { product_id, sku_id }= this.$route.query;
+      let { id: create_uid, orgID: org_id }= this.$storageLoader({ loader: sessionStorage, attrs: [ 'id', 'orgID' ] });
+      let data= this.$refs.priceMain.getData();
+      let result= { product_id, sku_id, create_uid, org_id, plan: null }
+      let date= this.$refs.priceHeader.selectedCalendar[0]._date;
+      result.plan= [data];
+      editSkuStock(result).then(() => {
+        this.$message.success('计划修改成功');
+        this.$refs.priceHeader.init(date, true);
+        this.$refs.priceMain.init();
+      });
     },
 
     notChange(){

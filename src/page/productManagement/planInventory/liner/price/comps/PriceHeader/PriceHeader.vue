@@ -76,13 +76,14 @@ export default {
      */
     init(date, autoSelect){
       if(!date) date= new Date();
+      console.log(date);
       this.getCalendarAction(date).then(list => {
         this.currentDate= date;
         this.priceCalendar= list;
         this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
         let calendarArr= this.$refs.datePanel.init(date);
         if(!autoSelect) return;
-        let find= calendarArr.find(day => day.dateInt=== this.$refs.datePanel.getDateInt(date, true));
+        let find= calendarArr.find(day => day && day.dateInt=== this.$refs.datePanel.getDateInt(date, true));
         this.emitSelect(find);
       })
     },
