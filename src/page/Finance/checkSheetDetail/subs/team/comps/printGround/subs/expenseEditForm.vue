@@ -105,28 +105,34 @@ export default {
 
   methods: {
     open() {
+      // this.$ls.clear()
       let that = this;
       //遍历所有表单组件 若为已填则弹出确认框
-      for (let item in this.submitForm) {
-        // if (this.submitForm[item] != null&&this.changed) {
-        if (this.submitForm[item] != null && this.changed) {
-          this.$confirm("是否需要保存草稿?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          })
+      let submitCopy = this.getSubmitForm;
+      let isChanged = this.isChanged(submitCopy);
+      if (isChanged) this.changed = false;
+      for (let item in that.getSubmitForm) {
+        if (item!='supplierID'&&that.getSubmitForm[item] != null && this.changed) {
+          that
+            .$confirm("是否需要保存草稿?", "提示", {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            })
             .then(() => {
+              this.changed = false;
+              that.submitForm = submitCopy;
+              this.changed = false;
               //保存草稿到缓存 有效时间为12小时
-              this.$ls.set(this.groupCode, JSON.stringify(this.submitForm));
-              this.$message({
+              that.$ls.set(that.groupCode, JSON.stringify(submitCopy));
+              that.$message({
                 type: "success",
                 message: "保存成功!"
               });
             })
             .catch(() => {
               //若是未保存 则清除缓存 并关闭当前模态框
-              this.$el.remove(this.groupCode);
-              this.$message({
+              that.$message({
                 type: "info",
                 message: "已取消保存"
               });
@@ -145,9 +151,16 @@ export default {
       this.state = true;
       //判断当前是否通过编辑进入(isSave=true通过编辑进入;isSave=false通过新增进入)
       this.expenseCache = this.isSave ? expense : this.getDraft();
-      Object.keys(this.submitForm).forEach(
-        attr => (this.submitForm[attr] = this.expenseCache[attr])
-      );
+      if (this.expenseCache) {
+        console.log("表单不重新渲染");
+        // this.changed = false;
+      } else {
+        console.log("表单重新渲染");
+        this.$refs.submitForm.resetFields();
+        Object.keys(this.submitForm).forEach(
+          attr => (this.submitForm[attr] = this.expenseCache[attr])
+        );
+      }
     },
 
     temporaryVariable() {
@@ -157,6 +170,13 @@ export default {
     getDraft() {
       //缓存表单唯一标识为 groupCode (应使用guid;未提交表单暂时得不到guid,暂时用groupCode代替)
       if (this.$ls.get(this.groupCode)) {
+        //判断当前缓存中的数据与当前submit是否相同(判断用户上次关闭填写组件是否有修改)
+        let isChangeed = -this.isChanged(this.submitForm);
+        if (isChangeed) !isChangeed;
+        // if (this.$ls.get(this.groupCode) == JSON.stringify(this.submitForm)) {
+        //   //false代表用户上次没有修改
+        //   return false;
+        // }
         let copy = this.getExpenseDTO();
         this.expenseCache = copy;
         Object.keys(this.expenseCache).forEach(item => {
@@ -189,14 +209,15 @@ export default {
           isSave: this.isSave
         });
         this.handleClose();
+        this.changed=false
+        this.$refs.submitForm.resetFields();
         //表单提交后 清楚本地草稿缓存
         let remove = this.$ls.remove(this.groupCode);
-        let data = this.$ls.get(this.groupCode);
       });
     },
 
     handleClose(status) {
-      this.$refs.submitForm.resetFields();
+      // this.$refs.submitForm.resetFields();
       this.temporaryVariable();
       this.state = false;
     },
@@ -251,23 +272,33 @@ export default {
     supplierValidator(rule, value, cb) {
       if (this.supplierSelected && this.submitForm.supplier) return cb();
       cb(new Error(rule.message));
+    },
+    //用于判断当前表单是否改变
+    isChanged(data) {
+      return this.$ls.get(this.groupCode) == JSON.stringify(data);
     }
   },
   watch: {
-    submitForm: {
-      handler(val, oldVal) {
-        for (let item in this.submitForm) {
-          //当点击新增或编辑时 supplierID 已自动获取有值
-          if (item != "supplierID") {
-            if (this.submitForm[item]) {
-              this.changed = true;
-              return false;
-            }
-          }
-        }
-        this.changed = false;
-      },
-      deep: true
+    // submitForm: {
+    //   handler(val, oldVal) {
+    //     for (let item in this.submitForm) {
+    //       //当点击新增或编辑时 supplierID 已自动获取有值
+    //       if (item != "supplierID") {
+    //         if (this.submitForm[item]) {
+    //           this.changed = true;
+    //           return false;
+    //         }
+    //       }
+    //     }
+    //     this.changed = false;
+    //   },
+    //   deep: true
+    // }
+  },
+  computed: {
+    getSubmitForm: function() {
+      this.changed = true;
+      return JSON.parse(JSON.stringify(this.submitForm));
     }
   }
 };
