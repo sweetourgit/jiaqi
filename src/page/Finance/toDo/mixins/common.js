@@ -17,10 +17,11 @@ export default {
   mounted () {
     this.getUserTel = sessionStorage.getItem('tel');
     let getWhichTabName = this.$route.query.whichTabName; // 区分tab类别
-    // 借款接口用
+    // 借款接口用（通过，驳回， 结束工作流）
     let mapTabName = {
       nameINoIn: 1,
       nameIAdvance: 2,
+      nameIRefund: 6,
     };
     this.setjQType = mapTabName[ getWhichTabName ];
   },

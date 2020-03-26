@@ -7,8 +7,8 @@
 <template>
   <div class="loan-management">
     <!-- 按钮组 -->
-    <div style="text-align: right;">
-      <el-button type="warning" plain @click="handleCancel()">取消</el-button>
+    <div style="text-align: right; margin: 25px 20px 0 0;">
+      <el-button type="warning" plain @click="handleCancel">取消</el-button>
       <el-button
         @click="handlePass"
         type="primary"
@@ -279,7 +279,7 @@
 </template>
 
 <script>
-  import common from "../../mixins/common";
+  import common from "../mixins/common";
 
   export default {
     name: 'borrowDetails',
@@ -314,7 +314,7 @@
     },
     mixins: [ common ],
     created () {
-      this.keepPaymentID = this.$route.query.pendingDetailPaymentID; // 查看详情用
+      this.keepPaymentID = this.$route.query.pendingDetailPaymentId; // 查看详情用
       this.getUserTopID = sessionStorage.getItem('topID');
       this.getTopName = sessionStorage.getItem('topName');
       let getUserCode = sessionStorage.getItem('userCode');
@@ -403,6 +403,7 @@
           jq_id:	result,
           jQ_Type: paramJqType, // 无收入1 预付款2,
         }).then(obj => {
+          // 裡面的具提屬性沒有調試
           _this.tableCourse = [];
           _this.tableCourse = obj.data.data;
           if (_this.tableCourse.length > 0) {
@@ -530,7 +531,10 @@
 
 <style scoped lang="scss">
   .loan-management{
-    margin-bottom: 50px;
+    width: 99%;
+    margin: 25px auto 50px;
+    height: auto;
+    border: 1px solid #e6e6e6;
     .title-margin{
       margin-bottom: 30px;
     }

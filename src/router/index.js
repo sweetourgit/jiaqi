@@ -694,8 +694,17 @@ export default new Router({
   },
   {
     path: '/borrow/borrowDetails',
-    component: () => import('@/page/Finance/toDo/team/borrow/borrowDetails'),
+    component: () => import('@/page/Finance/toDo/borrow/borrowDetails'),
     name: '待办/借款详情',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
+    path: '/refund/refundDetails',
+    component: () => import('@/page/Finance/toDo/refund/refundDetails'),
+    name: '待办/退款详情',
     meta: {
       keepAlive: true,
       auth: true
