@@ -107,7 +107,7 @@
               ></el-input>
             </el-form-item>
           </div>
-      
+     
         <!--总价-->
       <div class="price">
         <!-- <p class="totle">总价：￥{{toDecimal2(payable)}}</p> -->
@@ -142,24 +142,17 @@
               <el-tab-pane label="预付款" name="2"></el-tab-pane>
             
         </el-tabs> -->
-      <el-tabs v-model="activebox" type="card"  @tab-click="GetCabinbtn">
+      <el-tabs v-model="activebox" type="card"  @tab-click="GetCabinbtn" style="float:left;width: 100%;">
         <el-tab-pane
-          :key="item.name"
+          :key="item.id"
           v-for="(item,index) in GetCabinData"
-          :label="item.title"
-          :name="item.name"
+          :label="item.name"
+          :name="item.id"
         >
-          
         </el-tab-pane>
       </el-tabs>
-
-       <el-tabs v-model="activebox" @tab-click="joinClick"   style="float:left;width: 100%;">
-              <el-tab-pane label="预付款" name="2"></el-tab-pane>
-              <el-tab-pane label="无收入" name="1"></el-tab-pane>
-              <el-tab-pane label="无收入(无团期计划)" name="0"></el-tab-pane>
-          </el-tabs>
           <!-- @row-click="joinData_btn" -->
-          <el-table 
+          <!-- <el-table 
             :data="joinData" 
             border 
             tooltip-effect="dark"
@@ -168,15 +161,12 @@
             <el-table-column type="selection"  align="center"></el-table-column>
             <el-table-column prop="paymentID" label="预付款借款ID"  align="center" v-if="s_find==1"></el-table-column>
             <el-table-column prop="paymentID" label="无收入借款ID"  align="center" v-if="s_find==2"></el-table-column>
-          
             <el-table-column prop="supplierName" label="供应商"  align="center"></el-table-column>
             <el-table-column prop="supplierTypeEX" label="借款类型"  align="center"></el-table-column>
-            <!-- <el-table-column prop="orgName" label="部门" width="140"  align="center"></el-table-column> -->
             <el-table-column prop="price" label="金额"  align="center"></el-table-column>
-            <!-- <el-table-column prop="wcount" label="未报销金额" width="150" align="center"></el-table-column> -->
             <el-table-column prop="paymentMark" label="摘要"  align="center"></el-table-column>
             <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-          </el-table>
+          </el-table> -->
 
 
       </el-form>
@@ -236,8 +226,10 @@ export default {
       disperseOrderDisabled:false,
       dialogVisible: false,
       payable:0,//总价格
-      activebox:0,//舱房状态
-      GetCabinData:{},//
+      activebox:2,//舱房状态
+      GetCabinData:[],//客人信息列表头部
+      guest:[],//客人数组
+      NewGetCabinData:{},//筛选后的客人数据
       ruleForm: {
         contactName: "",
         contactPhone: "",
@@ -312,7 +304,8 @@ export default {
            if (res.data.code == 200) {
            
             this.orderinfo = res.data.data;
-            this.ruleForm.favourable = this.orderinfo.orderotherfee; // 其他费用
+            this.ruleForm.favourable = this.orderinfo.otherfee; // 其他费用
+            this.guest = this.orderinfo.guest// 所有客人信息
             this.ruleForm.contactName=this.orderinfo.contact[0].name;
             this.ruleForm.contactPhone=this.orderinfo.contact[0].tel;
             this.payable = this.orderinfo.payable // 总价
@@ -333,7 +326,7 @@ export default {
                '*'+
                this.cabin[i].adult_num;
 
-               this.GetCabinId( this.cabin[i].cabin_id);//获取客人房型tab
+               this.GetCabinId(this.cabin[i].cabin_id);//获取客人房型tab
             }
              for(let i in this.insurance){// 出行险 99.00 * 1
               this.insuranceText = 
@@ -364,7 +357,7 @@ export default {
         });
     },
     GetCabinId(id) { // 获取客人房型tab
-    this.$http
+      this.$http
         .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/cabin-type/getparents", {
          ids:id
         })
@@ -381,7 +374,17 @@ export default {
         });
         
     },
-    GetCabinbtn(id){//房型切换
+    GetCabinbtn(GetCabinbtn){//房型切换
+    console.log(GetCabinbtn.name,'ididididifasf');
+    for(let j in this.guest){
+      if(this.guest[j].cabin_id === GetCabinbtn.name){
+        console.log(this.guest,'筛选后的');
+        this.NewGetCabinData.push({
+          
+        })
+      }
+    }
+
 
     },
     ordersave(id, occupyStatus) { // 保存订单
