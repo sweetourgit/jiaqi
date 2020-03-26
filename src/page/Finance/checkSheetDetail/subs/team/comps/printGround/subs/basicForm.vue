@@ -1,3 +1,8 @@
+/*
+ * @Author: WZJ 
+ * @Last Modified by:   WZJ 
+ */
+
 <template>
   <div>
     <el-dialog
@@ -47,26 +52,16 @@
       <span slot="footer" class="dialog-footer">
         <!-- <el-popconfirm title="这是一段内容确定删除吗？">
           <el-button slot="reference">删除</el-button>
-        </el-popconfirm> -->
+        </el-popconfirm>-->
         <el-button size="small" @click="handleClose(true)">取 消</el-button>
         <el-button type="primary" size="small" @click="saveAction">保 存</el-button>
       </span>
-      <!-- <Draft
-      ref="draft"
-      v-bind:subForm="submitForm"
-      v-show="showDraft"
-      @change-draft="showDraft=$event"
-      :form="$refs.submitForm"
-      ></Draft>-->
     </el-dialog>
   </div>
 </template>
 
 <script>
-import Draft from "./comps/draft.vue";
 export default {
-  components: { Draft },
-
   data() {
     return Object.assign(
       {
@@ -98,7 +93,9 @@ export default {
   },
 
   methods: {
-    wakeup(payload) {
+    //(groupCode)用于拼接生成储存草稿的唯一标识
+    wakeup(payload, groupCode) {
+      console.log("groupCode", groupCode);
       let { guideName, localName, title, price, ticket } = payload;
       Object.assign(this.submitForm, {
         guideName,
@@ -112,6 +109,7 @@ export default {
     handleClose(type) {
       this.state = false;
       this.$refs.submitForm.resetFields();
+      this.showDraft = status;
     },
     saveAction() {
       this.$refs.submitForm.validate(result => {
@@ -135,10 +133,6 @@ export default {
       // 价格title都填写了
       if (price && title) return cb();
       return cb(error);
-    },
-    changeDraft(status, saved) {
-      this.showDraft = status;
-      // this.state=false
     }
   }
 };

@@ -341,7 +341,7 @@
       <!--流程管理弹窗-->
       <process-manage
         :orderId="orderId"
-         :a_variable="a_variable"
+        :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCode="orderCode"
         :paid="getListOneMessage.paid"

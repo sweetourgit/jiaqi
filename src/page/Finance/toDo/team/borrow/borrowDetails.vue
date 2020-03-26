@@ -1,6 +1,6 @@
 <!--
   待办 -> 借款详情（无收入、预付款）；
-  含有打印部分；
+  含有打印部分，选择银行账户；
   通过，驳回的一些方法在common.js里；
 -->
 
@@ -11,7 +11,7 @@
       <el-button type="warning" plain @click="handleCancel()">取消</el-button>
       <el-button
         @click="handlePass"
-        type="danger"
+        type="primary"
         plain
         :disabled="ifPassClick"
         v-if="(ifDY100009 && creatUserOrgID === 490) || ( ifDY100042 && creatUserOrgID !== 490)"
@@ -23,10 +23,18 @@
       <el-button
         type="danger"
         :disabled="ifClick"
-        @click="handleBankAccount(acoutInfo)"
+        @click="handleBankAccount"
         v-if="(ifDY100009 && creatUserOrgID === 490) || (ifDY100042 && creatUserOrgID !== 490)"
       >
         支付账户
+      </el-button>
+      <el-button
+        @click="printDetails"
+        type="success"
+        plain
+        v-if="(ifDY100009 && creatUserOrgID === 490) || ( ifDY100042 && creatUserOrgID !== 490)"
+      >
+        打印本页详情
       </el-button>
     </div>
     <!-- 按钮组 END -->
@@ -231,7 +239,7 @@
     </el-table>
     <!-- 收入明细 END -->
     <!-- 审批过程-查看弹窗 -->
-    <el-dialog width="45%" title="审批过程" :visible.sync="ifLookApproveProcess" append-to-body>
+    <el-dialog width="45%" title="审批过程" :visible.sync="ifLookApproveProcessDialog" append-to-body>
         <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
           <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
@@ -241,8 +249,7 @@
     </el-dialog>
     <!-- 审批过程-查看弹窗 END -->
     <!-- 通过、驳回弹框 -->
-    <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list" :show-close='false'>
-      <div @click="handleApproveDialogCancel">×</div>
+    <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list">
       <textarea rows="8" v-model="approvalOpinion" style="overflow: hidden; width: 99%; margin: 0 0 20px 0;"></textarea>
       <el-row type="flex" class="row-bg">
         <el-col :span="8" :offset="18">
@@ -252,6 +259,22 @@
       </el-row>
     </el-dialog>
     <!-- 通过、驳回弹框 END -->
+    <!-- 付款账户弹窗 -->
+    <el-dialog title="选择账户" :visible.sync="ifLookAccountDialog" width="1100px" custom-class="city_list">
+      <el-table :data="tableAccount" border :header-cell-style="getRowClass">
+        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+        <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
+        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
+        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
+        <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="handleSelectBankAccount(scope.$index, scope.row)">选择</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <!-- 付款账户弹窗 END -->
   </div>
 </template>
 
@@ -274,7 +297,9 @@
         tableMoney: [], // 无收入借款金额表格
         tablePayment:[], // 预付款明细表格
         tableIncome:[], // 无收入借款明细弹窗
-        ifLookApproveProcess: false, // 查看审批过程
+        tableAccount:[], // 银行账户表格数据
+        ifLookApproveProcessDialog: false, // 查看审批过程
+        ifLookAccountDialog: false, // 银行账户弹窗
         tableEarning: [], // 收入明细表格
         tableCourse: [], // 查看无收入借款审批过程
         keepPaymentType: null, // 弹窗中调用获取一条详情，保存paymentType类型
@@ -283,20 +308,23 @@
         approvalOpinion: '', // 审批意见
         guid: '', // 接口用的guid
         getWorkItemId: '', // 保存匹配的 workItemId
+        getUserTopID: null, // 保存用户 TopID
+        keepPaymentID: null // 保存当前选择行的 paymentID
       }
     },
     mixins: [ common ],
     created () {
-      let keepPaymentID = this.$route.query.pendingDetailPaymentID; // 查看详情用
+      this.keepPaymentID = this.$route.query.pendingDetailPaymentID; // 查看详情用
+      this.getUserTopID = sessionStorage.getItem('topID');
+      this.getTopName = sessionStorage.getItem('topName');
       let getUserCode = sessionStorage.getItem('userCode');
       this.getWorkItemId = this.$route.query.workItemID; // 工作流接口用
       this.whichComponentName = this.$route.query.componentName; // 来自无收入还是预付款
-      this.getTopName = sessionStorage.getItem('topName');
       // 打印相关（目前两个人可以进行打印）
       getUserCode === 'DY100009' ? this.ifDY100009 = true : this.ifDY100009 = false;
       getUserCode === 'DY100042' ? this.ifDY100042 = true : this.ifDY100042 = false;
       // 详情方法
-      this.getLabel(keepPaymentID);
+      this.getLabel(this.keepPaymentID);
     },
     methods: {
       // 打印详情
@@ -307,13 +335,63 @@
       handlePreview (file) {
         window.open(file.url);
       },
+      // 支付账户按钮触发弹窗
+      handleBankAccount () {
+        this.ifLookAccountDialog = true;
+        this.apiBankAccountTable();
+      },
+      // 选择银行具体账户
+      handleSelectBankAccount (index, row) {
+        this.$confirm('想好了？就选这个银行账户？', '注意！', {
+          confirmButtonText: '确定',
+          type: 'warning'
+        }).then(() => {
+          let _this = this;
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/payment/api/insertebs", {
+            "paymentID": this.keepPaymentID,
+            "accountID": row.id
+          }).then( res => {
+            if (res.data.isSuccess === true) {
+              _this.ifClick = true;
+              _this.ifPassClick = false;
+              _this.ifLookAccountDialog = false;
+              _this.$message({
+                type: 'success',
+                message: '选择成功'
+              });
+            }
+            // 选择成功之后刷新当前列表,让不具备付款账户按钮进行重新判断
+          }).catch(err => {
+            console.log( err )
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消选择'
+          });
+        });
+      },
+      // 银行账户表格查询
+      apiBankAccountTable () {
+        let _this = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
+          "object": {
+            "isDeleted": 0,
+            'orgID': this.getUserTopID,
+          }
+        }).then( res => {
+          _this.tableAccount = res.data.objects
+        }).catch( err => {
+          console.log( err )
+        })
+      },
       // 审批过程-查看按钮触发（ GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType -> 这是查看审批之后的流程日子 ）
       handleLookApprovalProcess (index, row, type) {
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType', {
           jq_id:	row.guid,
           jQ_Type: type,
         }).then(obj => {
-          this.ifLookApproveProcess = true;
+          this.ifLookApproveProcessDialog = true;
         }).catch(err => {
           console.log( err );
         })
@@ -348,6 +426,7 @@
             this.tableMoney = [];
             this.tableEarning = [];
             this.guid = res.data.object.guid;
+            this.creatUserOrgID = res.data.object.creatUserOrgID
             let createUserCode = res.data.object.creatUserCode;
             let getPaymentType = res.data.object.paymentType;
             this.keepPaymentType = getPaymentType;

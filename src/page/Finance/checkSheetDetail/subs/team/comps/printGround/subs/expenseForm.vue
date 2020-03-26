@@ -59,6 +59,7 @@ export default {
   },
 
   methods: {
+     //(groupCode)用于拼接生成储存草稿的唯一标识
     wakeup(expenses){
       this.expenses= expenses;
       this.state= true;

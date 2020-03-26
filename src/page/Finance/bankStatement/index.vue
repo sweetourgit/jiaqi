@@ -1,3 +1,9 @@
+/*
+ * @Author: WZJ 
+ * @Date: 2020-03-25 14:55:52 
+ * @Last Modified by:   WZJ 
+ * @Last Modified time: 2020-03-25 14:55:52 
+ */
 <template>
   <div class="bankStatement">
     <el-tabs v-model="activeName" @tab-click="handleClick">

@@ -1,3 +1,9 @@
+/*
+ * @Author: WZJ 
+ * @Date: 2020-03-25 14:55:58 
+ * @Last Modified by:   WZJ 
+ * @Last Modified time: 2020-03-25 14:55:58 
+ */
 <template>
   <div class="distributor-content" id="industrialBank">
     <!-- 搜索表单 -->

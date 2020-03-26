@@ -194,7 +194,7 @@
               <!-- v-if="getListOneMessage.paid > 0" -->
                <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,4,item.orderCode)"
+                @click.native="operation(item,6,item.orderCode)"
               >发票申请</el-breadcrumb-item>
               <el-breadcrumb-item 
                 class="breadCrumbPointer"
@@ -257,7 +257,11 @@
     <!-- 客人信息 -->
     <boatGuestsInfo :propsObj.sync="propsObj"></boatGuestsInfo>
     <!-- 流程管理-->
-    <boatProcessManage :propsObj.sync="propsObj"></boatProcessManage>
+    <boatProcessManage 
+     :propsObj.sync="propsObj"
+     :orderId="orderId"
+    ></boatProcessManage>
+      
   </div>
 </template>
 
@@ -308,7 +312,6 @@ export default {
         { status: 6, name: "完成退款", type: 2 },
         { status: 2, name: "拒绝退款", type: 2 }
       ], //搜索的订单状态集合  联系客人先不做
-      breadCrumbs: ["备注", "收款", "换舱", "退款", "出团通知书", "客人信息"], //折叠列表里面的操作集合
       isShowContent: null, //折叠列表是否显示
       isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
       orderCode: "", // 搜索订单ID
@@ -321,7 +324,7 @@ export default {
       contact:"",// 搜索订单联系人
       orderpage: [],//订单列表
       getListOneMessage: {},//订单列表下拉后详情
-      
+      orderId:0,
       orderCodeSon: null, //传给子组件
       order_status: 0,//订单状态
 
@@ -372,15 +375,13 @@ export default {
         }
     }, 
     axiosListOneInfo(id,planID) { // 请求list中的一个数据
+      this.orderId = id;
       this.$http
         .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/pageinfo", {
           id: id
         })
         .then(res => {
-          // console.log("请求一条数据的",res)
-          //let enrolls=[];//标题
-          //let guest;//全部数据
-        
+          //console.log("请求一条数据的",res)
           this.getListOneMessage = res.data.data; 
             // 下单平台
           if (this.getListOneMessage.platform == 1) { //订单来源
@@ -396,7 +397,9 @@ export default {
           }else if(this.getListOneMessage.platform == 6){
             this.getListOneMessage.platform = "App";
           }
-          this.orderCodeSon = res.data.data.order_code;     
+          //this.orderCodeSon = res.data.data.order_code;   
+         
+
          
       
         
@@ -409,8 +412,8 @@ export default {
     },
     // 操作
     operation(val, index) {
-      console.log(val,'val');
-      console.log(index,'index');
+      // console.log(val,'val');
+      // console.log(index,'index');
       this.propsObj = {
         dialogType: index
       };

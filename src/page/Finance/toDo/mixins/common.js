@@ -56,10 +56,6 @@ export default {
       this.approveDialogTitle = "审批驳回";
       this.ifShowApproveDialog = true;
     },
-    // 支付账户
-    handleBankAccount (paramsAcountInfo) {
-
-    },
     // 取消
     handleCancel (paramsTabName, paramsCollectionTab) {
       if (paramsTabName === 'collection') {
