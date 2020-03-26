@@ -719,7 +719,7 @@ export default {
               this.statusNow = "预定占位";
               this.statusNext = "确定占位";
               this.statusEnd = "补充资料";
-              this.statusBtn = '确定占位'
+              this.statusBtn = '确定占位';
               break;
             case 3: // 确定占位
               this.statusNow = "确定占位";
@@ -811,6 +811,8 @@ export default {
           this.statusNow = "确认占位";
           this.statusNext = "订单确认";
           this.statusEnd = "补充资料";
+          this.statusBtn = '订单确认';
+          
           break;
         case 9:
           this.statusNow = "作废订单";
@@ -822,6 +824,7 @@ export default {
           this.replenishInfoToastFun(this.orderget.orderChannel);
           this.statusNext = "补充资料";
           this.statusEnd = "签订合同";
+            this.statusBtn = '补充资料';
           break;
       }
     },
@@ -1318,6 +1321,12 @@ export default {
             obj.guests = guest;
             obj.teamID = this.orderget.teamID;
             obj.planID = this.orderget.planID;
+            console.log(obj,'大事哦');
+
+            if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true){
+                              //this.ExistContract(obj.orderCode)
+                              console.log(obj.orderCode,'edgwse');
+              }
 
             this.$http
                     .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
@@ -1325,7 +1334,7 @@ export default {
                     })
                     .then(res => {
                       if (res.data.isSuccess == true) {
-                        this.ExistContract(obj.orderCode)
+                       
                         this.$message({
                           message: "更改成功",
                           type: "success"

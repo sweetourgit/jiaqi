@@ -62,7 +62,7 @@
       <el-form :model="ruleForm" ref="ruleForm" class="demo-ruleForm cb" :rules="rules">
         <div v-for="(item,index) in ruleForm.favourable" :key="index" class="other-cost">
             <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost"
-              v-if="item.favMode=== 1">
+              v-if="item.fav_mode=== 1">
               <div>{{item.title}}</div>
               <el-input
                 v-model="item.price"
@@ -86,7 +86,7 @@
             </el-form-item>
 
             <el-form-item class="otherCost-mark"
-              v-if="item.favMode=== 1">
+              v-if="item.fav_mode=== 1">
               <el-input
                 v-model="item.mark"
                 placeholder="请输入摘要"
@@ -107,6 +107,52 @@
               ></el-input>
             </el-form-item>
           </div>
+      
+        <!--总价-->
+      <div class="price">
+        <!-- <p class="totle">总价：￥{{toDecimal2(payable)}}</p> -->
+        <p class="totle">
+          总价：￥
+          <span>{{payable}}</span>
+         </p>
+        <!-- <p
+          class="surplus"
+          v-if="orderinfo.order_channel===1"
+        >剩余预存款和额度：￥{{toDecimal2(deposit+balance)}}</p> -->
+      </div>
+      <hr />
+      <!--订单联系人-->
+      <el-form-item label="订单联系人" class="contact" prop="contactName">
+        <br />
+        <el-input class="input" placeholder="请输入"
+          v-model="ruleForm.contactName"
+          :disabled="orderinfo.order_status==4||orderinfo.order_status==5||orderinfo.order_status==6||orderinfo.order_status==9"
+        ></el-input>
+      </el-form-item>
+
+      <el-form-item label="联系电话" class="contact" prop="contactPhone">
+        <br />
+        <el-input class="input" placeholder="请输入"
+          v-model="ruleForm.contactPhone"
+          :disabled="orderinfo.order_status==4||orderinfo.order_status==5||orderinfo.order_status==6||orderinfo.order_status==9"
+        ></el-input>
+      </el-form-item>
+      <hr />
+       <!-- <el-tabs v-model="activebox"  v-for="(item,index) in ruleForm.favourable" :key="index" @tab-click="joinClick"   style="float:left;width: 100%;">
+              <el-tab-pane label="预付款" name="2"></el-tab-pane>
+            
+        </el-tabs> -->
+      <el-tabs v-model="activebox" type="card"  @tab-click=" ">
+        <el-tab-pane
+          :key="item.name"
+          v-for="(item, index) in GetCabinData"
+          :label="item.title"
+          :name="item.name"
+        >
+          
+        </el-tab-pane>
+      </el-tabs>
+
       </el-form>
       <div style="height:50px;margin-top:25px">
         <el-button
@@ -163,16 +209,17 @@ export default {
       isSaveBtn: false, //同业月结总价大于剩余额度和预存款时为true
       disperseOrderDisabled:false,
       dialogVisible: false,
+      payable:0,//总价格
+      activebox:0,//舱房状态
+      GetCabinData:{},//
       ruleForm: {
         contactName: "",
         contactPhone: "",
-        price: "1", //价格类型  1直客 2同业
         favourable: []
       },
       rules: {
         //变更数量
-        price: [{ required: true, message: "请选择价格", trigger: "change" }],
-        contactName: [
+         contactName: [
           { message: "联系人不能为空", trigger: "blur" },
           { max: 20, message: "不能超过20位长度", trigger: "blur" }
         ],
@@ -240,22 +287,27 @@ export default {
            
             this.orderinfo = res.data.data;
             this.ruleForm.favourable = this.orderinfo.orderotherfee; // 其他费用
+            this.ruleForm.contactName=this.orderinfo.contact[0].name;
+            this.ruleForm.contactPhone=this.orderinfo.contact[0].tel;
+            this.payable = this.orderinfo.payable // 总价
             this.getOrderStatus(
               this.orderinfo.order_status,
               this.orderinfo.occupy_status,
               this.orderinfo.order_channel
             );
-            this.ordercabin = res.data.data.ordercabin;
-            this.insurance = res.data.data.orderinsure;
-            this.traffic = res.data.data.orderdeliver;
-            for(let i in this.ordercabin){// 海景大床房  成人 ￥16999.00 * 2 
+            this.cabin = res.data.data.cabin;
+            this.insurance = res.data.data.insure;
+            this.traffic = res.data.data.deliver;
+            for(let i in this.cabin){// 海景大床房  成人 ￥16999.00 * 2 
               this.ordercabinText = 
-              this.ordercabin[i].name +
+              this.cabin[i].name +
                '成人'+
                '￥'+
-               this.ordercabin[i].adult_price +
+               this.cabin[i].adult_price +
                '*'+
-                this.ordercabin[i].adult_num;
+               this.cabin[i].adult_num;
+
+               this.GetCabinId( this.cabin[i].cabin_id);//获取客人房型tab
             }
              for(let i in this.insurance){// 出行险 99.00 * 1
               this.insuranceText = 
@@ -285,11 +337,28 @@ export default {
           console.log(err);
         });
     },
+    GetCabinId(id) { // 获取客人房型tab
+    this.$http
+        .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/cabin-type/getparents", {
+         ids:id
+        })
+        .then(res => {
+          if (res.data.code == 200) {
+           console.log(res.data,'噶是大哥');
+           this.GetCabinData = res.data.data
+            
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+        
+    },
     ordersave(id, occupyStatus) { // 保存订单
         
     },
     getOrderStatus(order_status,occupy_status,order_channel){
-      console.log(order_status,occupy_status,order_channel,'id');
+      //console.log(order_status,occupy_status,order_channel,'id');
       switch (order_status) {
         case 0: //订单状态0，暂按未确认处理
           switch (occupy_status) {
@@ -443,5 +512,36 @@ export default {
 .otherCost-mark {
   float: left;
   margin-top: 40px;
+}
+/*总价*/
+.price {
+  height: 50px;
+  margin-top: -25px;
+  text-align: right;
+}
+.price p {
+  margin: 8px 0;
+}
+.totle {
+  font-size: 17px;
+  font-weight: bold;
+}
+.surplus {
+  font-size: 12px;
+}
+hr {
+  background-color: #eee;
+  height: 1px;
+  border: 0;
+  clear: both;
+}
+/*订单联系人*/
+.contact {
+  float: left;
+  margin: 35px 50px 0 0;
+  height: 95px;
+}
+.contact .el-input {
+  width: 300px;
 }
 </style>
