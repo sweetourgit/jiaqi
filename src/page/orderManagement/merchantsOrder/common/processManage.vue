@@ -670,7 +670,7 @@ export default {
                 type: "success"
               });
               if (status === 1) {
-                this.ordersave(1);
+                //this.ordersave(1);
               }
               if (status === 10) {
                 this.ordersave(1);

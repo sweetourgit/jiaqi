@@ -671,7 +671,7 @@ export default {
                 type: "success"
               });
               if (status === 1) {
-                this.ordersave(1); //改
+                //this.ordersave(1); //改
               }
               if (status === 10) {
                 this.ordersave(1);
@@ -1329,10 +1329,10 @@ export default {
                     })
                     .then(res => {
                       if (res.data.isSuccess == true) {
+                        console.log(this.isChangeNumber,'805');
                        if(this.orderget.orderStatus=== 3 && this.isChangeNumber === false){
                               this.ExistContract(obj.orderCode)
-                             
-                          }
+                         }
                         this.$message({
                           message: "更改成功",
                           type: "success"
