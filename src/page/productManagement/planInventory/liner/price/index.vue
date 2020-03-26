@@ -27,7 +27,8 @@
       </PriceHeader>
       <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;z-index: 1999;">
         <el-button type="info" size="mini"
-          v-show="editState=== 'edit'">
+          v-show="editState=== 'edit'"
+          @click="addHandler">
           保存
         </el-button>
         <el-button type="info" size="mini"
@@ -73,8 +74,7 @@ export default {
     addHandler(){
       if(this.notChange()) return this.$message.info('数据无变化');
       let { product_id, sku_id }= this.$route.query;
-      let create_uid= sessionStorage.getItem('id');
-      let org_id= sessionStorage.getItem('orgID');
+      let { id: create_uid, orgID: org_id }= this.$storageLoader({ loader: sessionStorage, attrs: [ 'id', 'orgID' ] });
       let data= this.$refs.priceMain.getData();
       let result= { product_id, sku_id, create_uid, org_id, plan: null }
       result.plan= this.$refs.priceHeader.selectedCalendar.map(el => {
@@ -91,6 +91,11 @@ export default {
         this.$refs.priceHeader.init(
           new Date(day.set_out_year, day.set_out_month- 1, day.set_out_day), true)
       });
+    },
+
+    saveHandler(){
+      if(this.notChange()) return this.$message.info('数据无变化');
+      console.log(this.$refs.priceHeader.selectedCalendar)
     },
 
     notChange(){

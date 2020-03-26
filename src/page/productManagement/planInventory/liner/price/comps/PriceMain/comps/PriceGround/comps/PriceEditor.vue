@@ -164,8 +164,11 @@ export default {
     },
 
     findCabin(selector){
+      console.log(this.cabinTypeOptions.length);
       let attr= Object.prototype.toString.call(selector)=== '[object Number]'? 'id': 'name'
-      return this.cabinTypeOptions.find(el => el[attr]=== selector);
+      return this.cabinTypeOptions.find(el => {
+        return el[attr]=== selector
+      });
     },
 
     adaptor(price){

@@ -27,7 +27,7 @@
       </el-button>
     </header>
     <main>
-      <el-table border size="mini" style="width: 100%"
+      <el-table border size="small" style="width: 100%"
         :data="tableData" 
         :highlight-current-row="false"
         header-row-class-name="row-header">
@@ -108,8 +108,9 @@ export default {
     },
 
     makeCabinTypeOptions(){
-      // let { liner_id }= this.$route.query;
-      this.cabinTypePromise= getLinerCabinType({ liner_id: 1, limit: 100 }).then(res => {
+      let { liner_id }= this.$route.query;
+      this.cabinTypePromise= getLinerCabinType({ liner_id, limit: 100 }).then(res => {
+        console.log(res)
         this.cabinTypeOptions= res
         return Promise.resolve();
       });
@@ -124,6 +125,7 @@ export default {
     makePriceMap(priceArr){
       let result= {};
       priceArr.forEach(price => {
+        console.log(price);
         let { cabin_id }= price;
         let { name }= this.$refs.editor.findCabin(cabin_id);
         if(!(name in result)) result[name]= [];
