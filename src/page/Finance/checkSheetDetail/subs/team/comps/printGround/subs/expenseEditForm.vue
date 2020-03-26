@@ -68,7 +68,7 @@ export default {
         supplierSelected: false,
         groupCode: "",
         expenseCache: "",
-        changed: false,
+        changed: false, //判断表单是否修改(若是修改弹出草稿框)
         submitForm: {
           supplierID: null,
           supplier: null,
@@ -107,12 +107,19 @@ export default {
     open() {
       // this.$ls.clear()
       let that = this;
-      //遍历所有表单组件 若为已填则弹出确认框
+      //是个坑 勿动
       let submitCopy = this.getSubmitForm;
+      //判断当前表单是否修改
       let isChanged = this.isChanged(submitCopy);
       if (isChanged) this.changed = false;
       for (let item in that.getSubmitForm) {
-        if (item!='supplierID'&&that.getSubmitForm[item] != null && this.changed) {
+        //supplierID 通常情况下有值(不能作为判断已修改的条件)
+        //判断当前表单是否为空或者当前表单是否有修改
+        if (
+          item != "supplierID" &&
+          that.getSubmitForm[item] != null &&
+          this.changed
+        ) {
           that
             .$confirm("是否需要保存草稿?", "提示", {
               confirmButtonText: "确定",
@@ -120,10 +127,10 @@ export default {
               type: "warning"
             })
             .then(() => {
-              this.changed = false;
+              //坑 勿动
               that.submitForm = submitCopy;
               this.changed = false;
-              //保存草稿到缓存 有效时间为12小时
+              //保存草稿到缓存
               that.$ls.set(that.groupCode, JSON.stringify(submitCopy));
               that.$message({
                 type: "success",
@@ -138,6 +145,7 @@ export default {
               });
             });
           this.handleClose();
+          //跳出遍历 这里的遍历逻辑可能有问题 不耽误使用
           return false;
         }
       }
@@ -172,11 +180,8 @@ export default {
       if (this.$ls.get(this.groupCode)) {
         //判断当前缓存中的数据与当前submit是否相同(判断用户上次关闭填写组件是否有修改)
         let isChangeed = -this.isChanged(this.submitForm);
+        //若isChangeed=true 则返回false 对应重新渲染表单
         if (isChangeed) !isChangeed;
-        // if (this.$ls.get(this.groupCode) == JSON.stringify(this.submitForm)) {
-        //   //false代表用户上次没有修改
-        //   return false;
-        // }
         let copy = this.getExpenseDTO();
         this.expenseCache = copy;
         Object.keys(this.expenseCache).forEach(item => {
@@ -209,7 +214,8 @@ export default {
           isSave: this.isSave
         });
         this.handleClose();
-        this.changed=false
+        //表单保存后 修改状态为false
+        this.changed = false;
         this.$refs.submitForm.resetFields();
         //表单提交后 清楚本地草稿缓存
         let remove = this.$ls.remove(this.groupCode);
@@ -278,23 +284,7 @@ export default {
       return this.$ls.get(this.groupCode) == JSON.stringify(data);
     }
   },
-  watch: {
-    // submitForm: {
-    //   handler(val, oldVal) {
-    //     for (let item in this.submitForm) {
-    //       //当点击新增或编辑时 supplierID 已自动获取有值
-    //       if (item != "supplierID") {
-    //         if (this.submitForm[item]) {
-    //           this.changed = true;
-    //           return false;
-    //         }
-    //       }
-    //     }
-    //     this.changed = false;
-    //   },
-    //   deep: true
-    // }
-  },
+  //watch 有坑  computed能用
   computed: {
     getSubmitForm: function() {
       this.changed = true;
