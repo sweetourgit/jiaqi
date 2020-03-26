@@ -28,7 +28,7 @@
  */
 import Jdatepanel from './comps/Jdatepanel/Jdatepanel'
 import PriceDay from './comps/PriceDay'
-import { SKU_PLAN_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
+import { SKU_PLAN_STATUS, getSkuPlanDTO } from '@/page/productManagement/planInventory/liner/dictionary'
 import { getCalendar } from '@/page/productManagement/planInventory/liner/api.js'
 
 export default {
@@ -38,7 +38,7 @@ export default {
   props: ['options'],
 
   mounted(){
-    // this.init();
+    this.init();
   },
 
   computed: {
@@ -61,11 +61,9 @@ export default {
       planStatus: SKU_PLAN_STATUS.UNDO,
       panelOptions: {
         mixinHandler: (dto) => {
-          Object.assign(dto, {
-            selected: false,
-            plan: this.getSkuPlan(dto),
-            plan_status: this.getSkuPlanStatus(dto)
-          })
+          dto.selected= false;
+          dto.plan= this.getSkuPlan(dto);
+          dto.plan_status= this.getSkuPlanStatus(dto);
         }
       },
       
@@ -73,10 +71,21 @@ export default {
   },
 
   methods: {
-    init(date){
-      this.currentDate= date;
-      this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
-      let calendarArr= this.$refs.datePanel.init(date || new Date());
+    /**
+     * @description: autoSelect会自动选定当前日期的day
+     */
+    init(date, autoSelect){
+      if(!date) date= new Date();
+      console.log(date);
+      this.getCalendarAction(date).then(list => {
+        this.currentDate= date;
+        this.priceCalendar= list;
+        this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
+        let calendarArr= this.$refs.datePanel.init(date);
+        if(!autoSelect) return;
+        let find= calendarArr.find(day => day && day.dateInt=== this.$refs.datePanel.getDateInt(date, true));
+        this.emitSelect(find);
+      })
     },
 
     /**
@@ -86,8 +95,9 @@ export default {
      */
     setSelectedCalendar(selected, isReverse){
       let result;
-      let oldState= this.parentState;
       let newState;
+      let oldState= this.parentState;
+      let oldCalendar= [...this.selectedCalendar];
       if(this.$isArray(selected)){
         selected.forEach(el => el.selected= !isReverse)
         // 正选且之前不是多选状态，则清空目前的已选
@@ -95,12 +105,45 @@ export default {
         this.selectedCalendar= [...selected.filter(el => el.selected), ...this.selectedCalendar.filter(el => el.selected)];
         newState= this.selectedCalendar.length=== 0? null: 'add';
       } else {
+        // 单选做了处理,当单选的是个多选天,则是以数组传递过来,走上边的逻辑,
+        // 所以进入这里的selected都是过期或者有plan的单个day
         selected.selected= !isReverse;
+        // 正选时候只可能是过期或有plan, 所以selectedCalendar全取选
         if(!isReverse) this.selectedCalendar.splice(0).forEach(el => el.selected= false);
-        this.selectedCalendar= [...[selected].filter(el => el.selected), ...this.selectedCalendar.filter(el => el.selected)];
+        this.selectedCalendar= selected.selected? [selected]: [];
         newState= this.selectedCalendar.length=== 0? null: (this.selectedCalendar[0].isPassed? 'readonly': 'edit');
       }
-      this.parentState= newState;
+      console.log(oldState, newState)
+      // 如果之前处于只读或空选,直接赋值新状态
+      if(!oldState || oldState=== 'readonly') return this.setParentStatus(newState);
+      // 如果新旧状态都是新增,直接赋值新状态
+      if(oldState=== 'add' && newState=== 'add') return this.setParentStatus(newState);
+      // 没有数据变化,直接赋值新状态
+      if(this.options.notChange()) return this.setParentStatus(newState);
+      this.setPlanStatusAsyncInterceptor({
+        newState, oldState, 
+        sureCb: () => {
+          this.selectedCalendar.forEach(el => el.selected= false);
+          oldCalendar.forEach(el => el.selected= true);
+          this.selectedCalendar= oldCalendar;
+        }, 
+        cancelCb: () => this.setParentStatus(newState)
+      })
+    },
+
+    setPlanStatusAsyncInterceptor({ newState, oldState, sureCb, cancelCb }){
+      if(!oldState || oldState=== 'readonly') return cancelCb();
+      // 如果新旧状态都是新增,直接赋值新状态
+      if(oldState=== 'add' && newState=== 'add') return cancelCb();
+      // 没有数据变化,直接赋值新状态
+      if(this.options.notChange()) return cancelCb();
+      this.$confirm('存在数据变动，是否保存?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(sureCb)
+      .catch(cancelCb)
     },
 
     emitSelect(day){
@@ -118,10 +161,19 @@ export default {
       this.setPlanStatus(SKU_PLAN_STATUS.UNDO);
     },
 
+    // 日期发生变化
     emitDateChange(date){
-      this.getCalendarAction(date).then(list => {
-        this.priceCalendar= list;
-        this.init(date);
+      this.setPlanStatusAsyncInterceptor({
+        newState: null, 
+        oldState: this.parentState, 
+        sureCb: () => {
+          this.selectedCalendar.forEach(el => el.selected= false);
+          oldCalendar.forEach(el => el.selected= true);
+          this.selectedCalendar= oldCalendar;
+        }, 
+        cancelCb: () => {
+          this.init(date);
+        }
       })
     },
 
@@ -129,8 +181,9 @@ export default {
       this.$emit('close', this.selectedCalendar.map(el => el.date));
     },
 
+    // 过期的默认给一个统一plan
     getSkuPlan(day){
-      return null;
+      return this.priceCalendar.find((el) => day.dateInt== el.format_set_out_time);
     },
 
     getSkuPlanStatus(day){
@@ -155,27 +208,17 @@ export default {
     },
 
     setParentStatus(state){
-      // // 如果当前父组件是新增或者编辑状态，且数据发生过变动
-      // if((this.parentState=== 'edit' || this.parentState=== 'add') && this.options.notChange())
-      //   this.$confirm('存在数据变动，是否保存?', '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning'
-      //   }).then(() => {
-
-      //   }).catch(() => {
-          this.parentState= state;
-          this.$emit('set-parent-status', state);        
-        // });
+      let selected= (state=== 'edit' || state=== 'readonly')? this.selectedCalendar[0]: null;
+      this.parentState= state;
+      this.$emit('set-parent-status', { state, selected });
     },
 
     getCalendarAction(date){
+      let { product_id, sku_id }= this.$route.query;
       let year= date.getFullYear();
       let month= date.getMonth()+ 1;
       return getCalendar({
-        product_id: null,
-        sku_id: null,
-        year, month
+        product_id, sku_id, year, month
       })
     }
   }

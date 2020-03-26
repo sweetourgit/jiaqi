@@ -9,7 +9,8 @@
     box-sizing: border-box;
   }
   & >>> .row-header{
-    background-color: rgb(247, 247, 247);
+    color: #333;
+    background-color: #f2f2f2;
   }
   & >>> th{
     background-color: transparent;
@@ -22,12 +23,12 @@
     <header>
       <PriceHeader ref="priceHeader"
         :options="options"
-        @set-parent-status="editState= $event"
-        @select-day="emitSelectDay">
+        @set-parent-status="emitParentStatus">
       </PriceHeader>
       <div v-move-btn style="display:flex;justify-content: flex-end;width: 240px;z-index: 1999;">
         <el-button type="info" size="mini"
-          v-show="editState=== 'edit'">
+          v-show="editState=== 'edit'"
+          @click="saveHandler">
           保存
         </el-button>
         <el-button type="info" size="mini"
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+import { saveSkuStocks, editSkuStock } from '@/page/productManagement/planInventory/liner/api'
 import PriceHeader from './comps/PriceHeader/PriceHeader'
 import PriceMain from './comps/PriceMain/PriceMain'
 import './moveBtn'
@@ -68,16 +70,53 @@ export default {
   },
 
   methods: {
-    // 选中一天
-    emitSelectDay(day){
-      let { plan }= day;
-      this.$refs.priceMain.init(plan);
+
+    addHandler(){
+      if(this.notChange()) return this.$message.info('数据无变化');
+      let { product_id, sku_id }= this.$route.query;
+      let { id: create_uid, orgID: org_id }= this.$storageLoader({ loader: sessionStorage, attrs: [ 'id', 'orgID' ] });
+      let data= this.$refs.priceMain.getData();
+      let result= { product_id, sku_id, create_uid, org_id, plan: null }
+      let date= this.$refs.priceHeader.selectedCalendar[0]._date;
+      result.plan= this.$refs.priceHeader.selectedCalendar.map(el => {
+        return {
+          ...data,
+          set_out_year: el._date.getFullYear(),
+          set_out_month: el._date.getMonth()+ 1,
+          set_out_day: el._date.getDate()
+        }
+      })
+      saveSkuStocks(result).then(() => {
+        this.$message.success('计划新增成功');
+        this.$refs.priceHeader.init(date, true);
+        this.$refs.priceMain.init();
+      });
     },
 
-    addHandler(){},
+    saveHandler(){
+      if(this.notChange()) return this.$message.info('数据无变化');
+      let { product_id, sku_id }= this.$route.query;
+      let { id: create_uid, orgID: org_id }= this.$storageLoader({ loader: sessionStorage, attrs: [ 'id', 'orgID' ] });
+      let data= this.$refs.priceMain.getData();
+      let result= { product_id, sku_id, create_uid, org_id, plan: null }
+      let date= this.$refs.priceHeader.selectedCalendar[0]._date;
+      result.plan= [data];
+      editSkuStock(result).then(() => {
+        this.$message.success('计划修改成功');
+        this.$refs.priceHeader.init(date, true);
+        this.$refs.priceMain.init();
+      });
+    },
 
     notChange(){
-      return this.$refs.priceMain.notChange();
+      let bol= this.$refs.priceMain.notChange();
+      return bol;
+    },
+
+    emitParentStatus({ state, selected }){
+      this.editState= state;
+      if(state=== 'edit') return this.$refs.priceMain.init(selected.plan);
+      this.$refs.priceMain.init();
     }
   }
 }

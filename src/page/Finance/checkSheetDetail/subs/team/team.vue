@@ -254,7 +254,7 @@ export default {
       let { commentText, isAgree } = payload;
       let { guid, workItemID } = this.$route.query;
       // 1587
-      let rejectWorkItemID = this.$refs.printGround.finishedList[0].ObjectId;
+      let rejectWorkItemID = this.$refs.printGround.finishedList[0].objectId;
 
       let userCode = sessionStorage.getItem("tel");
       let action;

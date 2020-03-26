@@ -45,8 +45,9 @@
               价格
             </el-button>
             <el-button type="text"
-              v-show="scope.row.sale_price">
-              上线
+              v-show="scope.row.isPriced"
+              @click="deliverOnOffLineAction(scope.row)">
+              {{ scope.row.line_status=== 1? '下线': '上线' }}
             </el-button>
           </template>
         </el-table-column>
@@ -60,7 +61,7 @@
 
 <script>
 // import TableInputer from './comps/TableInputer'
-import { deliverListAll } from '@/page/productManagement/planInventory/liner/api'
+import { deliverListAll, saveDeliverPrice, deliverOnOffLine } from '@/page/productManagement/planInventory/liner/api'
 import { TableInputer, manager as TableInputerManager } from './comps/TableInputer/index'
 import BusDetailer from './comps/BusDetailer'
 
@@ -71,7 +72,7 @@ export default {
   filters: {
     priceFilter(val){
       if(!val) return '';
-      return val.toFixed(2);
+      return typeof val=== "string"? val: val.toFixed(2);
     }
   },
 
@@ -81,14 +82,24 @@ export default {
 
   data(){
     return {
-      tableData: [{ id: 123, name: 32 }],
+      tableData: [],
       priceOptions: {
         placeholder: '请输入价格',
         pattern: /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,
         message: '价格格式输入错误',
         adaptor: (val) => parseFloat(val),
-        successCb: ({ index }) => {
-          console.log(index)
+        successCb: ({ index, oldVal }) => {
+          let deliver= this.tableData[index];
+          let { id, sale_price }= deliver;
+          saveDeliverPrice({ id, sale_price })
+          .then(() => {
+            deliver= this.deliverAdaptor(deliver);
+            this.$message.success('售卖价格修改成功');
+          })
+          .catch(() => {
+            deliver.sale_price= oldVal;
+            this.$message.error('售卖价格修改失败');
+          });
         }
       }
     }
@@ -98,14 +109,35 @@ export default {
     init(){
       let { product_id }= this.$route.query;
       deliverListAll({ product_id })
-      .then(deliverList => this.tableData= deliverList);
+      .then(deliverList => this.tableData= deliverList.map(this.deliverAdaptor));
     },
+
     openPrice(table, column, index){
       let vm= TableInputerManager.getVm(table, column, index);
       vm.focus();
     },
+
     openDetailer(bus){
       this.$refs.detailer.open(bus)
+    },
+
+    deliverAdaptor(deliver){
+      deliver.isPriced= !!deliver.sale_price;
+      return deliver;
+    },
+
+    deliverOnOffLineAction(deliver){
+      let { id, line_status: oldStatus, isPriced }= deliver;
+      let line_status= oldStatus=== 2? 1: 2;
+      if(line_status=== 1 && !isPriced) return this.$message.error('未设置价格不能上线');
+      this.$confirm(`是否${line_status=== 1? '上线': '下线'}该大巴车信息?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => {
+        deliverOnOffLine({ id, line_status }).then(() => deliver.line_status= line_status);
+      })
     }
   }
 
