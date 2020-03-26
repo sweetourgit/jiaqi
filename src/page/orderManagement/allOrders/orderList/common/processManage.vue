@@ -629,10 +629,11 @@ export default {
                   // this.isChangeNumber = true;
                   return;
                 } else {
-                  url += "/signcontract";
+                  
                 }
               }
             }
+            url += "/signcontract";
              //url += "/econtract";
             break;
           case 8:

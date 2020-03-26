@@ -629,10 +629,11 @@ export default {
                   return;
                 } else {
                   //url = "/order/stat/api/econtract"; 下部分代码2020/03/17 添加 跳转合同页面 唐爱妮
-                    url += "/signcontract";
+                  
                 }
               }
             }
+              url += "/signcontract";
             // url += "/econtract";
             break;
          case 8:
