@@ -145,13 +145,39 @@
       <el-tabs v-model="activebox" type="card"  @tab-click=" ">
         <el-tab-pane
           :key="item.name"
-          v-for="(item, index) in GetCabinData"
+          v-for="(item,index) in GetCabinData"
           :label="item.title"
           :name="item.name"
         >
           
         </el-tab-pane>
       </el-tabs>
+      
+       <el-tabs v-model="activebox" @tab-click="joinClick"   style="float:left;width: 100%;">
+              <el-tab-pane label="预付款" name="2"></el-tab-pane>
+              <el-tab-pane label="无收入" name="1"></el-tab-pane>
+              <el-tab-pane label="无收入(无团期计划)" name="0"></el-tab-pane>
+          </el-tabs>
+          <!-- @row-click="joinData_btn" -->
+          <el-table 
+            :data="joinData" 
+            border 
+            tooltip-effect="dark"
+            @selection-change="joinData_btn"
+            style="width: 100%; margin-top: 30px">
+            <el-table-column type="selection"  align="center"></el-table-column>
+            <el-table-column prop="paymentID" label="预付款借款ID"  align="center" v-if="s_find==1"></el-table-column>
+            <el-table-column prop="paymentID" label="无收入借款ID"  align="center" v-if="s_find==2"></el-table-column>
+          
+            <el-table-column prop="supplierName" label="供应商"  align="center"></el-table-column>
+            <el-table-column prop="supplierTypeEX" label="借款类型"  align="center"></el-table-column>
+            <!-- <el-table-column prop="orgName" label="部门" width="140"  align="center"></el-table-column> -->
+            <el-table-column prop="price" label="金额"  align="center"></el-table-column>
+            <!-- <el-table-column prop="wcount" label="未报销金额" width="150" align="center"></el-table-column> -->
+            <el-table-column prop="paymentMark" label="摘要"  align="center"></el-table-column>
+            <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+          </el-table>
+
 
       </el-form>
       <div style="height:50px;margin-top:25px">
@@ -345,7 +371,8 @@ export default {
         .then(res => {
           if (res.data.code == 200) {
            console.log(res.data,'噶是大哥');
-           this.GetCabinData = res.data.data
+           this.GetCabinData = res.data.data;
+             console.log(this.GetCabinData,'噶是大哥');
             
           }
         })
