@@ -626,7 +626,7 @@ export default {
               for (let j = 0; j < this.salePrice[i].length; j++) {
                 if (this.salePrice[i][j].cnName == "") {
                   this.$message.error("请补全出行人信息");
-                 this.isChangeNumber = true;    
+                 //this.isChangeNumber = true;    
                   return;
                 } else {
                   
