@@ -362,7 +362,7 @@ export default {
                   "id": item.id,
                   "title": item.title,
                   "crowdID": '1',
-                  "visa_id": item.visa_info[0].visa_id,
+                  "visa_id": item.visa_info ? item.visa_info[0].visa_id : '',
                   "tableData": item.visa_info
                 }
               })
