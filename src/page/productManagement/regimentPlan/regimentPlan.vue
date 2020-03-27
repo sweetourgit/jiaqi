@@ -26,7 +26,7 @@ export default {
       }else if (tab.name == 3) {
         this.$router.push({ path: "/regimentPlan/visaOrderList" });
       }else if (tab.name == 4) {
-        this.$router.push({ path: "/regimentPlan/visaOrderList" });
+        this.$router.push({ path: "/regimentPlan/liner" });
       }
     }
   },

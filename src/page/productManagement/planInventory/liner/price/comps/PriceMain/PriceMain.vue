@@ -50,7 +50,6 @@ export default {
     init({ plan, state }){
       let oldState= this.state;
       this.state= state;
-      console.log(oldState, state);
       // 无选或连续多选
       if(!state || (oldState=== state && oldState=== 'add')) return;
       // 有计划

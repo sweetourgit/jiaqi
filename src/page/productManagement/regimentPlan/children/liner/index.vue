@@ -1,5 +1,7 @@
 <template>
-  <div>123</div>
+  <div style="height: 100%; overflow: auto;">
+    <div style="height: 2000px;">123</div>
+  </div>
 </template>
 
 <script>
