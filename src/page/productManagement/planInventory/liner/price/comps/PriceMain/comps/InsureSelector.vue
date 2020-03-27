@@ -39,14 +39,16 @@ export default {
   methods: {
     
     init(selected){
-      console.log(selected)
       this.tableData.forEach(el => el.selected= false);
-      insurePromise.then(list => this.tableData= list.map(el => this.adaptor(el, selected)));
-      cache= this.$deepCopy(this.tableData);
+      insurePromise.then(list => {
+        this.tableData= list.map(el => this.adaptor(el, selected));
+        cache= this.$deepCopy(this.tableData);
+      });
     },
 
     adaptor(insure, selected){
-      insure.selected= !!selected.find(el => el.insure_id=== insure.id);
+      let find= selected.find(el => el.id=== insure.id);
+      insure.selected= find? find.ischeck=== 1: false;
       return insure;
     },
 

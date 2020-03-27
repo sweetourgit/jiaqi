@@ -52,7 +52,8 @@ export default {
     },
 
     adaptor(deliver, selected){
-      deliver.selected= !!selected.find(el => el.id=== deliver.id);
+      let find= selected.find(el => el.id=== deliver.id);
+      deliver.selected= find? find.ischeck=== 1: false;
       return deliver;
     },
 

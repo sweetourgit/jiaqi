@@ -40,7 +40,7 @@
               修改
             </el-button>
             <el-button type="text">
-              价格
+              删除
             </el-button>
             <el-button type="text"
               v-show="scope.row.isPriced"
