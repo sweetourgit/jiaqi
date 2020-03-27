@@ -702,18 +702,18 @@ export default new Router({
     }
   },
   {
-    path: '/refund/refundDetails',
-    component: () => import('@/page/Finance/toDo/refund/refundDetails'),
-    name: '待办/退款详情',
+    path: '/reimburse/reimburseTeamDetails',
+    component: () => import('@/page/Finance/toDo/reimburse/reimburseTeamDetails'),
+    name: '待办/报销详情',
     meta: {
       keepAlive: true,
       auth: true
     }
   },
   {
-    path: '/approve/approveDetail',
-    component: () => import('@/page/Finance/approve/approveDetail'),
-    name: '审批详情',
+    path: '/refund/refundDetails',
+    component: () => import('@/page/Finance/toDo/refund/refundDetails'),
+    name: '待办/退款详情',
     meta: {
       keepAlive: true,
       auth: true

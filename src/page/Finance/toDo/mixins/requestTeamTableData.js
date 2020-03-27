@@ -14,7 +14,7 @@ let changeComName = {
   nameIReimburse: 'nameIIReimburseTeam', // 报销
   nameIRefund: 'nameIIRefundTeam', // 退款
   nameISheet: 'nameIISheetTeam', // 报账单
-}
+};
 
 export default {
   data(){

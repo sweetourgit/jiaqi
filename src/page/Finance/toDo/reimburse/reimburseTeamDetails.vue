@@ -6,15 +6,13 @@
 -->
 <template>
   <div class="loan-management">
-    <el-row style="margin-top: 20px;">
-      <el-col :span="6" :offset="18" style="text-align:center;">
-        <el-button type="warning" @click="handleCancel">取消</el-button>
-        <el-button type="success" @click="handlePassBtn">通过</el-button>
-        <el-button type="danger" @click="handleRejectBtn">驳回</el-button>
-      </el-col>
-    </el-row>
+    <div style="text-align: right; margin: 25px 20px 0 0;">
+      <el-button type="warning" plain @click="handleCancel">取消</el-button>
+      <el-button type="primary" plain @click="handlePassBtn">通过</el-button>
+      <el-button type="danger" plain @click="handleRejectBtn">驳回</el-button>
+    </div>
     <!-- 报销信息 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>报销信息</el-divider>
+    <el-divider content-position="left" class='title-margin'>报销信息</el-divider>
     <el-row class="row-content">
       <el-col :span="24">
         <el-tabs v-model="tabShowWhich">
@@ -149,9 +147,9 @@
 <!--      <div class="print-title">{{ getTopName }} - {{ presentRouter == '无收入借款管理' ? '无收入借款' : '预付款' }} - 借款单 </div>-->
       <!-- 基本信息 -->
       <div class="item-content print-hidden">
-        <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
-        <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
-        <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
+        <el-tag type="warning" v-if="fundamental.checkType === '0'" class="distributor-status">审批中</el-tag>
+        <el-tag type="danger" v-if="fundamental.checkType === '2'" class="distributor-status">驳回</el-tag>
+        <el-tag type="success" v-if="fundamental.checkType === '1'" class="distributor-status">通过</el-tag>
       </div>
       <!-- 第一行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
@@ -234,10 +232,10 @@
     </div>
     <!-- 参看拆分/还款弹窗 -->
     <el-dialog :title="title" :visible.sync="expenseType" width="40%" custom-class="city_list">
-      <p v-show="this.showExpenseType == 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
-      <p v-show="this.showExpenseType == 0"><span>没有进行相关操作</span></p>
-      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
-      <p style="margin-top: 10px;" v-show="this.showExpenseType == 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showAccountName }}</strong ></span></p>
+      <p v-show="this.showExpenseType === 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+      <p v-show="this.showExpenseType === 0"><span>没有进行相关操作</span></p>
+      <p style="margin-top: 10px;" v-show="this.showExpenseType === 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
+      <p style="margin-top: 10px;" v-show="this.showExpenseType === 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showAccountName }}</strong ></span></p>
     </el-dialog>
   </div>
 </template>
@@ -264,7 +262,6 @@
         keepBackContent: [], // 保存tab列表页数据
         keepExpense: [], // 从详情获取到报销id
         getApproveListGuid: null, // 获取列表页的的guid
-        workItemIDArr: null, // 保存匹配的WorkItemID 数组
         commentText: '', // 驳回通过内容
         transitShow: false, // 通过驳回弹窗
         title: '', // 通过驳回弹窗标题切换
@@ -272,6 +269,7 @@
         keepTabId: [],
         tabCount: [], // 计数开关
         ifExpenseType: false, // 是否有拆分类型的数据
+        printExpenseType: [] // 过滤出将被打印的 报销id
       }
     },
     // 关于时间的过滤
@@ -281,18 +279,11 @@
       }
     },
     created () {
-      this.getApproveListGuid = this.$route.query.approveDetailGuid;
-      this.workItemIDArr = this.$route.query.queryWorkItemID;
+      this.getParamsWorkItemId = this.$route.query.workItemID;
+      this.getApproveListGuid = this.$route.query.optionsGuid;
       this.getApproveDetail(this.getApproveListGuid);
       this.tabShowWhich = String(this.$route.query.queryApproveExpenseID);
       this.auditResult(this.getApproveListGuid);
-      if (this.workItemIDArr) {
-        this.workItemIDArr.forEach((item) => {
-          if (this.getApproveListGuid === item.jq_ID){
-            this.getParamsWorkItemId = item.workItemID
-          }
-        })
-      }
     },
     methods: {
       // 列表查看报销方式
@@ -375,12 +366,24 @@
         .then(obj => {
           let keepData = obj.data.objects;
           this.keepBackContent = keepData;
-          // 筛选出拆分的数据，筛选出expenseID（报销id）并重组新数组
-          this.keepExpense = keepData.map( item => {
-            return item.id
+
+          // 过滤出将被打印的 报销id
+          keepData.forEach(item => {
+            item.payments.forEach(itemPayments => {
+              if (itemPayments.expenseType === 1) {
+                this.printExpenseType.push(item.id)
+              }
+            })
           });
 
-          // 检测报销信息里是否存在拆分类型
+            // [...new Set(arr)]
+
+          // 筛选出拆分的数据，筛选出expenseID（报销id）并重组新数组
+          /*this.keepExpense = keepData.map( item => {
+            return item.id
+          });*/
+
+          // 检测报销信息里是否存在拆分类型,存在拆分類型進入打印方法，否車直接通過
           let getPaymentsData = keepData.map( item => {
             return item.payments
           });
@@ -390,7 +393,6 @@
               this.ifExpenseType = true  // 存在拆分类型的数据
             }
           });
-          console.log(changePaymentsData)
 
           this.listLoading = false
         }).catch(err => {
@@ -444,7 +446,7 @@
           if (keepObjLength && keepObjLength.length > 0)  {
             // 组合数据 用来遍历tab组件 形成多个tab页
             this.changeData.push({ id: paramsTabId, arr: obj.data.objects });
-            if (this.tabCount <= 0) {
+            if (this.tabCount === 0) {
               this.ifShowPrintTable = true;
             }
             console.log(this.changeData, '/api/listforexpense 进入打印方法')
@@ -456,37 +458,35 @@
       },
       // 审批通过成功时回调
       handlePassFn () {
-        this.keepTabId = []; // bug 原因在于这个数组 没有清空成功
-        console.log(this.keepTabId)
+        let _this = this;
+        // this.printExpenseType = [];
         // 转换下，存到keepTabId里
-        this.keepExpense.forEach(item => {
+       /* this.printExpenseType.forEach(item => {
           this.keepTabId.push(item);
-        });
-
-        console.log(this.keepTabId, '一共有多少个报销id')
-
-        this.keepTabId.forEach(item => {
-
-          this.tabCount = this.keepTabId.length; // 计数开关
-
-          console.log(this.tabCount, '计数开关初始化');
-
+        });*/
+        console.log(this.printExpenseType, '一共有多少个报销id')
+        this.printExpenseType.forEach(item => {
+          this.tabCount = this.printExpenseType.length; // 计数开关
           // 获取一条审批状态 checkType = 1 方可打印
           this.$http.post(this.GLOBAL.serverSrc + '/finance/expense/api/getchecktype', {
             id: item // 报销ID
           })
           .then(obj => {
+            console.log(obj.data.object.isEBS)
             if (obj.data.object.isEBS === 1) {
               this.tabCount--;
-              this.showPrintTable(item);  // 只有拆分时才会调打印方法
+              if (this.tabCount >= 0) {
+                this.showPrintTable(item);  // 只有拆分时才会调打印方法
+              }
               if (this.tabCount < 0) {
                 this.tabCount = 0
               }
               console.log(this.tabCount,'checkType 已经等于 1 了，/api/getchecktype')
             } else {
               setTimeout(function () {
-                this.handlePassFn()
-              }, 200)
+                _this.handlePassFn()
+              }, 500)
+
             }
           }).catch(obj => {
             console.log(obj);
@@ -555,7 +555,7 @@
       },
       // 返回到列表页
       backListPage () {
-        this.$router.push({ path: "/approve/approveList" });
+        this.$router.go(-1);
       },
       // 表格表头颜色
       getRowClass ({ row, column, rowIndex, columnIndex }) {

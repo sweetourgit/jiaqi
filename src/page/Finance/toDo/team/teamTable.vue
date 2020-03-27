@@ -75,7 +75,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row, 'nameIReimburse')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -117,7 +117,7 @@
       <el-table-column prop="createTime" :formatter='dateFormat' label="申请时间" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row, 'nameISheet')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -132,7 +132,7 @@
   let sourceMapJump = {
     nameINoIn: '/borrow/borrowDetails',
     nameIAdvance: '/borrow/borrowDetails',
-    nameIReimburse: '/borrow/borrowDetails',
+    nameIReimburse: '/reimburse/reimburseTeamDetails',
     nameIRefund: '/refund/refundDetails',
     nameISheet: '/borrow/borrowDetails',
   };
@@ -180,7 +180,7 @@
     methods: {
       // 详情方法
       handleJumpDetail (index, row, source) {
-        let { paymentID, guid, instanceID } = row; // 基本上都是给接口传参用
+        let { paymentID, guid, instanceID, expenseID } = row; // 基本上都是给接口传参用
         let keepWorkItemId = null;
 
         // 取出当前选中的 workItemID 与后端返回的做比较
@@ -200,7 +200,18 @@
           });
         }
 
-        this.$router.push({ path: sourceMapJump[source], query: { pendingDetailPaymentId: paymentID, componentName: this.getWhichTab, optionsGuid: guid, instanceID: instanceID, workItemID: keepWorkItemId, whichTabName: this.whichTab } });
+        this.$router.push({
+          path: sourceMapJump[source],
+          query: {
+            pendingDetailPaymentId: paymentID,
+            componentName: this.getWhichTab,
+            optionsGuid: guid,
+            instanceID: instanceID,
+            workItemID: keepWorkItemId,
+            whichTabName: this.whichTab,
+            queryApproveExpenseID: expenseID
+          }
+        });
       },
     }
   }

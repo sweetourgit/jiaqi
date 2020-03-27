@@ -422,19 +422,20 @@
           "id": paramPaymentId
         }).then(res => {
           if (res.data.isSuccess === true) {
+            let keepRes = res.data.object;
             this.tablePayment = [];
             this.tableIncome = [];
             this.tableMoney = [];
             this.tableEarning = [];
-            this.guid = res.data.object.guid;
-            this.creatUserOrgID = res.data.object.creatUserOrgID
-            let createUserCode = res.data.object.creatUserCode;
-            let getPaymentType = res.data.object.paymentType;
+            this.guid = keepRes.guid;
+            this.creatUserOrgID = keepRes.creatUserOrgID
+            let createUserCode = keepRes.creatUserCode;
+            let getPaymentType = keepRes.paymentType;
             this.keepPaymentType = getPaymentType;
-            this.fundamental = res.data.object;
-            this.auditResult(res.data.object.guid, getPaymentType);
-            if (res.data.object.planID > 0) {
-              this.apiSomeTableDel(res.data.object.planID);
+            this.fundamental = keepRes;
+            this.auditResult(keepRes.guid, getPaymentType);
+            if (keepRes.planID > 0) {
+              this.apiSomeTableDel(keepRes.planID);
             } else {
               this.apiBorrowDel(createUserCode);
             }
