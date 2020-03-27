@@ -1103,6 +1103,7 @@
                 } else {
                   this.tour[i][j].singlePrice = this.salePrice[i].price_02;
                 }
+                //guestAll[i].bornDate = new Date(guestAll[i].bornDate).getTime();
                 guestAll.push(this.tour[i][j]);
               }
             }
@@ -1240,6 +1241,7 @@
                   this.tour[i][j].singlePrice = this.salePrice[i].price_02;
                 }
                 guestAll.push(this.tour[i][j]);
+                guestAll[i].bornDate = new Date(guestAll[i].bornDate).getTime();
               }
             }
             // let guest = [];
@@ -1876,7 +1878,7 @@
         this.ruleForm.merchantsSell = ""; //商户名称发生改变时，商户销售清空
         this.tableData2 = [];
         this.$http
-          .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+          .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/listname", {
             object: {
               selName: queryString3,
               isDeleted: 0,

@@ -97,7 +97,7 @@
       <el-table-column prop="name" label="申请人" align="center"></el-table-column>
       <el-table-column label="审批" width="150" align="center">
         <template slot-scope="scope">
-          <el-button @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button @click="handleJumpDetail(scope.$index, scope.row, 'nameIRefund')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -133,7 +133,7 @@
     nameINoIn: '/borrow/borrowDetails',
     nameIAdvance: '/borrow/borrowDetails',
     nameIReimburse: '/borrow/borrowDetails',
-    nameIRefund: '/borrow/borrowDetails',
+    nameIRefund: '/refund/refundDetails',
     nameISheet: '/borrow/borrowDetails',
   };
 
@@ -178,9 +178,11 @@
       }
     },
     methods: {
+      // 详情方法
       handleJumpDetail (index, row, source) {
-        let { paymentID, guid, instanceID } = row;
+        let { paymentID, guid, instanceID } = row; // 基本上都是给接口传参用
         let keepWorkItemId = null;
+
         // 取出当前选中的 workItemID 与后端返回的做比较
         this.noTaskArr.forEach(item => {
           if (row.guid === item.jq_ID) {
@@ -188,11 +190,22 @@
           }
         });
 
-        this.$router.push({ path: sourceMapJump[source], query: { pendingDetailPaymentID: paymentID, componentName: this.getWhichTab, optionsGuid: guid, instanceID: instanceID, workItemID: keepWorkItemId, whichTabName: this.whichTab } });
+        // 退款详情接口定义的 paymentID 为 id，没有进行统一。
+        if (source === 'nameIRefund') {
+          paymentID = row.id;
+          this.noTaskArr.forEach(item => {
+            if (row.instanceID === item.instanceID) {
+              keepWorkItemId = item.workItemID
+            }
+          });
+        }
+
+        this.$router.push({ path: sourceMapJump[source], query: { pendingDetailPaymentId: paymentID, componentName: this.getWhichTab, optionsGuid: guid, instanceID: instanceID, workItemID: keepWorkItemId, whichTabName: this.whichTab } });
       },
     }
   }
 </script>
+
 <style lang="scss" scoped>
   .distributor-content {
     width: 99%;

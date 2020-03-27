@@ -208,7 +208,7 @@
         <!-- 订单来源为线下直客的时候订单总额不等于已付金额时 加上islowPrice -->
         <el-button sign="sign"
           type="primary"
-          v-if="orderget.orderStatus==0||orderget.orderStatus==10||orderget.orderStatus==1"
+          v-if="orderget.orderStatus==0||orderget.orderStatus==10||orderget.orderStatus==1||orderget.orderStatus==8"
           @click="orderModification(orderget.orderStatus,orderget.occupyStatus)"
           :disabled="isChangeNumber || isLowPrice"
           class="confirm fr"
@@ -584,6 +584,7 @@ export default {
     },
 
     orderModification(status, cancle) {
+      console.log(status,'orderModification');
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -618,10 +619,10 @@ export default {
             }
             break;
           case 10:
-            url += "/material";
+           url += "/material";
             break;
           case 1:
-            for (let i = 0; i < this.salePrice.length; i++) {
+              for (let i = 0; i < this.salePrice.length; i++) {
               for (let j = 0; j < this.salePrice[i].length; j++) {
                 if (this.salePrice[i][j].cnName == "") {
                   this.$message.error("请补全出行人信息");
@@ -629,24 +630,26 @@ export default {
                   return;
                 } else {
                   //url = "/order/stat/api/econtract"; 下部分代码2020/03/17 添加 跳转合同页面 唐爱妮
-                    let result= {};
-                    let token= localStorage.getItem('token');
-                    let attrArr= ['userCode', 'name', 'topName', 'orgName'];
-                    let orderCode_j = this.orderget.orderCode;
-                    attrArr.reduce((total, current, index) => {
-                      let val= sessionStorage.getItem(current);
-                      total[current]= val;
-                      return total;
-                    }, result);
-                    let { userCode, name: userName, topName: company, orgName: deptName  }= result;
-                    window.open(`http://118.25.222.233:8000/#/agreement/agreement-type?orderCode=${orderCode_j}&userCode=${userCode}&userName=${userName}&company=${company}&deptName=${deptName}&token=${token}`); 
+                  
                 }
               }
             }
+             this.ordersave(1);
+              url += "/signcontract";
             // url += "/econtract";
             break;
-          case 2:
-            url += "/signcontract";
+         case 8:
+            let result= {};
+            let token= localStorage.getItem('token');
+            let attrArr= ['userCode', 'name', 'topName', 'orgName'];
+            let orderCode_j = this.orderget.orderCode;
+            attrArr.reduce((total, current, index) => {
+              let val= sessionStorage.getItem(current);
+              total[current]= val;
+              return total;
+            }, result);
+            let { userCode, name: userName, topName: company, orgName: deptName  }= result;
+            window.open(`http://118.25.222.233:8000/#/agreement/agreement-type?orderCode=${orderCode_j}&userCode=${userCode}&userName=${userName}&company=${company}&deptName=${deptName}&token=${token}`); 
             break;
         }
         // 订单工作流状态更新-作废订单
@@ -669,8 +672,9 @@ export default {
                 message: "提交成功",
                 type: "success"
               });
-              if (status === 1) {
-                this.ordersave(3);
+            
+              if (status === 1){
+                //this.ordersave(8);
               }
               if (status === 10) {
                 this.ordersave(1);
@@ -807,6 +811,12 @@ export default {
           this.statusEnd = "补充资料";
           this.statusBtn = '订单确认';
           
+          break;
+        case 8:
+          this.statusNow = "签订合同";
+          this.statusNext = "待出行";
+          this.statusEnd = "出行中";
+          this.statusBtn = '查看合同';
           break;
         case 9:
           this.statusNow = "作废订单";
@@ -1235,6 +1245,7 @@ export default {
                 .then(() => {
                     this.orderget.orderStatus = 10;
                     this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+                    this.ExistContract(this.orderget.orderCode)
                 })
                 .catch(() => {
                   this.$message({
@@ -1297,6 +1308,12 @@ export default {
               guest.push(this.salePrice[i][j]);
             }
           }
+          for(let j in guest){
+            if(guest[j].sxe == -1){
+              guest[j].sxe = 3
+            }
+
+          }
           obj.number= guest.length;
           // 第一次保存，赋值时间错
           if(typeof id=== 'object' && 'altKey' in id){
@@ -1322,9 +1339,6 @@ export default {
                     })
                     .then(res => {
                       if (res.data.isSuccess == true) {
-                        if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true){
-                              this.ExistContract(obj.orderCode)
-                        }
                         this.$message({
                           message: "更改成功",
                           type: "success"

@@ -7,7 +7,7 @@ export const SKU_PROCESS_STATUS = dictionaryMaker({
   CAN_LINE: { label: '上线', value: 3 }
 })
 
-export const SKU_LINI_STATUS = dictionaryMaker({
+export const SKU_LINE_STATUS = dictionaryMaker({
   UP_LINE: { label: '上线', value: 1 },
   DOWN_LINE: { label: '下线', value: 2 }
 })
@@ -23,12 +23,8 @@ export const SKU_PLAN_STATUS= dictionaryMaker({
   NOT_SHARE: { label: '非共享', value: 2},
 })
 
-export const getSkuPlanDTO= function(payload){
-  let { product_id, sku_id }= payload;
+export const getSkuPlanDTO= function(){
   return {
-    set_out_year: '',
-    set_out_month: '',
-    set_out_day: '',
     reserved_time: 24,
     sku_plan_deliver: [],
     sku_plan_insure: [],

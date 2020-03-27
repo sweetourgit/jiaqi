@@ -1,15 +1,20 @@
 <!-- 退款-详情 -->
 <template>
   <div class="loan-management">
+    <!-- 按钮组 -->
     <div style="text-align: right; margin:25px 20px 0 0;">
-      <el-button type="warning" plain  @click="handleCancel('refund')">取消</el-button>
+      <el-button @click="handleCancel" type="warning" plain>取消</el-button>
+      <el-button @click="handlePass" type="primary" plain>通过</el-button>
+      <el-button @click="handleRejected" type="danger" plain>驳回</el-button>
     </div>
+    <!-- 按钮组 END -->
+    <!-- 基本信息 -->
     <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
     <div>
       <div class="item-content">
-        <el-tag type="warning" v-if="refundList.refundStateType=='0'" class="distributor-status">申请退款</el-tag>
-        <el-tag type="danger" v-if="refundList.refundStateType=='1'" class="distributor-status">退款完成</el-tag>
-        <el-tag type="success" v-if="refundList.refundStateType=='2'" class="distributor-status">拒绝退款</el-tag>
+        <el-tag type="warning" v-if="refundList.refundStateType === '0'" class="distributor-status">申请退款</el-tag>
+        <el-tag type="danger" v-if="refundList.refundStateType === '1'" class="distributor-status">退款完成</el-tag>
+        <el-tag type="success" v-if="refundList.refundStateType === '2'" class="distributor-status">拒绝退款</el-tag>
       </div>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
@@ -28,8 +33,8 @@
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">退款方式:</div></el-col>
-          <el-col :span="17" v-if="refundList.refundType == 1"><div class="grid-del">部分退</div></el-col>
-          <el-col :span="17" v-if="refundList.refundType == 2"><div class="grid-del">全退</div></el-col>
+          <el-col :span="17" v-if="refundList.refundType === 1"><div class="grid-del">部分退</div></el-col>
+          <el-col :span="17" v-if="refundList.refundType === 2"><div class="grid-del">全退</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">总退款:</div></el-col>
@@ -68,6 +73,8 @@
         <el-col :span="6"></el-col>
       </el-row>
     </div>
+    <!-- 基本信息 END -->
+    <!-- 订单详情 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>订单详情</el-divider>
     <div>
       <el-row type="flex" class="row-bg" justify="space-around">
@@ -99,10 +106,12 @@
         </el-col>
       </el-row>
     </div>
+    <!-- 订单详情 END -->
+    <!-- 部分退款信息 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>部分退信息</el-divider>
     <div>
       <div class="item-content">
-        <el-tag type="success">还需退款: {{refundList.needRefundPrice}}</el-tag>
+        <el-tag type="success">还需退款: {{ refundList.needRefundPrice }}</el-tag>
       </div>
       <el-table :data="mark" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
         <el-table-column prop="enrollName" label="报名类型" align="center"></el-table-column>
@@ -112,130 +121,149 @@
         <el-table-column prop="idCard" label="身份证" align="center"></el-table-column>
         <el-table-column label="性别" align="center">
           <template slot-scope="scope">
-            <span v-if="scope.row.sex===0">男</span>
-            <span v-if="scope.row.sex===1">女</span>
-            <span v-if="scope.row.sex===3">未选择</span>
+            <span v-if="scope.row.sex === 0">男</span>
+            <span v-if="scope.row.sex === 1">女</span>
+            <span v-if="scope.row.sex === 3">未选择</span>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <!-- 部分退款信息 END -->
+    <!-- 审核结果 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <div>
-      <el-table :data="tableAudit" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
-        <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
-        <el-table-column prop="name" label="审批人" align="center"></el-table-column>
-        <el-table-column prop="typeStr" label="审批结果" align="center"></el-table-column>
-        <el-table-column prop="opinions" label="审批意见" align="center"></el-table-column>
+      <el-table :data="tableCourse" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
+        <el-table-column prop="createdTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
+        <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+        <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+        <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
       </el-table>
     </div>
-  <order-info :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-info>
+    <!-- 审核结果 END -->
+    <!-- 通过、驳回弹框 -->
+    <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list">
+      <textarea rows="8" v-model="approvalOpinion" style="overflow: hidden; width: 99%; margin: 0 0 20px 0;"></textarea>
+      <el-row type="flex" class="row-bg">
+        <el-col :span="8" :offset="18">
+          <el-button @click="handleApproveDialogCancel">取消</el-button>
+          <el-button @click="handleApproveDialogConfirm" type="primary">确定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <!-- 通过、驳回弹框 END -->
+    <!-- 订单信息 -->
+    <order-info :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-info>
+    <!-- 订单信息 END -->
   </div>
 </template>
 <script>
   import orderInfo from "./orderDetails";
-  import common from "./common";
+  import common from "../mixins/common";
+
   export default {
     name: "refundDetails",
     components: {
       orderInfo
     },
-    data() {
+    data () {
       return {
-        orderID:0,
-        orderVariable:0,
-        orderDialogType:0,
-        refundList:{},
-        tableDate:[],// 详情弹窗部分退信息表格
-        tableAudit:[],// 详情页面审核结果表格
-        orderCode:'',// 获取orderCode来获取审核结果
-        indentID:0,
-        multipleSelection: [], //选中的list
-        disbursementID:0, // 获取详情时支付账户的id
-        payName:'', // 选择支付账户，通过ID获取名字
-        nonPayment:0,//未付金额
-        mark:[],
-        instanceID:0,
-        keepComponentName: null
+        orderID: 0,
+        orderVariable: 0,
+        orderDialogType: 0,
+        refundList: {}, // 详情数据
+        tableDate: [], // 详情弹窗部分退信息表格
+        tableCourse: [], // 详情页面审核结果表格
+        indentID: 0,
+        approveDialogTitle: '', // 审批弹窗标题设置
+        approvalOpinion: '', // 审批意见
+        multipleSelection: [], // 选中的list
+        disbursementID: 0, // 获取详情时支付账户的id
+        payName: '', // 选择支付账户，通过ID获取名字
+        nonPayment: 0, // 未付金额
+        mark: [],
+        guid: '', // 接口用的guid
+        getWorkItemId: '', // 保存匹配的 workItemId
       };
     },
-    mixins: [common],
-    created(){
-      let passPaymentID = this.$route.query.doneDetailPaymentID
-      this.keepComponentName = this.$route.query.componentName
-      this.keepPaymentId = passPaymentID
-      this.getInvoice(passPaymentID);
+    mixins: [ common ],
+    created () {
+      this.getWorkItemId = this.$route.query.workItemID; // 工作流接口用
+      this.keepPaymentId = this.$route.query.pendingDetailPaymentId; // PaymentId 接口用
+      this.apiGetDetail(this.keepPaymentId);
     //    this.getOrder(this.refundList.orderID);
     },
     methods: {
-      getCellClass() {
+      getCellClass () {
         return "textAlign:center";
       },
-      changeFun(val) {
+      changeFun (val) {
         //保存选中项的数据
         this.multipleSelection = val;
       },
-      clickRow(row) {
+      clickRow (row) {
         //选中行复选框勾选
         this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
-        for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
-            return { "background-color": "#ecf5ff" }
+      rowClass ({row, rowIndex}) {  // 选中行样式改变
+        for(let i=0; i<this.multipleSelection.length; i++) {
+          if(this.multipleSelection[i].id === row.id){
+            return { "background-color": "#ecf5ff" };
           }
         }
       },
-      getJqId(result){ // 获取审批结果tableAudit
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetOpinions',{
-          "jq_id":result,
-          "jQ_Type":6,
+      // 获取审批结果tableAudit
+      getJqId ( paramsInstanceID) {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ_BY_InstanceID', {
+          "instanceId":paramsInstanceID,
         }).then(obj => {
-          this.tableAudit = [];
-          this.tableAudit = obj.data
-          console.log(this.tableAudit)
+          this.tableCourse = [];
+          this.tableCourse = obj.data.extend.instanceLogInfo;
         })
       },
-      getOrder(ID){ // 点击退款获取详情信息
+      // 点击退款获取详情信息
+      getOrder (paramsId) {
         this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
-          id:ID,
+          id: paramsId,
         }).then(res => {
-          if (res.data.isSuccess == true){
+          if (res.data.isSuccess === true) {
             let orderInfo = res.data.object;
-            if(this.refundList.refundStateType==1){
+            if (this.refundList.refundStateType === 1) {
               this.nonPayment = this.refundList.payable - (this.refundList.paid - this.refundList.realRefundPrice);
-            }else{
+            } else {
               this.nonPayment = this.refundList.payable - this.refundList.paid;
             }
-            this.nonPayment=this.nonPayment>0?this.nonPayment:0;
+            this.nonPayment = this.nonPayment>0?this.nonPayment:0;
           }
         })
       },
-      getInvoice(ID){//详情弹窗
+      // 获取详情
+      apiGetDetail (paramsId) {
         this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
-          id: ID
+          id: paramsId
         }).then(res => {
-          if (res.data.isSuccess == true) {
-            this.refundList = res.data.object;
-            this.orderCode = res.data.object.orderCode;
-            this.indentID = res.data.object.orderID;
-            this.instanceID = res.data.object.instanceID;
-            console.log(res.data.object.instanceID)
-            this.getJqId(this.orderCode);
-            this.tableDate = res.data.object.guests;
-            this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
-            this.disbursementID = res.data.object.payID;
-            this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",{
-              id:this.disbursementID,
+          if (res.data.isSuccess === true) {
+            let keepRes = res.data.object;
+            this.refundList = keepRes;
+            this.guid = keepRes.orderCode;
+            this.indentID = keepRes.orderID;
+            this.tableDate = keepRes.guests;
+            this.getJqId(keepRes.instanceID);
+            this.mark = keepRes.mark === "" ? [] : JSON.parse(keepRes.mark);
+            this.disbursementID = keepRes.payID;
+            this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
+              id: this.disbursementID,
             }).then(res => {
-              if(res.data.isSuccess == true){
-                this.payName = res.data.object.title;
+              if (res.data.isSuccess === true) {
+                this.payName = keepRes.title;
               }
             })
           }
+        }).catch(err => {
+          console.log( err )
         });
       },
-      orderDetails(i){
+      orderDetails (i) {
         this.orderVariable++;
         this.orderDialogType = i;
         this.orderID = this.indentID;

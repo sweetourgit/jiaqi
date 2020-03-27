@@ -61,7 +61,7 @@ $fontHeight: 32px;
     position: absolute;
     top: -14px;
     left: 0;
-    transform: translateX(-50%) scale(0.8);
+    transform: translateX(-50%);
     color: #aeaeae;
   }
   .plan::after{
@@ -70,7 +70,7 @@ $fontHeight: 32px;
     position: absolute;
     top: -14px;
     right: 0;
-    transform: translateX(50%) scale(0.8);
+    transform: translateX(50%);
     color: #409EFF;
   }
 }

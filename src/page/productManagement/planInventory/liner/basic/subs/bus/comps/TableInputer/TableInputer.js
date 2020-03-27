@@ -1,3 +1,5 @@
+import style from './index.scss';
+
 const TableInputerFactory= function($){
   return {
     props: {
@@ -24,6 +26,9 @@ const TableInputerFactory= function($){
     render: function (h) {
       const show= this.inEdit? 
         <div style="display: flex;padding: 0 20px;">
+          <el-button size="mini" type="info" icon="el-icon-close" style="margin: 0;padding: 7px 7px;border-radius: 0;"
+            onClick={ this.close }>
+          </el-button>
           { 
             h('el-input', {
               ref: 'inputRef',
@@ -42,14 +47,12 @@ const TableInputerFactory= function($){
                   let { keyCode }= event;
                   if(keyCode && keyCode=== 13) this.submitVal();
                 }
-              }
+              },
+              'class': 'table-inputer'
             }) 
           }
-          <el-button size="mini" type="success" icon="el-icon-check" style="padding: 7px 7px;"
+          <el-button size="mini" type="success" icon="el-icon-check" style="padding: 7px 7px;border-radius: 0;"
             onClick={ this.submitVal }>
-          </el-button>
-          <el-button size="mini" type="info" icon="el-icon-close" style="margin: 0;padding: 7px 7px;"
-            onClick={ this.close }>
           </el-button>
         </div>
           : 
@@ -99,6 +102,7 @@ const TableInputerFactory= function($){
     methods: {
       submitVal(){
         let { pattern, validator, asyncValidator, adaptor, message, successCb }= this.options;
+        let oldVal= this.value;
         let val= this.val;
         if(pattern && !pattern.test(val)){
           this.$message.error(message || '格式错误');
@@ -112,7 +116,7 @@ const TableInputerFactory= function($){
         if(asyncValidator) return asyncValidator(val).then(() => {
           this.$emit('input', val);
           this.inEdit= false;
-          if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this) });
+          if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this), oldVal });
         })
         .catch((err) => {
           if(err) this.$message.error(err);
@@ -120,7 +124,7 @@ const TableInputerFactory= function($){
         })
         this.$emit('input', val);
         this.inEdit= false;
-        if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this) });
+        if(successCb) successCb.call(null, { vm: this, index: $.getIndex(this.block, this), oldVal });
       },
 
       focus(){

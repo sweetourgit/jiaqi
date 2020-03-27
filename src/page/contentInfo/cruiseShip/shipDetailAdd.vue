@@ -74,12 +74,14 @@ export default {
         
       }else{
         
-        if(this.status[index] != 'wait'){
+        if(this.status[index] != 'wait' && this.status[index] != ''){
           for(let i = 0; i < index; i++){
             this.$set(this.status, i, 'success');
           }
           this.activeIndex = index;
           this.$set(this.status, this.activeIndex, 'finish');
+        }else{
+          this.$message.warning("请按步骤填写邮轮信息！");
         }
       }
       

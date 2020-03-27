@@ -79,9 +79,13 @@ export default {
   methods: {
     getProduct(){
       this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/get",{
-        id:sessionStorage.getItem('productID')
+        id:sessionStorage.getItem('commodityID')
       }).then(res => {
-          console.log(res.data.object)
+          if(res.data.isSuccess == true){
+            this.ruleForm.important = res.data.object.important;
+            this.ruleForm.includes = res.data.object.cost;
+            this.ruleForm.costExclusive = res.data.object.notCost;
+          }
       })
     },
     addProduct(formName){
@@ -92,7 +96,7 @@ export default {
           this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/save",
             {
               object: {
-                "id": sessionStorage.getItem('productID'),
+                "id": sessionStorage.getItem('commodityID'),
                 "visaTitle": newsObject[0].name, // 签证名称
                 "strengths": newsObject[1].highlightWords, // 产品亮点词
                 "visaPod": newsObject[2].region, // 签证国家地区传ID

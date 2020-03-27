@@ -456,7 +456,7 @@
       },
       // 审批通过成功时回调
       handlePassFn () {
-        this.keepTabId.length = 0;
+        this.keepTabId = []; // bug 原因在于这个数组 没有清空成功
         console.log(this.keepTabId)
         // 转换下，存到keepTabId里
         this.keepExpense.forEach(item => {

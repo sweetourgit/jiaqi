@@ -4,7 +4,7 @@
     <div class="demo-input-suffix">
       <div>
         <!-- <span class="search-title" style="margin:0 0 0 35px;">退款单号</span>
-        <el-input placeholder="请输入" v-model="refundNumber" class="group-no" style="width:200px;"></el-input> 
+        <el-input placeholder="请输入" v-model="refundNumber" class="group-no" style="width:200px;"></el-input>
         <span class="search-title">申请人</span>
         <el-input placeholder="请输入" v-model="applicant" class="group-no" style="width:200px;"></el-input> -->
         <span class="search-title">申请日期</span>
@@ -83,7 +83,7 @@ export default {
         value:'4',
         label:'完成退款'
       }],
-      tableDate:[],//表格 
+      tableDate:[],//表格
       pageshow: true,// 分页
       pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
       pageIndex: 1, // 设定当前页数
@@ -111,7 +111,7 @@ export default {
       h = h < 10 ? "0" + h : h;
       var minute = date.getMinutes();
       minute = minute < 10 ? "0" + minute : minute;
-      var second = date.getSeconds();  
+      var second = date.getSeconds();
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
@@ -122,7 +122,7 @@ export default {
         return '';
       }
       return moment(date).format('YYYY-MM-DD')
-    },      
+    },
     search(){ // 搜索
       this.current = 1;
       //this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
@@ -169,6 +169,8 @@ export default {
       this.dialogType = i;
       this.refundID = id;
       this.workID = this.workItemID[index];
+      console.log(this.workID)
+      console.log(this.workItemID)
       //this.workID = String(this.workItemID); // 把workItemID数组类型转换成字符串类型
     },
     getFlowModel(){ // 获取id=6的FlowModel

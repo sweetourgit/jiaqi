@@ -1,15 +1,17 @@
 <template>
-  <el-table border size="mini" style="width: 100%; margin-top: 50px;"
+  <el-table border size="small" style="width: 100%; margin-top: 50px;"
     :data="tableData" 
     :highlight-current-row="false"
     header-row-class-name="row-header">
-    <el-table-column label="标题" prop="id" header-align="center" align="center" width="800"></el-table-column>
-    <el-table-column label="售卖价格" prop="sign" header-align="center" align="center"></el-table-column>
+    <el-table-column label="保险" prop="title" header-align="center" align="center"></el-table-column>
+    <el-table-column label="售卖价格" prop="sale_price" header-align="center" align="center" width="200"></el-table-column>
     <el-table-column label="操作" prop="quota" header-align="center" align="center" width="150">
       <template slot-scope="scope">
-        <template slot-scope="scope">
-          <el-checkbox v-model="scope.row.radio">选中</el-checkbox>
-        </template>
+        <el-checkbox 
+          v-model="scope.row.selected"
+          :disabled="parentState=== 'readonly'">
+          选定
+        </el-checkbox>
       </template>
     </el-table-column>
   </el-table>
@@ -18,11 +20,19 @@
 <script>
 import { insureListAll } from '@/page/productManagement/planInventory/liner/api'
 
+let cache;
+let insurePromise;
 export default {
+  props: ['parentState'],
 
   mounted(){
     let { product_id }= this.$route.query;
-    insureListAll({ product_id }).then(res => this.tableData= res.map(el => (el.selected= false) && el));
+    insurePromise= insureListAll({ product_id, line_status: 1 }).then(res => Promise.resolve(res));
+  },
+
+  beforeDestroy(){
+    cache= null;
+    insurePromise= null;
   },
 
   data(){
@@ -32,9 +42,31 @@ export default {
   },
 
   methods: {
-    init(){},
+    
+    init(selected){
+      this.tableData.forEach(el => el.selected= false);
+      insurePromise.then(list => {
+        this.tableData= list.map(el => this.adaptor(el, selected));
+        cache= this.$deepCopy(this.tableData);
+      });
+    },
+
+    adaptor(insure, selected){
+      let find= selected.find(el => el.id=== insure.id);
+      insure.selected= find? find.ischeck=== 1: false;
+      return insure;
+    },
+
     notChange(){
-      return true;
+      return this.$checkLooseEqual(this.tableData, cache);
+    },
+
+    getData(){
+      let result= [];
+      this.tableData.forEach(el => {
+        if(el.selected) result.push({ insure_id: el.id });
+      })
+      return result;
     }
   }
 

@@ -252,7 +252,7 @@ export default {
     },
     pageList(){
       this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/list", {
-        id:sessionStorage.getItem('productID')
+        id:sessionStorage.getItem('commodityID')
       }).then(res =>{
         if(res.data.isSuccess == true){
           if(res.data.objects){
@@ -647,7 +647,7 @@ export default {
       this.rowList();
     },
     nextMessage(formName){ // 点击下一步进入签证信息页面
-      this.$router.push({ path: "/visaImportant" }); // 基本信息添加完跳转到重要信息页面
+      this.$router.push({ path: "/editVisaImportant" }); // 基本信息添加完跳转到重要信息页面
     },
     cancel(){
       this.$confirm("是否取消本次添加产品?", "提示", {

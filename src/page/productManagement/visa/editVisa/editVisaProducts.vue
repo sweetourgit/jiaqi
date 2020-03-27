@@ -52,7 +52,7 @@
               <span class="redStar_01">*</span>
               <div class="img_upload">
                 <template v-for="(item, index) in ruleForm.avatarImages">
-                  <img class="img_list" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShow(item)">
+                  <img class="img_list" :key="item.id" src="item.url" alt="" @click="imgClickShow(item)">
                   <div class="img_div" :key="index" @click="imgDelete(item)">x</div>
                 </template>
               </div>
@@ -74,7 +74,7 @@
               <span class="redStar_02">*</span>
               <div class="img_upload_slideshow">
                 <template v-for="(item, index) in ruleForm.shuffling">
-                  <img class="img_list" id="showDiv" :key="item.img_ID" src="@/assets/image/pic.png" alt="" @click="imgClickShowAvatar(item)">
+                  <img class="img_list" id="showDiv" :key="item.pictureID" src="item.picturePath" alt="" @click="imgClickShowAvatar(item)">
                   <div class="img_div" :key="index" @click="imgDeleteAvatar(item)">x</div>
                 </template>
               </div>
@@ -94,12 +94,12 @@
             <!--轮播图上传END-->
             <el-form-item label="送签地" prop="sendVisa">
 	          <el-radio-group v-model="ruleForm.sendVisa">
-	            <el-radio v-for="(sendVisa,index) in authData" class="sendArea" :label="sendVisa" :key="sendVisa.id" name="type">{{sendVisa.areaName}}</el-radio>
+	            <el-radio v-for="(sendVisa,index) in authData" class="sendArea" :label="sendVisa.id" :key="sendVisa.id" name="type">{{sendVisa.areaName}}</el-radio>
 	          </el-radio-group>
             </el-form-item>
             <el-form-item label="签证受理地区" prop="visaRegion">
               <el-checkbox-group v-model="ruleForm.visaRegion">
-                <el-checkbox v-for="(visaRegion,index) in regionData" :label="visaRegion" :key="visaRegion.id" name="type" class="regionList">{{visaRegion.areaName}}</el-checkbox>
+                <el-checkbox v-for="(visaRegion,index) in regionData" :label="visaRegion.id" :key="visaRegion.id" name="type" class="regionList">{{visaRegion.areaName}}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <el-form-item label="签证类型" prop="visaType">
@@ -258,7 +258,9 @@ export default {
   created() {
   	this.getSendVisa();
   	this.getVisaRegion();
-    this.getProduct();
+    setTimeout(() => {
+      this.getProduct();
+    }, 200);
   },
   methods: {
     getProduct(){ // 获取一条产品信息
@@ -271,7 +273,16 @@ export default {
               id:data.visaPod
             }).then(res => {
               if(res.data.isSuccess == true){
-                this.region = res.data.object.areaName
+                this.region = res.data.object.areaName;
+                this.areaID = res.data.object.id 
+                this.ruleForm.region = this.region; // 签证国家地区
+              }
+            })
+            this.$http.post(this.GLOBAL.serverSrc + "/tpk/picture/api/get",{ // 获取头图
+              id:data.pictureID
+            }).then(res => {
+              if(res.data.isSuccess == true){
+                this.ruleForm.avatarImages.push(res.data.object);
               }
             })
             this.ruleForm.name = data.visaTitle; // 产品名称
@@ -279,13 +290,12 @@ export default {
             this.ruleForm.highlightWords1 = data.strengths[1].strength; // 亮点词
             this.ruleForm.highlightWords2 = data.strengths[2].strength; // 亮点词
             this.ruleForm.highlightWords3 = data.strengths[3].strength; // 亮点词
-            this.ruleForm.region = this.region; // 签证国家地区
-            //this.ruleForm.sendVisa = data.signature[0].visaHandleID + ''; // 送签地
-            this.ruleForm.sendVisa = [];
-            this.ruleForm.sendVisa.push(data.signature[0].visaHandleID + '')
+            this.pictureID = data.pictureID; // 初始获取头图ID
+            this.ruleForm.shuffling = data.pepeatpic; // 轮播图
+            this.ruleForm.sendVisa = data.signature[0].visaHandleID; // 送签地
             this.ruleForm.visaRegion = []; // 受理地区
             for(let i=0; i < data.reception.length;i++){
-             this.ruleForm.visaRegion.push(data.reception[i].visaHandleID + '')
+             this.ruleForm.visaRegion.push(data.reception[i].visaHandleID)
             }
             this.ruleForm.visaType =data.visaType + ''; // 签证类型
             this.ruleForm.visaProcessType = data.technologicalType + ''; // 签证流程类型
@@ -347,17 +357,18 @@ export default {
 		 }) 
   	},
     addFigure(){ // 点击头图上传按钮，显示图片弹窗
-      this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
+      this.imgData = this.ruleForm.avatarImages.map(v => v.pictureID);
       this.imgUpload = true;
     },
     // 图片添加
     checkList(data) {
       this.ruleForm.avatarImages = data.map(v => {
-      this.pictureID = data[0].id // 选择头图获取ID
+        this.pictureID = data[0].id // 选择头图获取ID
         return {
-          img_ID: v.id,
+          pictureID: v.id,
         }
       })
+      //this.pictureID = this.ruleForm.avatarImages[0].img_ID // 选择头图获取ID
     },
     imgClickShow(data){ // 点击图片查看预览 
       // this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
@@ -393,7 +404,7 @@ export default {
     },
     // 上传按钮
     handleImgUploadAvatar() {
-      this.imgDataAvatar = this.ruleForm.shuffling.map(v => v.img_ID);
+      this.imgDataAvatar = this.ruleForm.shuffling.map(v => v.pictureID);
       this.imgUploadAvatar = true;
     },
     // 点击删除图片
@@ -407,13 +418,18 @@ export default {
     },
     // 图片添加
     checkListAvatar(data) {
-      this.ruleForm.shuffling = data.map(v => {
-        console.log(v)
-        return {
-          img_ID:v.id,
-          img_url:v.url,
-        }
+      data.forEach( v => {
+        this.ruleForm.shuffling.push({
+          pictureID:v.id,
+          picturePath:v.url,
+        })
       })
+      // this.ruleForm.shuffling = data.map(v => {
+      //   return {
+      //     pictureID:v.id,
+      //     picturePath:v.url,
+      //   }
+      // })
     },
     isInfoAvatar(data) {
       this.isInfo = data;
@@ -422,26 +438,35 @@ export default {
       }
     },
     nextMessage(formName){
-      let sendAdrress = []; // 送签地
-      sendAdrress.push(this.ruleForm.sendVisa)
-      let visaSend = [{
-        podName : sendAdrress[0].areaName,
-        visaHandleID:sendAdrress[0].id
-      }]
-      let acceptRegion = [] ;  // 受理地区
+       // 送签地
+      let visaSend=[];
+      for(let i=0;i<this.authData.length;i++){
+       if(this.ruleForm.sendVisa==this.authData[i].id){
+         visaSend.push({
+           podName : this.authData[i].areaName,
+           visaHandleID:this.authData[i].id
+         })
+       }
+      }
+      // 受理地区
+      let acceptRegion = [] ;  
       for(let i = 0; i < this.ruleForm.visaRegion.length; i++){
-        acceptRegion.push({
-          podName:this.ruleForm.visaRegion[i].areaName,
-          visaHandleID:this.ruleForm.visaRegion[i].id,
-        })
+        for(let j=0;j<this.regionData.length;j++){        
+           if(this.ruleForm.visaRegion[i]==this.regionData[j].id){
+            acceptRegion.push({
+              podName:this.regionData[j].areaName,
+              visaHandleID:this.regionData[j].id,
+            })
+          }
+        }
       }
-      let shuffling = [] ;  // 受理地区
-      for(let i = 0; i < this.ruleForm.shuffling.length; i++){
-        shuffling.push({
-          pictureID:this.ruleForm.shuffling[i].img_ID,
-          picturePath:this.ruleForm.shuffling[i].img_url,
-        })
-      }
+      // let shuffling = [] ;  // 轮播图
+      // for(let i = 0; i < this.ruleForm.shuffling.length; i++){
+      //   shuffling.push({
+      //     pictureID:this.ruleForm.shuffling[i].img_ID,
+      //     picturePath:this.ruleForm.shuffling[i].img_url,
+      //   })
+      // }
       if(this.ruleForm.avatarImages.length !== 1){
         this.isInfoImg = true;
       }
@@ -473,7 +498,7 @@ export default {
           },{
             pictureID:this.pictureID
           },{
-            shuffling:shuffling
+            shuffling:this.ruleForm.shuffling
           },{
             signature:visaSend
           },{
@@ -493,6 +518,7 @@ export default {
           },{
             overview:this.ruleForm.content
           }];
+          console.log(basis)
           let basisInformation = JSON.stringify(basis)
           sessionStorage.setItem('message',basisInformation);
           this.$router.push({ path: "/editVisaMessage" }); // 基本信息添加完跳转到签证信息页面
