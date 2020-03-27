@@ -75,7 +75,7 @@ export default {
   filters: {
     clearanceTimeFilter(clearanceTime){
       let result= CLEARANCE_TIME_OPTIONS.find(el => el.value=== clearanceTime);
-      return result? result.label: '';
+      return result? result.label: '(暂无)';
     },
     grounpCodeFilter(sku){
       let { tour_no_prefix, tour_no_suffix }= sku;
