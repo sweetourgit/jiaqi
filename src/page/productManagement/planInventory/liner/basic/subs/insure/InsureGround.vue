@@ -39,7 +39,8 @@
               @click="openEditor(scope.row)">
               修改
             </el-button>
-            <el-button type="text">
+            <el-button type="text"
+              @click="delInsureAction(scope.row.id)">
               删除
             </el-button>
             <el-button type="text"
@@ -60,7 +61,7 @@
 </template>
 
 <script>
-import { insureListAll, insureOnOffLine } from '@/page/productManagement/planInventory/liner/api'
+import { insureListAll, insureOnOffLine, delInsure } from '@/page/productManagement/planInventory/liner/api'
 import insureEditor from './comps/InsureEditor'
 
 export default {
@@ -95,6 +96,15 @@ export default {
 
     insureAddHandler(insure){
       this.tableData.push(this.insureAdaptor(insure));
+    },
+
+    delInsureAction(id){
+      this.$confirm('确定要删除这条保险信息吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .then(() => { delInsure({ id }).then(this.init); });
     },
 
     insureOnOffLineAction(insure){

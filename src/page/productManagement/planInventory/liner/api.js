@@ -133,6 +133,21 @@ export const saveInsure= function(payload){
   })
 }
 
+// 删除保险
+export const delInsure= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/delinsure", payload)
+    .then(res => {
+      let { code, message }= res.data;
+      if(code!== 200) throw ('删除保险失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 export const insureOnOffLine= function(payload){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/onlineoffline", payload)
