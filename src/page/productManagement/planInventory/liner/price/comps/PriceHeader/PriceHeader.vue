@@ -163,12 +163,13 @@ export default {
 
     // 日期发生变化
     emitDateChange(date){
+      let oldCalendar= [...this.selectedCalendar];
       this.setPlanStatusAsyncInterceptor({
         newState: null, 
         oldState: this.parentState, 
         sureCb: () => {
           this.selectedCalendar.forEach(el => el.selected= false);
-          oldCalendar.forEach(el => el.selected= true);
+          oldCalendar.forEach(el => el.selected= true); 
           this.selectedCalendar= oldCalendar;
         }, 
         cancelCb: () => {

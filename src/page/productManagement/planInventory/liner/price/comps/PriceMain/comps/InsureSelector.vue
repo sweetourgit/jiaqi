@@ -22,7 +22,7 @@ export default {
 
   mounted(){
     let { product_id }= this.$route.query;
-    insurePromise= insureListAll({ product_id }).then(res => Promise.resolve(res));
+    insurePromise= insureListAll({ product_id, line_status: 1 }).then(res => Promise.resolve(res));
   },
 
   beforeDestroy(){
