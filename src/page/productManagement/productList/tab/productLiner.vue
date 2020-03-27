@@ -23,12 +23,30 @@
       <el-row type="flex" class="row-bg">
         <el-col :span="8">
           <el-form-item label="出发地:">
-            <el-input v-model="ruleForm.origin" placeholder="请输入"></el-input>
+            <!-- <el-input v-model="ruleForm.origin" placeholder="请输入"></el-input> -->
+            <el-autocomplete
+              class="search_input"
+              v-model="ruleForm.origin"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入"
+              :trigger-on-focus="false"
+              @select="handleSelect1"
+              @blur="blurHand1"
+            ></el-autocomplete>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="目的地:">
-            <el-input v-model="ruleForm.destination" placeholder="请输入"></el-input>
+            <!-- <el-input v-model="ruleForm.destination" placeholder="请输入"></el-input> -->
+            <el-autocomplete
+              class="search_input"
+              v-model="ruleForm.destination"
+              :fetch-suggestions="querySearch"
+              placeholder="请输入"
+              :trigger-on-focus="false"
+              @select="handleSelect2"
+              @blur="blurHand2"
+            ></el-autocomplete>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -81,7 +99,7 @@
       </el-table-column>
       <el-table-column prop="status" label="erp状态" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.line_status == 1 || scope.row.line_status == 2">上线</span>
+          <span v-if="scope.row.line_status == 1 || scope.row.line_status == 3">上线</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
@@ -91,8 +109,8 @@
           <el-button @click="changeStatus(scope.row)" type="text" size="small" class="table_details">更改状态</el-button>
           <el-button @click="copyFun(scope.row)" type="text" size="small" class="table_details">复制</el-button>
           <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">退改政策</el-button>暂时不写 -->
-          <el-button @click="complete(scope.row)" type="text" size="small" class="table_details">补充完整</el-button>
-          <el-button @click="edit(scope.row)" type="text" size="small" class="table_details">编辑</el-button>
+          <el-button @click="complete(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.cur_steps != 7">补充完整</el-button>
+          <el-button @click="edit(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.cur_steps == 7">编辑</el-button>
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
@@ -120,12 +138,15 @@ export default {
         priceHigh: '',
         priceLow: '',
         origin: '',
+        originID: '',
         destination: '',
+        destinationID: '',
         status: '',
         operator: '',
         operatorID: ''
       }, // 搜索字段
       operatorList: [],
+      destinationList: [],
       tableData: [], // table表格字段
       pageCurrent: 1, // 当前页数
       pageSize: 10, // 每页条数
@@ -179,6 +200,82 @@ export default {
         }
       }
     },
+    querySearch(queryString2, cb) {
+      this.destinationList = [];
+      this.$http.post(this.GLOBAL.serverSrcZb + '/universal/area/api/fuzzy', {
+        "object": {
+          areaName: queryString2
+        }
+      }, {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(res => {
+          console.log(res);
+        for (let i = 0; i < res.data.objects.length; i++) {
+          this.destinationList.push({
+            "value": res.data.objects[i].areaName,
+            "id": res.data.objects[i].id
+          })
+        }
+        var results = queryString2 ? this.destinationList.filter(this.createFilter(queryString2)) : [];
+        cb(results)
+      }).catch(err => {
+        console.log(err);
+      })
+    },
+    createFilter(queryString5) {
+      return (restaurant) => {
+        return (restaurant.value);
+      }
+    },
+    handleSelect1(item) {
+      this.ruleForm.originID = item.id;
+      this.ruleForm.origin = item.value;
+      this.destinationList = [];
+    },
+    handleSelect2(item) {
+      this.ruleForm.destinationID = item.id;
+      this.ruleForm.destination = item.value;
+      this.destinationList = [];
+    },
+    
+    blurHand1(){
+      const that = this;
+      let ida = '';
+      if(that.ruleForm.origin == ''){
+        that.ruleForm.originID = '';
+      }else{
+        this.destinationList.forEach(function (item, index, arr) {
+          if(that.ruleForm.origin == item.value){
+            ida = item.id;
+          }
+        });
+        if(ida){
+          that.ruleForm.originID = ida;
+        }else{
+          that.ruleForm.originID = '';
+        }
+      }
+    },
+    blurHand2(){
+      const that = this;
+      let ida = '';
+      if(that.ruleForm.destination == ''){
+        that.ruleForm.destinationID = '';
+      }else{
+        this.destinationList.forEach(function (item, index, arr) {
+          if(that.ruleForm.destination == item.value){
+            ida = item.id;
+          }
+        });
+        if(ida){
+          that.ruleForm.destinationID = ida;
+        }else{
+          that.ruleForm.destinationID = '';
+        }
+      }
+    },
     // 搜索
     searchHandInside(){
       this.loadData();
@@ -191,7 +288,9 @@ export default {
         priceHigh: '',
         priceLow: '',
         origin: '',
+        originID: '',
         destination: '',
+        destinationID: '',
         status: '',
         operator: '',
         operatorID: ''
@@ -215,7 +314,7 @@ export default {
         name: '邮轮/ 添加',
         query: {
           "id": row.id,
-          "step": row.cur_steps
+          "step": 0
         }
       });
     },
@@ -293,7 +392,7 @@ export default {
         type: "warning"
       }).then(() => {
         this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/del", {
-          "id": row.id
+          "product_id": row.id
         }, ).then(function(response) {
           // console.log('获取邮轮公司detail',response);
           if (response.data.code == '200') {
@@ -336,12 +435,12 @@ export default {
         "product_name": this.ruleForm.productName,
         "price_min": this.ruleForm.priceLow,
         "price_max": this.ruleForm.priceHigh,
-        "departure_id": this.ruleForm.origin,
-        "destination_id": this.ruleForm.destination,
+        "departure_id": this.ruleForm.originID,
+        "destination_id": this.ruleForm.destinationID,
         "line_status": this.ruleForm.status,
         "create_uid": this.ruleForm.operatorID,
       }, ).then(function(response) {
-        console.log('获取chanpni',response);
+        // console.log('获取chanpni',response);
         if (response.data.code == '200') {
           that.tableData = response.data.data.list;
           that.totalNum = response.data.data.total - 0;
@@ -412,7 +511,8 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-    }
+    },
+
   },
   created() {
     this.loadData();

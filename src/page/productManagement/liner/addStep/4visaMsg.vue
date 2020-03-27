@@ -5,85 +5,181 @@
       <el-button class="el-button" type="primary" @click="saveFun(2)">下一步</el-button>
       <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
     </div>
-    <el-button type="warning" @click='addCabin' class="addBtn">添加</el-button>
-    <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
-      <el-table-column prop="id" label="类型" align="center">
-        <template slot-scope="scope"> 
-          <div v-for='item in typeArr' :key="item.id">
-            <span v-if='item.id == scope.row.type'>{{item.name}}</span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" label="名称" align="center">
-      </el-table-column>
-      <el-table-column prop="number" label="容纳人数" align="center">
-      </el-table-column>
-      <el-table-column prop="floor" label="楼层" align="center">
-      </el-table-column>
-      <el-table-column prop="consumption" label="消费" align="center">
-      </el-table-column>
-      <el-table-column prop="opening_hours" label="开放时间" align="center">
-      </el-table-column>
-      <el-table-column prop="introduce" label="简介" align="center">
-      </el-table-column>
-      <el-table-column prop="id" label="图片" align="center">
-        <template slot-scope="scope"> 
-          <ul class="picList">
-            <li v-for="item in scope.row.pics" :key="item.index">
-              <a :href="item.url" target="_blank">{{item.pic_name}}</a>
-            </li>
-          </ul>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center">
-        <template slot-scope="scope"> 
-          <el-button @click="edit(scope.row)" type="text" size="small" class="table_details">编辑</el-button>
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- <div class="block">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
-      </el-pagination>
-    </div> -->
-    <cabinAdd :dialogFormVisible='dialogFormVisible' :info='info' @close="closeAdd"></cabinAdd>
+    <div style="margin-bottom: 20px;">
+      <el-button
+        size="small"
+        @click="addTab(editableTabsValue)"
+      >
+        添加签证信息
+      </el-button>
+    </div>
+    <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab" @tab-click="loadList()">
+      <el-tab-pane
+        v-for="item in editableTabs"
+        :key="item.name"
+        :label="item.title"
+        :name="item.name"
+      >
+        <p class="topTitle"><span>*</span>标题：</p>
+        <el-input v-model="item.content.title" class="inputWidth" placeholder="请输入" style="width: 68%;"></el-input>
+        <el-button type="warning" @click='addVisa' class="addBtn">新增一行</el-button>
+        <el-radio-group v-model="item.content.crowdID" style="margin-bottom:12px;" @change="loadList()">
+          <el-radio-button v-for="item in typeArr" :key="item.id" :label="item.id">{{item.name}}</el-radio-button>
+        </el-radio-group>
+
+        <el-table :data="item.content.tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
+          <el-table-column prop="type" label="类型" align="center">
+          </el-table-column>
+          <el-table-column prop="name" label="名称" align="center">
+          </el-table-column>
+          <el-table-column prop="describe" label="描述" align="center">
+          </el-table-column>
+          <el-table-column prop="must" label="必须" align="center">
+            <template slot-scope="scope"> 
+              <span v-if="scope.row.must == 1">是</span>
+              <span v-if="scope.row.must == 2">否</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="enclosure" label="附件" align="center">
+            <template slot-scope="scope"> 
+              <a :href="GLOBAL.serverSrcYL + scope.row.enclosure" target="blank">{{scope.row.enclosure}}</a>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button @click="edit(scope.row)" type="text" size="small" class="table_details">编辑</el-button>
+              <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+    </el-tabs>
+    
+    <visaMsgAdd :dialogFormVisible='dialogFormVisible' :info='info' @close="closeAdd"></visaMsgAdd>
+    <viseCopy :dialogFormVisibleCopy='dialogFormVisibleCopy' @close="closeCopy"></viseCopy>
   </div>
 </template>
 <script type="text/javascript">
-import cabinAdd from '@/page/contentInfo/cruiseShip/detailAddStep/playMsgAdd.vue'
+import visaMsgAdd from '@/page/productManagement/liner/addStep/4visaMsgAdd.vue'
+import viseCopy from '@/page/productManagement/liner/addStep/4visaMsgCopy.vue'
 import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "curiseShip",
   components: {
-    cabinAdd
+    visaMsgAdd,
+    viseCopy
   },
   data() {
     return {
-      tableData: [],
-      pageCurrent: 1,
-      pageSize: 10,
-      total: 0,
+      editableTabsValue: '1',
+      editableTabs: [{
+        title: '签证信息 1',
+        name: '1',
+        content: {
+          "id": '',
+          "title": '',
+          "crowdID": '1',
+          "visa_id": '',
+          "tableData": []
+        }
+      }],
       dialogFormVisible: false,
       info: '',
+      dialogFormVisibleCopy: false,
       typeArr: [
         {
           id: "1",
-          name: "船上娱乐"
+          name: "在职"
         },{
           id: "2",
-          name: "运动健身"
+          name: "自由职业"
         },{
           id: "3",
-          name: "海上休闲"
+          name: "在校学生"
         },{
           id: "4",
-          name: "其他"
+          name: "退休"
+        },{
+          id: "5",
+          name: "学龄前儿童"
         }
       ]
     }
   },
   computed: {},
   methods: {
+    removeTab(targetName){
+      console.log(targetName);
+      const that = this;
+      let deleteID = '', deleteTitle = '';
+      this.editableTabs.forEach(function(item, index, arr){
+        if(item.name == targetName){
+          deleteID = item.content.id;
+          deleteTitle = item.title;
+        }
+      })
+      this.$confirm("确认删除 "+ deleteTitle +"?", "提示", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/product/product/delproductvisa', {
+          "id": deleteID
+        }).then(res => {
+          // console.log(res);
+          if (res.data.code == 200) {
+              that.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              that.loadData();
+          } else {
+              if(res.data.message){
+              that.$message({
+                  type: 'warning',
+                  message: res.data.message
+              });
+              }else{
+              that.$message({
+                  type: 'warning',
+                  message: '删除失败'
+              });
+              }
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      }).catch( action => {
+        
+      });
+    },
+    addTab(){
+      this.dialogFormVisibleCopy = true;
+    },
+    closeCopy(str){
+      // alert(str);
+      if(str == 'copy'){
+        this.dialogFormVisibleCopy = false;
+        this.loadData();
+      }else if(str == 'add'){
+        this.dialogFormVisibleCopy = false;
+        let newTabName = (this.editableTabs.length + 1).toString();
+        this.editableTabs.push({
+          title: '签证信息' + newTabName,
+          name: newTabName,
+          content: {
+            "title": '',
+            "crowdID": '1',
+            "visa_id": '',
+            "tableData": []
+          }
+        });
+        this.editableTabsValue = newTabName;
+      }else if(str == 'cancle'){
+        this.dialogFormVisibleCopy = false;
+      }
+    },
     // 表格header设置
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -103,22 +199,26 @@ export default {
         that.saveFun(1);
       }).catch( action => {
         if(action === 'cancel'){
-          this.$router.push({
-            path: '/cruiseShip/cruiseShipDetail',
-            name: '邮轮管理/详情',
-            query: {
-              "id": this.$route.query.id
-            }
+          that.$router.push({
+            path: '/productList/productLiner',
+            name: '邮轮'
           });
-          localStorage.removeItem('liner_id');
         }
       });
     },
     saveFun(type){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-entertainment/btnsave", {
+      let visaList = [];
+      this.editableTabs.forEach(function(item, index, arr){
+        visaList.push({
+          "id": item.id,
+          "title": item.content.title
+        })
+      })
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/saveproductvisa", {
         "button_type": type,
-        "id": localStorage.getItem('liner_id'),
+        "product_id": this.$route.query.id,
+        "visa": visaList,
         "create_uid": sessionStorage.getItem('id'),
         "org_id": sessionStorage.getItem('orgID')
       }, ).then(function(response) {
@@ -132,13 +232,9 @@ export default {
             // alert('保存');
             // that.$router.back();
             that.$router.push({
-              path: '/cruiseShip/cruiseShipDetail',
-              name: '邮轮管理/详情',
-              query: {
-                "id": that.$route.query.id
-              }
+              path: '/productList/productLiner',
+              name: '邮轮'
             });
-            localStorage.removeItem('liner_id');
           }else if(type == '2'){
             // alert('下一步');
             // localStorage.setItem('liner_id', response.data.data.liner_id);
@@ -155,21 +251,37 @@ export default {
         console.log(error);
       });
     },
-    addCabin(){
-      this.dialogFormVisible = true;
+    addVisa(){
+      const num = parseInt(this.editableTabsValue - 1);
+      // alert(num);
+      if(this.editableTabs[num].content.title != '' || this.editableTabs[num].content.visa_id != ''){
+        this.dialogFormVisible = true;
+        this.info = {
+          title: this.editableTabs[num].content.title,
+          visa_id: this.editableTabs[num].content.visa_id
+        }
+      }else{
+        this.$message.warning("请填写标题后创建签证详情！");
+      }
+      
     },
     edit(row){
+      const num = parseInt(this.editableTabsValue - 1);
       this.dialogFormVisible = true;
-      this.info = row.id;
+      this.info = {
+        id: row.id,
+        title: this.editableTabs[num].content.title,
+        visa_id: this.editableTabs[num].content.visa_id
+      };
     },
     closeAdd(){
       this.dialogFormVisible = false;
       this.info = '';
-      this.loadData();
+      this.loadList();
     },
     deleteFun(row){
       const that = this;
-      this.$confirm("是否删除本条玩乐信息?", "提示", {
+      this.$confirm("是否删除本条签证信息?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -177,7 +289,7 @@ export default {
         this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-entertainment/dellinerentertainment", {
           "id": row.id
         }, ).then(function(response) {
-          console.log('del信息',response);
+          // console.log('del信息',response);
           if (response.data.code == '200') {
             that.$message.success("删除成功！");
             that.loadData();
@@ -195,28 +307,32 @@ export default {
         that.$message.warning("已取消~");
       });
     },
-    handleSizeChange(){
-
-    },
-    handleCurrentChange(){
-
-    },
-    loadData(){
+    loadList(){
       const that = this;
-      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-entertainment/listall", {
-        "liner_id": localStorage.getItem('liner_id')
+      const num = parseInt(this.editableTabsValue - 1);
+      let visaID = '';
+      if(this.editableTabs[num].content.visa_id){
+        visaID = this.editableTabs[num].content.visa_id;
+      }else if(localStorage.getItem("visa_id")){
+        visaID = parseInt(localStorage.getItem("visa_id"));
+      }else{
+        this.editableTabs[num].content.tableData = [];
+        return;
+      }
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product-visa-info/listall", {
+        "visa_id": visaID,
+        "crowd_id": this.editableTabs[num].content.crowdID
       }, ).then(function(response) {
-        console.log('playMsg信息',response);
+        // console.log('签证详情',response);
         if (response.data.code == '200') {
-          that.tableData = response.data.data.list;
-          that.total = response.data.data.list.length;
-          that.tableData.forEach(function(item, index, arr){
-            item.opening_hours = formatDate(new Date(item.opening_hours)).split(" ")[1];
-
-            item.pics.forEach(function(item, index, arr){
-              item.url = that.GLOBAL.serverSrcYL + item.pic_url;
-            })
-          })
+          that.editableTabs[num].content.tableData = response.data.data.list;
+          if(response.data.data.list.length != 0){
+            that.editableTabs[num].content.visa_id = response.data.data.list[0].visa_id;
+            if(localStorage.getItem("visa_id")){
+              localStorage.removeItem("visa_id");
+            }
+          }
+          
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);
@@ -227,10 +343,59 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-    }
+    },
+    loadData(){
+      const that = this;
+      
+      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/getproductvisa", {
+        "product_id": this.$route.query.id
+      }, ).then(function(response) {
+        // console.log('签证信息',response);
+        if (response.data.code == '200') {
+          if(response.data.data.list.length != 0){
+            that.editableTabs = [];
+            response.data.data.list.forEach(function(item, index, arr){
+              that.editableTabs.push({
+                title: '签证信息'+ (index + 1),
+                name: (index + 1).toString(),
+                content: {
+                  "id": item.id,
+                  "title": item.title,
+                  "crowdID": '1',
+                  "visa_id": item.visa_info[0].visa_id,
+                  "tableData": item.visa_info
+                }
+              })
+            })
+
+            that.loadList();
+          }else{
+            that.editableTabs = [{
+              title: '签证信息 1',
+              name: '1',
+              content: {
+                "id": '',
+                "title": '',
+                "crowdID": '1',
+                "visa_id": '',
+                "tableData": []
+              }
+            }]
+          }
+        } else {
+          if(response.data.message){
+            that.$message.warning(response.data.message);
+          }else{
+            that.$message.warning("加载数据失败~");
+          }
+        }
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
   },
   created() {
-    if(localStorage.getItem('liner_id')){
+    if(this.$route.query.id){
       this.loadData();
     }
   },
@@ -246,6 +411,13 @@ export default {
     .el-button{
       float: right;
       margin-right: 18px;
+    }
+  }
+  .topTitle{
+    display: inline-block;
+    width: 88px;
+    span{
+      color: red;
     }
   }
   .addBtn{

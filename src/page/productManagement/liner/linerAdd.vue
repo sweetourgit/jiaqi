@@ -77,12 +77,14 @@ export default {
         }
         
       }else{
-        for(let i = 0; i < index; i++){
-          this.$set(this.status, i, 'success');
-        }
-        if(this.status[index] == 'success'){
+        if(this.status[index] != 'wait' && this.status[index] != ''){
+          for(let i = 0; i < index; i++){
+            this.$set(this.status, i, 'success');
+          }
           this.activeIndex = index;
           this.$set(this.status, this.activeIndex, 'finish');
+        } else {
+          this.$message.warning("请按步骤填写产品信息！");
         }
       }
       
@@ -93,7 +95,7 @@ export default {
     if(this.$route.query.step || this.$route.query.step == 0){
       if(this.$route.query.step == 0){
         for(let i = 0; i < 7; i++){
-          console.log(i);
+          // console.log(i);
           this.$set(this.status, i, 'success');
         }
         this.$set(this.status, 0, 'finish');

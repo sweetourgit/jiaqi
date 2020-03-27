@@ -93,7 +93,7 @@
             closable
             :disable-transitions="false"
             @close="handleClose(tag)">
-            {{tag.lable_name}}
+            {{tag}}
           </el-tag>
           <el-input
             class="input-new-tag"
@@ -108,42 +108,20 @@
           <el-button v-else class="button-new-tag" size="small" @click="showInput">添加</el-button>
         </el-form-item>
         <el-form-item label="头图：" prop="width" label-width="140px">
-          <el-upload
-            :file-list="fileListPic"
-            :action="UploadUrl()"
-            :headers="headers"
-            :on-success="handleSuccess"
-            :on-error="handleError" 
-            :on-remove="handleRemove" 
-            :before-remove="beforeRemove"
-            :on-exceed="handleExceed"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :limit="1">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
+          <image-input
+            :list="ruleForm.logoPic"
+            :numLimit="1"
+            @wakeup-material="logoSelectHandler"
+            @remove-handler="removeLogoHandler"
+          ></image-input>
         </el-form-item>
         <el-form-item label="轮播图：" prop="width" label-width="140px">
-          <el-upload
-            :file-list="fileListVideo"
-            :action="UploadUrl1()"
-            :headers="headers"
-            :on-success="handleSuccess1" 
-            :on-error="handleError1" 
-            :on-remove="handleRemove1" 
-            :before-remove="beforeRemove1" 
-            :on-exceed="handleExceed1"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :limit="6">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
+          <image-input
+            :list="ruleForm.pic"
+            :numLimit="6"
+            @wakeup-material="picSelectHandler"
+            @remove-handler="removePicHandler"
+          ></image-input>
           <span>轮播图3-6张</span>
         </el-form-item>
         <el-form-item label="出游人群：" prop="person" label-width="140px">
@@ -166,14 +144,18 @@
         </el-form-item>
       </div>
     </el-form>
+    <material-list
+      ref="materialListRef">
+    </material-list>
   </div>
 </template>
 <script type="text/javascript">
+import imageInput from '@/page/contentInfo/cruiseShip/comp/image-input'
+import materialList from '@/page/contentInfo/cruiseShip/comp/material-list'
+import { getPictureAction } from '@/page/productManagement/listInfo/api.js'
 export default {
   name: "curiseShipBaseMsg",
-  components: {
-    
-  },
+  components: { imageInput, materialList },
   data() {
     const hasWord = (rule, value, callback) => {
       if (this.ruleForm.word1 == '' && this.ruleForm.word2 == '' && this.ruleForm.word3 == '' && this.ruleForm.word4 == '') {
@@ -220,7 +202,9 @@ export default {
         person: [],
         theme: [],
         days: '',
-        introduce: ''
+        introduce: '',
+        logoPic: [],
+        pic: []
       },
       originTag: [],
       destinationTag: [],
@@ -261,7 +245,6 @@ export default {
         days: [{ required: true, message: '提前天数不能为空!', trigger: 'blur' }],
       },
       fileListPic: [],
-      fileListVideo: [],
       // 上传图片查看大图功能
       dialogImageUrl: '',
       dialogVisible: false,
@@ -380,82 +363,72 @@ export default {
     handleInputConfirm() {
       let inputValue = this.ruleForm.operationLabel;
       if (inputValue) {
-        this.labelTag.push({
-          "lable_name": inputValue
-        });
+        this.labelTag.push(inputValue);
       }
       this.inputVisible = false;
       this.ruleForm.operationLabel = '';
     },
-    
-    // 上传凭证 function 图片
-    UploadUrl(){
-      return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-    },
-    handleSuccess(response, file, fileList){
-      // console.log(fileList);
-      // console.log(file);
-      if(response.code == 200){
-        this.fileListPic.push(response.data);
-        this.fileListPic.forEach(function(item, index, arr){
-          item.urlCopy = item.url;
-          item.url = fileList[index].url;
-        })
-      }else{
-        if(response.message){
-          this.$message.warning(response.message);
-        }else{
-          this.$message.warning('文件上传失败');
+    // 头图选择
+    logoSelectHandler(idList){
+      let cb= (list) => {
+        if(list.length > 1){
+          this.$message.error(`头图数量限制为1张，当前选择${list.length}张，将截取第一张`);
+          list= list.splice(0, 1);
         }
+        console.log(list);
+        this.getPictureFun(this.ruleForm.logoPic, list);
+        console.log(this.ruleForm.logoPic);
       }
+      this.$refs.materialListRef.wakeup(idList, cb);
     },
-    handleError(err, file, fileList){
-      this.$message.warning(`文件上传失败，请重新上传！`);
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-      this.fileListPic = fileList;
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`平台仅支持上传一张头图！`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+    
+    // 头图删除
+    removeLogoHandler(){
+      alert("删除！");
+      this.ruleForm.logoPic = [];
     },
 
-    // 上传凭证 function 视频
-    UploadUrl1(){
-      return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-    },
-    handleSuccess1(response, file, fileList){
-      // console.log(response);
-      // console.log(file);
-      if(response.code == 200){
-        this.fileListVideo.push(response.data);
-        this.fileListVideo.forEach(function(item, index, arr){
-          item.urlCopy = item.url;
-          item.url = fileList[index].url;
-        })
-      }else{
-        if(response.message){
-          this.$message.warning(response.message);
-        }else{
-          this.$message.warning('文件上传失败');
+    // 轮播图选择
+    picSelectHandler(idList){
+      let cb= (list) => {
+        // console.log(list);
+        if((this.ruleForm.pic.length + list.length) > 6){
+          this.$message.warning("最多支持六张图片上传！");
+          list = list.splice(0, (6 - this.ruleForm.pic.length));
         }
+        this.getPictureFun(this.ruleForm.pic, list);
       }
+      this.$refs.materialListRef.wakeup(idList, cb);
     },
-    handleError1(err, file, fileList){
-      this.$message.warning(`文件上传失败，请重新上传！`);
+
+    // 轮播图删除
+    removePicHandler(i){
+      console.log(this.ruleForm.pic, i);
+      this.ruleForm.pic.splice(i, 1);
+      console.log(this.ruleForm.pic);
     },
-    handleRemove1(file, fileList) {
-      console.log(file, fileList);
-      this.fileListVideo = fileList;
-    },
-    handleExceed1(files, fileList) {
-      this.$message.warning(`平台支持最多上传六张图片！`);
-    },
-    beforeRemove1(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+
+    getPictureFun(obj, list){
+      // console.log(list);
+      // let imgArr = [];
+      list.forEach(el => {
+        // console.log(el);
+        getPictureAction.bind(this)(el).then(res => {
+          console.log(res);
+          const item = {
+            id: el,
+            url: res.url
+          }
+          obj.push(item);
+        }).catch(err => {
+          const item = {
+            id: el,
+            url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+          }
+          obj.push(item);
+        })
+      })
+      
     },
 
     // 保存方法
@@ -485,26 +458,26 @@ export default {
               })
             }
             let filePic = [];
-            if(that.fileListPic.length == 0){
+            if(that.ruleForm.logoPic.length == 0){
               that.$message.warning("头图不能为空！");
               return;
             }else{
-              that.fileListPic.forEach(function (item, index, arr) {
+              that.ruleForm.logoPic.forEach(function (item, index, arr) {
                 filePic.push({
                   pic_id: item.id,
-                  pic_url: item.urlCopy
+                  pic_url: item.url
                 });
               })
             }
             let fileArr = [];
-            if(that.fileListVideo.length < 3){
+            if(that.ruleForm.pic.length < 3){
               that.$message.warning("轮播图最少上传3张！");
               return;
             }else{
-              that.fileListVideo.forEach(function (item, index, arr) {
+              that.ruleForm.pic.forEach(function (item, index, arr) {
                 fileArr.push({
                   pic_id: item.id,
-                  pic_url: item.urlCopy
+                  pic_url: item.url
                 });
               })
             }
@@ -523,6 +496,13 @@ export default {
                 theme_id: item
               })
             })
+
+            let labelArr = [];
+            this.labelTag.forEach(function(item, index, arr){
+              labelArr.push({
+                "lable_name": item
+              })
+            })
             this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/saveproductbasic", {
               "product_id": this.$route.query.id,
               "button_type": type,
@@ -534,7 +514,7 @@ export default {
               "destination": this.destinationTag,
               "returnplace": this.returnDesTag,
               "confirm_type": this.ruleForm.orderType,
-              "lable": this.labelTag,
+              "lable": labelArr,
               "head_image": filePic,
               "carousel_image": fileArr,
               "crowd": personArr,
@@ -609,17 +589,10 @@ export default {
             path: '/productList/productLiner',
             name: '邮轮'
           });
-          // localStorage.removeItem('liner_id');
         }
         
       });
       
-    },
-
-    handlePictureCardPreview(file) {
-      console.log(file);
-      this.dialogImageUrl = 'http://yl.dayuntong.com' + file.url;
-      this.dialogVisible = true;
     },
 
     loadData(){
@@ -637,33 +610,39 @@ export default {
             word4: response.data.data.info.strength[3] ? response.data.data.info.strength[3].strength : '',
             company_id: response.data.data.info.company_id,
             liner_id: response.data.data.info.liner_id,
-            orderType: response.data.data.info.confirm_type,
-            operationLabel: response.data.data.info.lable,
+            orderType: response.data.data.info.confirm_type.toString(),
+            operationLabel: '',
             person: [],
             theme: [],
             days: response.data.data.info.advance_enroll_day,
-            introduce: response.data.data.info.product_overview
+            introduce: response.data.data.info.product_overview,
+            pic: [],
+            logoPic: []
           };
+          response.data.data.info.lable.forEach(function(item, index, arr){
+            that.labelTag.push(item.lable_name);
+          })
+          // console.log(that.ruleForm.operationLabel)
           response.data.data.info.crowd.forEach(function(item, index, arr){
-            that.ruleForm.person.push(item.crowd_id);
+            that.ruleForm.person.push(item.crowd_id.toString());
           })
-          console.log(that.ruleForm.person)
+          // console.log(that.ruleForm.person)
           response.data.data.info.theme.forEach(function(item, index, arr){
-            that.ruleForm.theme.push(item.theme_id);
+            that.ruleForm.theme.push(item.theme_id.toString());
           })
-          console.log(that.ruleForm.theme)
+          // console.log(that.ruleForm.theme)
           that.originTag = response.data.data.info.departure;
           that.destinationTag = response.data.data.info.destination;
           that.returnDesTag = response.data.data.info.returnplace;
-          that.fileListPic = response.data.data.info.head_image;
-          that.fileListPic.forEach(function(item, index, arr){
-            item.url = 'http://yl.dayuntong.com' + item.pic_url;
-            item.urlCopy = item.pic_url;
+          that.ruleForm.logoPic = response.data.data.info.head_image;
+          that.ruleForm.logoPic.forEach(function(item, index, arr){
+            item.url = item.pic_url;
+            item.id = item.pic_id;
           })
-          that.fileListVideo = response.data.data.info.carousel_image;
-          that.fileListVideo.forEach(function(item, index, arr){
-            item.url = 'http://yl.dayuntong.com' + item.pic_url;
-            item.urlCopy = item.pic_url;
+          that.ruleForm.pic = response.data.data.info.carousel_image;
+          that.ruleForm.pic.forEach(function(item, index, arr){
+            item.url = item.pic_url;
+            item.id = item.pic_id;
           })
         } else {
           if(response.data.message){
