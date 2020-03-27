@@ -111,6 +111,7 @@ export default {
         product_id,
         create_uid: parseFloat(id),
         org_id: parseFloat(orgID),
+        line_status: 2
       }
     }
   }

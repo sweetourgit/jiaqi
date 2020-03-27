@@ -7,7 +7,7 @@ export const SKU_PROCESS_STATUS = dictionaryMaker({
   CAN_LINE: { label: '上线', value: 3 }
 })
 
-export const SKU_LINI_STATUS = dictionaryMaker({
+export const SKU_LINE_STATUS = dictionaryMaker({
   UP_LINE: { label: '上线', value: 1 },
   DOWN_LINE: { label: '下线', value: 2 }
 })

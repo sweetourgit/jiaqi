@@ -1,6 +1,6 @@
 <style lang="scss" scoped>
 .page{
-
+  padding-bottom: 80px;
 }
 </style>
 

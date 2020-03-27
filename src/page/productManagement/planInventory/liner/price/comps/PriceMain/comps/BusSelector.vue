@@ -29,7 +29,7 @@ export default {
 
   mounted(){
     let { product_id }= this.$route.query;
-    deliverPromise= deliverListAll({ product_id }).then(res => Promise.resolve(res))
+    deliverPromise= deliverListAll({ product_id, line_status: 1 }).then(res => Promise.resolve(res))
   },
 
   beforeDestroy(){
@@ -45,12 +45,15 @@ export default {
 
   methods: {
     init(selected){
-      deliverPromise.then(list => this.tableData= list.map(el => this.adaptor(el, selected)));
-      cache= this.$deepCopy(this.tableData);
+      deliverPromise.then(list => {
+        this.tableData= list.map(el => this.adaptor(el, selected));
+        cache= this.$deepCopy(this.tableData);
+      });
     },
 
     adaptor(deliver, selected){
-      deliver.selected= !!selected.find(el => el.deliver_id=== deliver.id);
+      let find= selected.find(el => el.id=== deliver.id);
+      deliver.selected= find? find.ischeck=== 1: false;
       return deliver;
     },
 

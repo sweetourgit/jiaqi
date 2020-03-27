@@ -7,7 +7,11 @@
     <el-table-column label="售卖价格" prop="sale_price" header-align="center" align="center" width="200"></el-table-column>
     <el-table-column label="操作" prop="quota" header-align="center" align="center" width="150">
       <template slot-scope="scope">
-        <el-checkbox v-model="scope.row.selected">选中</el-checkbox>
+        <el-checkbox 
+          v-model="scope.row.selected"
+          :disabled="parentState=== 'readonly'">
+          选定
+        </el-checkbox>
       </template>
     </el-table-column>
   </el-table>
@@ -19,10 +23,11 @@ import { insureListAll } from '@/page/productManagement/planInventory/liner/api'
 let cache;
 let insurePromise;
 export default {
+  props: ['parentState'],
 
   mounted(){
     let { product_id }= this.$route.query;
-    insurePromise= insureListAll({ product_id }).then(res => Promise.resolve(res));
+    insurePromise= insureListAll({ product_id, line_status: 1 }).then(res => Promise.resolve(res));
   },
 
   beforeDestroy(){
@@ -39,14 +44,16 @@ export default {
   methods: {
     
     init(selected){
-      console.log(selected)
       this.tableData.forEach(el => el.selected= false);
-      insurePromise.then(list => this.tableData= list.map(el => this.adaptor(el, selected)));
-      cache= this.$deepCopy(this.tableData);
+      insurePromise.then(list => {
+        this.tableData= list.map(el => this.adaptor(el, selected));
+        cache= this.$deepCopy(this.tableData);
+      });
     },
 
     adaptor(insure, selected){
-      insure.selected= !!selected.find(el => el.insure_id=== insure.id);
+      let find= selected.find(el => el.id=== insure.id);
+      insure.selected= find? find.ischeck=== 1: false;
       return insure;
     },
 

@@ -36,7 +36,10 @@
           @click="addHandler">
           提交
         </el-button>
-        <el-button type="info" size="mini">返回</el-button>
+        <el-button type="info" size="mini"
+          @click="backHandler">
+          返回
+        </el-button>
       </div>
     </header>
     <PriceMain ref="priceMain"
@@ -108,6 +111,18 @@ export default {
       });
     },
 
+    backHandler(){
+      let { product_id, liner_id }= this.$route.query;
+      let path= '/product/planInventory/liner/basic';
+      if(this.notChange()) return this.$router.push({ path, query: { product_id, liner_id } });
+      this.$confirm('存在数据变动，是否保存?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      .catch(() => this.$router.push({ path, query: { product_id, liner_id } }));
+    },
+
     notChange(){
       let bol= this.$refs.priceMain.notChange();
       return bol;
@@ -115,7 +130,7 @@ export default {
 
     emitParentStatus({ state, selected }){
       this.editState= state;
-      if(state=== 'edit') return this.$refs.priceMain.init(selected.plan);
+      if(state=== 'edit' || state=== 'readonly') return this.$refs.priceMain.init(selected.plan);
       this.$refs.priceMain.init();
     }
   }
