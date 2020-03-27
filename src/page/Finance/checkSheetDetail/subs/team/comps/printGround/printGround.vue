@@ -271,6 +271,9 @@ table {
       <!-- 注释编辑 -->
       <mark-form ref="markForm"></mark-form>
     </footer>
+    <Review>
+      
+    </Review>
   </div>
 </template>
 
@@ -282,7 +285,7 @@ import basicForm from "./subs/basicForm";
 import expenseForm from "./subs/expenseForm";
 import expenseEditForm from "./subs/expenseEditForm";
 import markForm from "./subs/markForm";
-
+import Review from './subs/review.vue'
 export default {
   components: {
     incomeBar,
@@ -291,7 +294,8 @@ export default {
     basicForm,
     expenseForm,
     expenseEditForm,
-    markForm
+    markForm,
+    Review
   },
 
   filters: {
@@ -359,7 +363,6 @@ export default {
 
   methods: {
     init(printData, pageType) {
-     
       let {
         incomes,
         expenses,
@@ -428,7 +431,7 @@ export default {
     wakeupMark(index) {
       this.$refs.markForm.wakeup(this.incomes[index]);
     },
- //(groupCode)用于拼接生成储存草稿的唯一标识
+    //(groupCode)用于拼接生成储存草稿的唯一标识
     awakeBasicForm(groupCode) {
       let { id, guideName, localName } = this.pd;
       this.$refs.basicForm.wakeup(
@@ -455,13 +458,13 @@ export default {
       !isSave && title && this.otherIncomes.push(assignObj);
       this.changeHandler();
     },
- //(groupCode)用于拼接生成储存草稿的唯一标识
+    //(groupCode)用于拼接生成储存草稿的唯一标识
     awakeExpenseForm() {
       this.$refs.expenseForm.wakeup(this.expenses);
     },
 
     awakeEditForm(expense) {
-      this.$refs.expenseEditForm.wakeup(expense,this.pd);
+      this.$refs.expenseEditForm.wakeup(expense, this.pd);
     },
 
     expenseSave(payload) {

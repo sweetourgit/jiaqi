@@ -105,16 +105,18 @@ export default {
 
   methods: {
     open() {
-      // this.$ls.clear()
       let that = this;
       //是个坑 勿动
       let submitCopy = this.getSubmitForm;
-      //判断当前表单是否修改
-      let isChanged = this.isChanged(submitCopy);
+      // this.isSave?function(){}
+      let isChanged = this.isSave
+        ? this.isChangedEdit(submitCopy)
+        : this.isChanged(submitCopy);
       if (isChanged) this.changed = false;
       for (let item in that.getSubmitForm) {
-        //supplierID 通常情况下有值(不能作为判断已修改的条件)
-        //判断当前表单是否为空或者当前表单是否有修改
+        //判断当前 item不为supplierID(点击新增按钮 自动有值，妨碍判断未填表单)
+        //其他item项不为null
+        //changed 改变状态为已改变
         if (
           item != "supplierID" &&
           that.getSubmitForm[item] != null &&
@@ -127,73 +129,115 @@ export default {
               type: "warning"
             })
             .then(() => {
+              let type = that.isSave ? "edit" : "add";
               //坑 勿动
               that.submitForm = submitCopy;
+              //保存后 改变状态为false
               this.changed = false;
-              //保存草稿到缓存
-              that.$ls.set(that.groupCode, JSON.stringify(submitCopy));
+              let setName = type == "edit" ? submitCopy.supplierID : "";
+              that.$ls.set(
+                that.groupCode + type + setName,
+                JSON.stringify(submitCopy)
+              );
+              that.$refs.submitForm.resetFields();
               that.$message({
                 type: "success",
                 message: "保存成功!"
               });
             })
             .catch(() => {
-              //若是未保存 则清除缓存 并关闭当前模态框
               that.$message({
                 type: "info",
                 message: "已取消保存"
               });
             });
           this.handleClose();
-          //跳出遍历 这里的遍历逻辑可能有问题 不耽误使用
+          //这里的false 只为跳出循环
           return false;
         }
       }
-      //若未填 则关闭当前
       this.handleClose();
     },
     wakeup(expense, { groupCode }) {
+      let that = this;
       this.groupCode = groupCode;
       this.isSave = !!expense;
       this.supplierSelected = this.isSave;
       this.state = true;
-      //判断当前是否通过编辑进入(isSave=true通过编辑进入;isSave=false通过新增进入)
-      this.expenseCache = this.isSave ? expense : this.getDraft();
-      if (this.expenseCache) {
+      //isSave 通过操作 编辑进入 返expense不是返
+      this.expenseCache = this.isSave
+        ? this.getDraftForEdit(expense)
+        : this.getDraft();
+      if (this.expenseCache == true) {
         console.log("表单不重新渲染");
-        // this.changed = false;
+        this.supplierSelected = true;
       } else {
         console.log("表单重新渲染");
-        this.$refs.submitForm.resetFields();
-        Object.keys(this.submitForm).forEach(
-          attr => (this.submitForm[attr] = this.expenseCache[attr])
-        );
+        Object.keys(this.submitForm).forEach(attr => {
+          this.submitForm[attr] = that.expenseCache[attr];
+        });
       }
     },
-
+    //获取编辑表单的草稿
+    getDraftForEdit(expense) {
+      //判断当前是否有对应数据
+      if (
+        JSON.parse(
+          this.$ls.get(this.groupCode + "edit" + expense.supplierID)
+        ) != null
+      ) {
+        //重置submitForm 表单
+        let submitForm = this.getExpenseDTO();
+        //取出数据并赋值给submitForm 这里因为没回关闭或保存表单都会重置表单 故用数据进行赋值对比表单是否有变化
+        let copy = JSON.parse(
+          this.$ls.get(this.groupCode + "edit" + expense.supplierID)
+        );
+        Object.keys(submitForm).forEach(attr => {
+          if (copy[attr] != undefined) {
+            submitForm[attr] = copy[attr];
+          }
+        });
+        submitForm["price"] = submitForm["arrearsPrice"];
+        //如果当前数据对比上回表单无修改则不重新渲染
+        if (JSON.stringify(submitForm) == JSON.stringify(expense)) {
+          this.changed = false;
+          return expense;
+          //若有修改 则返回数据 重新渲染
+        } else if (this.$ls.get(this.groupCode + "edit" + expense.supplierID)) {
+          this.changed = true;
+          return JSON.parse(
+            this.$ls.get(this.groupCode + "edit" + expense.supplierID)
+          );
+        }
+      }
+      return expense;
+    },
     temporaryVariable() {
       this.expenseCache = null;
     },
-    //打开表单时调用，判断是否有草稿
+    //获取添加表单的草稿
     getDraft() {
-      //缓存表单唯一标识为 groupCode (应使用guid;未提交表单暂时得不到guid,暂时用groupCode代替)
-      if (this.$ls.get(this.groupCode)) {
-        //判断当前缓存中的数据与当前submit是否相同(判断用户上次关闭填写组件是否有修改)
-        let isChangeed = -this.isChanged(this.submitForm);
-        //若isChangeed=true 则返回false 对应重新渲染表单
-        if (isChangeed) !isChangeed;
+      //当前groupCode所对应的数据不为空
+      if (this.$ls.get(this.groupCode + "add")) {
+        //判断是否改变
+        let isChangeed = this.isChanged(this.submitForm);
+        //为true 则返回true 代表未改变 则表单不重新渲染
+        if (isChangeed) {
+          return isChangeed;
+        }
         let copy = this.getExpenseDTO();
         this.expenseCache = copy;
+        //使expenseCache=groupCode所对应的数据
         Object.keys(this.expenseCache).forEach(item => {
-          if (JSON.parse(this.$ls.get(this.groupCode))[item])
-            this.expenseCache[item] = JSON.parse(this.$ls.get(this.groupCode))[
-              item
-            ];
+          if (JSON.parse(this.$ls.get(this.groupCode + "add"))[item])
+            this.expenseCache[item] = JSON.parse(
+              this.$ls.get(this.groupCode + "add")
+            )[item];
         });
+        // 修改rule 中的必选验证
         this.supplierSelected = true;
         return this.expenseCache;
       }
-      //若没有草稿则 重置表单
       return this.getExpenseDTO();
     },
 
@@ -201,6 +245,8 @@ export default {
       let that = this;
       this.$refs.submitForm.validate(result => {
         if (!result) return;
+        //若为true 代表当前表单对比上次没有修改 重置expenseCache属性值
+        if (that.expenseCache == true) that.expenseCache = that.getExpenseDTO();
         Object.keys(this.submitForm).forEach(attr => {
           this.expenseCache[attr] = this.submitForm[attr];
         });
@@ -214,16 +260,21 @@ export default {
           isSave: this.isSave
         });
         this.handleClose();
-        //表单保存后 修改状态为false
+        //保存成功后 改变状态为false 这里的changed 与 isChanged() 所对应的不是一个
+        //当时changed是准备当做isChanged() 用 后期应该是忘了changed属性 又写个函数
         this.changed = false;
+        //保存后清除数据
+        let type = this.isSave ? "edit" : "add";
+        let setName=type=='edit'? this.submitForm.supplierID:''
+        let remove = this.$ls.remove(
+          this.groupCode + type +setName
+        );
         this.$refs.submitForm.resetFields();
-        //表单提交后 清楚本地草稿缓存
-        let remove = this.$ls.remove(this.groupCode);
+
+        
       });
     },
-
     handleClose(status) {
-      // this.$refs.submitForm.resetFields();
       this.temporaryVariable();
       this.state = false;
     },
@@ -279,9 +330,16 @@ export default {
       if (this.supplierSelected && this.submitForm.supplier) return cb();
       cb(new Error(rule.message));
     },
-    //用于判断当前表单是否改变
+    //判断当前表单对比上次填写 是否有改变
     isChanged(data) {
-      return this.$ls.get(this.groupCode) == JSON.stringify(data);
+      return this.$ls.get(this.groupCode + "add") == JSON.stringify(data);
+    },
+    //判断当前表单对比上次填写 是否有改变
+    isChangedEdit(data) {
+      return (
+        this.$ls.get(this.groupCode + "edit" + data.supplierID) ==
+        JSON.stringify(data)
+      );
     }
   },
   //watch 有坑  computed能用
