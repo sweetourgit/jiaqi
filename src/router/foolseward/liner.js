@@ -24,7 +24,20 @@ const liner= [
       keepAlive: true,
       auth: true
     }
-  }
+  },
+
+  /**
+   * @description: 团期计划
+   */
+  {
+    path: '/regimentPlan2/liner',
+    component: () => import('@/page/productManagement/regimentPlan/children/liner'),
+    name: '产品管理 /团期计划/ 游轮',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  }  
 ]
 
 export default liner
