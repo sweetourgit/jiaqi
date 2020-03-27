@@ -31,7 +31,7 @@ import { singleSkuInfo } from '@/page/productManagement/planInventory/liner/api'
 let cache;
 export default {
 
-  props: ['state'],
+  // props: ['state'],
 
   components: { BusSelector, InsureSelector, PriceGround },
 
@@ -41,13 +41,20 @@ export default {
 
   data(){
     return {
+      state: null,
       reserved_time: 24,
     }
   },
 
   methods: {
-    init(plan){
+    init({ plan, state }){
+      let oldState= this.state;
+      this.state= state;
+      // 无选或连续多选
+      if(!state || (oldState=== state && oldState=== 'add')) return;
+      // 有计划
       if(plan) return singleSkuInfo({ id: plan.id }).then(this.initSuffix);
+      // 无计划
       this.initSuffix(getSkuPlanDTO());
     },
 

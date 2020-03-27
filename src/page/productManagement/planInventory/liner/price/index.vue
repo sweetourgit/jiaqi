@@ -42,9 +42,7 @@
         </el-button>
       </div>
     </header>
-    <PriceMain ref="priceMain"
-      :state="editState">
-    </PriceMain>
+    <PriceMain ref="priceMain"></PriceMain>
     
   </div>
 </template>
@@ -129,9 +127,10 @@ export default {
     },
 
     emitParentStatus({ state, selected }){
+      if(state=== 'edit' || state=== 'readonly') this.$refs.priceMain.init({ plan: selected.plan, state });
+      if(state=== 'add') this.$refs.priceMain.init({ state });
+      if(!state) this.$refs.priceMain.init({});
       this.editState= state;
-      if(state=== 'edit' || state=== 'readonly') return this.$refs.priceMain.init(selected.plan);
-      this.$refs.priceMain.init();
     }
   }
 }

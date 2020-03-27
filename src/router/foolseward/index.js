@@ -1,7 +1,7 @@
-import liner from './liner'
+import { liner, linerRegimentPlan } from './liner'
 
-const foolseward= [
+export const foolseward= [
   ...liner
 ]
 
-export default foolseward
+export const linerRegimentPlanRoutes= linerRegimentPlan;

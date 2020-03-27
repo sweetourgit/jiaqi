@@ -113,7 +113,6 @@ export default {
         this.selectedCalendar= selected.selected? [selected]: [];
         newState= this.selectedCalendar.length=== 0? null: (this.selectedCalendar[0].isPassed? 'readonly': 'edit');
       }
-      console.log(oldState, newState)
       // 如果之前处于只读或空选,直接赋值新状态
       if(!oldState || oldState=== 'readonly') return this.setParentStatus(newState);
       // 如果新旧状态都是新增,直接赋值新状态
