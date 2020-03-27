@@ -32,7 +32,7 @@
   // const jqUrl="http://test.dayuntong.com/h3wf";
   // const serverSrcPhp="http://www.around.com";
   const serverSrcPhp="http://zb.dayuntong.com";
-  const serverSrcYL="http://192.168.1.253";
+  const serverSrcYL="http://yl.dayuntong.com";
   const token="";
   const userId="";
   const hasEnter=false;
