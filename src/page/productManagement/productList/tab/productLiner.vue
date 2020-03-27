@@ -105,9 +105,9 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">预定</el-button>暂无 -->
-          <el-button @click="inventory(scope.row)" type="text" size="small" class="table_details">库存</el-button>
-          <el-button @click="changeStatus(scope.row)" type="text" size="small" class="table_details">更改状态</el-button>
-          <el-button @click="copyFun(scope.row)" type="text" size="small" class="table_details">复制</el-button>
+          <el-button @click="inventory(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.cur_steps == 7">库存</el-button>
+          <el-button @click="changeStatus(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.cur_steps == 7">更改状态</el-button>
+          <el-button @click="copyFun(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.cur_steps == 7">复制</el-button>
           <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">退改政策</el-button>暂时不写 -->
           <el-button @click="complete(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.cur_steps != 7">补充完整</el-button>
           <el-button @click="edit(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.cur_steps == 7">编辑</el-button>

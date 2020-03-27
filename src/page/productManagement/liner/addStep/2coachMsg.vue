@@ -197,6 +197,18 @@ export default {
               }
               that.listData.push(itemData);
             });
+          }else{
+            that.listData = [
+              {
+                title: '',
+                city: '',
+                location: '',
+                price: '',
+                note: '',
+                tips: '',
+                tableData: []
+              }
+            ];
           }
           
         } else {

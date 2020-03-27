@@ -15,7 +15,7 @@
             <el-input v-model="ruleForm.price" class="inputWidth" placeholder="请输入" maxlength="20" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="预订须知：" prop="introduction" label-width="140px">
-            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" maxlength="1000" show-word-limit></el-input>
+            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" maxlength="1000" show-word-limit :rows="6"></el-input>
           </el-form-item>
         </div>
       </el-form>

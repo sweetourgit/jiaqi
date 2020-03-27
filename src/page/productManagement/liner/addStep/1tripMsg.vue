@@ -19,7 +19,7 @@
           :name="item.name"
         >
           <!-- 每天的行程信息 form -->
-          <el-form-item label="标题：" prop="title" label-width="140px">
+          <el-form-item label="标题：" prop="title" label-width="140px" required>
             <el-input v-model="item.content.ruleForm.title" placeholder="请输入" class="inputWidth" maxlength="30" show-word-limit required></el-input>
           </el-form-item>
           <el-form-item label="所在城市：" prop="name" label-width="140px">
@@ -60,6 +60,9 @@
           </el-form-item>
           <el-form-item label="详情：" prop="name" label-width="140px">
             <el-input v-model="item.content.ruleForm.detail" placeholder="请输入" class="inputWidth" type="textarea"></el-input>
+          </el-form-item>
+          <el-form-item label="项目：" prop="name" label-width="140px">
+            
           </el-form-item>
           <el-button type="warning" @click='addCabin' class="addBtn">添加</el-button>
           <el-table :data="item.content.ruleForm.tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
@@ -195,11 +198,19 @@ export default {
       }
 
       const tripArr = [];
+      let check = true;
       this.editableTabs.forEach(function(item, index, arr){
         if(item.content.ruleForm.title == ''){
-          this.$message.warning("弟" + item.name + "天标题为空，请填写！");
+          that.$message({
+            message: "第" + item.name + "天标题为空，请填写！",
+            type: 'warning',
+            offset: (index + 1) * 45
+          });
+          check = false;
           return;
-        };
+        }else{
+
+        }
         // console.log(item.content.ruleForm.stopBordingTime);
         // console.log(item.content.ruleForm.stopBordingTime.getTime());
         // console.log(new Date(item.content.ruleForm.stopBordingTime.getTime()));
@@ -219,42 +230,45 @@ export default {
         tripArr.push(itemObj);
       })
 
-      this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/saveproducttrip", {
-        "button_type": type,
-        "product_id": this.$route.query.id,
-        "formation_day": this.day,
-        "night_day": this.night,
-        "trip": tripArr,
-        "create_uid": sessionStorage.getItem('id'),
-        "org_id": sessionStorage.getItem('orgID')
-      }, ).then(function(response) {
-        console.log('del信息',response);
-        if (response.data.code == '200') {
-          that.$message({
-            type: 'success',
-            message: '创建成功!'
-          });
-          if(type == '1'){
-            // alert('保存');
-            that.$router.push({
-              path: '/productList/productLiner',
-              name: '邮轮'
+      if(check){
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product/saveproducttrip", {
+          "button_type": type,
+          "product_id": this.$route.query.id,
+          "formation_day": this.day,
+          "night_day": this.night,
+          "trip": tripArr,
+          "create_uid": sessionStorage.getItem('id'),
+          "org_id": sessionStorage.getItem('orgID')
+        }, ).then(function(response) {
+          console.log('del信息',response);
+          if (response.data.code == '200') {
+            that.$message({
+              type: 'success',
+              message: '创建成功!'
             });
-          }else if(type == '2'){
-            // alert('下一步');
-            // localStorage.setItem('liner_id', response.data.data.liner_id);
-            that.$parent.next();
+            if(type == '1'){
+              // alert('保存');
+              that.$router.push({
+                path: '/productList/productLiner',
+                name: '邮轮'
+              });
+            }else if(type == '2'){
+              // alert('下一步');
+              // localStorage.setItem('liner_id', response.data.data.liner_id);
+              that.$parent.next();
+            }
+          } else {
+            if(response.data.message){
+              that.$message.warning(response.data.message);
+            }else{
+              that.$message.warning("加载数据失败~");
+            }
           }
-        } else {
-          if(response.data.message){
-            that.$message.warning(response.data.message);
-          }else{
-            that.$message.warning("加载数据失败~");
-          }
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
+        }).catch(function(error) {
+          console.log(error);
+        });
+      }
+
     },
     edit(scope){
       this.dialogFormVisible = true;
