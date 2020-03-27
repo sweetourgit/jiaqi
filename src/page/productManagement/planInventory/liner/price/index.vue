@@ -130,7 +130,7 @@ export default {
 
     emitParentStatus({ state, selected }){
       this.editState= state;
-      if(state=== 'edit') return this.$refs.priceMain.init(selected.plan);
+      if(state=== 'edit' || state=== 'readonly') return this.$refs.priceMain.init(selected.plan);
       this.$refs.priceMain.init();
     }
   }

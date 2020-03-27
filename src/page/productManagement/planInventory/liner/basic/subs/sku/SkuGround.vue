@@ -79,7 +79,7 @@ export default {
     },
     grounpCodeFilter(sku){
       let { tour_no_prefix, tour_no_suffix }= sku;
-      if(!tour_no_prefix || !tour_no_suffix) return '';
+      if(!tour_no_prefix || !tour_no_suffix) return '(暂无)';
       return `${tour_no_prefix} - { 时间戳 } - ${tour_no_suffix}`
     }
   },

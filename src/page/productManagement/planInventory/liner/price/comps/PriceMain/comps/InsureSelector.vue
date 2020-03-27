@@ -7,7 +7,11 @@
     <el-table-column label="售卖价格" prop="sale_price" header-align="center" align="center" width="200"></el-table-column>
     <el-table-column label="操作" prop="quota" header-align="center" align="center" width="150">
       <template slot-scope="scope">
-        <el-checkbox v-model="scope.row.selected">选中</el-checkbox>
+        <el-checkbox 
+          v-model="scope.row.selected"
+          :disabled="parentState=== 'readonly'">
+          选定
+        </el-checkbox>
       </template>
     </el-table-column>
   </el-table>
@@ -19,6 +23,7 @@ import { insureListAll } from '@/page/productManagement/planInventory/liner/api'
 let cache;
 let insurePromise;
 export default {
+  props: ['parentState'],
 
   mounted(){
     let { product_id }= this.$route.query;
