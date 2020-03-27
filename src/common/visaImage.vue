@@ -434,6 +434,7 @@ export default {
     },
     // 景点信息带过来的地区id  根据这个id去找他的父级节点id
     getParentId() {
+      this.checkList = [] ;
       if (this.imageAreaId !== 0) {
         this.$http
           .post(this.GLOBAL.serverSrc + "/universal/area/api/getpa", {

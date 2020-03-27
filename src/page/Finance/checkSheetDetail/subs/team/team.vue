@@ -5,7 +5,6 @@
 
 <style lang="scss" scoped>
 .check-sheet-detail {
-  width: 1120px;
   padding-bottom: 80px;
   & > header {
     display: flex;
@@ -74,15 +73,18 @@ import {
 import printGround from "./comps/printGround/printGround";
 import approvalForm from "./comps/approvalForm";
 import BackupMixin from "./BackupMixin.js";
-
+import { mapMutations } from "vuex";
 export default {
   mixins: [BackupMixin()],
 
   components: { printGround, approvalForm },
-
+  created() {
+    console.log("guid", this.$route.query.guid);
+  },
   // 创建和唤醒都要从新执行init
   mounted() {
     this.init();
+    this.auditResult(this.$route.query.guid, 6);
   },
 
   data() {
@@ -103,6 +105,31 @@ export default {
   },
 
   methods: {
+    ...mapMutations("review", {
+      setReviewList: "setReviewList"
+    }),
+    // 审核结果
+    auditResult(result, paramJqType) {
+      let _this = this;
+      this.$http
+        .post(
+          this.GLOBAL.jqUrl +
+            "/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType",
+          {
+            jq_id: result,
+            jQ_Type: paramJqType // 无收入1 预付款2,
+          }
+        )
+        .then(obj => {
+        this.setReviewList(obj.data)
+          // 裡面的具提屬性沒有調試
+          // _this.tableCourse = [];
+          // _this.tableCourse = obj.data.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     init() {
       this.type = this.choosePageType();
       this[this.type + "Init"]();
@@ -218,7 +245,11 @@ export default {
     printHandler() {
       let dom = this.$refs.printGround.$el;
       dom = dom.cloneNode(true);
-      Array.from(dom.querySelectorAll(".editable-cell")).forEach(dom => {
+      let removeDom = [
+        ...dom.querySelectorAll(".editable-cell"),
+        ...dom.querySelectorAll(".review-collection")
+      ];
+      Array.from(removeDom).forEach(dom => {
         dom.remove();
       });
       this.$printDom(dom);
@@ -254,7 +285,7 @@ export default {
       let { commentText, isAgree } = payload;
       let { guid, workItemID } = this.$route.query;
       // 1587
-      let rejectWorkItemID = this.$refs.printGround.finishedList[0].ObjectId;
+      let rejectWorkItemID = this.$refs.printGround.finishedList[0].objectId;
 
       let userCode = sessionStorage.getItem("tel");
       let action;

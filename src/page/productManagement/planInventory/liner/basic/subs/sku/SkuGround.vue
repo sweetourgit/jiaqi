@@ -51,7 +51,7 @@
             <el-button type="text"
               v-show="scope.row.sku_status >= SKU_PROCESS_STATUS.CAN_LINE"
               @click="changeSkuLineStatus(scope.row)">
-              {{ scope.row.line_status=== SKU_LINI_STATUS.UP_LINE? '下线': '上线' }}
+              {{ scope.row.line_status=== SKU_LINE_STATUS.UP_LINE? '下线': '上线' }}
             </el-button>
           </template>
         </el-table-column>
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { SKU_PROCESS_STATUS, CLEARANCE_TIME_OPTIONS, SKU_LINI_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
+import { SKU_PROCESS_STATUS, CLEARANCE_TIME_OPTIONS, SKU_LINE_STATUS } from '@/page/productManagement/planInventory/liner/dictionary'
 import { skuListAll, skuOnlineOffline } from '@/page/productManagement/planInventory/liner/api'
 import SkuEditor from './comps/SkuEditor'
 
@@ -75,11 +75,11 @@ export default {
   filters: {
     clearanceTimeFilter(clearanceTime){
       let result= CLEARANCE_TIME_OPTIONS.find(el => el.value=== clearanceTime);
-      return result? result.label: '';
+      return result? result.label: '(暂无)';
     },
     grounpCodeFilter(sku){
       let { tour_no_prefix, tour_no_suffix }= sku;
-      if(!tour_no_prefix || !tour_no_suffix) return '';
+      if(!tour_no_prefix || !tour_no_suffix) return '(暂无)';
       return `${tour_no_prefix} - { 时间戳 } - ${tour_no_suffix}`
     }
   },
@@ -93,7 +93,7 @@ export default {
       {
         tableData: []
       },
-      { SKU_PROCESS_STATUS, SKU_LINI_STATUS }
+      { SKU_PROCESS_STATUS, SKU_LINE_STATUS }
     )
   },
 
@@ -111,7 +111,7 @@ export default {
 
       changeSkuLineStatus(sku){
         let { id, line_status }= sku;
-        let find= SKU_LINI_STATUS.find(el => el.value!== line_status);
+        let find= SKU_LINE_STATUS.find(el => el.value!== line_status);
         this.$confirm(`是否${find.label}该SKU?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

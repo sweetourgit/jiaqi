@@ -3,6 +3,49 @@ import mock from 'mockjs'
 import Vue from 'vue'
 let { $http, GLOBAL, $message }= Vue.prototype;
 
+// 保存sku库存价格多个
+export const saveSkuStocks= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-stock/saveskustock", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('新增计划失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+export const editSkuStock= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-stock/editskustock", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('修改计划失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+export const singleSkuInfo= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-stock/info", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('保存计划失败'+ (message || ''));
+      resolve(data);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 获取产品下所有sku
 export const skuListAll= function(payload){
   return new Promise((resolve, reject) => {
@@ -75,6 +118,50 @@ export const getCalendar= function(payload){
   })
 }
 
+// 保存保险
+export const saveInsure= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/saveinsure", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('保存保险失败'+ (message || ''));
+      resolve(data.insure_id);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+// 删除保险
+export const delInsure= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/delinsure", payload)
+    .then(res => {
+      let { code, message }= res.data;
+      if(code!== 200) throw ('删除保险失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+export const insureOnOffLine= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-insure/onlineoffline", payload)
+    .then(res => {
+      let { code, message }= res.data;
+      if(code!== 200) throw ('更改保险上/下线状态失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
 // 获取产品下保险李彪
 export const insureListAll= function(payload){
   return new Promise((resolve, reject) => {
@@ -100,6 +187,31 @@ export const deliverListAll= function(payload){
     })
     .catch(err => {
       err && $message.error(err.toString());
+    })
+  })
+}
+
+export const deliverOnOffLine= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-deliver/onlineoffline", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) throw ('更改接送上/下线状态失败'+ (message || ''));
+      resolve();
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+export const saveDeliverPrice= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/product/product-deliver/saveprice", payload)
+    .then(res => {
+      let { code, message }= res.data;
+      if(code!== 200) return reject();
+      resolve();
     })
   })
 }

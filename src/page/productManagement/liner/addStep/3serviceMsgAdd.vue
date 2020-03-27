@@ -8,19 +8,14 @@
           <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
         </div>
         <div>
-          <el-form-item label="名称：" prop="name" label-width="140px">
-            <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
+          <el-form-item label="标题：" prop="title" label-width="140px">
+            <el-input v-model="ruleForm.title" class="inputWidth" placeholder="请输入" maxlength="30" show-word-limit></el-input>
           </el-form-item>
-          <el-form-item label="消费：" prop="money" label-width="140px">
-            <el-input v-model="ruleForm.money" class="inputWidth" placeholder="请输入"></el-input>
+          <el-form-item label="价钱：" prop="price" label-width="140px">
+            <el-input v-model="ruleForm.price" class="inputWidth" placeholder="请输入" maxlength="20" show-word-limit></el-input>
           </el-form-item>
-          <el-form-item label="简介：" prop="introduction" label-width="140px">
-            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea"></el-input>
-          </el-form-item>
-          <el-form-item label="图片：" label-width="140px">
-            <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
-              <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
+          <el-form-item label="预订须知：" prop="introduction" label-width="140px">
+            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" maxlength="1000" show-word-limit :rows="6"></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -39,14 +34,13 @@
       return {
         disabled: true,
         ruleForm: {
-          name: '',
-          money: '',
+          title: '',
+          price: '',
           introduction: ''
         },
         rules: {
-          name: [{ required: true, message: '名称不能为空!', trigger: 'blur' }]
+          title: [{ required: true, message: '标题不能为空!', trigger: 'blur' }]
         },
-        fileList1: [], // 图片文件
         topTitle: '添加'
       }
     },
@@ -74,15 +68,10 @@
       // 关闭弹框
       closeAdd() {
         this.ruleForm = {
-          cabinType: '',
-          name: '',
-          person: '',
-          floor: '',
-          money: '',
-          openTime: '',
+          title: '',
+          price: '',
           introduction: ''
         };
-        this.fileList1 = [];
         this.$emit('close', false);
       },
       // 取消按钮事件
@@ -104,29 +93,17 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             
-            let fileArr = [];
-            if(that.fileList1.length == 0){
-              // that.$message.warning("图片不能为空！");
-            }else{
-              that.fileList1.forEach(function (item, index, arr) {
-                fileArr.push({
-                  pic_id: item.id,
-                  pic_url: item.url
-                });
-              })
-            }
             let ida = '';
             if(this.info){
               ida = this.info;
             }
-              
-            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-service/savelinerservice', {
-							"liner_id": localStorage.getItem('liner_id'),
-							"id": ida,
-							"name": this.ruleForm.name,
-							"consumption": this.ruleForm.money,
-							"introduce": this.ruleForm.introduction,
-							"pics": fileArr,
+            
+            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/product/product-service/save', {
+              "id": ida,
+              "product_id": this.$route.query.id,
+							"title": this.ruleForm.title,
+							"price": this.ruleForm.price,
+							"details": this.ruleForm.introduction,
 							"create_uid": sessionStorage.getItem('id'),
 							"org_id": sessionStorage.getItem('orgID')
 						}).then(res => {
@@ -163,57 +140,20 @@
         });
       },
 
-      // 上传凭证 function logo
-      UploadUrl1(){
-        return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
-      },
-      handleSuccess1(response, file, fileList){
-        // console.log(response);
-        // console.log(file);
-        if(response.code == 200){
-          this.fileList1.push(response.data);
-        }else{
-          if(response.message){
-            this.$message.warning(response.message);
-          }else{
-            this.$message.warning('文件上传失败');
-          }
-        }
-      },
-      handleError1(err, file, fileList){
-        this.$message.warning(`文件上传失败，请重新上传！`);
-      },
-      handleRemove1(file, fileList) {
-        console.log(file, fileList);
-        this.fileList1 = fileList;
-      },
-      handleExceed1(files, fileList) {
-        this.$message.warning(`平台订单只支持一个附件上传！`);
-      },
-      beforeRemove1(file, fileList) {
-        return this.$confirm(`确定移除 ${ file.name }？`);
-      },
-
       // 加载编辑数据
       loadData(){
         // alert(this.info);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-service/viewlinerservice", {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product-service/info", {
           "id": this.info
         }, ).then(function(response) {
-          console.log('play-detail',response);
+          console.log('service-detail',response);
           if (response.data.code == '200') {
             that.ruleForm = {
-              name: response.data.data.name,
-              money: response.data.data.consumption,
-              introduction: response.data.data.introduce
+              title: response.data.data.info.title,
+              price: response.data.data.info.price,
+              introduction: response.data.data.info.details
             };
-            that.fileList1 = response.data.data.pics;
-            that.fileList1.forEach(function(item, index, arr){
-              item.name = response.data.data.pics[index].pic_name;
-              item.id = response.data.data.pics[index].pic_id;
-              item.url = response.data.data.pics[index].pic_url;
-            })
 
           } else {
             if(response.data.message){

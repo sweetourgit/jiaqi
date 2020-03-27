@@ -40,7 +40,7 @@
       dialogFormVisible: {
         handler: function () {
           if(this.info){
-            this.radioType = this.info.line_status;
+            this.radioType = this.info.line_status.toString();
           }
         }
       }

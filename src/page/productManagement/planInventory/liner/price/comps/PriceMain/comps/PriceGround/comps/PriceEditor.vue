@@ -4,7 +4,6 @@
   :visible="state"
   :close-on-click-modal="false"
   :before-close="handleClose">
-  {{ submitForm }}
   <div style="width: 600px;">
     <el-form
       size="small"
@@ -116,20 +115,22 @@ export default {
       let { title }= payload;
       if(!price){
         this.isAdd= true;
-        this.selectCabin(title);
       } else {
         // this.saled=
-        cache= price; 
+        cache= price;
         this.$assign(this.submitForm, price);
       }
+      this.selectCabin(title);
       this.state= true;
     },
 
     handleClose(){
-      this.state= false;
-      this.isAdd= false;
+      this.$refs.submitForm.resetFields();
+      this.$refs.submitForm.clearValidate();
       this.saled= 0;
       this.number= 0;
+      this.isAdd= false;
+      this.state= false;
     },
 
     submitHandler(){
@@ -138,11 +139,12 @@ export default {
         this.$refs.submitForm.clearValidate();
         if(this.isAdd){
           this.$emit('submit', { 
-            price: this.$deepCopy(this.submitForm), 
+            price: this.adaptor(this.$deepCopy(this.submitForm)), 
             isAdd: this.isAdd 
           });
         } else {
           this.$assign(cache, this.submitForm, true);
+          this.adaptor(cache);
           this.$emit('submit', { 
             price: cache, 
             isAdd: this.isAdd 
@@ -157,18 +159,20 @@ export default {
       let cabin= this.findCabin(selector);
       let { name, number, id }= cabin;
       if(this.isAdd) this.$assign(this.submitForm, this.getPriceDto({ cabin_id: id, title: name }));
-      this.submitForm.min_stay= null;
       this.submitForm.max_stay= number;
       this.number= number;
     },
 
     findCabin(selector){
       let attr= Object.prototype.toString.call(selector)=== '[object Number]'? 'id': 'name'
-      return this.cabinTypeOptions.find(el => el[attr]=== selector);
+      return this.cabinTypeOptions.find(el => {
+        return el[attr]=== selector
+      });
     },
 
     adaptor(price){
-
+      ['stock', 'adult_same_price', 'adult_straight_price'].forEach(attr => price[attr]= parseFloat(price[attr]));
+      return price;
     },
 
     stockValidator(rule, value, cb){

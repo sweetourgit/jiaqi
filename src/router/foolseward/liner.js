@@ -1,8 +1,10 @@
+import RedirectParent from './RedirectParent.vue'
+
 /**
  * @description: 邮轮路由
  */
 
-const liner= [
+export const liner= [
 
   /**
    * @description: 团期库存
@@ -10,7 +12,7 @@ const liner= [
   {
     path: '/product/planInventory/liner/basic',
     component: () => import('@/page/productManagement/planInventory/liner/basic'),
-    name: '产品管理  /团期库存/ 邮轮/ SKU',
+    name: '产品管理 / 团期库存/ 邮轮/ SKU',
     meta: {
       keepAlive: true,
       auth: true
@@ -19,12 +21,32 @@ const liner= [
   {
     path: '/product/planInventory/liner/price',
     component: () => import('@/page/productManagement/planInventory/liner/price'),
-    name: '产品管理  /团期库存/ 邮轮/ SKU价格',
+    name: '产品管理 /团期库存 / 邮轮/ SKU价格',
     meta: {
       keepAlive: true,
       auth: true
     }
-  }
+  }  
 ]
 
-export default liner
+export const linerRegimentPlan= {
+  path: 'liner',
+  // name: '产品管理/ 团期计划/ 游轮',
+  component: RedirectParent,
+  redirect: '/regimentPlan/liner/list',
+  meta: {
+    keepAlive: true,
+    auth: true
+  },
+  children: [
+    {
+      path: 'list',
+      name: '产品管理/ 团期计划/ 游轮/ 列表',
+      component: () => import('@/page/productManagement/regimentPlan/children/liner'),
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
+    }
+  ]
+}

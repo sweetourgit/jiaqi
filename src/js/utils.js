@@ -241,3 +241,14 @@ export const dictionaryMaker= function(source){
   })
   return result;
 }
+
+/**
+ * @description: 默认从localStorage读取
+ */
+Vue.prototype.$storageLoader= function({ loader, attrs }){
+  let result= {};
+  let _loader= loader || localStorage;
+  if(!isArray(attrs)) attrs= [attrs];
+  attrs.forEach(attr => result[attr]= _loader.getItem(attr));
+  return result;
+}

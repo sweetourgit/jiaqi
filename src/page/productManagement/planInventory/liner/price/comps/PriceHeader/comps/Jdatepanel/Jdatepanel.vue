@@ -6,11 +6,14 @@ $fontHeight: 32px;
   position: relative;
   display: inline-block;
   user-select: none;
-  cursor: pointer;
   .selector{
     line-height: 32px;
+    cursor: pointer;
     .control-btns{
       padding:0 20px;
+    }
+    .control-btns:hover{
+      color: #409EFF;
     }
   }
   .panel{
@@ -229,7 +232,7 @@ export default {
      * @param {Number} date: 月中几号
      * @param {Boolean} isPassed: 是否是过去时间
      * @param {Boolean} isToday: 是否是今天
-     * @param {Date} Date: 日期对象
+     * @param {Date} _date: 日期对象
      * @param {Number} dateInt: 日期的数字形式，月份从1开始
      * @param {Number} col
      * @param {Number} row
@@ -325,6 +328,7 @@ export default {
     },
  
     dayHandler(payload){
+      this.state= true;
       let dayVal= this.current[2]+ payload;
       let max, newDate, dateArr;
       // 月份减一
@@ -346,6 +350,7 @@ export default {
     },
 
     monthHandler(payload){
+      this.state= true;
       let monthVal= this.current[1]+ payload;
       let dayVal= this.current[2]
       // new Date(2019, 10, 0).getDate()

@@ -9,31 +9,24 @@
         </div>
         <div>
           <el-form-item label="类型：" prop="type" label-width="140px">
-            <!-- <el-input v-model="ruleForm.cabinType" placeholder="请输入" class="inputWidth"></el-input> -->
-            <el-select  v-model="ruleForm.type">
-              <el-option :key="item.id" v-for="item in typeArr" :label="item.name" :value="item.id"></el-option>
-            </el-select>
+            <el-input v-model="ruleForm.type" placeholder="请输入" class="inputWidth"></el-input>
           </el-form-item>
           <el-form-item label="名称：" prop="name" label-width="140px">
             <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
           </el-form-item>
-          <el-form-item label="容纳人数：" prop="person" label-width="140px">
-            <el-input v-model="ruleForm.person" class="inputWidth" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="楼层：" prop="floor" label-width="140px">
-            <el-input v-model="ruleForm.floor" class="inputWidth" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="消费：" prop="area" label-width="140px">
-            <el-input v-model="ruleForm.money" class="inputWidth" placeholder="请输入"></el-input>
-          </el-form-item>
-          <el-form-item label="开放时间：" prop="window" label-width="140px">
-            <el-time-picker v-model="ruleForm.openTime" placeholder="开放时间"></el-time-picker>
-              <!-- <el-date-picker v-model="ruleForm.openTime" type="date" placeholder="结束日期" class="inputWidth" :editable="disabled"></el-date-picker> -->
-          </el-form-item>
-          <el-form-item label="简介：" prop="introduction" label-width="140px">
+          <el-form-item label="描述" prop="introduction" label-width="140px">
             <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea"></el-input>
           </el-form-item>
-          <el-form-item label="图片：" label-width="140px">
+          <el-form-item label="人群：" prop="person" label-width="140px">
+            <el-checkbox-group v-model="ruleForm.person">
+              <el-checkbox v-for="item in personList" :key="item.id" :label="item.id" :value="item.id">{{item.name}}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form-item label="必须：" prop="require" label-width="140px">
+            <el-radio v-model="ruleForm.require" label="1">是</el-radio>
+            <el-radio v-model="ruleForm.require" label="2">否</el-radio>
+          </el-form-item>
+          <el-form-item label="附件：" label-width="140px">
             <el-upload ref="upload1" class="upload-demo" :action="UploadUrl1()" :headers="headers" :on-success="handleSuccess1" :on-error="handleError1" :on-remove="handleRemove1" :before-remove="beforeRemove1" :on-exceed="handleExceed1" :file-list="fileList1">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -57,34 +50,26 @@
         ruleForm: {
           type: '',
           name: '',
-          person: '',
-          floor: '',
-          money: '',
-          openTime: '',
-          introduction: ''
+          person: [],
+          introduction: '',
+          require: '1'
         },
         rules: {
-          type: [{ required: true, message: '类型不能为空!', trigger: 'change' }],
-          name: [{ required: true, message: '名称不能为空!', trigger: 'change' }]
+          type: [{ required: true, message: '类型不能为空!', trigger: 'blur' }],
+          name: [{ required: true, message: '名称不能为空!', trigger: 'blur' }],
+          introduction: [{ required: true, message: '描述不能为空!', trigger: 'blur' }],
+          person: [{ required: true, message: '人群不能为空!', trigger: 'change' }],
+          require: [{ required: true, message: '必须不能为空!', trigger: 'change' }]
         },
         fileList1: [], // 图片文件
         topTitle: '添加',
-        // 1:船上娱乐;2:运动健身;3:海上休闲;4:其他
-        typeArr: [
-          {
-            id: "1",
-            name: "船上娱乐"
-          },{
-            id: "2",
-            name: "运动健身"
-          },{
-            id: "3",
-            name: "海上休闲"
-          },{
-            id: "4",
-            name: "其他"
-          }
-        ]
+        personList: [
+          {id: "1", name: "在职"},
+          {id: "2", name: "自由职业"},
+          {id: "3", name: "在校学生"},
+          {id: "4", name: "退休"},
+          {id: "5", name: "学前龄儿童"}
+        ],
       }
     },
     computed: {
@@ -98,7 +83,7 @@
     watch: {
       dialogFormVisible: {
         handler: function () {
-          if(this.info){
+          if(this.info.id){
             this.topTitle = '编辑';
             this.loadData();
           }else{
@@ -111,13 +96,11 @@
       // 关闭弹框
       closeAdd() {
         this.ruleForm = {
-          cabinType: '',
+          type: '',
           name: '',
-          person: '',
-          floor: '',
-          money: '',
-          openTime: '',
-          introduction: ''
+          person: [],
+          introduction: '',
+          require: '1'
         };
         this.fileList1 = [];
         this.$emit('close', false);
@@ -140,43 +123,47 @@
         const that = this;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            
-            let fileArr = [];
-            if(that.fileList1.length == 0){
-              // that.$message.warning("图片不能为空！");
-            }else{
-              that.fileList1.forEach(function (item, index, arr) {
-                fileArr.push({
-                  pic_id: item.id,
-                  pic_url: item.url
-                });
-              })
-            }
             let ida = '';
-            if(this.info){
-              ida = this.info;
+            if(this.info.id){
+              ida = this.info.id;
+            }else{
+              ida = 0;
             }
-              
-            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/liner/liner-entertainment/savelinerentertainment', {
-							"liner_id": localStorage.getItem('liner_id'),
+            let idVisa = '';
+            if(this.info.visa_id){
+              idVisa = this.info.visa_id;
+            }else{
+              idVisa = 0;
+            }
+            let crowd = []
+            that.ruleForm.person.forEach(function(item, index, arr){
+              crowd.push({
+                "crowd_id": item
+              })
+            })
+            this.$http.post(this.GLOBAL.serverSrcYL + '/linerapi/v1/product/product-visa-info/save', {
 							"id": ida,
-							"type": this.ruleForm.type,
-							"name": this.ruleForm.name,
-							"number": this.ruleForm.person,
-							"floor": this.ruleForm.floor,
-							"consumption": this.ruleForm.money,
-							"opening_hours": this.ruleForm.openTime,
-							"introduce": this.ruleForm.introduction,
-							"pics": fileArr,
+              "product_id": this.$route.query.id,
+              "visa_id": idVisa,
+              "title": this.info.title,
+              "type": this.ruleForm.type,
+              "crowd": crowd,
+              "name": this.ruleForm.name,
+              "describe": this.ruleForm.introduction,
+              "must": parseInt(this.ruleForm.require),
+              "enclosure": this.fileList1.length != 0 ? this.fileList1[0].url : '',
 							"create_uid": sessionStorage.getItem('id'),
 							"org_id": sessionStorage.getItem('orgID')
 						}).then(res => {
 							// console.log(res);
 							if (res.data.code == 200) {
 									that.$message({
-									type: 'success',
-									message: '创建成功!'
-									});
+                    type: 'success',
+                    message: '创建成功!'
+                  });
+                  if(that.info.visa_id == ''){
+                    localStorage.setItem("visa_id", res.data.data.visa_id);
+                  }
 									that.closeAdd();
 
 							} else {
@@ -236,28 +223,33 @@
 
       // 加载编辑数据
       loadData(){
-        // alert(this.info);
+        // alert(this.info.id);
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-entertainment/viewlinerentertainment", {
-          "id": this.info
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product-visa-info/info", {
+          "id": this.info.id
         }, ).then(function(response) {
-          console.log('play-detail',response);
+          console.log('签证详情',response);
           if (response.data.code == '200') {
             that.ruleForm = {
-              type: response.data.data.type,
-              name: response.data.data.name,
-              person: response.data.data.number,
-              floor: response.data.data.floor,
-              money: response.data.data.consumption,
-              openTime: response.data.data.opening_hours,
-              introduction: response.data.data.introduce
+              type: response.data.data.info.type,
+              name: response.data.data.info.name,
+              person: [],
+              introduction: response.data.data.info.describe,
+              require: response.data.data.info.must.toString()
             };
-            that.fileList1 = response.data.data.pics;
-            that.fileList1.forEach(function(item, index, arr){
-              item.name = response.data.data.pics[index].pic_name;
-              item.id = response.data.data.pics[index].pic_id;
-              item.url = response.data.data.pics[index].pic_url;
+            let crowdArr = '';
+            if(typeof response.data.data.info.crowd == "string"){
+              crowdArr = JSON.parse(response.data.data.info.crowd);
+            }else{
+              crowdArr = response.data.data.info.crowd;
+            }
+            crowdArr.forEach(function(item, index, arr){
+              that.ruleForm.person.push(item.crowd_id.toString());
             })
+            that.fileList1 = [{
+              name: response.data.data.info.enclosure,
+              url: response.data.data.info.enclosure
+            }];
 
           } else {
             if(response.data.message){
