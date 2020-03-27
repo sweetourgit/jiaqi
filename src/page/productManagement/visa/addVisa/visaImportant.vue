@@ -81,7 +81,11 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/get",{
         id:sessionStorage.getItem('productID')
       }).then(res => {
-          console.log(res.data.object)
+          if(res.data.isSuccess == true){
+            this.ruleForm.important = res.data.object.important;
+            this.ruleForm.includes = res.data.object.cost;
+            this.ruleForm.costExclusive = res.data.object.notCost;
+          }
       })
     },
     addProduct(formName){

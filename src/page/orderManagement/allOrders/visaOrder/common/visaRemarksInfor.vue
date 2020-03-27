@@ -1,23 +1,24 @@
 <template>
   <div>
        <!--备注信息弹窗-->
-       <el-dialog title="订单备注" :visible.sync="dialogFormMark" class="city_list" width="780px" @close="close">
+       <el-dialog title="订单备注" :visible.sync="dialogFormMark" class="city_list dialogOrder" width="780px" @close="close">
           <el-form :model="markFormAdd" :rules="rules" ref="markFormAdd" label-width="80px" class="demo-ruleForm">
-               <div v-for="item in markForms">
+            <el-button class="colse" @click="close">关闭</el-button>
+             <div v-for="item in markForms">
                <el-form-item :label="name">            
                   <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="item.Mark" :disabled="true"></el-input>
                   <div class="time">{{item.CreateTime}}</div>
                </el-form-item>
-               </div>
-               <el-form-item label="填写备注" prop="Mark">            
-                  <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markFormAdd.Mark"></el-input>
-               </el-form-item>
-               <el-form-item>
-                  <el-button type="info" size="medium" class="submitMark" @click="submitMark">提交备注</el-button>
-               </el-form-item>
-               <el-form-item>
-                  <el-button class="colse" @click="close">关闭</el-button>
-               </el-form-item>
+             </div>
+             <el-form-item label="填写备注" prop="Mark">            
+                <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 6}" class="remark" placeholder="请输入内容" v-model="markFormAdd.Mark"></el-input>
+             </el-form-item>
+             <el-form-item>
+                <el-button type="info" size="medium" class="submitMark" @click="submitMark()">提交备注</el-button>
+             </el-form-item>
+             <!-- <el-form-item>
+                <el-button class="colse" @click="close">关闭</el-button>
+             </el-form-item> -->
           </el-form>
        </el-dialog>
   </div>
@@ -104,5 +105,7 @@ export default {
    .remark{width: 600px}
    .time{margin-right: 60px;text-align: right;color: #999}
    .submitMark{float: right;margin-right: 60px}
-   .colse{margin-left: 230px;width: 100px}
+   .pr{position:relative;}
+   .colse{position:absolute; top: 8px; right: 10px;}
+   /*.colse{margin-left: 230px;width: 100px}*/
 </style>

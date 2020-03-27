@@ -1,6 +1,6 @@
 <template>
   <div>
-     <div class="demo-input-suffix" v-if="false">
+     <div class="demo-input-suffix" v-if="true">
           <!--搜索-->
           <span class="search-title">订单ID</span>
           <el-input v-model="orderCode" class="input"></el-input>
@@ -48,11 +48,17 @@
                 </tr>
                 <tr>
                   <td class="tr">套餐</td>
-                  <td>单人多次旅游签证</td>
+                  <td>{{item.package}}</td>
                   <td class="tr">签证类型</td>
-                  <td>5年旅游签</td>
+                  <td>
+                    <div v-if="item.productType=='1'">单次旅游签</div>
+                    <div v-if="item.productType=='2'">5年旅游签</div>
+                    <div v-if="item.productType=='3'">10年多次旅游签</div>
+                    <div v-if="item.productType=='4'">探亲访友签</div>
+                    <div v-if="item.productType=='5'">商务签证</div>
+                  </td>
                   <td class="tr">签证地区</td>
-                  <td>新加坡</td>
+                  <td>{{item.visaArea}}</td>
                 </tr>
               </table>
               <i :class="['contentHeaderIcon', showContent !== index ? 'el-icon-arrow-right': 'el-icon-arrow-down']"></i>
@@ -62,51 +68,71 @@
                 <table>
                   <tr>
                     <td class="tr">联系人</td>
-                    <td width="270">123</td>
+                    <td width="270">{{item.contactName}}</td>
                     <td class="tr">电话</td>
-                    <td width="270">13000000000</td>
+                    <td width="270">{{item.contactTel}}</td>
                     <td class="tr">产品类型</td>
-                    <td width="270">签证</td>
+                    <td width="270">
+                      <div v-if="item.productType=='1'">跟团游</div>
+                      <div v-if="item.productType=='2'">自由行</div>
+                      <div v-if="item.productType=='3'">签证</div>
+                      <div v-if="item.productType=='4'">邮轮</div>
+                    </td>
                   </tr>
                   <tr>
                     <td class="tr">整体优惠</td>
-                    <td>0.00</td>
+                    <td>{{item.favTitle}}({{item.entiretyFav | numFilter}})</td>
                     <td class="tr">数量</td>
-                    <td>2</td>
+                    <td>{{item.enrollDetail}}</td>
                     <td class="tr">其他费用</td>
-                    <td>押金（200.00）</td>
+                    <td>{{item.otherTitle}}({{item.otherPrice | numFilter}})</td>
                   </tr>
                   <tr>
                     <td class="tr">支付方式</td>
-                    <td>微信</td>
+                    <td>
+                      <div v-if="item.settlementType=='1'">月结</div>
+                      <div v-if="item.settlementType=='2'">非月结</div>
+                    </td>
                     <td class="tr">销售</td>
-                    <td>123</td>
+                    <td>{{item.saler}}</td>
                     <td class="tr">订单来源</td>
-                    <td>大运通门店</td>
+                    <td>{{item.orderChannels}}</td>
                   </tr>
                   <tr>
                     <td class="tr">平台</td>
-                    <td>ERP系统</td>
+                    <td>
+                      <div v-if="item.platform=='1'">ERP系统</div>
+                      <div v-if="item.platform=='2'">同业系统</div>
+                    </td>
                     <td class="tr">操作</td>
-                    <td>123</td>
+                    <td>{{item.op}}</td>
                     <td class="tr">商户销售</td>
-                    <td>123</td>
+                    <td>{{item.indirectSale}}</td>
                   </tr>
                   <tr>
                     <td class="tr">订单总额</td>
-                    <td>0.00</td>
+                    <td>{{item.payable | numFilter}}</td>
                     <td class="tr">已付金额</td>
-                    <td>0.00</td>
+                    <td>{{item.paid | numFilter}}</td>
                   </tr>
                 </table>
                 <el-breadcrumb separator="|" class="confirm-time">
                   <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,1,item.orderCode)">备注</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item>
                   <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">流程管理</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer">退款</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer">发票申请</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer">出团通知书</el-breadcrumb-item>
                 </el-breadcrumb>
                 <div class="but-row">
                     <span class="dot"></span>
-                    <span>{{getOrderStatus(item.orderStatus)}}</span>
+                    <span>{{getOrderStatus(item.visaOrderStatus)}}</span>
                 </div> 
+                <!--退款状态-->
+                <div class="but-row" v-if="item.refundStatus !=0">
+                  <span class="dot"></span>
+                  <span>{{getrefundStatus(item.refundStatus)}}</span>
+                </div>
               </div>
             </transition>
           </div>
@@ -157,7 +183,8 @@ export default {
          {'status':0,'name':"材料补交中(2)"},
          {'status':0,'name':"材料制作中(2)"},
          {'status':0,'name':"成功预约时间(2)"},
-         {'status':0,'name':"送签/面签(2)"},
+         {'status':0,'name':"送签(2)"},
+         {'status':0,'name':"面签(2)"},
          {'status':0,'name':"使馆审理中(2)"},
          {'status':0,'name':"使馆审理完毕(2)"},
          {'status':0,'name':"过签(2)"},
@@ -195,10 +222,17 @@ export default {
   created(){
     this.orderPage();
   },
+  filters: {
+    numFilter (value) {
+      // 截取当前数据到小数点后两位
+      let realVal = parseFloat(value).toFixed(2)
+      return realVal
+    }
+  },
   methods: {
       //目的地
     querySearch(queryString, cb) {
-      this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
+      this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/areainforlist', {
         "object": {
           areaName: queryString
         }
@@ -343,13 +377,13 @@ export default {
         this.orderPage(val,this.pageSize);
         this.pageIndex=val;
       },
-      orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize,orderCode=this.orderCode,teamID=this.teamID,groupCode=this.groupCode,beginDate=this.beginDate,endDate=this.endDate,name=this.name,destinationID=this.destinationID,saler=this.saler,productType=this.productType,orderStatus=this.orderStatus,refundStatus=this.refundStatus){
+      orderPage(pageIndex=this.pageIndex,pageSize=this.pageSize,orderCode=this.orderCode,teamID=this.teamID,groupCode=this.groupCode,name=this.productName,beginDate=this.beginDate,endDate=this.endDate,visaArea = this.destination,destinationID=this.destinationID,saler=this.saler,productType=this.productType,orderStatus=this.orderStatus,refundStatus=this.refundStatus){
         this.pageshow = false;
         if(beginDate){
           let y=beginDate.getFullYear();
           let m=(beginDate.getMonth()+1)>9?beginDate.getMonth()+1:'0'+(beginDate.getMonth()+1);
           let d=beginDate.getDate()>9?beginDate.getDate():'0'+beginDate.getDate();
-          beginDate=''+ y + m + d
+          beginDate=''+ y + '-' + m + '-' + d
         }else{
           beginDate = "0001-01-01";
         }
@@ -357,23 +391,24 @@ export default {
           let y=endDate.getFullYear();
           let m=(endDate.getMonth()+1)>9?endDate.getMonth()+1:'0'+(endDate.getMonth()+1);
           let d=endDate.getDate()>9?endDate.getDate():'0'+endDate.getDate();
-          endDate=''+ y + m + d
+          endDate=''+ y + '-' + m + '-' + d
         }else{
           endDate = "0001-01-01";
         }
-        this.$http.post(this.GLOBAL.serverSrc + '/order/all/api/orderpage',{
+        this.$http.post(this.GLOBAL.serverSrc + '/order/visa/api/orderpage',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
             "object":{            
                 "orderCode":orderCode,   
                 "teamID":teamID?teamID:0,
                 "groupCode":groupCode,
+                "name":this.productName,
                 "beginDate": beginDate,
                 "endDate": endDate,
-                "name":name,
-                "destinationID":destinationID?destinationID:0,
+                "visaArea":this.destination,
+                //"destinationID":destinationID?destinationID:0,
                 "saler":saler,
-                "productType":productType?productType:0,
+                "productType":productType ? productType : 0,
                 "orderStatus":this.orderStatus,
                 "refundStatus":this.refundStatus
              }
@@ -381,7 +416,8 @@ export default {
             this.orderpage=[];
             this.total=res.data.total;
             if(res.data.isSuccess == true){
-               this.orderpage=res.data.objects;              
+               this.orderpage=res.data.objects; 
+               this.getOrderStatus(this.orderpage);             
             }
           }).catch(err => {
             console.log(err)
@@ -393,6 +429,9 @@ export default {
       //列表订单状态显示
       getOrderStatus(status){
           switch(status){
+            case 0:
+              return '全部';
+              break;
             case 1:
               return '下单成功';
               break;
@@ -415,7 +454,7 @@ export default {
               return '送签';
               break;
             case 8:
-              return '面签';//？
+              return '面签';
               break;
             case 9:
               return '使馆审理中';
@@ -423,25 +462,60 @@ export default {
             case 10:
               return '使馆审理完毕';
               break;
-            case 10:
+            case 11:
               return '过签';
               break;
-            case 10:
+            case 12:
               return '拒签';
               break;
-            case 10:
+            case 13:
               return '邮寄中';
               break;
-            case 10:
+            case 14:
               return '待评价';
               break;
-            case 10:
+            case 15:
               return '订单完成';
               break;
-            case 10:
+            case 16:
               return '订单作废';
               break;
+            case 17:
+              return '申请退款';
+              break;
+            case 18:
+              return '退款中';
+              break;
+            case 19:
+              return '完成退款';
+              break;
+            case 20:
+              return '拒绝退款';
+              break;
           }
+      },
+      //列表退款状态显示
+      getrefundStatus(status) {
+        switch (status) {
+          case 1:
+            return "退款中";
+            break;
+          case 2:
+            return "拒绝退款";
+            break;
+          case 3:
+            return "已退款";
+            break;
+          case 4:
+            return "无退款";
+            break;
+          case 5:
+            return "申请退款";
+            break;
+          case 6:
+            return "完成退款";
+            break;
+        }
       },
       formatDate(date){
        var y = date.getFullYear();  
@@ -482,13 +556,13 @@ export default {
        .poa{position: absolute;left: 76px;top: 30px;width: 100px;color: red;font-size: 12px}
        .por {position: relative}
        /*订单列表*/
-       .pro-info{font-size: 14px;background-color: #e4e4e4;margin:0 30px 30px 10px;line-height: 25px;padding:15px;width: 70%;min-width: 1120px;}
+       .pro-info{font-size: 14px;background-color: #e4e4e4;margin:0 30px 30px 10px;line-height: 25px;padding:15px;width: 70%;min-width: 1120px; overflow: hidden;}
        .list-title{margin-left: 4px}
        .breadCrumbPointer{cursor: pointer;}
        .contentHeader{position: relative;}
        .contentHeaderIcon{position: absolute;right: 10px;top:18px;transform: translateY(-50%);}
        .tr{font-weight: bold;vertical-align: top;width:65px;}
-       .but-row{margin: 40px 0 20px 10px;}
+       .but-row{margin: 10px 20px 10px 10px; float: left;}
        .confirm-time{float: right;margin-top: 46px;margin-right: 20px;}
        .pagination{text-align: center;margin: 50px 0;}
        .dot{display: inline-block;width: 7px;height: 7px;background-color: #7ec856;border-radius: 50%;margin-top: -2px;margin-right: 6px;}
