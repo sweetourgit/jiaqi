@@ -7,7 +7,7 @@
 <template>
   <!--填写游客信息-->
   <el-dialog class="city_list" width="700px" height="500px"
-    :title="'出行人信息（'+ title +'）'"
+    title="出行人信息"
     :visible.sync="visible"
     :close-on-click-modal="false"
     @close="close">
@@ -132,6 +132,7 @@ export default {
 
   methods: {
     wakeup(guest){
+      console.log(guest,'发发');
       Object.assign(this.submitForm, guest);
       // Object.assign(this.submitForm, {
       //   cnName: '丁丁',

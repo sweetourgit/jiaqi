@@ -9,6 +9,7 @@
       style="margin-top:-50px"
       @open="processManage"
       @close="close"
+      
     >
     <!--订单状态begin-->
       <div style="position:relative;height:50px">
@@ -138,35 +139,51 @@
         ></el-input>
       </el-form-item>
       <hr />
-       <!-- <el-tabs v-model="activebox"  v-for="(item,index) in ruleForm.favourable" :key="index" @tab-click="joinClick"   style="float:left;width: 100%;">
-              <el-tab-pane label="预付款" name="2"></el-tab-pane>
-            
-        </el-tabs> -->
-      <el-tabs v-model="activebox" type="card"  @tab-click="GetCabinbtn" style="float:left;width: 100%;">
+      <el-tabs  v-model="activebox" type="card" @tab-click="GetCabinbtn" style="float:left;width: 100%;">
         <el-tab-pane
-          :key="item.id"
           v-for="(item,index) in GetCabinData"
+          :key="item.id"
           :label="item.name"
           :name="item.id"
         >
         </el-tab-pane>
       </el-tabs>
-          <!-- @row-click="joinData_btn" -->
-          <!-- <el-table 
-            :data="joinData" 
-            border 
-            tooltip-effect="dark"
-            @selection-change="joinData_btn"
-            style="width: 100%; margin-top: 30px">
-            <el-table-column type="selection"  align="center"></el-table-column>
-            <el-table-column prop="paymentID" label="预付款借款ID"  align="center" v-if="s_find==1"></el-table-column>
-            <el-table-column prop="paymentID" label="无收入借款ID"  align="center" v-if="s_find==2"></el-table-column>
-            <el-table-column prop="supplierName" label="供应商"  align="center"></el-table-column>
-            <el-table-column prop="supplierTypeEX" label="借款类型"  align="center"></el-table-column>
-            <el-table-column prop="price" label="金额"  align="center"></el-table-column>
-            <el-table-column prop="paymentMark" label="摘要"  align="center"></el-table-column>
-            <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-          </el-table> -->
+      <table class="costList" border="1" cellpadding="0" cellspacing="0" >
+            <tr class="costList_01">
+              <td width="120">姓名</td>
+              <td width="120">报名类型</td>
+              <td width="120">护照</td>
+              <td width="180">身份证</td>
+              <td width="120">电话</td>
+              <td width="120">性别</td>
+              <!-- <td width="120">签署状态</td> -->
+              <td width="120">操作</td>
+            </tr>
+        <tr v-for="(guest, index) in NewGetCabinData" :key="'g'+index">
+          <td>{{guest.NGDName}}</td>
+          <td>{{guest.NGDType}}</td>
+          <td>{{guest.NGDPassport}}</td>
+          <td>{{guest.NGDCard}}</td>
+          <td>{{guest.NGDTel}}</td>
+          <td>
+            <div v-if="guest.NGDSex=='1'">男</div>
+            <div v-if="guest.NGDSex=='2'">女</div>
+          </td>
+          <!-- <td> 签署状态
+            <el-button
+              class="fl cursor"
+             >{{guest.NGDState}}
+            </el-button>
+          </td> -->
+          <td class="tc">
+            <el-button
+              class="fl cursor"
+              @click="perateBtn(guest,index)">
+                {{guest.NGDOperate}}
+              </el-button>
+          </td>
+        </tr>
+      </table>
 
 
       </el-form>
@@ -198,17 +215,23 @@
         <el-button class="fr" @click="close">取消</el-button>
       </div>
     </el-dialog>
+    <!-- 出行人信息编辑 -->
+    <guestEditDialog ref="guestEditDialog" 
+      @save-guest="saveGuestEmit">
+   </guestEditDialog>
   </div>
 </template>
 
 <script>
 import moment from "moment";
+import guestEditDialog from './comps/guestEditDialog'
 
 export default {
   name: "boatProcessManage",
+  components: {guestEditDialog },
   props: {
-     propsObj: { type: Object },
-     orderId:0,//订单id
+    propsObj: {type:Object },
+    orderId:0,//订单id
   },
   data() {
     return {
@@ -226,15 +249,17 @@ export default {
       disperseOrderDisabled:false,
       dialogVisible: false,
       payable:0,//总价格
-      activebox:2,//舱房状态
+      activebox:"2",//舱房状态
       GetCabinData:[],//客人信息列表头部
       guest:[],//客人数组
-      NewGetCabinData:{},//筛选后的客人数据
+      NewGetCabinData:[],//筛选后的客人数据
+      GuestRoomId:"",//客房id
       ruleForm: {
         contactName: "",
         contactPhone: "",
         favourable: []
       },
+      
       rules: {
         //变更数量
          contactName: [
@@ -325,8 +350,23 @@ export default {
                this.cabin[i].adult_price +
                '*'+
                this.cabin[i].adult_num;
-
+               //this.GuestRoomId = this.cabin[i].cabin_id;
                this.GetCabinId(this.cabin[i].cabin_id);//获取客人房型tab
+               this.activebox = this.cabin[0].cabin_id.toString();
+                for(let j in this.guest){
+                  if(this.guest[j].cabin_id == this.cabin[0].cabin_id){
+                      this.NewGetCabinData.push({
+                        NGDName:this.guest[j].name,//名字
+                        NGDType:this.guest[j].enroll_type,//类型
+                        NGDPassport:this.guest[j].passport,//护照
+                        NGDCard:this.guest[j].id_card,//身份证
+                        NGDTel:this.guest[j].tel,//电话
+                        NGDSex:this.guest[j].sex,//男女
+                        NGDState:1,//签署状态
+                        NGDOperate:'编辑', //操作
+                       })
+                  }
+                }
             }
              for(let i in this.insurance){// 出行险 99.00 * 1
               this.insuranceText = 
@@ -357,38 +397,50 @@ export default {
         });
     },
     GetCabinId(id) { // 获取客人房型tab
+      id = id.toString();
       this.$http
         .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/cabin-type/getparents", {
          ids:id
         })
         .then(res => {
           if (res.data.code == 200) {
-           console.log(res.data,'噶是大哥');
-           this.GetCabinData = res.data.data;
-             console.log(this.GetCabinData,'噶是大哥');
-            
-          }
+            for(let i in res.data.data){
+              res.data.data[i].id = res.data.data[i].id.toString();
+            }
+            this.GetCabinData = res.data.data;
+            }
         })
         .catch(err => {
           console.log(err);
         });
         
     },
-    GetCabinbtn(GetCabinbtn){//房型切换
-    console.log(GetCabinbtn.name,'ididididifasf');
-    for(let j in this.guest){
-      if(this.guest[j].cabin_id === GetCabinbtn.name){
-        console.log(this.guest,'筛选后的');
-        this.NewGetCabinData.push({
-          
-        })
+   GetCabinbtn(GetCabinbtn){//房型切换
+   this.NewGetCabinData = [];
+     for(let j in this.guest){
+      if(this.guest[j].cabin_id == GetCabinbtn.name){
+          this.NewGetCabinData.push({
+            NGDName:this.guest[j].name,//名字
+            NGDType:this.guest[j].enroll_type,//类型
+            NGDPassport:this.guest[j].passport,//护照
+            NGDCard:this.guest[j].id_card,//身份证
+            NGDTel:this.guest[j].tel,//电话
+            NGDSex:this.guest[j].sex,//男女
+            NGDState:1,//签署状态
+            NGDOperate:'编辑', //操作
+           })
+        }
       }
-    }
-
-
+  },
+    perateBtn(guest){ // 编辑
+      this.$refs.guestEditDialog.wakeup(guest);
+    },
+    saveGuestEmit(payload){ // 保存信息
+      let { guest, formData }= payload;
+      Object.assign(guest, formData);
     },
     ordersave(id, occupyStatus) { // 保存订单
-        
+            
     },
     getOrderStatus(order_status,occupy_status,order_channel){
       //console.log(order_status,occupy_status,order_channel,'id');
@@ -576,5 +628,30 @@ hr {
 }
 .contact .el-input {
   width: 300px;
+}
+.costList {
+  width: 800px;
+  line-height: 40px;
+  text-align: center;
+  border: 1px solid #ebebeb;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.costList_01 {
+  background: #f3f3f3;
+}
+.tc {
+  text-align: center;
+}
+.cursor {
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
 }
 </style>

@@ -1648,10 +1648,9 @@ export default {
               type: "warning"
             })
             .then(() => {
-                  this.alljoinData=[];
+                 // this.alljoinData=[];
                   let tabs = this.ruleForm.editableTabs;
                   let activeName = this.ruleForm.editableTabsValue;
-
                   if (activeName === targetName) {
                     tabs.forEach((tab, index) => {
                       if (tab.name === targetName) {
@@ -1662,13 +1661,17 @@ export default {
                       }
                     });
                   }
-                  
-
-                  this.ruleForm.editableTabsValue = activeName;
+               
+                  let targetb = targetName-1;
+                  this.alljoinData.splice(targetb, 1);
+                   this.ruleForm.editableTabsValue = activeName;
                   this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
                   this.subscript(); 
-                  let joinData = this.s_content.joinData;
-                  this.alljoinData.push(joinData);
+                   
+                  // let joinData = this.s_content.joinData;
+                  // this.alljoinData.push(joinData);
+
+                  
                })
               
           .catch(() => {
@@ -1913,9 +1916,10 @@ export default {
                                     return;
                                   }    
                            if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
+                               console.log(this.alljoinData,'排重关联订单')
                                for(var i=0; i<this.alljoinData.length; i++){
                                   for(var j=i+1; j<this.alljoinData.length; j++){
-                                    if(this.alljoinData[i].paymentID == this.alljoinData[j].paymentID){
+                                    if(this.alljoinData[i].paymentID === this.alljoinData[j].paymentID){
                                         this.$message({
                                                 message:'关联单据重复，请重新选择',
                                                 type: 'warning' 
@@ -1993,7 +1997,7 @@ export default {
                     }
               }
              if(verify !== 0){
-                this.add_form(this.object_lisr)//调用提交接口
+               // this.add_form(this.object_lisr)//调用提交接口
                
               }
           },
