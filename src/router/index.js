@@ -639,6 +639,15 @@ export default new Router({
     }
   },
   {
+    path: '/approve/reimburseTeamDetails',
+    component: () => import('@/page/Finance/approve/reimburseTeamDetails'),
+    name: '待办/报销详情',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
     path: '/doneAll/list',
     component: () => import('@/page/Finance/doneAll/list'),
     name: '已办',

@@ -108,7 +108,7 @@
         let getCurrentGuid = row.guid // 获取当前行的 guid
         let getWorkItemID = this.keepWorkItemID
         let getCurrentExpenseID = row.expenseID // 获取当前行的 guid
-        this.$router.push({ path: "/approve/approveDetail", query: { approveDetailGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
+        this.$router.push({ path: "/approve/reimburseTeamDetails", query: { approveDetailGuid: getCurrentGuid, queryApproveExpenseID: getCurrentExpenseID, queryWorkItemID: getWorkItemID } })
       },
       // 请求工作流接口获取未完成的任务
       approveTableList(){
