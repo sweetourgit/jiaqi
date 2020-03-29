@@ -3,10 +3,8 @@
   // const serverSrc="http://api.dayuntong.com"
   // const jqUrl = 'http://49.4.28.5:3019/h3wf'
   // 测试
-  // const serverSrc="http://223.100.19.245:3017";
-  // const jqUrl = 'http://223.100.19.245:3020/h3wf'
-  const serverSrc="http://192.168.2.81:3017";
-  const jqUrl = 'http://192.168.2.81:3019/h3wf';
+  const serverSrc="http://223.100.19.245:3017";
+  const jqUrl = 'http://223.100.19.245:3020/h3wf'
 
   // const serverSrc="/api";
   // const jqUrl = '/api/h3bpm'
@@ -15,8 +13,9 @@
   // const serverSrcZb="http://zb.dayuntong.com"
   // const jqUrlZB = 'http://49.4.28.5:3019/h3wf' // 周边工作流
   // 测试
-  const serverSrcZb="http://192.168.2.81:3017";
-  const jqUrlZB = 'http://192.168.2.81:3019/h3wf'; // 周边工作流
+  const serverSrcZb="http://223.100.19.245:3017";
+  // const serverSrcZb="http://223.100.19.245:3020";
+  const jqUrlZB = 'http://223.100.19.245:3017/h3wf' // 周边工作流
 
   // const serverSrc= "http://web.17lvju.com/app/jialv"
   // const imgUrl="http://test.dayuntong.com";
@@ -32,7 +31,7 @@
   // const jqUrl="http://test.dayuntong.com/h3wf";
   // const serverSrcPhp="http://www.around.com";
   const serverSrcPhp="http://zb.dayuntong.com";
-  const serverSrcYL="http://yl.dayuntong.com";
+  const serverSrcYL="http://web.17lvju.com/app/jialv";
   const token="";
   const userId="";
   const hasEnter=false;

@@ -1,9 +1,5 @@
-<style lang="scss" scoped>
-
-</style>
-
 <template>
-  <header>
+  <header style="background:#F7F7F7;padding-top: 20px;">
     <div class="form-ground">
       <el-form label-width="120px" style="width: 100%;"
         ref="submitForm"
@@ -51,24 +47,32 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
+          <el-col style="width: 320px;">
+            <div style="display: flex; justify-content: flex-end; align-items: center;height: 40px; line-height: 40px;">
+              <el-button size="small" type="primary" style="display: inline-block; height: 32px;" 
+                @click="$emit('reset-pageinfo')">
+                搜索
+              </el-button>
+              <el-button size="small" type="info" style="display: inline-block; height: 32px;" 
+                @click="reset">
+                重置
+              </el-button>
+            </div>
+          </el-col>
         </el-row>
       </el-form>
-    </div>
-    <div class="btn-ground">
-      <el-button size="small" type="primary" 
-        @click="$emit('reset-pageinfo')">
-        搜索
-      </el-button>
-      <el-button size="small" type="info" 
-        @click="reset">
-        重置
-      </el-button>
     </div>
   </header>
 </template>
 
 <script>
 export default {
+
+  data(){
+    return {
+      submitForm: {}
+    }
+  }
 
 }
 </script>

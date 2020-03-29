@@ -42,7 +42,7 @@ export const linerRegimentPlan= {
     {
       path: 'list',
       name: '产品管理/ 团期计划/ 游轮/ 列表',
-      component: () => import('@/page/productManagement/regimentPlan/children/liner'),
+      component: () => import('@/page/productManagement/regimentPlan/children/liner/LinerList'),
       meta: {
         keepAlive: true,
         auth: true

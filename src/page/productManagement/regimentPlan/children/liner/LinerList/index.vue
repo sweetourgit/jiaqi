@@ -1,9 +1,12 @@
 <style lang="scss" scoped>
-
+.list-page{
+  height: 100%; 
+  overflow: auto;
+}
 </style>
 
 <template>
-  <div class="liner-list">
+  <div class="list-page">
     <ListHeader></ListHeader>
     <ListMain></ListMain>
   </div>  
