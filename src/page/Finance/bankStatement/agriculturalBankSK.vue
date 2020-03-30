@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:54:18 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:54:18 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 14:22:22
  */
 
 <template>
@@ -115,7 +115,7 @@
           <span v-if="scope.row.abcBank_ZCK == 1">已设置</span>
         </template>
       </el-table-column>
-      <el-table-column prop="code" label="交易流水号" align="center"></el-table-column>
+      <!-- <el-table-column prop="code" label="交易流水号" align="center"></el-table-column> -->
       <el-table-column prop="createTime" label="交易时间" align="center">
           <template slot-scope="scope">
           <span> {{scope.row.createTime.split('T')[0]}}<br/>{{scope.row.createTime.split('T')[1]}}</span>
