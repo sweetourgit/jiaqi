@@ -81,6 +81,7 @@ $fontHeight: 32px;
         position:absolute;
         top: 70px;
         right: 24px;
+        width: 22px !important;
         li {
           box-sizing: border-box;
           writing-mode: vertical-rl;
