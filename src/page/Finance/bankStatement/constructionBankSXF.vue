@@ -2,7 +2,7 @@
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:37 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 14:54:03
+ * @Last Modified time: 2020-03-30 15:36:29
  */
 <template>
   <div class="distributor-content" id="industrialBank">
@@ -447,12 +447,11 @@ export default {
               ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
               : "2099-05-16",
             seachType: 2,
-            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+           userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {

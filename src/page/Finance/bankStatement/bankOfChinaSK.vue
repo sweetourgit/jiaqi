@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:54:27 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:54:27 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 15:32:43
  */
 
 <template>
@@ -200,7 +200,7 @@ export default {
       this.File.userid=data4D.userID
       this.File.orgid=data4D.orgID
       this.File.topid=data4D.topID
-      this.File.company='辽宁大运通'//测试 暂时写死
+      this.File.company=data4D.company//测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -335,11 +335,10 @@ export default {
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
           "seachType": 0,
-           //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
         }
       }).then(function (obj) {
         // console.log('中国银行',obj);

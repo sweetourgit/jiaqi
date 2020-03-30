@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:54:48 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:54:48 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 15:34:45
  */
 <template>
   <div class="distributor-content">
@@ -838,12 +838,11 @@ export default {
             transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            seachType: 3,
+           userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {
@@ -877,12 +876,11 @@ export default {
             transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            seachType: 3,
+           userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {
@@ -908,10 +906,10 @@ export default {
             // transaction_reference_number: "",
             begin: "2000-05-16",
             end: "2099-05-16",
-            // userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
             seachType: 3
           }
         })
@@ -963,12 +961,11 @@ export default {
               transaction_reference_number: "",
               begin: "2000-05-16",
               end: "2099-05-16",
-              seachType: 3
-              //若传入4D则无数据 测试暂时先不传
-              //   userid: data4D.userID, // 暂无数据 想看改成0,
-              // orgid: data4D.orgID, // 暂无数据 想看改成0,
-              // topid: data4D.topID, // 暂无数据 想看改成0,
-              // company: "",
+              seachType: 3,
+              userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
             }
           }
         )
@@ -1018,12 +1015,11 @@ export default {
             matching_State: 0,
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            seachType: 3,
+            userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {
@@ -1076,12 +1072,11 @@ export default {
             matching_State: 0,
             begin: "2000-05-16",
             end: "2099-05-16",
-            seachType: 3
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            seachType: 3,
+             userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {
@@ -1132,12 +1127,11 @@ export default {
           object: {
             matching_State: 0,
             begin: "2000-05-16",
-            end: "2099-05-16"
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            end: "2099-05-16",
+          userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {

@@ -2,7 +2,7 @@
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:22 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 14:45:50
+ * @Last Modified time: 2020-03-30 15:37:52
  */
 
 <template>
@@ -424,6 +424,7 @@ export default {
       this.loadData();
     },
     loadData() {
+        let data4D = utils.getSession4D();
       const that = this;
       //   this.$http.post('mock/zhongxinSXF', {}).then(function (obj) {
       //       that.total = 100;
@@ -442,7 +443,11 @@ export default {
               ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
               : "2099-05-16",
             seachType: 2,
-            is_EBS: this.ruleForm.matchType ? this.ruleForm.matchType : 0
+            is_EBS: this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+              userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {

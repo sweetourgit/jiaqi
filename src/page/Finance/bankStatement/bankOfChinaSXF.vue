@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:54:40 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:54:40 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 15:33:20
  */
 
 <template>
@@ -213,7 +213,7 @@ export default {
       this.File.userid=data4D.userID
       this.File.orgid=data4D.orgID
       this.File.topid=data4D.topID
-      this.File.company=''//测试 暂时写死
+      this.File.company=data4D.company//测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -411,12 +411,11 @@ export default {
               ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
               : "2099-05-16",
             seachType: 2,
-            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+            userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {
