@@ -19,12 +19,12 @@
           <el-table-column label="标题" prop="tour_no" header-align="center" align="center"></el-table-column>
           <el-table-column label="状态" prop="status" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="产品名称" prop="product_name" header-align="center" align="center"></el-table-column>
-          <el-table-column label="出行日期" prop="time" header-align="center" align="center" width="240"></el-table-column>
+          <el-table-column label="出行日期" prop="time" header-align="center" align="center" width="120"></el-table-column>
           <el-table-column label="报账状态" prop="bill_status" header-align="center" align="center" width="80"></el-table-column>
-          <el-table-column label="房间库存" prop="room_stock" header-align="center" align="center" width="120"></el-table-column>
-          <el-table-column label="剩余房间" prop="surplus_room_stock" header-align="center" align="center" width="120"></el-table-column>
-          <el-table-column label="人数库存" prop="number_stock" header-align="center" align="center" width="120"></el-table-column>
-          <el-table-column label="剩余人数" prop="surplus_room_num" header-align="center" align="center" width="120"></el-table-column>
+          <el-table-column label="房间库存" prop="room_stock" header-align="center" align="center" width="80"></el-table-column>
+          <el-table-column label="剩余房间" prop="surplus_room_stock" header-align="center" align="center" width="80"></el-table-column>
+          <el-table-column label="人数库存" prop="number_stock" header-align="center" align="center" width="80"></el-table-column>
+          <el-table-column label="剩余人数" prop="surplus_room_num" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="操作人员" header-align="center" align="center" width="120"></el-table-column>
           <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">

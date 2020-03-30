@@ -13,10 +13,10 @@
   <div class="price-ground">
     <header>
       <el-button-group>
-        <el-button size="mini" type="info"
+        <el-button size="mini" :type="el=== title?'primary':'info'"
           v-for="el in priceMapKeys" 
           :key="el"
-          @click="title= el">
+          @click="changeTableData(el)">
           {{ el }}
         </el-button>
       </el-button-group>
@@ -39,7 +39,9 @@
         <el-table-column label="同业价" prop="adult_same_price" header-align="center" align="center"></el-table-column>
         <el-table-column label="销售价" prop="adult_straight_price" header-align="center" align="center"></el-table-column>
         <el-table-column label="库存" prop="stock" header-align="center" align="center"></el-table-column>
-        <el-table-column label="上线/下线" prop="line_status" header-align="center" align="center"></el-table-column>
+        <el-table-column label="上线/下线" header-align="center" align="center">
+          <template slot-scope="scope">{{ getLineStatus(scope.row.line_status) }}</template>
+        </el-table-column>
         <el-table-column label="操作" header-align="center" align="center">
           <template slot-scope="scope">
             <el-button type="text" size="small"
@@ -119,6 +121,10 @@ export default {
     getCabinName(cabin_id){
       let { name }= this.$refs.editor.findCabin(cabin_id);
       return name;
+    },
+
+    getLineStatus(line_status){
+      return line_status=== 1? '上线': '下线'
     },
 
     // 分类price， price的title是自己的title，而分类用的title，是price.cabin_id对应的title
