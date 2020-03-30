@@ -68,6 +68,7 @@ export default {
     },
 
     notChange(){
+      if(!cache) return true;
       let bol= true;
       bol= this.reserved_time=== cache.reserved_time;
       if(bol) bol= this.$refs.busSelector.notChange();

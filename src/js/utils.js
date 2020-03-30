@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
+import moment from 'moment'
 
 /**
  * @description: 简易版深拷贝，不可拷贝循环引用结构
@@ -239,7 +240,11 @@ export const dictionaryMaker= function(source){
       configurable: true
     })
   })
-  return result;
+  result.getLabel= function(value){
+    let find= result.find(el => el.value=== value);
+    return find? find.label: undefined;
+  }
+  return Object.freeze(result);
 }
 
 /**
@@ -252,3 +257,5 @@ Vue.prototype.$storageLoader= function({ loader, attrs }){
   attrs.forEach(attr => result[attr]= _loader.getItem(attr));
   return result;
 }
+
+Vue.prototype.$moment= moment;

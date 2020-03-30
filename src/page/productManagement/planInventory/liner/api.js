@@ -1,5 +1,4 @@
 // /linerapi/v1/product/product-deliver/saveprice 邮轮产品接送设置售卖价格
-import mock from 'mockjs'
 import Vue from 'vue'
 let { $http, GLOBAL, $message }= Vue.prototype;
 
