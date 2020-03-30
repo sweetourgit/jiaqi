@@ -2,7 +2,7 @@
  * @Author: WZJ 
  * @Date: 2020-03-25 14:56:08 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 14:13:41
+ * @Last Modified time: 2020-03-30 14:25:20
  */
 <template>
   <div class="distributor-content" id="industrialBankSXF">
@@ -108,7 +108,6 @@
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
           <!-- {{scope.row.reference != '收付直通车支付结算'}} -->
-        {{scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee}}
           <el-button
             @click="deleteFun(scope.row)"
             v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee&&scope.row.is_EBS==0"
