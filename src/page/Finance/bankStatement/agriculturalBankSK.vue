@@ -2,7 +2,7 @@
  * @Author: WZJ 
  * @Date: 2020-03-25 14:54:18 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 14:44:51
+ * @Last Modified time: 2020-03-30 14:54:23
  */
 
 <template>
@@ -76,7 +76,7 @@
         :before-remove="beforeRemove"
         :before-upload="beforeUpload"
         :data="File"
-        name="excelfile"
+           name="excelfile"
       >
         <el-button type="primary">添加农业银行流水单</el-button>
       </el-upload>

@@ -67,7 +67,7 @@
         :before-remove="beforeRemove1"
         :before-upload="beforeUpload"
         :data="File"
-        name="excelfile"
+         name="excelfile"
       >
         <el-button type="primary">添加招商银行流水单</el-button>
       </el-upload>
