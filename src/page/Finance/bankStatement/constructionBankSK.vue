@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:30 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:55:30 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 14:46:03
  */
 <template>
   <div class="distributor-content" id="bankContent">
@@ -205,7 +205,7 @@ export default {
       this.File.userid=data4D.userID
       this.File.orgid=data4D.orgID
       this.File.topid=data4D.topID
-      this.File.company=''//测试 暂时写死
+      this.File.company=data4D.company//测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
