@@ -106,17 +106,16 @@ export default {
       let conditions= {};
       Object.keys(this.submitForm).forEach(attr => {
         if(this.$isNull(this.submitForm[attr])) return;
-        if(attr=== 'time') conditions= this.timeAdaptor(conditions);
+        if(attr=== 'time') this.timeTranslater(conditions, this.submitForm);
         if(attr!== 'time') conditions[attr]= this.submitForm[attr];
       })
       return conditions;
     },
 
-    timeAdaptor(source){
+    timeTranslater(obj, source){
       let time= source.time;
-      source.start_at= this.$moment(time[0]).format('YYYY-MM-DD');
-      source.end_at= this.$moment(time[1]).format('YYYY-MM-DD');
-      return source;
+      obj.start_at= this.$moment(time[0]).format('YYYY-MM-DD');
+      obj.end_at= this.$moment(time[1]).format('YYYY-MM-DD');
     },
 
     reset(){

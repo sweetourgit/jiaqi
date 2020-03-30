@@ -7,7 +7,7 @@ export const getSkuPlanListPage= function(payload){
     $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-plan/listpage", payload)
     .then(res => {
       let { code, message, data }= res.data;
-      if(code!== 200) throw ('查询团期计划列表失败'+ (message || ''));
+      if(code!== 200) return reject('查询团期计划列表失败');
       resolve(data);
     })
     .catch(err => {
