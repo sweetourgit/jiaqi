@@ -17,7 +17,7 @@
           :highlight-current-row="false"
           header-row-class-name="row-header">
           <el-table-column label="标题" prop="tour_no" header-align="center" align="center"></el-table-column>
-          <el-table-column label="状态" prop="status" header-align="center" align="center" width="80"></el-table-column>
+          <el-table-column label="状态" prop="statusText" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="产品名称" prop="product_name" header-align="center" align="center"></el-table-column>
           <el-table-column label="出行日期" prop="time" header-align="center" align="center" width="120"></el-table-column>
           <el-table-column label="报账状态" prop="bill_status" header-align="center" align="center" width="80"></el-table-column>
@@ -28,14 +28,45 @@
           <el-table-column label="操作人员" header-align="center" align="center" width="120"></el-table-column>
           <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
-              <el-button type="text" size="small"
-                @click="awakeEditor(scope.row)">
-                编辑
-              </el-button>
-              <el-button type="text" size="small"
-                @click="removePrice(scope.row)">
-                删除
-              </el-button>
+              <div style="display:inline-block" v-show="scope.row.status=== PLAN_STATUS.NORMAL">
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
+                  停售
+                </el-button>
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
+                  下单
+                </el-button>
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
+                  分房
+                </el-button>
+              </div>
+
+              <div style="display:inline-block" v-show="scope.row.status=== PLAN_STATUS.PRE_FULL || scope.row.status=== PLAN_STATUS.FULL">
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
+                  分房
+                </el-button>
+              </div>
+
+              <div style="display:inline-block" v-show="scope.row.status=== PLAN_STATUS.CLOSE">
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
+                  报账单
+                </el-button>
+              </div>
+
+              <div style="display:inline-block;padding-left: 10px;">
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
+                  详情
+                </el-button>
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
+                  出团通知书
+                </el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -45,7 +76,7 @@
       <div style="display: flex; justify-content: center; padding-top: 20px;">
         <el-pagination background
           :current-page.sync="pageInfo.pageIndex"
-          :page-sizes="[5, 10, 20, 50]"
+          :page-sizes="[5, 10]"
           :page-size="pageInfo.pageSize"
           :total="pageInfo.total"
           @current-change="pageActionHandler"
@@ -60,6 +91,7 @@
 </template>
 
 <script>
+import { Random } from 'mockjs'
 import ListHeader from './comps/ListHeader'
 import { PLAN_STATUS, CHECK_STATUS } from './dictionary'
 import { getSkuPlanListPage } from './api'
@@ -83,6 +115,7 @@ export default {
     return {
       pageInfo: getPageInfo(),
       tableData: [],
+      PLAN_STATUS
     }
   },
 
@@ -148,7 +181,8 @@ export default {
 
     listAdaptor(item){
       let { set_out_year, set_out_month, set_out_day }= item;
-      item.status= PLAN_STATUS.getLabel(item.status);
+      item.status= Random.integer(1, 5);
+      item.statusText= PLAN_STATUS.getLabel(item.status);
       item.bill_status= CHECK_STATUS.getLabel(item.bill_status);
       item.time= set_out_year+ set_out_month.padStart(3, '-0')+ set_out_day.padStart(3, '-0');
       return item;
