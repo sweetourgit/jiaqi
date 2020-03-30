@@ -1,7 +1,7 @@
 <style lang="scss" scoped>
 .redirect-parent {
   /* 50= navbar  50  */
-  height: calc(100vh - 200px);
+  height: calc(100vh - 220px);
   width: 100%;
   position: relative;
   overflow: hidden;

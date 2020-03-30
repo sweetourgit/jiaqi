@@ -98,7 +98,7 @@ export default {
         ],
         tour_no_suffix: [
           { required: true, message: '请填写团号后缀', trigger: ['blur']},
-          { required: true, validator: this.codeValidator, trigger: ['blur']},
+          { required: true, asyncValidator: this.codeValidator, trigger: ['blur']},
         ],
         clearance_time: { required: true, message: '请选择清位时间', trigger: 'blur'}
       },
@@ -141,6 +141,7 @@ export default {
       // if(this.inited) return cb();
       let { tour_no_prefix, tour_no_suffix }= this.submitForm;
       if(!tour_no_prefix || !tour_no_suffix) return cb();
+      if(tour_no_prefix && tour_no_suffix && ((tour_no_prefix.length+ tour_no_suffix.length)> 30)) return cb('前后缀长度之和不能大于30字符');
       this.$refs.prefixRef.clearValidate();
       this.$refs.suffixRef.clearValidate();
       getTourAround({ tour_no_prefix, tour_no_suffix }).then(() => {

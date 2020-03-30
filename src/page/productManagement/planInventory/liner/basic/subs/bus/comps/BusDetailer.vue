@@ -11,7 +11,7 @@
         <el-form-item label="价格说明：" prop="price">{{ bus.price }}</el-form-item>
         <el-form-item label="预定须知：" prop="reservation_notes">{{ bus.reservation_notes }}</el-form-item>
         <el-form-item label="温馨提示：" prop="reminder">{{ bus.reminder }}</el-form-item>
-        <el-form-item label="去程返程：" prop="tour_no_prefix">{{ bus.go_destination+ ' / '+ bus.return_place_departure }}</el-form-item>
+        <el-form-item label="去程返程：" prop="tour_no_prefix">{{ bus.go_place_departure+ ' / '+ bus.return_place_departure }}</el-form-item>
         <el-form-item label="售卖价格：" prop="sale_price">{{ bus.sale_price }}</el-form-item>
       </el-form> 
     </div>

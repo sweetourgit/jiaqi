@@ -39,6 +39,7 @@ export default {
 
   mounted(){
     this.init();
+    console.log(SKU_PLAN_STATUS[1]);
   },
 
   computed: {
