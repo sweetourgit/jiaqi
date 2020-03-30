@@ -40,7 +40,7 @@
                </el-table>
                <el-form-item>
                   <div class="required"><span>*</span>更改状态</div>
-                  <el-select v-model="processFrom.orderStatu" placeholder="请选择">
+                  <el-select v-model="processFrom.orderStatu" placeholder="请选择" @change="changeTab()">
                      <el-option v-for="item in processFrom.orderStatus" :key="item.id" :label="item.label" :value="item.id"></el-option>
                   </el-select>
                </el-form-item>
@@ -74,7 +74,7 @@
                   <div class="required">制作中发现问题</div>
                   <el-input v-model="contentFrom.makeQuestion"></el-input>
                </el-form-item>
-               <el-form-item v-if="processFrom.orderStatu == 6">
+               <el-form-item v-if="processFrom.orderStatu == 6" v-for="(item,index) in subscribeData" :key="item">
                   <div class="required"><span>*</span>预约时间、护照号、预约号和地点</div>
                   <table>
                     <tr>
@@ -89,12 +89,28 @@
                   <div class="required">注意事项</div>
                   <el-input v-model="contentFrom.attention"></el-input>
                </el-form-item>
+               <el-form-item prop="visaDate" v-if="processFrom.orderStatu == 7">
+                  <div class="required"><span>*</span>预计出签日期</div>
+                  <el-date-picker v-model="contentFrom.visaDate" type="date" placeholder="选择日期"></el-date-picker>
+               </el-form-item>
+               <el-form-item prop="auditTime" v-if="processFrom.orderStatu == 9">
+                  <div class="required"><span>*</span>审核时长</div>
+                  <el-input v-model="contentFrom.auditTime"></el-input>
+               </el-form-item>
+               <el-form-item prop="courierCompany" v-if="processFrom.orderStatu == 13">
+                  <div class="required">快递公司</div>
+                  <el-input v-model="contentFrom.courierCompany"></el-input>
+               </el-form-item>
+               <el-form-item prop="courierNumber" v-if="processFrom.orderStatu == 13">
+                  <div class="required">快递单号</div>
+                  <el-input v-model="contentFrom.courierNumber"></el-input>
+               </el-form-item>
             </el-form>
           </div>
           <div slot="footer" class="footer">
             <el-button class="cancel-order">取消订单</el-button>     
             <el-button class="fr save" type="primary" @click="saveOrder('contentFrom')">保存更改</el-button>
-            <el-button class="fr" @click="cancle">取 消</el-button>
+            <el-button class="fr" @click="cancle()">取 消</el-button>
           </div>
          </div>
        </el-dialog>
@@ -184,7 +200,12 @@ export default {
          subscribeNumber:"", // 预约号
          address:"", // 地点
          attention:"", // 注意事项
+         visaDate:"", // 预计出签日期
+         auditTime:"", // 审核时长
+         courierCompany:"", // 快递公司
+         courierNumber:"", // 快递单号
        },
+       subscribeData:[],
        tourList:[],
        authDiocss:{
 　　　　 height:'',
@@ -198,37 +219,36 @@ export default {
          {name:"下单成功"},
          {name:"收到材料"},
          {name:"材料审核",lists:
-          [{title:"开始审核日期",content:"2019-09-21"},
-          {title:"预计审核时长",content:"3天"},
-          {title:"审核问题",content:"缺少材料"}]
+          [{title:"开始审核日期",content:""},
+          {title:"预计审核时长",content:""},
+          {title:"审核问题",content:""}]
          },
          {name:"材料补交中",lists:
-          [{title:"需补交材料",content:"身份证复印件"}]
+          [{title:"需补交材料",content:""}]
          },
          {name:"材料制作中",lists:
-          [{title:"开始制作日期",content:"2019-09-21"},
-          {title:"预计制作时长",content:"3天"},
-          {title:"制作中发现问题",content:"缺少材料"}]
+          [{title:"开始制作日期",content:""},
+          {title:"预计制作时长",content:""},
+          {title:"制作中发现问题",content:""}]
          },
          {name:"成功预约时间",lists:
-          [{title:"注意事项",content:"身份证复印件"}]
+          [{title:"注意事项",content:""}]
          },
          {name:"送签",lists:
-          [{title:"预计出签日期",content:"2019-09-21"}]
+          [{title:"预计出签日期",content:""}]
          },
          {name:"面签"},
          {name:"使馆审核中",lists:
-          [{title:"预计出签日期",content:"2019-09-21"}]
+          [{title:"预计出签日期",content:""}]
          },
          {name:"使馆审理完毕"},
          {name:"过签"},
+         {name:"拒签"},
          {name:"邮寄中",lists:
-          [{title:"快递公司",content:"中通"},
-          {title:"快递单号",content:"12345467"}]
+          [{title:"快递公司",content:""},
+          {title:"快递单号",content:""}]
          },
-         {name:"待评价",lists:
-          [{title:"评价",content:"非常好"}]
-         },
+         {name:"待评价"},
          {name:"订单完成"}
        ],
        
@@ -285,6 +305,12 @@ export default {
         address:[
           { required: true, message: "地点不能为空", trigger: "blur" }
         ],
+        visaDate:[
+          { required: true, message: "预计出签日期不能为空", trigger: "blur" }
+        ],
+        auditTime:[
+          { required: true, message: "审核时长不能为空", trigger: "blur" }
+        ],
        },
        visitorsShow:false, // 出行人信息弹窗
        ruleForm:{},
@@ -302,6 +328,11 @@ export default {
         label:'军官证'
        },],
        indexes:'',
+       orderID:0,
+       orderCode:'',
+       orderChannel:'',
+       orgID:0,
+       statusDetail:'',
     }
   },
   mounted(){
@@ -338,6 +369,25 @@ export default {
                let contact = JSON.parse(res.data.object.contact)
                this.processFrom.contactName = contact.Name;
                this.processFrom.contactPhone = contact.Tel;
+               this.orderCode = res.data.object.orderCode;
+               this.orderID = res.data.object.id;
+               this.orderChannel = res.data.object.orderChannel; 
+               this.orgID = res.data.object.orgID;
+               for(let i = 0; i < res.data.object.statusDetail.length; i++){
+                var statusDetail = JSON.parse(res.data.object.statusDetail[i].details);
+               }
+               this.orderStatusInfo[2].lists[0].content = statusDetail.auditDate;
+               this.orderStatusInfo[2].lists[1].content = statusDetail.duration;
+               this.orderStatusInfo[2].lists[2].content = statusDetail.question;
+               this.orderStatusInfo[3].lists[0].content = statusDetail.material;
+               this.orderStatusInfo[4].lists[0].content = statusDetail.makeDate;
+               this.orderStatusInfo[4].lists[1].content = statusDetail.makeDuration;
+               this.orderStatusInfo[4].lists[2].content = statusDetail.makeQuestion;
+               this.orderStatusInfo[5].lists[0].content = statusDetail.attention;
+               this.orderStatusInfo[6].lists[0].content = statusDetail.visaDate;
+               this.orderStatusInfo[7].lists[0].content = statusDetail.auditTime;
+               this.orderStatusInfo[12].lists[0].content = statusDetail.courierCompany;
+               this.orderStatusInfo[12].lists[1].content = statusDetail.courierNumber;
             }
           }).catch(err => {
             console.log(err)
@@ -363,10 +413,68 @@ export default {
         this.$set(this.tourList,this.indexes,JSON.parse(JSON.stringify(this.ruleForm)))
         this.visitorsShow = false;
       },
+      changeTab(){
+        this.subscribeData.length = this.tourList.length;
+      },
       saveOrder(formName){
-        this.$refs[formName].validate((valid) => {
+        let contact = {
+          Name : this.processFrom.contactName,
+          Tel:this.processFrom.contactPhone
+        }
+        let details = {
+           auditDate:this.contentFrom.auditDate, // 开始审核日期
+           duration:this.contentFrom.duration, // 预计审核时长
+           question:this.contentFrom.question, // 审核问题
+           material:this.contentFrom.material, // 需补交材料
+           makeDate:this.contentFrom.makeDate, // 开始制作日期
+           makeDuration:this.contentFrom.makeDuration, // 预计制作时长
+           makeQuestion:this.contentFrom.makeQuestion, // 制作中发现问题
+           subscribeDate:this.contentFrom.subscribeDate, // 预约时间
+           passportNumber:this.contentFrom.passportNumber, // 护照号
+           subscribeNumber:this.contentFrom.subscribeNumber, // 预约号
+           address:this.contentFrom.address, // 地点
+           attention:this.contentFrom.attention, // 注意事项
+           visaDate:this.contentFrom.visaDate, // 预计出签日期
+           auditTime:this.contentFrom.auditTime, // 审核时长
+           courierCompany:this.contentFrom.courierCompany, // 快递公司
+           courierNumber:this.contentFrom.courierNumber, // 快递单号
+        }
+        for (let i = 0; i < this.tourList.length; i++) {
+          this.tourList[i].bornDate = new Date(this.tourList[i].bornDate).getTime();
+        }
+        this.$refs["processFrom"].validate((valid) => {
           if (valid) {
-
+            this.$http.post(this.GLOBAL.serverSrc + "/order/visa/api/ordersave",
+              {
+                object: {
+                    "id": this.orderID,
+                    "orderCode": this.orderCode,  
+                    "contact": JSON.stringify( contact ),
+                    "orderChannel": this.orderChannel,
+                    "orgID": this.orgID,
+                    "guests": this.tourList,
+                    "visaOrderStatus": this.processFrom.orderStatu,
+                    "statusDetail": [
+                      {
+                        "id": 0,
+                        "createTime": 0,
+                        "orderID": this.orderID,
+                        "visaOrderStatus": this.processFrom.orderStatu,
+                        "details": JSON.stringify( details )
+                      }
+                    ],
+                }
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                   //this.pageList();
+                   this.dialogFormProcess = false
+                   this.$refs["processFrom"].resetFields();
+                   this.$refs["contentFrom"].resetFields();
+                }else{
+                   this.$message.success("添加失败");
+                }
+            })
           }
         })
       },

@@ -28,20 +28,22 @@
               <el-input v-model="ruleForm.name" class="messagename" placeholder="请输入产品名称"></el-input>
               <span class="Numbers">{{ruleForm.name.length}}/30字</span>
             </el-form-item>
-            <el-form-item label="亮点词" prop="highlightWords">
-              <el-input v-model="ruleForm.highlightWords" class="Words" placeholder="请输入产品亮点词"></el-input>
+             <el-form-item label="亮点词" prop="highlightWords">
+              <span class="redStar">*</span>
+              <el-input v-model="ruleForm.highlightWords" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords.length}}/8字</span>
+              <div class="cognate" v-show="cognateShow">亮点词不能为空</div>
             </el-form-item>
             <el-form-item prop="highlightWords1" class="Words1">
-              <el-input v-model="ruleForm.highlightWords1" class="Words" placeholder="请输入产品亮点词"></el-input>
+              <el-input v-model="ruleForm.highlightWords1" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords1.length}}/8字</span>
             </el-form-item>
             <el-form-item prop="highlightWords2" class="Words2">
-              <el-input v-model="ruleForm.highlightWords2" class="Words" placeholder="请输入产品亮点词"></el-input>
+              <el-input v-model="ruleForm.highlightWords2" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords2.length}}/8字</span>
             </el-form-item>
             <el-form-item prop="highlightWords3" class="Words3">
-              <el-input v-model="ruleForm.highlightWords3" class="Words" placeholder="请输入产品亮点词"></el-input>
+              <el-input v-model="ruleForm.highlightWords3" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
             </el-form-item>
             <el-form-item label="签证国家地区" prop="region" class="mt80">
@@ -187,19 +189,15 @@ export default {
           { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change' }
         ],
         highlightWords: [
-          { required: true, message: '请输入亮点词', trigger: 'change' },
           { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
         ],
         highlightWords1: [
-          { required: true, message: '请输入亮点词', trigger: 'change' },
           { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
         ],
         highlightWords2: [
-          { required: true, message: '请输入亮点词', trigger: 'change' },
           { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
         ],
         highlightWords3: [
-          { required: true, message: '请输入亮点词', trigger: 'change' },
           { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'change' }
         ],
         region: [
@@ -253,6 +251,7 @@ export default {
       variable: 0, //设置一个变量展示弹窗
       visaID:0, // 添加成功后获取的产品ID
       region:'',
+      cognateShow:false,
     };
   },
   created() {
@@ -263,6 +262,11 @@ export default {
     }, 200);
   },
   methods: {
+    highlightWords(){
+      if(this.ruleForm.highlightWords !== '' || this.ruleForm.highlightWords1 !== '' || this.ruleForm.highlightWords2 !== '' || this.ruleForm.highlightWords3 !== ''){
+            this.cognateShow = false;
+        }
+    },
     getProduct(){ // 获取一条产品信息
       this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/get",{
         id:sessionStorage.getItem('commodityID')
@@ -438,6 +442,12 @@ export default {
       }
     },
     nextMessage(formName){
+      if(this.ruleForm.highlightWords.length == 0 && this.ruleForm.highlightWords1.length == 0 &&this.ruleForm.highlightWords2.length == 0 &&this.ruleForm.highlightWords3.length == 0 ){
+        this.cognateShow = true;
+        return;
+      }else {
+        this.cognateShow = false;
+      }
        // 送签地
       let visaSend=[];
       for(let i=0;i<this.authData.length;i++){
@@ -673,6 +683,8 @@ export default {
 }
 .redStar_01{ color: #f56c6c; float: left; margin-left:-50px;}
 .redStar_02{ color: #f56c6c; float: left; margin-left:-65px;}
+.cognate{ color:red;position:absolute;left:0px;top:30px;font-size: 12px;}
+.redStar{ color: #f56c6c; float: left; margin-left:-64px;}
 </style>
 
 

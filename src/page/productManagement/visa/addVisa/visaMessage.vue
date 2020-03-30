@@ -283,7 +283,9 @@ export default {
               }
             }).then(res => {
                 if(res.data.isSuccess == true){
-                   this.addVisaMessageShow = false
+                   this.addVisaMessageShow = false;
+                   this.pageList();
+                   this.a = 0;
                 }else{
                    this.$message.success(res.data.result.message);
                 }
@@ -354,28 +356,33 @@ export default {
            type: "warning"
         })
         .then(() => {
-          this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
-            "id": this.editableTabs[this.editableTabsValue].id
-          })
-          .then(res => {
-            if(res.data.isSuccess == true){
-              this.pageList();
-              let tabs = this.editableTabs;
-              let activeName = this.editableTabsValue;
-              if (activeName === targetName) {
-                tabs.forEach((tab, index) => {
-                  if (tab.name === targetName) {
-                    let nextTab = tabs[index + 1] || tabs[index - 1];
-                    if (nextTab) {
-                      activeName = nextTab.name;
+          if(this.tableDate.length > 0){
+            this.$message.success("该主题存在签证信息人群，不允许删除");
+          } else{
+            this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
+              "id": this.editableTabs[this.editableTabsValue].id
+            })
+            .then(res => {
+              if(res.data.isSuccess == true){
+                this.editableTabs = [];
+                this.pageList();
+                let tabs = this.editableTabs;
+                let activeName = this.editableTabsValue;
+                if (activeName === targetName) {
+                  tabs.forEach((tab, index) => {
+                    if (tab.name === targetName) {
+                      let nextTab = tabs[index + 1] || tabs[index - 1];
+                      if (nextTab) {
+                        activeName = nextTab.name;
+                      }
                     }
-                  }
-                });
-              }       
-              this.editableTabsValue = String(this.editableTabs.length - 2);
-              this.$message.success("删除成功");
-            }
-           })
+                  });
+                }       
+                this.editableTabsValue = String(this.editableTabs.length - 2);
+                this.$message.success("删除成功");
+              }
+             })
+          }
         })
         .catch(() => {
           this.$message({
@@ -589,10 +596,12 @@ export default {
           id:status
         }).then(res => {
             if(res.data.isSuccess == true){
+              this.tableDate = [];
               this.rowList();
               this.$message.success("删除成功");
             }
         })
+        
       }).catch(() => {
         this.$message({
           type: "info",

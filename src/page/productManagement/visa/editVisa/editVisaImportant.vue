@@ -120,7 +120,7 @@ export default {
                 "createTime": "2020-03-12T06:38:40.753Z",
                 "code": "string",
                 "copyNum": 0,
-                "createUser": "string"
+                "createUser": sessionStorage.getItem('userCode')
               }
             })
             .then(res => {
