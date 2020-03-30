@@ -1,6 +1,7 @@
 /*
 *
-*   处理时间格式，表格的通用方法，通过，驳回
+*   借款，退款在用；
+*   处理时间格式，表格的通用方法，通过，驳回；
 *
 * */
 
@@ -59,9 +60,6 @@ export default {
     },
     // 取消
     handleCancel (paramsTabName, paramsCollectionTab) {
-      if (paramsTabName === 'collection') {
-
-      }
       this.handleGoBack();
     },
     // 审批弹窗确定回调

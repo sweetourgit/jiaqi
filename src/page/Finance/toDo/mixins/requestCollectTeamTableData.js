@@ -1,6 +1,6 @@
 /*
 *
-* 收款里的跟团（含请求表格数据，和一些通用方法）
+* 收款里的跟团（含请求表格数据，和一些通用方法）列表页
 *
 * */
 
@@ -98,7 +98,7 @@ export default {
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
         object: {
-          checkType: this.ruleFormSearch.checkType ? this.ruleFormSearch.checkType : -1,
+          checkType: this.ruleFormSearch.checkType ? this.ruleFormSearch.checkType : 0,
           collectionTime: "2019-05-16",
           startTime: this.ruleFormSearch.startTime ? moment(this.ruleFormSearch.startTime).format('YYYY-MM-DD 00:00:00') : "2000-05-16",
           endTime: this.ruleFormSearch.endTime ? moment(this.ruleFormSearch.endTime).format('YYYY-MM-DD 23:59:59') : '2099-05-16',

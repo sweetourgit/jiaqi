@@ -158,7 +158,7 @@
     <!-- 基本信息 END -->
     <!-- 审核结果 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
-    <el-table :data="tableCourse" border :header-cell-style="getRowClass">
+    <el-table :data="tableAuditResults" border :header-cell-style="getRowClass">
       <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
       <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
       <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
@@ -301,7 +301,7 @@
         ifLookApproveProcessDialog: false, // 查看审批过程
         ifLookAccountDialog: false, // 银行账户弹窗
         tableEarning: [], // 收入明细表格
-        tableCourse: [], // 查看无收入借款审批过程
+        tableAuditResults: [], // 查看无收入借款审批过程
         keepPaymentType: null, // 弹窗中调用获取一条详情，保存paymentType类型
         getTopName: '', // 部门
         approveDialogTitle: '', // 审批弹窗标题设置
@@ -404,11 +404,11 @@
           jQ_Type: paramJqType, // 无收入1 预付款2,
         }).then(obj => {
           // 裡面的具提屬性沒有調試
-          _this.tableCourse = [];
-          _this.tableCourse = obj.data.data;
-          if (_this.tableCourse.length > 0) {
+          _this.tableAuditResults = [];
+          _this.tableAuditResults = obj.data.data;
+          if (_this.tableAuditResults.length > 0) {
             _this.printAuditingContent = '<b>开始</b> -> ';
-            _this.tableCourse.forEach(function (item) {
+            _this.tableAuditResults.forEach(function (item) {
               _this.printAuditingContent += item.participantName + '( <b>' + item.approvalName + '</b> )'  + ' -> ';
             });
           }

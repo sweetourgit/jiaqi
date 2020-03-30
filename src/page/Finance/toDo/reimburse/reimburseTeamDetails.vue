@@ -18,9 +18,9 @@
         <el-tabs v-model="tabShowWhich">
           <el-tab-pane v-for="tabItem in keepBackContent" :key="tabItem.id" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
             <el-row class="item-content">
-                <el-tag type="warning" v-if="tabItem.checkType=='0'" class="distributor-status">审批中</el-tag>
-                <el-tag type="danger" v-if="tabItem.checkType=='2'" class="distributor-status">驳回</el-tag>
-                <el-tag type="success" v-if="tabItem.checkType=='1'" class="distributor-status">通过</el-tag>
+                <el-tag type="warning" v-if="tabItem.checkType === '0'" class="distributor-status">审批中</el-tag>
+                <el-tag type="danger" v-if="tabItem.checkType === '2'" class="distributor-status">驳回</el-tag>
+                <el-tag type="success" v-if="tabItem.checkType === '1'" class="distributor-status">通过</el-tag>
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="6">

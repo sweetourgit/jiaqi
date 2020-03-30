@@ -285,9 +285,17 @@
       handleCheckbox () {
 
       },
-      handleDetails (row) {
-        let getCurrentPaymentID = row.id
-        this.$router.push({ path: "/doneAll/collectionDetails", query: {doneDetailPaymentID: getCurrentPaymentID, componentName: 'direct'} })
+      handleJumpDetail (index, row) {
+        let { id, collectionType, invoiceTable } = row;
+        this.$router.push({
+          path: "/collection/collectionTeamDetails",
+          query: {
+            id,
+            collectionType,
+            invoiceTable,
+            componentName: this.whichCollectTeamTab
+          }
+        });
       },
       // 直客同业的搜索 收款账户显示的集合
       getCollectionAccount () {

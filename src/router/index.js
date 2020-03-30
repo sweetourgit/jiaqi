@@ -711,6 +711,15 @@ export default new Router({
     }
   },
   {
+    path: '/collection/collectionTeamDetails',
+    component: () => import('@/page/Finance/toDo/collection/collectionTeamDetails'),
+    name: '待办/收款详情',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+  {
     path: '/reimburse/reimburseTeamDetails',
     component: () => import('@/page/Finance/toDo/reimburse/reimburseTeamDetails'),
     name: '待办/报销详情',

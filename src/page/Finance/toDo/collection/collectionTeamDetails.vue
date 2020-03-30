@@ -1,16 +1,24 @@
+<!--
+
+  收款详情，所有收款类型通用同一个组件
+
+-->
 <template>
   <div class="loan-management">
-    <div style="text-align: right; margin:25px 20px 0 0;">
-      <el-button type="warning" plain  @click="handleCancel('collection', keepComponentName)">取消</el-button>
+    <div style="text-align: right; margin: 25px 20px 0 0;">
+      <el-button type="warning" plain @click="handleCancel">取消</el-button>
+      <el-button type="primary" plain @click="handlePass">通过</el-button>
+      <el-button type="danger" plain @click="handleReject">驳回</el-button>
+      <el-button type="success" plain @click="handleTouchPrint" plain v-if="getOrgID === 491">打印本页</el-button>
     </div>
     <div>
       <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
       <div class="item-content">
-        <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
-        <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
-        <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
+        <el-tag type="warning" v-if="fundamental.checkType === '0'" class="distributor-status">审批中</el-tag>
+        <el-tag type="danger" v-if="fundamental.checkType === '2'" class="distributor-status">驳回</el-tag>
+        <el-tag type="success" v-if="fundamental.checkType === '1'" class="distributor-status">通过</el-tag>
       </div>
-      <div v-if="keepComponentName == 'direct'">
+      <div v-if="keepComponentName === 'nameIIICollectionTeamDirect'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
@@ -84,7 +92,7 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-else-if="keepComponentName == 'same'">
+      <div v-else-if="keepComponentName === 'nameIIICollectionTeamSame'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
@@ -145,7 +153,7 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-else-if="keepComponentName == 'inner'">
+      <div v-else-if="keepComponentName === 'nameIIICollectionTeamInner'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
@@ -215,7 +223,7 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-else-if="keepComponentName == 'reimburse'">
+      <div v-else-if="keepComponentName === 'nameIIICollectionTeamReimburse'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
@@ -264,10 +272,10 @@
         <!-- 第四行 END -->
       </div>
       <div v-else></div>
-      <div v-if="keepComponentName !== 'reimburse'">
+      <div v-if="keepComponentName !== 'nameIIICollectionTeamReimburse'">
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
-        <el-table :data="tableAudit" border :header-cell-style="getRowClass">
+        <el-table :data="tableAuditResults" border :header-cell-style="getRowClass">
           <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
           <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
@@ -275,58 +283,93 @@
         </el-table>
         <!-- 审核结果 END -->
         <!-- 发票 -->
-        <el-divider content-position="left" class='title-margin title-margin-t'>发票</el-divider>
-        <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
-          <el-table-column prop="invoiceID" label="发票类型" align="center">
-            <template slot-scope="scope">
-              <div v-if="scope.row.invoiceID == 1">纸质发票</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="invoiceType" label="个人/单位" align="center">
-            <template slot-scope="scope">
-              <div v-if="scope.row.invoiceType == 1">个人</div>
-              <div v-if="scope.row.invoiceType == 2">单位</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
-          <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
-          <el-table-column prop="invoiceItem" label="发票项目" align="center">
-            <template slot-scope="scope">
-              <div v-if="scope.row.invoiceItem == 1">旅游费</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="invoicePrice" label="金额" align="center"></el-table-column>
-          <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
-          <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
-          <el-table-column prop="address" label="地址" align="center"></el-table-column>
-          <el-table-column prop="tel" label="电话" align="center"></el-table-column>
-        </el-table>
+        <div v-if="paramsInvoiceTable.length !== 0">
+          <el-divider content-position="left" class='title-margin title-margin-t'>发票</el-divider>
+          <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
+            <el-table-column prop="invoiceID" label="发票类型" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.invoiceID === 1">纸质发票</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="invoiceType" label="个人/单位" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.invoiceType === 1">个人</div>
+                <div v-if="scope.row.invoiceType === 2">单位</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
+            <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
+            <el-table-column prop="invoiceItem" label="发票项目" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.invoiceItem === 1">旅游费</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="invoicePrice" label="金额" align="center"></el-table-column>
+            <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
+            <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
+            <el-table-column prop="address" label="地址" align="center"></el-table-column>
+            <el-table-column prop="tel" label="电话" align="center"></el-table-column>
+          </el-table>
+        </div>
         <!-- 关联欠款 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
-        <div class="associatedIcon">
-          <i class="el-icon-warning"></i>
+        <!-- 同业/直客关联欠款 -->
+        <div v-if="paramsCollectionType === 2 || paramsCollectionType === 1">
+          <div v-if="paramsCollectionType === 2">
+            <div class="associatedIcon">
+              <i class="el-icon-warning"></i>
+            </div>
+            <div class="associatedItems">
+              已关联
+              <span style="font-weight: bold;">{{ tableManyRow }}</span>项
+            </div>
+            <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
+          </div>
+          <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
+            <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+            <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+            <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
+            <el-table-column prop="arrearsPrice" label="未收金额" align="center"></el-table-column>
+            <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
+            <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
+            <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
+            <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout">
+              <template slot-scope="scope">
+                <el-button type="primary" plain size="small" @click="handleRecognitionDetail(scope.row)">去认款</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
-        <div class="associatedItems">
-          已关联
-          <span style="font-weight: bold;">{{ tableManyRow }}</span>项
+        <!-- 同业/直客关联欠款 END -->
+        <!-- 内部收款，关联欠款 -->
+        <div class="stepDv bottomDis" v-else-if="paramsCollectionType === 5">
+          <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
+            <el-table-column prop="id" label="订单编号" align="center"></el-table-column>
+            <!--没有这个字段 suppliers 待解决-->
+            <el-table-column prop="suppliers" label="分销商" width="80" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+            <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
+            <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
+            <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
+            <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
+            <el-table-column prop="matchingPrice" label="本次收款" align="center"></el-table-column>
+          </el-table>
         </div>
-        <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
-        <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
-          <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-          <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
-          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
-          <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
-          <el-table-column prop="arrearsPrice" label="未收金额" align="center"></el-table-column>
-          <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
-          <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
-          <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-          <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout">
-            <template slot-scope="scope">
-              <el-button type="text" @click="handleRecognitionDetail(scope.row)">查看认款信息</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <!-- 通过、驳回弹框 -->
+        <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list">
+          <textarea rows="8" v-model="approvalOpinion" style="width: 100%; margin: 0 auto; resize: none"></textarea>
+          <el-row type="flex" class="row-bg">
+            <el-col :span="8" :offset="18">
+              <el-button @click="handleApproveDialogCancel">取消</el-button>
+              <el-button @click="handleApproveDialogConfirm" type="primary">确定</el-button>
+            </el-col>
+          </el-row>
+        </el-dialog>
+        <!-- 通过、驳回弹框 END -->
+        <!-- 内部收款，关联欠款 END -->
         <recognitionDetail :dialogFormVisible="dialogFormVisible" :msg="msg" @close="recognitionClose"></recognitionDetail>
       </div>
     </div>
@@ -334,93 +377,44 @@
 </template>
 <script>
   import recognitionDetail from './recognitionDetail';
-  import common from './common';
+  import collectTeamDetails from '../mixins/collectTeamDetails';
 
   export default {
-    name: "refundDetails",
+    name: "collectionTeamDetails",
     components: {
       recognitionDetail
     },
     data() {
       return {
         orderID:0,
-        collCheckout: false,
         refundList:{},
         dialogFormVisible: false,
-        fundamental:{},//查看详情基本信息数组
-        tableAudit:[], //审核结果表格
-        tableInvoice:[],//发票表格
-        tableAssociated:[],//发票关联表
-        keepComponentName: null,
-        keepPaymentId: null,
         msg: "",
         tableManyRow: 0,
         getCollectionPriceTotal: 0
       };
     },
-    mixins: [common],
-    created(){
-      let passPaymentID = this.$route.query.doneDetailPaymentID
-      this.keepComponentName = this.$route.query.componentName
-      console.log(this.keepComponentName)
-      this.keepPaymentId = passPaymentID
-      this.getLabel(passPaymentID);
+    mixins: [ collectTeamDetails ],
+    created () {
       //    this.getOrder(this.refundList.orderID);
     },
     methods: {
       // 点击图片钩子
-      handlePreview(file) {
+      handlePreview (file) {
         window.open(file.url);
       },
-      recognitionClose(str) {
+      recognitionClose (str) {
         this.dialogFormVisible = false;
       },
       // 查看认款详情
-      handleRecognitionDetail(row) {
+      handleRecognitionDetail (row) {
         this.msg = {
           id: row.id
         };
         this.dialogFormVisible = true;
       },
-      getAccountId(paramsId){
-        let that = this
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/collectionaccount/api/get', {
-          "id": paramsId
-        }).then(res => {
-          if (res.data.isSuccess == true) {
-            if (res.data.object.subject) {
-              that.collCheckout = true; //有科目值 对公的 ( 有科目值可以去认款 )
-            }
-          }
-        }).catch(function(res) {
-          console.log(res)
-        })
-      },
-      getLabel(id) {
-        this.tableAssociated = [];
-        let that = this
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/collection/api/coll', {
-          "id": id
-        }).then(res => {
-          //console.log(res.data.object.invoiceTable)
-          if (res.data.isSuccess == true) {
-            this.tableAssociated = res.data.object.arrears
-            this.fundamental = res.data.object;
-            this.tableInvoice = res.data.object.invoiceTable;
-            this.tableAudit = res.data.object.spw
-            this.tour_id = res.data.object.planID;
-            this.tableManyRow = that.tableAssociated.length;
-            this.getAccountId(res.data.object.accountID)
-            this.tableAssociated.forEach(item => {
-              that.getCollectionPriceTotal += item.matchingPrice;
-            })
-          }
-        }).catch(function(res) {
-          console.log(res)
-        })
-      }
     }
-  };
+  }
 </script>
 
 <style scoped lang="scss">
