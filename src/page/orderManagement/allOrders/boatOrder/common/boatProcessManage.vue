@@ -254,6 +254,8 @@ export default {
       guest:[],//客人数组
       NewGetCabinData:[],//筛选后的客人数据
       GuestRoomId:"",//客房id
+      AddNumber:0,//加的金额
+      MinusNumber:0,//减的金额
       ruleForm: {
         contactName: "",
         contactPhone: "",
@@ -342,6 +344,13 @@ export default {
             this.cabin = res.data.data.cabin;
             this.insurance = res.data.data.insure;
             this.traffic = res.data.data.deliver;
+            for(let k in this.ruleForm.favourable){
+              if(this.ruleForm.favourable[k].fav_mode == 1){
+                this.AddNumber = this.ruleForm.favourable[k].price;
+              }else if(this.ruleForm.favourable[k].fav_mode == 2){
+                 this.MinusNumber = this.ruleForm.favourable[k].price;
+              }
+            }
             for(let i in this.cabin){// 海景大床房  成人 ￥16999.00 * 2 
               this.ordercabinText = 
               this.cabin[i].name +
@@ -442,55 +451,74 @@ export default {
     ordersave(id, occupyStatus) { // 保存订单
             
     },
-    getOrderStatus(order_status,occupy_status,order_channel){
-      //console.log(order_status,occupy_status,order_channel,'id');
-      switch (order_status) {
+    favourableChangeHandler(item){ // 其他费用
+    if(item.fav_mode == 1){
+       this.payable = this.payable - this.AddNumber;
+       this.payable = parseInt(this.payable) + parseInt(item.price)
+    }
+     
+    },
+     //什么都不填写然后失去光标变为0
+    comPriceBlur(item, index) {
+      console.log(item,'fasfaws');
+      let { price }= this.favourableProto[index];
+      if (item.price == "") {
+        item.price = 0;
+      }
+    },
+    getOrderStatus(status, endTime, occupyStatus, orderChannel) {
+       switch (status) {
         case 0: //订单状态0，暂按未确认处理
-          switch (occupy_status) {
+          switch (occupyStatus) {
             case 1: //不占
               this.statusNow = "预定不占";
               this.statusNext = "预定占位";
               this.statusEnd = "确认占位";
+              this.statusBtn = '预定占位';
               break;
             case 2: // 预定占位
               this.statusNow = "预定占位";
               this.statusNext = "确定占位";
               this.statusEnd = "补充资料";
+              this.statusBtn = '确定占位';
               break;
             case 3: // 确定占位
               this.statusNow = "确定占位";
-              //this.replenishInfoToastFun(this.orderget.orderChannel);
+              this.replenishInfoToastFun(this.orderget.orderChannel);
               this.statusNext = "补充资料";
               this.statusEnd = "签订合同";
+              this.statusBtn = '补充资料'
               break;
           }
           break;
         case 1:
-          // setTimeout(() => {
-          //   let guest = this.orderget.guests;
-          //   for (let i = 0; i < guest.length; i++) {
-          //     if (guest[i].cnName == "点击填写") {
-          //       this.isChangeNumber = true;
-          //     } else {
-          //       this.isChangeNumber = false;
-          //     }
-          //   }
-          //   if (this.isChangeNumber === true) {
-          //     this.$message.error("请补全出行人信息");
-          //   }
-          // }, 200);
+          setTimeout(() => {
+            let guest = this.orderget.guests;
+            for (let i = 0; i < guest.length; i++) {
+              if (guest[i].cnName == "点击填写") {
+                this.isChangeNumber = true;
+              } else {
+                this.isChangeNumber = false;
+              }
+            }
+            if (this.isChangeNumber === true) {
+              this.$message.error("请补全出行人信息");
+            }
+          }, 200);
 
           this.statusNow = "补充材料";
           this.statusNext = "签订合同";
           this.statusEnd = "待出行";
+          this.statusBtn = '提交资料';
           break;
         case 2:
           this.statusNow = "签订合同";
           this.statusNext = "待出行";
           this.statusEnd = "出行中";
+          this.statusBtn = '查看合同';
           break;
         case 3:
-          switch (order_channel) {
+          switch (orderChannel) {
             case 1:
               this.statusNow = "待出行";
               this.statusNext = "出行中";
@@ -509,7 +537,10 @@ export default {
           }
           break;
         case 4:
-          switch (order_channel) {
+          //同业社没有待评价 直客有待评价
+          //订单来源现在是后台写死的3  后台对应的 1同业  2 线上直客 3 线下直客
+          //而实际项目团期计划下单位置 1 线下直客 2 商户（同业和门店）
+          switch (orderChannel) {
             case 1:
               this.statusNow = "出行中";
               this.statusNext = "订单完成";
@@ -541,6 +572,13 @@ export default {
           this.statusNow = "确认占位";
           this.statusNext = "订单确认";
           this.statusEnd = "补充资料";
+          this.statusBtn = '订单确认';
+          break;
+        case 8:
+          this.statusNow = "签订合同";
+          this.statusNext = "待出行";
+          this.statusEnd = "出行中";
+          this.statusBtn = '查看合同';
           break;
         case 9:
           this.statusNow = "作废订单";
@@ -549,13 +587,13 @@ export default {
           break;
         case 10:
           this.statusNow = "确认占位";
-          //this.replenishInfoToastFun(this.orderget.orderChannel);
+          this.replenishInfoToastFun(this.orderget.orderChannel);
           this.statusNext = "补充资料";
           this.statusEnd = "签订合同";
+            this.statusBtn = '补充资料';
           break;
       }
-
-    }
+    },
   },
   mounted() {}
 };

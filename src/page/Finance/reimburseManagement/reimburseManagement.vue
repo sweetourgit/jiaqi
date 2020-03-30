@@ -479,28 +479,10 @@
         <!-- @row-click="joinData_btn" -->
          <div v-if="find==1" class="statetype_style">
             <div>拆分/还款：{{statetype}}</div> 
-            <div v-if="statetype=='还款'">
-                还款账号：{{statetype_Data}}
-                       <!-- <el-table 
-                        :data="statetype_Data" 
-                        :highlight-current-row="true"
-                        border 
-                        style="  margin-top: 30px">
-                        <el-table-column prop="cardType" label='类型'  align="center"></el-table-column>
-                        <el-table-column prop="title" label="账号名称"  align="center"></el-table-column>
-                        <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
-                        <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
-                        <el-table-column prop="openingName" label="开户人"  align="center"></el-table-column>
-                        
-                      </el-table> -->
-                    
-                  
-               
-   
-                     
+              <div v-if="statetype=='还款'">
+                  还款账号：{{statetype_Data}}
               </div> 
-
-          </div>
+            </div>
 
         
           <div class="cancel"  >
@@ -1997,7 +1979,7 @@ export default {
                     }
               }
              if(verify !== 0){
-               // this.add_form(this.object_lisr)//调用提交接口
+                this.add_form(this.object_lisr)//调用提交接口
                
               }
           },

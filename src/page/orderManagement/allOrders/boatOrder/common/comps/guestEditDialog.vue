@@ -14,38 +14,32 @@
     <el-form ref="submitForm"
       :model="submitForm"
       :rules="rules">
-      <el-form-item label="中文姓名" prop="cnName" label-width="110px" class="fl">
-        <el-input type="text" v-model="submitForm.cnName" class="w200 fl"></el-input>
+      <el-form-item label="姓名" prop="NGDName" label-width="110px" class="fl">
+        <el-input type="text" v-model="submitForm.NGDName" class="w200 fl"></el-input>
       </el-form-item>
-      <el-form-item label="英文姓名" prop="enName" label-width="110px" class="fl">
-        <el-input type="text" v-model="submitForm.enName" class="w200"></el-input>
+       <el-form-item label="报名类型" prop="NGDType" label-width="110px" class="fl">
+        <el-input type="text" v-model="submitForm.NGDType" class="w200"></el-input>
       </el-form-item>
-      <el-form-item label="性别" prop="sex" label-width="110px" class="fl" style="width:310px">
-        <el-radio-group v-model="submitForm.sex">
+      <el-form-item label="护照" prop="NGDPassport" label-width="110px" class="fl">
+        <el-input type="text" v-model="submitForm.NGDPassport" class="w200"></el-input>
+      </el-form-item>
+      <el-form-item label="身份证" prop="NGDCard" label-width="110px" class="fl">
+        <el-input type="text" v-model="submitForm.NGDCard" class="w200"></el-input>
+      </el-form-item>
+      <el-form-item label="电话" prop="NGDTel" label-width="110px" class="fl">
+        <el-input type="text" v-model="submitForm.NGDTel" class="w200"></el-input>
+      </el-form-item>
+      <el-form-item label="性别" prop="NGDSex" label-width="110px" class="fl" style="width:310px">
+        <el-radio-group v-model="submitForm.NGDSex">
           <el-radio :label="0">男</el-radio>
           <el-radio :label="1">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="电话" prop="mobile" label-width="110px" class="fl">
-        <el-input type="text" v-model="submitForm.mobile" class="w200"></el-input>
-      </el-form-item>
-      <el-form-item label="身份证" prop="idCard" label-width="110px" class="fl">
-        <el-input type="text" v-model="submitForm.idCard" class="w200"></el-input>
-      </el-form-item>
-      <el-form-item label="出生日期" prop="bornDate" label-width="110px" class="fl">
-        <el-date-picker v-model="submitForm.bornDate" type="date" placeholder="选择日期" class="w200"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="证件类型" prop="credType" label-width="110px" class="fl">
-        <el-select v-model="submitForm.credType" placeholder="请选择">
-          <el-option label="请选择" :value="0" />
-          <el-option label="护照" :value="1" />
-          <el-option label="港澳通行证" :value="2" />
-          <el-option label="军官证" :value="3" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="证件号码" prop="credCode" label-width="110px" class="fl">
-        <el-input type="text" v-model="submitForm.credCode" class="w200"></el-input>
-      </el-form-item>
+     
+   
+      
+      
+     
       <!-- <el-form-item label="证件有效期" prop="credTOV" label-width="110px" class="fl">
         <el-date-picker v-model="conForm.credTOV" type="date" placeholder="选择日期" class="w200"></el-date-picker>
       </el-form-item>-->
@@ -64,49 +58,20 @@ export default {
       title: null,
       visible: false,
       submitForm: {
-        cnName: null,
-        enName: null,
-        sex: 0,
-        mobile: null,
-        idCard: null,
-        bornDate: 0,
-        credType: 0,
-        credCode: null,
+        NGDName:null,//名字
+        NGDType:null,//类型
+        NGDPassport:0,//护照
+        NGDCard:0,//身份证
+        NGDTel:0,//电话
+        NGDSex:0,//男女
       },
       rules: {
-        //变更数量
-        price: [{ required: true, message: "请选择价格", trigger: "change" }],
-        contactName: [
-          { message: "联系人不能为空", trigger: "blur" },
-          { max: 20, message: "不能超过20位长度", trigger: "blur" }
-        ],
-        contactPhone: [
-          { message: "联系电话不能为空", trigger: "blur" },
-          {
-            pattern: /((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/,
-            message: "电话号格式不正确",
-            trigger: "blur"
-          },
-          { max: 20, message: "不能超过20位长度", trigger: "blur" }
-        ],
-        otherCost: [
-          {
-            pattern: /^(([+]?\d*$)|(^[+]?\d+(\.\d+)?$))/,
-            message: "必须为数字值，并且不允许是负数"
-          }
-        ],
+         
         //游客信息
-        cnName: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-        enName: [
-          { required: true, message: "请输入姓（拼音）", trigger: "blur" },
-          {
-            pattern: /(a[io]?|ou?|e[inr]?|ang?|ng|[bmp](a[io]?|[aei]ng?|ei|ie?|ia[no]|o|u)|pou|me|m[io]u|[fw](a|[ae]ng?|ei|o|u)|fou|wai|[dt](a[io]?|an|e|[aeio]ng|ie?|ia[no]|ou|u[ino]?|uan)|dei|diu|[nl](a[io]?|ei?|[eio]ng|i[eu]?|i?ang?|iao|in|ou|u[eo]?|ve?|uan)|nen|lia|lun|[ghk](a[io]?|[ae]ng?|e|ong|ou|u[aino]?|uai|uang?)|[gh]ei|[jqx](i(ao?|ang?|e|ng?|ong|u)?|u[en]?|uan)|([csz]h?|r)([ae]ng?|ao|e|i|ou|u[ino]?|uan)|[csz](ai?|ong)|[csz]h(ai?|uai|uang)|zei|[sz]hua|([cz]h|r)ong|y(ao?|[ai]ng?|e|i|ong|ou|u[en]?|uan))/,
-            message: "姓（拼音）格式不正确",
-            trigger: "blur"
-          }
-        ],
-        sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
-        mobile: [
+        NGDName: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        NGDPassport:[{required:true,message:'请输入护照号',trigger:'blur' }],
+        NGDSex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+        NGDTel: [
           { required: true, message: "请输入手机号", trigger: "blur" },
           {
             pattern: /^1[3456789]\d{9}$/,
@@ -114,7 +79,7 @@ export default {
             trigger: "blur"
           }
         ],
-        idCard: [
+        NGDCard: [
           // { required: true, message: "身份证号不能为空", trigger: "blur" },
           {
             pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
