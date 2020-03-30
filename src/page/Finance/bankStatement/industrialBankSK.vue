@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:58 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:55:58 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 14:17:40
  */
 <template>
   <div class="distributor-content" id="industrialBank">
@@ -19,9 +19,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <!-- <el-form-item label="银行流水号:" prop="code">
+          <el-form-item label="银行流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item> -->
+          </el-form-item>
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
@@ -82,10 +82,13 @@
     <el-table :data="tableData" border :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content">
       <el-table-column label="操作" width="140" align="center" fixed>
         <template slot-scope="scope">
-         
+         <!-- {{scope.row.surplus_Amount != scope.row.credit_amount + scope.row.purpose_fee}}
+         {{scope.row.surplus_Amount}}
+          {{scope.row.credit_amount}}
+           {{scope.row.purpose_fee}} -->
           <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信</br>支付宝明细</el-button>
            <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details" v-else>查看订单</el-button>
-          <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button v-if="scope.row.surplus_Amount == scope.row.credit_amount + scope.row.purpose_fee&&scope.row.reference != '收付直通车支付结算'" @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="id" label="明细ID" align="center">

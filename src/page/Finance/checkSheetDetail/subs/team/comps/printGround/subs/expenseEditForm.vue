@@ -63,6 +63,7 @@ export default {
   data() {
     return Object.assign(
       {
+        typed: "",//通过父组件传值进来 判断当前编辑 还是添加
         state: false,
         isSave: false,
         supplierSelected: false,
@@ -109,6 +110,7 @@ export default {
       //是个坑 勿动
       let submitCopy = this.getSubmitForm;
       // this.isSave?function(){}
+      //两个函数 判断当前哪个表单(编辑还是添加)是否有变化
       let isChanged = this.isSave
         ? this.isChangedEdit(submitCopy)
         : this.isChanged(submitCopy);
@@ -122,6 +124,10 @@ export default {
           that.getSubmitForm[item] != null &&
           this.changed
         ) {
+          //编辑表单添加草稿暂时放弃 逻辑上没必要
+          if (this.typed == "edit") {
+            return  that.handleClose();
+          }
           that
             .$confirm("是否需要保存草稿?", "提示", {
               confirmButtonText: "确定",
@@ -158,7 +164,8 @@ export default {
       }
       this.handleClose();
     },
-    wakeup(expense, { groupCode }) {
+    wakeup(expense, { groupCode }, typed) {
+      this.typed = typed;
       let that = this;
       this.groupCode = groupCode;
       this.isSave = !!expense;
@@ -166,7 +173,9 @@ export default {
       this.state = true;
       //isSave 通过操作 编辑进入 返expense不是返
       this.expenseCache = this.isSave
-        ? this.getDraftForEdit(expense)
+        ? // ? this.getDraftForEdit(expense) 从草稿取值并赋予编辑表单 暂时废弃
+          expense
+          //用于从草稿获取添加表单信息
         : this.getDraft();
       if (this.expenseCache == true) {
         console.log("表单不重新渲染");
@@ -178,7 +187,7 @@ export default {
         });
       }
     },
-    //获取编辑表单的草稿
+    //获取编辑表单的草稿 暂时废弃 勿删 以后若用直接开启
     getDraftForEdit(expense) {
       //判断当前是否有对应数据
       if (
@@ -265,13 +274,12 @@ export default {
         this.changed = false;
         //保存后清除数据
         let type = this.isSave ? "edit" : "add";
-        let setName=type=='edit'? this.submitForm.supplierID:''
-        let remove = this.$ls.remove(
-          this.groupCode + type +setName
-        );
-        this.$refs.submitForm.resetFields();
+        let setName = type == "edit" ? this.submitForm.supplierID : "";
+        if (!this.isSave) {
+          let remove = this.$ls.remove(this.groupCode + type + setName);
+        }
 
-        
+        this.$refs.submitForm.resetFields();
       });
     },
     handleClose(status) {
@@ -334,7 +342,7 @@ export default {
     isChanged(data) {
       return this.$ls.get(this.groupCode + "add") == JSON.stringify(data);
     },
-    //判断当前表单对比上次填写 是否有改变
+    //判断当前表单对比上次填写 是否有改变 暂时废弃 勿动
     isChangedEdit(data) {
       return (
         this.$ls.get(this.groupCode + "edit" + data.supplierID) ==

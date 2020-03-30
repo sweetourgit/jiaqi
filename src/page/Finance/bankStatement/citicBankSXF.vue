@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:22 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:55:22 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 14:19:55
  */
 
 <template>
@@ -13,7 +13,7 @@
         <el-col :span="7">
           <el-form-item label="状态:" class="status-length" prop="matchType">
             <el-select v-model="ruleForm.matchType" placeholder="请选择状态">
-              <el-option label="全部" value=""></el-option>
+              <el-option label="全部" value></el-option>
               <el-option label="未导入" value="0"></el-option>
               <el-option label="已导入" value="1"></el-option>
             </el-select>
@@ -22,7 +22,7 @@
         <el-col :span="7">
           <!-- <el-form-item label="银行流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item> -->
+          </el-form-item>-->
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
@@ -108,7 +108,13 @@
       <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
-          <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details">删除</el-button>
+          <el-button
+            @click="deleteFun(scope.row)"
+            v-if="scope.row.surplusPrice == scope.row.dF_Price&&scope.row.is_EBS == 0"
+            type="text"
+            size="small"
+            class="table_details"
+          >删除</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="is_EBS" label="状态" align="center">
@@ -117,18 +123,16 @@
           <span v-if="scope.row.is_EBS == 1">已导入</span>
         </template>
       </el-table-column>
-                  <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
+      <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
 
-            <el-table-column prop="sxf" label="手续费" align="center"></el-table-column>
+      <el-table-column prop="sxf" label="手续费" align="center"></el-table-column>
 
       <el-table-column prop="citiC_Day" label="交易日期" align="center"></el-table-column>
       <el-table-column prop="citiC_Time" label="交易时间" align="center"></el-table-column>
       <el-table-column prop="guestAccount" label="对方账号" align="center"></el-table-column>
       <el-table-column prop="accountName" label="对方账户名称 " align="center"></el-table-column>
-      <el-table-column prop="openAccountBankName" label="对方账号开户网点名称" align="center">
-      </el-table-column>
-      <el-table-column prop="jF_Price" label="借方发生额" align="center">
-      </el-table-column>
+      <el-table-column prop="openAccountBankName" label="对方账号开户网点名称" align="center"></el-table-column>
+      <el-table-column prop="jF_Price" label="借方发生额" align="center"></el-table-column>
       <el-table-column prop="dF_Price" label="贷方发生额" align="center"></el-table-column>
       <el-table-column prop="accountSurplus" label="账户余额" align="center"></el-table-column>
       <el-table-column prop="reference" label="摘要" align="center"></el-table-column>
@@ -161,7 +165,7 @@
 
 <script type="text/javascript">
 import moment from "moment";
-import * as utils from './utils.js'
+import * as utils from "./utils.js";
 export default {
   components: {},
   data() {
@@ -172,10 +176,9 @@ export default {
         matchType: "", // 匹配状态
         code: "", // 交易流水号
         dateStart: "", // 开始时间
-        dateEnd: "", // 结束时间
-       
+        dateEnd: "" // 结束时间
       },
- File: {},
+      File: {},
       multipleSelection: [], // 选择项
 
       pageCurrent: 1,
@@ -217,12 +220,12 @@ export default {
   },
   methods: {
     beforeUpload(event, file, filelist) {
-     let data4D=utils.getSession4D()
+      let data4D = utils.getSession4D();
       this.File.FileName = event.name;
-      this.File.userid=data4D.userID
-      this.File.orgid=data4D.orgID
-      this.File.topid=data4D.topID
-      this.File.company='辽宁大运通'//测试 暂时写死
+      this.File.userid = data4D.userID;
+      this.File.orgid = data4D.orgID;
+      this.File.topid = data4D.topID;
+      this.File.company = "辽宁大运通"; //测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -314,10 +317,7 @@ export default {
         this.$message.success("中信银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit(
-          "changeBankData",
-          "citicBankSXF" + Math.random()
-        );
+        this.$store.commit("changeBankData", "citicBankSXF" + Math.random());
       } else {
         this.$message.warning("中信银行流水单上传失败！");
       }
@@ -333,7 +333,9 @@ export default {
     },
     // 上传微信支付宝明细
     UploadUrl2() {
-      return this.GLOBAL.serverSrc + "/finance/wa_payment_citic/api/importexcel";
+      return (
+        this.GLOBAL.serverSrc + "/finance/wa_payment_citic/api/importexcel"
+      );
     },
     handleSuccess2(response, file, fileList) {
       console.log(response);
@@ -365,12 +367,9 @@ export default {
       })
         .then(() => {
           this.$http
-            .post(
-              this.GLOBAL.serverSrc + "/finance/citic_bank/api/delete",
-              {
-                id: row.id
-              }
-            )
+            .post(this.GLOBAL.serverSrc + "/finance/citic_bank/api/delete", {
+              id: row.id
+            })
             .then(function(response) {
               if (response.data.isSuccess) {
                 that.pageCurrent = 1;
@@ -447,7 +446,7 @@ export default {
           }
         })
         .then(function(obj) {
-          console.log('中信银行',obj);
+          console.log("中信银行", obj);
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;

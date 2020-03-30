@@ -1,8 +1,8 @@
 /*
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:37 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:55:37 
+ * @Last Modified by: WZJ
+ * @Last Modified time: 2020-03-30 14:17:13
  */
 <template>
   <div class="distributor-content" id="industrialBank">
@@ -109,7 +109,7 @@
         <template slot-scope="scope">
           <el-button
             @click="deleteFun(scope.row)"
-            v-if="scope.row.surplusAmount == scope.row.creditAmount&&scope.row.is_EBS==0&&!/^\d{4}-\d{4}费\d*\.\d{2}元$/.test(scope.row.remark)"
+            v-if="scope.row.surplusAmount == scope.row.creditAmount&&scope.row.is_EBS==0"
             type="text"
             size="small"
             class="table_details"

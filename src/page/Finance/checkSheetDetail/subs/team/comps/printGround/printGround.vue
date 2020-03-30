@@ -463,8 +463,8 @@ export default {
       this.$refs.expenseForm.wakeup(this.expenses);
     },
 
-    awakeEditForm(expense) {
-      this.$refs.expenseEditForm.wakeup(expense, this.pd);
+    awakeEditForm(expense,type) {
+      this.$refs.expenseEditForm.wakeup(expense, this.pd,type);
     },
 
     expenseSave(payload) {

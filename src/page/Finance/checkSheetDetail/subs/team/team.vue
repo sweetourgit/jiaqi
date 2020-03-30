@@ -121,7 +121,7 @@ export default {
           }
         )
         .then(obj => {
-        this.setReviewList(obj.data)
+        this.setReviewList(obj.data.tableAuditResults)
           // 裡面的具提屬性沒有調試
           // _this.tableCourse = [];
           // _this.tableCourse = obj.data.data;

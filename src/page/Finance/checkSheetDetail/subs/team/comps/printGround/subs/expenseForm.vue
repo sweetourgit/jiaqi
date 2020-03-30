@@ -6,7 +6,7 @@
     :before-close="handleClose">
     <div style="text-align: left; margin-bottom: 10px;">
       <el-button size="small" type="primary"
-        @click="wakeupEditForm()">
+        @click="wakeupEditForm(null,'add')">
         新增
       </el-button>
     </div>
@@ -25,7 +25,7 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="small" type="primary" 
-              @click="wakeupEditForm(scope.row)">
+              @click="wakeupEditForm(scope.row,'edit')">
               编辑
             </el-button>
             <el-button size="small" type="danger"
@@ -69,8 +69,8 @@ export default {
       this.state= false;
     },
 
-    wakeupEditForm(expense){
-      this.$emit('wakeup-edit', expense);
+    wakeupEditForm(expense,type){
+      this.$emit('wakeup-edit', expense,type);
     },
 
     // 表格头部背景颜色
