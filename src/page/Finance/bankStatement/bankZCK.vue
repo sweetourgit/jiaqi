@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:54:48 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:54:48
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 15:34:45
  */
@@ -417,7 +417,7 @@
     </el-tabs>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import BankOfChinaZCK from "./componentsZCK/bankOfChinaZCK.vue";
 import * as utils from "./utils.js";
@@ -578,6 +578,7 @@ export default {
 
     // 关闭当前页面
     closeBtn() {
+      console.log('searchType',this.$route.query.searchType)
       this.$router.push({
         path: "/bankStatement",
         name: "银行流水单管理",
