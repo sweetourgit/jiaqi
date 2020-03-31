@@ -258,7 +258,10 @@
     <!-- 出团通知书 -->
     <boatAppearBook :propsObj.sync="propsObj"></boatAppearBook>
     <!-- 客人信息 -->
-    <boatGuestsInfo :propsObj.sync="propsObj"></boatGuestsInfo>
+    <boatGuestsInfo 
+    :propsObj.sync="propsObj"
+    :orderId="orderId"
+    ></boatGuestsInfo>
     <!-- 流程管理-->
     <boatProcessManage 
      :propsObj.sync="propsObj"
@@ -336,7 +339,7 @@ export default {
   },
 
   created() {
-     this.handleBusinessGet();
+     //this.handleBusinessGet();
      this.orderPage();
   },
 

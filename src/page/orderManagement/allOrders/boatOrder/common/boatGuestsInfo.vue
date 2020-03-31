@@ -6,54 +6,48 @@
     :close-on-click-modal="false"
     class
     width="780px"
+    @open="orderData"
     @close="btReceiptDialogClose"
   >
     <!-- tabs  begin -->
     <el-radio-group v-model="chooseTab">
-      <el-radio-button label="分房"></el-radio-button>
-      <el-radio-button label="保险"></el-radio-button>
-      <el-radio-button label="大巴"></el-radio-button>
+      <el-radio-button label="分房" name="1"></el-radio-button>
+      <el-radio-button label="保险" name="2"></el-radio-button>
+      <el-radio-button label="大巴" name="3"></el-radio-button>
     </el-radio-group>
     <!-- tabs  end -->
-
-    <!-- swiper begin  -->
-    <!-- <div class="swiperBox">
-      <i class="el-icon-arrow-left iconLeft" @click="handleLeft(1)"></i>
-      <el-menu
-        :default-active="achooseSwiperIndex"
-        class="el-menu-demo swiper"
-        mode="horizontal"
-        ref="swiper"
-        @select="handleSelect"
-      >
-        <el-menu-item
-          v-for="(item,index) in swiperInfo"
-          :key="index"
-          :index="index+''"
-          class="swiperSon"
-        >{{item}}</el-menu-item>
-      </el-menu>
-      <i class="el-icon-arrow-right iconRight" @click="handleRight(2)"></i>
-      <div class="line"></div>
-    </div>-->
-
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">slider1</div>
-        <div class="swiper-slide">slider2</div>
-        <div class="swiper-slide">slider3</div>
-        <div class="swiper-slide">slider4</div>
-      </div>
-      <div class="swiper-wrapper">
-        <div class="swiper-slide">slider1</div>
-        <div class="swiper-slide">slider2</div>
-        <div class="swiper-slide">slider3</div>
-        <div class="swiper-slide">slider4</div>
-      </div>
-      <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
-    </div>
-    <!-- swiper begin  -->
+      <!-- <el-tabs v-model="activebox" type="card" @tab-click="GetCabinbtn" style="float:left;width: 100%;">
+        <el-tab-pane
+          v-for="(item,index) in GetCabinData"
+          :key="item.id"
+          :label="item.name"
+          :name="item.id"
+        >
+        </el-tab-pane>
+      </el-tabs>
+      <table class="costList" border="1" cellpadding="0" cellspacing="0" >
+            <tr class="costList_01">
+              <td width="120">姓名</td>
+              <td width="120">报名类型</td>
+              <td width="120">护照</td>
+              <td width="180">身份证</td>
+              <td width="120">电话</td>
+              <td width="120">性别</td>
+            </tr>
+        <tr v-for="(guest, index) in NewGetCabinData" :key="'g'+index">
+          <td>{{guest.NGDName}}</td>
+          <td>{{guest.NGDType}}</td>
+          <td>{{guest.NGDPassport}}</td>
+          <td>{{guest.NGDCard}}</td>
+          <td>{{guest.NGDTel}}</td>
+          <td>
+            <div v-if="guest.NGDSex=='1'">男</div>
+            <div v-if="guest.NGDSex=='2'">女</div>
+          </td>
+        </tr>
+      </table>
+   -->
+ 
   </el-dialog>
 </template>
 
@@ -63,11 +57,12 @@ import "swiper/dist/css/swiper.min.css";
 export default {
   name: "boatReceipt",
   props: {
-    propsObj: { type: Object }
+    propsObj: { type: Object },
+    orderId:0
   },
   data() {
     return {
-      chooseTab: "", //tabs选中的
+      chooseTab: "分房", //tabs选中的
       // chooseSwiper: "", //swiper选中的
       // achooseSwiperIndex: "0", //当前swiper选中的index
       // swiperInfo: [
@@ -85,36 +80,11 @@ export default {
   },
   created() {},
   methods: {
-    // swiper 选中事件
-    // handleSelect(key) {
-    //   console.log("开始", this.achooseSwiperIndex);
-    //   this.achooseSwiperIndex = key;
-    //   console.log("中间", this.achooseSwiperIndex);
-    //   this.isDirection
-    //     ? (this.achooseSwiperIndex = (
-    //         Number(this.achooseSwiperIndex) - 1
-    //       ).toString())
-    //     : (this.achooseSwiperIndex = (
-    //         Number(this.achooseSwiperIndex) + 1
-    //       ).toString());
-    //   console.log("结束", this.achooseSwiperIndex);
-    // },
-
-    // swiper 左箭头
-    // handleLeft() {
-    //   this.isDirection = true;
-    //   this.handleSelect(this.achooseSwiperIndex);
-    // },
-
-    // swiper 右箭头
-    // handleRight() {
-    //   this.isDirection = false;
-    //   this.handleSelect(this.achooseSwiperIndex);
-    // },
-
-    // 客人信息弹窗关闭事件
-    btReceiptDialogClose() {
+    btReceiptDialogClose() {  // 客人信息弹窗关闭事件
       this.$parent.resetDialogType();
+    },
+    orderData(){ // 获取客人信息
+
     }
   },
   mounted() {

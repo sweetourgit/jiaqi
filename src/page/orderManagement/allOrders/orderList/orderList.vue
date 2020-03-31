@@ -498,7 +498,7 @@ export default {
   },
   created() {
     this.orderPage();
-    this.handleBusinessGet();
+    //this.handleBusinessGet();
   },
   methods: {
     moment,
@@ -551,7 +551,7 @@ export default {
     handleBusinessGet(queryString3, cb) {
       this.businessLists = [];
       this.$http
-        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+        .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/listname", {
           object: {
             name: queryString3,
             isDeleted: 0
