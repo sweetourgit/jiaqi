@@ -336,10 +336,16 @@ export default {
     },
     cancelChangeType(formName){ // 更改状态方法
       let onlineType = '';
+      let erpType = '' ;
       if(this.changeTypeForm.orderSource == 1){
         onlineType = 0;
-      } else {
+        erpType = 0;
+      } else if(this.changeTypeForm.orderSource == 2) {
         onlineType = 1;
+        erpType = 0;
+      } else if(this.changeTypeForm.orderSource == 3){
+        onlineType = 1;
+        erpType = 1;
       }
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -348,7 +354,7 @@ export default {
               object: {
                 "id": this.pid,
                 "onlineType":onlineType,
-                "erpType":(this.changeTypeForm.orderSource == 2) ? 0 : 1
+                "erpType":erpType
               }
             })
             .then(res => {
