@@ -19,7 +19,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="银行流水号:" prop="code">
+          <el-form-item label="流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
           </el-form-item>
         </el-col>
