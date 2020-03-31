@@ -50,9 +50,6 @@ export default {
   },
 
   methods: {
-    test(){
-      console.log(this.filesList[0])
-    },
     wakeup(sku_plan){
       cache= sku_plan;
       let { notice }= sku_plan;
