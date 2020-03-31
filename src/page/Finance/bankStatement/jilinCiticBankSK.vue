@@ -209,7 +209,7 @@ export default {
     handleSuccess(response, file, fileList){
       console.log(response);
       if(response == true){
-        this.$message.success("农业银行流水单上传成功！");
+        this.$message.success("吉林中信银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
         this.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
