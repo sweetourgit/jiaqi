@@ -578,7 +578,6 @@ export default {
 
     // 关闭当前页面
     closeBtn() {
-      console.log('searchType',this.$route.query.searchType)
       this.$router.push({
         path: "/bankStatement",
         name: "银行流水单管理",
