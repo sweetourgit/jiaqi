@@ -181,18 +181,19 @@ export default {
       })
     },
 
-    listAdaptor(item){
-      let { set_out_year, set_out_month, set_out_day }= item;
-      item.status= Random.integer(1, 5);
-      item.statusText= PLAN_STATUS.getLabel(item.status);
-      item.billStatusText= CHECK_STATUS.getLabel(item.bill_status);
-      item.time= set_out_year+ set_out_month.padStart(3, '-0')+ set_out_day.padStart(3, '-0');
-      getUserlist(item.create_uid).then(res => item.creater= res.name);
-      return item;
+    listAdaptor(sku_plan){
+      let { set_out_year, set_out_month, set_out_day }= sku_plan;
+      sku_plan.status= Random.integer(1, 5);
+      sku_plan.statusText= PLAN_STATUS.getLabel(sku_plan.status);
+      sku_plan.billStatusText= CHECK_STATUS.getLabel(sku_plan.bill_status);
+      sku_plan.time= set_out_year+ set_out_month.padStart(3, '-0')+ set_out_day.padStart(3, '-0');
+      sku_plan.notice= sku_plan.notice
+      getUserlist(sku_plan.create_uid).then(res => sku_plan.creater= res.name);
+      return sku_plan;
     },
 
-    awakeFileEditor(){
-      this.$refs.fileEditor.wakeup();
+    awakeFileEditor(sku_plan){
+      this.$refs.fileEditor.wakeup(sku_plan);
     }
   }
 
