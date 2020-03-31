@@ -1,3 +1,4 @@
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="merchantsBankSXF">
     <!-- 搜索表单 -->
@@ -111,7 +112,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
-      <el-table-column prop="creditAmount" label="手续费" align="center"></el-table-column>
+	  <!--  -->
+      <el-table-column prop="purpose_fee" label="手续费" align="center"></el-table-column>
       <el-table-column prop="referenceNumber" label="交易流水号" align="center"></el-table-column>
       <el-table-column prop label="交易日期" align="center">
         <template slot-scope="scope">
