@@ -124,7 +124,7 @@
           type="success"
           @click="touchPrint"
           plain
-          v-if="getOrgID == 491"
+          v-if="getOrgID == 491 || getOrgID == 342 || getOrgID == 362 || getOrgID == 542 || getOrgID == 310"
         >
           打印本页详情信息
         </el-button>
@@ -686,7 +686,8 @@ export default {
                 "spstate": "通过",
                 "spcontent": "",
                 'checktype': 2,
-                "id": this.pid
+                "id": this.pid,
+                'SpCode': sessionStorage.getItem('userCode')
               }).then(res => {
                 console.log(res,'通过res')
               }).catch(err => {

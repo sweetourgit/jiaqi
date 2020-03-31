@@ -577,7 +577,8 @@ export default {
           spstate: "认款",
           spcontent: "",
           checktype: 3,
-          id: that.tableDataOrder[0].id
+          id: that.tableDataOrder[0].id,
+          'SpCode': sessionStorage.getItem('userCode')
         })
         .then(function(response) {
           if (response.data.isSuccess) {
