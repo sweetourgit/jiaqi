@@ -7,7 +7,7 @@
       :close-on-click-modal="false"
       class
       width="780px"
-      @open="orderGetFun(this.orderId,this.orderCodeSon)"
+      @open="orderGetFun"
       @close="btRemarkDialogClose"
     >
       <el-form
@@ -24,10 +24,10 @@
               :autosize="{ minRows: 3, maxRows: 6}"
               class="remark"
               placeholder="请输入内容"
-              v-model="item.content"
+              v-model="item.mark"
               :disabled="true"
             ></el-input>
-            <div class="time">{{getTimeChange(item.createTime)}}</div>
+            <div class="time">{{getTimeChange(item.created_at)}}</div>
           </el-form-item>
         </div>
         <el-form-item label="填写备注" prop="Mark">
@@ -36,14 +36,12 @@
             :autosize="{ minRows: 3, maxRows: 6}"
             class="remark"
             placeholder="请输入内容"
-            v-model="markFormAdd.Mark"
+            v-model="markFormAdd.mark"
           ></el-input>
         </el-form-item>
-        <el-form-item align="right">
-          <el-button type="info" size="medium" class="submitMark" @click="submitMark">提交备注</el-button>
-        </el-form-item>
         <el-form-item align="center">
-          <el-button class="colse" @click="btRemarkDialogClose">关闭</el-button>
+          <el-button type="primary" size="medium" @click="submitMark">保存</el-button>
+          <el-button class="colse" @click="btRemarkDialogClose">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -62,16 +60,16 @@ export default {
   },
   data() {
     return {
-      // name: localStorage.getItem("name"),
+      name: localStorage.getItem("name"),
       markFormAdd: {
         orderCode: "",
-        Mark: "",
+        mark: "",
         CreateTime: formatDate(new Date())
       },
       markForms: [],
       orderget: {},
       rules: {
-        Mark: [{ required: true, message: "请填写备注信息", trigger: "blur" }]
+        mark: [{ required: true, message: "请填写备注信息", trigger: "blur" }]
       }
     };
   },
@@ -85,62 +83,60 @@ export default {
         "update:this.propsObj.dialogType",
         (this.propsObj.dialogType = -1)
       );
-      this.markFormAdd.Mark = ""
-    }
+      this.markFormAdd.mark = ""
+    },
+    orderGetFun() { // 获取备注信息
+      this.$http
+          .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order-comment/listall", {
+            order_code:this.orderCodeSon,
+            order_id: this.orderId,
+            limit: 20
+          })
+          .then(res => {
+            console.log(res)
+            if (res.data.code== 200) {
+               this.markForms = res.data.data.list
+             }
+          })
+
+          .catch(err => {
+            console.log(err);
+          });
+    },
+    submitMark() {
+      this.$refs["markFormAdd"].validate(valid => {
+        if (valid) {
+            this.$http
+            .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order-comment/addcomment", {
+              object: {
+                order_code: this.orderCodeSon,
+                mark: this.markFormAdd.mark,
+                order_id:this.orderId,
+                create_uid:'100',
+                org_id: 0,
+               }
+            })
+            .then(res => {
+              if (res.data.code == 200) {
+                this.$message.success("提交成功");
+                this.btRemarkDialogClose();
+              } else {
+                this.$message.error("提交失败");
+              }
+            });
+
+        }
+      });
+    },
+    getTimeChange (str) { // 接收备注时间格式的转换   
+       let time = moment(str).format("YYYY-MM-DD HH:mm:ss");
+       return time
+    },
   },
-  orderGetFun(orderId,orderCode) {
-    this.$http
-        .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order-comment/listall", {
-          order_code: orderCode,
-          order_id: orderId,
-          limit: 20
-        })
-        .then(res => {
-          console.log(res)
-          if (res.data.isSuccess == true) {
-            // this.orderget = res.data.objects;
-            this.markForms = res.data.objects
-            //   ? JSON.parse(res.data.object.remark)
-            //   : [];
-            //  console.log("orderGet的this.markForms",this.markForms)
-          }
-        })
 
-        .catch(err => {
-          console.log(err);
-        });
-    },
-   submitMark() {
-      // this.$refs["markFormAdd"].validate(valid => {
-      //   if (valid) {
-      //       let createTime = moment().utcOffset(480).format('YYYY-MM-DD HH:mm:ss').toString()
-      //       this.$http
-      //       .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
-      //         object: {
-      //           orderCode: this.orderCodeSon,
-      //           content: this.markFormAdd.Mark,
-      //           createTime: createTime
-      //         }
-      //       })
-      //       .then(res => {
-      //         if (res.data.isSuccess == true) {
-      //           this.$message.success("提交成功");
-      //           this.dialogFormMark = false;
-      //           this.$refs["markFormAdd"].resetFields();
-      //         } else {
-      //           this.$message.error("提交失败");
-      //         }
-      //       });
-
-      //   }
-      // });
-    },
 };
 </script>
 
 <style>
-.submitMark {
-  float: right;
-  margin-right: 60px;
-}
+ 
 </style>
