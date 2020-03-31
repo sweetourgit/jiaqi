@@ -835,7 +835,7 @@ export default {
       beginDate = this.beginDate,
       endDate = this.endDate,
       saler = this.saler,
-      // localCompName = this.localCompName, //商户名称
+      localCompName = this.orgIDValue, //商户名称
       // orderChannels = this.orderChannels, //商户名称
       orgID = this.orgID, //商户名称 搜索时的字段
       // productType = this.productType,
@@ -890,7 +890,7 @@ export default {
         refundStatus: this.refundStatus,
         contact: contact,
         podID: podID ? podID : 0,
-        // localCompName: localCompName //商户名称
+        localCompName: localCompName, //商户名称
         // orderChannels: orderChannels //商户名称
         orgID: orgID ? orgID : 0 //商户名称搜索时的字段
       };

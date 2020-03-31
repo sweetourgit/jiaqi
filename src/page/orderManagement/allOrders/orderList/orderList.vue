@@ -625,40 +625,13 @@ export default {
           let enrolls=[];//标题
           let guest;//全部数据
           this.enrollDetailShow = "";
+           if(res.data.object.orderStatus === 1 && res.data.object.refundStatus === 6){
+              res.data.object.orderStatus = 10;
+              this.dataorderStatus(res.data.object.id,res.data.object.orderCode,res.data.object.orderStatus,);
+            }
+            
           this.getListOneMessage = res.data.object;
-         // let enrollDetail = this.getListOneMessage.enrollDetail;
-          // this.formatData(enrollDetail);
-          // console.log(enrollDetail);
-          // if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
-          //   this.getListOneMessage.enrollDetail = enrollDetail.substring(
-          //     0,
-          //     enrollDetail.length - 1
-          //   );
-          // enrollDetail = enrollDetail.replace(/\s*/g, "");
-          // let _arr = enrollDetail.split(",");
-          // _arr.splice(_arr.length - 1, 1);
-          // // console.log(_arr)
-          // let _res = [];
-          // _arr.sort();
-          // for (let i = 0; i < _arr.length; ) {
-          //   let count = 0;
-          //   for (let j = i; j < _arr.length; j++) {
-          //     if (_arr[i] == _arr[j]) {
-          //       count++;
-          //     }
-          //   }
-          //   _res.push([_arr[i], count]);
-          //   i += count;
-          // }
-          // // console.log(_res)
-          // //_res 二维数维中保存了 值和值的重复数
-          // let _newArr = [];
-          // for (let i = 0; i < _res.length; i++) {
-          //   let a = _res[i][0].split("*");
-          //   _newArr.push(a[0] + "x" + _res[i][1] + ")");
-          // }
-          // this.getListOneMessage.enrollDetail = _newArr.toString();
-          // }
+          
 
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
@@ -699,7 +672,19 @@ export default {
           console.log(err);
         });
     },
-  
+     dataorderStatus(id,code,orderStatus){
+       this.$http
+          .post(this.GLOBAL.serverSrc + "/order/stat/api/confirmed", {
+             object:{
+               id:id,
+               orderCode:code,
+               orderStatus:orderStatus
+            }
+          })
+          .then(res => {
+              //console.log(res,'测试的发传单666');
+          });
+    },
    sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect={};
           // console.log(this.salePrice,'88')
@@ -877,7 +862,7 @@ export default {
       beginDate = this.beginDate,
       endDate = this.endDate,
       saler = this.saler,
-      // localCompName = this.localCompName, //商户名称
+      localCompName = this.orgIDValue, //商户名称
       // orderChannels = this.orderChannels, //商户名称
       orgID = this.orgID, //商户名称 搜索时的字段
       // productType = this.productType,
@@ -932,7 +917,7 @@ export default {
         refundStatus: this.refundStatus,
         contact: contact,
         podID: podID ? podID : 0,
-        // localCompName: localCompName //商户名称
+        localCompName: localCompName, //商户名称
         // orderChannels: orderChannels //商户名称
         orgID: orgID ? orgID : 0 //商户名称搜索时的字段
       };
@@ -967,6 +952,7 @@ export default {
           console.log(err);
         });
     },
+   
     // 接收数据 判断显示
     receiveDataJudgeShow(orderpage) {
       orderpage.forEach(item => {

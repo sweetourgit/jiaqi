@@ -1236,7 +1236,7 @@ export default {
     },
     ordersave(id, occupyStatus) {
     
-      if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true){
+      if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true||this.changedPrice != 0){//this.changedPrice后加的主要验证修改其他金额将作废合同
                   this.$confirm("更改信息后合同将作废", "提示", {
                   confirmButtonText: "确定",
                   cancelButtonText: "取消",
