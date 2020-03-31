@@ -1,27 +1,32 @@
+/*
+ * @Author: WZJ 
+ * @Last Modified by:   WZJ 
+ */
+
 <style scoped>
 /* 这个样式要给打印用，所以不使用scss了 */
-*{
+* {
   font-weight: normal;
   box-sizing: border-box;
 }
-table{
+table {
   width: 100%;
 }
-.print-ground{
+.print-ground {
   font-size: 14px;
   line-height: normal;
   text-align: center;
   font-weight: normal;
 }
-.print-ground>header .title{
+.print-ground > header .title {
   font-size: 18px;
   line-height: 36px;
 }
-.print-ground>header .time{
+.print-ground > header .time {
   line-height: 2.5;
   text-align: right;
 }
-.cell{
+.cell {
   text-align: center;
   box-sizing: border-box;
   overflow: hidden;
@@ -32,18 +37,18 @@ table{
   padding-right: 5px;
   padding-left: 5px;
 }
-.base{
+.base {
   width: 10%;
   padding: 5px 0;
   border-top: 1px solid #000;
   border-left: 1px solid #000;
   vertical-align: middle;
 }
-.label{
+.label {
   background-color: #ccc;
   color: #000;
 }
-.base:last-child{
+.base:last-child {
   border-right: 1px solid #000;
 }
 </style>
@@ -53,38 +58,34 @@ table{
     <!-- <div style="white-space:pre-wrap" v-html="printData"></div> -->
     <header>
       <div class="title">{{ pd.topOrgName }}旅游团队报账单</div>
-      <div class="time"
-        v-if="pd.checkTime=== pd.createTime">
-        报账时间：{{ dateFormator(pd.checkTime) }}
-      </div>
+      <div class="time" v-if="pd.checkTime=== pd.createTime">报账时间：{{ dateFormator(pd.checkTime) }}</div>
     </header>
     <main>
-
       <table cellspacing="0" cellpadding="0" border="0">
         <tr>
           <td class="base label">
             <div class="cell">部门</div>
           </td>
           <td class="base">
-            <div class="cell"> {{ pd.orgName }} </div>
+            <div class="cell">{{ pd.orgName }}</div>
           </td>
           <td class="base label">
             <div class="cell">操作人</div>
           </td>
           <td class="base">
-            <div class="cell"> {{ pd.userName }} </div>
+            <div class="cell">{{ pd.userName }}</div>
           </td>
           <td class="base label">
             <div class="cell">导陪</div>
           </td>
           <td class="base">
-            <div class="cell"> {{ pd.guideName }} </div>
+            <div class="cell">{{ pd.guideName }}</div>
           </td>
           <td class="base label">
             <div class="cell">接团社</div>
           </td>
           <td class="base" colspan="4">
-            <div class="cell"> {{ pd.localName }} </div>
+            <div class="cell">{{ pd.localName }}</div>
           </td>
         </tr>
 
@@ -92,17 +93,17 @@ table{
           <td class="base label">
             <div class="cell">团号</div>
           </td>
-          <td class="base"  colspan="3">
-            <div class="cell"> {{ pd.groupCode }} </div>
+          <td class="base" colspan="3">
+            <div class="cell">{{ pd.groupCode }}</div>
           </td>
           <td class="base label">
             <div class="cell">产品名称</div>
           </td>
           <td class="base" colspan="6">
-            <div class="cell"> {{ pd.teamProTitle }} </div>
+            <div class="cell">{{ pd.teamProTitle }}</div>
           </td>
         </tr>
-  
+
         <tr>
           <td class="base label">
             <div class="cell">团队人数</div>
@@ -120,19 +121,19 @@ table{
             <div class="cell">出发日期</div>
           </td>
           <td class="base" colspan="1">
-            <div class="cell"> {{ pd.date | dateFilter }} </div>
+            <div class="cell">{{ pd.date | dateFilter }}</div>
           </td>
           <td class="base label" colspan="1">
             <div class="cell">返回日期</div>
           </td>
           <td class="base" colspan="1">
-            <div class="cell"> {{ pd.returnDate | dateFilter }} </div>
+            <div class="cell">{{ pd.returnDate | dateFilter }}</div>
           </td>
           <td class="base label" colspan="1">
             <div class="cell">全程天数</div>
           </td>
           <td class="base" colspan="1">
-            <div class="cell"> {{ pd.day }} </div>
+            <div class="cell">{{ pd.day }}</div>
           </td>
         </tr>
 
@@ -219,8 +220,8 @@ table{
           :proto="item"
           :rank="i"
           :page-type="pageType"
-          @wakeup-mark="wakeupMark">
-        </income-bar>
+          @wakeup-mark="wakeupMark"
+        ></income-bar>
 
         <tr>
           <td class="base label" colspan="5">
@@ -238,42 +239,20 @@ table{
         </tr>
       </table>
 
-      <otherGround ref="otherGround"
-        @change="changeHandler">
-      </otherGround>
+      <otherGround ref="otherGround" @change="changeHandler"></otherGround>
 
-      <expenseGround ref="expenseGround"
-        @change="changeHandler">
-      </expenseGround>
+      <expenseGround ref="expenseGround" @change="changeHandler"></expenseGround>
 
       <table cellspacing="0" cellpadding="0" border="0">
         <tr>
           <td class="base label" style="width:15%;">
             <div class="cell">审批人</div>
           </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">计调</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
-          </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">部门经理</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
-          </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">财务部</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
-          </td>
-          <td class="base label" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell">总经理</div>
-          </td>
-          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;">
-            <div class="cell"></div>
+          <td class="base" rowspan="2" style="border-bottom: 1px solid #000;width: 85%;">
+            <div
+              class="cell"
+              style="text-align: left;padding-left: 5%; font-weight: bold;"
+            >{{ finishedListStr }}</div>
           </td>
         </tr>
         <tr>
@@ -282,98 +261,121 @@ table{
           </td>
         </tr>
       </table>
-
     </main>
     <footer>
       <!-- 基本信息编辑 -->
-      <basic-form ref="basicForm"
-        @save-action="basicSave">
-      </basic-form>
+      <basic-form ref="basicForm" @save-action="basicSave"></basic-form>
       <!-- 挂账信息编辑 -->
-      <expense-form ref="expenseForm"
-        @wakeup-edit="awakeEditForm"
-        @remove="removeExpense">
-      </expense-form>
-      <expense-edit-form ref="expenseEditForm"
-        @save-action="expenseSave">
-      </expense-edit-form>
+      <expense-form ref="expenseForm" @wakeup-edit="awakeEditForm" @remove="removeExpense"></expense-form>
+      <expense-edit-form ref="expenseEditForm" @save-action="expenseSave"></expense-edit-form>
       <!-- 注释编辑 -->
-      <mark-form ref="markForm">
-      </mark-form>
+      <mark-form ref="markForm"></mark-form>
     </footer>
-  </div>  
+    <Review>
+      
+    </Review>
+  </div>
 </template>
 
 <script>
-import incomeBar from './subs/incomeBar'
-import otherGround from './subs/otherGround'
-import expenseGround from './subs/expenseGround'
-import basicForm from './subs/basicForm'
-import expenseForm from './subs/expenseForm'
-import expenseEditForm from './subs/expenseEditForm'
-import markForm from './subs/markForm'
-
+import incomeBar from "./subs/incomeBar";
+import otherGround from "./subs/otherGround";
+import expenseGround from "./subs/expenseGround";
+import basicForm from "./subs/basicForm";
+import expenseForm from "./subs/expenseForm";
+import expenseEditForm from "./subs/expenseEditForm";
+import markForm from "./subs/markForm";
+import Review from './subs/review.vue'
 export default {
-
-  components: { incomeBar, otherGround, expenseGround, basicForm, expenseForm, expenseEditForm, markForm },
+  components: {
+    incomeBar,
+    otherGround,
+    expenseGround,
+    basicForm,
+    expenseForm,
+    expenseEditForm,
+    markForm,
+    Review
+  },
 
   filters: {
-    dateFilter(val){
+    dateFilter(val) {
       let year, month, day;
-      year= ~~ (val / 10000);
-      month= ~~ ((val - year * 10000) / 100);
-      day= val - year * 10000 - month * 100;
+      year = ~~(val / 10000);
+      month = ~~((val - year * 10000) / 100);
+      day = val - year * 10000 - month * 100;
       // return `${year}年${month}月${day}日`
-      if(month< 10) month= '0' + month;
-      if(day< 10) day= '0' + day;
-      return `${year}.${month}.${day}`
+      if (month < 10) month = "0" + month;
+      if (day < 10) day = "0" + day;
+      return `${year}.${month}.${day}`;
     },
-    priceFilter(val){
-      if(!val) return 0;
+    priceFilter(val) {
+      if (!val) return 0;
       return val.toFixed(2);
     }
   },
 
   computed: {
     // incomes统计信息对象
-    incomesJoin(){
-      let people= 0;
-      let price= 0;
-      let totalPrice= 0;
+    incomesJoin() {
+      let people = 0;
+      let price = 0;
+      let totalPrice = 0;
       this.incomes.forEach(income => {
-        let { settlementType, peopleCount, incomePrice, arrearsPrice, orderPrice }= income;
-        people+= peopleCount;
+        let {
+          settlementType,
+          peopleCount,
+          incomePrice,
+          arrearsPrice,
+          orderPrice
+        } = income;
+        people += peopleCount;
         // 总收入等于 st非1的incomePrice与st为1的arrearsPrice之和
-        price+= settlementType=== 1? (incomePrice+ arrearsPrice): incomePrice;
-        totalPrice+= orderPrice;
-      })
+        price +=
+          settlementType === 1 ? incomePrice + arrearsPrice : incomePrice;
+        totalPrice += orderPrice;
+      });
       return { people, price, totalPrice };
+    },
+
+    finishedListStr() {
+      return this.finishedList
+        .map(finished => finished.participantName)
+        .join(" >> ");
     }
   },
 
-  data(){
+  data() {
     return Object.assign(
       {
         incomeSum: 0, // 总收入
         expenseSum: 0, // 总支出
         profitSum: 0, // 毛利额
         profitRate: 0, // 毛利率
+        finishedList: []
       },
       {
-        pd: {},  // printData缩写
+        pd: {}, // printData缩写
         incomes: []
       }
-    )
+    );
   },
 
   methods: {
-    init(printData, pageType){
-      let { incomes, expenses, otherIncomes, ...pdData }= printData;
-      this.pageType= pageType;
-      this.pd= pdData;
-      this.incomes= incomes;
-      this.otherIncomes= otherIncomes;
-      this.expenses= expenses;
+    init(printData, pageType) {
+      let {
+        incomes,
+        expenses,
+        otherIncomes,
+        finishedList,
+        ...pdData
+      } = printData;
+      if (finishedList) this.finishedList = finishedList;
+      this.pageType = pageType;
+      this.pd = pdData;
+      this.incomes = incomes;
+      this.otherIncomes = otherIncomes;
+      this.expenses = expenses;
       this.$refs.otherGround.init(otherIncomes);
       this.$refs.expenseGround.init(expenses);
       this.changeHandler();
@@ -382,98 +384,106 @@ export default {
     /**
      * @description: @1383 提交需要判断非月结和线下直客订单有欠款不能提交报账单
      */
-    getData(){
-      let otherIncomes= this.otherIncomes;
-      let expenses= this.expenses;
-      let data= { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
-      if(this.$isNull(data.guideName) || this.$isNull(data.localName)){
-        this.$message.error('导游与接团社不能为空');
+    getData() {
+      let otherIncomes = this.otherIncomes;
+      let expenses = this.expenses;
+      let data = { ...this.pd, incomes: this.incomes, otherIncomes, expenses };
+      if (this.$isNull(data.guideName) || this.$isNull(data.localName)) {
+        this.$message.error("导游与接团社不能为空");
         return false;
       }
       // @1383
-      let incomeSum= this.incomeSum;
-      let { totalPrice }= this.incomesJoin;
-      let orderPrice= otherIncomes.length=== 0? 0: (+ otherIncomes[0].price);
-      if(+incomeSum!== totalPrice+ orderPrice){
-        this.$message.error('有直客和非月结社订单存在欠款，不允许报账');
+      let incomeSum = this.incomeSum;
+      let { totalPrice } = this.incomesJoin;
+      let orderPrice = otherIncomes.length === 0 ? 0 : +otherIncomes[0].price;
+      if (+incomeSum !== totalPrice + orderPrice) {
+        this.$message.error("有直客和非月结社订单存在欠款，不允许报账");
         return false;
       }
       return data;
     },
 
-    dateFormator(time){
+    dateFormator(time) {
       let date, year, month, day;
-      date= new Date(time);
-      year= date.getFullYear();
-      month= date.getMonth()+ 1;
-      day= date.getDate();
-      return `${year}年${month< 10?'0': ''}${month}月${day}日`
+      date = new Date(time);
+      year = date.getFullYear();
+      month = date.getMonth() + 1;
+      day = date.getDate();
+      return `${year}年${month < 10 ? "0" : ""}${month}月${day}日`;
     },
 
-    changeHandler(){
+    changeHandler() {
       let { price: incomesPrice } = this.incomesJoin;
       let othersPrice = this.$refs.otherGround.getPrice();
       let expensesPrice = this.$refs.expenseGround.getPrice();
       this.incomeSum = incomesPrice + othersPrice;
       this.expenseSum = expensesPrice;
       this.profitSum = this.incomeSum - this.expenseSum;
-      this.profitRate = this.incomeSum===0? 0: ((this.profitSum / this.incomeSum) * 100).toFixed(2) + '%';
+      this.profitRate =
+        this.incomeSum === 0
+          ? 0
+          : ((this.profitSum / this.incomeSum) * 100).toFixed(2) + "%";
       this.incomeSum = this.incomeSum.toFixed(2);
       this.expenseSum = this.expenseSum.toFixed(2);
       this.profitSum = this.profitSum.toFixed(2);
     },
 
-    wakeupMark(index){
+    wakeupMark(index) {
       this.$refs.markForm.wakeup(this.incomes[index]);
     },
-
-    awakeBasicForm(){
-      let { id, guideName, localName }= this.pd;
-      this.$refs.basicForm.wakeup({
-        guideName, localName, ...this.otherIncomes[0]
-      })
+    //(groupCode)用于拼接生成储存草稿的唯一标识
+    awakeBasicForm(groupCode) {
+      let { id, guideName, localName } = this.pd;
+      this.$refs.basicForm.wakeup(
+        {
+          guideName,
+          localName,
+          ...this.otherIncomes[0]
+        },
+        groupCode
+      );
     },
 
-    basicSave(payload){
-      let { sheetID }= this.pd;
-      let { guideName, localName, title, price, ticket }= payload;
-      let isSave= !!this.otherIncomes[0];
+    basicSave(payload) {
+      let { sheetID } = this.pd;
+      let { guideName, localName, title, price, ticket } = payload;
+      let isSave = !!this.otherIncomes[0];
       // 改成提交的时候统一加sheetID和createTime
       // let assignObj= isSave? this.otherIncomes[0] : { sheetID, createTime: new Date().toISOString() };
-      let assignObj= isSave? this.otherIncomes[0] : { };
-      this.pd.guideName= guideName;
-      this.pd.localName= localName;
+      let assignObj = isSave ? this.otherIncomes[0] : {};
+      this.pd.guideName = guideName;
+      this.pd.localName = localName;
       Object.assign(assignObj, { title, price, ticket });
       // 如果填写过信息才会向otherIncomes中推入信息
       !isSave && title && this.otherIncomes.push(assignObj);
       this.changeHandler();
     },
-
-    awakeExpenseForm(){
-      this.$refs.expenseForm.wakeup(this.expenses)
+    //(groupCode)用于拼接生成储存草稿的唯一标识
+    awakeExpenseForm() {
+      this.$refs.expenseForm.wakeup(this.expenses);
     },
 
-    awakeEditForm(expense){
-      this.$refs.expenseEditForm.wakeup(expense);
+    awakeEditForm(expense,type) {
+      this.$refs.expenseEditForm.wakeup(expense, this.pd,type);
     },
 
-    expenseSave(payload){
-      let { isSave, expense }= payload;
-      if(isSave) return this.changeHandler();
+    expenseSave(payload) {
+      let { isSave, expense } = payload;
+      if (isSave) return this.changeHandler();
       this.expenses.push(expense);
       this.changeHandler();
     },
 
-    removeExpense(expense){
+    removeExpense(expense) {
       let result;
       let index;
-      result= this.expenses.filter(item => item!== expense);
+      result = this.expenses.filter(item => item !== expense);
       this.expenses.splice(0);
       this.$nextTick(() => {
         this.expenses.push(...result);
         this.changeHandler();
-      })
+      });
     }
   }
-}
+};
 </script>

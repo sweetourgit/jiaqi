@@ -137,14 +137,19 @@ export default {
           this.getCheckSheetListAction()
         })
       },
-
-      toDetailPage(row){
-        let tab= 'all';
-        let { id }= row;
-        let { object, ...pageInfo }= this.getCheckSheetListData();
-        this.$router.push({ path: '/checkSheetDetail/team', query: {
-          id, tab, conditions: JSON.stringify({ object, pageInfo })
-        }})
+toDetailPage(row) {
+        let tab = "all";
+        let { id,guid } = row;
+        let { object, ...pageInfo } = this.getCheckSheetListData();
+        this.$router.push({
+          path: "/checkSheetDetail/team",
+          query: {
+            id,
+            tab,
+            conditions: JSON.stringify({ object, pageInfo }),
+            guid
+          }
+        });
       },
 
       // 表格头部背景颜色
