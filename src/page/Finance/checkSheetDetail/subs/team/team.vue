@@ -114,7 +114,7 @@ export default {
       this.$http
         .post(
           this.GLOBAL.jqUrl +
-            "/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType",
+            "/JQ/GetInstanceActityInfoForJQ",
           {
             jq_id: result,
             jQ_Type: paramJqType // 无收入1 预付款2,
