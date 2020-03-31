@@ -133,3 +133,57 @@ export const saveChcektype= function(object){
     })
   })
 }
+
+export const getFlowFinishedList = function (jq_id) {
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.jqUrl + '/JQ/GetWorkItemFinishedList',
+      {
+        jq_id, jq_Type: 5
+      }
+    ).then((res) => {
+      let { statusText, data } = res;
+      if (statusText !== "OK") throw '获取审批列表失败';
+      return resolve(data);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
+}
+
+export const upLoadDraft = function (userID, guid, data, vm) {
+  console.log('data', data)
+  const loading = vm.$loading({
+    lock: true,
+    text: 'Loading',
+    spinner: 'el-icon-loading',
+    background: 'rgba(0, 0, 0, 0.7)'
+  });
+  // setTimeout(() => {
+  //   loading.close();
+  // }, 2000);
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrc + '/draft/tsa/api/insert',
+      {
+        userID,
+        guid,
+        data
+      }
+    ).then((res) => {
+      console.log('res', res)
+      let { statusText, data } = res;
+      loading.close();
+      return resolve(data);
+    }).catch((err) => {
+      loading.close();
+      reject(err);
+    })
+  })
+}
+export const deleteDraft = function () {
+  const loading = vm.$loading({
+    lock: true,
+    text: 'Loading',
+    spinner: 'el-icon-loading',
+    background: 'rgba(0, 0, 0, 0.7)'
+  });
+}

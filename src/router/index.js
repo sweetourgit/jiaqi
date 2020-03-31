@@ -860,6 +860,24 @@ export default new Router({
       keepAlive: true,
       auth: true
     }
+  },
+  // 建设银行单独微信支付宝明细(建行的微信支付宝明细与其他微信支付宝明细字段不同)
+  {
+    path: '/bankStatement/constructionPayDetails',
+    component: () => import('@/page/Finance/bankStatement/constructionPayDetails.vue'),
+    name: '建设银行流水单管理  /微信支付宝明细',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  }, {
+    path: '/bankStatement/citicBankPayDetails',
+    component: () => import('@/page/Finance/bankStatement/citicBankPayDetails.vue'),
+    name: '中信银行流水单管理  /微信支付宝明细',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
   }, {
     path: '/bankStatement/payDetails',
     component: () => import('@/page/Finance/bankStatement/payDetails.vue'),

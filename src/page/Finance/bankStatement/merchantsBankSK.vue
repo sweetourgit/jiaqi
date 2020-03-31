@@ -1,28 +1,27 @@
 /*
  * @Author: WZJ 
- * @Date: 2020-03-25 14:54:40 
+ * @Date: 2020-03-25 14:56:21 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 15:33:20
+ * @Last Modified time: 2020-03-30 14:47:16
  */
-
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
     <el-form :model="ruleForm" ref="ruleForm" label-width="110px" class="form-content">
       <el-row type="flex" class="row-bg">
         <el-col :span="7">
-          <el-form-item label="状态:" class="status-length" prop="matchType">
-            <el-select v-model="ruleForm.matchType" placeholder="请选择状态">
-              <el-option label="全部" value="2"></el-option>
-              <el-option label="未导入" value="0"></el-option>
-              <el-option label="已导入" value="1"></el-option>
+          <el-form-item label="匹配状态:" class="status-length" prop="matchType">
+            <el-select v-model="ruleForm.matchType" placeholder="请选择匹配状态">
+              <el-option label="全部" value="0"></el-option>
+              <el-option label="剩余金额为0" value="1"></el-option>
+              <el-option label="剩余金额不为0" value="2"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="7">
-          <el-form-item label="交易流水号:" prop="code">
+          <!-- <el-form-item label="交易流水号:" prop="code">
             <el-input v-model="ruleForm.code" placeholder="请输入交易流水号"></el-input>
-          </el-form-item>
+          </el-form-item>-->
         </el-col>
         <el-col :span="10">
           <el-form-item label="交易日期:" prop="dateStart">
@@ -63,7 +62,7 @@
     </el-form>
     <!-- 搜索表单 END -->
     <div class="buttonsDv">
-      <el-button @click="importFun" type="warning" :disabled="clickable">导入财务系统</el-button>
+      <el-button @click="setZCK" type="warning">设置暂存款</el-button>
       <el-upload
         class="upload-demo"
         :action="UploadUrl()"
@@ -76,27 +75,29 @@
         :data="File"
         name="excelfile"
       >
-        <el-button type="primary">添加中国银行流水单</el-button>
+        <el-button type="primary">添加招商银行流水单</el-button>
       </el-upload>
     </div>
     <!-- 表格 -->
     <el-table
-      ref="multipleTable"
       :data="tableData"
       border
       :highlight-current-row="true"
       :header-cell-style="getRowClass"
       :stripe="true"
       id="table-content"
-      @row-click="handleRowClick"
-      @selection-change="selectionChange"
     >
-      <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
       <el-table-column label="操作" width="100" align="center" fixed>
         <template slot-scope="scope">
           <el-button
+            @click="orderDetail(scope.row)"
+            type="text"
+            size="small"
+            class="table_details"
+          >查看订单</el-button>
+          <el-button
+            v-if="scope.row.surplusAmount == scope.row.creditAmount"
             @click="deleteFun(scope.row)"
-            v-if="scope.row.surplus_Amount == scope.row.trade_Amount&&scope.row.is_EBS==0"
             type="text"
             size="small"
             class="table_details"
@@ -104,37 +105,54 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
-      <el-table-column prop="id" label="状态" align="center">
+      <el-table-column prop="surplusAmount" label="剩余金额" align="center"></el-table-column>
+      <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
         <template slot-scope="scope">
-          <span v-if="scope.row.is_EBS == 0">未导入</span>
-          <span v-if="scope.row.is_EBS == 1">已导入</span>
+          <span v-if="scope.row.is_ZCK == 0">未设置</span>
+          <span v-if="scope.row.is_ZCK == 1">已设置</span>
         </template>
       </el-table-column>
-      <el-table-column prop="transaction_reference_number" label="交易流水号" align="center"></el-table-column>
-      <el-table-column prop="transaction_Date" label="交易日期" align="center"></el-table-column>
-      <el-table-column prop="transaction_Time" label="交易时间" align="center"></el-table-column>
-      <el-table-column prop="trade_Currency" label="交易货币" align="center"></el-table-column>
-      <el-table-column prop="trade_Amount" label="交易金额" align="center"></el-table-column>
-      <el-table-column prop="value_Date" label="起息日期" align="center"></el-table-column>
-      <el-table-column prop="exchange_rate" label="汇率" align="center"></el-table-column>
-      <el-table-column prop="record_ID" label="记录标识号" align="center"></el-table-column>
-      <el-table-column prop="reference" label="摘要" align="center"></el-table-column>
+      <el-table-column prop="referenceNumber" label="交易流水号" align="center"></el-table-column>
+      <el-table-column prop label="交易日" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.transactionDateTime.split('T')[0]}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop label="交易时间" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.transactionDateTime.split('T')[1]}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="valueDate" label="起息日" align="center"></el-table-column>
+      <el-table-column prop="transactionType" label="交易类型" align="center"></el-table-column>
+      <el-table-column prop="debitAmount" label="借方金额" align="center"></el-table-column>
+      <el-table-column prop="creditAmount" label="贷方金额" align="center"></el-table-column>
+      <el-table-column prop="balance" label="余额" align="center"></el-table-column>
       <el-table-column prop="purpose" label="用途" align="center"></el-table-column>
-      <el-table-column prop="remark" label="交易附言" align="center"></el-table-column>
-      <el-table-column prop="transaction_Type" label="交易类型" align="center"></el-table-column>
-      <el-table-column prop="business_type" label="业务类型" align="center"></el-table-column>
-      <el-table-column prop="account_holding_bank_number_of_payer" label="付款人开户行号" align="center"></el-table-column>
-      <el-table-column prop="payer_account_bank" label="付款人开户行名" align="center"></el-table-column>
-      <el-table-column prop="debit_Account_No" label="付款人账号" align="center"></el-table-column>
-      <el-table-column prop="payer_s_Name" label="付款人姓名" align="center"></el-table-column>
-      <el-table-column
-        prop="account_holding_bank_number_of_beneficiary"
-        label="收款人开户行号"
-        align="center"
-      ></el-table-column>
-      <el-table-column prop="beneficiary_account_bank" label="收款人开户行名" align="center"></el-table-column>
-      <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center"></el-table-column>
-      <el-table-column prop="payee_s_Name" label="收款人姓名" align="center"></el-table-column>
+      <el-table-column prop="processInstanceNumber" label="流程实例号" align="center"></el-table-column>
+      <el-table-column prop="businessName" label="业务名称" align="center"></el-table-column>
+      <el-table-column prop="businessReferenceNumber" label="业务参考号" align="center"></el-table-column>
+      <el-table-column prop="businessSummary" label="业务摘要" align="center"></el-table-column>
+      <el-table-column prop="otherSummary" label="其他摘要" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBank" label="收(付)方分行名" align="center"></el-table-column>
+      <el-table-column prop="payerDebitName" label="收(付)方名称" align="center"></el-table-column>
+      <el-table-column prop="payerDebitAccount" label="收(付)方账号" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBankNumber" label="收(付)方开户行行号" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBankName" label="收(付)方开户行名" align="center"></el-table-column>
+      <el-table-column prop="payerDebitBankAddress" label="收(付)方开户行地址" align="center"></el-table-column>
+      <el-table-column prop="parentSubAccountBank" label="母(子)公司账号分行名" align="center"></el-table-column>
+      <el-table-column prop="parentSubAccount" label="母(子)公司账号" align="center"></el-table-column>
+      <el-table-column prop="parentSubName" label="母(子)公司名称" align="center"></el-table-column>
+      <el-table-column prop="informationSign" label="信息标志" align="center"></el-table-column>
+      <el-table-column prop="attachmentInformation" label="有否附件信息" align="center"></el-table-column>
+      <el-table-column prop="rushMark" label="冲账标志" align="center"></el-table-column>
+      <el-table-column prop="extendedAbstract" label="扩展摘要" align="center"></el-table-column>
+      <el-table-column prop="transactionAnalysisCode" label="交易分析码" align="center"></el-table-column>
+      <el-table-column prop="billNumber" label="票据号" align="center"></el-table-column>
+      <el-table-column prop="businesPayOrderNum" label="商务支付订单号" align="center"></el-table-column>
+      <el-table-column prop="internalNumber" label="内部编号" align="center"></el-table-column>
+      <!-- <el-table-column prop="" label="所属公司" align="center">
+      </el-table-column>-->
     </el-table>
     <div class="block">
       <el-pagination
@@ -148,17 +166,20 @@
       ></el-pagination>
     </div>
     <!-- 表格 END -->
+    <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
-
+ 
 <script type="text/javascript">
 import moment from "moment";
-import * as utils from './utils.js'
+import orderDetail from "@/page/Finance/bankStatement/orderDetails.vue";
+import * as utils from "./utils.js";
 export default {
-  components: {},
+  components: {
+    orderDetail
+  },
   data() {
     return {
-      clickable: true,
       tableData: [], // 表格数据
       ruleForm: {
         matchType: "", // 匹配状态
@@ -167,8 +188,6 @@ export default {
         dateEnd: "" // 结束时间
       },
       File: {},
-      multipleSelection: [], // 选择项
-
       pageCurrent: 1,
       pageSize: 10,
       total: 0,
@@ -195,9 +214,9 @@ export default {
   watch: {
     countTest: function(newV, oldV) {
       const that = this;
-      if (newV.indexOf("bankOfChinaSXF") != -1 && newV != oldV) {
+      if (newV.indexOf("bankOfChinaSK") != -1 && newV != oldV) {
         setTimeout(function() {
-          // alert('数据改变，执行loadDataSXF~')
+          // alert('数据改变，执行loadDataSK~')
           that.loadData();
         }, 500);
       }
@@ -208,12 +227,12 @@ export default {
   },
   methods: {
     beforeUpload(event, file, filelist) {
-      let data4D=utils.getSession4D()
+      let data4D = utils.getSession4D();
       this.File.FileName = event.name;
-      this.File.userid=data4D.userID
-      this.File.orgid=data4D.orgID
-      this.File.topid=data4D.topID
-      this.File.company=data4D.company//测试 暂时写死
+      this.File.userid = data4D.userID;
+      this.File.orgid = data4D.orgID;
+      this.File.topid = data4D.topID;
+      this.File.company = data4D.company; //测试 暂时写死
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -222,93 +241,29 @@ export default {
         return "";
       }
     },
-
-    // 导入
-    importFun() {
-      const that = this;
-      this.$confirm("是否确认导入财务系统", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "info"
-      })
-        .then(() => {
-          let idArr = [];
-          this.multipleSelection.forEach(function(item, index, arr) {
-            idArr.push(item.id);
-          });
-          // console.log(idArr);
-          this.$http
-            .post(
-              this.GLOBAL.serverSrc + "/finance/bankofchina/api/ImportEBS",
-              {
-                ids: idArr,
-                type: 0
-              }
-            )
-            .then(function(response) {
-              // console.log(response)
-              if (response.status == 200) {
-                that.$message.success("导入成功！");
-                that.loadData();
-              } else {
-                if (response.statusText) {
-                  that.$message.warning(response.data.statusText);
-                } else {
-                  that.$message.warning("导入失败~");
-                }
-              }
-            })
-            .catch(function(error) {
-              console.log(error);
-              that.$message.warning("导入失败~");
-            });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消导入"
-          });
-        });
+    setZCK() {
+      this.$router.push({
+        path: "/bankStatement/bankZCK",
+        name: "银行流水单管理  /设置暂存款",
+        query: {
+          searchType: "forth"
+        }
+      });
     },
-
-    selectInit(row, index) {
-      if (row.is_EBS == 1) {
-        return false; //不可勾选
-      } else {
-        return true; //可勾选
-      }
-    },
-
-    // 整行点击
-    handleRowClick(row, column, event) {
-      if (row.is_EBS == 0) {
-        this.$refs.multipleTable.toggleRowSelection(row);
-      }
-    },
-
-    // 选择项更改
-    selectionChange(val) {
-      if (val.length > 0) {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelection = val;
-    },
-
-    // 文件上传
     UploadUrl() {
-      return this.GLOBAL.serverSrc + "/finance/bankofchina/api/ImportExcel";
+      return (
+        this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/importexcel"
+      );
     },
     handleSuccess(response, file, fileList) {
       console.log(response);
       if (response == true) {
-        this.$message.success("中国银行流水单上传成功！");
+        this.$message.success("招商银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit("changeBankData", "bankOfChinaSK" + Math.random());
+        this.$store.commit("changeBankData", "bankOfChinaSXF" + Math.random());
       } else {
-        this.$message.warning("中国银行流水单上传失败！");
+        this.$message.warning("招商银行流水单上传失败！");
       }
     },
     handleError(err, file, fileList) {
@@ -320,8 +275,26 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-
-    // 删除
+    searchHandInside() {
+      this.pageCurrent = 1;
+      this.loadData();
+    },
+    emptyButtonInside() {
+      this.$refs["ruleForm"].resetFields();
+      this.pageCurrent = 1;
+      this.loadData();
+    },
+    orderDetail(row) {
+      this.dialogFormVisible = true;
+      this.info = {
+        id: row.id,
+        type: 5
+      };
+    },
+    close() {
+      this.dialogFormVisible = false;
+      this.info = "";
+    },
     deleteFun(row) {
       const that = this;
       this.$confirm("是否需要删除", "提示", {
@@ -331,16 +304,19 @@ export default {
       })
         .then(() => {
           this.$http
-            .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/delete", {
-              id: row.id
-            })
+            .post(
+              this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/delete",
+              {
+                id: row.id
+              }
+            )
             .then(function(response) {
               if (response.data.isSuccess) {
                 that.pageCurrent = 1;
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "bankOfChinaSK" + Math.random()
+                  "merchantsBankSK" + Math.random()
                 );
                 that.$message({
                   type: "info",
@@ -366,18 +342,6 @@ export default {
           });
         });
     },
-
-    // 搜索/重置
-    searchHandInside() {
-      this.pageCurrent = 1;
-      this.loadData();
-    },
-    emptyButtonInside() {
-      this.$refs["ruleForm"].resetFields();
-      this.pageCurrent = 1;
-      this.loadData();
-    },
-
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageCurrent = 1;
@@ -397,29 +361,45 @@ export default {
     },
     loadData() {
       const that = this;
-    let data4D=utils.getSession4D
+      let dateStart = "",
+        dateEnd = "";
+      let data4D = utils.getSession4D;
+      if (this.ruleForm.dateStart) {
+        dateStart = moment(this.ruleForm.dateStart).format(
+          "YYYY-MM-DD 00:00:00"
+        );
+      }
+      if (this.ruleForm.dateEnd) {
+        dateEnd = moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59");
+      }
+      //  this.$http.post('mock/zhaoshang', {}).then(function (obj) {
+      //       that.total = 100;
+      //     that.tableData = obj.data.data;
+      // })
       this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-          pageIndex: this.pageCurrent - 1,
-          pageSize: this.pageSize,
-          object: {
-            transaction_reference_number: this.ruleForm.code,
-            begin: this.ruleForm.dateStart
-              ? moment(this.ruleForm.dateStart).format("YYYY-MM-DD 00:00:00")
-              : "2000-05-16",
-            end: this.ruleForm.dateEnd
-              ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
-              : "2099-05-16",
-            seachType: 2,
-            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-            userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
+        .post(
+          this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
+          {
+            pageIndex: this.pageCurrent - 1,
+            pageSize: this.pageSize,
+            object: {
+              matching_State: this.ruleForm.matchType
+                ? this.ruleForm.matchType
+                : 0,
+              transaction_reference_number: this.ruleForm.code,
+              begin: dateStart ? dateStart : "2000-05-16",
+              end: dateEnd ? dateEnd : "2099-05-16",
+              seachType: 0
+              //若传入4D则无数据 测试暂时先不传
+              //   userid: data4D.userID, // 暂无数据 想看改成0,
+              // orgid: data4D.orgID, // 暂无数据 想看改成0,
+              // topid: data4D.topID, // 暂无数据 想看改成0,
+              // company: "",
+            }
           }
-        })
+        )
         .then(function(obj) {
-          // console.log('中国银行',obj);
+          console.log("中国招商银行", obj);
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;
@@ -434,7 +414,6 @@ export default {
           }
         });
     },
-    // 时间限制
     beginDate() {
       const that = this;
       return {
@@ -487,9 +466,6 @@ export default {
   .buttonsDv {
     width: 98%;
     margin: 5px auto;
-    .el-button {
-      margin-right: 10px;
-    }
   }
   #table-content {
     width: 98%;
@@ -504,11 +480,8 @@ export default {
     text-align: center;
     margin: 30px auto;
   }
-  .upload-demo {
-    display: inline-block !important;
-    .el-upload-list {
-      display: none !important;
-    }
+  .el-upload-list {
+    display: none !important;
   }
 }
 </style>
