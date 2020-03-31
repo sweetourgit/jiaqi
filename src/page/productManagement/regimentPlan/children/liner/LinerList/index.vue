@@ -20,12 +20,12 @@
           <el-table-column label="状态" prop="statusText" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="产品名称" prop="product_name" header-align="center" align="center"></el-table-column>
           <el-table-column label="出行日期" prop="time" header-align="center" align="center" width="120"></el-table-column>
-          <el-table-column label="报账状态" prop="bill_status" header-align="center" align="center" width="80"></el-table-column>
+          <el-table-column label="报账状态" prop="billStatusText" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="房间库存" prop="room_stock" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="剩余房间" prop="surplus_room_stock" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="人数库存" prop="number_stock" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="剩余人数" prop="surplus_room_num" header-align="center" align="center" width="80"></el-table-column>
-          <el-table-column label="操作人员" header-align="center" align="center" width="120"></el-table-column>
+          <el-table-column label="操作人员" prop="creater" header-align="center" align="center" width="120"></el-table-column>
           <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
               <div style="display:inline-block" v-show="scope.row.status=== PLAN_STATUS.NORMAL">
@@ -63,7 +63,7 @@
                   详情
                 </el-button>
                 <el-button type="text" size="mini"
-                  @click="awakeEditor(scope.row)">
+                  @click="awakeFileEditor(scope.row)">
                   出团通知书
                 </el-button>
               </div>
@@ -86,6 +86,7 @@
           layout="total, sizes, prev, pager, next, jumper"
         ></el-pagination>
       </div>
+      <FileEditor ref="fileEditor"></FileEditor>
     </footer>
   </div>  
 </template>
@@ -93,8 +94,9 @@
 <script>
 import { Random } from 'mockjs'
 import ListHeader from './comps/ListHeader'
+import FileEditor from './comps/FileEditor'
 import { PLAN_STATUS, CHECK_STATUS } from './dictionary'
-import { getSkuPlanListPage } from './api'
+import { getSkuPlanListPage, getUserlist } from './api'
 
 const getPageInfo= function(total){
   return {
@@ -105,7 +107,7 @@ const getPageInfo= function(total){
 }
 export default {
 
-  components: { ListHeader },
+  components: { ListHeader, FileEditor },
 
   mounted(){
     this.init();
@@ -183,9 +185,14 @@ export default {
       let { set_out_year, set_out_month, set_out_day }= item;
       item.status= Random.integer(1, 5);
       item.statusText= PLAN_STATUS.getLabel(item.status);
-      item.bill_status= CHECK_STATUS.getLabel(item.bill_status);
+      item.billStatusText= CHECK_STATUS.getLabel(item.bill_status);
       item.time= set_out_year+ set_out_month.padStart(3, '-0')+ set_out_day.padStart(3, '-0');
+      getUserlist(item.create_uid).then(res => item.creater= res.name);
       return item;
+    },
+
+    awakeFileEditor(){
+      this.$refs.fileEditor.wakeup();
     }
   }
 

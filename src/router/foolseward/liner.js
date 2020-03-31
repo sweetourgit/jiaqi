@@ -47,6 +47,15 @@ export const linerRegimentPlan= {
         keepAlive: true,
         auth: true
       }
+    },
+    {
+      path: 'order',
+      name: '产品管理/ 团期计划/ 游轮/ 下单',
+      component: () => import('@/page/productManagement/regimentPlan/children/liner/OrderMaker'),
+      meta: {
+        keepAlive: true,
+        auth: true
+      }
     }
   ]
 }
