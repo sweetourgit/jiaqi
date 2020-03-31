@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Last Modified by:   WZJ 
+ * @Author: WZJ
+ * @Last Modified by:   WZJ
  */
 
 <style lang="scss" scoped>
@@ -84,7 +84,7 @@ export default {
   // 创建和唤醒都要从新执行init
   mounted() {
     this.init();
-    this.auditResult(this.$route.query.guid, 6);
+    this.auditResult(this.$route.query.guid, 5);
   },
 
   data() {
