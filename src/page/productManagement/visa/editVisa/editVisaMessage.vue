@@ -50,7 +50,7 @@
                   <el-table-column prop="must" label="必须" align="center" width="60"></el-table-column>
                   <el-table-column label="附件" align="center" width="180">
                     <template slot-scope="scope">
-                      <span v-for="(item,index) in scope.row.crowdFile">{{item.name}}</span>
+                      <span v-for="(item,index) in scope.row.crowdFile"><el-link>{{item.name}}</el-link></span>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="120">
@@ -244,7 +244,7 @@ export default {
         object: {
           id:this.sid,
           title: this.ruleForm.caption,
-          visaID:sessionStorage.getItem('productID')
+          visaID:sessionStorage.getItem('commodityID')
         }
       }).then(res => {
           
@@ -279,11 +279,13 @@ export default {
             this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
               object: {
                 title: this.ruleForm.caption,
-                visaID:sessionStorage.getItem('productID')
+                visaID:sessionStorage.getItem('commodityID')
               }
             }).then(res => {
                 if(res.data.isSuccess == true){
-                   this.addVisaMessageShow = false
+                   this.addVisaMessageShow = false;
+                   this.pageList();
+                   this.a = 0;
                 }else{
                    this.$message.success(res.data.result.message);
                 }
@@ -310,7 +312,7 @@ export default {
     instructionsList(){
       //this.copyList = [];
       this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/list", {
-        id:sessionStorage.getItem('productID')
+        id:sessionStorage.getItem('commodityID')
       })
       .then(res =>{
         this.copyList = res.data.objects;
@@ -354,28 +356,33 @@ export default {
            type: "warning"
         })
         .then(() => {
-          this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
-            "id": this.editableTabs[this.editableTabsValue].id
-          })
-          .then(res => {
-            if(res.data.isSuccess == true){
-              this.pageList();
-              let tabs = this.editableTabs;
-              let activeName = this.editableTabsValue;
-              if (activeName === targetName) {
-                tabs.forEach((tab, index) => {
-                  if (tab.name === targetName) {
-                    let nextTab = tabs[index + 1] || tabs[index - 1];
-                    if (nextTab) {
-                      activeName = nextTab.name;
+          if(this.tableDate.length > 0){
+            this.$message.success("该主题存在签证信息人群，不允许删除");
+          } else{
+            this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
+              "id": this.editableTabs[this.editableTabsValue].id
+            })
+            .then(res => {
+              if(res.data.isSuccess == true){
+                this.editableTabs = [];
+                this.pageList();
+                let tabs = this.editableTabs;
+                let activeName = this.editableTabsValue;
+                if (activeName === targetName) {
+                  tabs.forEach((tab, index) => {
+                    if (tab.name === targetName) {
+                      let nextTab = tabs[index + 1] || tabs[index - 1];
+                      if (nextTab) {
+                        activeName = nextTab.name;
+                      }
                     }
-                  }
-                });
-              }       
-              this.editableTabsValue = String(this.editableTabs.length - 2);
-              this.$message.success("删除成功");
-            }
-           })
+                  });
+                }       
+                this.editableTabsValue = String(this.editableTabs.length - 2);
+                this.$message.success("删除成功");
+              }
+             })
+          }
         })
         .catch(() => {
           this.$message({
@@ -595,6 +602,7 @@ export default {
           id:status
         }).then(res => {
             if(res.data.isSuccess == true){
+              this.tableDate = [];
               this.rowList();
               this.$message.success("删除成功");
             }
