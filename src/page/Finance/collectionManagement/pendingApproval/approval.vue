@@ -24,7 +24,7 @@
           @click="recognitionDetail(tableAssociated[0])"
         >查看</el-button>
         <!-- 报销还款审批页的去认款按钮显示end -->
-        <el-button type="success" @click="touchPrint" plain v-if="getOrgID == 491">打印本页详情</el-button>
+        <el-button type="success" @click="touchPrint" plain v-if="getOrgID == 491 && info.collectionType != 6">打印本页详情</el-button>
       </div>
       <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
       <div ref="print">
@@ -1482,11 +1482,9 @@ export default {
 
     getMoment() {
       const now = new Date();
-
       const year = now.getFullYear().toString();
       const month = (now.getMonth() + 1).toString();
       const day = now.getDate().toString();
-
       return year + month + day;
     }
   },

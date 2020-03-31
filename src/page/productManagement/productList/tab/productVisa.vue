@@ -40,8 +40,8 @@
       <el-button :disabled="forbidden" @click="editProducts()">编辑</el-button>
       <el-button :disabled="forbidden">预订</el-button>
       <el-button :disabled="forbidden" @click="visaInventory()">库存</el-button>
-      <el-button :disabled="forbidden">更改状态</el-button>
-      <el-button :disabled="forbidden">复制</el-button>
+      <el-button :disabled="forbidden" @click="changeType()">更改状态</el-button>
+      <el-button :disabled="forbidden" @click="copyProducts()">复制</el-button>
       <el-button :disabled="forbidden">退改政策</el-button>
       <el-button :disabled="forbidden" type="danger" plain @click="deleteProducts()">删除</el-button>
     </div>
@@ -60,6 +60,23 @@
     <el-pagination style="margin:0 0 60px 0;" v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
       :current-page.sync="currentPage" :page-size="pageSize" :page-sizes="[10, 30, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="total"
     ></el-pagination>
+    <!--更改状态弹窗-->
+    <el-dialog title="更改状态" :visible.sync="changeTypeShow" custom-class="city_list" style="margin-top:-100px;" width="500px"
+      @close="closeChangeType('changeTypeForm')">
+        <div class="controlButton">
+          <el-button @click="closeChangeType('changeTypeForm')">取消</el-button>
+          <el-button @click="cancelChangeType('changeTypeForm')"type="primary">确定</el-button>
+        </div>
+        <el-form :model="changeTypeForm" :rules="rules" ref="changeTypeForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="订单来源：" prop="orderSource">
+            <el-radio-group v-model="changeTypeForm.orderSource">
+              <el-radio label="1">线上上线</el-radio>
+              <el-radio label="2">仅erp上线</el-radio>
+              <el-radio label="3">下线</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -118,6 +135,16 @@ export default {
       forbidden:true, 
       pid:"",
       countriesID:'',
+      changeTypeShow:false, // 更改状态弹窗
+      changeTypeForm:{
+        orderSource:''
+      },
+      rules:{
+        orderSource: [
+          { required: true, message: "请选择订单来源", trigger: "change" }
+        ],
+      },
+
     };
 
   },
@@ -134,9 +161,8 @@ export default {
         this.pageIndex = 1;
         this.getUserCode();
       }
-      //this.pageList();
     },
-    reset(){ // 重置
+    reset(curPage){ // 重置
       this.productID = '';//产品ID
       this.productName = '';//产品名称
       this.minPrice = ''; // 最低价格
@@ -145,6 +171,9 @@ export default {
       this.visaTypes = '';// 签证类型
       this.state = '';// 状态
       this.op = ''; // 操作
+      this.pageIndex = 1 ? 1 : 1;
+      this.currentPage = curPage;
+      this.pageList();
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
@@ -217,7 +246,7 @@ export default {
           "visaPod":this.countriesID == "" ? 0 : this.countriesID,
           "visaType":this.visaTypes == ""  ? 0 : this.visaTypes,
           "onlineTypeAndErpType":this.state == ""  ? 0 : this.state,
-          "userCode":this.op
+          "userCode":userCode
         },
         "pageSize":this.pageSize,
         "pageIndex":this.currentPage,
@@ -263,7 +292,7 @@ export default {
             if (res.data.objects.length !=0) {
               var getUserCode='';
               getUserCode = res.data.objects[0].userCode;
-              this.pageList(this.pageIndex,this.pageSize,this.productID,this.productName,this.minPrice,this.maxPrice,getUserCode,this.countriesArea,this.visaTypes,this.state,this.op);
+              this.pageList(this.pageIndex,this.pageSize,this.productID,this.productName,this.minPrice,this.maxPrice,this.countriesArea,this.visaTypes,this.state,getUserCode);
             } else {
               that.tableDate = [];
             }
@@ -277,11 +306,19 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.pageList();
+      if(this.op == ""){
+        this.pageList(this.pageIndex,val);
+      }else{
+        this.getUserCode();
+      }
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
-      this.pageList();
+      if(this.op == ""){
+        this.pageList(val,this.pageSize);
+      }else{
+        this.getUserCode();
+      }
     },
     addProducts(){
       this.$router.push({ path: "/visaProducts" });
@@ -289,6 +326,69 @@ export default {
     editProducts(){
       sessionStorage.setItem('commodityID',this.pid);
       this.$router.push({ path: "/editVisaProducts" });
+    },
+    changeType(){ // 更改状态
+      this.changeTypeShow = true;
+    },
+    closeChangeType(formName){
+      this.changeTypeShow = false;
+      this.$refs[formName].resetFields();
+    },
+    cancelChangeType(formName){ // 更改状态方法
+      let onlineType = '';
+      let erpType = '' ;
+      if(this.changeTypeForm.orderSource == 1){
+        onlineType = 0;
+        erpType = 0;
+      } else if(this.changeTypeForm.orderSource == 2) {
+        onlineType = 1;
+        erpType = 0;
+      } else if(this.changeTypeForm.orderSource == 3){
+        onlineType = 1;
+        erpType = 1;
+      }
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$http.post(this.GLOBAL.serverSrc + "/visa/visapro/api/savetype",
+            {
+              object: {
+                "id": this.pid,
+                "onlineType":onlineType,
+                "erpType":erpType
+              }
+            })
+            .then(res => {
+              if(res.data.isSuccess == true){
+                this.pageList();
+                this.changeTypeShow = false;
+                this.$refs[formName].resetFields();
+              }
+          })
+        }
+      })
+    },
+    copyProducts(){ // 复制产品方法
+      this.$confirm("是否删除该产品?", "提示", {
+         confirmButtonText: "确定",
+         cancelButtonText: "取消",
+         type: "warning"
+      }).then(() => {
+        this.$http.post(this.GLOBAL.serverSrc + '/visa/visapro/api/copyvisa',{
+          "id": this.pid
+        })
+        .then(res => {
+          if(res.data.isSuccess == true){
+             this.$message.success("复制产品成功成功");
+             this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
+            }
+         })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+      })
     },
     visaInventory(){ // 团期库存
       this.$router.push({ path: "/visaInventory?id="+this.pid });
@@ -388,4 +488,5 @@ export default {
 }
 /*分页*/
 .pagination{float: right; margin: 10px 0 20px 0;}
+.controlButton{position: absolute; top: 8px; right: 10px;}
 </style>

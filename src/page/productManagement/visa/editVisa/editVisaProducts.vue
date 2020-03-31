@@ -290,10 +290,26 @@ export default {
               }
             })
             this.ruleForm.name = data.visaTitle; // 产品名称
-            this.ruleForm.highlightWords = data.strengths[0].strength; // 亮点词
-            this.ruleForm.highlightWords1 = data.strengths[1].strength; // 亮点词
-            this.ruleForm.highlightWords2 = data.strengths[2].strength; // 亮点词
-            this.ruleForm.highlightWords3 = data.strengths[3].strength; // 亮点词
+            if(data.strengths[0] != undefined){
+              this.ruleForm.highlightWords = data.strengths[0].strength; // 亮点词
+            } else {
+              this.ruleForm.highlightWords = ''
+            }
+            if(data.strengths[1] != undefined){
+              this.ruleForm.highlightWords1 = data.strengths[1].strength; // 亮点词
+            } else {
+              this.ruleForm.highlightWords1 = ''
+            }
+            if(data.strengths[2] != undefined){
+              this.ruleForm.highlightWords2 = data.strengths[2].strength; // 亮点词
+            } else {
+              this.ruleForm.highlightWords2 = ''
+            }
+            if(data.strengths[3] != undefined){
+              this.ruleForm.highlightWords3 = data.strengths[3].strength; // 亮点词
+            } else {
+              this.ruleForm.highlightWords3 = ''
+            }
             this.pictureID = data.pictureID; // 初始获取头图ID
             this.ruleForm.shuffling = data.pepeatpic; // 轮播图
             this.ruleForm.sendVisa = data.signature[0].visaHandleID; // 送签地

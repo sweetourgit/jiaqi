@@ -115,6 +115,9 @@
         <p class="totle">
           总价：￥
           <span>{{payable}}</span>
+          <!-- <span v-show="changedPrice"> + {{ changedPrice}}</span>
+           <span v-show="changedPriceFilter"> - {{ changedPriceFilter}}</span> -->
+         
          </p>
         <!-- <p
           class="surplus"
@@ -199,10 +202,10 @@
         <el-button sign="sign"
           type="primary"
           v-if="orderinfo.order_status==0||orderinfo.order_status==10||orderinfo.order_status==1"
-          @click="orderModification(orderinfo.order_status,orderget.occupyStatus)"
+          @click="orderModification(orderinfo.order_status,orderget.occupy_status)"
           :disabled="isChangeNumber || isLowPrice"
           class="confirm fr"
-        >{{statusNext}}</el-button>
+        >{{statusBtn}}</el-button>
         <!--保存游客信息按钮-->
         <el-button
           type="primary"
@@ -214,6 +217,15 @@
         <!--取消按钮-->
         <el-button class="fr" @click="close">取消</el-button>
       </div>
+    </el-dialog>
+    
+    <!--取消订单弹框 @click="dialogVisible = false"-->
+    <el-dialog title="提示" :visible.sync="dialogVisible" :modal-append-to-body="false" width="500px">
+      <span>是否需要取消该订单</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="orderModification(9,0)">确 定</el-button>
+      </span>
     </el-dialog>
     <!-- 出行人信息编辑 -->
     <guestEditDialog ref="guestEditDialog" 
@@ -256,6 +268,8 @@ export default {
       GuestRoomId:"",//客房id
       AddNumber:0,//加的金额
       MinusNumber:0,//减的金额
+      changedPrice:0,//当前变动
+      statusBtn:'',//提交按钮
       ruleForm: {
         contactName: "",
         contactPhone: "",
@@ -319,6 +333,7 @@ export default {
     moment,
     close(){//关闭
       this.$parent.resetDialogType();
+      this.NewGetCabinData= []; // 用户信息
     },
    
     processManage() {  //流程详情
@@ -452,20 +467,35 @@ export default {
             
     },
     favourableChangeHandler(item){ // 其他费用
-    if(item.fav_mode == 1){
-       this.payable = this.payable - this.AddNumber;
-       this.payable = parseInt(this.payable) + parseInt(item.price)
-    }
+    // if(item.fav_mode == 1){}
+      //   AddNumber:0,//加的金额
+      // MinusNumber:0,//减的金额
+      // changedPrice:0,//当前变动
+      console.log(item,'发嗯艾丝凡');
+      console.log(this.AddNumber,'测试价格');
+        let varied= 0;
+        // 如果输入不合规，则以旧值(原值加上最后一次改变)还原
+        if(this.$isNull(price) || isNaN(parseFloat(price))) return item.price= priceProto + variedProto;
+        varied= parseFloat(price)- priceProto;
+        this.changedPrice+= (favMode=== 1? 1: -1) * (varied- variedProto);
+        // 记录最后一次
+        this.AddNumber= varied;
+      
+     
      
     },
-     //什么都不填写然后失去光标变为0
-    comPriceBlur(item, index) {
-      console.log(item,'fasfaws');
-      let { price }= this.favourableProto[index];
-      if (item.price == "") {
-        item.price = 0;
-      }
+    changedPriceFilter(val){
+      if(val> 0) return `+${val}`;
+      return val;
     },
+     //什么都不填写然后失去光标变为0
+    // comPriceBlur(item, index) {
+    //   console.log(item,'fasfaws');
+    //   let { price }= this.favourableProto[index];
+    //   if (item.price == "") {
+    //     item.price = 0;
+    //   }
+    // },
     getOrderStatus(status, endTime, occupyStatus, orderChannel) {
        switch (status) {
         case 0: //订单状态0，暂按未确认处理
@@ -484,7 +514,6 @@ export default {
               break;
             case 3: // 确定占位
               this.statusNow = "确定占位";
-              this.replenishInfoToastFun(this.orderget.orderChannel);
               this.statusNext = "补充资料";
               this.statusEnd = "签订合同";
               this.statusBtn = '补充资料'
@@ -493,7 +522,7 @@ export default {
           break;
         case 1:
           setTimeout(() => {
-            let guest = this.orderget.guests;
+            let guest = this.orderinfo.guests;
             for (let i = 0; i < guest.length; i++) {
               if (guest[i].cnName == "点击填写") {
                 this.isChangeNumber = true;
@@ -587,7 +616,6 @@ export default {
           break;
         case 10:
           this.statusNow = "确认占位";
-          this.replenishInfoToastFun(this.orderget.orderChannel);
           this.statusNext = "补充资料";
           this.statusEnd = "签订合同";
             this.statusBtn = '补充资料';
@@ -595,7 +623,44 @@ export default {
       }
     },
   },
-  mounted() {}
+   orderModification(status, cancle) {
+     if (
+        this.orderinfo.occupy_status === 1 &&
+        this.settlementType === 1 &&
+      
+        // this.payable < this.balance + this.deposit &&
+        this.changedPrice > this.balance + this.deposit &&
+
+        status !== 9
+      ) {
+        this.$message.error("总价超过剩余预存款和额度");
+      }else{
+       if (cancle === 0) {// 取消订单按钮
+        this.$http
+          .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/cancleorder", {
+            id: this.orderinfo.id
+          })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        }
+        // url = "/order/all/api/orderdelete";
+        // this.$http
+        //   .post(this.GLOBAL.serverSrcYL + url, {
+        //     object: {
+        //       id: this.orderget.id,
+        //       occupyStatus: this.orderget.occupyStatus
+        //     }
+        //   })
+        //   .then(res => {
+        //     if (res.data.isSuccess == true) {
+        //      }
+        //   });
+      }
+    },
 };
 </script>
 

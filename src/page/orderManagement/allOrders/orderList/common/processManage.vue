@@ -108,7 +108,7 @@
           <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost"
             v-else>
             <div>{{item.title}}</div>
-            <el-input
+            <el-input 
               v-model="item.price"
               v-readonly="'others'"
               placeholder="请输入金额"
@@ -1232,7 +1232,7 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
-       if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true){
+       if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true ||this.changedPrice != 0 ){ //this.changedPrice后加的主要验证修改其他金额将作废合同
                   this.$confirm("更改信息后合同将作废", "提示", {
                   confirmButtonText: "确定",
                   cancelButtonText: "取消",
@@ -1250,7 +1250,8 @@ export default {
                   });
               });
            }else{
-              this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+            
+             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
            }
       },
     ordersave_data(id, occupyStatus){ // 便于提醒是否作废合同新增客人
@@ -1329,7 +1330,7 @@ export default {
             obj.guests = guest;
             obj.teamID = this.orderget.teamID;
             obj.planID = this.orderget.planID;
-          this.$http
+                this.$http
                     .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                       object: obj
                     })

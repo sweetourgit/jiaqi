@@ -1,3 +1,4 @@
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="merchantsBankSXF">
     <!-- 搜索表单 -->
@@ -111,7 +112,8 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
-      <el-table-column prop="creditAmount" label="手续费" align="center"></el-table-column>
+	  <!--  -->
+      <el-table-column prop="purpose_fee" label="手续费" align="center"></el-table-column>
       <el-table-column prop="referenceNumber" label="交易流水号" align="center"></el-table-column>
       <el-table-column prop label="交易日期" align="center">
         <template slot-scope="scope">
@@ -440,7 +442,7 @@ export default {
       // this.$http.post("mock/zhaohangSXF", {}).then(function(obj) {
       //   that.total = 100;
       //   that.tableData = obj.data.data;
-      // });
+      // });R
       this.$http
         .post(
           this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
@@ -459,11 +461,11 @@ export default {
               import_State: this.ruleForm.matchType
                 ? this.ruleForm.matchType
                 : 0,
-                   //若传入4D则无数据 测试暂时先不传
-              //   userid: data4D.userID, // 暂无数据 想看改成0,
-              // orgid: data4D.orgID, // 暂无数据 想看改成0,
-              // topid: data4D.topID, // 暂无数据 想看改成0,
-              // company: "",
+                  //  若传入4D则无数据 测试暂时先不传
+                userid: data4D.userID, // 暂无数据 想看改成0,
+              orgid: data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
             }
           }
         )

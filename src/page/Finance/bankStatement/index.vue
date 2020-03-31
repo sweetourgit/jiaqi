@@ -52,7 +52,7 @@
           <el-tab-pane label="付款">暂时不写</el-tab-pane>
         </el-tabs>
       </el-tab-pane>
-      <el-tab-pane label="建设银行" name="fivth">
+      <el-tab-pane label="建设银行" name="fifth">
         <!-- <industrialBankSK></industrialBankSK> -->
         <el-tabs type="border-card" @tab-click="handleClick">
           <el-tab-pane label="收款">

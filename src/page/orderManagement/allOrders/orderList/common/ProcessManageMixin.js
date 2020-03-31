@@ -212,6 +212,7 @@ const ProcessManageMixin= {
       favourableChangeHandler(item){
         let { price, favMode }= item;
         let proto= this.favourableProto.find(el => el.id=== item.id);
+        console.log(proto,'fasrf');
         let { price: priceProto, varied: variedProto }= proto;
         let varied= 0;
         // 如果输入不合规，则以旧值(原值加上最后一次改变)还原
@@ -220,6 +221,7 @@ const ProcessManageMixin= {
         this.changedPrice+= (favMode=== 1? 1: -1) * (varied- variedProto);
         // 记录最后一次
         proto.varied= varied;
+        
         // 旧逻辑
         this.isSaveBtnClick();
         this.isChangeNumberClick();

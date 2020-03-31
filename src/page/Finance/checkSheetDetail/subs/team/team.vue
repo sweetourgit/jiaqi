@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Last Modified by:   WZJ 
+ * @Author: WZJ
+ * @Last Modified by:   WZJ
  */
 
 <style lang="scss" scoped>
@@ -84,7 +84,7 @@ export default {
   // 创建和唤醒都要从新执行init
   mounted() {
     this.init();
-    this.auditResult(this.$route.query.guid, 6);
+    this.auditResult(this.$route.query.guid, 5);
   },
 
   data() {
@@ -114,14 +114,14 @@ export default {
       this.$http
         .post(
           this.GLOBAL.jqUrl +
-            "/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType",
+            "/JQ/GetInstanceActityInfoForJQ",
           {
             jq_id: result,
             jQ_Type: paramJqType // 无收入1 预付款2,
           }
         )
         .then(obj => {
-        this.setReviewList(obj.data.tableAuditResults)
+        this.setReviewList(obj.data.extend.instanceLogInfo)
           // 裡面的具提屬性沒有調試
           // _this.tableCourse = [];
           // _this.tableCourse = obj.data.data;

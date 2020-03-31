@@ -286,13 +286,14 @@
 
       },
       handleJumpDetail (index, row) {
-        let { id, collectionType, invoiceTable } = row;
+        let { id, collectionType, invoiceTable, accountID } = row;
         this.$router.push({
           path: "/collection/collectionTeamDetails",
           query: {
             id,
             collectionType,
             invoiceTable,
+            accountID,
             componentName: this.whichCollectTeamTab
           }
         });
