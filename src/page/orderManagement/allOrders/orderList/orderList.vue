@@ -629,8 +629,7 @@ export default {
               res.data.object.orderStatus = 10;
               this.dataorderStatus(res.data.object.id,res.data.object.orderCode,res.data.object.orderStatus,);
             }
-            
-          this.getListOneMessage = res.data.object;
+         this.getListOneMessage = res.data.object;
           
 
           let date = res.data.object.date.toString();
