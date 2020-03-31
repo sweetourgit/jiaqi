@@ -55,7 +55,7 @@
         <li
           v-for="(item,index) in orderStatusSearch"
           :key="index"
-          @click="statusTab(item,index)"
+          @click="statusTab(item,index,item.status)"
           v-bind:class="{statusbg: orderNum==index}"
         >{{item.name}}</li>
       </ul>
@@ -243,7 +243,10 @@
     <!-- 分页end -->
 
     <!-- 备注 -->
-    <boatRemarksInfor :propsObj.sync="propsObj"></boatRemarksInfor>
+    <boatRemarksInfor
+      :propsObj.sync="propsObj"
+      :orderId="orderId"
+     ></boatRemarksInfor>
     <!-- 收款 -->
     <boatReceipt :propsObj.sync="propsObj"></boatReceipt>
     <!-- 换舱 -->
@@ -260,6 +263,7 @@
     <boatProcessManage 
      :propsObj.sync="propsObj"
      :orderId="orderId"
+     :orderCodeSon='orderCodeSon'
     ></boatProcessManage>
       
   </div>
@@ -338,10 +342,6 @@ export default {
 
   methods: {
     moment,
-    statusTab(item, index) { //   点击订单状态筛选
-      this.orderNum = index;
-    },
-
     // 分页 条数显示变动
     handleSizeChange(size) {
       this.pageSize = size;
@@ -356,12 +356,7 @@ export default {
     },
 
     // 折叠表格显示
-    // handleOpen(item,index) {
-    //   this.isShowContent == index
-    //     ? (this.isShowContent = -1)
-    //     : (this.isShowContent = index);
-    // },
-    handleOpen(item, index) { // 点击list列表中的一个
+   handleOpen(item, index) { // 点击list列表中的一个
        this.variable= 0; //退款
        this.a_variable=0;//设置一个变量展示弹窗
        this.variable_s=0;//发票申请
@@ -383,6 +378,7 @@ export default {
         .then(res => {
           //console.log("请求一条数据的",res)
           this.getListOneMessage = res.data.data; 
+          this.orderCodeSon = res.data.data.order_code;
             // 下单平台
           if (this.getListOneMessage.platform == 1) { //订单来源
             this.getListOneMessage.platform = "ERP系统";
@@ -398,14 +394,7 @@ export default {
             this.getListOneMessage.platform = "App";
           }
           //this.orderCodeSon = res.data.data.order_code;   
-         
-
-         
-      
-        
-        
-           
-         })
+        })
         .catch(err => {
           console.log(err);
         });
@@ -427,6 +416,13 @@ export default {
     // 重置按钮
     handleReset() {
       this.isShowContent = null;
+      this.orderCode = ""; //订单ID
+      this.name = ""; //产品名称
+      this.groupCode = null; //团期计划ID
+      this.beginDate = ""; //开始日期
+      this.endDate = ""; //结束日期
+      this.saler = ""; //销售
+      this.orderPage(1, this.pageSize);
     },
     orderCodeBlur() { //搜索订单文本
       if (this.orderCode == "") {
@@ -530,7 +526,7 @@ export default {
     handleChooseOrgID(item) {   // 搜索商户名称下拉选择事件
       this.orgID = item.id;
     },
-    statusTab(num, index, status) {
+    statusTab(num, index, status) { //   点击订单状态筛选
       if (num == 1) {
         this.refundNum = 7; //为7 只要不等于索引值不等于退款状态号就行
         this.refundStatus = 0;

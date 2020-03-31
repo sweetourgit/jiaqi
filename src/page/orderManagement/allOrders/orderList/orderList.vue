@@ -810,20 +810,7 @@ export default {
       this.podID = item.id;
       this.pod = item.value;
     },
-    // statusTab(num, index, status) {
-    //   if (num == 1) {
-    //     this.whichStateTab = num;
-    //     this.orderNum = index;
-    //     this.orderStatus = status;
-    //     this.orderPage(1, this.pageSize);
-    //   }
-    //   if (num == 2) {
-    //     this.whichStateTab = num;
-    //     this.refundNum = index;
-    //     this.refundStatus = status;
-    //     this.orderPage(1, this.pageSize);
-    //   }
-    // },
+    
     statusTab(num, index, status) {
       if (num == 1) {
         this.refundNum = 7; //为7 只要不等于索引值不等于退款状态号就行

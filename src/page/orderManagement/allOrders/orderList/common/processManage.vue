@@ -108,7 +108,7 @@
           <el-form-item class="fl" :prop="'favourable.'+ index +'.price'" :rules="rules.otherCost"
             v-else>
             <div>{{item.title}}</div>
-            <el-input
+            <el-input 
               v-model="item.price"
               v-readonly="'others'"
               placeholder="请输入金额"

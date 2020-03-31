@@ -7,6 +7,7 @@
       :close-on-click-modal="false"
       class
       width="780px"
+      @open="orderGetFun(this.orderId,this.orderCodeSon)"
       @close="btRemarkDialogClose"
     >
       <el-form
@@ -26,7 +27,7 @@
               v-model="item.content"
               :disabled="true"
             ></el-input>
-            <div class="time">2020-11-12</div>
+            <div class="time">{{getTimeChange(item.createTime)}}</div>
           </el-form-item>
         </div>
         <el-form-item label="填写备注" prop="Mark">
@@ -39,7 +40,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item align="right">
-          <el-button type="info" size="medium" class="submitMark">提交备注</el-button>
+          <el-button type="info" size="medium" class="submitMark" @click="submitMark">提交备注</el-button>
         </el-form-item>
         <el-form-item align="center">
           <el-button class="colse" @click="btRemarkDialogClose">关闭</el-button>
@@ -50,10 +51,14 @@
 </template>
 
 <script>
+import { formatDate } from "@/js/libs/publicMethod.js";
+import moment from "moment"
 export default {
   name: "boatRemarksInfor",
   props: {
-    propsObj: { type: Object }
+    propsObj: { type: Object },
+    orderId:0,//订单id
+    orderCodeSon:'',
   },
   data() {
     return {
@@ -61,7 +66,7 @@ export default {
       markFormAdd: {
         orderCode: "",
         Mark: "",
-        CreateTime: ""
+        CreateTime: formatDate(new Date())
       },
       markForms: [],
       orderget: {},
@@ -71,7 +76,7 @@ export default {
     };
   },
 
-  watch: {},
+  watch: { },
   created() {},
   methods: {
     // 关闭弹窗事件
@@ -83,9 +88,59 @@ export default {
       this.markFormAdd.Mark = ""
     }
   },
-  mounted() {}
+  orderGetFun(orderId,orderCode) {
+    this.$http
+        .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order-comment/listall", {
+          order_code: orderCode,
+          order_id: orderId,
+          limit: 20
+        })
+        .then(res => {
+          console.log(res)
+          if (res.data.isSuccess == true) {
+            // this.orderget = res.data.objects;
+            this.markForms = res.data.objects
+            //   ? JSON.parse(res.data.object.remark)
+            //   : [];
+            //  console.log("orderGet的this.markForms",this.markForms)
+          }
+        })
+
+        .catch(err => {
+          console.log(err);
+        });
+    },
+   submitMark() {
+      // this.$refs["markFormAdd"].validate(valid => {
+      //   if (valid) {
+      //       let createTime = moment().utcOffset(480).format('YYYY-MM-DD HH:mm:ss').toString()
+      //       this.$http
+      //       .post(this.GLOBAL.serverSrc + "/orderquery/get/api/InserOrderComment", {
+      //         object: {
+      //           orderCode: this.orderCodeSon,
+      //           content: this.markFormAdd.Mark,
+      //           createTime: createTime
+      //         }
+      //       })
+      //       .then(res => {
+      //         if (res.data.isSuccess == true) {
+      //           this.$message.success("提交成功");
+      //           this.dialogFormMark = false;
+      //           this.$refs["markFormAdd"].resetFields();
+      //         } else {
+      //           this.$message.error("提交失败");
+      //         }
+      //       });
+
+      //   }
+      // });
+    },
 };
 </script>
 
-<style lang="scss" scoped>
+<style>
+.submitMark {
+  float: right;
+  margin-right: 60px;
+}
 </style>
