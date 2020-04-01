@@ -4,7 +4,7 @@
     <div class="demo-input-suffix">
       <div>
         <span class="search-title" style="margin:0 0 0 35px;">发票号码</span>
-        <el-input placeholder="请输入" v-model="invoiceNumber" class="group-no" style="width:200px;"></el-input> 
+        <el-input placeholder="请输入" v-model="invoiceNumber" class="group-no" style="width:200px;"></el-input>
         <span class="search-title">商户名称</span>
         <el-input placeholder="请输入" v-model="merchantsName" class="group-no" style="width:200px;"></el-input>
         <span class="search-title">申请日期</span>
@@ -34,7 +34,7 @@
         <el-button type="primary" class="search-but" @click="search()">搜索</el-button>
         <el-button type="primary" plain @click="reset()">重置</el-button>
       </div>
-      
+
     </div>
     <div class="main">
       <el-button type="primary" class="apply" @click="addInvoiceApply(1)">申请</el-button>
@@ -84,8 +84,8 @@
 
 <script>
 import moment from "moment";
-import invoiceApplyDetails from "./invoiceApplyDetails/invoiceApplyDetails";//详情
-import addInvoiceApply from "./invoiceApplyDetails/addInvoiceApply";
+import invoiceApplyDetails from "./invoiceApplyDetails";//详情
+import addInvoiceApply from "./addInvoiceApply";
 export default {
   name: "invoiceApply",
   components: {
@@ -98,7 +98,7 @@ export default {
       variable: 0, //设置一个变量展示弹窗
       dialogType: 0, //弹窗类型  1：详情
       variableInvoice:0, // 申请发票开关
-      
+
       //搜索框
       invoiceNumber:'',//发票号码
       merchantsName:'',//商户名称
@@ -150,7 +150,7 @@ export default {
       h = h < 10 ? "0" + h : h;
       var minute = date.getMinutes();
       minute = minute < 10 ? "0" + minute : minute;
-      var second = date.getSeconds();  
+      var second = date.getSeconds();
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
@@ -161,7 +161,7 @@ export default {
         return '';
       }
       return moment(date).format('YYYY-MM-DD')
-    },      
+    },
     search(){ // 搜索
       this.current = 1;
       this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
@@ -179,7 +179,7 @@ export default {
       this.current = curPage;
       this.pageList();
     },
-    
+
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -260,7 +260,7 @@ export default {
     },
     addInvoiceApply(i){
       this.variableInvoice++;
-   
+
     },
     changeFun(val) {
       //保存选中项的数据
