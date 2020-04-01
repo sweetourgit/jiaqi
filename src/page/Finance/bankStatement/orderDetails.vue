@@ -193,7 +193,7 @@ export default {
       this.loadData();
     },
     loadData() {
-      console.log("订单明细info", this.info);
+ 
       const that = this;
       this.$http
         .post(

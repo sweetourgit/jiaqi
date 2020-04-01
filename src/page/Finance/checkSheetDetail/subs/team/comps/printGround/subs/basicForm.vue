@@ -95,7 +95,7 @@ export default {
   methods: {
     //(groupCode)用于拼接生成储存草稿的唯一标识
     wakeup(payload, groupCode) {
-      console.log("groupCode", groupCode);
+     
       let { guideName, localName, title, price, ticket } = payload;
       Object.assign(this.submitForm, {
         guideName,

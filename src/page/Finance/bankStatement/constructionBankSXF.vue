@@ -163,7 +163,7 @@
     watch: {
       countTest: function(newV, oldV) {
         const that = this;
-        if (newV.indexOf("industrialBankSXF") != -1 && newV != oldV) {
+        if (newV.indexOf("constructionBankSXF") != -1 && newV != oldV) {
           setTimeout(function() {
             // alert('数据改变，执行loadDataSXF~')
             that.loadData();
@@ -267,14 +267,14 @@
         return this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/importexcel";
       },
       handleSuccess1(response, file, fileList) {
-        console.log(response);
+       
         if (response == true) {
           this.$message.success("建设银行流水单上传成功！");
           this.pageCurrent = 1;
           this.loadData();
           this.$store.commit(
             "changeBankData",
-            "industrialBankSK" + Math.random()
+            "constructionBankSK" + Math.random()
           );
         } else {
           this.$message.warning("建设银行流水单上传失败！");
@@ -284,7 +284,7 @@
         this.$message.warning(`文件上传失败，请重新上传！`);
       },
       handleRemove1(file, fileList) {
-        console.log(file, fileList);
+       
       },
       beforeRemove1(file, fileList) {
         return this.$confirm(`确定移除 ${file.name}？`);
@@ -294,7 +294,7 @@
         return this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/importexcel";
       },
       handleSuccess2(response, file, fileList) {
-        console.log(response);
+       
         if (response == true) {
           this.$message.success("微信支付宝明细上传成功！");
           this.pageCurrent = 1;
@@ -307,7 +307,7 @@
         this.$message.warning(`文件上传失败，请重新上传！`);
       },
       handleRemove2(file, fileList) {
-        console.log(file, fileList);
+       
       },
       beforeRemove2(file, fileList) {
         return this.$confirm(`确定移除 ${file.name}？`);
@@ -334,7 +334,7 @@
                   that.loadData();
                   that.$store.commit(
                     "changeBankData",
-                    "constructionBankSXF" + Math.random()
+                    "constructionBankSK" + Math.random()
                   );
                   that.$message({
                     type: "info",

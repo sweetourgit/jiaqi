@@ -199,7 +199,7 @@ export default {
           }
         })
         .then(function(obj) {
-          console.log("微信支付宝明细", obj);
+         
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;

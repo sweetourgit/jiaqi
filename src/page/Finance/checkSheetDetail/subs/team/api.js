@@ -18,7 +18,7 @@ export const getPreCheckSheetByPlanID = function (id) {
 
 // 获取已报账的报账单
 export const getCheckSheetByPlanID = function (id) {
-  console.log('getCheckSheetByPlanID')
+  
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/getforplan", { id })
       .then(res => {
@@ -151,7 +151,7 @@ export const getFlowFinishedList = function (jq_id) {
 }
 
 export const upLoadDraft = function (userID, guid, data, vm) {
-  console.log('data', data)
+  
   const loading = vm.$loading({
     lock: true,
     text: 'Loading',
@@ -169,7 +169,7 @@ export const upLoadDraft = function (userID, guid, data, vm) {
         data
       }
     ).then((res) => {
-      console.log('res', res)
+     
       let { statusText, data } = res;
       loading.close();
       return resolve(data);
