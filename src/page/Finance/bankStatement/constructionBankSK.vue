@@ -224,7 +224,7 @@ export default {
       });
     },
     UploadUrl1(){
-      return this.GLOBAL.serverSrc + '/finance/industrialbank/api/ImportExcel';
+      return this.GLOBAL.serverSrc + '/finance/chinaconstbank/api/importexcel';
     },
     handleSuccess1(response, file, fileList){
       console.log(response);

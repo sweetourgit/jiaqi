@@ -140,7 +140,7 @@
       <el-table-column prop="payerDebitBankNumber" label="收(付)方开户行行号" align="center"></el-table-column>
       <el-table-column prop="payerDebitBankName" label="收(付)方开户行名" align="center"></el-table-column>
       <el-table-column prop="payerDebitBankAddress" label="收(付)方开户行地址" align="center"></el-table-column>
-      <el-table-column prop="parentSubAccountBank" label="收(付)母(子)公司账号分行名" align="center"></el-table-column>
+      <el-table-column prop="parentSubAccountBank" label="母(子)公司账号分行名" align="center"></el-table-column>
       <el-table-column prop="parentSubAccount" label="母(子)公司账号" align="center"></el-table-column>
       <el-table-column prop="parentSubName" label="母(子)公司名称" align="center"></el-table-column>
       <el-table-column prop="informationSign" label="信息标志" align="center"></el-table-column>

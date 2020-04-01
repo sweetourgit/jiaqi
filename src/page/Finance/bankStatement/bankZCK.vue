@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:54:48 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:54:48
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 15:34:45
  */
@@ -417,7 +417,7 @@
     </el-tabs>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import BankOfChinaZCK from "./componentsZCK/bankOfChinaZCK.vue";
 import * as utils from "./utils.js";
@@ -866,7 +866,7 @@ export default {
     },
     loadData2() {
       const that = this;
-      // let data4D=utils.getSession4D
+      let data4D=utils.getSession4D
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
           pageIndex: this.pageCurrent2 - 1,
