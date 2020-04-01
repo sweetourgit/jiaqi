@@ -1,20 +1,17 @@
 import Vue from 'vue'
 let uuid= Vue.prototype.$uuid;
 
-const style = (el, prop) => {
+let style = (el, prop) => {
   return typeof getComputedStyle !== 'undefined'
     ? getComputedStyle(el, null).getPropertyValue(prop)
     : el.style[prop]
 }
 
-const overflow = (el) => {
+let overflow = (el) => {
   return style(el, 'overflow') + style(el, 'overflow-y') + style(el, 'overflow-x')
 }
 
-const scrollParent = (el) => {
-  if (!(el instanceof HTMLElement)) {
-    return window
-  }
+let scrollParent = (el) => {
   let parent = el
   while (parent) {
     if (parent === document.body || parent === document.documentElement) {

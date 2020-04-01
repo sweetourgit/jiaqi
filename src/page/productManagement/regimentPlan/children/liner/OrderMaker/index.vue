@@ -7,12 +7,14 @@
     position: static;
     display: flex;
     justify-content: flex-end;
+    padding: 0 10px 10px 0;
+    background-color: transparent;
   }
 }
 </style>
 
 <template>
-  <div class="order-page" style="padding-right: 10px;">
+  <div class="order-page">
     <header v-fixed-bar>
       <div>
         <el-button size="small" type="info">取消</el-button>
@@ -21,16 +23,35 @@
         <el-button size="small" type="primary">确定占位</el-button>
       </div>
     </header>
-    <div style="height: 3000px;width:100%;">
-      123
-    </div>
+    <main>
+      <InfoGround ref="infoGround"></InfoGround>
+      <ChannelGround ref="channelGround"></ChannelGround>
+    </main>
   </div>
 </template>
 
 <script>
 import './FixedBar'
+import InfoGround from './comps/InfoGround'
+import ChannelGround from './comps/ChannelGround'
+import { getSkuPlanInfo, getProductInfo } from './api'
 
+let skuPlanCache;
 export default {
+
+  components: { InfoGround, ChannelGround },
+  
+  mounted(){
+    let { sku_id, product_id }= this.$route.query;
+    Promise.all([
+      getProductInfo(product_id),
+      getSkuPlanInfo(sku_id) 
+    ]).then(res => console.log(res))
+  },
+
+  beforeDestroy(){
+    skuPlanCache= null;
+  }
 
 }
 </script>
