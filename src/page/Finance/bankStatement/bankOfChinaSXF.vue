@@ -2,7 +2,7 @@
  * @Author: WZJ 
  * @Date: 2020-03-25 14:54:40 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 15:33:20
+ * @Last Modified time: 2020-04-01 15:58:26
  */
 
 <template>
@@ -412,10 +412,10 @@ export default {
               : "2099-05-16",
             seachType: 2,
             import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0,
-            userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
+            userid: 0,//data4D.userID, // 暂无数据 想看改成0,
+            orgid: 0,//data4D.orgID, // 暂无数据 想看改成0,
+            topid: 0,//data4D.topID, // 暂无数据 想看改成0,
+            company: '',//data4D.company,
           }
         })
         .then(function(obj) {

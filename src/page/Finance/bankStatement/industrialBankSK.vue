@@ -2,7 +2,7 @@
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:58 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 15:37:05
+ * @Last Modified time: 2020-04-01 15:56:51
  */
 <template>
   <div class="distributor-content" id="industrialBank">
@@ -310,6 +310,7 @@ export default {
     },
     payDetail(row){
       console.log('row',row)
+       let data4D=utils.getSession4D();
       this.$router.push({
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',
@@ -317,7 +318,7 @@ export default {
           id:row.id,
           type:2,
           creditAmount:row.credit_amount,
-          company:row.company,
+          company:data4D.company,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date,
         }
@@ -388,10 +389,10 @@ export default {
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
           "seachType": 0,
-             userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
+             userid: 0,//data4D.userID, // 暂无数据 想看改成0,
+            orgid: 0,//data4D.orgID, // 暂无数据 想看改成0,
+            topid: 0,//data4D.topID, // 暂无数据 想看改成0,
+            company: '',//data4D.company,
         }
       }).then(function (obj) {
         // console.log('兴业银行',obj);

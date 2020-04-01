@@ -2,7 +2,7 @@
  * @Author: WZJ 
  * @Date: 2020-03-25 14:55:30 
  * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 15:36:17
+ * @Last Modified time: 2020-04-01 15:57:03
  */
 <template>
   <div class="distributor-content" id="bankContent">
@@ -371,10 +371,10 @@ export default {
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
           "seachType": 0,
-           userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
+           userid: 0,//data4D.userID, // 暂无数据 想看改成0,
+            orgid: 0,//data4D.orgID, // 暂无数据 想看改成0,
+            topid: 0,//data4D.topID, // 暂无数据 想看改成0,
+            company: '',//data4D.company,
         }
       }).then(function (obj) {
         if(obj.data.isSuccess){

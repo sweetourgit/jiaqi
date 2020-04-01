@@ -219,6 +219,7 @@ export default {
       const that = this;
       console.log("id", this.$route.query);
       let url = "";
+      console.log('company',this.$route.query.company)
       switch (this.$route.query.company) {
         case "辽宁大运通":
           url = this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search";

@@ -460,10 +460,10 @@ export default {
                 ? this.ruleForm.matchType
                 : 0,
                   //  若传入4D则无数据 测试暂时先不传
-                userid: data4D.userID, // 暂无数据 想看改成0,
-              orgid: data4D.orgID, // 暂无数据 想看改成0,
-              topid: data4D.topID, // 暂无数据 想看改成0,
-              company: data4D.company,
+                userid: 0,//data4D.userID, // 暂无数据 想看改成0,
+              orgid: 0,//data4D.orgID, // 暂无数据 想看改成0,
+              topid: 0,//data4D.topID, // 暂无数据 想看改成0,
+              company: '',//data4D.company,
             }
           }
         )
