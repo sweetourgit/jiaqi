@@ -39,7 +39,7 @@ export default {
           this.activeName = "1"
         }else if(val.path == "/regimentPlan/visaOrderList"){
           this.activeName = "3"
-        }else if(val.path == "/regimentPlan/liner"){
+        }else if(val.path.indexOf("/regimentPlan/liner")=== 0){
           this.activeName = "4"
         }
       },
@@ -54,7 +54,7 @@ export default {
     if (this.$route.path == "/regimentPlan/visaOrderList") {
       this.activeName = "3"
     }
-    if (this.$route.path == "/regimentPlan/liner") {
+    if (this.$route.path.indexOf("/regimentPlan/liner")=== 0) {
       this.activeName = "4"
     }
   },

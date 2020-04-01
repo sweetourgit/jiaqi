@@ -30,11 +30,13 @@
             <template slot-scope="scope">
               <div style="display:inline-block" v-show="scope.row.status=== PLAN_STATUS.NORMAL">
                 <el-button type="text" size="mini"
-                  @click="awakeEditor(scope.row)">
+                  @click="updateSaleStatusAction(scope.row)">
                   停售
                 </el-button>
                 <el-button type="text" size="mini"
-                  @click="awakeEditor(scope.row)">
+                  @click="$router.push({ 
+                    path: '/regimentPlan/liner/order', 
+                    query: { product_id: scope.row.product_id, sku_id: scope.row.sku_id }})">
                   下单
                 </el-button>
                 <el-button type="text" size="mini"
@@ -96,7 +98,10 @@ import { Random } from 'mockjs'
 import ListHeader from './comps/ListHeader'
 import FileEditor from './comps/FileEditor'
 import { PLAN_STATUS, CHECK_STATUS } from './dictionary'
-import { getSkuPlanListPage, getUserlist } from './api'
+import { 
+  getSkuPlanListPage, getUserlist, 
+  putSkuPlanSaleStatus 
+} from './api'
 
 const getPageInfo= function(total){
   return {
@@ -194,7 +199,11 @@ export default {
 
     awakeFileEditor(sku_plan){
       this.$refs.fileEditor.wakeup(sku_plan);
-    }
+    },
+
+    updateSaleStatusAction(sku_plan){
+      putSkuPlanSaleStatus
+    },
   }
 
 }

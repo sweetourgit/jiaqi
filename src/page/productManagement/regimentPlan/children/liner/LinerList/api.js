@@ -46,7 +46,7 @@ export const getUserlist= function(id){
   })
 }
 
-// 上传出团通知书
+// 保存出团通知书
 export const uploadNotice= function(payload){
   let { plan_id, notice }= payload;
   return new Promise((resolve, reject) => {
@@ -64,6 +64,7 @@ export const uploadNotice= function(payload){
   })
 }
 
+// 上传文件
 export const upload= function(formData){
   return new Promise((resolve, reject) => {
     $http({
@@ -74,6 +75,21 @@ export const upload= function(formData){
     })
     .then(res => {
       return resolve(JSON.parse(res.data).paths[0]);
+    })
+    .catch(err => {
+      err && $message.error(err.toString());
+    })
+  })
+}
+
+// 团期计划停售开售
+export const putSkuPlanSaleStatus= function(payload){
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-plan/updstatus", payload)
+    .then(res => {
+      let { code, message, data }= res.data;
+      if(code!== 200) return reject('查询团期计划列表失败');
+      resolve(data);
     })
     .catch(err => {
       err && $message.error(err.toString());

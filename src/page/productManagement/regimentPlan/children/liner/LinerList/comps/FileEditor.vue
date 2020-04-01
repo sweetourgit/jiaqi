@@ -3,7 +3,7 @@
     ref="dialogRef" 
     :visible="state"
     :close-on-click-modal="false"
-    :before-close="closeHandler">
+    :before-close="closePreHandler">
     <div style="width: 600px;">
       <el-form
         size="small"
@@ -82,6 +82,7 @@ export default {
     },
 
     submitHandler(notice){
+      this.$message.success('出团通知书上传成功');
       let sku_plan= cache;
       sku_plan.notice= notice;
       this.closeHandler();
