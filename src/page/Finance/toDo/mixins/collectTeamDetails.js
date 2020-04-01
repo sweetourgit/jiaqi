@@ -17,7 +17,9 @@ export default {
       keepPaymentId: null, // PaymentId 接口传值用
       keepComponentName: null,
       paramsCollectionType: null, // 收款类型（区分关联欠款）
-      tableAuditResults: [], // 审核结果表格
+      dialogVisibleDel: false, // 认款详情显示隐藏
+      dialogVisibleDo: false, // 认款详情显示隐藏
+      tableAuditResults: [], // 去认款显示隐藏
       tableInvoice: [], // 发票表格
       tableAssociated: [], // 发票关联表
       collCheckout: false, // 显示操作列信息（去认款）
@@ -27,7 +29,10 @@ export default {
       approvalOpinion: '', // 审批意见
       approveDialogState: '', // 通过1，驳回2
       paramsChangeDate: null, // 数字相连的时间格式，接口传参用
-      hasSubject: false // 科目值
+      hasSubject: false, // 科目值
+      tableManyRow: 0,
+      getCollectionPriceTotal: 0,
+      msg: "",
     }
   },
   created () {
@@ -68,9 +73,9 @@ export default {
   },
   methods: {
     moment,
-    // 打印
-    handleTouchPrint () {
-      this.$print(this.$refs.print);
+    // 点击图片钩子
+    handlePreview (file) {
+      window.open(file.url);
     },
     // 取消
     handleCancel () {
@@ -117,11 +122,6 @@ export default {
         this.apiReject();
       }
     },*/
-
-    /*
-    * chargeSubmit   插入手续费（审批通过，有科目值，剩余金额少于收款金额产生手续费）
-    *
-    * */
     // 审批提交事件
     handleApproveDialogConfirm () {
       let _this = this;
@@ -247,10 +247,18 @@ export default {
           this.tableAuditResults = keepRes.spw;
           this.tour_id = keepRes.planID;
           this.tableManyRow = this.tableAssociated.length;
-          this.getAccountId(keepRes.accountID, keepRes.arrears[0].id);
           this.tableAssociated.forEach(item => {
             _this.getCollectionPriceTotal += item.matchingPrice;
-          })
+          });
+          _this.printMatchingPrice = keepRes.arrears[0].matchingPrice;
+          _this.printPayablePrice = keepRes.arrears[0].payablePrice;
+          _this.printOrderCode = keepRes.arrears[0].orderCode;
+          _this.printGroupCode = keepRes.arrears[0].groupCode;
+          // 打印相关
+          if (keepRes.spw.length > 0) {
+            _this.printSureTime = keepRes.spw[0].createTime;
+            _this.printSureState = keepRes.spw[ keepRes.spw.length - 1 ].spState;
+          }
         }
       }).catch(err => {
         console.log( err )
@@ -387,7 +395,7 @@ export default {
         console.log(err);
       });
     },
-    // / 插入一条手续费
+    // / 插入一条手续费 插入手续费（审批通过，有科目值，剩余金额少于收款金额产生手续费）
     chargeSubmit(item, row, type, charge) {
       const _this = this;
       if (type === 0) {
@@ -600,34 +608,43 @@ export default {
     },
 
     /* 待整理 包括相关的 HTML */
+
     // 去认款
+    // recognitionDo(row) {
     recognitionDo(row) {
       this.dialogFormVisible2 = true;
       this.msg = {
-        collectionType: this.info.collectionType,
+        collectionType: this.paramsCollectionType,
         baseInfo: this.baseInfo,
         tableDataOrder: row,
         fileList: this.fileList
       };
     },
     // 查看认款详情
-    recognitionDetail(row) {
+    // recognitionDetail
+    handleRecognitionDel(row) {
       this.msg = {
         id: row.id
       };
       this.dialogFormVisible3 = true;
     },
+    // 关闭认款弹窗
     recognitionClose(str) {
       this.dialogFormVisible2 = false;
       this.dialogFormVisible3 = false;
       this.msg = "";
       if (str === "success") {
         this.passDisabled = false;
-        this.loadData();
       }
     },
 
-
+    // 查看认款详情
+    handleRecognitionDetail (row) {
+      this.msg = {
+        id: row.id
+      };
+      this.dialogFormVisible = true;
+    },
 
 
 

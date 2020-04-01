@@ -1,7 +1,7 @@
 <template>
   <div class="vivo" style="position:relative">
     <!--认收款-->
-    <el-dialog title="查看认款详情" :visible="dialogFormVisible" width=90% @close="closeAdd" append-to-body>
+    <el-dialog title="查看认款详情" :visible="dialogVisibleDel" width=90% @close="closeAdd" append-to-body>
       <div class="tableDv">
         <!-- 中国银行认款信息 -->
         <el-table v-if="isShowZH" :data="tableDataZH" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content1">
@@ -186,7 +186,7 @@
     components: {
     },
     props: {
-      dialogFormVisible: false,
+      dialogVisibleDel: false,
       msg: '',
     },
     data() {
@@ -203,7 +203,7 @@
       // 计算属性的 getter
     },
     watch: {
-      dialogFormVisible: {
+      dialogVisibleDel: {
         handler: function () {
           // console.log('this.msg',this.msg);
           if(this.msg == ''){

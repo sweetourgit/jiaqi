@@ -108,7 +108,7 @@
         <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
         <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
         <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-        <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
+        <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
       </el-table>
     </el-row>
     <!-- 审核结果 END -->

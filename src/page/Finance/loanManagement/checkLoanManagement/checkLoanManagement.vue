@@ -215,7 +215,7 @@
           <el-table-column prop="finishedTime" label="审批时间" width="150" align="center"></el-table-column>
           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-          <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+          <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
     </el-dialog>
