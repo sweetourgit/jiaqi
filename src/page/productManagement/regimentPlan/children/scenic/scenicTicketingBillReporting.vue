@@ -23,7 +23,7 @@
             <el-button class="el-button" @click="closeAdd">取 消</el-button>
             <el-button class="el-button" type="primary" @click="toPrint">订单打印</el-button>
             <el-button class="el-button" type="primary" @click="toPreview">预览报账单</el-button>
-            <!--<el-button class="el-button" type="primary" @click="submitForm">保 存</el-button>-->
+            <el-button class="el-button" type="primary" @click="recoilLoan">回冲借款</el-button>
             <el-button class="el-button" type="primary" @click="delInfo" v-if="statusBtn != 7 && statusBtn != 8">提交报账单</el-button>
             <el-button class="el-button" type="primary" @click="toUpdate" v-if="statusBtn == 4 || statusBtn == 6">修 改</el-button>
 
@@ -178,6 +178,7 @@
       <ToUpddateSource :dialogFormVisible="dialogFormVisible2" @close="close2" :info="updateSource"></ToUpddateSource>
       <!--<ToUpddateIncome :dialogFormVisible="dialogFormVisible3" @close="close2" :info="info"></ToUpddateIncome>-->
       <ToPreview :dialogFormVisible="dialogFormVisible4" @close="close4" :info="msg"></ToPreview>
+      <recoilLoan :dialogFormVisible="dialogFormVisible5" @close="close5" :info="recoilMsg"></recoilLoan>
     </div>
   </div>
 </template>
@@ -187,6 +188,7 @@ import ToUpddateSource from '@/page/productManagement/regimentPlan/children/scen
 import ToUpdate from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpdate'
 //import ToUpddateIncome from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toUpddateIncome'
 import ToPreview from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/toPreview'
+import recoilLoan from '@/page/productManagement/regimentPlan/children/scenic/scenicTicketingInfo/recoilLoan.vue'
 import {formatDate} from '@/js/libs/publicMethod.js'
 export default {
   name: "scenicTicketingBillReporting",
@@ -195,7 +197,8 @@ export default {
     ToUpddateSource,
 //    ToUpddateIncome,
     ToPreview,
-    ToUpdate
+    ToUpdate,
+    recoilLoan
   },
   data() {
     return {
@@ -233,8 +236,10 @@ export default {
       dialogFormVisible2: false,
       dialogFormVisible3: false,
       dialogFormVisible4: false,
+      dialogFormVisible5: false,
       tableData: [],
-      updateSource: ''
+      updateSource: '',
+      recoilMsg: ''
     }
   },
   computed: {
@@ -247,6 +252,15 @@ export default {
     // print 
     toPrint(){
       window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/exportorders?tour_no=" + this.msg.tour_no;
+    },
+    // 回冲借款单
+    recoilLoan(){
+      this.dialogFormVisible5 = true;
+      this.recoilMsg = this.$route.query.tour_no;
+    },
+    close5() {
+      this.dialogFormVisible5 = false;
+      this.recoilMsg = '';
     },
     cellStyle(data) {
       if (data.columnIndex == 3) {
@@ -391,7 +405,7 @@ export default {
     },
     loadTopData(){
       const that = this;
-//      获取基本信息
+      //      获取基本信息
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/viewbill", {
         "id": this.param
       }, ).then(function(response) {

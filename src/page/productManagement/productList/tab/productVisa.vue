@@ -368,7 +368,7 @@ export default {
       })
     },
     copyProducts(){ // 复制产品方法
-      this.$confirm("是否删除该产品?", "提示", {
+      this.$confirm("是否复制该产品?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
          type: "warning"
@@ -378,7 +378,7 @@ export default {
         })
         .then(res => {
           if(res.data.isSuccess == true){
-             this.$message.success("复制产品成功成功");
+             this.$message.success("复制产品成功");
              this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
             }
          })

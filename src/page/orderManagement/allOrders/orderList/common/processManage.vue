@@ -1302,8 +1302,10 @@ export default {
           let guest = [];
           for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
+              let bornDate = this.salePrice[i][j].bornDate
+              this.salePrice[i][j].bornDate = Date.parse(bornDate);
               guest.push(this.salePrice[i][j]);
-            }
+           }
           }
           for(let j in guest){
             if(guest[j].sxe == -1){
