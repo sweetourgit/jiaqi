@@ -413,8 +413,8 @@ export default {
       priceType: null, //价格类型  1直客  2同业价格
       // localCompName: "", //商户名称
       // orderChannels: "", //商户名称
-      localcompID:null,
-      orgID: null, //商户名称搜索传给后台的id
+      localcompID: 0,
+      orgID: 0, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
       contact: "", //订单联系人
       orderChannel: null, //订单来源

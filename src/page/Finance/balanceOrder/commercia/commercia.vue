@@ -206,6 +206,10 @@ export default {
                   let str = obj.data.objects[j].date;
                       str = str.toString();
                   let nawdata = str[0]+str[1]+str[2]+str[3]+"-"+str[4]+str[5]+"-"+str[6]+str[7];
+                  let arrears = obj.data.objects[j].orderPrice - 666.66;
+                  console.log(arrears,'gasf');
+                      arrears.toString().split(".")[0].length;
+                       console.log(arrears,'gasf2');
                   that.tableData.push({
                         ID:obj.data.objects[j].orderCode,//id+
                         planid:obj.data.objects[j].id,//id+
@@ -214,7 +218,8 @@ export default {
                         productName:obj.data.objects[j].title, //产品名称+
                         plan:obj.data.objects[j].groupCode,//团期计划
                         order:obj.data.objects[j].orderPrice,//订单金额+
-                        arrears: obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice, //欠款金额
+                        //arrears: obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice, //欠款金额
+                        arrears: arrears, //欠款金额
                         also:obj.data.objects[j].collectionPrice, //已还金额
                         examine:obj.data.objects[j].approvedPrice,//待审批金额
                         arrearsDate:obj.data.objects[j].createDate,//欠款日期
