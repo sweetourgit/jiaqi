@@ -413,6 +413,7 @@ export default {
       priceType: null, //价格类型  1直客  2同业价格
       // localCompName: "", //商户名称
       // orderChannels: "", //商户名称
+      localcompID:null,
       orgID: null, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
       contact: "", //订单联系人
@@ -639,7 +640,7 @@ export default {
               if (res.data.isSuccess == true) {
                     enrolls = res.data.objects;
                     guest= this.getListOneMessage.guests;
-                    console.log(enrolls);
+                   // console.log(enrolls);
                     this.sourceMaker(enrolls,guest);
                     this.enrollDetailMaker();
                   }
@@ -852,7 +853,8 @@ export default {
       beginDate = this.beginDate,
       endDate = this.endDate,
       saler = this.saler,
-      localCompName = this.orgIDValue, //商户名称
+      localcompID = this.orgID,
+      //localCompName = this.orgIDValue, //商户名称
       // orderChannels = this.orderChannels, //商户名称
       orgID = this.orgID, //商户名称 搜索时的字段
       // productType = this.productType,
@@ -908,7 +910,7 @@ export default {
         refundStatus: this.refundStatus,
         contact: contact,
         podID: podID ? podID : 0,
-        localCompName: localCompName, //商户名称
+        localcompID: localcompID, //商户id
         // orderChannels: orderChannels //商户名称
         orgID: orgID ? orgID : 0 //商户名称搜索时的字段
       };
