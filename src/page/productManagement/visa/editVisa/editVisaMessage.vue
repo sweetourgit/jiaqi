@@ -50,7 +50,12 @@
                   <el-table-column prop="must" label="必须" align="center" width="60"></el-table-column>
                   <el-table-column label="附件" align="center" width="180">
                     <template slot-scope="scope">
-                      <span v-for="(item,index) in scope.row.crowdFile"><el-link @click="checkMent(scope.row.crowdFile)">{{item.name}}</el-link></span>
+                      <!-- <span v-for="(item,index) in scope.row.crowdFile"><el-link :href="scope.row.crowdFile[0].path">{{item.name}}</el-link></span> -->
+                      <span v-for="(item,index) in scope.row.crowdFile">
+                        <el-link>
+                          <a :href="scope.row.crowdFile[0].path" target='_blank'>{{item.name}}</a>
+                        </el-link>
+                      </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="120">
@@ -66,14 +71,6 @@
           </div>
         </div>
       </div>
-      <!--附件弹窗-->
-      <el-dialog title="查看附件" :visible.sync="checkAttachment" custom-class="city_list" style="margin-top:-100px;" width="500px"
-      @close="closeCheckAttachment()">
-        <el-button class="controlButton" @click="closeCheckAttachment()">取消</el-button>
-        <div>
-          <img class="show_img" :src="imgUrlShow" alt="">
-        </div>
-      </el-dialog>
       <!--增加签证信息弹窗-->
       <el-dialog title="新增签证信息" :visible.sync="addVisaMessageShow" custom-class="city_list" style="margin-top:-100px;" width="500px"
       @close="closeVisaMessage('ruleForm')">
@@ -219,8 +216,6 @@ export default {
       multipleSelection: [],   //选中的list
       lineID:0,
       crowdFile:[],
-      checkAttachment:false, // 附件弹窗
-      imgUrlShow: '',
     };
   },
   watch: {
@@ -682,19 +677,6 @@ export default {
           message: "已取消"
         });
       });
-    },
-    checkMent(status){
-      this.checkAttachment = true;
-      this.imgUrlShow = status[0].path;
-      // this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
-      //   "id": status[0].id,
-      // }).then(res => {
-      //   this.isImgUrlShow = true;
-      //   this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
-      // })
-    },
-    closeCheckAttachment(){
-      this.checkAttachment = false;
     },
   }
 };
