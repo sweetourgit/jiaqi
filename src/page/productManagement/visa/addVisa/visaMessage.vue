@@ -50,7 +50,11 @@
                   <el-table-column prop="must" label="必须" align="center" width="60"></el-table-column>
                   <el-table-column label="附件" align="center" width="180">
                     <template slot-scope="scope">
-                      <span v-for="(item,index) in scope.row.crowdFile"><el-link>{{item.name}}</el-link></span>
+                      <span v-for="(item,index) in scope.row.crowdFile">
+                        <el-link>
+                          <a style="text-decoration:none;" :href="scope.row.crowdFile[0].path" target='_blank'>{{item.name}}</a>
+                        </el-link>
+                      </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="120">
