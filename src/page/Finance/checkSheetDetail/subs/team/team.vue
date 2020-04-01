@@ -79,7 +79,7 @@ export default {
 
   components: { printGround, approvalForm },
   created() {
-    console.log("guid", this.$route.query.guid);
+   
   },
   // 创建和唤醒都要从新执行init
   mounted() {
@@ -170,7 +170,7 @@ export default {
         if (planID) return resolve(getCheckSheetByPlanID(planID));
       })
         .then(res => {
-          console.log("res", res);
+         
           payload = res;
           let { guid } = res;
           return getFlowFinishedList(guid);
@@ -199,7 +199,7 @@ export default {
         guid,
         comeFrom
       } = query;
-      console.log("query", query);
+     
       this.cacheConditions = conditions;
       this.isFromCheckSheet = tab ? true : false;
       this.$router.replace({

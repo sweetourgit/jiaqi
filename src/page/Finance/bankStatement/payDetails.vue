@@ -167,8 +167,7 @@ export default {
         case "吉林大运通":
           deleteURL = this.GLOBAL.serverSrc + "/finance/wa_payment_jl/api/delete";
       }
-      console.log('deleteURL',deleteURL)
-        console.log('rowID',row.id)
+    
       this.$confirm("是否需要删除", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -217,7 +216,7 @@ export default {
     },
     loadData() {
       const that = this;
-      console.log("id", this.$route.query);
+  
       let url = "";
       switch (this.$route.query.company) {
         case "辽宁大运通":
@@ -226,7 +225,7 @@ export default {
         case "吉林大运通":
           url = this.GLOBAL.serverSrc + "/finance/wa_payment_jl/api/Search";
       }
-      console.log('url',url)
+
       this.$http
         .post(url, {
           pageIndex: this.pageCurrent,
@@ -240,7 +239,7 @@ export default {
           }
         })
         .then(function(obj) {
-          console.log("微信支付宝明细", obj);
+         
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;

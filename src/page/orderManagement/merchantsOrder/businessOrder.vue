@@ -413,7 +413,8 @@ export default {
       priceType: null, //价格类型  1直客  2同业价格
       // localCompName: "", //商户名称
       // orderChannels: "", //商户名称
-      orgID: null, //商户名称搜索传给后台的id
+      localcompID: 0,
+      orgID: 0, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
       contact: "", //订单联系人
       orderChannel: null, //订单来源
@@ -571,7 +572,11 @@ export default {
           // console.log("请求一条数据的",res)
           let enrolls=[];//标题
           let guest;//全部数据
-          this.enrollDetailShow = ""
+          this.enrollDetailShow = "";
+          if(res.data.object.orderStatus === 1 && res.data.object.refundStatus === 6){
+              res.data.object.orderStatus = 10;
+              this.dataorderStatus(res.data.object.id,res.data.object.orderCode,res.data.object.orderStatus,);
+            }
           this.getListOneMessage = res.data.object;
           // let enrollDetail = this.getListOneMessage.enrollDetail;
           // this.formatData(enrollDetail);
@@ -635,7 +640,7 @@ export default {
               if (res.data.isSuccess == true) {
                     enrolls = res.data.objects;
                     guest= this.getListOneMessage.guests;
-                    console.log(enrolls);
+                   // console.log(enrolls);
                     this.sourceMaker(enrolls,guest);
                     this.enrollDetailMaker();
                   }
@@ -645,6 +650,19 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    dataorderStatus(id,code,orderStatus){
+       this.$http
+          .post(this.GLOBAL.serverSrc + "/order/stat/api/confirmed", {
+             object:{
+               id:id,
+               orderCode:code,
+               orderStatus:orderStatus
+            }
+          })
+          .then(res => {
+              //console.log(res,'测试的发传单666');
+          });
     },
     sourceMaker(enrolls, guests){
         let salePriceReflect= this.salePriceReflect={};
@@ -835,7 +853,8 @@ export default {
       beginDate = this.beginDate,
       endDate = this.endDate,
       saler = this.saler,
-      // localCompName = this.localCompName, //商户名称
+      localcompID = this.orgID,
+      //localCompName = this.orgIDValue, //商户名称
       // orderChannels = this.orderChannels, //商户名称
       orgID = this.orgID, //商户名称 搜索时的字段
       // productType = this.productType,
@@ -846,6 +865,7 @@ export default {
       pod = this.pod,
       podID = this.podID //出发地
     ) {
+      //console.log(orgID,'orgID');
       // 每次搜索都折叠 要不折叠的数据显示不对 因为点击折叠的位置需要调取另一个接口
       this.showContent = null;
       if (beginDate) {
@@ -890,7 +910,7 @@ export default {
         refundStatus: this.refundStatus,
         contact: contact,
         podID: podID ? podID : 0,
-        // localCompName: localCompName //商户名称
+        localcompID: localcompID, //商户id
         // orderChannels: orderChannels //商户名称
         orgID: orgID ? orgID : 0 //商户名称搜索时的字段
       };

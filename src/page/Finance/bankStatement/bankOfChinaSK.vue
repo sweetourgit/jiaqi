@@ -223,7 +223,7 @@ export default {
     },
     handleSuccess(response, file, fileList){
       this.fileName=file.name
-      console.log(response);
+      
       if(response == true){
         this.$message.success("中国银行流水单上传成功！");
         this.pageCurrent = 1;
@@ -237,7 +237,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);

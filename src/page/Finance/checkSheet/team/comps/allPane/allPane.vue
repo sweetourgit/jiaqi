@@ -140,7 +140,7 @@ export default {
 
       toDetailPage(row) {
         let tab = "all";
-        console.log('row',row)
+        
         let { id,guid } = row;
         let { object, ...pageInfo } = this.getCheckSheetListData();
         this.$router.push({

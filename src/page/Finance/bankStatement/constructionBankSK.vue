@@ -1,9 +1,10 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:55:30 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:55:30
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 15:36:17
  */
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
@@ -190,7 +191,7 @@ export default {
   watch: {
     countTest:function(newV, oldV){
       const that = this;
-      if(newV.indexOf("industrialBankSK") != -1 && newV != oldV){
+      if(newV.indexOf("constructionBankSK") != -1 && newV != oldV){
         setTimeout(function () {
           // alert('数据改变，执行loadDataSXF~')
           that.loadData()
@@ -227,12 +228,12 @@ export default {
       return this.GLOBAL.serverSrc + '/finance/chinaconstbank/api/importexcel';
     },
     handleSuccess1(response, file, fileList){
-      console.log(response);
+     
       if(response == true){
         this.$message.success("建设银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit('changeBankData', 'industrialBankSXF' + Math.random());
+        this.$store.commit('changeBankData', 'constructionBankSXF' + Math.random());
       }else{
         this.$message.warning("建设银行流水单上传失败！");
       }
@@ -241,7 +242,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove1(file, fileList) {
-      console.log(file, fileList);
+    
     },
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
@@ -250,7 +251,7 @@ export default {
       return this.GLOBAL.serverSrc + '/finance/wapaymentccb/api/importexcel';
     },
     handleSuccess2(response, file, fileList){
-      console.log(response);
+      
       if(response == true){
         this.$message.success("微信支付宝明细上传成功！");
         this.pageCurrent = 1;
@@ -263,7 +264,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove2(file, fileList) {
-      console.log(file, fileList);
+      
     },
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);

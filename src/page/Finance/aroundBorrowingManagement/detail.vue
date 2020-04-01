@@ -75,9 +75,13 @@
           <el-table ref="singleTable" :data="tableDataRelated" border :header-cell-style="getRowClass" maxHeight="700">
             <el-table-column prop="order_sn" label="订单编号" align="center">
             </el-table-column>
+            <el-table-column prop="tour_no" label="报账团期" align="center">
+            </el-table-column>
             <el-table-column prop="product_name" label="产品名称" align="center">
             </el-table-column>
             <el-table-column prop="contact_name" label="订单联系人" align="center">
+            </el-table-column>
+            <el-table-column prop="check_at" label="验证时间" align="center">
             </el-table-column>
             <el-table-column prop="quantity" label="人数" align="center">
             </el-table-column>
@@ -385,21 +389,20 @@
             }
 
             // 根据账户ID获取账户名称
-//            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
-//              {
-//                "id": response.data.data.account_id
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-//                }
-//              }).then(function (obj) {
-////              console.log('账户查询',obj);
-//              if(obj.data.isSuccess){
-//                that.baseInfo.account = obj.data.object.title;
-//              }
-//            }).catch(function (obj) {
-//              console.log(obj)
-//            });
+            // that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
+            //   {
+            //     "id": response.data.data.account_id
+            //   },{
+            //     headers: {
+            //       'Authorization': 'Bearer ' + localStorage.getItem('token')
+            //     }
+            //   }).then(function (obj) {
+            //   if(obj.data.isSuccess){
+            //     that.baseInfo.account = obj.data.object.title;
+            //   }
+            // }).catch(function (obj) {
+            //   console.log(obj)
+            // });
             // 凭证
             that.fileList = JSON.parse(response.data.data.info.file);
             for(let i = 0; i < that.fileList.length; i++){
@@ -420,6 +423,9 @@
 
             if(response.data.data.info.rel_order){
               that.tableDataRelated = response.data.data.info.rel_order;
+              that.tableDataRelated.forEach(function(item, index, arr){
+                item.check_at = formatDate(new Date(item.check_at*1000));
+              })
             }
 
           } else {

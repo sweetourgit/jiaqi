@@ -50,7 +50,11 @@
                   <el-table-column prop="must" label="必须" align="center" width="60"></el-table-column>
                   <el-table-column label="附件" align="center" width="180">
                     <template slot-scope="scope">
-                      <span v-for="(item,index) in scope.row.crowdFile"><el-link>{{item.name}}</el-link></span>
+                      <span v-for="(item,index) in scope.row.crowdFile">
+                        <el-link>
+                          <a style="text-decoration:none;" :href="scope.row.crowdFile[0].path" target='_blank'>{{item.name}}</a>
+                        </el-link>
+                      </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="120">
@@ -257,7 +261,9 @@ export default {
         if(res.data.isSuccess == true){
           if(res.data.objects){
           this.editableTabs = res.data.objects;
-          this.ruleForm.caption = this.editableTabs[0].title;
+          for(let i = 0; i < this.editableTabs.length; i++){
+            this.ruleForm.caption = this.editableTabs[i].title;
+          }
           this.tabIndex = this.editableTabs.length;
         }else{
           this.editableTabs = []
@@ -505,12 +511,14 @@ export default {
         })
       }
       let pathUrl = []; // 附件
-      for(let i = 0; i < this.addVisa.throng.length; i++){
-        pathUrl.push({
-          crowdType:this.addVisa.throng[i],
-          name:this.name_Suffix,
-          path:this.img_Url,
-        })
+      for(let i = 0; i < this.fileList.length; i++){
+        for(let j = 0; j < this.addVisa.throng.length; j++){
+          pathUrl.push({
+            crowdType:this.addVisa.throng[j],
+            name:this.name_Suffix,
+            path:this.img_Url,
+          })
+        }
       }
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -549,12 +557,14 @@ export default {
         })
       }
       let pathUrl = []; // 附件
-      for(let i = 0; i < this.addVisa.throng.length; i++){
-        pathUrl.push({
-          crowdType:this.addVisa.throng[i],
-          name:this.name_Suffix,
-          path:this.img_Url,
-        })
+      for(let i = 0; i < this.fileList.length; i++){
+        for(let j = 0; j < this.addVisa.throng.length; j++){
+          pathUrl.push({
+            crowdType:this.addVisa.throng[j],
+            name:this.name_Suffix,
+            path:this.img_Url,
+          })
+        }
       }
       console.log(pathUrl)
       this.$refs[formName].validate((valid) => {

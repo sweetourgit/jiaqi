@@ -192,7 +192,7 @@ export default {
   watch: {
     countTest: function(newV, oldV) {
       const that = this;
-      if (newV.indexOf("bankOfChinaSK") != -1 && newV != oldV) {
+      if (newV.indexOf("agriculturalBankSK") != -1 && newV != oldV) {
         setTimeout(function() {
           // alert('数据改变，执行loadDataSK~')
           that.loadData();
@@ -232,12 +232,11 @@ export default {
       return this.GLOBAL.serverSrc + "/finance/ABCBank/api/ImportExcel";
     },
     handleSuccess(response, file, fileList) {
-      console.log(response);
       if (response == true) {
         this.$message.success("农业银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit("changeBankData", "bankOfChinaSXF" + Math.random());
+        this.$store.commit("changeBankData", "agriculturalBankSXF" + Math.random());
       } else {
         this.$message.warning("农业银行流水单上传失败！");
       }
@@ -289,7 +288,7 @@ export default {
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "agriculturalBankSK" + Math.random()
+                  "agriculturalBankSXF" + Math.random()
                 );
                 that.$message({
                   type: "info",

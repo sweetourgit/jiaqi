@@ -10,10 +10,10 @@
     @close="btReceiptDialogClose"
   >
     <!-- tabs  begin -->
-    <el-radio-group v-model="chooseTab">
-      <el-radio-button label="分房" name="1"></el-radio-button>
-      <el-radio-button label="保险" name="2"></el-radio-button>
-      <el-radio-button label="大巴" name="3"></el-radio-button>
+    <el-radio-group v-model="chooseTab" @tab-click="chooseTabClick">
+      <el-radio-button label="1">分房</el-radio-button>
+      <el-radio-button label="2">保险</el-radio-button>
+      <el-radio-button label="3">大巴</el-radio-button>
     </el-radio-group>
     <!-- tabs  end -->
       <!-- <el-tabs v-model="activebox" type="card" @tab-click="GetCabinbtn" style="float:left;width: 100%;">
@@ -25,28 +25,35 @@
         >
         </el-tab-pane>
       </el-tabs>
+        -->
       <table class="costList" border="1" cellpadding="0" cellspacing="0" >
             <tr class="costList_01">
               <td width="120">姓名</td>
               <td width="120">报名类型</td>
               <td width="120">护照</td>
-              <td width="180">身份证</td>
               <td width="120">电话</td>
+              <td width="180">身份证</td>
               <td width="120">性别</td>
+              <!-- <td width="120" v-if='this.chooseTab== 1'>房间号</td>
+               <td width="120" v-if='this.chooseTab== 2'>保险</td>
+                <td width="120" v-if='this.chooseTab== 3'>大巴</td> -->
             </tr>
         <tr v-for="(guest, index) in NewGetCabinData" :key="'g'+index">
           <td>{{guest.NGDName}}</td>
           <td>{{guest.NGDType}}</td>
-          <td>{{guest.NGDPassport}}</td>
           <td>{{guest.NGDCard}}</td>
+          <td>{{guest.NGDPassport}}</td>
           <td>{{guest.NGDTel}}</td>
           <td>
             <div v-if="guest.NGDSex=='1'">男</div>
             <div v-if="guest.NGDSex=='2'">女</div>
           </td>
+          <!-- <td width="120" v-if='this.chooseTab== 1'>房间号</td>
+          <td width="120" v-if='this.chooseTab== 2'>保险</td>
+          <td width="120" v-if='this.chooseTab== 3'>大巴</td> -->
         </tr>
       </table>
-   -->
+ 
  
   </el-dialog>
 </template>
@@ -62,7 +69,8 @@ export default {
   },
   data() {
     return {
-      chooseTab: "分房", //tabs选中的
+      chooseTab:"1", //tabs选中的
+      NewGetCabinData:{},//客人信息
       // chooseSwiper: "", //swiper选中的
       // achooseSwiperIndex: "0", //当前swiper选中的index
       // swiperInfo: [
@@ -84,6 +92,26 @@ export default {
       this.$parent.resetDialogType();
     },
     orderData(){ // 获取客人信息
+      this.$http
+        .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/guestinfo", {
+          id: this.orderId
+        })
+        .then(res => {
+              if(res.data.code === 200){
+                 console.log("请求一条数据的",res.data.data)
+                      this.NewGetCabinData = res.data.data.info;
+                     
+              }
+         
+          
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    chooseTabClick(tab,event){
+      console.log(tab);
+      console.log(event);
 
     }
   },

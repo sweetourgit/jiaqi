@@ -114,6 +114,8 @@
                 </el-table-column>
                 <el-table-column prop="distributor" label="分销商" align="center">
                 </el-table-column>
+                <el-table-column prop="distributor_remark" label="分销商备注" align="center">
+                </el-table-column>
                 <el-table-column label="客人信息" align="center" width="180px;">
                   <template slot-scope="scope">
                     <span>取票人:{{scope.row.contact_name}}</span><br>

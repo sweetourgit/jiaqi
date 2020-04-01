@@ -11,6 +11,8 @@
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
           </el-table-column>
+          <el-table-column prop="distributor_remark" label="分销商备注" align="center">
+          </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>
           <el-table-column prop="income" label="收入" align="center">
@@ -90,13 +92,11 @@
         });
       },
       loadData(){
-//        console.log(this.sendID);
         const id = this.sendID;
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/groupplan/group-plan/recognitioninfo", {
           "id": id
         }, ).then(function(response) {
-//          console.log(response);
           if (response.data.code == '200') {
             console.log(response);
             that.tableData = response.data.data.order_list;

@@ -11,7 +11,7 @@ export default {
     },
     mutations: {
         setReviewList(state, data) {
-            console.log('调用了vuex',data)
+          
             state.reviewList = data
         }
     }

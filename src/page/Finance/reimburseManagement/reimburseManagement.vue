@@ -2020,7 +2020,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .borders {
     width: 99%;
     margin: 25px auto;

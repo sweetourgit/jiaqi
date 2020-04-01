@@ -314,7 +314,7 @@ export default {
       return this.GLOBAL.serverSrc + "/finance/industrialbank/api/ImportExcel";
     },
     handleSuccess1(response, file, fileList) {
-      console.log(response);
+    
       if (response == true) {
         this.$message.success("兴业银行流水单上传成功！");
         this.pageCurrent = 1;
@@ -331,7 +331,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove1(file, fileList) {
-      console.log(file, fileList);
+    
     },
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -350,7 +350,7 @@ export default {
       return upURL;
     },
     handleSuccess2(response, file, fileList) {
-      console.log(response);
+      
       if (response == true) {
         this.$message.success("微信支付宝明细上传成功！");
         this.pageCurrent = 1;
@@ -363,7 +363,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove2(file, fileList) {
-      console.log(file, fileList);
+    
     },
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);

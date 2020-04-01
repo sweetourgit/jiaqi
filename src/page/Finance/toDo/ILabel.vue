@@ -113,7 +113,7 @@
     name: "ILabel",
     data () {
       return {
-        tabIShowWhich: 'nameINoIn', // 一级tab预设值为无收入
+        tabIShowWhich: 'nameINoIn', // 一级tab预设值为无收入00555555
         tabIINoInShowWhich: 'nameIINoInTeam', // 无收入二级tab预设值（跟团）
         tabIIAdvanceShowWhich: 'nameIIAdvanceTeam', // 预付款二级tab预设值（跟团）
         tabIIReimburseShowWhich: 'nameIIReimburseTeam',  // 报销二级tab预设值（跟团）
