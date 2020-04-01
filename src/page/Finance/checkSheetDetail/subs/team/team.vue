@@ -286,7 +286,7 @@ export default {
       let action;
       action = isAgree
         ? agreeForJQ({ commentText, workItemID, userCode })
-        : rejectForJQ({ commentText, workItemID: rejectWorkItemID, userCode })
+        : rejectForJQ({ commentText, workItemID, userCode })
             .then(() => endForJQ({ jQ_ID: guid, jQ_Type: 5 }))
             .then(() => saveChcektype({ guid, checkType: 2 }));
       action

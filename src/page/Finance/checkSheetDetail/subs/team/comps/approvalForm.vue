@@ -65,6 +65,7 @@ export default {
 
     saveAction(){
       this.$refs.submitForm.validate(result => {
+        
         if(!result) return;
         let { commentText }= this.submitForm;
         let isAgree= this.isAgree;
