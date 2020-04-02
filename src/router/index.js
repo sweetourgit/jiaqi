@@ -755,6 +755,17 @@ export default new Router({
       auth: true
     }
   },
+//测试why无借款管理开始
+  {
+    path: '/testLoanManagement',
+    component: () => import('@/page/Finance/testLoanManagement/testLoanManagement'),
+    name: '无收入借款管理测试why',
+    meta: {
+      keepAlive: true,
+      auth: true
+    }
+  },
+//测试why无借款管理结束
   {
     path: '/relationSplitMap',
     component: () => import('@/page/Finance/relationSplitMap/relationSplitMap'),
