@@ -1308,9 +1308,9 @@ export default {
             for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
               let bornDate = this.salePrice[i][j].bornDate;
-              let sxe = this.salePrice[i][j].sxe;
-               if(sxe === -1){
-                  this.salePrice[i][j].sxe = 3
+              let sex = this.salePrice[i][j].sex;
+               if(sex === -1){
+                  this.salePrice[i][j].sex = 3
                 }
               if(bornDate === null || bornDate === NaN){
                   this.salePrice[i][j].bornDate = 0;
