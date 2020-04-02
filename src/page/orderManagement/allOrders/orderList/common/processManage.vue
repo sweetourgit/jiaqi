@@ -1232,13 +1232,15 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
-       if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true ||this.changedPrice != 0 ){ //this.changedPrice后加的主要验证修改其他金额将作废合同
-                  this.$confirm("更改信息后合同将作废", "提示", {
+    if(this.orderget.orderStatus === 3 ){//this.changedPrice后加的主要验证修改其他金额将作废合同
+        if(this.changedPrice != 0 || this.isChangeNumber === true){
+              this.$confirm("更改信息后合同将作废", "提示", {
                   confirmButtonText: "确定",
                   cancelButtonText: "取消",
                   type: "warning"
                 })
                 .then(() => {
+                       
                     this.orderget.orderStatus = 10;
                     this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
                     this.ExistContract(this.orderget.orderCode)
@@ -1249,6 +1251,9 @@ export default {
                     message: "已取消"
                   });
               });
+            }else{
+             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+            }
            }else{
             
              this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
@@ -1300,20 +1305,25 @@ export default {
             sum += item;
           });
           let guest = [];
-          for (let i = 0; i < this.salePrice.length; i++) {
+            for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
-              let bornDate = this.salePrice[i][j].bornDate
-              this.salePrice[i][j].bornDate = Date.parse(bornDate);
-              guest.push(this.salePrice[i][j]);
-           }
-          }
-          for(let j in guest){
-            if(guest[j].sxe == -1){
-              guest[j].sxe = 3
+              let bornDate = this.salePrice[i][j].bornDate;
+              let sxe = this.salePrice[i][j].sxe;
+               if(sxe === -1){
+                  this.salePrice[i][j].sxe = 3
+                }
+              if(bornDate === null || bornDate === NaN){
+                  this.salePrice[i][j].bornDate = 0;
+                  guest.push(this.salePrice[i][j]);
+                }else if(bornDate.length === 24){
+                  this.salePrice[i][j].bornDate = Date.parse(bornDate);
+                  guest.push(this.salePrice[i][j]);
+                }else{
+                  guest.push(this.salePrice[i][j]);
+                }
             }
-
           }
-          obj.number= guest.length;
+           obj.number= guest.length;
           // 第一次保存，赋值时间错
           if(typeof id=== 'object' && 'altKey' in id){
             let timestamp= Date.now();

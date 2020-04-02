@@ -157,7 +157,6 @@
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactName"
-            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
@@ -165,12 +164,11 @@
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactPhone"
-            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
-        <hr />
-        <!--出行人信息-->
+          <hr />
+         <!--出行人信息-->
         <!-- <el-form-item label="出行人信息" class="cb">
           <div class="oh" v-for="(item,indexPrice) in salePrice" :key="indexPrice">
             <div class="tour-til">{{item.enrollName}}</div>
@@ -321,7 +319,7 @@ export default {
         sex: "",
         mobile: "",
         idCard: "", //身份证
-        bornDate: 0,
+        bornDate: null,
         credType: 0,
         credCode: "",
         // credTOV: 0,
@@ -927,7 +925,7 @@ export default {
             idCard: "",
             singlePrice: this.orderget.guests[0].singlePrice,
             mobile: "",
-            bornDate: 0,
+            bornDate: null,
             credType: 0,
             credCode: "",
             // credTOV: 0,
@@ -1025,7 +1023,7 @@ export default {
           sex: "",
           mobile: "",
           idCard: "", //身份证
-          bornDate: 0,
+          bornDate: null,
           credType: 0,
           credCode: "",
           // credTOV: 0,
@@ -1236,9 +1234,10 @@ export default {
       this.addInfoFun();
     },
     ordersave(id, occupyStatus) {
-    
-      if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true||this.changedPrice != 0){//this.changedPrice后加的主要验证修改其他金额将作废合同
-                  this.$confirm("更改信息后合同将作废", "提示", {
+      console.log(this.orderget.orderStatus,'orderget');
+     if(this.orderget.orderStatus === 3 ){//this.changedPrice后加的主要验证修改其他金额将作废合同
+        if(this.changedPrice != 0 || this.isChangeNumber === true){
+              this.$confirm("更改信息后合同将作废", "提示", {
                   confirmButtonText: "确定",
                   cancelButtonText: "取消",
                   type: "warning"
@@ -1254,6 +1253,9 @@ export default {
                     message: "已取消"
                   });
               });
+            }else{
+             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+            }
            }else{
              this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
            }
@@ -1274,11 +1276,8 @@ export default {
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
           } 
-            // 补充资料和待出行 信息更改跳转回到确认占位状态
-          if ( this.isChangeNumber === true &&
-            (this.orderget.orderStatus === 1 ||
-              this.orderget.orderStatus === 2 )
-          ) {
+            // 补充资料和待出行 信息更改跳转回到确认占位状态 this.orderget.orderStatus === 1 // 补充资料
+          if ( this.isChangeNumber === true && this.orderget.orderStatus === 2 ){
               obj.orderStatus = 10;
            }
           // 签署订单按钮
@@ -1307,14 +1306,25 @@ export default {
      
           for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
-              let bornDate = this.salePrice[i][j].bornDate
-              this.salePrice[i][j].bornDate = Date.parse(bornDate);
-              guest.push(this.salePrice[i][j]);
-           }
+              let bornDate = this.salePrice[i][j].bornDate;
+              let sex = this.salePrice[i][j].sex;
+               if(sex === -1){
+                  this.salePrice[i][j].sex = 3
+                }
+              if(bornDate === null || bornDate === NaN){
+                  this.salePrice[i][j].bornDate = 0;
+                  guest.push(this.salePrice[i][j]);
+                }else if(bornDate.length === 24){
+                  this.salePrice[i][j].bornDate = Date.parse(bornDate);
+                  guest.push(this.salePrice[i][j]);
+                }else{
+                  guest.push(this.salePrice[i][j]);
+                }
+            }
           }
           for(let j in guest){
             if(guest[j].sxe == -1){
-              guest[j].sxe = 3
+               guest[j].sxe = 3
             }
 
           }
