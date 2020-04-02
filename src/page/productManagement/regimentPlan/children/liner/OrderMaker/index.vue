@@ -4,7 +4,6 @@
   height: 100%; 
   overflow: auto;
   &>header{
-    position: static;
     display: flex;
     justify-content: flex-end;
     padding: 0 10px 10px 0;
@@ -31,6 +30,10 @@
 </template>
 
 <script>
+/**
+ * 下单流程,先走php验证接口,然后走.net提交接口,再将.net生成的id和orderCode带给php的提交接口 
+ */
+
 import './FixedBar'
 import InfoGround from './comps/InfoGround'
 import ChannelGround from './comps/ChannelGround'

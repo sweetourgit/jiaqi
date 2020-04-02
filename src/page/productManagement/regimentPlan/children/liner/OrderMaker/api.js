@@ -31,3 +31,40 @@ export const getProductInfo= function(product_id){
   })
 }
 
+/*
+// 直客销售补全
+.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+  object: {
+    name: queryString1,
+    isDeleted: 0
+  }
+})
+
+// 商户销售
+.post(
+  this.GLOBAL.serverSrc + "/universal/localcomp/api/PeerUser_AdminList",
+  {
+    object: {
+      localCompID: this.productPos,
+      jqUserType: 2,
+      state:2,
+      isDeleted:0
+    }
+  }
+)
+
+ .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+            id: this.productPos
+          })
+
+// 商户模糊
+.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/listname", {
+  object: {
+    selName: queryString3,
+    isDeleted: 0,
+    state: 2
+  }
+})
+
+*/
+

@@ -8,11 +8,11 @@
 </style>
 
 <template>
-  <el-card shadow="never">
+  <el-card shadow="never" style="width: 1240px;">
     <div slot="header">
       <span>团期信息</span>
     </div>
-    <el-form  label-width="120px">
+    <el-form  label-width="120px" size="small">
       <el-row>
         <el-col :span="8">
           <el-form-item label="团期计划：" prop="title">
