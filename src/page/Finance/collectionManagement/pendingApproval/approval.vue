@@ -1300,7 +1300,7 @@ export default {
           spname: sessionStorage.getItem("name"),
           spstate: "认款",
           spcontent: "",
-          checktype: 3,
+          checktype: 1,
           id: item.id,
           'SpCode': sessionStorage.getItem('userCode')
         })
