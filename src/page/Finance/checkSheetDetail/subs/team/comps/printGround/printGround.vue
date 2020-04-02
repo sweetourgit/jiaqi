@@ -1,8 +1,8 @@
 /*
- * @Author: WZJ 
- * @Last Modified by:   WZJ 
+ * @Author: WZJ
+ * @Last Modified by:   WZJ
  */
-
+<!-- 2020-3-31 -->
 <style scoped>
 /* 这个样式要给打印用，所以不使用scss了 */
 * {
@@ -272,7 +272,7 @@ table {
       <mark-form ref="markForm"></mark-form>
     </footer>
     <Review>
-      
+
     </Review>
   </div>
 </template>
@@ -468,6 +468,7 @@ export default {
     },
 
     expenseSave(payload) {
+
       let { isSave, expense } = payload;
       if (isSave) return this.changeHandler();
       this.expenses.push(expense);
