@@ -1,6 +1,7 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <!--  v-if='this.show == "0"'-->
+    <el-tabs v-model="activeName" @tab-click="handleClick"  >
       <el-tab-pane label="跟团游" name="1"></el-tab-pane>
       <el-tab-pane label="签证" name="2"></el-tab-pane>
       <el-tab-pane label="邮轮游" name="3"></el-tab-pane>
@@ -12,7 +13,8 @@
 export default {
   data() {
     return {
-      activeName: "1"
+      activeName: "1",
+      show:"1"
     };
   },
   methods: {
