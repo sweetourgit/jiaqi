@@ -8,7 +8,7 @@
 </style>
 
 <template>
-  <el-card shadow="never" style="width: 1240px;">
+  <el-card shadow="never">
     <div slot="header">
       <span>团期信息</span>
     </div>

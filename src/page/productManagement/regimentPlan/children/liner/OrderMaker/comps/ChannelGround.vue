@@ -49,6 +49,7 @@ export default {
     return Object.assign(
       {
         submitForm: {},
+        rules: {}
       },
       {
 

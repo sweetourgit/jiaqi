@@ -164,12 +164,10 @@ $fontHeight: 32px;
 </template>
 
 <script>
-import Jdateday from './comps/Jdateday.vue'
 
 let ctrlDownHandler;
 let ctrlUpHandler;
 export default {
-  components: { Jdateday },
 
   props: {
     /**
@@ -178,7 +176,7 @@ export default {
      */
     options: {
       type: Object,
-      default: function(){
+      default(){
         return {}
       }
     },
