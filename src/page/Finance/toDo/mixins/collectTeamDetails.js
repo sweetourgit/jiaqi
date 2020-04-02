@@ -334,7 +334,7 @@ export default {
         spname: this.getUserName,
         spstate: "认款",
         spcontent: "",
-        checktype: 3,
+        checktype: 1,
         id: item.id,
         'SpCode': this.getUserCode
       })
@@ -409,21 +409,18 @@ export default {
             trade_Amount: 0 - parseFloat(charge),
             value_Date: row.value_Date,
             exchange_rate: row.exchange_rate,
-            transaction_reference_number:
-              row.transaction_reference_number + "-" + new Date().getTime(),
+            transaction_reference_number: row.transaction_reference_number + "-" + new Date().getTime(),
             record_ID: row.record_ID,
             reference: row.reference,
             purpose: row.purpose,
             remark: row.remark,
             transaction_Type: row.transaction_Type,
             business_type: row.business_type,
-            account_holding_bank_number_of_payer:
-            row.account_holding_bank_number_of_payer,
+            account_holding_bank_number_of_payer: row.account_holding_bank_number_of_payer,
             payer_account_bank: row.payer_account_bank,
             debit_Account_No: row.debit_Account_No,
             payer_s_Name: row.payer_s_Name,
-            account_holding_bank_number_of_beneficiary:
-            row.account_holding_bank_number_of_beneficiary,
+            account_holding_bank_number_of_beneficiary: row.account_holding_bank_number_of_beneficiary,
             beneficiary_account_bank: row.beneficiary_account_bank,
             payee_s_Account_Number: row.payee_s_Account_Number,
             payee_s_Name: row.payee_s_Name,
@@ -463,13 +460,11 @@ export default {
             remark: row.remark,
             transaction_Type: row.transaction_Type,
             business_type: row.business_type,
-            account_holding_bank_number_of_payer:
-            row.account_holding_bank_number_of_payer,
+            account_holding_bank_number_of_payer: row.account_holding_bank_number_of_payer,
             payer_account_bank: row.payer_account_bank,
             debit_Account_No: row.debit_Account_No,
             payer_s_Name: row.payer_s_Name,
-            account_holding_bank_number_of_beneficiary:
-            row.account_holding_bank_number_of_beneficiary,
+            account_holding_bank_number_of_beneficiary: row.account_holding_bank_number_of_beneficiary,
             beneficiary_account_bank: row.beneficiary_account_bank,
             payee_s_Account_Number: row.payee_s_Account_Number,
             payee_s_Name: row.payee_s_Name,
