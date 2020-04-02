@@ -1276,8 +1276,11 @@ export default {
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
           } 
-            // 补充资料和待出行 信息更改跳转回到确认占位状态 this.orderget.orderStatus === 1 // 补充资料
-          if ( this.isChangeNumber === true && this.orderget.orderStatus === 2 ){
+            // 补充资料和待出行 信息更改跳转回到确认占位状态
+          if ( this.isChangeNumber === true &&
+            (this.orderget.orderStatus === 1 ||
+              this.orderget.orderStatus === 2 || this.orderget.orderStatus === 8)
+          ) {
               obj.orderStatus = 10;
            }
           // 签署订单按钮
