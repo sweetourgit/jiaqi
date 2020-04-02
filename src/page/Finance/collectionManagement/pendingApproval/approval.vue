@@ -952,7 +952,7 @@ export default {
           if (this.hasSubject) {
             this.tableAssociated.forEach(function(item, index, arr) {
               const dataLocal = JSON.parse(localStorage.getItem(item.id));
-              // console.log(dataLocal);
+              console.log(dataLocal);
               if (dataLocal.hasCharge) {
                 that.chargeSubmit(
                   item,
