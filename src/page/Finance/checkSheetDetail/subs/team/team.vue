@@ -2,7 +2,7 @@
  * @Author: WZJ
  * @Last Modified by:   WZJ
  */
-
+<!-- 2020-3-31 -->
 <style lang="scss" scoped>
 .check-sheet-detail {
   padding-bottom: 80px;
@@ -79,7 +79,7 @@ export default {
 
   components: { printGround, approvalForm },
   created() {
-   
+
   },
   // 创建和唤醒都要从新执行init
   mounted() {
@@ -170,7 +170,7 @@ export default {
         if (planID) return resolve(getCheckSheetByPlanID(planID));
       })
         .then(res => {
-         
+
           payload = res;
           let { guid } = res;
           return getFlowFinishedList(guid);
@@ -199,7 +199,7 @@ export default {
         guid,
         comeFrom
       } = query;
-     
+
       this.cacheConditions = conditions;
       this.isFromCheckSheet = tab ? true : false;
       this.$router.replace({
@@ -291,7 +291,7 @@ export default {
       let action;
       action = isAgree
         ? agreeForJQ({ commentText, workItemID, userCode })
-        : rejectForJQ({ commentText, workItemID: rejectWorkItemID, userCode })
+        : rejectForJQ({ commentText, workItemID, userCode })
             .then(() => endForJQ({ jQ_ID: guid, jQ_Type: 5 }))
             .then(() => saveChcektype({ guid, checkType: 2 }));
       action

@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:56:08 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:56:08
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 14:25:20
  */
@@ -314,7 +314,7 @@ export default {
       return this.GLOBAL.serverSrc + "/finance/industrialbank/api/ImportExcel";
     },
     handleSuccess1(response, file, fileList) {
-    
+
       if (response == true) {
         this.$message.success("兴业银行流水单上传成功！");
         this.pageCurrent = 1;
@@ -331,7 +331,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove1(file, fileList) {
-    
+
     },
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -350,7 +350,7 @@ export default {
       return upURL;
     },
     handleSuccess2(response, file, fileList) {
-      
+
       if (response == true) {
         this.$message.success("微信支付宝明细上传成功！");
         this.pageCurrent = 1;
@@ -363,7 +363,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove2(file, fileList) {
-    
+
     },
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -454,12 +454,12 @@ export default {
               ? moment(this.ruleForm.dateEnd).format("YYYY-MM-DD 23:59:59")
               : "2099-05-16",
             seachType: 2,
-            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0
-            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+            import_State: this.ruleForm.matchType ? this.ruleForm.matchType : 0,
+            // 若传入4D则无数据 测试暂时先不传
+              userid: data4D.userID, // 暂无数据 想看改成0,
+            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
           }
         })
         .then(function(obj) {

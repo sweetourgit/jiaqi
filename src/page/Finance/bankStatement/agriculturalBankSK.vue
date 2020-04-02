@@ -1,10 +1,10 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:54:18 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:54:18
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 15:32:16
  */
-
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
@@ -147,7 +147,7 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import moment from "moment";
 import orderDetail from "@/page/Finance/bankStatement/orderDetails.vue";

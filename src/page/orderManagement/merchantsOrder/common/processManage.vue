@@ -243,7 +243,7 @@
 </template>
 
 <script>
-import { max } from "moment";
+import  moment from "moment";
 import numberInputer from './comps/numberInputer'
 import travelMessage from './comps/travelMessage'
 import guestEditDialog from './comps/guestEditDialog'
@@ -451,6 +451,7 @@ export default {
     //     });
     // },
     // 报名信息显示 格式整理
+    moment,
     showEnrollDetail() {
       this.formatData(this.enrollDetail)
       this.showApplyInfo(this.enrollformatData)
@@ -1303,10 +1304,13 @@ export default {
             sum += item;
           });
           let guest = [];
+     
           for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
+              let bornDate = this.salePrice[i][j].bornDate
+              this.salePrice[i][j].bornDate = Date.parse(bornDate);
               guest.push(this.salePrice[i][j]);
-            }
+           }
           }
           for(let j in guest){
             if(guest[j].sxe == -1){
@@ -1333,7 +1337,7 @@ export default {
             obj.guests = guest;
             obj.teamID = this.orderget.teamID;
             obj.planID = this.orderget.planID;
-            this.$http
+               this.$http
                     .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                       object: obj
                     })

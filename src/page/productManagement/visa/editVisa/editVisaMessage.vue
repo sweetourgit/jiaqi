@@ -50,7 +50,11 @@
                   <el-table-column prop="must" label="必须" align="center" width="60"></el-table-column>
                   <el-table-column label="附件" align="center" width="180">
                     <template slot-scope="scope">
-                      <span v-for="(item,index) in scope.row.crowdFile"><el-link @click="checkMent(scope.row.crowdFile)">{{item.name}}</el-link></span>
+                      <span v-for="(item,index) in scope.row.crowdFile">
+                        <el-link>
+                          <a style="text-decoration:none;" :href="scope.row.crowdFile[0].path" target='_blank'>{{item.name}}</a>
+                        </el-link>
+                      </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="120">
@@ -66,12 +70,6 @@
           </div>
         </div>
       </div>
-      <!--附件弹窗-->
-      <el-dialog title="查看附件" :visible.sync="checkAttachment" custom-class="city_list" style="margin-top:-100px;" width="500px"
-      @close="closeCheckAttachment()">
-        <el-button class="controlButton" @click="closeCheckAttachment()">取消</el-button>
-        <div></div>
-      </el-dialog>
       <!--增加签证信息弹窗-->
       <el-dialog title="新增签证信息" :visible.sync="addVisaMessageShow" custom-class="city_list" style="margin-top:-100px;" width="500px"
       @close="closeVisaMessage('ruleForm')">
@@ -217,7 +215,6 @@ export default {
       multipleSelection: [],   //选中的list
       lineID:0,
       crowdFile:[],
-      checkAttachment:false, // 附件弹窗
     };
   },
   watch: {
@@ -264,7 +261,9 @@ export default {
         if(res.data.isSuccess == true){
           if(res.data.objects){
           this.editableTabs = res.data.objects;
-          this.ruleForm.caption = this.editableTabs[0].title;
+          for(let i = 0; i < this.editableTabs.length; i++){
+            this.ruleForm.caption = this.editableTabs[i].title;
+          }
           this.tabIndex = this.editableTabs.length;
         }else{
           this.editableTabs = []
@@ -407,31 +406,25 @@ export default {
         this.$refs[formName].resetFields();
         this.a = 1;
       }else {
-        this.$refs[formName].validate((valid) => {
-          for(let i = 0; i < this.copyList.length; i++){
-            this.messageID = this.copyList[i].id;
-            this.messageTitle = this.copyList[i].title
-          }
-          if (valid) {
-            this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
-              object: {
-                id: this.messageID,
+        for(let i = 0; i < this.copyList.length; i++){
+          this.messageID = this.copyList[i].id;
+          this.messageTitle = this.copyList[i].title
+        }
+          this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
+            object: {
+              id: this.messageID,
+            }
+          }).then(res => {
+              if(res.data.isSuccess == true){
+                 this.ruleForm.caption = this.messageTitle;
+                 this.handleTabsEdit(this.tabIndex, "add");
+                 this.addVisaMessageShow = false
+                 this.$refs[formName].resetFields();
+                 this.pageList();
+              }else{
+                 this.$message.success(res.data.result.message);
               }
-            }).then(res => {
-                if(res.data.isSuccess == true){
-                   this.ruleForm.caption = this.messageTitle;
-                   this.handleTabsEdit(this.tabIndex, "add");
-                   this.addVisaMessageShow = false
-                   this.$refs[formName].resetFields();
-                   this.pageList();
-                }else{
-                   this.$message.success(res.data.result.message);
-                }
-            })
-          } else {
-            return false;
-          }
-        });
+          })
       }
     },
     closeVisaMessage(formName){ // 关闭签证信息弹窗
@@ -487,7 +480,7 @@ export default {
              }
              this.addVisa.must=data.must + ''; // 必须
              this.fileList = [],// 附件
-             this.fileList.push({'url':data.crowdFile[0].path,'name':data.crowdFile[0].name})
+             this.fileList.push({'url':data.crowdFile[0].path,'name':data.crowdFile[0].name});
              // data.crowdFile.forEach(v =>{
              //   this.fileList.push({'url':v.path,'name':v.name})
              // })
@@ -512,14 +505,15 @@ export default {
         })
       }
       let pathUrl = []; // 附件
-      for(let i = 0; i < this.addVisa.throng.length; i++){
-        pathUrl.push({
-          crowdType:this.addVisa.throng[i],
-          name:this.name_Suffix,
-          path:this.img_Url,
-        })
+      for(let i = 0; i < this.fileList.length; i++){
+        for(let j = 0; j < this.addVisa.throng.length; j++){
+          pathUrl.push({
+            crowdType:this.addVisa.throng[j],
+            name:this.name_Suffix,
+            path:this.img_Url,
+          })
+        }
       }
-      console.log(pathUrl)
       for(var i =0; i<this.editableTabs.length; i++){
         if(i== this.editableTabsValue){
           this.sid = this.editableTabs[i].id
@@ -544,8 +538,6 @@ export default {
               if(res.data.isSuccess == true){
                  this.rowList();
                  this.addVisaWindows = false;
-                 pathUrl = [];
-                 this.addVisa.attachment = [];
                  this.$refs[formName].resetFields();
               }else{
                  this.$message.success("添加失败");
@@ -564,12 +556,14 @@ export default {
         })
       }
       let pathUrl = []; // 附件
-      for(let i = 0; i < this.addVisa.throng.length; i++){
-        pathUrl.push({
-          crowdType:this.addVisa.throng[i],
-          name:this.name_Suffix,
-          path:this.img_Url,
-        })
+      for(let i = 0; i < this.fileList.length; i++){
+        for(let j = 0; j < this.addVisa.throng.length; j++){
+          pathUrl.push({
+            crowdType:this.addVisa.throng[j],
+            name:this.name_Suffix,
+            path:this.img_Url,
+          })
+        }
       }
       console.log(pathUrl)
       this.$refs[formName].validate((valid) => {
@@ -682,12 +676,6 @@ export default {
           message: "已取消"
         });
       });
-    },
-    checkMent(){
-      this.checkAttachment = true;
-    },
-    closeCheckAttachment(){
-      this.checkAttachment = false;
     },
   }
 };

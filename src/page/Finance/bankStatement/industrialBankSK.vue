@@ -309,7 +309,7 @@ export default {
       this.info = '';
     },
     payDetail(row){
-     
+      let data4D=utils.getSession4D();
       this.$router.push({
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',
@@ -317,7 +317,7 @@ export default {
           id:row.id,
           type:2,
           creditAmount:row.credit_amount,
-          company:row.company,
+          company:data4D.company,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date,
         }

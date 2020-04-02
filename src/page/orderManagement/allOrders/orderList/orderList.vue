@@ -445,7 +445,8 @@ export default {
       priceType: null, //价格类型  1直客  2同业价格
       // localCompName: "", //商户名称
       // orderChannels: "", //商户名称
-      orgID: null, //商户名称搜索传给后台的id
+      localCompID:0,
+      orgID: 0, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
       contact: "", //订单联系人
       orderChannel: null, //订单来源
@@ -862,6 +863,7 @@ export default {
       endDate = this.endDate,
       saler = this.saler,
       localCompName = this.orgIDValue, //商户名称
+      localCompID= this.orgID,
       // orderChannels = this.orderChannels, //商户名称
       orgID = this.orgID, //商户名称 搜索时的字段
       // productType = this.productType,
@@ -916,7 +918,7 @@ export default {
         refundStatus: this.refundStatus,
         contact: contact,
         podID: podID ? podID : 0,
-        localCompName: localCompName, //商户名称
+        localcompID: localCompID, //商户名称
         // orderChannels: orderChannels //商户名称
         orgID: orgID ? orgID : 0 //商户名称搜索时的字段
       };

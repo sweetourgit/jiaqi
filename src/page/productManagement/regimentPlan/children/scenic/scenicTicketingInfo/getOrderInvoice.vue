@@ -60,6 +60,8 @@
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
           </el-table-column>
+          <el-table-column prop="distributor_remark" label="分销商备注" align="center">
+          </el-table-column>
           <el-table-column prop="cost" label="成本" align="center">
           </el-table-column>
           <el-table-column prop="income" label="收入" align="center">
