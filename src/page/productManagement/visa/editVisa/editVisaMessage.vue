@@ -260,15 +260,13 @@ export default {
       }).then(res =>{
         if(res.data.isSuccess == true){
           if(res.data.objects){
-          this.editableTabs = res.data.objects;
-          for(let i = 0; i < this.editableTabs.length; i++){
-            this.ruleForm.caption = this.editableTabs[i].title;
+            this.editableTabs = res.data.objects;
+            this.ruleForm.caption = this.editableTabs[this.editableTabsValue].title;
+            this.tabIndex = this.editableTabs.length;
+          }else{
+            this.editableTabs = []
           }
-          this.tabIndex = this.editableTabs.length;
-        }else{
-          this.editableTabs = []
-        }
-        this.rowList();
+          this.rowList();
         }
       })
     },
@@ -340,6 +338,7 @@ export default {
         let newTabName = ++this.tabIndex + '';
         if(this.addVisa.copy ==1){
           this.editableTabs.push({
+            id:0,
             title: '签证信息' + (this.editableTabs.length + 1),
             content: 'New Tab content'
           });
@@ -349,13 +348,12 @@ export default {
             content: 'New Tab content'
           });
         }
-        
         this.editableTabsValue = (newTabName-1).toString();
         }
+        console.log(this.editableTabs)
       }
       if (action === 'remove') {
         this.editableTabsValue = targetName;
-        console.log(this.editableTabs)
         this.$confirm("是否删除该签证说明?", "提示", {
            confirmButtonText: "删除",
            cancelButtonText: "取消",
@@ -365,29 +363,49 @@ export default {
           if(this.tableDate.length > 0){
             this.$message.success("该主题存在签证信息人群，不允许删除");
           } else{
-            this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
-              "id": this.editableTabs[this.editableTabsValue].id
-            })
-            .then(res => {
-              if(res.data.isSuccess == true){
-                this.editableTabs = [];
-                this.pageList();
-                let tabs = this.editableTabs;
-                let activeName = this.editableTabsValue;
-                if (activeName === targetName) {
-                  tabs.forEach((tab, index) => {
-                    if (tab.name === targetName) {
-                      let nextTab = tabs[index + 1] || tabs[index - 1];
-                      if (nextTab) {
-                        activeName = nextTab.name;
-                      }
+            if(this.editableTabs[this.editableTabsValue].id == 0){
+              this.editableTabs = [];
+              this.pageList();
+              let tabs = this.editableTabs;
+              let activeName = this.editableTabsValue;
+              if (activeName === targetName) {
+                tabs.forEach((tab, index) => {
+                  if (tab.name === targetName) {
+                    let nextTab = tabs[index + 1] || tabs[index - 1];
+                    if (nextTab) {
+                      activeName = nextTab.name;
                     }
-                  });
-                }       
-                this.editableTabsValue = String(this.editableTabs.length - 2);
-                this.$message.success("删除成功");
+                  }
+                });
               }
-             })
+              this.editableTabsValue = String(this.editableTabs.length);
+              this.$message.success("删除成功");
+              return;
+            }else {
+              this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
+                "id": this.editableTabs[this.editableTabsValue].id
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                  this.editableTabs = [];
+                  this.pageList();
+                  let tabs = this.editableTabs;
+                  let activeName = this.editableTabsValue;
+                  if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                      if (tab.name === targetName) {
+                        let nextTab = tabs[index + 1] || tabs[index - 1];
+                        if (nextTab) {
+                          activeName = nextTab.name;
+                        }
+                      }
+                    });
+                  }       
+                  this.editableTabsValue = String(this.editableTabs.length);
+                  this.$message.success("删除成功");
+                }
+               })
+            }
           }
         })
         .catch(() => {
@@ -407,24 +425,25 @@ export default {
         this.a = 1;
       }else {
         for(let i = 0; i < this.copyList.length; i++){
-          this.messageID = this.copyList[i].id;
-          this.messageTitle = this.copyList[i].title
+          if(this.addVisa.copy == this.copyList[i].id){
+            this.messageTitle = this.copyList[i].title
+          }
         }
-          this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
-            object: {
-              id: this.messageID,
+        this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
+          object: {
+            id: this.addVisa.copy,
+          }
+        }).then(res => {
+            if(res.data.isSuccess == true){
+               this.ruleForm.caption = this.messageTitle;
+               this.handleTabsEdit(this.tabIndex, "add");
+               this.addVisaMessageShow = false
+               this.$refs[formName].resetFields();
+               this.pageList();
+            }else{
+               this.$message.success(res.data.result.message);
             }
-          }).then(res => {
-              if(res.data.isSuccess == true){
-                 this.ruleForm.caption = this.messageTitle;
-                 this.handleTabsEdit(this.tabIndex, "add");
-                 this.addVisaMessageShow = false
-                 this.$refs[formName].resetFields();
-                 this.pageList();
-              }else{
-                 this.$message.success(res.data.result.message);
-              }
-          })
+        })
       }
     },
     closeVisaMessage(formName){ // 关闭签证信息弹窗
