@@ -39,7 +39,7 @@ const ProcessManageMixin= {
       processManage(orderId){
         getOrderAction(orderId)
         .then(orderDetail => {
-          console.log(JSON.parse(sessionStorage.getItem('butPermission')))
+         // console.log(JSON.parse(sessionStorage.getItem('butPermission')))
 
           let { planID, guests, favourable, contact }= orderDetail;
           Promise.all([

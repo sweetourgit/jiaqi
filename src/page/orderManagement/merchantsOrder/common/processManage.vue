@@ -583,7 +583,11 @@ export default {
     },
 
     orderModification(status, cancle) {
-      console.log(status,'orderModification');
+      console.log(status,'status');
+       console.log(cancle,'cancle');
+       if(cancle == 0){
+         return;
+       }
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -603,12 +607,12 @@ export default {
           case 7:
             switch (cancle) {
               case 1:
-                this.ordersave(this.orderget.id, cancle);
+                this.ordersave();
                 break;
                 retrun;
               case 2:
                 url = "";
-                this.ordersave(this.orderget.id, cancle);
+                this.ordersave();
                 break;
                 retrun;
               // case 3:
@@ -628,16 +632,17 @@ export default {
                   // this.isChangeNumber = true;
                   return;
                 } else {
-                  //url = "/order/stat/api/econtract"; 下部分代码2020/03/17 添加 跳转合同页面 唐爱妮
+                  //url = "/order/stat/api/econtract"; 
                   
                 }
               }
             }
-             this.ordersave(1);
+             this.ordersave();
               url += "/signcontract";
             // url += "/econtract";
             break;
          case 8:
+           console.log(8);
             let result= {};
             let token= localStorage.getItem('token');
             let attrArr= ['userCode', 'name', 'topName', 'orgName'];
@@ -652,17 +657,18 @@ export default {
             break;
         }
         // 订单工作流状态更新-作废订单
-        if (cancle == 0) {
-          this.dialogVisible = false;
-          url = "/order/stat/api/invalid";
-          // url = "/order/all/api/orderdelete";
-        }
-
+        // if (cancle == 0) {
+        //   this.dialogVisible = false;
+        //   url = "/order/stat/api/invalid";
+        //   // url = "/order/all/api/orderdelete";
+        // }
+          console.log(this.orderget.occupyStatus,'occupyStatus');
         this.$http
           .post(this.GLOBAL.serverSrc + url, {
             object: {
               id: this.orderget.id,
-              occupyStatus: this.orderget.occupyStatus
+              occupyStatus: this.orderget.occupyStatus,
+              orderStatus:this.orderget.orderStatus
             }
           })
           .then(res => {
@@ -673,24 +679,24 @@ export default {
               });
             
               if (status === 1){
-                //this.ordersave(8);
+               // this.ordersave();
               }
               if (status === 10) {
-                this.ordersave(1);
+                //this.ordersave();
               }
               // 取消订单按钮
-              if (cancle === 0) {
-                this.$http
-                  .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
-                    id: this.orderget.id
-                  })
-                  .then(res => {
-                    console.log(res);
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
-              }
+              // if (cancle === 0) {
+              //   this.$http
+              //     .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
+              //       id: this.orderget.id
+              //     })
+              //     .then(res => {
+              //       console.log(res);
+              //     })
+              //     .catch(err => {
+              //       console.log(err);
+              //     });
+              // }
               this.$emit("orderPage");
               this.cancle();
             }
@@ -1233,8 +1239,7 @@ export default {
       this.isSaveBtnClick();
       this.addInfoFun();
     },
-    ordersave(id, occupyStatus) {
-      console.log(this.orderget.orderStatus,'orderget');
+    ordersave() {
      if(this.orderget.orderStatus === 3 ){//this.changedPrice后加的主要验证修改其他金额将作废合同
         if(this.changedPrice != 0 || this.isChangeNumber === true){
               this.$confirm("更改信息后合同将作废", "提示", {
@@ -1244,7 +1249,7 @@ export default {
                 })
                 .then(() => {
                     this.orderget.orderStatus = 10;
-                    this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+                    this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
                     this.ExistContract(this.orderget.orderCode)
                 })
                 .catch(() => {
@@ -1254,10 +1259,10 @@ export default {
                   });
               });
             }else{
-             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
             }
            }else{
-             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
            }
       },
     ordersave_data(id, occupyStatus){ // 便于提醒是否作废合同新增客人
@@ -1270,12 +1275,14 @@ export default {
             '","Tel":"' +
             this.ruleForm.contactPhone +
             '"}';
-
+          console.log(occupyStatus,' ||obj.occupyStatus = 3;');
           if (occupyStatus == 1) {
             obj.occupyStatus = 2;
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
-          } 
+          } else if(occupyStatus== 0 ){
+            obj.occupyStatus = 3;
+          }
             // 补充资料和待出行 信息更改跳转回到确认占位状态
           if ( this.isChangeNumber === true &&
             (this.orderget.orderStatus === 1 ||
@@ -1350,6 +1357,7 @@ export default {
             obj.guests = guest;
             obj.teamID = this.orderget.teamID;
             obj.planID = this.orderget.planID;
+            console.log(obj,'obj');
                this.$http
                     .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                       object: obj

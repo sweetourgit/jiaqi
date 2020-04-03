@@ -573,7 +573,7 @@ export default {
           let enrolls=[];//标题
           let guest;//全部数据
           this.enrollDetailShow = "";
-          if(res.data.object.orderStatus === 1 && res.data.object.refundStatus === 6){
+          if(res.data.object.orderStatus != 10 && res.data.object.refundStatus === 6){
               res.data.object.orderStatus = 10;
               this.dataorderStatus(res.data.object.id,res.data.object.orderCode,res.data.object.orderStatus,);
             }
