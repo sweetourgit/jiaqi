@@ -751,7 +751,7 @@
             <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
             <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
             <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-            <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout">
+            <el-table-column prop="prop" label="操作" align="center">
               <template slot-scope="scope">
                 <el-button
                   v-if="scope.row.hasSubmitData"
@@ -834,6 +834,7 @@
     },
     mixins: [ collectTeamDetails ],
     created () {},
+    mounted() {},
     methods: {
       // 打印
       handleTouchPrint () {

@@ -447,7 +447,8 @@ export default {
       service_charge: "",
       rowMsg: [],
       rowType: "",
-      noEdit: true
+      noEdit: true,
+      keepRow: null
     };
   },
   computed: {
@@ -489,8 +490,9 @@ export default {
       this.$emit("close", "success");
     },
     payDetail(row) {
+      this.keepRow = row
       this.isShow = true;
-      this.loadDataMX(row);
+      this.loadDataMX();
       this.activeName = "bankMX";
     },
 
@@ -833,15 +835,15 @@ export default {
       this.pageCurrentMX = val;
       this.loadDataMX();
     },
-    loadDataMX(row) {
+    loadDataMX() {
       const that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search", {
           pageIndex: this.pageCurrentMX,
           pageSize: this.pageSizeMX,
           object: {
-            purpose_Merchant_code: row.purpose_Merchant_code,
-            purpose_Date: row.purpose_Date
+            purpose_Merchant_code: this.keepRow.purpose_Merchant_code,
+            purpose_Date: this.keepRow.purpose_Date
           }
         })
         .then(function(obj) {

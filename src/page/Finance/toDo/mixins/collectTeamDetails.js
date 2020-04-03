@@ -22,7 +22,6 @@ export default {
       tableAuditResults: [], // 去认款显示隐藏
       tableInvoice: [], // 发票表格
       tableAssociated: [], // 发票关联表
-      collCheckout: false, // 显示操作列信息（去认款）
       paramsInvoiceTable: null, // 是否显示发票列表
       approveDialogTitle: '', // 审批弹窗标题
       ifShowApproveDialog: false, // 是否展示审批弹窗
@@ -48,9 +47,6 @@ export default {
     this.getUserCode = sessionStorage.getItem('userCode');
     this.getArrearsId = sessionStorage.getItem('arrearsID');
     this.paramsChangeDate = this.getMoment();
-  },
-  mounted () {
-
   },
   filters: {
     numFilter (value) {
@@ -254,6 +250,7 @@ export default {
           _this.printPayablePrice = keepRes.arrears[0].payablePrice;
           _this.printOrderCode = keepRes.arrears[0].orderCode;
           _this.printGroupCode = keepRes.arrears[0].groupCode;
+          _this.getAccount(keepRes.accountID, keepRes.arrears[0].id);
           // 打印相关
           if (keepRes.spw.length > 0) {
             _this.printSureTime = keepRes.spw[0].createTime;
@@ -285,6 +282,7 @@ export default {
           });
         } else {
           // alert("有科目值");
+          console.log(_this.tableAssociated)
           _this.tableAssociated.forEach(item => {
             _this.getCollectionPriceTotal += item.matchingPrice;
             // console.log("submitData", localStorage.getItem(item.id));
@@ -296,7 +294,7 @@ export default {
               // item.hasSubmitData = false;
               _this.$set(item, "hasSubmitData", false);
             }
-            if (_this.info.collectionType !== 6) {
+            if (_this.collectionType !== 6) {
               if (localStorage.getItem(item.id) == null) {
                 _this.passDisabled = true;
               }
@@ -310,7 +308,7 @@ export default {
         // _this.isLookBtn = _this.tableAssociated[0].checkType;
         // console.log("hasSubject",_this.hasSubject)
         _this.isLookBtn = _this.getArrearsId ? true : false;
-        if (_this.info.collectionType === 6) {
+        if (_this.collectionType === 6) {
           if (id === 13) {
             _this.passDisabled = false;
           } else {
