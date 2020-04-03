@@ -83,7 +83,7 @@
                 </td>
                 <td width="33%">
                   <div width="80" class="floatL fb">订单来源:</div>
-                  <div v-if="orderList.orderChannel=='1'" class="floatL ml13">同业</div>
+                  <div v-if="orderList.orderChannel=='1'" class="floatL ml13">{{orderList.orderChannels}}</div>
                   <div v-if="orderList.orderChannel=='2'" class="floatL ml13">线上直客</div>
                   <div v-if="orderList.orderChannel=='3'" class="floatL ml13">线下直客</div>
                 </td>
