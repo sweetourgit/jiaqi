@@ -41,8 +41,8 @@
             </el-select>
           </el-col>
           <el-col :span="9">
-            <span class="reimbursed_status">报销状态：</span>
-            <el-select v-model="accountType" placeholder="请选择" class="search_input">
+            <span class="search_style">报销状态：</span>
+            <el-select v-model="reimbursed_status" placeholder="请选择" class="search_input">
               <el-option key="" label="全部" value="0"></el-option>
               <el-option key="1" label="未完成报销" value="1"></el-option>
               <el-option key="2" label="已完成报销" value="2"></el-option>
@@ -263,6 +263,7 @@
         this.reimbursementPerID = '';
         this.borrowStatus = '';
         this.accountType = '';
+        this.reimbursed_status = '';
         this.currentPage = 1;
         this.isShow = false;
         this.loadData();

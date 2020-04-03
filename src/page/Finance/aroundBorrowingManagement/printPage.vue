@@ -12,30 +12,21 @@
       <!-- 第一行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
-          <el-col :span="17"><div class="grid-del">{{ printMsg.fundamental.id }}</div></el-col>
+          <el-col :span="9"><div class="grid-del label-color">借款单号:</div></el-col>
+          <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.id }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
-          <el-col :span="17"><div class="grid-del ">{{ printMsg.fundamental.create_uid }}</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{printMsg.fundamental.orgName}}--{{ printMsg.fundamental.create_uid }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
+          <el-col :span="9"><div class="grid-del label-color">申请时间:</div></el-col>
           <el-col :span="15"><div class="grid-del ">{{ printMsg.fundamental.created_at }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第一行 END -->
       <!-- 第二行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
-        <!-- 周边没有团期计划和产品名称 -->
-        <!-- <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">团期计划:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.groupCode }}</div></el-col>
-        </el-col>
-        <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">产品名称:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ printMsg.fundamental.productName }}</div></el-col>
-        </el-col> -->
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">供应商:</div></el-col>
           <el-col :span="17"><div class="grid-del ">{{ printMsg.fundamental.supplier }}</div></el-col>
@@ -43,7 +34,7 @@
         <el-col :span="6">
           <el-col :span="9"><div class="grid-del label-color">借款类型:</div></el-col>
           <el-col :span="15">
-            <div class="grid-del">{{ printMsg.presentRouter }}</div>
+            <div class="grid-del">{{ loan_type[printMsg.fundamental.loanType] }}</div>
           </el-col>
         </el-col>
         <el-col :span="6">
@@ -54,16 +45,6 @@
       <!-- 第二行 END -->
       <!-- 第三行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
-        <!-- <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">借款类型:</div></el-col>
-          <el-col :span="15">
-            <div class="grid-del">{{ printMsg.presentRouter }}</div>
-          </el-col>
-        </el-col>
-        <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">借款金额:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.reimbursed_money }}</div></el-col>
-        </el-col> -->
         <el-col :span="6">
           <!-- 摘要打印时隐藏 -->
           <el-col :span="6" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
@@ -72,17 +53,19 @@
       </el-row>
       <!-- 第三行 END -->
       <!-- 支付账户 -->
-      <el-row type="flex" class="row-bg print-acount" justify="start">
-        <el-col :span="2" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="18"><div class="grid-del">{{ printMsg.fundamental.accountPay }}</div></el-col>
+      <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
+        <el-col :span="14">
+          <el-col :span="4"><div class="grid-del label-color">支付账户:</div></el-col>
+          <el-col :span="19"><div class="grid-del">{{ printMsg.fundamental.accountPay }}</div></el-col>
+        </el-col>
+        <el-col :span="6">
+          <el-col :span="9"><div class="grid-del label-color">对公/对私:</div></el-col>
+          <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.account_type }}</div></el-col>
+        </el-col>
+        <!-- <el-col :span="2" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
+        <el-col :span="18"><div class="grid-del">{{ printMsg.fundamental.accountPay }}</div></el-col> -->
       </el-row>
       <!-- 支付账户 -->
-      <!-- 审批人 打印时输出 -->
-      <el-row type="flex" class="row-bg print-approve" justify="start">
-        <el-col :span="2" :offset="1"><div class="grid-del label-color">审批人:</div></el-col>
-        <el-col :span="18"><div class="grid-del" v-html="printMsg.printContent"></div></el-col>
-      </el-row>
-      <!-- 审批人 打印时输出 END -->
       <!-- 第四行 -->
       <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
         <el-col :span="6">
@@ -99,6 +82,12 @@
         </el-col>
       </el-row>
       <!-- 第四行 END -->
+      <!-- 审批人 打印时输出 -->
+      <el-row type="flex" class="row-bg print-approve" justify="start">
+        <el-col :span="2" :offset="1"><div class="grid-del label-color">审批人:</div></el-col>
+        <el-col :span="18"><div class="grid-del" v-html="printMsg.printContent"></div></el-col>
+      </el-row>
+      <!-- 审批人 打印时输出 END -->
     </div>
   </div>
 </template>
@@ -115,7 +104,13 @@ export default {
     return {
       presentRouter: '',
       fundamental: {},
-      printMsg: {}
+      printMsg: {},
+      loan_type: {
+        '1': '门票',
+        '2': '酒店',
+        '3': '地接',
+        '4': '定制游(跟团游)'
+      },
     }
   },
   computed: {},

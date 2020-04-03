@@ -22,11 +22,11 @@
       <el-button type="danger" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 2">驳回</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 3">通过</el-button>
       <div class="stepDv">
-        <p class="inputLabel"><span>ID：</span>{{baseInfo.id}}</p>
+        <p class="inputLabel"><span>借款单号：</span>{{baseInfo.id}}</p>
         <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
-        <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
+        <p class="inputLabel"><span>借款类型：</span>{{loan_type[baseInfo.loanType]}}</p>
         <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p>
         <p class="inputLabel"><span>摘要：</span>{{baseInfo.remark}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>账号：</span>{{baseInfo.account}}</p>
@@ -34,7 +34,8 @@
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户名：</span>{{baseInfo.accountName}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
-
+        <!-- <p class="inputLabel"><span>对公/对私：</span>{{baseInfo.account_type}}</p> -->
+        <p class="inputLabel"><span>回冲供应商：</span>{{baseInfo.recoil_supplier}}</p>
         <div class="inputLabel">
           <span>附件：</span>
           <!--<el-upload ref="upload1" class="upload-demo" action="" :file-list="fileList" :disabled="disabled">-->
@@ -138,19 +139,27 @@
           created_at: '',
           supplier: '',
           type: '',
+          loanType: '',
           money: '',
           remark: '',
           account: '',
           accountBank: '',
           accountName: '',
           accountPay: '',
-          reimbursed_money: ''
+          reimbursed_money: '',
+          account_type: ''
         },
         // 认款方式array
         periphery_type: {
           '1': '无收入借款',
           '2': '预付款',
           '3': '余额支付借款'
+        },
+        loan_type: {
+          '1': '门票',
+          '2': '酒店',
+          '3': '地接',
+          '4': '定制游(跟团游)'
         },
         // 基础信息凭证
         fileList: [],
@@ -183,7 +192,7 @@
       dialogFormVisible: {
         handler:function(){
           if(this.info != '' && this.dialogFormVisible){
-            if(sessionStorage.getItem('orgID') == '542' && sessionStorage.getItem('userCode') == 'dy10009862'){
+            if(sessionStorage.getItem('orgID') == '542' && (sessionStorage.getItem('userCode') == 'TC900007' || sessionStorage.getItem('userCode') == 'TC900006')){
               this.passButtonDo = true;
             }
             this.loadData();
@@ -239,14 +248,17 @@
           orgName: '',
           created_at: '',
           supplier: '',
+          recoil_supplier: '',
           type: '',
+          loanType: '',
           money: '',
           remark: '',
           account: '',
           accountBank: '',
           accountName: '',
           accountPay: '',
-          reimbursed_money: ''
+          reimbursed_money: '',
+          account_type: ''
         };
 
         this.$emit('close', false);
@@ -362,7 +374,9 @@
               orgName: '',
               created_at: response.data.data.info.created_at,
               supplier: response.data.data.info.supplier_code,
+              recoil_supplier: response.data.data.info.recoil_supplier_code,
               type: response.data.data.info.periphery_type,
+              loanType: response.data.data.info.loan_type,
               money: response.data.data.info.loan_money,
               remark: response.data.data.info.mark,
               accountPay: '',
@@ -370,7 +384,8 @@
               accountBank: response.data.data.info.opening_bank,
               accountName: response.data.data.info.account_name,
               reimbursed_money: response.data.data.info.reimbursed_money,
-              approval_status: response.data.data.info.approval_status
+              approval_status: response.data.data.info.approval_status,
+              account_type: response.data.data.info.account_type == 1 ? '对公' : '对私'
             };
 
             if(response.data.data.info.periphery_type == 3){
@@ -405,6 +420,31 @@
                 // console.log(response);
                 if (response.data.isSuccess) {
                   that.baseInfo.supplier = response.data.object.name
+                } else {
+                  if(response.data.result.message){
+                    that.$message.warning(response.data.result.message);
+                  }else{
+                    that.$message.warning("获取供应商名称失败~");
+                  }
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+            }
+
+            // 获取回冲供应商名称
+            if(response.data.data.info.recoil_supplier_code){
+
+              that.$http.post(that.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
+                "id": response.data.data.info.recoil_supplier_code
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+                // console.log(response);
+                if (response.data.isSuccess) {
+                  that.baseInfo.recoil_supplier = response.data.object.name
                 } else {
                   if(response.data.result.message){
                     that.$message.warning(response.data.result.message);
