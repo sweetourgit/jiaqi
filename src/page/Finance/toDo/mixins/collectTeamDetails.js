@@ -17,8 +17,10 @@ export default {
       keepPaymentId: null, // PaymentId 接口传值用
       keepComponentName: null,
       paramsCollectionType: null, // 收款类型（区分关联欠款）
-      dialogVisibleDel: false, // 认款详情显示隐藏
+
       dialogVisibleDo: false, // 认款详情显示隐藏
+      dialogVisibleDel: false, // 认款详情显示隐藏
+
       tableAuditResults: [], // 去认款显示隐藏
       tableInvoice: [], // 发票表格
       tableAssociated: [], // 发票关联表
@@ -605,7 +607,7 @@ export default {
     // 去认款
     // recognitionDo(row) {
     recognitionDo(row) {
-      this.dialogFormVisible2 = true;
+      this.dialogVisibleDo = true;
       this.msg = {
         collectionType: this.paramsCollectionType,
         baseInfo: this.baseInfo,
@@ -619,18 +621,17 @@ export default {
       this.msg = {
         id: row.id
       };
-      this.dialogFormVisible3 = true;
+      this.dialogVisibleDel = true;
     },
     // 关闭认款弹窗
     recognitionClose(str) {
-      this.dialogFormVisible2 = false;
-      this.dialogFormVisible3 = false;
+      this.dialogVisibleDo = false;
+      this.dialogVisibleDel = false;
       this.msg = "";
       if (str === "success") {
         this.passDisabled = false;
       }
     },
-
     // 查看认款详情
     handleRecognitionDetail (row) {
       this.msg = {
@@ -638,9 +639,6 @@ export default {
       };
       this.dialogFormVisible = true;
     },
-
-
-
     // 转换为数字连接的时间格式，接口传值用
     getMoment() {
       const now = new Date();

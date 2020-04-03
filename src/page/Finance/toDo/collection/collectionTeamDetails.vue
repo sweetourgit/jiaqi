@@ -799,12 +799,12 @@
         </el-dialog>
         <!-- 通过、驳回弹框 END -->
         <!-- 内部收款，关联欠款 END -->
-        <!-- 去认款 -->
-        <recognitionDetail :dialogVisibleDel="dialogVisibleDel" :msg="msg" @close="recognitionClose"></recognitionDetail>
-        <!-- 去认款 END -->
         <!-- 认款详情 -->
+        <recognitionDetail :dialogVisibleDel="dialogVisibleDel" :msg="msg" @close="recognitionClose"></recognitionDetail>
+        <!-- 认款详情 END -->
+        <!-- 去认款 -->
         <recognitionDo :dialogVisibleDo="dialogVisibleDo" :msg="msg" @close="recognitionClose"></recognitionDo>
-        <!-- 认款详情 EBD -->
+        <!-- 去认款 EBD -->
       </div>
     </div>
   </div>
