@@ -708,6 +708,10 @@ export default {
   },
   data() {
     return {
+      keepUserid: null,
+      keepOrgid: null,
+      keepTopid: null,
+      keepCompany: null,
       printMatchingPrice: null,
       getOrgID: null, // 财务id
       printSureTime: null, // 打印用 - 确认时间
@@ -763,6 +767,7 @@ export default {
       dialogFormVisible2: false, // 去认款显示隐藏
       dialogFormVisible3: false, // 查看认款详情
       msg: "" // 传值字段
+
     };
   },
   computed: {
@@ -1085,21 +1090,18 @@ export default {
               trade_Amount: 0 - parseFloat(charge),
               value_Date: row.value_Date,
               exchange_rate: row.exchange_rate,
-              transaction_reference_number:
-                row.transaction_reference_number + "-" + new Date().getTime(),
+              transaction_reference_number: row.transaction_reference_number + "-" + new Date().getTime(),
               record_ID: row.record_ID,
               reference: row.reference,
               purpose: row.purpose,
               remark: row.remark,
               transaction_Type: row.transaction_Type,
               business_type: row.business_type,
-              account_holding_bank_number_of_payer:
-                row.account_holding_bank_number_of_payer,
+              account_holding_bank_number_of_payer: row.account_holding_bank_number_of_payer,
               payer_account_bank: row.payer_account_bank,
               debit_Account_No: row.debit_Account_No,
               payer_s_Name: row.payer_s_Name,
-              account_holding_bank_number_of_beneficiary:
-                row.account_holding_bank_number_of_beneficiary,
+              account_holding_bank_number_of_beneficiary: row.account_holding_bank_number_of_beneficiary,
               beneficiary_account_bank: row.beneficiary_account_bank,
               payee_s_Account_Number: row.payee_s_Account_Number,
               payee_s_Name: row.payee_s_Name,
@@ -1108,7 +1110,11 @@ export default {
               isDeleted: 0,
               is_ZCK: 0,
               is_EBS: 0,
-              purpose_fee: charge
+              purpose_fee: charge,
+              userid: this.keepUserid,
+              orgid: this.getOrgID,
+              topid: this.keepTopid,
+              company: this.keepCompany
             }
           })
           .then(function(obj) {
@@ -1490,6 +1496,9 @@ export default {
     }
   },
   created() {
+    this.keepUserid = sessionStorage.getItem("id");
+    this.keepCompany = sessionStorage.getItem("topName");
+    this.keepTopid = sessionStorage.getItem("topID");
     this.getOrgID = sessionStorage.getItem("orgID");
     this.getUserName = sessionStorage.getItem("name");
   },
