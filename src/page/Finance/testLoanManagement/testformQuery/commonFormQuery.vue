@@ -2,15 +2,16 @@
 
 <template>
 <div style="padding-bottom:80px">
+  <!-- 搜索 -->
    <el-form ref="formquery" :model="formquery" label-width="80px" >
-            
+
          <el-row type="flex" class="row-bg">
             <el-col :span="8">
                 <el-form-item label="团期计划" prop="teamPlan">
                     <el-input v-model="formquery.teamPlan"></el-input>
                 </el-form-item>
             </el-col>
-            <el-col :span="8">              
+            <el-col :span="8">
                 <el-form-item label="借款人" prop="borrower">
                    <el-autocomplete
                     style="width: 100%"
@@ -23,7 +24,7 @@
                     @blur="departureBorrowerBlur"
                     @focus="departureBorrowerFocus"
                     ></el-autocomplete>
-                </el-form-item>               
+                </el-form-item>
             </el-col>
             <el-col :span="8">
                 <el-form-item label="状态" prop="checkType">
@@ -32,14 +33,14 @@
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"></el-option>
-                 
+
                   </el-select>
-                   
+
                 </el-form-item>
             </el-col>
          </el-row>
         <el-row type="flex" class="row-bg">
-         
+
             <el-col :span="8">
                 <el-form-item label="申请时间" >
                     <el-col :span="11">
@@ -50,7 +51,7 @@
                     <el-col class="line" :span="2">-</el-col>
                     <el-col :span="11">
                         <el-form-item prop="applyLastTime">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="formquery.applyLastTime" style="width: 100%;"></el-date-picker> 
+                            <el-date-picker type="date" placeholder="选择日期" v-model="formquery.applyLastTime" style="width: 100%;"></el-date-picker>
                         </el-form-item>
                     </el-col>
                 </el-form-item>
@@ -64,21 +65,18 @@
             </el-col>
         </el-row>
 </el-form>
+  <!-- 搜索 END -->
 
- <el-button type="primary" @click="applyBtn()" class="add-style">申请</el-button>
+ <el-button type="primary" @click="applyBtn" class="add-style">申请</el-button>
 
 <el-table
-v-loading="listLoading"
+    v-loading="listLoading"
     :data="tableData"
     border
      stripe
      :header-cell-style="getRowClass"
     style="width: 100%">
-    <el-table-column
-      fixed
-      prop="paymentID"
-      label="借款单号">
-    </el-table-column>
+    <el-table-column fixed prop="paymentID" label="借款单号"></el-table-column>
     <el-table-column
       prop="checkTypeEX"
       label="状态">
@@ -109,35 +107,35 @@ v-loading="listLoading"
     <el-table-column
     prop="price"
       label="借款金额">
-     
+
     </el-table-column>
       <el-table-column
      prop="expensePrice"
-      label="已核销金额">    
+      label="已核销金额">
     </el-table-column>
     <el-table-column
      prop="createUser"
-      label="申请人">    
+      label="申请人">
     </el-table-column>
      <el-table-column
-      label="操作"> 
+      label="操作">
     <template slot-scope="scope">
         <el-button @click="handleClick(scope.row)" type="text" size="small">详情</el-button>
-       
+
       </template>
 
     </el-table-column>
   </el-table>
 
     <div class="block">
-   
+
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="curpage"
       :page-sizes="[100, 200, 300, 400]"
       :page-size=pageSize
-     
+
       :total=total>
     </el-pagination>
   </div>
@@ -149,15 +147,15 @@ v-loading="listLoading"
 
 <script>
   export default {
-    data() {
+    data () {
       return {
         formquery: {
           teamPlan: '',
           borrower: '',
           checkType: '',
           applyBeginTime: '',
-          applyLastTime: false,       
-       
+          applyLastTime: false,
+
         },
            options: [{
             value: '0',
@@ -169,7 +167,7 @@ v-loading="listLoading"
              value: '2',
              label: '驳回'
             }],
-         tableData: [{
+         tableData: [{ // 借款数据表格
           paymentID: '',
           checkTypeEX: '',
           province: '',
@@ -181,32 +179,22 @@ v-loading="listLoading"
           expensePrice:'',
           createUser:'',
         }],
-        listLoading:true,
-         curpage:1,
-         total:0,
-         pageSize:10,
+        listLoading: true,
+         curpage: 1,
+         total: 0,
+         pageSize: 10,
          pageIndex:1,
-         tableDataBorrower:[],//借款人
+         tableDataBorrower:[], // 借款人
          keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
          ifShowsearch: false,
       };
-
-
-      
-
     },
-    created(){
-
-        this.getPageList();//加载table页
-
+    created () {
+        this.getPageList(); // 加载table页
       },
-    
-   
     methods: {
       onSubmit() {
         console.log('submit!');
-
-
 
       },
        // 借款人模糊检索
@@ -217,15 +205,18 @@ v-loading="listLoading"
           name: queryBorrowerString
         }
       }).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
+        let keepRes = res.data.objects;
+        for (let i = 0; i < keepRes.length; i++) {
           this.tableDataBorrower.push({
-            "value": res.data.objects[i].name,
-            "userCode": res.data.objects[i].userCode
+            "value": keepRes[i].name,
+            "userCode": keepRes[i].userCode
           })
         }
         var results = queryBorrowerString ? this.tableDataBorrower.filter(this.createFilteBorrowerr(queryBorrowerString)) : [];
         cb(results)
-      }).catch(err => {})
+      }).catch(err => {
+        console.log( err )
+      })
     },
 
       // 模糊查询返回下拉选中项 - 查询返回userCode的（借款人）
@@ -241,7 +232,7 @@ v-loading="listLoading"
     },
     // 借款人 失焦
     departureBorrowerBlur(){
-      if(this.formquery.borrower == ''){
+      if(this.formquery.borrower === ''){
         this.ifShowsearch = false
       }else {
         if(this.keepBorrowerUserCode == null){
@@ -265,7 +256,7 @@ v-loading="listLoading"
 
       },
        handleClick(row) {
-       
+
       },
        handleSizeChange(val) {
         console.log(`每页 ${val} 条`);
@@ -287,9 +278,9 @@ v-loading="listLoading"
     },
 
       //获取分页列表
-        async getPageList(){   
+        async getPageList(){
              this.listLoading = true;
-            let res=await this.$http.post( this.GLOBAL.serverSrc + "/finance/payment/api/page",{
+            let res = await this.$http.post( this.GLOBAL.serverSrc + "/finance/payment/api/page",{
                 pageIndex: this.pageIndex,
                 pageSize: this.pageSize,
                 total:this.total,
@@ -297,25 +288,25 @@ v-loading="listLoading"
             });
             console.log(res.data);
             this.total=res.data.total;
-            this.tableData=res.data.objects;   
-            this.listLoading = false;        
+            this.tableData=res.data.objects;
+            this.listLoading = false;
         },
 
      //有条件获取分页列表
-     async getFilterPageList(){ 
+     async getFilterPageList(){
             let res=await this.$http.post( this.GLOBAL.serverSrc + "/finance/payment/api/page",{
                 pageIndex: this.pageIndex,
                 pageSize: this.pageSize,
                 total:this.total,
                 object: {
                     paymentType: 1, //无收入借款
-                    checkType: this.checkType, //状态                  
+                    checkType: this.checkType, //状态
                     groupCode:this.groupCode,
                     beginTime: this.applyBeginTime,
                     endTime: this.applyLastTime,
                     createUser: this.createUser,
-                   
- 
+
+
 
 
 
@@ -324,7 +315,7 @@ v-loading="listLoading"
             });
             console.log(res.data);
             this.total=res.data.total;
-            this.tableData=res.data.objects;           
+            this.tableData=res.data.objects;
         }
     }
   };
