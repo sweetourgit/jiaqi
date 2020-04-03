@@ -9,108 +9,108 @@
         <div class="matter">
           <div class="title"><u>{{orderList.name}}</u></div>
           <div>
-            <span class="fl red">订单总额:{{orderList.payable | numFilter}}</span>
-            <span class="fl red ml30">已付金额:{{orderList.paid | numFilter}}</span>
+            <span class="floatL red">订单总额:{{orderList.payable | numFilter}}</span>
+            <span class="floatL red ml30">已付金额:{{orderList.paid | numFilter}}</span>
           </div>
           <div>
             <table width="100%">
               <tr>
                 <td width="33%">
-                  <div width="80" class="fl fb">订单ID:</div>
-                  <div class="fl ml13">{{orderList.orderCode}}</div>
+                  <div width="80" class="floatL fb">订单ID:</div>
+                  <div class="floatL ml13">{{orderList.orderCode}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">团期计划:</div>
-                  <div class="fl ml13">{{orderList.groupCode}}</div>
+                  <div width="80" class="floatL fb">团期计划:</div>
+                  <div class="floatL ml13">{{orderList.groupCode}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">下单时间:</div>
-                  <div class="fl ml13">{{formatDate(new Date(orderList.createTime))}}</div>
-                </td>
-              </tr>
-              <tr>
-                <td width="33%">
-                  <div width="80" class="fl fb">套餐:</div>
-                  <div class="fl ml13">{{orderList.package}}</div>
-                </td>
-                <td width="33%">
-                  <div width="80" class="fl fb">出发地:</div>
-                  <div class="fl ml13">{{orderList.pod}}</div>
-                </td>
-                <td width="33%">
-                  <div width="80" class="fl fb">目的地:</div>
-                  <div class="fl ml13">{{orderList.destination}}</div>
+                  <div width="80" class="floatL fb">下单时间:</div>
+                  <div class="floatL ml13">{{formatDate(new Date(orderList.createTime))}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
-                  <div width="80" class="fl fb">出发日期:</div>
-                  <div class="fl ml13">{{orderList.date}}</div>
+                  <div width="80" class="floatL fb">套餐:</div>
+                  <div class="floatL ml13">{{orderList.package}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">电话:</div>
-                  <div class="fl ml13">{{orderList.contactTel}}</div>
+                  <div width="80" class="floatL fb">出发地:</div>
+                  <div class="floatL ml13">{{orderList.pod}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">产品类型:</div>
-                  <div v-if="orderList.productType=='1'" class="fl ml13">跟团游</div>
-                  <div v-if="orderList.productType=='2'" class="fl ml13">自由行</div>
-                  <div v-if="orderList.productType=='3'" class="fl ml13">签证</div>
-                  <div v-if="orderList.productType=='4'" class="fl ml13">邮轮</div>
-                </td>
-              <tr>
-                <td width="33%">
-                  <div width="80" class="fl fb">联系人:</div>
-                  <div class="fl ml13">{{orderList.contactName}}</div>
-                </td>
-                <td width="33%">
-                  <div width="80" class="fl fb">数量:</div>
-                  <div class="fl ml13">{{orderList.number}}</div>
-                </td>
-                <td width="33%">
-                  <div width="80" class="fl fb">其他费用:</div>
-                  <div class="fl ml13">{{orderList.otherPrice}}</div>
+                  <div width="80" class="floatL fb">目的地:</div>
+                  <div class="floatL ml13">{{orderList.destination}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
-                  <div width="80" class="fl fb">整体优惠:</div>
-                  <div class="fl ml13">{{orderList.entiretyFav}}</div>
+                  <div width="80" class="floatL fb">出发日期:</div>
+                  <div class="floatL ml13">{{orderList.date}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">销售:</div>
-                  <div class="fl ml13">{{orderList.indirectSale}}</div>
+                  <div width="80" class="floatL fb">电话:</div>
+                  <div class="floatL ml13">{{orderList.contactTel}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">订单来源:</div>
-                  <div v-if="orderList.orderChannel=='1'" class="fl ml13">同业</div>
-                  <div v-if="orderList.orderChannel=='2'" class="fl ml13">线上直客</div>
-                  <div v-if="orderList.orderChannel=='3'" class="fl ml13">线下直客</div>
+                  <div width="80" class="floatL fb">产品类型:</div>
+                  <div v-if="orderList.productType=='1'" class="floatL ml13">跟团游</div>
+                  <div v-if="orderList.productType=='2'" class="floatL ml13">自由行</div>
+                  <div v-if="orderList.productType=='3'" class="floatL ml13">签证</div>
+                  <div v-if="orderList.productType=='4'" class="floatL ml13">邮轮</div>
+                </td>
+              <tr>
+                <td width="33%">
+                  <div width="80" class="floatL fb">联系人:</div>
+                  <div class="floatL ml13">{{orderList.contactName}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="floatL fb">数量:</div>
+                  <div class="floatL ml13">{{orderList.number}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="floatL fb">其他费用:</div>
+                  <div class="floatL ml13">{{orderList.otherPrice}}</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
-                  <div width="80" class="fl fb">优惠活动:</div>
-                  <div class="fl ml13">{{0}}</div>
+                  <div width="80" class="floatL fb">整体优惠:</div>
+                  <div class="floatL ml13">{{orderList.entiretyFav}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">操作:</div>
-                  <div class="fl ml13">{{orderList.op}}</div>
+                  <div width="80" class="floatL fb">销售:</div>
+                  <div class="floatL ml13">{{orderList.indirectSale}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">商户销售:</div>
-                  <div class="fl ml13">{{orderList.saler}}</div>
+                  <div width="80" class="floatL fb">订单来源:</div>
+                  <div v-if="orderList.orderChannel=='1'" class="floatL ml13">{{orderList.orderChannels}}</div>
+                  <div v-if="orderList.orderChannel=='2'" class="floatL ml13">线上直客</div>
+                  <div v-if="orderList.orderChannel=='3'" class="floatL ml13">线下直客</div>
                 </td>
               </tr>
               <tr>
                 <td width="33%">
-                  <div width="80" class="fl fb">平台:</div>
-                  <div v-if="orderList.platform=='1'" class="fl ml13">ERP系统</div>
-                  <div v-if="orderList.platform=='2'" class="fl ml13">同业系统</div>
+                  <div width="80" class="floatL fb">优惠活动:</div>
+                  <div class="floatL ml13">{{0}}</div>
                 </td>
                 <td width="33%">
-                  <div width="80" class="fl fb">支付方式:</div>
-                  <div class="fl ml13">{{0}}</div>
+                  <div width="80" class="floatL fb">操作:</div>
+                  <div class="floatL ml13">{{orderList.op}}</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="floatL fb">商户销售:</div>
+                  <div class="floatL ml13">{{orderList.saler}}</div>
+                </td>
+              </tr>
+              <tr>
+                <td width="33%">
+                  <div width="80" class="floatL fb">平台:</div>
+                  <div v-if="orderList.platform=='1'" class="floatL ml13">ERP系统</div>
+                  <div v-if="orderList.platform=='2'" class="floatL ml13">同业系统</div>
+                </td>
+                <td width="33%">
+                  <div width="80" class="floatL fb">支付方式:</div>
+                  <div class="floatL ml13">{{0}}</div>
                 </td>
               </tr>
             </table>
@@ -118,7 +118,7 @@
         </div>
         <div class="line"></div>
         <div class="matter">
-          <div class="fl">
+          <div class="floatL">
             <span class="point"></span>
             <span v-if="orderList.orderStatus == 1">补充资料</span>
             <span v-if="orderList.orderStatus == 2">电子合同</span>
@@ -130,26 +130,26 @@
             <span v-if="orderList.orderStatus == 8">签署合同</span>
             <span v-if="orderList.orderStatus == 9">作废订单</span>
             <span v-if="orderList.orderStatus == 10">确认订单</span>
-            <!-- <span class="fl">{{orderList.orderStatus}}</span> -->
+            <!-- <span class="floatL">{{orderList.orderStatus}}</span> -->
           </div>
-          <!-- <div class="fl ml30">
-            <span class="fl">待确认剩余</span>
-            <span class="fl red">23:00:00</span>
+          <!-- <div class="floatL ml30">
+            <span class="floatL">待确认剩余</span>
+            <span class="floatL red">23:00:00</span>
           </div> -->
           <!-- <div class="fr">
-            <span class="fl cursor">联系客人</span>
-            <span class="fl ml5">|</span>
-            <span class="fl cursor">备注</span>
-            <span class="fl ml5">|</span>
-            <span class="fl cursor">收款</span>
-            <span class="fl ml5">|</span>
-            <span class="fl cursor">转团</span>
-            <span class="fl ml5">|</span>
-            <span class="fl cursor">流程管理</span>
-            <span class="fl ml5">|</span>
-            <span class="fl cursor" @click="refund(1)">退款</span>
-            <span class="fl ml5">|</span>
-            <span class="fl cursor">更多</span>
+            <span class="floatL cursor">联系客人</span>
+            <span class="floatL ml5">|</span>
+            <span class="floatL cursor">备注</span>
+            <span class="floatL ml5">|</span>
+            <span class="floatL cursor">收款</span>
+            <span class="floatL ml5">|</span>
+            <span class="floatL cursor">转团</span>
+            <span class="floatL ml5">|</span>
+            <span class="floatL cursor">流程管理</span>
+            <span class="floatL ml5">|</span>
+            <span class="floatL cursor" @click="refund(1)">退款</span>
+            <span class="floatL ml5">|</span>
+            <span class="floatL cursor">更多</span>
           </div> -->
         </div>
       </div>
@@ -268,7 +268,7 @@ export default {
 .border{width:1160px; border:1px solid #e6e6e6; margin:0 0 25px 0;}
 .matter{line-height: 40px;margin-left:auto;margin-right:auto; overflow:hidden;width:1130px;}
 .title{font-size:13pt;font-weight:bold;}
-.fl{float:left;}
+.floatL{float:left;}
 .red{color:red;}
 .ml30{margin:0 0 0 30px;}
 .line{width:1160px; line-height:40px; border-bottom:1px solid #e6e6e6;}
