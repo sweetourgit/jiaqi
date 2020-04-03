@@ -4,11 +4,11 @@
     <el-dialog :title="title" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
       @close="cancelInfoOrder()">
       <div class="controlButton">
-  	    <div class="fl">
+  	    <div class="floatL">
   	      <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
   	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情' && refundList.refundStateType !='1'">撤 销</el-button>
   	    </div>
-        <div class="fl" v-if="title == '审批'">
+        <div class="floatL" v-if="title == '审批'">
     	    <el-button class="ml13" type="primary" @click="payAccount()" v-if="ifDY100068">支付账户</el-button>
           <!-- <el-button class="ml13" type="primary">转 办</el-button> -->
           <el-button class="ml13" type="primary" :disabled="forbidden" @click="through()">通 过</el-button>
@@ -26,56 +26,56 @@
           <table width="100%">
             <tr>
               <td width="33%">
-                <div width="80" class="fl fb">退款单号:</div>
-                <div class="fl ml13">{{refundList.refundCode}}</div>
+                <div width="80" class="floatL fb">退款单号:</div>
+                <div class="floatL ml13">{{refundList.refundCode}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">申请人:</div>
-                <div class="fl ml13">{{refundList.name}}</div>
+                <div width="80" class="floatL fb">申请人:</div>
+                <div class="floatL ml13">{{refundList.name}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">申请时间:</div>
-                <div class="fl ml13">{{refundList.createTime | formatDate}}</div>
+                <div width="80" class="floatL fb">申请时间:</div>
+                <div class="floatL ml13">{{refundList.createTime | formatDate}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
-                <div width="80" class="fl fb">退款方式:</div>
+                <div width="80" class="floatL fb">退款方式:</div>
                 <div>
-                  <div v-if="refundList.refundType=='1'" class="fl ml13">部分退</div>
-                  <div v-if="refundList.refundType=='2'" class="fl ml13">全退</div>
+                  <div v-if="refundList.refundType=='1'" class="floatL ml13">部分退</div>
+                  <div v-if="refundList.refundType=='2'" class="floatL ml13">全退</div>
                 </div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">总退款:</div>
-                <div class="fl ml13">{{refundList.allRefundPrice}}</div>
+                <div width="80" class="floatL fb">总退款:</div>
+                <div class="floatL ml13">{{refundList.allRefundPrice}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">实际退款金额:</div>
-                <div class="fl ml13">{{refundList.realRefundPrice}}</div>
+                <div width="80" class="floatL fb">实际退款金额:</div>
+                <div class="floatL ml13">{{refundList.realRefundPrice}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
-                <div width="80" class="fl fb">汇款账号:</div>
-                <div class="fl ml13">{{refundList.remittanceCode}}</div>
+                <div width="80" class="floatL fb">汇款账号:</div>
+                <div class="floatL ml13">{{refundList.remittanceCode}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">汇款开户行:</div>
-                <div class="fl ml13">{{refundList.remittanceBank}}</div>
+                <div width="80" class="floatL fb">汇款开户行:</div>
+                <div class="floatL ml13">{{refundList.remittanceBank}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">汇款开户人:</div>
-                <div class="fl ml13">{{refundList.remittancePerson}}</div>
+                <div width="80" class="floatL fb">汇款开户人:</div>
+                <div class="floatL ml13">{{refundList.remittancePerson}}</div>
               </td>
             <tr>
               <td width="33%">
-                <div width="80" class="fl fb">退款原由:</div>
-                <div class="fl ml13">{{refundList.reason}}</div>
+                <div width="80" class="floatL fb">退款原由:</div>
+                <div class="floatL ml13">{{refundList.reason}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">支付账户:</div>
-                <div class="fl ml13">{{payName}}</div>
+                <div width="80" class="floatL fb">支付账户:</div>
+                <div class="floatL ml13">{{payName}}</div>
               </td>
             </tr>
           </table>
@@ -85,30 +85,30 @@
           <table width="100%">
             <tr>
               <td width="33%">
-                <div width="80" class="fl fb">订单ID:</div>
-                <div class="fl ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderCode}}</u></div>
+                <div width="80" class="floatL fb">订单ID:</div>
+                <div class="floatL ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderCode}}</u></div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">订单金额:</div>
-                <div class="fl ml13">{{refundList.payable}}</div>
+                <div width="80" class="floatL fb">订单金额:</div>
+                <div class="floatL ml13">{{refundList.payable}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">已付金额:</div>
-                <div class="fl ml13">{{refundList.paid}}</div>
+                <div width="80" class="floatL fb">已付金额:</div>
+                <div class="floatL ml13">{{refundList.paid}}</div>
               </td>
             </tr>
             <tr>
               <td width="33%">
-                <div width="80" class="fl fb">未付金额:</div>
-                <div class="fl ml13">{{nonPayment}}</div>
+                <div width="80" class="floatL fb">未付金额:</div>
+                <div class="floatL ml13">{{nonPayment}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">其他费用:</div>
-                <div class="fl ml13">{{refundList.otherPrice}}</div>
+                <div width="80" class="floatL fb">其他费用:</div>
+                <div class="floatL ml13">{{refundList.otherPrice}}</div>
               </td>
               <td width="33%">
-                <div width="80" class="fl fb">整体优惠:</div>
-                <div class="fl ml13">{{refundList.entiretyFav}}</div>
+                <div width="80" class="floatL fb">整体优惠:</div>
+                <div class="floatL ml13">{{refundList.entiretyFav}}</div>
               </td>
             </tr>
           </table>
@@ -170,7 +170,7 @@
         <el-button class="ml13" @click="paymentRefundCharge()"type="primary">确 认</el-button>
       </div>
       <div class="oh">
-        <div class="fl" style="margin:10px 0 0 0;">退款手续费:</div>
+        <div class="floatL" style="margin:10px 0 0 0;">退款手续费:</div>
         <el-input class="refundChargeClass" placeholder="0.00" v-model="refundCharge"> </el-input>
       </div>
     </el-dialog>
@@ -182,8 +182,8 @@
         <el-button class="ml13" @click="determine()" type="primary">确 认</el-button>
       </div>
       <div class="oh">
-        <div class="fl" v-if="approval === '审批通过'">通过说明:</div>
-        <div class="fl" v-if="approval === '审批驳回'">驳回意见:</div>
+        <div class="floatL" v-if="approval === '审批通过'">通过说明:</div>
+        <div class="floatL" v-if="approval === '审批驳回'">驳回意见:</div>
         <el-input class="opinions" type="textarea" :rows="5" placeholder="请输入内容" v-model="opinion"> </el-input>
       </div>
     </el-dialog>
@@ -613,7 +613,7 @@ export default {
 .planBorder{width: 95%;margin: 0 30px 10px 0;font-size: 14px;line-height: 25px;}
 .order-title{font-size: 14pt; color:#000;line-height: 40px;}
 .controlButton{position: absolute; top: 8px; right: 10px;}
-.fl{float: left;}
+.floatL{float: left;}
 .fb{font-weight: bold;}
 .ml13{margin: 0 0 0 13px;}
 .state01{text-align: center; background: #ffaa00; border-radius: 5px; color: #fff;width:60px;padding: 2px; margin: 10px 0 0 0;}
