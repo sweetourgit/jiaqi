@@ -529,7 +529,6 @@ export default {
     //   }
     // },
     isSaveBtnClick(){
-      console.log(123)
       this.isSaveBtn = false
       if(this.totalPrice + this.changedPrice<= 0) return this.isSaveBtn = true;
       // 如果一个报名也没有也不可以保存
@@ -583,11 +582,6 @@ export default {
     },
 
     orderModification(status, cancle) {
-      console.log(status,'status');
-       console.log(cancle,'cancle');
-       if(cancle == 0){
-         return;
-       }
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -657,11 +651,11 @@ export default {
             break;
         }
         // 订单工作流状态更新-作废订单
-        // if (cancle == 0) {
-        //   this.dialogVisible = false;
-        //   url = "/order/stat/api/invalid";
-        //   // url = "/order/all/api/orderdelete";
-        // }
+        if (cancle == 0) {
+          this.dialogVisible = false;
+          url = "/order/stat/api/invalid";
+          // url = "/order/all/api/orderdelete";
+        }
           console.log(this.orderget.occupyStatus,'occupyStatus');
         this.$http
           .post(this.GLOBAL.serverSrc + url, {
@@ -1179,7 +1173,7 @@ export default {
     },
 
     compPrice(type, index) {
-      console.log(type,index)
+      
       //计算总价
       if (type == 2) {
         this.isChangeNumber = true; //数量有变动 则动态按钮不可点击
@@ -1275,13 +1269,14 @@ export default {
             '","Tel":"' +
             this.ruleForm.contactPhone +
             '"}';
-          console.log(occupyStatus,' ||obj.occupyStatus = 3;');
+          //console.log(occupyStatus,' ||obj.occupyStatus = 3;');
           if (occupyStatus == 1) {
             obj.occupyStatus = 2;
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
-          } else if(occupyStatus== 0 ){
-            obj.occupyStatus = 3;
+          }  
+          if(occupyStatus == 0){
+            return;
           }
             // 补充资料和待出行 信息更改跳转回到确认占位状态
           if ( this.isChangeNumber === true &&
@@ -1317,12 +1312,14 @@ export default {
           for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
               let bornDate = this.salePrice[i][j].bornDate;
+              let createTime = this.salePrice[i][j].createTime;
               let sex = this.salePrice[i][j].sex;
                if(sex === -1){
                   this.salePrice[i][j].sex = 3
                 }
-              if(bornDate === null || bornDate === NaN){
+              if(bornDate === null || bornDate === NaN ||createTime == null){
                   this.salePrice[i][j].bornDate = 0;
+                  this.salePrice[i][j].createTime = 0;
                   guest.push(this.salePrice[i][j]);
                 }else if(bornDate.length === 24){
                   this.salePrice[i][j].bornDate = Date.parse(bornDate);
@@ -1357,8 +1354,7 @@ export default {
             obj.guests = guest;
             obj.teamID = this.orderget.teamID;
             obj.planID = this.orderget.planID;
-            console.log(obj,'obj');
-               this.$http
+              this.$http
                     .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                       object: obj
                     })
