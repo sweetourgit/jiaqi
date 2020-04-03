@@ -37,6 +37,7 @@
             <div v-if="scope.row.refundStateType=='退款完成'" style="color: #33D174" >{{scope.row.refundStateType}}</div>
           </template>
         </el-table-column>
+        <!-- <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column> -->
         <el-table-column prop="createTime" label="申请日期" align="center">
           <template slot-scope="scope">
             <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
@@ -48,6 +49,11 @@
         <el-table-column prop="realRefundPrice" label="实际退款金额" align="center"></el-table-column>
         <el-table-column prop="name" label="申请人" align="center"></el-table-column>
         <el-table-column prop="" label="审批意见" align="center"></el-table-column>
+        <!-- <el-table-column prop="createTime" label="审批时间" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
+          </template>
+        </el-table-column> -->
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <span class="cursor blue" @click="operation(1,scope.row.id)">详情</span>

@@ -1878,7 +1878,7 @@
         this.ruleForm.merchantsSell = ""; //商户名称发生改变时，商户销售清空
         this.tableData2 = [];
         this.$http
-          .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/listname", {
+          .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
             object: {
               selName: queryString3,
               isDeleted: 0,
@@ -1935,10 +1935,9 @@
       },
       departure(item,useList) {
         this.productPos = item.id; //获取供应商的id传给下单接口的orgID
-        this.lines = item.balance; //获取剩余额度
+        this.getAmount(); // 通过id获取剩余额度加预存款
         this.deposit = item.deposit; //获取预存款
         this.payment = item.settlementType; //获取结算方式
-        this.amount = this.lines + this.deposit;
         this.originPlace = item.value;
         this.querySearch2();
         this.ruleForm.travelSales = "";
@@ -1953,6 +1952,16 @@
           this.ruleForm.merchantsSell = this.useList[0].value;
           this.userID = this.useList[0].id;
         },300)
+      },
+      getAmount(){ // 通过id获取剩余额度加预存款
+        this.$http.post(this.GLOBAL.serverSrc + '/universal/localcomp/api/get',{
+           "id":this.productPos
+        }).then(res => {
+            if(res.data.isSuccess == true){
+               let data = res.data.object;
+               this.amount = res.data.object.balance + res.data.object.deposit;
+            }
+        }) 
       },
       travelGuest() {
         //直客销售清空后输入信息不对的验证取消
