@@ -633,7 +633,7 @@ export default {
                 }
               }
             }
-            this.ordersave(1);
+            this.ordersave();
             url += "/signcontract";
              //url += "/econtract";
             break;
@@ -673,7 +673,7 @@ export default {
                 type: "success"
               });
               if (status === 10) {
-                this.ordersave(1);
+                this.ordersave();
               }
               // 取消订单按钮
               if (cancle === 0) {
@@ -1242,7 +1242,7 @@ export default {
                 .then(() => {
                        
                     this.orderget.orderStatus = 10;
-                    this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+                    this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
                     this.ExistContract(this.orderget.orderCode)
                 })
                 .catch(() => {
@@ -1252,11 +1252,11 @@ export default {
                   });
               });
             }else{
-             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
             }
            }else{
             
-             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
            }
       },
     ordersave_data(id, occupyStatus){ // 便于提醒是否作废合同新增客人
@@ -1275,6 +1275,9 @@ export default {
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
           } 
+          if(occupyStatus == 0){
+            return;
+          }
             // 补充资料和待出行 信息更改跳转回到确认占位状态
           if ( this.isChangeNumber === true &&
             (this.orderget.orderStatus === 1 ||
@@ -1308,12 +1311,14 @@ export default {
             for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
               let bornDate = this.salePrice[i][j].bornDate;
+              let createTime = this.salePrice[i][j].createTime;
               let sex = this.salePrice[i][j].sex;
                if(sex === -1){
                   this.salePrice[i][j].sex = 3
                 }
-              if(bornDate === null || bornDate === NaN){
+              if(bornDate === null || bornDate === NaN ||createTime == null){
                   this.salePrice[i][j].bornDate = 0;
+                  this.salePrice[i][j].createTime = 0;
                   guest.push(this.salePrice[i][j]);
                 }else if(bornDate.length === 24){
                   this.salePrice[i][j].bornDate = Date.parse(bornDate);
