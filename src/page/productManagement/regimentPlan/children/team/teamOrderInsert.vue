@@ -1878,7 +1878,7 @@
         this.ruleForm.merchantsSell = ""; //商户名称发生改变时，商户销售清空
         this.tableData2 = [];
         this.$http
-          .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/list", {
+          .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/listname", {
             object: {
               selName: queryString3,
               isDeleted: 0,
