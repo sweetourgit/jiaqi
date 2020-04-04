@@ -21,10 +21,10 @@
             <el-input v-model="ruleForm.price" class="inputWidth" placeholder="请输入" maxlength="20" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="预订须知：" prop="note" label-width="140px">
-            <el-input v-model="ruleForm.note" class="inputWidth" placeholder="请输入" type="textarea" maxlength="1000" show-word-limit></el-input>
+            <el-input v-model="ruleForm.note" class="inputWidth" placeholder="请输入" type="textarea" maxlength="1000" show-word-limit :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="温馨提示：" prop="tips" label-width="140px">
-            <el-input v-model="ruleForm.tips" class="inputWidth" placeholder="请输入" type="textarea" maxlength="200" show-word-limit></el-input>
+            <el-input v-model="ruleForm.tips" class="inputWidth" placeholder="请输入" type="textarea" maxlength="200" show-word-limit :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="去程：" prop="go" label-width="140px">
             <el-input v-model="ruleForm.originGo" class="inputWidth" placeholder="请输入出发地" maxlength="20" show-word-limit></el-input>

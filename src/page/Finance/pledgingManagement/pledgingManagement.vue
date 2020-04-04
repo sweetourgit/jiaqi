@@ -1,15 +1,33 @@
 <template>
   <div class="vivo" style="position:relative">
     <div class="demo-input-suffix ">
-      <span class="search-title">报账团号：</span>
-      <el-input v-model="activeForm.tour" class="input" placeholder="请输入"></el-input>
-      <span class="search-title">操作人：</span>
-      <!--<el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>-->
-      <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
-      <div class="button_select">
-        <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
-        <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
-      </div>
+      <el-row>
+        <el-col :span="7">
+          <span class="search-title">报账团号：</span>
+          <el-input v-model="activeForm.tour" class="input" placeholder="请输入"></el-input>
+        </el-col>
+        <el-col :span="7">
+          <span class="search-title">操作人：</span>
+          <!--<el-input v-model="activeForm.user" class="input" placeholder="请输入"></el-input>-->
+          <el-autocomplete class="input" v-model="activeForm.user" :fetch-suggestions="querySearchOper" placeholder="请输入操作人员" @select="handleSelectOper" @blur="blurHand"></el-autocomplete>
+        </el-col>
+        <el-col :span="9">
+          <span class="search-title">申请时间：</span>
+          <el-date-picker v-model="activeForm.startTime" type="date" placeholder="开始时间" :picker-options="startDatePicker" class="dataIn"></el-date-picker>
+          <div class="date-line"></div>
+          <el-date-picker v-model="activeForm.endTime" type="date" placeholder="结束时间" :picker-options="endDatePicker" class="dataIn"></el-date-picker>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="9" :offset="14">
+          <div class="button_select">
+            <el-button type="primary" @click="resetHand()" size="medium" plain>重置</el-button>
+            <el-button type="primary" @click="searchHand()" size="medium">搜索</el-button>
+            <el-button type="primary" @click="exportrecognition()" size="medium" :disabled="activeForm.tour == '' && activeForm.userID == '' && activeForm.startTime == '' && activeForm.endTime == ''">导出</el-button>
+          </div>
+        </el-col>
+      </el-row>
+      
     </div>
     <div class="main">
       <el-button type="primary" @click="startNumber('发票号','发票起始号:')" plain>发票起始号：{{invoiceStart}}</el-button>
@@ -43,7 +61,9 @@ export default {
       activeForm: {
         user: '',
         userID: '',
-        tour: ''
+        tour: '',
+        startTime: '',
+        endTime: ''
       },
       operatorList: [],
       reable: true,
@@ -54,7 +74,9 @@ export default {
       dialogFormVisible: false,
       number: 10,
       invoiceStart: '12321',
-      receivStart: '214321'
+      receivStart: '214321',
+      startDatePicker: this.beginDate(),
+      endDatePicker: this.processDate()
     }
   },
   computed: {
@@ -62,6 +84,9 @@ export default {
   },
   watch: {},
   methods: {
+    exportrecognition(){
+      window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/exportrecognition?tour_no=" + this.activeForm.tour + "&create_uid=" + this.activeForm.userID + "&start_time=" + this.activeForm.startTime + "&end_time=" + this.activeForm.endTime;
+    },
     getNumber(number) {
       this.number = number;
     },
@@ -108,8 +133,10 @@ export default {
     resetHand() {
       this.activeForm = {
         user: '',
-        c: '',
+        userID: '',
         tour: '',
+        startTime: '',
+        endTime: ''
       };
       if(this.activeName == "one"){
         this.$refs.record.loadDataRecord();
@@ -210,7 +237,32 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-    }
+    },
+    // 时间限制
+    beginDate(){
+      const that = this;
+      return {
+        disabledDate(time){
+          if (that.activeForm.endTime) { //如果结束时间不为空，则小于结束时间
+            return new Date(that.activeForm.endTime).getTime() < time.getTime()
+          } else {
+            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+          }
+        }
+      }
+    },
+    processDate(){
+      const that = this;
+      return {
+        disabledDate(time) {
+          if (that.activeForm.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+            return new Date(that.activeForm.startTime).getTime() > time.getTime()
+          } else {
+            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
+          }
+        }
+      }
+    },
   },
   created() {
     this.loadData();
@@ -228,14 +280,17 @@ export default {
     padding: 40px;
     margin-top: 20px;
 
+    .el-row{
+      margin-bottom: 10px;
+    }
     .search-title {
       font-size: 14px;
       margin-left: 20px;
       margin-top: 10px;
     }
 
-    .el-input {
-      width: 20%;
+    .input {
+      width: 65%;
     }
 
     .el-input__inner {
@@ -254,8 +309,10 @@ export default {
     }
 
     .button_select {
-      display: inline;
-      margin-left: 15%;
+      .el-button{
+        float: right;
+        margin-right: 10px;
+      }
     }
 
   }

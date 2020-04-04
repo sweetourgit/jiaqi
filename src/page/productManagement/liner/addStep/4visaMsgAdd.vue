@@ -15,7 +15,7 @@
             <el-input v-model="ruleForm.name" class="inputWidth" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="描述" prop="introduction" label-width="140px">
-            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea"></el-input>
+            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" :rows="6"></el-input>
           </el-form-item>
           <el-form-item label="人群：" prop="person" label-width="140px">
             <el-checkbox-group v-model="ruleForm.person">
