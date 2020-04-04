@@ -297,17 +297,17 @@
         }, ).then(function(response) {
           console.log('无收入借款list',response);
           if (response.data.code == '200') {
-//            console.log('无收入借款list',response);
+            // console.log('无收入借款list',response);
             that.tableData = response.data.data.list;
             that.num = response.data.data.list.length;
             that.pageCount = response.data.data.total - 0;
             let moneyAll = 0;
             that.tableData.forEach(function (item, index, arr) {
               moneyAll += parseFloat(item.loan_money);
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
+              // item.receivables_at = formatDate(new Date(item.receivables_at*1000));
+              // item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
+              // item.created_at = item.created_at.split(" ")[0];
               // 获取申请人
               that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
@@ -316,7 +316,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-//                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
@@ -397,7 +397,7 @@
         }).then(function(response) {
 
           if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
+            // console.log('操作人员列表',response.data.objects);
             let operatorList = [];
             response.data.objects.forEach(function (item, index, arr) {
               const operator = {
@@ -417,7 +417,6 @@
 
       // 时间限制（开始时间小于结束时间）
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -430,7 +429,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
