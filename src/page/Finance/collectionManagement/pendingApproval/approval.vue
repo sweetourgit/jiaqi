@@ -1205,7 +1205,11 @@ export default {
               isDeleted: 0,
               surplus_Amount: row.surplus_Amount,
               is_ZCK: 0,
-              is_EBS: 0
+              is_EBS: 0,
+              userid: this.keepUserid,
+              orgid: this.getOrgID,
+              topid: this.keepTopid,
+              company: this.keepCompany
             }
           })
           .then(function(obj) {
