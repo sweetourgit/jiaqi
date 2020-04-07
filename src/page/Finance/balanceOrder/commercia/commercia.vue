@@ -63,19 +63,19 @@
          style="width: 100%;" 
          :header-cell-style="getRowClass"
          :row-class-name="tableRowClassName" >
-            <el-table-column prop="ID" label="订单单号" width="185" align="center"></el-table-column>
-            <el-table-column prop="name" label="商户名称" width="119" align="center"></el-table-column>
-            <el-table-column prop="moneyType" label="结款方式" width="80" align="center"></el-table-column>
-            <el-table-column prop="productName" label="产品名称" width="170" align="center"></el-table-column>
-            <el-table-column prop="plan" label="团期计划" width="140" align="center"></el-table-column>
-            <el-table-column prop="order" label="订单金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="arrears" label="欠款金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="also" label="已还金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="examine" label="待审批金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
-            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
-            <el-table-column prop="date" label="出团日期" width="100" align="center"></el-table-column>
-            <el-table-column prop="paymentID" label="操作" width="80" align="center">
+            <el-table-column prop="ID" label="订单单号" align="center"></el-table-column>
+            <el-table-column prop="name" label="商户名称" align="center"></el-table-column>
+            <el-table-column prop="moneyType" label="结款方式" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="plan" label="团期计划"  align="center"></el-table-column>
+            <el-table-column prop="order" label="订单金额"  align="center"></el-table-column>
+            <el-table-column prop="arrears" label="欠款金额"  align="center"></el-table-column>
+            <el-table-column prop="also" label="已还金额"  align="center"></el-table-column>
+            <el-table-column prop="examine" label="待审批金额"  align="center"></el-table-column>
+            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center"></el-table-column>
+            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' align="center"></el-table-column>
+            <el-table-column prop="date" label="出团日期"  align="center"></el-table-column>
+            <el-table-column prop="paymentID" label="操作"  align="center">
                           <template slot-scope="scope">
                           <div @click="dialogchange(scope)" style="color: #f5a142">修改时间</div>
                          </template>
