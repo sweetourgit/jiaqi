@@ -1308,7 +1308,7 @@ export default {
             sum += item;
           });
           let guest = [];
-            for (let i = 0; i < this.salePrice.length; i++) {
+           for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
               let bornDate = this.salePrice[i][j].bornDate;
               let createTime = this.salePrice[i][j].createTime;
@@ -1328,7 +1328,7 @@ export default {
                 }
             }
           }
-           obj.number= guest.length;
+          obj.number= guest.length;
           // 第一次保存，赋值时间错
           if(typeof id=== 'object' && 'altKey' in id){
             let timestamp= Date.now();

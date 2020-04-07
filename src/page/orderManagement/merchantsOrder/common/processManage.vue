@@ -636,7 +636,6 @@ export default {
             // url += "/econtract";
             break;
          case 8:
-           console.log(8);
             let result= {};
             let token= localStorage.getItem('token');
             let attrArr= ['userCode', 'name', 'topName', 'orgName'];
@@ -679,18 +678,18 @@ export default {
                 //this.ordersave();
               }
               // 取消订单按钮
-              // if (cancle === 0) {
-              //   this.$http
-              //     .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
-              //       id: this.orderget.id
-              //     })
-              //     .then(res => {
-              //       console.log(res);
-              //     })
-              //     .catch(err => {
-              //       console.log(err);
-              //     });
-              // }
+              if (cancle === 0) {
+                this.$http
+                  .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
+                    id: this.orderget.id
+                  })
+                  .then(res => {
+                    console.log(res);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              }
               this.$emit("orderPage");
               this.cancle();
             }
