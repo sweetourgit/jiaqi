@@ -265,12 +265,12 @@ export default {
           if(res.data.objects){
             this.editableTabs = res.data.objects;
             this.ruleForm.caption = this.editableTabs[this.editableTabsValue].title;
-            this.tabIndex = this.editableTabs.length;
-          }else{
-            this.editableTabs = []
           }
-          this.rowList();
+        }else{
+          this.editableTabs = []
         }
+        this.tabIndex = this.editableTabs.length;
+        this.rowList();
       })
     },
     handleClick(tab, event){
@@ -345,6 +345,7 @@ export default {
             title: '签证信息' + (this.editableTabs.length + 1),
             content: 'New Tab content'
           });
+          this.tableDate = [] ;
         }else{
           this.editableTabs.push({
             title: this.messageTitle,
@@ -407,6 +408,8 @@ export default {
                   }       
                   this.editableTabsValue = String(this.editableTabs.length);
                   this.$message.success("删除成功");
+                } else {
+                  this.$message.success("该主题存在签证信息人群，不允许删除");
                 }
                })
             }
