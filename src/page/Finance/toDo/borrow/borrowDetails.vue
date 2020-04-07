@@ -7,7 +7,7 @@
 <template>
   <div class="loan-management">
     <!-- 按钮组 -->
-    <div style="text-align: right; margin: 25px 20px 0 0;">
+    <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button type="warning" plain @click="handleCancel">取消</el-button>
       <el-button
         @click="handlePass"
@@ -60,20 +60,20 @@
           <el-col :span="17"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">创建时间:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第一行 END -->
       <!-- 第二行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">团期计划:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">团期计划:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">产品名称:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">产品名称:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">供应商:</div></el-col>
@@ -84,26 +84,26 @@
       <!-- 第三行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">借款类型:</div></el-col>
-          <el-col :span="15">
+          <el-col :span="7"><div class="grid-del label-color">借款类型:</div></el-col>
+          <el-col :span="17">
             <div class="grid-del">{{ fundamental.supplierTypeEX }}</div>
           </el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">借款金额:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ fundamental.price }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">借款金额:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ fundamental.price }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <!-- 摘要打印时隐藏 -->
-          <el-col :span="6" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
+          <el-col :span="7" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
           <el-col :span="17" class="print-hidden"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第三行 END -->
       <!-- 支付账户 -->
       <el-row type="flex" class="row-bg print-acount" justify="start">
-        <el-col :span="2" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="18"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
+        <el-col :span="7" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
+        <el-col :span="17"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
       </el-row>
       <!-- 支付账户 -->
       <!-- 审批人 打印时输出 -->
@@ -115,16 +115,16 @@
       <!-- 第四行 -->
       <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
         <el-col :span="6">
-          <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
-          <el-col :span="18"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">账号:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">开户行:</div></el-col>
-          <el-col :span="15"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">开户行:</div></el-col>
+          <el-col :span="17"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="9"><div class="grid-del label-color">开户名:</div></el-col>
-          <el-col :span="15"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
+          <el-col :span="7"><div class="grid-del label-color">开户名:</div></el-col>
+          <el-col :span="17"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第四行 END -->
@@ -132,14 +132,14 @@
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <!-- 打印时隐藏 -->
-          <el-col :span="9" class="print-hidden"><div class="grid-del label-color">支付账户:</div></el-col>
-          <el-col :span="12" class="print-hidden">
+          <el-col :span="7" class="print-hidden"><div class="grid-del label-color">支付账户:</div></el-col>
+          <el-col :span="17" class="print-hidden">
             <div class="grid-del">{{ fundamental.accountsName }}</div>
           </el-col>
         </el-col>
         <el-col :span="14">
-          <el-col :span="6"><div class="grid-del label-color print-hidden">附件:</div></el-col>
-          <el-col :span="18">
+          <el-col :span="7"><div class="grid-del label-color print-hidden">附件:</div></el-col>
+          <el-col :span="17">
             <el-upload
               class="upload-demo print-hidden"
               name="files"
@@ -161,7 +161,7 @@
     <el-table :data="tableAuditResults" border :header-cell-style="getRowClass">
       <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
       <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-      <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+      <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
       <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
     </el-table>
     <!-- 审核结果 END -->
@@ -244,7 +244,7 @@
           <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-          <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+          <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
         </el-table>
     </el-dialog>
     <!-- 审批过程-查看弹窗 END -->
@@ -387,10 +387,12 @@
       },
       // 审批过程-查看按钮触发（ GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType -> 这是查看审批之后的流程日子 ）
       handleLookApprovalProcess (index, row, type) {
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType', {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jq_id:	row.guid,
           jQ_Type: type,
         }).then(obj => {
+          let keepObj = obj.data.extend.instanceLogInfo;
+          this.tableIncomeCheck = keepObj;
           this.ifLookApproveProcessDialog = true;
         }).catch(err => {
           console.log( err );
@@ -399,13 +401,13 @@
       // 审核结果
       auditResult (result, paramJqType) {
         let _this = this;
-        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType', {
+        this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jq_id:	result,
           jQ_Type: paramJqType, // 无收入1 预付款2,
         }).then(obj => {
           // 裡面的具提屬性沒有調試
           _this.tableAuditResults = [];
-          _this.tableAuditResults = obj.data.data;
+          _this.tableAuditResults = obj.data.extend.instanceLogInfo;
           if (_this.tableAuditResults.length > 0) {
             _this.printAuditingContent = '<b>开始</b> -> ';
             _this.tableAuditResults.forEach(function (item) {

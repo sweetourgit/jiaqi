@@ -401,6 +401,9 @@ export default {
     dialogVisibleDo: false,
     msg: ""
   },
+  created() {
+    console.log(this.msg, '等会啊')
+  },
   data() {
     return {
       canClick: false,
@@ -876,7 +879,6 @@ export default {
       return year + month + day;
     }
   },
-  created() {}
 };
 </script>
 <style lang="scss" scoped>
