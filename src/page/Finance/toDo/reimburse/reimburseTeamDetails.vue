@@ -280,7 +280,7 @@
     },
     created () {
       this.getParamsWorkItemId = this.$route.query.workItemID;
-      this.getApproveListGuid = this.$route.query.optionsGuid;
+      this.getApproveListGuid = this.$route.query.guid;
       this.getApproveDetail(this.getApproveListGuid);
       this.tabShowWhich = String(this.$route.query.queryApproveExpenseID);
       this.auditResult(this.getApproveListGuid);
