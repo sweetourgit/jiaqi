@@ -158,16 +158,22 @@
     <!-- 基本信息 END -->
     <!-- 审核结果 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
-    <el-table :data="tableAuditResults" border :header-cell-style="getRowClass">
+    <el-table :data="tableAuditResults" stripe border :header-cell-style="getRowClass">
       <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-      <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+      <el-table-column prop="approvalName" label="审批结果" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.approvalName === '审批中'" style="color: #7F7F7F" >{{ scope.row.approvalName }}</div>
+          <div v-if="scope.row.approvalName === '驳回'" style="color: #FF4A3D" >{{ scope.row.approvalName }}</div>
+          <div v-if="scope.row.approvalName === '通过'" style="color: #33D174" >{{ scope.row.approvalName }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
       <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
     </el-table>
     <!-- 审核结果 END -->
     <!-- 相关信息 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>相关信息</el-divider>
-    <el-table :data="tableMoney" border :header-cell-style="getRowClass">
+    <el-table :data="tableMoney" stripe border :header-cell-style="getRowClass">
       <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
       <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
       <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
@@ -184,7 +190,7 @@
     <!-- 无收入借款明细 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
 <!--    <el-table :data="tableIncome" border :header-cell-style="getRowClass" :row-class-name="tableRowClassName">-->
-    <el-table :data="tableIncome" border :header-cell-style="getRowClass">
+    <el-table :data="tableIncome" stripe border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="审批状态" align="center">
         <template slot-scope="scope">
@@ -207,7 +213,7 @@
     <!-- 无收入借款明细 END -->
     <!-- 预付款明细 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
-    <el-table :data="tablePayment" border :header-cell-style="getRowClass">
+    <el-table :data="tablePayment" stripe border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="审批状态" align="center">
         <template slot-scope="scope">
@@ -252,10 +258,16 @@
     <!-- 收入明细 END -->
     <!-- 审批过程-查看弹窗 -->
     <el-dialog width="45%" title="审批过程" :visible.sync="ifLookApproveProcessDialog" append-to-body>
-        <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
+        <el-table :data="tableIncomeCheck" stripe border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
           <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-          <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+          <el-table-column prop="approvalName" label="审批结果" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.approvalName === '审批中'" style="color: #7F7F7F" >{{ scope.row.approvalName }}</div>
+              <div v-if="scope.row.approvalName === '驳回'" style="color: #FF4A3D" >{{ scope.row.approvalName }}</div>
+              <div v-if="scope.row.approvalName === '通过'" style="color: #33D174" >{{ scope.row.approvalName }}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
         </el-table>
     </el-dialog>
@@ -273,7 +285,7 @@
     <!-- 通过、驳回弹框 END -->
     <!-- 付款账户弹窗 -->
     <el-dialog title="选择账户" :visible.sync="ifLookAccountDialog" width="1100px" custom-class="city_list">
-      <el-table :data="tableAccount" border :header-cell-style="getRowClass">
+      <el-table :data="tableAccount" stripe border :header-cell-style="getRowClass">
         <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
         <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
         <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
