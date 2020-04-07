@@ -673,7 +673,7 @@ export default {
                 type: "success"
               });
               if (status === 10) {
-                this.ordersave();
+                //this.ordersave();
               }
               // 取消订单按钮
               if (cancle === 0) {
@@ -700,9 +700,7 @@ export default {
       // if (status == 2) {
       //   status = 3; //没有电子合同，直接跳到待出行
       // }
-      console.log(status,'status');
-      console.log(status,'status');
-      switch (status) {
+     switch (status) {
         case 0: //订单状态0，暂按未确认处理
           switch (occupyStatus) {
             case 1: //不占

@@ -10,11 +10,11 @@
     @close="btReceiptDialogClose"
   >
     <!-- tabs  begin -->
-    <el-radio-group v-model="chooseTab" @tab-click="chooseTabClick">
-      <el-radio-button label="1">分房</el-radio-button>
-      <el-radio-button label="2">保险</el-radio-button>
-      <el-radio-button label="3">大巴</el-radio-button>
-    </el-radio-group>
+    <el-tabs v-model="chooseTab" type="card"  @tab-click="chooseTabClick">
+      <el-tab-pane label="分房" name='0'></el-tab-pane>
+      <el-tab-pane label="保险" name='deliverinfo'></el-tab-pane>
+      <el-tab-pane label="大巴" name='insureinfo'></el-tab-pane>
+    </el-tabs>
     <!-- tabs  end -->
       <!-- <el-tabs v-model="activebox" type="card" @tab-click="GetCabinbtn" style="float:left;width: 100%;">
         <el-tab-pane
@@ -69,8 +69,9 @@ export default {
   },
   data() {
     return {
-      chooseTab:"1", //tabs选中的
-      NewGetCabinData:{},//客人信息
+      chooseTab:"0", //tabs选中的
+      choosetext:null,
+      NewGetCabinData:[],//客人信息
       // chooseSwiper: "", //swiper选中的
       // achooseSwiperIndex: "0", //当前swiper选中的index
       // swiperInfo: [
@@ -97,9 +98,21 @@ export default {
           id: this.orderId
         })
         .then(res => {
+         
+       
               if(res.data.code === 200){
-                 console.log("请求一条数据的",res.data.data)
-                      this.NewGetCabinData = res.data.data.info;
+                let infodata = res.data.data;
+                for(let y in infodata){
+                   console.log(infodata[y],'发哇');
+                }
+                //  if(this.choosetext === deliverinfo){
+                //       console.log("请求一条数据的");
+                //     this.NewGetCabinData = res.data.data.info.deliverinfo;
+                //  }else if(this.choosetext === insureinfo){
+                //     this.NewGetCabinData = res.data.data.info.insureinfo;
+                //  }
+                 
+                         
                      
               }
          
@@ -110,10 +123,12 @@ export default {
         });
     },
     chooseTabClick(tab,event){
-      console.log(tab);
-      console.log(event);
+      this.NewGetCabinData = [];
+      this.choosetext = tab.name;
+      this.orderData();
+     
 
-    }
+    },
   },
   mounted() {
     const mySwiper = new Swiper(".swiper-container", {
