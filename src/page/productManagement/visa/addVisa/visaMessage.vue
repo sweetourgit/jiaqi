@@ -157,13 +157,16 @@ export default {
           { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change' }
         ],
         type: [
-          { required: true, message: '请输入类型', trigger: 'change' }
+          { required: true, message: '请输入类型', trigger: 'change' },
+          { min: 1, max:50, message: '长度在 1 到 50 个字符', trigger: 'change' }
         ],
         name: [
-          { required: true, message: '请输入名称', trigger: 'change' }
+          { required: true, message: '请输入名称', trigger: 'change' },
+          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'change' }
         ],
         describe: [
-          { required: true, message: '请输入描述', trigger: 'change' }
+          { required: true, message: '请输入描述', trigger: 'change' },
+          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'change' }
         ],
         throng: [
           { required: true, message: '请选择人群', trigger: 'change' }
