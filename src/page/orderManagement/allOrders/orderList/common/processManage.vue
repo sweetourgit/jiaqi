@@ -617,6 +617,7 @@ export default {
             }
             break;
           case 10:
+            this.ordersave();
             url += "/material";
             break;
           case 1:
@@ -670,9 +671,7 @@ export default {
                 message: "提交成功",
                 type: "success"
               });
-              if (status === 10) {
-                //this.ordersave();
-              }
+               
               // 取消订单按钮
              if (status==9 && cancle === 0) {
                 this.$http

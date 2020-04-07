@@ -102,9 +102,7 @@ export default {
        
               if(res.data.code === 200){
                 let infodata = res.data.data;
-                for(let y in infodata){
-                   console.log(infodata[y],'发哇');
-                }
+                
                 //  if(this.choosetext === deliverinfo){
                 //       console.log("请求一条数据的");
                 //     this.NewGetCabinData = res.data.data.info.deliverinfo;
