@@ -183,9 +183,16 @@
     <!-- 相关信息 END -->
     <!-- 无收入借款明细 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
+<!--    <el-table :data="tableIncome" border :header-cell-style="getRowClass" :row-class-name="tableRowClassName">-->
     <el-table :data="tableIncome" border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
-      <el-table-column prop="checkTypeEX" label="审批状态" align="center"></el-table-column>
+      <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.checkTypeEX === '审批中'" style="color: #7F7F7F" >{{ scope.row.checkTypeEX }}</div>
+          <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D" >{{ scope.row.checkTypeEX }}</div>
+          <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174" >{{ scope.row.checkTypeEX }}</div>
+        </template>
+      </el-table-column>
       <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
       <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
       <el-table-column prop="price" label="金额" align="center"></el-table-column>
@@ -203,6 +210,11 @@
     <el-table :data="tablePayment" border :header-cell-style="getRowClass">
       <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+        <template slot-scope="scope">
+          <div v-if="scope.row.checkTypeEX === '审批中'" style="color: #7F7F7F" >{{ scope.row.checkTypeEX }}</div>
+          <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D" >{{ scope.row.checkTypeEX }}</div>
+          <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174" >{{ scope.row.checkTypeEX }}</div>
+        </template>
       </el-table-column>
       <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
       <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
@@ -218,7 +230,7 @@
     <!-- 预付款明细 END -->
     <!-- 收入明细 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
-    <el-table :data="tableEarning" border :header-cell-style="getRowClass">
+    <el-table :data="tableEarning" border stripe :header-cell-style="getRowClass">
       <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
       <el-table-column prop="channel" label="订单来源" align="center"></el-table-column>
       <el-table-column prop="person" label="订单联系人" align="center"></el-table-column>
@@ -277,6 +289,18 @@
     <!-- 付款账户弹窗 END -->
   </div>
 </template>
+
+<style>
+  .el-table .going-row {
+    background: #7F7F7F;
+  }
+  .el-table .pass-row {
+    background: #f0f9eb;
+  }
+  .el-table .reject-row {
+    background: #FF4A3D;
+  }
+</style>
 
 <script>
   import common from "../mixins/common";
