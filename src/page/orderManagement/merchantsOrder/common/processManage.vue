@@ -650,7 +650,7 @@ export default {
             break;
         }
         // 订单工作流状态更新-作废订单
-        if (cancle == 0) {
+        if (status==9 && cancle === 0) {
           this.dialogVisible = false;
           url = "/order/stat/api/invalid";
           // url = "/order/all/api/orderdelete";
@@ -678,7 +678,7 @@ export default {
                 //this.ordersave();
               }
               // 取消订单按钮
-              if (cancle === 0) {
+              if (status==9 && cancle === 0) {
                 this.$http
                   .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
                     id: this.orderget.id
