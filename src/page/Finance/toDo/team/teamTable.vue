@@ -134,7 +134,7 @@
     nameIAdvance: '/borrow/borrowDetails',
     nameIReimburse: '/reimburse/reimburseTeamDetails',
     nameIRefund: '/refund/refundDetails',
-    nameISheet: '/borrow/borrowDetails',
+    nameISheet: '/checkSheetDetail/team',
   };
 
   export default {
@@ -180,7 +180,7 @@
     methods: {
       // 详情方法
       handleJumpDetail (index, row, source) {
-        let { paymentID, guid, instanceID, expenseID } = row; // 基本上都是给接口传参用
+        let { id, paymentID, guid, instanceID, expenseID } = row; // 基本上都是给接口传参用
         let keepWorkItemId = null;
 
         // 取出当前选中的 workItemID 与后端返回的做比较
@@ -205,7 +205,8 @@
           query: {
             pendingDetailPaymentId: paymentID,
             componentName: this.getWhichTab,
-            optionsGuid: guid,
+            guid: guid, // 报账单定义为 guid
+            id: id, // 报账单用
             instanceID: instanceID,
             workItemID: keepWorkItemId,
             whichTabName: this.whichTab,
