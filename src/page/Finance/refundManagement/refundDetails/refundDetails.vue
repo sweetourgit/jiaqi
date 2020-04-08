@@ -174,12 +174,11 @@
                     <div v-if="scope.row.checkType=='通过'" style="color: #33D174">{{scope.row.checkType}}</div>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="createTime"
-                  label="发起时间"
-                  min-width="150"
-                  align="center"
-                ></el-table-column>
+                <el-table-column prop="createTime" label="发起时间" min-width="150"align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.createTime !='0'">{{formatDate01(new Date(scope.row.createTime))}}</div>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="price" label="该团期的报销金额" min-width="150" align="center"></el-table-column>
                 <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
                 <el-table-column label="审批过程" min-width="70" align="center">
