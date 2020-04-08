@@ -1241,7 +1241,7 @@
                   this.tour[i][j].singlePrice = this.salePrice[i].price_02;
                 }
                 guestAll.push(this.tour[i][j]);
-                guestAll[i].bornDate = new Date(guestAll[i].bornDate).getTime();
+                this.tour[i][j].bornDate = new Date(this.tour[i][j].bornDate).getTime();
               }
             }
             // let guest = [];
