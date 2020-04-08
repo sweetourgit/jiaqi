@@ -3,14 +3,15 @@
 </style>
 
 <template>
-  <div>
+  <div style="padding-bottom: 40px; border-bottom: 1px solid #cecece;">
     <div style="padding: 10px 0 10px 0;">
-      <el-button type="primary" size="small">
+      <el-button type="primary" size="small"
+        @click="awakeEditor">
         舱房
       </el-button>
     </div>
     <TitleBar :options="{ deletable: true, badge: true }"></TitleBar>
-    <div style="padding: 22px 0 40px 0;border-bottom: 1px solid #cecece;">
+    <div style="padding: 22px 0 40px 0;border-bottom: 1px solid #cecece; display: none;">
       <el-form
         label-width="120px" 
         ref="submitForm"
@@ -32,21 +33,34 @@
         </el-form-item>
       </el-form>
     </div>
+    <CabinEditor ref="editor"
+      @submit="addCabin">
+    </CabinEditor>
   </div>
 </template>
 
 <script>
 import TitleBar from './comps/TitleBar'
+import CabinEditor from './comps/CabinEditor'
 
 export default {
 
-  components: { TitleBar },
+  components: { TitleBar, CabinEditor },
 
   data(){
     return {
+      cabins: [],
       submitForm: {},
       rules: {},
     }
+  },
+
+  methods: {
+    awakeEditor(){
+      this.$refs.editor.init();
+    },
+
+    addCabin(){}
   }
 
 }

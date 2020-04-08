@@ -36,7 +36,7 @@
                 <el-button type="text" size="mini"
                   @click="$router.push({ 
                     path: '/regimentPlan/liner/order', 
-                    query: { product_id: scope.row.product_id, sku_id: scope.row.sku_id }})">
+                    query: { sku_price_id: scope.row.id, product_id: scope.row.product_id, sku_id: scope.row.sku_id }})">
                   下单
                 </el-button>
                 <el-button type="text" size="mini"

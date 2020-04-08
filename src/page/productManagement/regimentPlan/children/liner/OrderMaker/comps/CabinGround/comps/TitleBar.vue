@@ -3,6 +3,8 @@
   position: relative;
   width: 100%;
   padding: 0 36px;
+  height: 32px;
+  line-height: 32px;
   box-sizing: border-box;
   *{
     box-sizing: content-box;
@@ -10,8 +12,7 @@
   .control-btns{
     display: inline-block;
     width: 36px;
-    top: 10px;
-    line-height: 32px;
+    top: 0;
     text-align: center;
     cursor: pointer;
   }
@@ -44,7 +45,7 @@
       &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
         border-radius: 10px;
         box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        background: #535353;
+        background: #AAA;
       }
       &::-webkit-scrollbar-track {/*滚动条里面轨道*/
         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
@@ -55,12 +56,11 @@
     .bar-outer{
       position: relative;
       display: inline-block;
-      padding: 10px 30px 0 10px;
+      padding: 0 30px 0 30px;
       box-sizing: border-box;
       user-select: none;
       .title-text{
         max-width: 300px;
-        line-height: 32px;
         word-break: keep-all;
         white-space: nowrap;
         overflow: hidden;
@@ -71,8 +71,7 @@
         position: absolute;
         display: block;
         width: 30px;
-        top: 10px;
-        line-height: 32px;
+        top: 0;
         right: 0;
         text-align: center;
         color: gray;
@@ -96,16 +95,18 @@
       <div class="scroll-body" style="width: 2000px;">
 
         <div class="bar-outer selected">
-          <el-badge
-            v-if="options.badge" 
-            :value="0">
-            <div class="title-text"
-              :title="'123'">
-              123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
-            </div>
-          </el-badge>
           <div class="title-text"
-            v-else
+            :title="'123'">
+            123
+          </div>
+          <div class="close-btn"
+            v-show="options.deletable">
+            <i class="el-icon-close"></i>
+          </div>
+        </div>
+
+        <div class="bar-outer">
+          <div class="title-text"
             :title="'123'">
             123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
           </div>
@@ -116,16 +117,18 @@
         </div>
 
         <div class="bar-outer">
-          <el-badge
-            v-if="options.badge" 
-            :value="0">
-            <div class="title-text"
-              :title="'123'">
-              123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
-            </div>
-          </el-badge>
           <div class="title-text"
-            v-else
+            :title="'123'">
+            123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
+          </div>
+          <div class="close-btn"
+            v-show="options.deletable">
+            <i class="el-icon-close"></i>
+          </div>
+        </div>
+
+        <div class="bar-outer">
+          <div class="title-text"
             :title="'123'">
             123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
           </div>
