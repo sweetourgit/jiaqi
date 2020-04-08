@@ -694,7 +694,8 @@ export default {
         that.$http
           .post(this.GLOBAL.serverSrc + "/finance/payment/api/list", {
             object: {
-              planID: this.planId
+              planID: this.planId,
+              checkType:-1
             }
           })
           .then(res => {
