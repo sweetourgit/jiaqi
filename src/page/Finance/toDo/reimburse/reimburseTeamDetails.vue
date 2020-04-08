@@ -6,7 +6,7 @@
 -->
 <template>
   <div class="loan-management">
-    <div style="text-align: right; margin: 25px 20px 0 0;">
+    <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button type="warning" plain @click="handleCancel">取消</el-button>
       <el-button type="primary" plain @click="handlePassBtn">通过</el-button>
       <el-button type="danger" plain @click="handleRejectBtn">驳回</el-button>
@@ -18,9 +18,9 @@
         <el-tabs v-model="tabShowWhich">
           <el-tab-pane v-for="tabItem in keepBackContent" :key="tabItem.id" :label="'报销 - '+String(tabItem.id)" :name="String(tabItem.id)">
             <el-row class="item-content">
-                <el-tag type="warning" v-if="tabItem.checkType === '0'" class="distributor-status">审批中</el-tag>
-                <el-tag type="danger" v-if="tabItem.checkType === '2'" class="distributor-status">驳回</el-tag>
-                <el-tag type="success" v-if="tabItem.checkType === '1'" class="distributor-status">通过</el-tag>
+                <el-tag type="warning" v-if="tabItem.checkType === 0" class="distributor-status">审批中</el-tag>
+                <el-tag type="danger" v-if="tabItem.checkType === 2" class="distributor-status">驳回</el-tag>
+                <el-tag type="success" v-if="tabItem.checkType === 1" class="distributor-status">通过</el-tag>
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="6">
@@ -84,8 +84,8 @@
                 <el-table-column prop="peopleCount" label="人数" align="center"></el-table-column>
                 <el-table-column prop="expenseType" label="还款/拆分" align="center">
                   <template slot-scope="scope">
-                    <div v-if="scope.row.expenseType == 1">拆分</div>
-                    <div v-if="scope.row.expenseType == 2">还款</div>
+                    <div v-if="scope.row.expenseType === 1">拆分</div>
+                    <div v-if="scope.row.expenseType === 2">还款</div>
                   </template>
                 </el-table-column>
                 <!-- 1-拆分，2-还款 -->
@@ -104,10 +104,16 @@
     <!-- 审核结果 -->
     <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
     <el-row type="flex" class="row-bg row-content" justify="space-between">
-      <el-table :data="examineData" border :header-cell-style="getRowClass" v-loading="listLoading">
+      <el-table :data="examineData" stripe border :header-cell-style="getRowClass" v-loading="listLoading">
         <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
         <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-        <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
+        <el-table-column prop="approvalName" label="审批结果" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.approvalName === '审批中'" style="color: #7F7F7F" >{{ scope.row.approvalName }}</div>
+            <div v-if="scope.row.approvalName === '驳回'" style="color: #FF4A3D" >{{ scope.row.approvalName }}</div>
+            <div v-if="scope.row.approvalName === '通过'" style="color: #33D174" >{{ scope.row.approvalName }}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
       </el-table>
     </el-row>
@@ -125,7 +131,7 @@
     <el-dialog width="60%" title="打印" :visible="ifShowPrintTable" :before-close="handlePrintClose">
       <el-tabs>
         <el-tab-pane v-for="item in changeData" :key="item.id" :label="'报销 - ' + String(item.id)">
-            <el-table :data="item.arr" border style=" width:90%; margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
+            <el-table :data="item.arr" stripe border style=" width:90%; margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
               <el-table-column prop="parentID" label="拆分前借款单ID" width="150" align="center"></el-table-column>
               <el-table-column prop="id" label="新无收入借款单ID" align="center"></el-table-column>
               <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>

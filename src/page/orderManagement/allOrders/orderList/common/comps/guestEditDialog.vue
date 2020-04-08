@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 .w200 {
   width: 200px;
 }

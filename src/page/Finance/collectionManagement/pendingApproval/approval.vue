@@ -693,9 +693,11 @@
   </div>
 </template>
 <script type="text/javascript">
+
 import { formatDate } from "@/js/libs/publicMethod.js";
 import recognitionDo from "@/page/Finance/collectionManagement/pendingApproval/recognitionDo.vue";
 import recognitionDetail from "@/page/Finance/collectionManagement/pendingApproval/recognitionDetail.vue";
+import moment from 'moment'
 export default {
   name: "collectionDetail",
   components: {
@@ -788,6 +790,7 @@ export default {
     }
   },
   methods: {
+    moment,
     // 打印详情
     touchPrint() {
       this.$print(this.$refs.print);
@@ -976,11 +979,13 @@ export default {
     axiosSubmit() {
       const that = this;
       const date = this.getMoment();
+      let getTime = moment().format('YYYY-MM-DD HH:mm:ss');
 
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
           datetime: date,
           spname: sessionStorage.getItem("name"),
+          sptime: getTime,
           spstate: this.approval_status,
           spcontent: this.approvalMark,
           checktype: this.approval_status,
@@ -1289,6 +1294,7 @@ export default {
 
     // 认款接口 -- 将关联欠款的状态改成3(认款)
     getColl(item) {
+      let getTime = moment().format('YYYY-MM-DD HH:mm:ss');
       const that = this;
       const date = this.getMoment();
       this.$http
@@ -1296,6 +1302,7 @@ export default {
           datetime: date,
           spname: sessionStorage.getItem("name"),
           spstate: "认款",
+          sptime: getTime,
           spcontent: "",
           checktype: 1,
           id: this.info.id,

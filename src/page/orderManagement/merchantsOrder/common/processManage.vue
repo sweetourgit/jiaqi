@@ -616,6 +616,7 @@ export default {
             }
             break;
           case 10:
+           this.ordersave();
            url += "/material";
             break;
           case 1:
@@ -636,7 +637,6 @@ export default {
             // url += "/econtract";
             break;
          case 8:
-           console.log(8);
             let result= {};
             let token= localStorage.getItem('token');
             let attrArr= ['userCode', 'name', 'topName', 'orgName'];
@@ -651,7 +651,7 @@ export default {
             break;
         }
         // 订单工作流状态更新-作废订单
-        if (cancle == 0) {
+        if (status==9 && cancle === 0) {
           this.dialogVisible = false;
           url = "/order/stat/api/invalid";
           // url = "/order/all/api/orderdelete";
@@ -671,26 +671,19 @@ export default {
                 message: "提交成功",
                 type: "success"
               });
-            
-              if (status === 1){
-               // this.ordersave();
-              }
-              if (status === 10) {
-                //this.ordersave();
-              }
               // 取消订单按钮
-              // if (cancle === 0) {
-              //   this.$http
-              //     .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
-              //       id: this.orderget.id
-              //     })
-              //     .then(res => {
-              //       console.log(res);
-              //     })
-              //     .catch(err => {
-              //       console.log(err);
-              //     });
-              // }
+              if (status==9 && cancle === 0) {
+                this.$http
+                  .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
+                    id: this.orderget.id
+                  })
+                  .then(res => {
+                    console.log(res);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              }
               this.$emit("orderPage");
               this.cancle();
             }

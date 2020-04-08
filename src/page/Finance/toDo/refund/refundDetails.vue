@@ -2,7 +2,7 @@
 <template>
   <div class="loan-management">
     <!-- 按钮组 -->
-    <div style="text-align: right; margin:25px 20px 0 0;">
+    <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button @click="handleCancel" type="warning" plain>取消</el-button>
       <el-button @click="handlePass" type="primary" plain>通过</el-button>
       <el-button @click="handleRejected" type="danger" plain>驳回</el-button>

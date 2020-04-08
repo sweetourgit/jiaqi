@@ -135,10 +135,21 @@ export default {
     // 表格行样式
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px';
+        return 'background:#e6e6e6;height:60px;textAlign:center;color:#333;fontSize:15px';
       } else {
         return '';
       }
+    },
+    // 依据状态显示不同行样式
+    tableRowClassName({row, rowIndex}) {
+      if (row.checkType === 0) {
+        return 'going-row';
+      } else if (row.checkType === 1) {
+        return 'pass-row';
+      } else if (row.checkType === 2) {
+        return 'reject-row';
+      }
+      return '';
     },
   }
 }

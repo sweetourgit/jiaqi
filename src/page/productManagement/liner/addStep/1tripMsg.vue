@@ -19,8 +19,8 @@
           :name="item.name"
         >
           <!-- 每天的行程信息 form -->
-          <el-form-item label="标题：" prop="title" label-width="140px" required>
-            <el-input v-model="item.content.ruleForm.title" placeholder="请输入" class="inputWidth" maxlength="30" show-word-limit required></el-input>
+          <el-form-item label="标题：" prop="title" label-width="140px" :rules="[{ required: true, message: '标题不能为空', trigger: 'blur'}]">
+            <el-input v-model="item.content.ruleForm.title" placeholder="请输入" class="inputWidth" maxlength="30" show-word-limit></el-input>
           </el-form-item>
           <el-form-item label="所在城市：" prop="name" label-width="140px">
             <el-input v-model="item.content.ruleForm.city" placeholder="请输入" class="inputWidth"></el-input>
