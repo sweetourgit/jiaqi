@@ -21,7 +21,7 @@
         <el-form-item label="报名人数：" prop="name" ref="supplierRef" style="margin: 0;">
           <div style="display:flex;flex-direction:column;">
             <div>成人 ￥16999.00 * 2</div>
-            <el-input-number v-model="num" @change="handleChange" :min="1" :max="10" label="描述文字" size="small"></el-input-number>
+            <el-input-number v-model="submitForm.num" :min="1" :max="10" label="描述文字" size="small"></el-input-number>
             <div>
               剩余完整房间：4间 可住16人  |   剩余拼住房间：1间 可住3人  |  可住19人
             </div>
@@ -34,6 +34,7 @@
       </el-form>
     </div>
     <CabinEditor ref="editor"
+      :sku-cabins="skuCabins"
       @submit="addCabin">
     </CabinEditor>
   </div>
@@ -52,10 +53,15 @@ export default {
       cabins: [],
       submitForm: {},
       rules: {},
+      skuCabins: [],
     }
   },
 
   methods: {
+    init(skuPlan){
+      this.skuCabins= skuPlan.price;
+    },
+
     awakeEditor(){
       this.$refs.editor.init();
     },

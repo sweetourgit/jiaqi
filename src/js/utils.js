@@ -240,10 +240,13 @@ export const dictionaryMaker= function(source){
       configurable: true
     })
   })
-  result.getLabel= function(value){
-    let find= result.find(el => el.value=== value);
-    return find? find.label: undefined;
-  }
+  Object.defineProperty(result, 'getLabel', {
+    value: function(value){
+      let find= result.find(el => el.value=== value);
+      return find? find.label: undefined;
+    },
+    enumerable: false
+  })
   return Object.freeze(result);
 }
 

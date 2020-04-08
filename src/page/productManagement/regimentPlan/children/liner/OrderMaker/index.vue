@@ -53,7 +53,7 @@ import './FixedBar'
 import InfoGround from './comps/InfoGround'
 import ChannelGround from './comps/ChannelGround'
 import CabinGround from './comps/CabinGround'
-import { getSkuPlanInfo, getProductInfo } from './api'
+import { getSkuPlanInfo } from './api'
 
 let skuPlanCache;
 export default {
@@ -61,17 +61,23 @@ export default {
   components: { InfoGround, ChannelGround, CabinGround },
   
   mounted(){
-    console.log(skuPlanCache)
-    skuPlanCache= 123;
     let { sku_id, product_id }= this.$route.query;
-    Promise.all([
-      getProductInfo(product_id),
-      getSkuPlanInfo(sku_id) 
-    ]).then(res => console.log(res))
+    getSkuPlanInfo(sku_id) 
+    .then(res => {
+      skuPlanCache= res;
+      this.init();
+    })
   },
 
   beforeDestroy(){
-    // skuPlanCache= null;
+    skuPlanCache= null;
+  },
+
+  methods: {
+    init(){
+      this.$refs.infoGround.init(skuPlanCache);
+      this.$refs.cabinGround.init(skuPlanCache);
+    }
   }
 
 }
