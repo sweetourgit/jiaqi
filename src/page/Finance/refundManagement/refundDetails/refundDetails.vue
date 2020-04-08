@@ -340,7 +340,6 @@ export default {
       } else if(this.dialogType == 2){  // 审批详情
         setTimeout(() => {
           this.getInvoice(this.refundID,this.workID);
-          console.log(this.workID)
         },200);
         this.dialogFormOrder = true;
         this.title = "审批"
@@ -451,7 +450,6 @@ export default {
           this.orderCode = res.data.object.orderCode;
           this.indentID = res.data.object.orderID;
           this.instanceID = res.data.object.instanceID;
-          console.log(res.data.object.instanceID)
           this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
           this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
