@@ -8,7 +8,6 @@
       class="city_list"
       width="870px"
       style="margin-top:-50px"
-      @open="openDiolog"
       @close="cancle"
     >
       <!--订单状态begin-->
@@ -80,7 +79,7 @@
             <!-- :max="salePriceNum[index].quota" -->
             <numberInputer class="input-num"
               :proto="item"
-              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
               @change="enrollChangeHandler">
             </numberInputer>
           </div>
@@ -101,7 +100,7 @@
               v-model="item.price"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
@@ -113,7 +112,7 @@
               v-readonly="'others'"
               placeholder="请输入金额"
               class="input"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
               @change="favourableChangeHandler(item)"
             ></el-input>
           </el-form-item>
@@ -125,7 +124,7 @@
               placeholder="请输入摘要"
               class="input1"
               :title="item.mark"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
             ></el-input>
           </el-form-item>
           <el-form-item class="otherCost-mark"
@@ -136,7 +135,7 @@
               placeholder="请输入摘要"
               class="input1"
               :title="item.mark"
-              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9||disperseOrderDisabled"
+              :disabled="orderget.orderStatus == 4 || orderget.orderStatus == 6||orderget.orderStatus===9"
             ></el-input>
           </el-form-item>
         </div>
@@ -191,7 +190,7 @@
         <div class="travelMessage">出行人信息</div>
         <travelMessage
           :proto="salePrice"
-          :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9||disperseOrderDisabled"
+          :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           :editDisabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           @remove-guest="removeGuestEmit"
           @edit-guest="editGuestEmit">
@@ -204,7 +203,6 @@
         <el-button
           class="fl"
           @click="dialogVisible = true"
-          :disabled="disperseOrderDisabled"
           v-if="orderget.orderStatus!=4&&orderget.orderStatus!=5&&orderget.orderStatus!=6&&orderget.orderStatus!=9"
         >取消订单</el-button>
         <!-- 修改订单状态按钮:disabled="isChangeNumber || isLowPrice"-->
@@ -619,6 +617,7 @@ export default {
             }
             break;
           case 10:
+            this.ordersave();
             url += "/material";
             break;
           case 1:
@@ -633,7 +632,7 @@ export default {
                 }
               }
             }
-            this.ordersave(1);
+            this.ordersave();
             url += "/signcontract";
              //url += "/econtract";
             break;
@@ -653,11 +652,11 @@ export default {
             break;
         }
         // 订单工作流状态更新-作废订单
-        if (cancle == 0) {
-          this.dialogVisible = false;
-          url = "/order/stat/api/invalid";
-          // url = "/order/all/api/orderdelete";
-        }
+        if (status==9 && cancle == 0) {
+              this.dialogVisible = false;
+              url = "/order/stat/api/invalid";
+              // url = "/order/all/api/orderdelete";
+            }
 
         this.$http
           .post(this.GLOBAL.serverSrc + url, {
@@ -672,11 +671,9 @@ export default {
                 message: "提交成功",
                 type: "success"
               });
-              if (status === 10) {
-                this.ordersave(1);
-              }
+               
               // 取消订单按钮
-              if (cancle === 0) {
+             if (status==9 && cancle === 0) {
                 this.$http
                   .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
                     id: this.orderget.id
@@ -700,9 +697,7 @@ export default {
       // if (status == 2) {
       //   status = 3; //没有电子合同，直接跳到待出行
       // }
-      console.log(status,'status');
-      console.log(status,'status');
-      switch (status) {
+     switch (status) {
         case 0: //订单状态0，暂按未确认处理
           switch (occupyStatus) {
             case 1: //不占
@@ -1242,7 +1237,7 @@ export default {
                 .then(() => {
                        
                     this.orderget.orderStatus = 10;
-                    this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+                    this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
                     this.ExistContract(this.orderget.orderCode)
                 })
                 .catch(() => {
@@ -1252,11 +1247,11 @@ export default {
                   });
               });
             }else{
-             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
             }
            }else{
             
-             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
            }
       },
     ordersave_data(id, occupyStatus){ // 便于提醒是否作废合同新增客人
@@ -1275,6 +1270,9 @@ export default {
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
           } 
+          if(occupyStatus == 0){
+            return;
+          }
             // 补充资料和待出行 信息更改跳转回到确认占位状态
           if ( this.isChangeNumber === true &&
             (this.orderget.orderStatus === 1 ||
@@ -1305,15 +1303,17 @@ export default {
             sum += item;
           });
           let guest = [];
-            for (let i = 0; i < this.salePrice.length; i++) {
+           for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
               let bornDate = this.salePrice[i][j].bornDate;
+              let createTime = this.salePrice[i][j].createTime;
               let sex = this.salePrice[i][j].sex;
                if(sex === -1){
                   this.salePrice[i][j].sex = 3
                 }
-              if(bornDate === null || bornDate === NaN){
+              if(bornDate === null || bornDate === NaN ||createTime == null){
                   this.salePrice[i][j].bornDate = 0;
+                  this.salePrice[i][j].createTime = 0;
                   guest.push(this.salePrice[i][j]);
                 }else if(bornDate.length === 24){
                   this.salePrice[i][j].bornDate = Date.parse(bornDate);
@@ -1323,7 +1323,7 @@ export default {
                 }
             }
           }
-           obj.number= guest.length;
+          obj.number= guest.length;
           // 第一次保存，赋值时间错
           if(typeof id=== 'object' && 'altKey' in id){
             let timestamp= Date.now();
@@ -1493,10 +1493,7 @@ export default {
       return s;
     },
 
-    openDiolog() {
-      this.disperseOrderDisabled=false
-      this.isCancelBtn = false
-    },
+    
 
     cancle() {
       this.isChangeNumber = false;

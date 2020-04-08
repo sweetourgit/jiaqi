@@ -348,6 +348,20 @@ export default {
      }
   },
   methods: {
+      formatDate(date) {//时间转化
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? "0" + m : m;
+        var d = date.getDate();
+        d = d < 10 ? "0" + d : d;
+        var h = date.getHours();
+        h = h < 10 ? "0" + h : h;
+        var minute = date.getMinutes();
+        minute = minute < 10 ? "0" + minute : minute;
+        var second = date.getSeconds();  
+        second = second < 10 ? "0" + second : second;
+        return y + "-" + m + "-" + d;
+      },
       getRowClass({ row, column, rowIndex, columnIndex }){
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:35px;textAlign:center;color:#333;fontSize:15px'
@@ -376,16 +390,16 @@ export default {
                for(let i = 0; i < res.data.object.statusDetail.length; i++){
                 var statusDetail = JSON.parse(res.data.object.statusDetail[i].details);
                }
-               this.orderStatusInfo[2].lists[0].content = statusDetail.auditDate;
+               this.orderStatusInfo[2].lists[0].content = this.formatDate(new Date(statusDetail.auditDate));
                this.orderStatusInfo[2].lists[1].content = statusDetail.duration;
                this.orderStatusInfo[2].lists[2].content = statusDetail.question;
                this.orderStatusInfo[3].lists[0].content = statusDetail.material;
-               this.orderStatusInfo[4].lists[0].content = statusDetail.makeDate;
+               this.orderStatusInfo[4].lists[0].content = this.formatDate(new Date(statusDetail.makeDate));
                this.orderStatusInfo[4].lists[1].content = statusDetail.makeDuration;
                this.orderStatusInfo[4].lists[2].content = statusDetail.makeQuestion;
                this.orderStatusInfo[5].lists[0].content = statusDetail.attention;
-               this.orderStatusInfo[6].lists[0].content = statusDetail.visaDate;
-               this.orderStatusInfo[7].lists[0].content = statusDetail.auditTime;
+               this.orderStatusInfo[6].lists[0].content = this.formatDate(new Date(statusDetail.visaDate));
+               this.orderStatusInfo[7].lists[0].content = this.formatDate(new Date(statusDetail.auditTime));
                this.orderStatusInfo[12].lists[0].content = statusDetail.courierCompany;
                this.orderStatusInfo[12].lists[1].content = statusDetail.courierNumber;
             }

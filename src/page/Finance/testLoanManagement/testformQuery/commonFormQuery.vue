@@ -268,15 +268,18 @@
           name: queryBorrowerString
         }
       }).then(res => {
-        for (let i = 0; i < res.data.objects.length; i++) {
+        let keepRes = res.data.objects;
+        for (let i = 0; i < keepRes.length; i++) {
           this.tableDataBorrower.push({
-            "value": res.data.objects[i].name,
-            "userCode": res.data.objects[i].userCode
+            "value": keepRes[i].name,
+            "userCode": keepRes[i].userCode
           })
         }
         var results = queryBorrowerString ? this.tableDataBorrower.filter(this.createFilteBorrowerr(queryBorrowerString)) : [];
         cb(results)
-      }).catch(err => {})
+      }).catch(err => {
+        console.log( err )
+      })
     },
 
       // 模糊查询返回下拉选中项 - 查询返回userCode的（借款人）
@@ -292,7 +295,7 @@
     },
     // 借款人 失焦
     departureBorrowerBlur(){
-      if(this.formquery.borrower == ''){
+      if(this.formquery.borrower === ''){
         this.ifShowsearch = false
       }else {
         if(this.keepBorrowerUserCode == null){

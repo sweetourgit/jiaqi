@@ -171,6 +171,7 @@ export default {
       this.visaTypes = '';// 签证类型
       this.state = '';// 状态
       this.op = ''; // 操作
+      this.countriesID = '';
       this.pageIndex = 1 ? 1 : 1;
       this.currentPage = curPage;
       this.pageList();

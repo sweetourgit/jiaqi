@@ -147,7 +147,7 @@ export default {
     },
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px';
+        return 'background:#e6e6e6;height:60px;textAlign:center;color:#333;fontSize:15px';
       } else {
         return '';
       }

@@ -20,6 +20,8 @@
           </el-table-column>
           <el-table-column prop="distributor" label="分销商" align="center">
           </el-table-column>
+          <el-table-column prop="distributor_remark" label="分销商备注" align="center">
+          </el-table-column>
           <el-table-column prop="product_name" label="产品名称" align="center">
           </el-table-column>
           <el-table-column prop="type_name" label="类别" align="center" width="60">

@@ -454,7 +454,7 @@ export default {
       isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
       enrollDetailShow: "" ,//报名信息的数量
       salePrice:[],//拼接空数组
-    };
+   };
   },
   watch: {
     destination: function(val) {
@@ -573,10 +573,6 @@ export default {
           let enrolls=[];//标题
           let guest;//全部数据
           this.enrollDetailShow = "";
-          if(res.data.object.orderStatus === 1 && res.data.object.refundStatus === 6){
-              res.data.object.orderStatus = 10;
-              this.dataorderStatus(res.data.object.id,res.data.object.orderCode,res.data.object.orderStatus,);
-            }
           this.getListOneMessage = res.data.object;
           // let enrollDetail = this.getListOneMessage.enrollDetail;
           // this.formatData(enrollDetail);

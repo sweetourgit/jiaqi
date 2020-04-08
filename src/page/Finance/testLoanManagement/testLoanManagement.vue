@@ -10,7 +10,7 @@
        <commonformquery ref="groupTour" :changedTab="changedTab"></commonformquery>
     </el-tab-pane>
 
-    
+
   </el-tabs>
 </template>
 <script>

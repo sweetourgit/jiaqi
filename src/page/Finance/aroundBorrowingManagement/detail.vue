@@ -22,11 +22,11 @@
       <el-button type="danger" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 2">驳回</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 3">通过</el-button>
       <div class="stepDv">
-        <p class="inputLabel"><span>ID：</span>{{baseInfo.id}}</p>
+        <p class="inputLabel"><span>借款单号：</span>{{baseInfo.id}}</p>
         <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
-        <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
+        <p class="inputLabel"><span>借款类型：</span>{{loan_type[baseInfo.loanType]}}</p>
         <p class="inputLabel" v-if="baseInfo.type != '1'"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
         <p class="inputLabel" v-if="baseInfo.type == '1'"><span>借款金额：</span>{{baseInfo.money}}</p>
         <!-- <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p> -->
@@ -126,6 +126,7 @@
           created_at: '',
           supplier: '',
           type: '',
+          loanType: '',
           money: '',
           number: '',
           remark: '',
@@ -144,6 +145,13 @@
           '1': '无收入借款',
           '2': '预付款',
           '3': '余额支付借款'
+        },
+
+        loan_type: {
+          '1': '门票',
+          '2': '酒店',
+          '3': '地接',
+          '4': '定制游(跟团游)'
         },
         // 基础信息凭证
         fileList: [],
@@ -304,6 +312,7 @@
               created_at: response.data.data.info.created_at,
               supplier: response.data.data.info.supplier_code,
               type: response.data.data.info.periphery_type,
+              loanType: response.data.data.info.loan_type,
               money: response.data.data.info.loan_money,
               number: response.data.data.info.number,
               remark: response.data.data.info.mark,

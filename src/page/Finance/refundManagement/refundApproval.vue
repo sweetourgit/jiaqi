@@ -42,9 +42,9 @@
         </el-table-column>
       </el-table>
       <!--分页-->
-      <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
+      <!-- <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
-      ></el-pagination>
+      ></el-pagination> -->
       <refund-details :refundID="refundID" :variable="variable" :dialogType="dialogType" :workID="workID"></refund-details>
     </div>
   </div>
@@ -125,7 +125,7 @@ export default {
     },
     search(){ // 搜索
       this.current = 1;
-      //this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
+      //this.getFlowModel(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
       this.getFlowModel();
     },
     reset(curPage){ // 重置
@@ -134,7 +134,7 @@ export default {
       this.applyForDate = ''; // 申请日期
       this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
-      this.pageList();
+      this.getFlowModel();
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
@@ -149,11 +149,11 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.pageList(this.pageIndex,val);
+      this.getFlowModel(this.pageIndex,val);
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
-      this.pageList(val,this.pageSize);
+      this.getFlowModel(val,this.pageSize);
     },
     changeFun(val) {
       //保存选中项的数据

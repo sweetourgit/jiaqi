@@ -134,7 +134,8 @@ export default {
         "tour_no": this.$parent.$parent.$parent.activeForm.tour,
         "create_uid": this.$parent.$parent.$parent.activeForm.userID,
         "bill_status": "2",
-        "limit": "0"
+        "start_time": this.$parent.$parent.$parent.activeForm.startTime,
+        "end_time": this.$parent.$parent.$parent.activeForm.endTime
       }, ).then(function(response) {
         if (response.data.code == '200') {
           console.log(response);

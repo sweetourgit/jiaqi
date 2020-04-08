@@ -5,7 +5,7 @@
 -->
 <template>
   <div class="loan-management">
-    <div style="text-align: right; margin: 25px 20px 0 0;">
+    <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button type="warning" plain @click="handleCancel">取消</el-button>
       <el-button type="primary" plain @click="handlePass">通过</el-button>
       <el-button type="danger" plain @click="handleRejected">驳回</el-button>
@@ -751,7 +751,7 @@
             <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
             <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
             <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-            <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout">
+            <el-table-column prop="prop" label="操作" align="center">
               <template slot-scope="scope">
                 <el-button
                   v-if="scope.row.hasSubmitData"
@@ -799,12 +799,12 @@
         </el-dialog>
         <!-- 通过、驳回弹框 END -->
         <!-- 内部收款，关联欠款 END -->
-        <!-- 去认款 -->
-        <recognitionDetail :dialogVisibleDel="dialogVisibleDel" :msg="msg" @close="recognitionClose"></recognitionDetail>
-        <!-- 去认款 END -->
         <!-- 认款详情 -->
+        <recognitionDetail :dialogVisibleDel="dialogVisibleDel" :msg="msg" @close="recognitionClose"></recognitionDetail>
+        <!-- 认款详情 END -->
+        <!-- 去认款 -->
         <recognitionDo :dialogVisibleDo="dialogVisibleDo" :msg="msg" @close="recognitionClose"></recognitionDo>
-        <!-- 认款详情 EBD -->
+        <!-- 去认款 EBD -->
       </div>
     </div>
   </div>
@@ -834,6 +834,7 @@
     },
     mixins: [ collectTeamDetails ],
     created () {},
+    mounted() {},
     methods: {
       // 打印
       handleTouchPrint () {

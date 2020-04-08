@@ -19,6 +19,8 @@
         </el-select>
         <span class="search-title">订单ID</span>
         <el-input placeholder="请输入" v-model="orderID" class="group-no" style="width:200px;"></el-input>
+        <span class="search-title">团期计划</span>
+        <el-input placeholder="请输入" v-model="groupCode" class="group-no" style="width:200px;"></el-input>
         <div class="search-but">
           <el-button type="primary" @click="search()">搜索</el-button>
           <el-button type="primary" plain @click="reset()">重置</el-button>
@@ -37,6 +39,7 @@
             <div v-if="scope.row.refundStateType=='退款完成'" style="color: #33D174" >{{scope.row.refundStateType}}</div>
           </template>
         </el-table-column>
+        <el-table-column prop="groupcode" label="团期计划" align="center"></el-table-column>
         <el-table-column prop="createTime" label="申请日期" align="center">
           <template slot-scope="scope">
             <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
@@ -48,6 +51,11 @@
         <el-table-column prop="realRefundPrice" label="实际退款金额" align="center"></el-table-column>
         <el-table-column prop="name" label="申请人" align="center"></el-table-column>
         <el-table-column prop="" label="审批意见" align="center"></el-table-column>
+        <!-- <el-table-column prop="createTime" label="审批时间" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
+          </template>
+        </el-table-column> -->
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <span class="cursor blue" @click="operation(1,scope.row.id)">详情</span>
@@ -82,6 +90,7 @@ export default {
       applyForDate:'', // 申请日期
       states:'',// 状态
       orderID:'',// 订单ID
+      groupCode:'', // 团期计划
       statesType:[{ // 搜索框状态数据
         value:'0',
         label:'申请退款'
@@ -139,6 +148,7 @@ export default {
       this.applyForDate = ''; // 申请日期
       this.states = '';// 状态
       this.orderID = '';// 订单ID
+      this.groupCode = ''; // 团期计划
       this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.pageList();
@@ -153,7 +163,7 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,refundNumber = this.refundNumber,applicant = this.applicant,startTime = this.applyForDate == null ? 0 : this.applyForDate[0],endTime = this.applyForDate == null ? 0 : this.applyForDate[1],states = this.states,orderID = this.orderID){
+    pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,refundNumber = this.refundNumber,applicant = this.applicant,startTime = this.applyForDate == null ? 0 : this.applyForDate[0],endTime = this.applyForDate == null ? 0 : this.applyForDate[1],states = this.states,orderID = this.orderID,groupcode = this.groupCode){
       if (startTime) {
         let y = startTime.getFullYear();
         let m = startTime.getMonth() + 1 > 9 ? startTime.getMonth() + 1 : "0" + (startTime.getMonth() + 1);
@@ -179,7 +189,8 @@ export default {
              endTime:endTime, // 结束时间
              refundStateType:this.states == "" ? -1 : this.states, // 状态
              //orderCode:orderCode, // 订单ID
-             orderID:this.orderID == "" ? 0 : orderID // 订单ID
+             orderID:this.orderID == "" ? 0 : orderID, // 订单ID
+             groupcode:groupcode
           },
           "pageSize":this.pageSize,
           "pageIndex":this.pageIndex,

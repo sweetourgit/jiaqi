@@ -157,13 +157,16 @@ export default {
           { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change' }
         ],
         type: [
-          { required: true, message: '请输入类型', trigger: 'change' }
+          { required: true, message: '请输入类型', trigger: 'change' },
+          { min: 1, max:50, message: '长度在 1 到 50 个字符', trigger: 'change' }
         ],
         name: [
-          { required: true, message: '请输入名称', trigger: 'change' }
+          { required: true, message: '请输入名称', trigger: 'change' },
+          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'change' }
         ],
         describe: [
-          { required: true, message: '请输入描述', trigger: 'change' }
+          { required: true, message: '请输入描述', trigger: 'change' },
+          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'change' }
         ],
         throng: [
           { required: true, message: '请选择人群', trigger: 'change' }
@@ -262,12 +265,12 @@ export default {
           if(res.data.objects){
             this.editableTabs = res.data.objects;
             this.ruleForm.caption = this.editableTabs[this.editableTabsValue].title;
-            this.tabIndex = this.editableTabs.length;
-          }else{
-            this.editableTabs = []
           }
-          this.rowList();
+        }else{
+          this.editableTabs = []
         }
+        this.tabIndex = this.editableTabs.length;
+        this.rowList();
       })
     },
     handleClick(tab, event){
@@ -342,6 +345,7 @@ export default {
             title: '签证信息' + (this.editableTabs.length + 1),
             content: 'New Tab content'
           });
+          this.tableDate = [] ;
         }else{
           this.editableTabs.push({
             title: this.messageTitle,
@@ -349,8 +353,8 @@ export default {
           });
         }
         this.editableTabsValue = (newTabName-1).toString();
+        console.log(this.editableTabsValue)
         }
-        console.log(this.editableTabs)
       }
       if (action === 'remove') {
         this.editableTabsValue = targetName;
@@ -402,7 +406,10 @@ export default {
                     });
                   }       
                   this.editableTabsValue = String(this.editableTabs.length);
+                  console.log(this.editableTabsValue)
                   this.$message.success("删除成功");
+                } else {
+                  this.$message.success("该主题存在签证信息人群，不允许删除");
                 }
                })
             }
@@ -421,7 +428,9 @@ export default {
         this.ruleForm.caption = '';
         this.handleTabsEdit(this.tabIndex, "add");
         this.addVisaMessageShow = false;
-        this.$refs[formName].resetFields();
+        this.addVisa.copy = '';
+        //this.editableTabsValue = String(this.editableTabs.length)-2;
+        //this.$refs["ruleForm"].resetFields();
         this.a = 1;
       }else {
         for(let i = 0; i < this.copyList.length; i++){

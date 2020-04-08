@@ -1,16 +1,25 @@
 <template>
-   <div  class="vivo" style="position:relative; width:100%;">
+   <div  class="distributor-content" style="position:relative; width:100%;">
      <div label="商户欠款订单">
-        <!--搜索框-->
-        <div style="width:100%; padding:30px 0 0 0;">
-            <span class="emptyPlan">订单单号</span>
-            <el-input v-model="orderid" placeholder="订单ID" class="search_input" style='width:200px;'></el-input>
-            <span class="emptyPlan">商户名称</span>
-            <el-input v-model="ordertitle"  placeholder="请输入商户名称" class="search_input" style='width:200px;'></el-input>
-            <span class="emptyPlan">出团日期</span>
-             <el-date-picker
-                class="search_input"
-                v-model="planTime"
+  
+       <!-- 搜索表单 -->
+          <el-form :model="ruleForm" ref="ruleForm"  label-width="80px" id="form-content">
+            <el-row type="flex" class="row-bg">
+              <el-col :span="8">
+                <el-form-item label="订单单号:" prop="planID">
+                  <el-input v-model="ruleForm.orderid" placeholder="订单ID"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="商户名称:" prop="user">
+                  <el-input v-model="ruleForm.ordertitle" placeholder="请输入商户名称" ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                 <el-form-item label="出团日期:">
+                 <el-date-picker
+                class="status-length"
+                v-model="ruleForm.planTime"
                 @change="endDateChange()" 
                 type="daterange"
                 range-separator="至"
@@ -18,40 +27,55 @@
                 end-placeholder="终止日期"
                 >
               </el-date-picker>
-        </div>
-        <div style="width:1100px;clear:both; padding:30px 0 50px 0;">
-             <span class="emptyPlan">欠款逾期</span>
-             <el-select v-model="typeColl" placeholder="请选择逾期类型"  class="search_input">
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row type="flex">
+               <el-col :span="8">
+                <el-form-item label="欠款逾期:" prop="user">
+                 <el-select v-model="ruleForm.typeColl" placeholder="请选择逾期类型" class="status-length">
                      <el-option :label="item.label" :value="item.value" v-for="item in settlements" :key="item.value" /> 
             </el-select>
-            <span class="emptyPlan">结款类型</span>
-            <el-select v-model="settlement" placeholder="请选择结款类型"  class="search_input">
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="结款类型:" prop="checkType">
+                  <el-select v-model="ruleForm.settlement" placeholder="请选择结款类型" class="status-length">
                      <el-option :label="item.label" :value="item.value" v-for="item in moneydata" :key="item.value" /> 
-            </el-select>
-          
-          <div style="float:right; margin: 20px -40px 30px 0;">
-            <el-button type="primary" @click="handleSearch()">搜索</el-button>
-            <el-button type="primary" @click="emptyButton()" >重置</el-button>
-          </div>
-        </div>
-      <!--搜索框-->
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item>
+                    <el-button type="primary" @click="handleSearch()">搜索</el-button>
+                    <el-button type="primary" @click="emptyButton()" >重置</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
  
         <!--表格-->
     <div class="table_style">
-         <el-table :data="tableData" class="labelTable"  border style="width: 100%;" :row-class-name="tableRowClassName" >
-            <el-table-column prop="ID" label="订单单号" width="185" align="center"></el-table-column>
-            <el-table-column prop="name" label="商户名称" width="119" align="center"></el-table-column>
-            <el-table-column prop="moneyType" label="结款方式" width="80" align="center"></el-table-column>
-            <el-table-column prop="productName" label="产品名称" width="170" align="center"></el-table-column>
-            <el-table-column prop="plan" label="团期计划" width="140" align="center"></el-table-column>
-            <el-table-column prop="order" label="订单金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="arrears" label="欠款金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="also" label="已还金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="examine" label="待审批金额" width="85" align="center"></el-table-column>
-            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
-            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' width="100" align="center"></el-table-column>
-            <el-table-column prop="date" label="出团日期" width="100" align="center"></el-table-column>
-            <el-table-column prop="paymentID" label="操作" width="80" align="center">
+         <el-table 
+         :data="tableData" 
+         class="labelTable"  
+         border 
+         style="width: 100%;" 
+         :header-cell-style="getRowClass"
+         :row-class-name="tableRowClassName" >
+            <el-table-column prop="ID" label="订单单号" align="center"></el-table-column>
+            <el-table-column prop="name" label="商户名称" align="center"></el-table-column>
+            <el-table-column prop="moneyType" label="结款方式" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="plan" label="团期计划"  align="center"></el-table-column>
+            <el-table-column prop="order" label="订单金额"  align="center"></el-table-column>
+            <el-table-column prop="arrears" label="欠款金额"  align="center"></el-table-column>
+            <el-table-column prop="also" label="已还金额"  align="center"></el-table-column>
+            <el-table-column prop="examine" label="待审批金额"  align="center"></el-table-column>
+            <el-table-column prop="arrearsDate" label="欠款日期" :formatter='dateFormat' align="center"></el-table-column>
+            <el-table-column prop="alsoDate" label="应还日期" :formatter='dateFormat' align="center"></el-table-column>
+            <el-table-column prop="date" label="出团日期"  align="center"></el-table-column>
+            <el-table-column prop="paymentID" label="操作"  align="center">
                           <template slot-scope="scope">
                           <div @click="dialogchange(scope)" style="color: #f5a142">修改时间</div>
                          </template>
@@ -84,7 +108,7 @@
    
   </div>
 </template>
-<style>
+<style scoped>
   /*搜索框*/
   .search_input{ width: 200px;float:left; line-height: 30px;margin: 0 0 0 10px; }
   .fl{float:left; margin: 20px 0 20px 0;}
@@ -95,8 +119,28 @@
   .table_style {width: 98%;margin-left: 20px;margin-top: 20px;}
   .labelTable{margin: 20px 30px 100px 0;overflow: hidden;clear:both;}
   .pageList{float:right; margin: -70px 0 60px 0;}
-  .el-table .warning-red-jenny { color: red;}
-  
+
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+  }
+   #form-content {
+      background: #f7f7f7;
+      padding: 20px 10px;
+      margin: 20px 10px;
+    }
+  .line{
+        text-align: center;
+      }
+  .status-length{
+        width: 100% !important;
+      }
+      
+</style>
+<style>
+.el-table .warning-red-jenny {color: red;}
 </style>
 <script>
 import commercia from "./commercia";
@@ -111,13 +155,16 @@ export default {
      return {
        activeName: 'first',
        //搜索栏
+       ruleForm: {
         orderid:"",//订单id
         ordertitle:'',//商户名称
         planTime:"",//time
-        amendTime:'',//修改时间
         typeColl:-1, //欠款逾期
         settlement:-1,//结款类型
-        dialogFormVisible:false,//修改时间弹框
+       },
+      amendTime:'',//修改时间
+       dialogFormVisible:false,//修改时间弹框
+       
         moneydata:[{
           value:  -1,
           label: '全部'
@@ -162,12 +209,12 @@ export default {
       pageList(
             pageIndex = this.pageIndex,
             pageSize = this.pageSize,
-            orderCode = this.orderid,//订单id
-            localComp = this.ordertitle,//商户名称
+            orderCode = this.ruleForm.orderid,//订单id
+            localComp = this.ruleForm.ordertitle,//商户名称
             startDate= this.startDate,//开始时间
             endDate = this.endDate,//结束时间
-            typeColl=this.typeColl,//选择逾期
-            settlement=this.settlement,//结款方式
+            typeColl=this.ruleForm.typeColl,//选择逾期
+            settlement=this.ruleForm.settlement,//结款方式
         ){
             var that = this;
             let object={};
@@ -246,24 +293,24 @@ export default {
       
     //重置
     emptyButton(){
-      this.orderid ='',
-      this.ordertitle ='',
-      this.planTime = '';
+      this.ruleForm.orderid ='',
+      this.ruleForm.ordertitle ='',
+      this.ruleForm.planTime = '';
       this.endDate = null;
       this.startDate = null;
-      this.typeColl = -1;
+      this.ruleForm.typeColl = -1;
       this.currentPage4 = 1;
-      this.settlement = -1;
+      this.ruleForm.settlement = -1;
       this.pageList(1, this.pageSize);
     },
     //判断结束时间不能在开始时间之前
     endDateChange() {
-     if (this.planTime == null){
-              this.planTime = "";
+     if (this.ruleForm.planTime == null){
+              this.ruleForm.planTime = "";
               this.pageList();
           }else{
-            this.startDate = moment(this.planTime[0]).format("YYYYMMDD");
-            this.endDate = moment(this.planTime[1]).format("YYYYMMDD");
+            this.startDate = moment(this.ruleForm.planTime[0]).format("YYYYMMDD");
+            this.endDate = moment(this.ruleForm.planTime[1]).format("YYYYMMDD");
             // if(endDate == startDate){
             //     this.planTime[1] = moment(this.planTime[1]).format("YYYY-MM-DD 23:59:00");
             // }
@@ -297,6 +344,14 @@ export default {
          this.planid = id.row.planid 
          this.dialogFormVisible = true;
         },
+         // 表格头部背景颜色
+    getRowClass({row, column, rowIndex, columnIndex}) {
+      if (rowIndex == 0) {
+        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+      } else {
+        return ''
+      }
+    },
     chanceSubmit() { // 取消按钮
             this.$confirm("是否取消修改时间", "提示", {
                 confirmButtonText: "确定",

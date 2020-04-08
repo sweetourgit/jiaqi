@@ -29,21 +29,21 @@
               <span class="Numbers">{{ruleForm.name.length}}/30字</span>
             </el-form-item>
             <el-form-item label="亮点词" prop="highlightWords">
-              <span class="redStar">*</span>
-              <el-input v-model="ruleForm.highlightWords" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
+              <!-- <span class="redStar">*</span> -->
+              <el-input v-model="ruleForm.highlightWords" class="Words" placeholder="请输入产品亮点词"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords.length}}/8字</span>
-              <div class="cognate" v-show="cognateShow">亮点词不能为空</div>
+              <!-- <div class="cognate" v-show="cognateShow">亮点词不能为空</div> -->
             </el-form-item>
             <el-form-item prop="highlightWords1" class="Words1">
-              <el-input v-model="ruleForm.highlightWords1" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
+              <el-input v-model="ruleForm.highlightWords1" class="Words" placeholder="请输入产品亮点词"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords1.length}}/8字</span>
             </el-form-item>
             <el-form-item prop="highlightWords2" class="Words2">
-              <el-input v-model="ruleForm.highlightWords2" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
+              <el-input v-model="ruleForm.highlightWords2" class="Words" placeholder="请输入产品亮点词"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords2.length}}/8字</span>
             </el-form-item>
             <el-form-item prop="highlightWords3" class="Words3">
-              <el-input v-model="ruleForm.highlightWords3" class="Words" placeholder="请输入产品亮点词" @blur="highlightWords()"></el-input>
+              <el-input v-model="ruleForm.highlightWords3" class="Words" placeholder="请输入产品亮点词"></el-input>
               <span class="Numbers">{{ruleForm.highlightWords3.length}}/8字</span>
             </el-form-item>
             <el-form-item label="签证国家地区" prop="region" class="mt80">
@@ -258,11 +258,11 @@ export default {
   	this.getVisaRegion();
   },
   methods: {
-    highlightWords(){
-      if(this.ruleForm.highlightWords !== '' || this.ruleForm.highlightWords1 !== '' || this.ruleForm.highlightWords2 !== '' || this.ruleForm.highlightWords3 !== ''){
-            this.cognateShow = false;
-        }
-    },
+    // highlightWords(){
+    //   if(this.ruleForm.highlightWords !== '' || this.ruleForm.highlightWords1 !== '' || this.ruleForm.highlightWords2 !== '' || this.ruleForm.highlightWords3 !== ''){
+    //         this.cognateShow = false;
+    //     }
+    // },
     querySearch(queryString1, cb) { // 搜索国家地区模糊查询
       this.vague = [];
       this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
@@ -387,12 +387,12 @@ export default {
     },
     // 轮播图上传END=========
     nextMessage(formName){
-      if(this.ruleForm.highlightWords.length == 0 && this.ruleForm.highlightWords1.length == 0 &&this.ruleForm.highlightWords2.length == 0 &&this.ruleForm.highlightWords3.length == 0 ){
-        this.cognateShow = true;
-        return;
-      }else {
-        this.cognateShow = false;
-      }
+      // if(this.ruleForm.highlightWords.length == 0 && this.ruleForm.highlightWords1.length == 0 &&this.ruleForm.highlightWords2.length == 0 &&this.ruleForm.highlightWords3.length == 0 ){
+      //   this.cognateShow = true;
+      //   return;
+      // }else {
+      //   this.cognateShow = false;
+      // }
       let sendAdrress = []; // 送签地
       sendAdrress.push(this.ruleForm.sendVisa)
       let visaSend = [{

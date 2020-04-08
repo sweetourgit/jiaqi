@@ -1,3 +1,4 @@
+<!-- 2020-3-31 -->
 <template>
   <div class="vivo">
     <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -127,7 +128,7 @@ export default {
           "total": 0,
           "object": {
             "collectionType":2,//直客1.同业2
-            "localCompID":this.sid,//直客0,同业变成同业社id
+            "localCompID":this.sid,//直客0,同业变成同业社id 2020-4-2 wzj sid为undefine
           }
         })
         .then(function (obj) {
