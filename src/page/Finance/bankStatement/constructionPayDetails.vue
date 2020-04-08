@@ -186,7 +186,6 @@ export default {
     },
     loadData(){
       const that = this;
-      // console.log(this.$route.query)
       this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/search", {
         "pageIndex": this.pageCurrent,
         "pageSize": this.pageSize,

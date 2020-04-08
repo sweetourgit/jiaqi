@@ -296,7 +296,7 @@ export default {
         name: '建设银行流水单管理  /微信支付宝明细',
         query: {
           purpose_Merchant_code: row.id,
-          "purpose_Merchant_code": row.purpose_Merchant_code||'',
+          // "purpose_Merchant_code": row.purpose_Merchant_code||'',
           // "purpose_Date": row.purpose_Date||'',
           "creditAmount":row.creditAmount,
           "remarkStartDate":row.remarkStartDate.replace('T',' '),

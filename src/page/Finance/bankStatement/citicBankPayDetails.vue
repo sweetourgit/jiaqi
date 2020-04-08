@@ -187,7 +187,7 @@ export default {
     },
     loadData() {
       const that = this;
-      // console.log(this.$route.query)
+      console.log(this.$route.query)
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/wa_payment_citic/api/page", {
           pageIndex: this.pageCurrent,
