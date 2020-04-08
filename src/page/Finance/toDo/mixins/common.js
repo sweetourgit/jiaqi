@@ -142,7 +142,6 @@ export default {
     },
     // 依据状态显示不同行样式
     tableRowClassName({row, rowIndex}) {
-      console.log(row)
       if (row.checkType === 0) {
         return 'going-row';
       } else if (row.checkType === 1) {

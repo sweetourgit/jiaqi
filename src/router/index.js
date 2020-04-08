@@ -650,7 +650,7 @@ export default new Router({
   {
     path: '/doneAll/list',
     component: () => import('@/page/Finance/doneAll/list'),
-    name: '已办',
+    name: '已办管理',
     meta: {
       keepAlive: true,
       auth: true
@@ -659,7 +659,7 @@ export default new Router({
   {
     path: '/doneAll/advanceAndNoInDetails',
     component: () => import('@/page/Finance/doneAll/advanceAndNoInDetails'),
-    name: '已办/借款详情',
+    name: '已办管理/借款详情',
     meta: {
       keepAlive: true,
       auth: true
@@ -668,7 +668,7 @@ export default new Router({
   {
     path: '/doneAll/reimbursementDetails',
     component: () => import('@/page/Finance/doneAll/reimbursementDetails'),
-    name: '已办/报销详情',
+    name: '已办管理/报销详情',
     meta: {
       keepAlive: true,
       auth: true
@@ -677,7 +677,7 @@ export default new Router({
   {
     path: '/doneAll/refundDetails',
     component: () => import('@/page/Finance/doneAll/refundDetails'),
-    name: '已办/退款详情',
+    name: '已办管理/退款详情',
     meta: {
       keepAlive: true,
       auth: true
@@ -686,7 +686,7 @@ export default new Router({
   {
     path: '/doneAll/collectionDetails',
     component: () => import('@/page/Finance/doneAll/collectionDetails'),
-    name: '已办/收款详情',
+    name: '已办管理/收款详情',
     meta: {
       keepAlive: true,
       auth: true
@@ -695,7 +695,7 @@ export default new Router({
   {
     path: '/toDo/ILabel',
     component: () => import('@/page/Finance/toDo/ILabel'),
-    name: '待办',
+    name: '待办管理',
     meta: {
       keepAlive: true,
       auth: true
@@ -704,7 +704,7 @@ export default new Router({
   {
     path: '/borrow/borrowDetails',
     component: () => import('@/page/Finance/toDo/borrow/borrowDetails'),
-    name: '待办/借款详情',
+    name: '待办管理/借款详情',
     meta: {
       keepAlive: true,
       auth: true
@@ -713,7 +713,7 @@ export default new Router({
   {
     path: '/collection/collectionTeamDetails',
     component: () => import('@/page/Finance/toDo/collection/collectionTeamDetails'),
-    name: '待办/收款详情',
+    name: '待办管理/收款详情',
     meta: {
       keepAlive: true,
       auth: true
@@ -722,7 +722,7 @@ export default new Router({
   {
     path: '/reimburse/reimburseTeamDetails',
     component: () => import('@/page/Finance/toDo/reimburse/reimburseTeamDetails'),
-    name: '待办/报销详情',
+    name: '待办管理/报销详情',
     meta: {
       keepAlive: true,
       auth: true
@@ -731,7 +731,7 @@ export default new Router({
   {
     path: '/refund/refundDetails',
     component: () => import('@/page/Finance/toDo/refund/refundDetails'),
-    name: '待办/退款详情',
+    name: '待办管理/退款详情',
     meta: {
       keepAlive: true,
       auth: true

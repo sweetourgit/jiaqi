@@ -302,6 +302,7 @@
   </div>
 </template>
 
+<!-- 依据审批状态显示不同行的背景颜色 -->
 <style>
   .el-table .going-row {
     background: #7F7F7F;
