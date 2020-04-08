@@ -984,12 +984,7 @@ export default {
         } else if (item.orderStatus == 9) {
           item.orderStatus = "作废订单";
         } else if (item.orderStatus == 10) {
-           if (item.refundStatus != 0) {
-              item.orderStatus = "确定占位";
-           }else{
-              item.orderStatus = "确定占位";
-           }
-
+          item.orderStatus = "确定占位";
         }
         if (item.refundStatus == 1) {
           item.refundStatus = "退款中";

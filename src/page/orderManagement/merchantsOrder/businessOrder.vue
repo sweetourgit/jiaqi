@@ -975,7 +975,7 @@ export default {
         } else if (item.orderStatus == 9) {
           item.orderStatus = "作废订单";
         } else if (item.orderStatus == 10) {
-          item.orderStatus = "确认订单";
+          item.orderStatus = "确定占位";
         }
         //产品类型
         // if (item.productType == 1) {
