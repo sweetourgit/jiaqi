@@ -1,27 +1,26 @@
 <style lang="scss" scoped>
 .title-bar{
   position: relative;
-  line-height: 32px;
   width: 100%;
   padding: 0 36px;
-  box-sizing: content-box;
-  cursor: pointer;
+  box-sizing: border-box;
   *{
     box-sizing: content-box;
   }
   .control-btns{
     display: inline-block;
     width: 36px;
+    top: 10px;
+    line-height: 32px;
     text-align: center;
+    cursor: pointer;
   }
   .control-btns:first-child{
     position: absolute;
-    top: 0;
     left: 0;
   }
   .control-btns:last-child{
     position: absolute;
-    top: 0;
     right: 0;
   }
   .control-btns:hover{
@@ -37,16 +36,52 @@
       flex-wrap: nowrap;
       max-width: 100%;
       overflow-x:auto;
-      & .bar-outer{
-        user-select: none;
-        display: inline-block;
-      }
-      & .selected{
-        border-bottom: 2px solid #333;
-      }
       &::-webkit-scrollbar{
-        display: none;
+        width: 10px;
+        height: 4px;
+        border-radius: 2px;
       }
+      &::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 10px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        background: #535353;
+      }
+      &::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        border-radius: 10px;
+        background: #EDEDED;
+      }
+    }
+    .bar-outer{
+      position: relative;
+      display: inline-block;
+      padding: 10px 30px 0 10px;
+      box-sizing: border-box;
+      user-select: none;
+      .title-text{
+        max-width: 300px;
+        line-height: 32px;
+        word-break: keep-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+      }
+      .close-btn{
+        position: absolute;
+        display: block;
+        width: 30px;
+        top: 10px;
+        line-height: 32px;
+        right: 0;
+        text-align: center;
+        color: gray;
+        cursor: pointer;
+      }
+    }
+    .selected{
+      color: #409EFF;
+      font-weight: bold;
     }
   }
 }
@@ -59,19 +94,47 @@
     </div>
     <div class="scroll-container">
       <div class="scroll-body" style="width: 2000px;">
-        <div class="bar-outer">123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
-        <div>123123123123123123</div>
+
+        <div class="bar-outer selected">
+          <el-badge
+            v-if="options.badge" 
+            :value="0">
+            <div class="title-text"
+              :title="'123'">
+              123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
+            </div>
+          </el-badge>
+          <div class="title-text"
+            v-else
+            :title="'123'">
+            123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
+          </div>
+          <div class="close-btn"
+            v-show="options.deletable">
+            <i class="el-icon-close"></i>
+          </div>
+        </div>
+
+        <div class="bar-outer">
+          <el-badge
+            v-if="options.badge" 
+            :value="0">
+            <div class="title-text"
+              :title="'123'">
+              123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
+            </div>
+          </el-badge>
+          <div class="title-text"
+            v-else
+            :title="'123'">
+            123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
+          </div>
+          <div class="close-btn"
+            v-show="options.deletable">
+            <i class="el-icon-close"></i>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="control-btns">
@@ -85,10 +148,17 @@ export default {
 
   props: {
     list: Array,
-    deletable: {
-      type: Boolean,
-      default: true
-    },
+    options: {
+      type: Object,
+      default(){
+        return {
+          // 是否有删除
+          deletable: false,
+          // badge
+          badge: false
+        }
+      }
+    }
   },
 
 }

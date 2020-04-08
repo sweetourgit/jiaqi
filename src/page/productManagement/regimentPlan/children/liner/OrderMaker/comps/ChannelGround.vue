@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top: 42px;">
+  <div style="padding: 40px 0 40px 0; border-bottom: 1px solid #cecece;">
     <el-form
       label-width="120px" 
       ref="submitForm"
@@ -32,7 +32,7 @@
           @select="selectSupplier">
         </el-autocomplete>
       </el-form-item>
-      <el-form-item label="价格选择：" prop="name" ref="supplierRef">
+      <el-form-item label="价格选择：" prop="name" ref="supplierRef" style="margin:0;">
         <el-radio-group v-model="submitForm.line_status">
           <el-radio :label="1">线下直客</el-radio>
           <el-radio :label="2">商户（同业、门店）</el-radio>

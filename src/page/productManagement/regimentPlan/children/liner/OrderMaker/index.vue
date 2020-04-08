@@ -61,6 +61,8 @@ export default {
   components: { InfoGround, ChannelGround, CabinGround },
   
   mounted(){
+    console.log(skuPlanCache)
+    skuPlanCache= 123;
     let { sku_id, product_id }= this.$route.query;
     Promise.all([
       getProductInfo(product_id),
@@ -69,7 +71,7 @@ export default {
   },
 
   beforeDestroy(){
-    skuPlanCache= null;
+    // skuPlanCache= null;
   }
 
 }
