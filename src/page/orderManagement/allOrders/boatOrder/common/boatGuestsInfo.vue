@@ -32,29 +32,29 @@
               <td width="120">报名类型</td>
               <td width="120">护照</td>
               <td width="120">电话</td>
-              <td width="180">身份证</td>
+              <td width="120">身份证</td>
               <td width="120">性别</td>
-              <!-- <td width="120" v-if='this.chooseTab== 1'>房间号</td>
-               <td width="120" v-if='this.chooseTab== 2'>保险</td>
-                <td width="120" v-if='this.chooseTab== 3'>大巴</td> -->
+              <td width="120" v-if='this.choosetext== 0'>房间号</td>
+              <td width="120" v-if='this.choosetext== 1'>保险</td>
+              <td width="120" v-if='this.choosetext== 2'>大巴</td>
             </tr>
-        <tr v-for="(guest, index) in NewGetCabinData" :key="'g'+index">
-          <td>{{guest.NGDName}}</td>
-          <td>{{guest.NGDType}}</td>
-          <td>{{guest.NGDCard}}</td>
-          <td>{{guest.NGDPassport}}</td>
-          <td>{{guest.NGDTel}}</td>
+        <tr v-for="(guest, index) in NewGetcontext" :key="'g'+index">
+          <td>{{guest.name}}</td>
+          <td>{{guest.enroll_type}}</td>
+          <td>{{guest.id_card}}</td>
+          <td>{{guest.passport}}</td>
+          <td>{{guest.tel}}</td>
           <td>
-            <div v-if="guest.NGDSex=='1'">男</div>
-            <div v-if="guest.NGDSex=='2'">女</div>
+            <div v-if="guest.sex=='1'">男</div>
+            <div v-if="guest.sex=='2'">女</div>
           </td>
-          <!-- <td width="120" v-if='this.chooseTab== 1'>房间号</td>
-          <td width="120" v-if='this.chooseTab== 2'>保险</td>
-          <td width="120" v-if='this.chooseTab== 3'>大巴</td> -->
-        </tr>
+          <td>
+            {{guest.insure_title}}
+            </td>
+       </tr>
       </table>
  
- 
+  <el-button class="m_top_20" @click="btReceiptDialogClose">取消</el-button>
   </el-dialog>
 </template>
 
@@ -69,22 +69,11 @@ export default {
   },
   data() {
     return {
-      chooseTab:"0", //tabs选中的
-      choosetext:null,
-      NewGetCabinData:[],//客人信息
-      // chooseSwiper: "", //swiper选中的
-      // achooseSwiperIndex: "0", //当前swiper选中的index
-      // swiperInfo: [
-      //   "处理中心1",
-      //   "处理中心2",
-      //   "处理中心3",
-      //   "处理中心4",
-      //   "处理中心5",
-      //   "处理中心6",
-      //   "处理中11111心7",
-      //   "处理中心8"
-      // ], //swiper数据的集合
-      // isDirection: false // 监听是右箭头还是左箭头的字段 默认false为向右
+      chooseTab:'deliverinfo', //tabs选中的
+      choosetext:"1",
+      NewGetCabinData:{},//客人信息
+      NewGetcontext:[],//信息
+    
     };
   },
   created() {},
@@ -98,21 +87,20 @@ export default {
           id: this.orderId
         })
         .then(res => {
-         
-       
               if(res.data.code === 200){
-                let infodata = res.data.data;
-                
-                //  if(this.choosetext === deliverinfo){
-                //       console.log("请求一条数据的");
-                //     this.NewGetCabinData = res.data.data.info.deliverinfo;
-                //  }else if(this.choosetext === insureinfo){
-                //     this.NewGetCabinData = res.data.data.info.insureinfo;
-                //  }
-                 
-                         
-                     
-              }
+                let infodata = res.data.data.info;
+                   if(this.choosetext == 0){
+                     this.NewGetCabinData = infodata[0];
+                   }else if(this.choosetext== 1 ){
+                     this.NewGetcontext = infodata.insureinfo;
+                   }else if(this.choosetext == 2){
+                     this.NewGetcontext = infodata.deliverinfo;
+                   }
+                  console.log("请求一条数据的", this.NewGetcontext);
+                  
+                   
+                  
+             }
          
           
         })
@@ -120,14 +108,13 @@ export default {
           console.log(err);
         });
     },
-    chooseTabClick(tab,event){
+    chooseTabClick(tab){
       this.NewGetCabinData = [];
-      this.choosetext = tab.name;
+      this.NewGetcontext = [];
+      this.choosetext = tab.index;
       this.orderData();
-     
-
-    },
-  },
+      },
+   },
   mounted() {
     const mySwiper = new Swiper(".swiper-container", {
       slidesPerView: 4,
@@ -143,52 +130,22 @@ export default {
   width: 600px;
   height: 300px;
 }
-// 轮播导航begin
-// .swiperBox {
-//   position: relative;
-
-//   .swiper {
-//     width: 700px;
-//     margin: 15px 0 15px 20px;
-//     padding: 0 10px;
-//     box-sizing: border-box;
-//     overflow-y: hidden;
-//     overflow-x: scroll;
-//     display: flex;
-//     justify-content: space-between;
-//     white-space: nowrap;
-
-//     .swiperSon {
-//       margin: 0 17px;
-//       list-style: none;
-//       text-align: center;
-//     }
-//   }
-
-//   .iconLeft {
-//     position: absolute;
-//     left: 0;
-//     top: 15px;
-//     padding: 10px;
-//     cursor: pointer;
-//   }
-
-//   .iconRight {
-//     position: absolute;
-//     right: 0;
-//     top: 15px;
-//     padding: 10px;
-//     cursor: pointer;
-//   }
-
-//   .iconLeft:hover,
-//   .iconRight:hover {
-//     color: #409eff;
-//   }
-
-//   ::-webkit-scrollbar {
-//     display: none;
-//   }
-// }
-// 轮播导航end
+.costList {
+  width: 700px;
+  line-height: 40px;
+  text-align: center;
+  border: 1px solid #ebebeb;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.costList_01 {
+  background: #f3f3f3;
+}
+.fl {
+  float: left;
+}
+ 
+.m_top_20{
+  margin: 20px 0 20px 620px;
+}
 </style>

@@ -987,7 +987,7 @@ export default {
            if (item.refundStatus != 0) {
               item.orderStatus = "确定占位";
            }else{
-              item.orderStatus = "确认订单";
+              item.orderStatus = "确定占位";
            }
 
         }
