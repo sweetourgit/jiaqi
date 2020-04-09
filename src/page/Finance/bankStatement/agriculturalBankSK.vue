@@ -352,8 +352,8 @@ export default {
             type: this.ruleForm.matchType ? this.ruleForm.matchType : 1,
             startTime: dateStart ? dateStart : "2000-05-16",
             endTime: dateEnd ? dateEnd : "2099-05-16",
-            userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            userid: 0,  //data4D.userID, // 暂无数据 想看改成0, 2020-4-9 要求改为0
+            orgid:  0,   //data4D.orgID, // 暂无数据 想看改成0, 2020-4-9 要求改为0
             topid: data4D.topID, // 暂无数据 想看改成0,
             company: data4D.company,
             seachType: 0

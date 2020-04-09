@@ -149,9 +149,9 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/delete", {
-          "id": row.id,
+          "id": this.$route.query.purpose_Merchant_code,
         }).then(function(response) {
-          if (response.data.isSuccess) {
+          if (response.statusText=='OK') {
             that.loadData();
             that.$message({
               type: 'info',
