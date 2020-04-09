@@ -217,7 +217,7 @@
         }
       },
       // 关闭弹窗
-      closeAdd(){
+      closeAdd(str){
         this.baseInfo = {
           id: '',
           create_uid: '',
@@ -236,7 +236,9 @@
           approval_status: '',
           pay_type: ''
         };
-
+        if(str == 'cancle'){
+          this.$emit('close', str);
+        }
         this.$emit('close', 'detail');
       },
       // 选择付款账户
@@ -264,7 +266,7 @@
             if (response.data.code == '200') {
               that.$message.success("撤销成功~");
               that.endWorking();
-              that.closeAdd();
+              that.closeAdd('cancle');
             } else {
               if(response.data.message){
                 that.$message.warning(response.data.message);

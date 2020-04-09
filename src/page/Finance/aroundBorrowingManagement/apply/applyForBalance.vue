@@ -319,7 +319,7 @@
 
             }else{
               this.tableDataChoose.forEach(function(item, index, arr){
-                ids = item.id + ','
+                ids += item.id + ','
               })
               ids = ids.substring(0, ids.length - 1)
             }
