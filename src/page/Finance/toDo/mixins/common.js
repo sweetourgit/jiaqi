@@ -77,12 +77,12 @@ export default {
     // 审核通过时调用
     apiAuditApproved () {
       let _this = this;
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ', {
         "jQ_ID": _this.guid,
         "jQ_Type": this.setjQType,
         "userCode": this.getUserTel,
         "workItemID": _this.getWorkItemId,
-        "approvalOpinion": _this.approvalOpinion
+        "commentText": _this.approvalOpinion
       }).then(res => {
         _this.ifShowApproveDialog = false;
         _this.detailstShow = false;
@@ -97,7 +97,7 @@ export default {
         "jQ_Type": this.setjQType,
         "userCode":this.getUserTel,
         "workItemID": _this.getWorkItemId,
-        "approvalOpinion": _this.approvalOpinion
+        "commentText": _this.approvalOpinion
       }).then(res => {
         _this.ifShowApproveDialog = false;
         _this.detailstShow = false;
