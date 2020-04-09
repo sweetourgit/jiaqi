@@ -138,19 +138,20 @@ export default {
 
   methods: {
     clickHandler(title){
+      if(!title) return this.$emit('select');
       if(typeof title=== 'number') title= this.dataList.find(el => el.key=== title);
       let find= this.dataList.find(el => el.selected);
-      if(!find) return;
+      if(!find || find=== title) return;
       find.selected= false;
       title.selected= true;
       this.$forceUpdate();
+      this.$emit('select', title);
     },
     closeHandler(title){
       let index= this.dataList.findIndex(el => el=== title);
       this.$emit('close', title.key);
       if(this.dataList.length=== 0) return;
       let find= this.dataList[index];
-      if(!find) return;
       this.clickHandler(find);
     },
   }

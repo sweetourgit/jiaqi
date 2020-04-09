@@ -13,19 +13,22 @@
     <TitleBar 
       :data-list="cabinTitles" 
       :options="{ deletable: true, badge: true }"
+      @select="selectCabin"
       @close="removeCabin">
     </TitleBar>
-    <div style="padding: 22px 0 40px 0;border-bottom: 1px solid #cecece; display: none;">
+    <div style="padding: 22px 0 40px 0;border-bottom: 1px solid #cecece;">
       <el-form
         label-width="120px" 
         ref="submitForm"
         :model="submitForm"
         :rules="rules">
-        <el-form-item label="拼住/整间：" prop="name" ref="supplierRef">{{ 123 }}</el-form-item>
-        <el-form-item label="报名人数：" prop="name" ref="supplierRef" style="margin: 0;">
+        <el-form-item label="拼住/整间：" prop="name"></el-form-item>
+        <el-form-item label="报名人数：" prop="name" style="margin: 0;">
           <div style="display:flex;flex-direction:column;">
             <div>成人 ￥16999.00 * 2</div>
-            <el-input-number v-model="submitForm.num" :min="1" :max="10" label="描述文字" size="small"></el-input-number>
+              <el-input-number v-model="submitForm.num" :min="1" :max="10000" :step="1" label="描述文字" size="small"
+                @change="changeHandler">
+              </el-input-number>
             <div>
               剩余完整房间：4间 可住16人  |   剩余拼住房间：1间 可住3人  |  可住19人
             </div>
@@ -64,7 +67,9 @@ export default {
 
   data(){
     return {
-      submitForm: {},
+      submitForm: {
+        num: 0,
+      },
       rules: {},
       skuCabins: [],
       cabin: [],
@@ -82,8 +87,17 @@ export default {
       this.$refs.editor.init();
     },
 
+    changeHandler(nval, oval){
+      console.log(nval, oval)
+      this.submitForm.num+= 100;
+    },
+
     addCabin(cabin){
       this.cabin.push(cabin);
+    },
+
+    selectCabin(cabin){
+
     },
 
     removeCabin(id){
