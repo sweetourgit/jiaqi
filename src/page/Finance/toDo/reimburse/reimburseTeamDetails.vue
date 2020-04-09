@@ -8,7 +8,7 @@
   <div class="loan-management">
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button type="warning" plain @click="handleCancel">取消</el-button>
-      <el-button type="primary" plain @click="handlePassBtn">通过</el-button>
+      <el-button type="success" plain @click="handlePassBtn">通过</el-button>
       <el-button type="danger" plain @click="handleRejectBtn">驳回</el-button>
     </div>
     <!-- 报销信息 -->
