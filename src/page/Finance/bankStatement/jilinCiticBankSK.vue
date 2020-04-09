@@ -1,9 +1,10 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:56:14 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:56:14
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 14:47:02
  */
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
@@ -122,7 +123,7 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
@@ -135,7 +136,7 @@ export default {
     return {
       tableData: [], // 表格数据
       ruleForm: {
-        matchType: '', // 匹配状态 
+        matchType: '', // 匹配状态
         code: '', // 交易流水号
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
@@ -167,7 +168,7 @@ export default {
   watch: {
     countTest:function(newV, oldV){
       const that = this;
-      if(newV.indexOf("bankOfChinaSK") != -1 && newV != oldV){
+      if(newV.indexOf("jilinCitiBankSK") != -1 && newV != oldV){
         setTimeout(function () {
           // alert('数据改变，执行loadDataSK~')
           that.loadData()
@@ -207,14 +208,14 @@ export default {
       return this.GLOBAL.serverSrc + '/finance/citic_bank_jl/api/ImportExcel';
     },
     handleSuccess(response, file, fileList){
-      console.log(response);
+    
       if(response == true){
         this.$message.success("吉林中信银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
+        this.$store.commit('changeBankData', 'jilinCitiBankSK' + Math.random());
       }else{
-        this.$message.warning("农业银行流水单上传失败！");
+        this.$message.warning("吉林中信银行流水单上传失败！");
       }
     },
     handleError(err, file, fileList){
@@ -261,6 +262,10 @@ export default {
           if (response.data.isSuccess) {
             that.pageCurrent = 1;
             that.loadData();
+            that.$store.commit(
+              "changeBankData",
+              "jilinCitiBankSK" + Math.random()
+            );
             // that.$store.commit('changeBankData', 'bankOfChinaSXF' + Math.random());
             that.$message({
               type: 'info',
@@ -305,7 +310,7 @@ export default {
       const that = this;
       let dateStart = '', dateEnd = '';
       let data4D=utils.getSession4D()
-     
+
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }
@@ -325,10 +330,10 @@ export default {
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
            //若传入4D则无数据 测试暂时先不传
-            //   userid: data4D.userID, // 暂无数据 想看改成0,
-            // orgid: data4D.orgID, // 暂无数据 想看改成0,
-            // topid: data4D.topID, // 暂无数据 想看改成0,
-            // company: "",
+              userid:0,// data4D.userID, // 暂无数据 想看改成0,
+            orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
+            topid: data4D.topID, // 暂无数据 想看改成0,
+            company: data4D.company,
         }
       }).then(function (obj) {
         if(obj.data.isSuccess){

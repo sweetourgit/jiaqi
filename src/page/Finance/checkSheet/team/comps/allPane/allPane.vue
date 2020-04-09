@@ -1,3 +1,4 @@
+<!-- 2020-3-31 -->
 <style lang="scss" scoped>
 .all-pane {
   border: 1px solid #e6e6e6;
@@ -46,7 +47,9 @@
         <el-table-column prop="createTime" label="申请时间" align="center">
           <template slot-scope="scope">{{ dateFormator(scope.row.createTime) }}</template>
         </el-table-column>
-
+   <el-table-column prop="createTime" label="审批时间" align="center">
+          <template slot-scope="scope">{{ dateFormator(scope.row.checkTime) }}</template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click="toDetailPage(scope.row)">详情</el-button>
@@ -140,7 +143,7 @@ export default {
 
       toDetailPage(row) {
         let tab = "all";
-        console.log('row',row)
+
         let { id,guid } = row;
         let { object, ...pageInfo } = this.getCheckSheetListData();
         this.$router.push({

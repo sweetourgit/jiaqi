@@ -1,9 +1,10 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:55:05 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:55:05
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 15:35:09
  */
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
@@ -233,7 +234,7 @@ export default {
   watch: {
     countTest: function(newV, oldV) {
       const that = this;
-      if (newV.indexOf("industrialBankSK") != -1 && newV != oldV) {
+      if (newV.indexOf("citicBankSK") != -1 && newV != oldV) {
         setTimeout(function() {
           // alert('数据改变，执行loadDataSXF~')
           that.loadData();
@@ -270,14 +271,14 @@ export default {
       return this.GLOBAL.serverSrc + "/finance/citic_bank/api/importexcel";
     },
     handleSuccess1(response, file, fileList) {
-      console.log(response);
+      
       if (response == true) {
         this.$message.success("中信银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
         this.$store.commit(
           "changeBankData",
-          "industrialBankSXF" + Math.random()
+          "citicBankSXF" + Math.random()
         );
       } else {
         this.$message.warning("中信银行流水单上传失败！");
@@ -287,7 +288,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove1(file, fileList) {
-      console.log(file, fileList);
+     
     },
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -296,7 +297,7 @@ export default {
       return this.GLOBAL.serverSrc + "/finance/wa_payment_citic/api/importexcel";
     },
     handleSuccess2(response, file, fileList) {
-      console.log(response);
+    
       if (response == true) {
         this.$message.success("微信支付宝明细上传成功！");
         this.pageCurrent = 1;
@@ -309,7 +310,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove2(file, fileList) {
-      console.log(file, fileList);
+      
     },
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -368,7 +369,7 @@ export default {
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "citicBankSK" + Math.random()
+                  "citicBankSXF" + Math.random()
                 );
                 that.$message({
                   type: "info",
@@ -432,14 +433,14 @@ export default {
             begin: dateStart ? dateStart : "2000-05-16",
             end: dateEnd ? dateEnd : "2099-05-16",
             seachType: 0,
-            userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            userid:0,// data4D.userID, // 暂无数据 想看改成0,
+            orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
             topid: data4D.topID, // 暂无数据 想看改成0,
             company: data4D.company,
           }
         })
         .then(function(obj) {
-          console.log("中信银行", obj);
+         
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;

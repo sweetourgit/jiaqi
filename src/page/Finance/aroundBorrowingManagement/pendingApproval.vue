@@ -21,6 +21,12 @@
                 </template>
               </el-table-column>
               <el-table-column prop="loan_money" label="借款金额" width="120" align="center"></el-table-column>
+              <el-table-column prop="account_type" label="对公/对私" align="center">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.account_type=='1'">对公</span>
+                  <span v-if="scope.row.account_type=='2'">对私</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="reimbursed_money" label="已报销金额" align="center"></el-table-column>
               <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
               <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>
@@ -63,6 +69,12 @@
                 </template>
               </el-table-column>
               <el-table-column prop="loan_money" label="借款金额" width="120" align="center"></el-table-column>
+              <el-table-column prop="account_type" label="对公/对私" align="center">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.account_type=='1'">对公</span>
+                  <span v-if="scope.row.account_type=='2'">对私</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="reimbursed_money" label="已报销金额" align="center"></el-table-column>
               <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
               <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>
@@ -105,6 +117,12 @@
                 </template>
               </el-table-column>
               <el-table-column prop="loan_money" label="借款金额" width="120" align="center"></el-table-column>
+              <el-table-column prop="account_type" label="对公/对私" align="center">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.account_type=='1'">对公</span>
+                  <span v-if="scope.row.account_type=='2'">对私</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="reimbursed_money" label="已报销金额" align="center"></el-table-column>
               <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
               <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>

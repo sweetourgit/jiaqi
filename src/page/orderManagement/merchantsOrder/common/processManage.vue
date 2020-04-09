@@ -157,7 +157,6 @@
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactName"
-            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
@@ -165,12 +164,11 @@
           <br />
           <el-input class="input" placeholder="请输入"
             v-model="ruleForm.contactPhone"
-            v-has="'others'"
             :disabled="orderget.orderStatus==4||orderget.orderStatus==5||orderget.orderStatus==6||orderget.orderStatus==9"
           ></el-input>
         </el-form-item>
-        <hr />
-        <!--出行人信息-->
+          <hr />
+         <!--出行人信息-->
         <!-- <el-form-item label="出行人信息" class="cb">
           <div class="oh" v-for="(item,indexPrice) in salePrice" :key="indexPrice">
             <div class="tour-til">{{item.enrollName}}</div>
@@ -243,7 +241,7 @@
 </template>
 
 <script>
-import { max } from "moment";
+import  moment from "moment";
 import numberInputer from './comps/numberInputer'
 import travelMessage from './comps/travelMessage'
 import guestEditDialog from './comps/guestEditDialog'
@@ -321,7 +319,7 @@ export default {
         sex: "",
         mobile: "",
         idCard: "", //身份证
-        bornDate: 0,
+        bornDate: null,
         credType: 0,
         credCode: "",
         // credTOV: 0,
@@ -451,6 +449,7 @@ export default {
     //     });
     // },
     // 报名信息显示 格式整理
+    moment,
     showEnrollDetail() {
       this.formatData(this.enrollDetail)
       this.showApplyInfo(this.enrollformatData)
@@ -530,7 +529,6 @@ export default {
     //   }
     // },
     isSaveBtnClick(){
-      console.log(123)
       this.isSaveBtn = false
       if(this.totalPrice + this.changedPrice<= 0) return this.isSaveBtn = true;
       // 如果一个报名也没有也不可以保存
@@ -584,7 +582,6 @@ export default {
     },
 
     orderModification(status, cancle) {
-      console.log(status,'orderModification');
       if (
         this.orderget.orderChannel === 1 &&
         this.settlementType === 1 &&
@@ -604,12 +601,12 @@ export default {
           case 7:
             switch (cancle) {
               case 1:
-                this.ordersave(this.orderget.id, cancle);
+                this.ordersave();
                 break;
                 retrun;
               case 2:
                 url = "";
-                this.ordersave(this.orderget.id, cancle);
+                this.ordersave();
                 break;
                 retrun;
               // case 3:
@@ -619,6 +616,7 @@ export default {
             }
             break;
           case 10:
+           this.ordersave();
            url += "/material";
             break;
           case 1:
@@ -629,12 +627,12 @@ export default {
                   // this.isChangeNumber = true;
                   return;
                 } else {
-                  //url = "/order/stat/api/econtract"; 下部分代码2020/03/17 添加 跳转合同页面 唐爱妮
+                  //url = "/order/stat/api/econtract"; 
                   
                 }
               }
             }
-             this.ordersave(1);
+             this.ordersave();
               url += "/signcontract";
             // url += "/econtract";
             break;
@@ -653,17 +651,18 @@ export default {
             break;
         }
         // 订单工作流状态更新-作废订单
-        if (cancle == 0) {
+        if (status==9 && cancle === 0) {
           this.dialogVisible = false;
           url = "/order/stat/api/invalid";
           // url = "/order/all/api/orderdelete";
         }
-
+          console.log(this.orderget.occupyStatus,'occupyStatus');
         this.$http
           .post(this.GLOBAL.serverSrc + url, {
             object: {
               id: this.orderget.id,
-              occupyStatus: this.orderget.occupyStatus
+              occupyStatus: this.orderget.occupyStatus,
+              orderStatus:this.orderget.orderStatus
             }
           })
           .then(res => {
@@ -672,15 +671,8 @@ export default {
                 message: "提交成功",
                 type: "success"
               });
-            
-              if (status === 1){
-                //this.ordersave(8);
-              }
-              if (status === 10) {
-                this.ordersave(1);
-              }
               // 取消订单按钮
-              if (cancle === 0) {
+              if (status==9 && cancle === 0) {
                 this.$http
                   .post(this.GLOBAL.serverSrc + "/order/all/api/orderdelete", {
                     id: this.orderget.id
@@ -926,7 +918,7 @@ export default {
             idCard: "",
             singlePrice: this.orderget.guests[0].singlePrice,
             mobile: "",
-            bornDate: 0,
+            bornDate: null,
             credType: 0,
             credCode: "",
             // credTOV: 0,
@@ -1024,7 +1016,7 @@ export default {
           sex: "",
           mobile: "",
           idCard: "", //身份证
-          bornDate: 0,
+          bornDate: null,
           credType: 0,
           credCode: "",
           // credTOV: 0,
@@ -1174,7 +1166,7 @@ export default {
     },
 
     compPrice(type, index) {
-      console.log(type,index)
+      
       //计算总价
       if (type == 2) {
         this.isChangeNumber = true; //数量有变动 则动态按钮不可点击
@@ -1234,17 +1226,17 @@ export default {
       this.isSaveBtnClick();
       this.addInfoFun();
     },
-    ordersave(id, occupyStatus) {
-    
-      if(this.orderget.orderStatus=== 3 && this.isChangeNumber === true||this.changedPrice != 0){//this.changedPrice后加的主要验证修改其他金额将作废合同
-                  this.$confirm("更改信息后合同将作废", "提示", {
+    ordersave() {
+     if(this.orderget.orderStatus === 3 ){//this.changedPrice后加的主要验证修改其他金额将作废合同
+        if(this.changedPrice != 0 || this.isChangeNumber === true){
+              this.$confirm("更改信息后合同将作废", "提示", {
                   confirmButtonText: "确定",
                   cancelButtonText: "取消",
                   type: "warning"
                 })
                 .then(() => {
                     this.orderget.orderStatus = 10;
-                    this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+                    this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
                     this.ExistContract(this.orderget.orderCode)
                 })
                 .catch(() => {
@@ -1253,8 +1245,11 @@ export default {
                     message: "已取消"
                   });
               });
+            }else{
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
+            }
            }else{
-             this.ordersave_data(id, occupyStatus)  //更新订单，补充游客信息
+             this.ordersave_data(this.orderget.id, this.orderget.occupyStatus)  //更新订单，补充游客信息
            }
       },
     ordersave_data(id, occupyStatus){ // 便于提醒是否作废合同新增客人
@@ -1267,16 +1262,19 @@ export default {
             '","Tel":"' +
             this.ruleForm.contactPhone +
             '"}';
-
+          //console.log(occupyStatus,' ||obj.occupyStatus = 3;');
           if (occupyStatus == 1) {
             obj.occupyStatus = 2;
           } else if (occupyStatus == 2) {
             obj.occupyStatus = 3;
-          } 
+          }  
+          if(occupyStatus == 0){
+            return;
+          }
             // 补充资料和待出行 信息更改跳转回到确认占位状态
           if ( this.isChangeNumber === true &&
             (this.orderget.orderStatus === 1 ||
-              this.orderget.orderStatus === 2 )
+              this.orderget.orderStatus === 2 || this.orderget.orderStatus === 8)
           ) {
               obj.orderStatus = 10;
            }
@@ -1303,14 +1301,30 @@ export default {
             sum += item;
           });
           let guest = [];
+     
           for (let i = 0; i < this.salePrice.length; i++) {
             for (let j = 0; j < this.salePrice[i].length; j++) {
-              guest.push(this.salePrice[i][j]);
+              let bornDate = this.salePrice[i][j].bornDate;
+              let createTime = this.salePrice[i][j].createTime;
+              let sex = this.salePrice[i][j].sex;
+               if(sex === -1){
+                  this.salePrice[i][j].sex = 3
+                }
+              if(bornDate === null || bornDate === NaN ||createTime == null){
+                  this.salePrice[i][j].bornDate = 0;
+                  this.salePrice[i][j].createTime = 0;
+                  guest.push(this.salePrice[i][j]);
+                }else if(bornDate.length === 24){
+                  this.salePrice[i][j].bornDate = Date.parse(bornDate);
+                  guest.push(this.salePrice[i][j]);
+                }else{
+                  guest.push(this.salePrice[i][j]);
+                }
             }
           }
           for(let j in guest){
             if(guest[j].sxe == -1){
-              guest[j].sxe = 3
+               guest[j].sxe = 3
             }
 
           }
@@ -1333,7 +1347,7 @@ export default {
             obj.guests = guest;
             obj.teamID = this.orderget.teamID;
             obj.planID = this.orderget.planID;
-            this.$http
+              this.$http
                     .post(this.GLOBAL.serverSrc + "/order/all/api/ordersave", {
                       object: obj
                     })

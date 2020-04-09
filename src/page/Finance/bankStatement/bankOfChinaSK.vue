@@ -223,7 +223,7 @@ export default {
     },
     handleSuccess(response, file, fileList){
       this.fileName=file.name
-      console.log(response);
+      
       if(response == true){
         this.$message.success("中国银行流水单上传成功！");
         this.pageCurrent = 1;
@@ -237,7 +237,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
@@ -335,8 +335,8 @@ export default {
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
           "seachType": 0,
-            userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            userid: 0,// data4D.userID, // 暂无数据 想看改成0,
+            orgid:0, // data4D.orgID, // 暂无数据 想看改成0,
             topid: data4D.topID, // 暂无数据 想看改成0,
             company: data4D.company,
         }

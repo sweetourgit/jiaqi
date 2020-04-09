@@ -1,10 +1,10 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:54:18 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:54:18
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 15:32:16
  */
-
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
@@ -147,7 +147,7 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import moment from "moment";
 import orderDetail from "@/page/Finance/bankStatement/orderDetails.vue";
@@ -192,7 +192,7 @@ export default {
   watch: {
     countTest: function(newV, oldV) {
       const that = this;
-      if (newV.indexOf("bankOfChinaSK") != -1 && newV != oldV) {
+      if (newV.indexOf("agriculturalBankSK") != -1 && newV != oldV) {
         setTimeout(function() {
           // alert('数据改变，执行loadDataSK~')
           that.loadData();
@@ -232,12 +232,11 @@ export default {
       return this.GLOBAL.serverSrc + "/finance/ABCBank/api/ImportExcel";
     },
     handleSuccess(response, file, fileList) {
-      console.log(response);
       if (response == true) {
         this.$message.success("农业银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit("changeBankData", "bankOfChinaSXF" + Math.random());
+        this.$store.commit("changeBankData", "agriculturalBankSXF" + Math.random());
       } else {
         this.$message.warning("农业银行流水单上传失败！");
       }
@@ -289,7 +288,7 @@ export default {
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "agriculturalBankSK" + Math.random()
+                  "agriculturalBankSXF" + Math.random()
                 );
                 that.$message({
                   type: "info",
@@ -353,8 +352,8 @@ export default {
             type: this.ruleForm.matchType ? this.ruleForm.matchType : 1,
             startTime: dateStart ? dateStart : "2000-05-16",
             endTime: dateEnd ? dateEnd : "2099-05-16",
-            userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
+            userid: 0,  //data4D.userID, // 暂无数据 想看改成0, 2020-4-9 要求改为0
+            orgid:  0,   //data4D.orgID, // 暂无数据 想看改成0, 2020-4-9 要求改为0
             topid: data4D.topID, // 暂无数据 想看改成0,
             company: data4D.company,
             seachType: 0

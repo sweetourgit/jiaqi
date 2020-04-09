@@ -18,7 +18,7 @@
             <el-input v-model="ruleForm.duration" class="inputWidth" placeholder="请输入"></el-input>
           </el-form-item>
           <el-form-item label="简介：" prop="introduction" label-width="140px">
-            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" maxlength="100" show-word-limit></el-input>
+            <el-input v-model="ruleForm.introduction" class="inputWidth" placeholder="请输入" type="textarea" maxlength="100" show-word-limit :rows="6"></el-input>
           </el-form-item>
         </div>
       </el-form>

@@ -10,7 +10,11 @@
       <el-tab-pane :label="'无收入借款管理(' + countNoIn +')'" name="nameINoIn">
         <el-tabs v-model="tabIINoInShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + countNoInTeam +')'" name="nameIINoInTeam">
+
             <team-table :whichTab="whichTab" ref="noInTeamDom"></team-table>
+
+
+
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIINoInShip">
 
@@ -22,7 +26,10 @@
       <el-tab-pane :label="'预付款管理(' + countAdvance +')'" name="nameIAdvance">
         <el-tabs v-model="tabIIAdvanceShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + countAdvanceTeam +')'" name="nameIIAdvanceTeam">
+
             <team-table :whichTab="whichTab" ref="advanceTeamDom"></team-table>
+
+
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIAdvanceShip">
 
@@ -113,7 +120,7 @@
     name: "ILabel",
     data () {
       return {
-        tabIShowWhich: 'nameINoIn', // 一级tab预设值为无收入
+        tabIShowWhich: 'nameINoIn', // 一级tab预设值为无收入00555555
         tabIINoInShowWhich: 'nameIINoInTeam', // 无收入二级tab预设值（跟团）
         tabIIAdvanceShowWhich: 'nameIIAdvanceTeam', // 预付款二级tab预设值（跟团）
         tabIIReimburseShowWhich: 'nameIIReimburseTeam',  // 报销二级tab预设值（跟团）

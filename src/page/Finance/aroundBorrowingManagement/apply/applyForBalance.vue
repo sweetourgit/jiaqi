@@ -44,16 +44,9 @@
         <div>
           <el-divider content-position="left">相关信息</el-divider>
           <div class="timeDv">
-            <span>验证时间：</span>
-            <el-date-picker v-model="ruleForm.timeStart" type="date" placeholder="开始日期" :picker-options="startDatePicker"></el-date-picker>
-            <span>--</span>
-            <el-date-picker v-model="ruleForm.timeEnd" type="date" placeholder="结束日期" :picker-options="endDatePicker"></el-date-picker>
-            <span>产品名称：</span>
-            <el-input v-model="ruleForm.productName" placeholder="请输入"></el-input>
-            <el-button @click="loadRelatedData()" type="primary">搜索</el-button>
-            <el-button @click="emptyButtonInside()" type="primary" plain>重置</el-button>
+            <el-button @click="addMsg()" type="primary">添加</el-button>
           </div>
-          <el-table ref="singleTable" v-loading="loading" :data="tableDataXG" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass" maxHeight="700">
+          <el-table ref="singleTable" v-loading="loading" :data="tableDataChoose" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass" maxHeight="700">
             <el-table-column prop="order_sn" label="订单编号" align="center">
             </el-table-column>
             <el-table-column prop="product_name" label="产品名称" align="center">
@@ -73,9 +66,55 @@
                 <span>0.00</span>
               </template>
             </el-table-column>
+            <el-table-column prop="reimbursed_money" label="已报销金额" align="center">
+              <template slot-scope="scope">
+                <el-button @click="deleteBtn(scope)" type="text" class="table_details">删除</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </el-form>
+      <!-- 选择相关订单 -->
+      <el-dialog title="选择相关订单" :visible="dialogFormVisible2" width=80% @close="closeFun2" append-to-body id="chooseDD">
+        <div class="timeDv">
+          <span>验证时间：</span>
+          <el-date-picker v-model="ruleForm.timeStart" type="date" placeholder="开始日期" :picker-options="startDatePicker"></el-date-picker>
+          <span>--</span>
+          <el-date-picker v-model="ruleForm.timeEnd" type="date" placeholder="结束日期" :picker-options="endDatePicker"></el-date-picker>
+          <span>产品名称：</span>
+          <el-input v-model="ruleForm.productName" placeholder="请输入"></el-input>
+          <el-button @click="loadRelatedData()" type="primary" class="rightBtn">搜索</el-button>
+          <el-button @click="emptyButtonInside()" type="primary" plain class="rightBtn">重置</el-button>
+        </div>
+        <el-table ref="singleTable" v-loading="loading" :data="tableDataXG" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass" maxHeight="700" @selection-change="selectionChange">
+          <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
+          </el-table-column>
+          <el-table-column prop="order_sn" label="订单编号" align="center">
+          </el-table-column>
+          <el-table-column prop="product_name" label="产品名称" align="center">
+          </el-table-column>
+          <el-table-column prop="contact_name" label="订单联系人" align="center">
+          </el-table-column>
+          <el-table-column prop="check_at" label="验证时间" align="center">
+          </el-table-column>
+          <el-table-column prop="quantity" label="人数" align="center">
+          </el-table-column>
+          <el-table-column prop="cost" label="成本" align="center">
+          </el-table-column>
+          <el-table-column prop="income" label="订单金额" align="center">
+          </el-table-column>
+          <el-table-column prop="reimbursed_money" label="已报销金额" align="center">
+            <template>
+              <span>0.00</span>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div class="footer" style="text-align: right;">
+          <el-button class="el-button" type="warning" @click="closeFun2">取 消</el-button>
+          <el-button class="el-button" type="primary" @click="saveBtn">确 认</el-button>
+        </div>
+      </el-dialog>
     </el-dialog>
   </div>
 </template>
@@ -152,6 +191,9 @@
         fileList: [],
 
         tableDataXG: [],
+        dialogFormVisible2: false,
+        multipleSelection: [],
+        tableDataChoose: [],
 
         // 时间限制
         startDatePicker: this.beginDate(),
@@ -171,6 +213,7 @@
         handler: function () {
           if(this.dialogFormVisible){
             // this.loadSupplier();
+            this.tableDataChoose = [];
             if(storageLocal.get("supplier")){
               this.supplierList = storageLocal.get("supplier");
             }else{
@@ -272,6 +315,15 @@
             }
 //            this.ruleForm.supplierID = 6;
 //            this.ruleForm.supplierName = 3;
+            let ids = '';
+            if(this.tableDataChoose.length == 0){
+
+            }else{
+              this.tableDataChoose.forEach(function(item, index, arr){
+                ids += item.id + ','
+              })
+              ids = ids.substring(0, ids.length - 1)
+            }
             this.getCode().then(code => {
               if(code !== ''){
                 this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
@@ -295,7 +347,8 @@
                   "time_start": this.ruleForm.timeStart,
                   "time_end": this.ruleForm.timeEnd,
                   "oracle_supplier_code": this.supplierCode,
-                  "product_name": this.ruleForm.productName
+                  "product_name": this.ruleForm.productName,
+                  "order_ids": ids
                 }).then(res => {
                   console.log(res);
                   if (res.data.code == 200) {
@@ -499,7 +552,7 @@
               nameStr = nameStr.substr(0, nameStr.length - 1);
             }
             that.ruleForm.supplierNameHC = nameStr;
-            this.loadRelatedData();
+            // this.loadRelatedData();
           }else{
             that.ruleForm.supplierIDHC = '';
             that.tableDataXG = [];
@@ -555,6 +608,14 @@
         });
       },
 
+      //相关信息
+      addMsg(){
+        this.dialogFormVisible2 = true;
+        this.loadRelatedData();
+      },
+      closeFun2(){
+        this.dialogFormVisible2 = false;
+      },
       // 加载相关信息
       loadRelatedData(){
         const that = this;
@@ -574,16 +635,16 @@
           console.log('获取相关信息',res);
           if(res.data.code == 200){
             that.tableDataXG = res.data.data.list;
-            let totalMoney = 0, totalNum = 0;
+            // let totalMoney = 0, totalNum = 0;
 
             that.tableDataXG.forEach(function (item, index, arr) {
               item.check_at = formatDate(new Date(item.check_at * 1000));
-              totalMoney += parseFloat(item.cost);
-              totalNum += parseInt(item.quantity);
+              // totalMoney += parseFloat(item.cost);
+              // totalNum += parseInt(item.quantity);
             });
 
-            that.ruleForm.money = totalMoney.toFixed(2);
-            that.ruleForm.number = totalNum;
+            // that.ruleForm.money = totalMoney.toFixed(2);
+            // that.ruleForm.number = totalNum;
             that.loading = false;
           }else{
             that.loading = false;
@@ -605,6 +666,46 @@
         // this.$set(this.ruleForm.productName, '');
         this.$set(that.ruleForm, 'productName', '');
         this.loadRelatedData();
+      },
+      selectInit(row, index){
+        if(row.order_sn){
+          let flagItem = true;
+          this.tableDataChoose.forEach(function(item, index, arr){
+            if(row.order_sn == item.order_sn){
+              flagItem = false;
+            }
+          })
+          // console.log(flagItem);
+          return flagItem;
+        }
+      },
+      // 所选项改变触发
+      selectionChange(val){
+        this.multipleSelection = val;
+        console.log(this.multipleSelection);
+      },
+      saveBtn(){
+        this.tableDataChoose = this.tableDataChoose.concat(this.multipleSelection);
+        let totalMoney = 0, totalNum = 0;
+        this.tableDataChoose.forEach(function (item, index, arr) {
+          totalMoney += parseFloat(item.cost);
+          totalNum += parseInt(item.quantity);
+        });
+
+        this.ruleForm.money = totalMoney.toFixed(2);
+        this.ruleForm.number = totalNum;
+        this.closeFun2();
+      },
+      deleteBtn(scope){
+        this.tableDataChoose.splice(scope.$index, 1);
+        let totalMoney = 0, totalNum = 0;
+        this.tableDataChoose.forEach(function (item, index, arr) {
+          totalMoney += parseFloat(item.cost);
+          totalNum += parseInt(item.quantity);
+        });
+
+        this.ruleForm.money = totalMoney.toFixed(2);
+        this.ruleForm.number = totalNum;
       },
 
       // 开始工作流
@@ -772,10 +873,16 @@
     padding: 10px;
     margin: 10px auto;
     background-color: #f7f7f7;
+  }
+  #chooseDD .timeDv{
+    width: 98%;
+    padding: 10px;
+    margin: 10px auto;
+    background-color: #f7f7f7;
     .el-input{
       width: 220px;
     }
-    .el-button{
+    .rightBtn{
       float: right;
       margin-right: 10px;
     }

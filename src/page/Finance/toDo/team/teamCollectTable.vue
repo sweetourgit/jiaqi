@@ -73,7 +73,7 @@
     </div>
     <!-- 检索 END -->
     <!-- 直客表格 -->
-    <el-table class="table-content" :data="approvalTeamDirectData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamDirect'">
+    <el-table class="table-content" :data="approvalTeamDirectData" stripe border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamDirect'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -112,13 +112,13 @@
     </el-table>
     <!-- 直客表格 END -->
     <!-- 同业表格 -->
-    <el-table class="table-content" :data="approvalTeamSameData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamSame'">
+    <el-table class="table-content" :data="approvalTeamSameData" border stripe :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamSame'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F">审批中</div>
-          <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D">驳回</div>
-          <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
+          <div v-if="scope.row.checkType === 0" style="color: #7F7F7F">审批中</div>
+          <div v-if="scope.row.checkType === 2" style="color: #FF4A3D">驳回</div>
+          <div v-if="scope.row.checkType === 1" style="color: #33D174">通过</div>
         </template>
       </el-table-column>
       <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
@@ -126,7 +126,7 @@
         <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
                 {{item.groupCode}}
-                <i v-if="index != scope.row.arrears.length-1">，</i>
+                <i v-if="index !== scope.row.arrears.length-1">，</i>
               </span>
         </template>
       </el-table-column>
@@ -134,8 +134,8 @@
       <el-table-column prop="orderNumber" label="订单号" align="center">
         <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
-                {{item.orderCode}}
-                <i v-if="index != scope.row.arrears.length-1">，</i>
+                {{ item.orderCode }}
+                <i v-if="index !== scope.row.arrears.length-1">，</i>
               </span>
         </template>
       </el-table-column>
@@ -151,29 +151,29 @@
     </el-table>
     <!-- 同业表格 END -->
     <!-- 内部收款 -->
-    <el-table class="table-content" :data="approvalTeamInnerData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamInner'">
+    <el-table class="table-content" :data="approvalTeamInnerData" border stripe :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamInner'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F">审批中</div>
-          <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D">驳回</div>
-          <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
+          <div v-if="scope.row.checkType === 0" style="color: #7F7F7F">审批中</div>
+          <div v-if="scope.row.checkType === 2" style="color: #FF4A3D">驳回</div>
+          <div v-if="scope.row.checkType === 1" style="color: #33D174">通过</div>
         </template>
       </el-table-column>
       <el-table-column prop="collectionTime" label="收款时间" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center">
         <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
-                {{item.groupCode}}
-                <i v-if="index != scope.row.arrears.length-1">，</i>
+                {{ item.groupCode }}
+                <i v-if="index !== scope.row.arrears.length-1">，</i>
               </span>
         </template>
       </el-table-column>
       <el-table-column prop="orderNumber" label="订单号" align="center">
         <template slot-scope="scope">
               <span v-for="(item,index) in scope.row.arrears" :key="index">
-                {{item.orderCode}}
-                <i v-if="index != scope.row.arrears.length-1">，</i>
+                {{ item.orderCode }}
+                <i v-if="index !== scope.row.arrears.length-1">，</i>
               </span>
         </template>
       </el-table-column>
@@ -188,13 +188,13 @@
     </el-table>
     <!-- 内部收款 END -->
     <!-- 报销还款 -->
-    <el-table class="table-content" :data="approvalTeamReimburseData" border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamReimburse'">
+    <el-table class="table-content" :data="approvalTeamReimburseData" border stripe :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamReimburse'">
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.checkType=='0'" style="color: #7F7F7F">审批中</div>
-          <div v-if="scope.row.checkType=='2'" style="color: #FF4A3D">驳回</div>
-          <div v-if="scope.row.checkType=='1'" style="color: #33D174">通过</div>
+          <div v-if="scope.row.checkType === 0" style="color: #7F7F7F">审批中</div>
+          <div v-if="scope.row.checkType === 2" style="color: #FF4A3D">驳回</div>
+          <div v-if="scope.row.checkType === 1" style="color: #33D174">通过</div>
         </template>
       </el-table-column>
       <el-table-column prop="reimbursement" label="报销单号" align="center"></el-table-column>

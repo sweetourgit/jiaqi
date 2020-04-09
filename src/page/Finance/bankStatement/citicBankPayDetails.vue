@@ -160,7 +160,7 @@ export default {
                 if (response.data.message) {
                   that.$message.warning(response.data.result.message);
                 } else {
-                  that.$message.warning("删除失败~");
+                  that.$message.warning("有明细已关联订单，不允许删除~");
                 }
               }
             })
@@ -187,7 +187,7 @@ export default {
     },
     loadData() {
       const that = this;
-      // console.log(this.$route.query)
+      console.log(this.$route.query)
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/wa_payment_citic/api/page", {
           pageIndex: this.pageCurrent,
@@ -199,7 +199,7 @@ export default {
           }
         })
         .then(function(obj) {
-          console.log("微信支付宝明细", obj);
+         
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;

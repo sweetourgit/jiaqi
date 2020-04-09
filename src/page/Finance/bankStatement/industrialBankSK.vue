@@ -237,7 +237,7 @@ export default {
       return this.GLOBAL.serverSrc + '/finance/industrialbank/api/ImportExcel';
     },
     handleSuccess1(response, file, fileList){
-      console.log(response);
+    
       if(response == true){
         this.$message.success("兴业银行流水单上传成功！");
         this.pageCurrent = 1;
@@ -251,7 +251,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove1(file, fileList) {
-      console.log(file, fileList);
+      
     },
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
@@ -270,7 +270,7 @@ export default {
       return upURL;
     },
     handleSuccess2(response, file, fileList){
-      console.log(response);
+      
       if(response == true){
         this.$message.success("微信支付宝明细上传成功！");
         this.pageCurrent = 1;
@@ -283,7 +283,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove2(file, fileList) {
-      console.log(file, fileList);
+     
     },
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${ file.name }？`);
@@ -309,7 +309,7 @@ export default {
       this.info = '';
     },
     payDetail(row){
-      console.log('row',row)
+      let data4D=utils.getSession4D();
       this.$router.push({
         path: '/bankStatement/payDetails',
         name: '银行流水单管理  /微信支付宝明细',
@@ -317,7 +317,7 @@ export default {
           id:row.id,
           type:2,
           creditAmount:row.credit_amount,
-          company:row.company,
+          company:data4D.company,
           "purpose_Merchant_code": row.purpose_Merchant_code,
           "purpose_Date": row.purpose_Date,
         }
@@ -388,8 +388,8 @@ export default {
           "begin": dateStart ? dateStart : "2000-05-16",
           "end": dateEnd ? dateEnd : "2099-05-16",
           "seachType": 0,
-             userid: data4D.userID, // 暂无数据 想看改成0,
-            orgid: data4D.orgID, // 暂无数据 想看改成0,
+             userid:0,// data4D.userID, // 暂无数据 想看改成0,
+            orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
             topid: data4D.topID, // 暂无数据 想看改成0,
             company: data4D.company,
         }

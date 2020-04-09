@@ -208,7 +208,6 @@ export default {
         Authorization: "Bearer " + localStorage.getItem("token")
       };
     },
-
     countTest: function() {
       return this.$store.state.bankDataUpdate;
     }
@@ -216,7 +215,7 @@ export default {
   watch: {
     countTest: function(newV, oldV) {
       const that = this;
-      if (newV.indexOf("industrialBankSXF") != -1 && newV != oldV) {
+      if (newV.indexOf("merchantsBankSXF") != -1 && newV != oldV) {
         setTimeout(function() {
           // alert('数据改变，执行loadDataSXF~')
           that.loadData();
@@ -305,7 +304,7 @@ export default {
 
     // 选择项更改
     selectionChange(val) {
-      console.log(val);
+  
       if (val.length > 0) {
         this.clickable = false;
       } else {
@@ -321,14 +320,14 @@ export default {
       );
     },
     handleSuccess1(response, file, fileList) {
-      console.log(response);
+     
       if (response == true) {
         this.$message.success("招商银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
         this.$store.commit(
           "changeBankData",
-          "industrialBankSK" + Math.random()
+          "merchantsBankSK" + Math.random()
         );
       } else {
         this.$message.warning("招商银行流水单上传失败！");
@@ -338,7 +337,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove1(file, fileList) {
-      console.log(file, fileList);
+      
     },
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -348,7 +347,7 @@ export default {
       return this.GLOBAL.serverSrc + "/finance/wa_payment/api/ImportExcel";
     },
     handleSuccess2(response, file, fileList) {
-      console.log(response);
+   
       if (response == true) {
         this.$message.success("微信支付宝明细上传成功！");
         this.pageCurrent = 1;
@@ -361,7 +360,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove2(file, fileList) {
-      console.log(file, fileList);
+     
     },
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -389,7 +388,7 @@ export default {
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "merchantsBankSXF" + Math.random()
+                  "merchantsBankSK" + Math.random()
                 );
                 that.$message({
                   type: "info",
@@ -462,8 +461,8 @@ export default {
                 ? this.ruleForm.matchType
                 : 0,
                   //  若传入4D则无数据 测试暂时先不传
-                userid: data4D.userID, // 暂无数据 想看改成0,
-              orgid: data4D.orgID, // 暂无数据 想看改成0,
+                userid:0,// data4D.userID, // 暂无数据 想看改成0,
+              orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
               topid: data4D.topID, // 暂无数据 想看改成0,
               company: data4D.company,
             }

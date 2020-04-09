@@ -50,7 +50,11 @@
                   <el-table-column prop="must" label="必须" align="center" width="60"></el-table-column>
                   <el-table-column label="附件" align="center" width="180">
                     <template slot-scope="scope">
-                      <span v-for="(item,index) in scope.row.crowdFile"><el-link>{{item.name}}</el-link></span>
+                      <span v-for="(item,index) in scope.row.crowdFile">
+                        <el-link>
+                          <a style="text-decoration:none;" :href="scope.row.crowdFile[0].path" target='_blank'>{{item.name}}</a>
+                        </el-link>
+                      </span>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" align="center" width="120">
@@ -153,13 +157,16 @@ export default {
           { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change' }
         ],
         type: [
-          { required: true, message: '请输入类型', trigger: 'change' }
+          { required: true, message: '请输入类型', trigger: 'change' },
+          { min: 1, max:50, message: '长度在 1 到 50 个字符', trigger: 'change' }
         ],
         name: [
-          { required: true, message: '请输入名称', trigger: 'change' }
+          { required: true, message: '请输入名称', trigger: 'change' },
+          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'change' }
         ],
         describe: [
-          { required: true, message: '请输入描述', trigger: 'change' }
+          { required: true, message: '请输入描述', trigger: 'change' },
+          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'change' }
         ],
         throng: [
           { required: true, message: '请选择人群', trigger: 'change' }
@@ -256,14 +263,14 @@ export default {
       }).then(res =>{
         if(res.data.isSuccess == true){
           if(res.data.objects){
-          this.editableTabs = res.data.objects;
-          this.ruleForm.caption = this.editableTabs[0].title;
-          this.tabIndex = this.editableTabs.length;
+            this.editableTabs = res.data.objects;
+            this.ruleForm.caption = this.editableTabs[this.editableTabsValue].title;
+          }
         }else{
           this.editableTabs = []
         }
+        this.tabIndex = this.editableTabs.length;
         this.rowList();
-        }
       })
     },
     handleClick(tab, event){
@@ -334,9 +341,11 @@ export default {
         let newTabName = ++this.tabIndex + '';
         if(this.addVisa.copy ==1){
           this.editableTabs.push({
+            id:0,
             title: '签证信息' + (this.editableTabs.length + 1),
             content: 'New Tab content'
           });
+          this.tableDate = [] ;
         }else{
           this.editableTabs.push({
             title: this.messageTitle,
@@ -359,29 +368,51 @@ export default {
           if(this.tableDate.length > 0){
             this.$message.success("该主题存在签证信息人群，不允许删除");
           } else{
-            this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
-              "id": this.editableTabs[this.editableTabsValue].id
-            })
-            .then(res => {
-              if(res.data.isSuccess == true){
-                this.editableTabs = [];
-                this.pageList();
-                let tabs = this.editableTabs;
-                let activeName = this.editableTabsValue;
-                if (activeName === targetName) {
-                  tabs.forEach((tab, index) => {
-                    if (tab.name === targetName) {
-                      let nextTab = tabs[index + 1] || tabs[index - 1];
-                      if (nextTab) {
-                        activeName = nextTab.name;
-                      }
+            if(this.editableTabs[this.editableTabsValue].id == 0){
+              this.editableTabs = [];
+              this.pageList();
+              let tabs = this.editableTabs;
+              let activeName = this.editableTabsValue;
+              if (activeName === targetName) {
+                tabs.forEach((tab, index) => {
+                  if (tab.name === targetName) {
+                    let nextTab = tabs[index + 1] || tabs[index - 1];
+                    if (nextTab) {
+                      activeName = nextTab.name;
                     }
-                  });
-                }       
-                this.editableTabsValue = String(this.editableTabs.length - 2);
-                this.$message.success("删除成功");
+                  }
+                });
               }
-             })
+              this.editableTabsValue = String(this.editableTabs.length);
+              this.$message.success("删除成功");
+              return;
+            }else {
+              this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
+                "id": this.editableTabs[this.editableTabsValue].id
+              })
+              .then(res => {
+                if(res.data.isSuccess == true){
+                  this.editableTabs = [];
+                  this.pageList();
+                  let tabs = this.editableTabs;
+                  let activeName = this.editableTabsValue;
+                  if (activeName === targetName) {
+                    tabs.forEach((tab, index) => {
+                      if (tab.name === targetName) {
+                        let nextTab = tabs[index + 1] || tabs[index - 1];
+                        if (nextTab) {
+                          activeName = nextTab.name;
+                        }
+                      }
+                    });
+                  }       
+                  this.editableTabsValue = String(this.editableTabs.length);
+                  this.$message.success("删除成功");
+                } else {
+                  this.$message.success("该主题存在签证信息人群，不允许删除");
+                }
+               })
+            }
           }
         })
         .catch(() => {
@@ -400,31 +431,26 @@ export default {
         this.$refs[formName].resetFields();
         this.a = 1;
       }else {
-        this.$refs[formName].validate((valid) => {
-          for(let i = 0; i < this.copyList.length; i++){
-            this.messageID = this.copyList[i].id;
+        for(let i = 0; i < this.copyList.length; i++){
+          if(this.addVisa.copy == this.copyList[i].id){
             this.messageTitle = this.copyList[i].title
           }
-          if (valid) {
-            this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
-              object: {
-                id: this.messageID,
-              }
-            }).then(res => {
-                if(res.data.isSuccess == true){
-                   this.ruleForm.caption = this.messageTitle;
-                   this.handleTabsEdit(this.tabIndex, "add");
-                   this.addVisaMessageShow = false
-                   this.$refs[formName].resetFields();
-                   this.pageList();
-                }else{
-                   this.$message.success(res.data.result.message);
-                }
-            })
-          } else {
-            return false;
+        }
+        this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
+          object: {
+            id: this.addVisa.copy,
           }
-        });
+        }).then(res => {
+            if(res.data.isSuccess == true){
+               this.ruleForm.caption = this.messageTitle;
+               this.handleTabsEdit(this.tabIndex, "add");
+               this.addVisaMessageShow = false
+               this.$refs[formName].resetFields();
+               this.pageList();
+            }else{
+               this.$message.success(res.data.result.message);
+            }
+        })
       }
     },
     closeVisaMessage(formName){ // 关闭签证信息弹窗
@@ -505,12 +531,14 @@ export default {
         })
       }
       let pathUrl = []; // 附件
-      for(let i = 0; i < this.addVisa.throng.length; i++){
-        pathUrl.push({
-          crowdType:this.addVisa.throng[i],
-          name:this.name_Suffix,
-          path:this.img_Url,
-        })
+      for(let i = 0; i < this.fileList.length; i++){
+        for(let j = 0; j < this.addVisa.throng.length; j++){
+          pathUrl.push({
+            crowdType:this.addVisa.throng[j],
+            name:this.name_Suffix,
+            path:this.img_Url,
+          })
+        }
       }
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -549,12 +577,14 @@ export default {
         })
       }
       let pathUrl = []; // 附件
-      for(let i = 0; i < this.addVisa.throng.length; i++){
-        pathUrl.push({
-          crowdType:this.addVisa.throng[i],
-          name:this.name_Suffix,
-          path:this.img_Url,
-        })
+      for(let i = 0; i < this.fileList.length; i++){
+        for(let j = 0; j < this.addVisa.throng.length; j++){
+          pathUrl.push({
+            crowdType:this.addVisa.throng[j],
+            name:this.name_Suffix,
+            path:this.img_Url,
+          })
+        }
       }
       console.log(pathUrl)
       this.$refs[formName].validate((valid) => {

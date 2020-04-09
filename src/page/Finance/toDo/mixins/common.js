@@ -77,12 +77,12 @@ export default {
     // 审核通过时调用
     apiAuditApproved () {
       let _this = this;
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ', {
         "jQ_ID": _this.guid,
         "jQ_Type": this.setjQType,
         "userCode": this.getUserTel,
         "workItemID": _this.getWorkItemId,
-        "approvalOpinion": _this.approvalOpinion
+        "commentText": _this.approvalOpinion
       }).then(res => {
         _this.ifShowApproveDialog = false;
         _this.detailstShow = false;
@@ -97,7 +97,7 @@ export default {
         "jQ_Type": this.setjQType,
         "userCode":this.getUserTel,
         "workItemID": _this.getWorkItemId,
-        "approvalOpinion": _this.approvalOpinion
+        "commentText": _this.approvalOpinion
       }).then(res => {
         _this.ifShowApproveDialog = false;
         _this.detailstShow = false;
@@ -135,10 +135,21 @@ export default {
     // 表格行样式
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
-        return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px';
+        return 'background:#e6e6e6;height:60px;textAlign:center;color:#333;fontSize:15px';
       } else {
         return '';
       }
+    },
+    // 依据状态显示不同行样式
+    tableRowClassName({row, rowIndex}) {
+      if (row.checkType === 0) {
+        return 'going-row';
+      } else if (row.checkType === 1) {
+        return 'pass-row';
+      } else if (row.checkType === 2) {
+        return 'reject-row';
+      }
+      return '';
     },
   }
 }

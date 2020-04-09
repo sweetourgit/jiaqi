@@ -22,11 +22,11 @@
       <el-button type="danger" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 2">驳回</el-button>
       <el-button type="success" round size="mini" style="margin-left: 4%;" v-if="baseInfo.approval_status == 3">通过</el-button>
       <div class="stepDv">
-        <p class="inputLabel"><span>ID：</span>{{baseInfo.id}}</p>
+        <p class="inputLabel"><span>借款单号：</span>{{baseInfo.id}}</p>
         <p class="inputLabel"><span>申请人：</span>{{baseInfo.orgName}}--{{baseInfo.create_uid}}</p>
         <p class="inputLabel"><span>申请时间：</span>{{baseInfo.created_at}}</p>
         <p class="inputLabel"><span>供应商：</span>{{baseInfo.supplier}}</p>
-        <p class="inputLabel"><span>借款类型：</span>{{periphery_type[baseInfo.type]}}</p>
+        <p class="inputLabel"><span>借款类型：</span>{{loan_type[baseInfo.loanType]}}</p>
         <p class="inputLabel" v-if="baseInfo.type != '1'"><span>借款金额：</span>{{baseInfo.money}}（{{baseInfo.number}}人）</p>
         <p class="inputLabel" v-if="baseInfo.type == '1'"><span>借款金额：</span>{{baseInfo.money}}</p>
         <!-- <p class="inputLabel"><span>借款金额：</span>{{baseInfo.money}}</p> -->
@@ -37,7 +37,7 @@
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
         <p class="inputLabel"><span>回冲供应商：</span>{{baseInfo.supplierHC}}</p>
-        <p class="inputLabel"><span>对公/对私：</span>{{baseInfo.account_type}}</p>
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>对公/对私：</span>{{baseInfo.account_type}}</p>
 
         <div class="inputLabel">
           <span>附件：</span>
@@ -75,9 +75,13 @@
           <el-table ref="singleTable" :data="tableDataRelated" border :header-cell-style="getRowClass" maxHeight="700">
             <el-table-column prop="order_sn" label="订单编号" align="center">
             </el-table-column>
+            <el-table-column prop="tour_no" label="报账团期" align="center">
+            </el-table-column>
             <el-table-column prop="product_name" label="产品名称" align="center">
             </el-table-column>
             <el-table-column prop="contact_name" label="订单联系人" align="center">
+            </el-table-column>
+            <el-table-column prop="check_at" label="验证时间" align="center">
             </el-table-column>
             <el-table-column prop="quantity" label="人数" align="center">
             </el-table-column>
@@ -122,6 +126,7 @@
           created_at: '',
           supplier: '',
           type: '',
+          loanType: '',
           money: '',
           number: '',
           remark: '',
@@ -140,6 +145,13 @@
           '1': '无收入借款',
           '2': '预付款',
           '3': '余额支付借款'
+        },
+
+        loan_type: {
+          '1': '门票',
+          '2': '酒店',
+          '3': '地接',
+          '4': '定制游(跟团游)'
         },
         // 基础信息凭证
         fileList: [],
@@ -205,7 +217,7 @@
         }
       },
       // 关闭弹窗
-      closeAdd(){
+      closeAdd(str){
         this.baseInfo = {
           id: '',
           create_uid: '',
@@ -224,7 +236,9 @@
           approval_status: '',
           pay_type: ''
         };
-
+        if(str == 'cancle'){
+          this.$emit('close', str);
+        }
         this.$emit('close', 'detail');
       },
       // 选择付款账户
@@ -252,7 +266,7 @@
             if (response.data.code == '200') {
               that.$message.success("撤销成功~");
               that.endWorking();
-              that.closeAdd();
+              that.closeAdd('cancle');
             } else {
               if(response.data.message){
                 that.$message.warning(response.data.message);
@@ -300,6 +314,7 @@
               created_at: response.data.data.info.created_at,
               supplier: response.data.data.info.supplier_code,
               type: response.data.data.info.periphery_type,
+              loanType: response.data.data.info.loan_type,
               money: response.data.data.info.loan_money,
               number: response.data.data.info.number,
               remark: response.data.data.info.mark,
@@ -385,21 +400,20 @@
             }
 
             // 根据账户ID获取账户名称
-//            that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
-//              {
-//                "id": response.data.data.account_id
-//              },{
-//                headers: {
-//                  'Authorization': 'Bearer ' + localStorage.getItem('token')
-//                }
-//              }).then(function (obj) {
-////              console.log('账户查询',obj);
-//              if(obj.data.isSuccess){
-//                that.baseInfo.account = obj.data.object.title;
-//              }
-//            }).catch(function (obj) {
-//              console.log(obj)
-//            });
+            // that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
+            //   {
+            //     "id": response.data.data.account_id
+            //   },{
+            //     headers: {
+            //       'Authorization': 'Bearer ' + localStorage.getItem('token')
+            //     }
+            //   }).then(function (obj) {
+            //   if(obj.data.isSuccess){
+            //     that.baseInfo.account = obj.data.object.title;
+            //   }
+            // }).catch(function (obj) {
+            //   console.log(obj)
+            // });
             // 凭证
             that.fileList = JSON.parse(response.data.data.info.file);
             for(let i = 0; i < that.fileList.length; i++){
@@ -420,6 +434,9 @@
 
             if(response.data.data.info.rel_order){
               that.tableDataRelated = response.data.data.info.rel_order;
+              that.tableDataRelated.forEach(function(item, index, arr){
+                item.check_at = formatDate(new Date(item.check_at*1000));
+              })
             }
 
           } else {

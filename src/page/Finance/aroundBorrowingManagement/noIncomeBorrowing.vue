@@ -41,18 +41,29 @@
             </el-select>
           </el-col>
           <el-col :span="9">
+            <span class="search_style">报销状态：</span>
+            <el-select v-model="reimbursed_status" placeholder="请选择" class="search_input">
+              <el-option key="" label="全部" value="0"></el-option>
+              <el-option key="1" label="未完成报销" value="1"></el-option>
+              <el-option key="2" label="已完成报销" value="2"></el-option>
+            </el-select>
+          </el-col>
+          
+        </el-row>
+        <el-row>
+          <el-col :span="9" :offset="14">
             <div class="buttonDv">
               <el-button type="primary" @click="resetFun" plain>重置</el-button>
               <el-button type="primary" @click="searchFun">搜索</el-button>
             </div>
           </el-col>
         </el-row>
-
       </div>
       <div class="search applyDv">
         <el-button type="primary" @click="applyFor">申请</el-button>
       </div>
       <div class="table_style">
+        <div class="totalMoney" v-if="isShow"><i class="el-icon-info"></i>&nbsp;&nbsp;已关联：{{num}}项 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总计：{{totalMoney}}元</div>
         <el-table :data="tableData" :header-cell-style="getRowClass" border>
           <el-table-column prop="id" label="借款单号" align="center"></el-table-column>
           <el-table-column prop="status" label="状态" align="center">
@@ -121,6 +132,9 @@
     },
     data() {
       return {
+        isShow: false,// 统计条是否显示
+        num: '',
+        totalMoney: '',
         disabled: false,// 设置搜索项时间不可编辑
 
         supplier: '',// 供应商
@@ -133,6 +147,7 @@
         operatorList: [],// 申请人list
         borrowStatus: '',// 借款状态
         accountType: '',// 对公--1,对私--2
+        reimbursed_status: '',
 
         // 页数，页码，条数
         pageSize: 10,
@@ -230,12 +245,12 @@
         const timer = setTimeout(function () {
           that.$parent.loadData('NoIncomeLoan_ZB');
         }, 800);
-//        console.log(this.$parent.loadData(1));
       },
 
       // 搜索
       searchFun(){
         this.currentPage = 1;
+        this.isShow = true;
         this.loadData();
       },
       // 重置
@@ -248,7 +263,9 @@
         this.reimbursementPerID = '';
         this.borrowStatus = '';
         this.accountType = '';
+        this.reimbursed_status = '';
         this.currentPage = 1;
+        this.isShow = false;
         this.loadData();
       },
       // 每页条数操作
@@ -275,18 +292,22 @@
           "end_at": this.endTime,
           "periphery_type": 1,
           "approval_status": this.borrowStatus,
-          "account_type": this.accountType
+          "account_type": this.accountType,
+          "reimbursed_status": this.reimbursed_status
         }, ).then(function(response) {
           console.log('无收入借款list',response);
           if (response.data.code == '200') {
-//            console.log('无收入借款list',response);
+            // console.log('无收入借款list',response);
             that.tableData = response.data.data.list;
+            that.num = response.data.data.list.length;
             that.pageCount = response.data.data.total - 0;
+            let moneyAll = 0;
             that.tableData.forEach(function (item, index, arr) {
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
+              moneyAll += parseFloat(item.loan_money);
+              // item.receivables_at = formatDate(new Date(item.receivables_at*1000));
+              // item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
+              // item.created_at = item.created_at.split(" ")[0];
               // 获取申请人
               that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
@@ -295,7 +316,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-//                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
@@ -328,6 +349,7 @@
                 console.log(error);
               });
             })
+            that.totalMoney = moneyAll.toFixed(2);
           } else {
             that.$message.success("加载数据失败~");
           }
@@ -375,7 +397,7 @@
         }).then(function(response) {
 
           if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
+            // console.log('操作人员列表',response.data.objects);
             let operatorList = [];
             response.data.objects.forEach(function (item, index, arr) {
               const operator = {
@@ -395,7 +417,6 @@
 
       // 时间限制（开始时间小于结束时间）
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -408,7 +429,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -559,6 +579,13 @@
       margin-left: 600px;
       margin-top: 70px;
       margin-bottom: 30px;
+    }
+    .totalMoney {
+      width: 100%;
+      background-color: #E6F3FC;
+      height: 30px;
+      line-height: 30px;
+      margin: 8px auto;
     }
   }
 </style>

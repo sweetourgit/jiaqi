@@ -16,7 +16,7 @@
               <el-date-picker
                 class="search_input"
                 style="width:30%"
-                @change="endDateChange()" 
+                @change="endDateChange()"
                 v-model="plan_data"
                 type="daterange"
                 range-separator="至"
@@ -119,7 +119,7 @@
 
               <div style="color: red; position: absolute;left: 20px;top:15px;" v-if="find==0" >*</div>
               <el-form-item label="团期计划" porp="groupCode" v-if="find==0"  >
-                  <el-input 
+                  <el-input
                       v-model="item.content.groupCode"
                       ref="groupCode"
                       style="width: 240px;"
@@ -128,10 +128,10 @@
                       @blur="tour_check"
                      >
                     </el-input >
-                    <el-input 
-                    style="width:300px;" 
-                    disabled 
-                    v-model="item.content.productName"  
+                    <el-input
+                    style="width:300px;"
+                    disabled
+                    v-model="item.content.productName"
                     placeholder="通过输入团期计划,自动补充产品名称"
                     ></el-input>
 
@@ -149,19 +149,19 @@
                 ></el-input>
               </el-form-item>
               <el-form-item label="附件" label-width="75px"  v-if="find==0">
-                  <el-upload 
-                  ref="image" 
+                  <el-upload
+                  ref="image"
                   prop="image"
-                  class="upload-demo" 
+                  class="upload-demo"
                   multiple
                   name="files"
                   :action= "uploadUrl"
-                  :on-success="handleSucess" 
+                  :on-success="handleSucess"
                   :on-change="handleChange"
                   :on-remove="handleRemove"
-                  :on-error="handleError" 
+                  :on-error="handleError"
                   :on-preview="handlePreview"
-                  :before-remove="beforeRemove" 
+                  :before-remove="beforeRemove"
                   :file-list="item.content.files">
                     <el-button size="small" type="primary" v-if="find==0">点击上传</el-button>
                   </el-upload>
@@ -173,8 +173,8 @@
                     <div class="handle_time" v-if="find==1"><span>摘要:</span><span style="margin-left: 10px;" >{{item.content.mark}}</span></div>
               </div>
               <el-form-item  label="附件" label-width="80px" v-if="find==1">
-                    <el-upload 
-                    class="upload-demo" 
+                    <el-upload
+                    class="upload-demo"
                     name="files"
                     :action= "uploadUrl"
                     :show-file-list=true
@@ -208,7 +208,7 @@
                 </div>
                 <div v-if="radio==1">
                    <div class="re_style">
-                    <el-table :data="item.content.payments" border style="margin-top: 30px;width: 100%"> 
+                    <el-table :data="item.content.payments" border style="margin-top: 30px;width: 100%">
                       <el-table-column prop="paymentID" label="无收入借款或预付款ID" align="center" v-if="find==1"></el-table-column>
                       <el-table-column prop="paymentID" label="无收入借款或预付款ID"  align="center" v-if="find==0"></el-table-column>
                       <el-table-column prop="supplierTypeEX" label="借款类型"  align="center"></el-table-column>
@@ -227,7 +227,7 @@
                           <el-input v-model="scope.row.peopleCount" style="width:100px;"></el-input>
                         </template>
                       </el-table-column> -->
-                      <!-- 不能改的 --> 
+                      <!-- 不能改的 -->
                       <el-table-column prop="swcount" label="报销金额"  align="center" v-if="find==0">  </el-table-column>
                       <el-table-column prop="peopled" label="人数"  align="center" v-if="find==0"> </el-table-column>
 
@@ -238,12 +238,12 @@
                        <el-table-column prop="expenseType" label="还款/拆分" align="center"></el-table-column>
                        <el-table-column prop="paymentID"  disabled  label="操作"    align="center">
                           <template slot-scope="scope">
-                             <span @click="AmendOpen(scope.$index,scope.row.paymentID,0)" style="color: #f5a142" v-if="find==0">设置 |</span> 
+                             <span @click="AmendOpen(scope.$index,scope.row.paymentID,0)" style="color: #f5a142" v-if="find==0">设置 |</span>
                              <span @click="t_delete(scope.row.paymentID)" style="color: #f5a142" v-if="find==0">删除</span>
                              <span @click="AmendOpen(scope.$index,scope.row.paymentID,1)" style="color: #f5a142" v-if="find==1">查看</span>
                          </template>
                        </el-table-column>
-                       
+
                     </el-table>
                   </div>
                  </div>
@@ -265,8 +265,8 @@
                     <el-button type="primary" @click="addDomain" v-if="find==0">添加</el-button>
                   </div>
                   <div
-                   v-for="(domain, index) in domains" 
-                   :class="re_style" 
+                   v-for="(domain, index) in domains"
+                   :class="re_style"
                    style="margin: 20px 0 0 135px;"
                    :key='index+"m"'>
                     <el-input
@@ -292,7 +292,7 @@
                   <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
                   <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
                   <el-table-column prop="approvalName" label="审批结果" align="center"></el-table-column>
-                  <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
+                  <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
                 </el-table>
               <!-- 审核结果 END -->
              </div>
@@ -346,7 +346,7 @@
                 class="search_input"
                 style="width:33%"
                 v-model="plan_data2"
-                @change="endDateChange2()" 
+                @change="endDateChange2()"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
@@ -360,14 +360,14 @@
                 round
                 style="margin-top: 10px;margin-bottom: 10px; margin-left: 20px; float:left;"
               >搜索</el-button>
-              <el-button 
-              @click="T_update_btn" 
+              <el-button
+              @click="T_update_btn"
               type="primary"
               size="mini"
               round
               style="margin-top: 10px;margin-bottom: 10px; margin-left: 10px;float:left;"
               >重置</el-button>
-              
+
             </div>
             <el-table
               :data="planData"
@@ -396,7 +396,7 @@
                   background
               ></el-pagination>
             </div>
-          
+
       </el-dialog>
       <!--团期计划弹窗end-->
       <!--添加报销弹窗-->
@@ -413,16 +413,16 @@
               <el-tab-pane label="无收入(无团期计划)" name="0"></el-tab-pane>
           </el-tabs>
           <!-- @row-click="joinData_btn" -->
-          <el-table 
-            :data="joinData" 
-            border 
+          <el-table
+            :data="joinData"
+            border
             tooltip-effect="dark"
             @selection-change="joinData_btn"
             style="width: 100%; margin-top: 30px">
             <el-table-column type="selection"  align="center"></el-table-column>
             <el-table-column prop="paymentID" label="预付款借款ID"  align="center" v-if="s_find==1"></el-table-column>
             <el-table-column prop="paymentID" label="无收入借款ID"  align="center" v-if="s_find==2"></el-table-column>
-          
+
             <el-table-column prop="supplierName" label="供应商"  align="center"></el-table-column>
             <el-table-column prop="supplierTypeEX" label="借款类型"  align="center"></el-table-column>
             <!-- <el-table-column prop="orgName" label="部门" width="140"  align="center"></el-table-column> -->
@@ -455,11 +455,11 @@
                       <el-radio v-model="Amend.state" :label="2"  :disabled="disabled_style" >还款</el-radio>
                     </el-form-item>
                     <el-form-item label="选择账号："   v-if="Amend.state == 2">
-                      <el-table 
-                        :data="AmendData" 
+                      <el-table
+                        :data="AmendData"
                         :highlight-current-row="true"
                         @row-click="AmendDataClick"
-                        border 
+                        border
                         style="width: 100%; margin-top: 30px">
                         <el-table-column prop="cardType" label='类型'  align="center"></el-table-column>
                         <el-table-column prop="title" label="账号名称"  align="center"></el-table-column>
@@ -468,23 +468,23 @@
                         <el-table-column prop="openingName" label="开户人"  align="center"></el-table-column>
                         <el-table-column prop="createUser" label="操作"  align="center">
                           <template slot-scope="scope">
-                              <span style="color: #f5a142">选择</span> 
+                              <span style="color: #f5a142">选择</span>
                           </template>
                         </el-table-column>
                       </el-table>
-                    
+
                     </el-form-item>
                 </div>
             </el-form>
         <!-- @row-click="joinData_btn" -->
          <div v-if="find==1" class="statetype_style">
-            <div>拆分/还款：{{statetype}}</div> 
+            <div>拆分/还款：{{statetype}}</div>
               <div v-if="statetype=='还款'">
                   还款账号：{{statetype_Data}}
-              </div> 
+              </div>
             </div>
 
-        
+
           <div class="cancel"  >
               <el-button  @click="Amenddel()">取 消</el-button>
               <el-button  type="primary" @click="AmendApply(Amend)"  v-if="find==0">保存</el-button>
@@ -620,7 +620,7 @@ export default {
                 planId: "",
                 planName: ""
               },
-             
+
           }
         }
       ],
@@ -711,7 +711,7 @@ export default {
                   this.tableCourse = [];
                   this.ruleNull()
             }
-         
+
         },
           // 表格表头颜色
         getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -727,7 +727,7 @@ export default {
                    this.s_content = this.ruleForm.editableTabs[j].content;
                 }
               }
-             
+
         },
         AmendNull(){ //拆分清空
          this.Amend={
@@ -766,7 +766,7 @@ export default {
                                 planId: "",
                                 planName: ""
                               },
-                            
+
                           }
                         }
                       ]
@@ -777,7 +777,7 @@ export default {
             this.currentPage5 = 1;
 
             this.dialogFormVisible2 = false;
-            this.T_update_btn(); 
+            this.T_update_btn();
         },
         addplan(editableTabsValue) {//选择团期计划的确定按钮
            this. subscript();
@@ -791,16 +791,16 @@ export default {
                   this.currentPage5 = 1;
                   this.dialogFormVisible2 = false;
                   this.T_update_btn();
-                  this.s_content.payments=[]; 
-                  
+                  this.s_content.payments=[];
+
            }else{
                   this.dialogFormVisible2 = true;
                   this.$message({ message:'请选择团期计划',
-                                  type: 'warning' 
+                                  type: 'warning'
                                 });
-           } 
-         
-          
+           }
+
+
         },
         //获取关联单据
         Associated(
@@ -819,11 +819,11 @@ export default {
                   object:object,
                 })
                 .then(res => {
-                  
+
                   var object = res.data.objects;
                   var wcount; //未报销金额
                     for (let i in object) {
-                     
+
                       // object[i].peopleCount = this.s_content.count
                        this.joinData.push({
                           paymentID:  object[i].paymentID,
@@ -845,10 +845,10 @@ export default {
                           peopled:'',
                           swcount:'',
 
-                           
+
                       });
-                      
-                     
+
+
                     }
                       this.s_content.joinData = this.joinData;
                       this.t_supplier = "";
@@ -857,7 +857,7 @@ export default {
                   console.log(err);
                 });
             },
-      
+
         planChange(row) {  //获取团号和name
           this.plans = {};
           this.plans.planName = row.title;
@@ -865,9 +865,9 @@ export default {
           this.plans.pid = row.planID;
           this.plans.count = row.count;
           this.subscript();
-        
+
         },
-      
+
         clickBanle(row) {  // 报销人选中行
           this.people = {};
           this.people.peo = row.name;
@@ -925,7 +925,7 @@ export default {
             this.currentPage5 = 1;
             this.searchHand4()
         },
-       
+
         addDomain() {  //添加
           this.domains.push({
               mark: "0",
@@ -954,7 +954,7 @@ export default {
                 console.log(err);
               });
           },
-      
+
         chanelSubmit(ruleForm) {   //撤销申请
          let chanel_guid = ruleForm.editableTabs[0].content.guid;
             this.$confirm("是否需要撤销该笔报销", "提示", {
@@ -971,7 +971,7 @@ export default {
                 })
                .then(res => {
                    if (res.data.isSuccess == true) {
-                    var d_objects = res.data.objects; 
+                    var d_objects = res.data.objects;
                     for(let i in d_objects){
                           if(d_objects[i].checkType == 0){
                             this.$http
@@ -997,7 +997,7 @@ export default {
                                       this.ruleNull()
                                       let text = res.config.data
                                       this.beginWokeing(text);
-                                     } 
+                                     }
                                     })
                                   .catch(err => {
                                     console.log(err);
@@ -1014,7 +1014,7 @@ export default {
                                   message: "订单已审核，刷新看状态"
                                 });
 
-                            
+
                          }
                         }
                         return;
@@ -1023,7 +1023,7 @@ export default {
                 .catch(err => {
                   console.log(err);
                 });
-                
+
               })
               .catch(() => {
                 this.$message({
@@ -1033,7 +1033,7 @@ export default {
               });
           },
         joinData_btn(row) {  //获取管理订单
-         this.subscript(); 
+         this.subscript();
          this.s_content.joinData = row;
          this.new_style = 1;
         },
@@ -1043,12 +1043,12 @@ export default {
       //         this.$message({
       //               type: "warning",
       //               message: "请选择关联单据"
-      //               }); 
+      //               });
       //               return;
       //    }
         t_text() {//确认添加
         if(this.new_style == 1){
-             this.subscript(); 
+             this.subscript();
               let joinData = this.s_content.joinData;
               let joinDataid = this.s_content.joinData.paymentID;
               let payments = this.s_content.payments;
@@ -1070,9 +1070,9 @@ export default {
                                     this.$message({
                                           type: "warning",
                                           message: "请重新选择关联单据"
-                                          });  
+                                          });
                                           return;
-                                      } 
+                                      }
                                  }
                             }
                         }
@@ -1091,24 +1091,24 @@ export default {
               this.$message({
                     type: "warning",
                     message: "请选择关联单据"
-                    }); 
+                    });
           }
-        
-            
+
+
       },
-       
+
         t_text_del(){//确认取消
          this.subscript();
          this.joinData=[];
          this.activebox='2',
          this.dialogFormVisible3 = false;
-        
+
         },
         AmendDataClick(row){ // 获取还款账号
-           this.Amend.cardNum = row.id; 
+           this.Amend.cardNum = row.id;
         },
         AmendApply(Amend){//提交申请
-        
+
          this.subscript();
          let payments_box = this.s_content.payments;
          this.s_content.t_price_box=[];
@@ -1116,33 +1116,33 @@ export default {
                 this.$message({
                                 type: "warning",
                                 message: "金额不能为空 请重新填写"
-                                }); 
+                                });
                               return;
               }else if( Amend.number == ""){
                 this.$message({
                                 type: "warning",
                                 message: "人数不能为空 请重新填写"
-                                }); 
+                                });
                               return
             }else if( Amend.number > Amend.Newnumber){
                   this.$message({
                                 type: "warning",
                                 message: "人数不能大于库存 请重新填写内容"
-                                }); 
+                                });
                               return;
             }else if(Amend.money > Amend.Newmoney){
                   this.$message({
                                 type: "warning",
                                 message: "报销金额不能大于借款金额 请重新填写内容"
                                 });
-                      return;        
+                      return;
             }else if(Amend.money < Amend.Newmoney){
                           if(Amend.state == 0){
                               this.$message({
                                         type: "warning",
                                         message: "请选择拆分/还款"
                                         });
-                                return;          
+                                return;
                           }else if(Amend.state == 2){
                             if(Amend.cardNum == ""){
                                   this.$message({
@@ -1160,7 +1160,7 @@ export default {
                                           payments_box[i].accountID = Amend.cardNum;
                                           payments_box[i].paymentID = Amend.paymentID;
                                           payments_box[i].expenseType = "还款";
-                                
+
                                       }
                                       this.s_content.t_price_box.push(payments_box[i].swcount);
                                   }
@@ -1184,14 +1184,14 @@ export default {
                                         payments_box[i].expenseType = "拆分";
                                   }
                                     this.s_content.t_price_box.push(payments_box[i].swcount);
-                                } 
+                                }
                                 console.log(payments_box,'拆分2');
                               this.AmendOpenVisble = false;
                               this.disabled_style =false;
                               this.t_price_sum();
                               //this.AmendNull();
                           }
-                  
+
                 }else if(Amend.money == Amend.Newmoney){
                         Amend.cardNum = 0;
                         for(let i in payments_box){
@@ -1206,13 +1206,13 @@ export default {
                               this.s_content.t_price_box.push(payments_box[i].swcount);
                           }
                               this.AmendOpenVisble = false;
-                              
+
                               this.t_price_sum();
                               //this.AmendNull();
 
                 }
-          
-          
+
+
         },
         Amenddel(){ // 关闭隐藏
           this.AmendOpenVisble = false;
@@ -1225,7 +1225,7 @@ export default {
                   payments_box[i].expenseType = "拆分"
                 }else if(payments_box[i].expenseType == 2){
                   payments_box[i].expenseType = "还款"
-                } 
+                }
 
              }
 
@@ -1242,14 +1242,14 @@ export default {
                 this.statetype = payments_box[index].expenseType;
                 let oid = payments_box[i].accountID;
                 this.collectionaccount(oid);
-               
+
                 if(payments_box[index].swcount != "" ){
                    if(condition == 0){
                       if(payments_box[index].expenseType == "拆分"){
                         payments_box[index].expenseType = 1
                       }else if(payments_box[index].expenseType == "还款"){
                         payments_box[index].expenseType = 2
-                      } 
+                      }
                     }
                    this.Amend.money = payments_box[index].swcount;
                    this.Amend.number = payments_box[index].peopled;
@@ -1257,7 +1257,7 @@ export default {
                    this.Amend.Newnumber = payments_box[index].peopleCount;
                    this.Amend.state = payments_box[index].expenseType;
                    this.Amend.paymentID = payments_box[index].paymentID;
-                 
+
                 }else{
                   this.Amend.Newmoney = payments_box[index].paymentPrice;
                   this.Amend.Newnumber = payments_box[index].peopleCount;
@@ -1266,26 +1266,26 @@ export default {
                   this.Amend.paymentID = payments_box[index].paymentID;
                   }
 
-                 
+
                  if(this.Amend.money >= this.Amend.Newmoney){
                       this.disabled_style = true;
                   }else{
                       this.disabled_style = false;
                   }
-                      
 
-                  
-                 
-               
-                  
-              } 
-                
-               
+
+
+
+
+
+              }
+
+
             }
-           
-            
 
-           
+
+
+
          },
          collectionaccount(oid){
             this.$http
@@ -1335,12 +1335,12 @@ export default {
                           payments_box.splice(j, 1);
                           if(payments_box.length == 0){//删除后没数据了
                            this.s_content.payments=[];
-                           
+
                            this.s_content.payments.length = 0;
                           } else{//删除后还有数据
                            this.s_content.payments.length = payments_box.length;
                            this.s_content.t_price_box.splice(j, 1);
-                           
+
                           }
                            for(let y in this.alljoinData ){
                                     if(this.alljoinData[y].paymentID === paymentID){
@@ -1360,13 +1360,13 @@ export default {
             });
           });
         },
-         
+
         t_price_sum(){//多少项总价多少
           this.subscript();
           let t_price_box = this.s_content.t_price_box;
           let sss = 0 ;
             for(let i=0;i < t_price_box.length;i++){
-                  sss = Number(t_price_box[i]) + sss  
+                  sss = Number(t_price_box[i]) + sss
               }
          this.s_content.t_sum = this.s_content.payments.length;//多少项
          this.s_content.t_price= sss //多少钱
@@ -1377,7 +1377,7 @@ export default {
           this.change = false;
           this.dialogFormVisible = true;
         },
-         
+
         dialogFind(scope) {//详情
           this.find = 1;
           this.change = true;
@@ -1392,7 +1392,7 @@ export default {
                 })
                 .then(res => {
                   if (res.data.isSuccess == true) {
-                    var d_objects = res.data.objects; 
+                    var d_objects = res.data.objects;
                     let d_objects_content =[];
                     // let wcount_s = 0;
                     for(let i in d_objects){
@@ -1403,7 +1403,7 @@ export default {
                         }else if(d_objects[i].checkType == 2){
                           this.state = 2;
                         }
-                            let t_sum = d_objects[i].payments.length;//多少项 
+                            let t_sum = d_objects[i].payments.length;//多少项
                             let qian = 0;
                             let d_price_box =[];
                       for( let s in d_objects[i].payments){
@@ -1423,10 +1423,10 @@ export default {
                                   d_objects[i].payments[s].expenseType= ""
                                }
                               }
-                      
-                          
+
+
                       for(let i=0;i < d_price_box.length;i++){ // 多少钱
-                          qian = Number(d_price_box[i]) + qian  
+                          qian = Number(d_price_box[i]) + qian
                       }
                         d_objects_content.unshift({
                           createUser:d_objects[i].createUser,
@@ -1443,7 +1443,7 @@ export default {
                           joinData:d_objects[i].joinData,
                       })
                     }
-                      
+
                     for(let i in d_objects_content){
                               let newTabName = ++this.tabIndex;
                                         newTabName=newTabName-1 +"";
@@ -1455,18 +1455,18 @@ export default {
                       if(d_objects_content[i].id == scope.row.expenseID){
                            this.ruleForm.editableTabsValue = this.ruleForm.editableTabs.length.toString();
                         }
-                                
+
                       }
                        this.auditResult(d_objects[0].guid);
-                        
-                      
+
+
                   }
                 })
                 .catch(err => {
                   console.log(err);
                 });
         },
-        addbx(item) { //添加报销 || this.image === 0 
+        addbx(item) { //添加报销 || this.image === 0
           this.plans.pid = item.id;
           if(item.groupCode === "" || item.mark === "" || item.productName === "" ){
                 this.$message({
@@ -1502,7 +1502,7 @@ export default {
               console.log(obj);
             });
         },
-       
+
         planDialog() {  //团期计划弹窗
           this.dialogFormVisible2 = true;
           this.searchHand4();
@@ -1517,7 +1517,7 @@ export default {
             let paymentype = this.paymentype;
             let suppliername = this.t_supplier;
             let pid = this.plans.pid;
-             
+
             if(this.jointab == "2"){
                 paymentype = 2;
                 this.s_find = 1;
@@ -1530,31 +1530,31 @@ export default {
                paymentype = 1;
                this.s_find = 2;
                pid = this.plans.pid;
-               
+
             }
            this.Associated(pid,suppliername,paymentype)
-           
+
         },
         handleSizeChange(val) {
           this.pageSize = val;
           this.currentPage4 = 1;
           this.pageList();
         },
-        
+
         handleCurrentChange(val) {
           this.currentPage4 = val;
           this.pageList();
         },
-      
+
         handleCurrentChange1(val) {   //选择报销人
           this.getUserList(val);
           console.log(`当前页: ${val}`);
         },
-       
+
         handleChange(file, files) {  //文件上传
           this.files = files.slice(-3);
         },
-        
+
         handleSucess(res, file, files) {  //图片上传成功
           this.subscript();
           var paths = [];
@@ -1567,15 +1567,15 @@ export default {
           }
           this.image = 1;
           this.uid = files[0].uid;
-        }, 
+        },
         handleRemove(file, files) {//图片删除
-          this.subscript(); 
+          this.subscript();
           let files_n = this.s_content;
           if(files.length == 0){
             files_n.files = [];
           }
          this.uid = file[0].uid;
-    
+
           },
         handleError(err, file) {// 上传失败
           this.files = []
@@ -1583,7 +1583,7 @@ export default {
         handlePreview(file) {
             window.open(file.url);
           },
-        
+
         beforeRemove(file, files) {
           return this.$confirm(`确定移除 ${ file.name }？`);
         },
@@ -1599,7 +1599,7 @@ export default {
             this.ruleForm.editableTabsValue = newTabName;
           }
           if (action === "remove") {
-         
+
             if(this.ruleForm.editableTabs.length == 1){
                  this.$confirm("是否取消本次报销申请", "提示", {
                     confirmButtonText: "确定",
@@ -1615,7 +1615,7 @@ export default {
                     this.find = 0;
                     this.state = 1;
                     this.dialogFormVisible = false;
-                      
+
                   })
                 .catch(() => {
                   this.$message({
@@ -1643,19 +1643,19 @@ export default {
                       }
                     });
                   }
-               
+
                   let targetb = targetName-1;
                   this.alljoinData.splice(targetb, 1);
                    this.ruleForm.editableTabsValue = activeName;
                   this.ruleForm.editableTabs = tabs.filter(tab => tab.name !== targetName);
-                  this.subscript(); 
-                   
+                  this.subscript();
+
                   // let joinData = this.s_content.joinData;
                   // this.alljoinData.push(joinData);
 
-                  
+
                })
-              
+
           .catch(() => {
             console.log(7);
             this.$message({
@@ -1669,7 +1669,7 @@ export default {
         tabClick(targetName) {  //切换时候，换内容
           this.ruleForm.editableTabsValue = targetName.name
            },
-      
+
         getNewTab(){  // 获取新tab实例
           return {
               createUser:"",
@@ -1715,7 +1715,7 @@ export default {
             this.pageIndex = 1;
             this.currentPage4 = 1;
             this.pageList(1, this.pageSize);
-            
+
           },
         handleReset() { // 重置
             this.pageIndex = 1;
@@ -1749,7 +1749,7 @@ export default {
               message: "请选择结束时间"
             });
             }
-              
+
               expenseID !== "" ? (object.expenseID = expenseID) : expenseID,
               groupCode !== "" ? (object.groupCode = groupCode) : groupCode,
               productName !== "" ?(object.productName = productName) : productName,
@@ -1760,7 +1760,7 @@ export default {
             if (endTime !== "" && beginTime !== "") {
                 object.beginTime = moment(beginTime).format("YYYY-MM-DD");
                 object.endTime = moment(endTime).format("YYYY-MM-DD");
-                } 
+                }
 
             that.$http
               .post(that.GLOBAL.serverSrc + "/finance/expense/api/page", {
@@ -1806,8 +1806,8 @@ export default {
           }
           return moment(date).format('YYYY-MM-DD HH:mm:ss')
         },
-        
-       
+
+
         tour_check() {   // 团期计划输入框失去焦点时
            this.subscript();
            if(this.s_content.groupCode.length > 10 ){
@@ -1836,8 +1836,8 @@ export default {
 
               }
         },
-        
-         
+
+
         add_form(object){ // 提交代码
               this.$http
                     .post(this.GLOBAL.serverSrc + "/finance/expense/api/insertlist", {
@@ -1856,9 +1856,9 @@ export default {
                             type: "success",
                             message: "创建成功!"
                           });
-                        
+
                         this.ruleNull()
-                        this.T_update_btn(); 
+                        this.T_update_btn();
                         this.beginWokeing(res.data.object);
                         return;
                         }else{
@@ -1875,10 +1875,10 @@ export default {
                       .catch(err => {
                         console.log(err);
                       });
-                 
-                  
+
+
         },
-        
+
         submitForm(ruleForm) { // 报销申请提交
             var joinData_sn=[];
             var files_s=[];
@@ -1891,12 +1891,12 @@ export default {
                           if(submitForm_list.mark.length > 80 ){ // 判断摘要字数
                                     this.$message({
                                         message:'摘要字数不能超过80字',
-                                        type: 'warning' 
+                                        type: 'warning'
                                     });
                                    this.submitformBtn=false;
                                     verify = 0
                                     return;
-                                  }    
+                                  }
                            if(submitForm_list.groupCode !=="" && submitForm_list.mark !== ""  && submitForm_list.payments.length !== 0){ // 判断必填内容 && submitForm_list.files.length !== 0
                                console.log(this.alljoinData,'排重关联订单')
                                for(var i=0; i<this.alljoinData.length; i++){
@@ -1904,19 +1904,19 @@ export default {
                                     if(this.alljoinData[i].paymentID === this.alljoinData[j].paymentID){
                                         this.$message({
                                                 message:'关联单据重复，请重新选择',
-                                                type: 'warning' 
+                                                type: 'warning'
                                               });
                                              this.submitformBtn=false;
                                               verify = 0
                                               return;
                                         }
                                      }
-                                }                              
+                                }
                                for(var n in submitForm_list.payments){//判断填写的报销金额
                                 if(submitForm_list.payments[n].price === "0" || submitForm_list.payments[n].price === ""){
                                    this.$message({
                                                 message:'请填写本次报销金额',
-                                                type: 'warning' 
+                                                type: 'warning'
                                               });
                                               this.submitformBtn=false;
                                               verify = 0
@@ -1924,7 +1924,7 @@ export default {
                                 }else if(submitForm_list.payments[n].peopled === 0 || submitForm_list.payments[n].peopled === ""){
                                           this.$message({
                                                 message:'人数不能为空',
-                                                type: 'warning' 
+                                                type: 'warning'
                                               });
                                               this.submitformBtn=false;
                                               verify = 0
@@ -1935,7 +1935,7 @@ export default {
                                         // else if(submitForm_list.payments[n].price > submitForm_list.payments[n].wcount){
                                         //     this.$message({
                                         //         message:'本次报销金额不得大于借款金额',
-                                        //         type: 'warning' 
+                                        //         type: 'warning'
                                         //       });
                                         //       this.submitformBtn=false;
                                         //       verify = 0
@@ -1944,7 +1944,7 @@ export default {
                                          if(submitForm_list.payments[n].swcount == ""){
                                            this.$message({
                                                 message:'请设置 报销金额/人数',
-                                                type: 'warning' 
+                                                type: 'warning'
                                               });
                                               this.submitformBtn=false;
                                               return;
@@ -1956,7 +1956,7 @@ export default {
                                            submitForm_list.payments[n].expenseType = 0;
                                         }
                                 }
-                              
+
                                 this.object_lisr.push({//给数组赋值
                                           createUser: sessionStorage.getItem('id'),//用户id
                                           planID:submitForm_list.id,//团期计划id
@@ -1964,7 +1964,7 @@ export default {
                                           mark:submitForm_list.mark,
                                           files: submitForm_list.files , //图片
                                           payments: submitForm_list.payments, //关联付款单据报销明细
-                                          checkType:0,//审批状态 
+                                          checkType:0,//审批状态
                                         })
                                         verify = 1
                           }else{
@@ -1972,7 +1972,7 @@ export default {
                               verify = 0
                               this.$message({
                                   message: '请检查必填项',
-                                  type: 'warning' 
+                                  type: 'warning'
                               });
                               this.submitformBtn=false;
                               return;
@@ -1980,11 +1980,11 @@ export default {
               }
              if(verify !== 0){
                 this.add_form(this.object_lisr)//调用提交接口
-               
+
               }
           },
         //方法结尾
-     
+
         // 获取审核列表结果
         auditResult(paramsGuid) {
           var that =this
@@ -2016,7 +2016,7 @@ export default {
           this.ifShowProposer = true
         }
       },
- 
+
 };
 </script>
 
@@ -2089,7 +2089,7 @@ export default {
 /* .indialog {
   min-height: 300px;
 } */
- 
+
 .all .el-upload-list__item {
   clear: both;
 }
@@ -2097,7 +2097,7 @@ export default {
   margin:20px 30px;
   font-size: 16px;
  }
- 
+
 .sh_style {
   width: 48px;
   border-radius:10%;

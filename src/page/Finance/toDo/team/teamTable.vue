@@ -36,7 +36,7 @@
     </div>
     <!-- 检索 END -->
     <!-- 需要审批表格-无收入款 -->
-    <el-table :data="approvalNoInData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameINoIn'">
+    <el-table :data="approvalNoInData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameINoIn'">
       <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -51,7 +51,7 @@
       </el-table-column>
     </el-table>
     <!-- 需要审批表格-预付款 END -->
-    <el-table :data="approvalAdvanceData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameIAdvance'">
+    <el-table :data="approvalAdvanceData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameIAdvance'">
       <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -67,7 +67,7 @@
     </el-table>
     <!-- 需要审批表格-预付款 END -->
     <!-- 需要审批表格-报销管理 -->
-    <el-table :data="approvalReimburseData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameIReimburse'">
+    <el-table :data="approvalReimburseData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameIReimburse'">
       <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -81,7 +81,7 @@
     </el-table>
     <!-- 需要审批表格-报销管理 END -->
     <!-- 需要审批表格-退款 -->
-    <el-table :data="approvalRefundData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border v-show="getWhichTab === 'nameIRefund'">
+    <el-table :data="approvalRefundData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameIRefund'">
       <el-table-column prop="refundCode" label="退款单号" align="center"></el-table-column>
       <el-table-column prop="refundStateType" label="状态" align="center">
         <template slot-scope="scope">
@@ -103,13 +103,13 @@
     </el-table>
     <!-- 需要审批表格-退款 END -->
     <!-- 需要审批表格-报账单 -->
-    <el-table :data="approvalSheetData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" borde v-show="getWhichTab === 'nameISheet'">
+    <el-table :data="approvalSheetData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameISheet'">
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="状态" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.checkTypeEX ==='审批中'" style="color: #7F7F7F">{{scope.row.checkTypeEX}}</div>
-          <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D">{{scope.row.checkTypeEX}}</div>
-          <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174">{{scope.row.checkTypeEX}}</div>
+          <div v-if="scope.row.checkTypeEX ==='审批中'" style="color: #7F7F7F">{{ scope.row.checkTypeEX }}</div>
+          <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D">{{ scope.row.checkTypeEX }}</div>
+          <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174">{{ scope.row.checkTypeEX }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="teamProTitle" label="产品名称" align="center"></el-table-column>
@@ -134,7 +134,7 @@
     nameIAdvance: '/borrow/borrowDetails',
     nameIReimburse: '/reimburse/reimburseTeamDetails',
     nameIRefund: '/refund/refundDetails',
-    nameISheet: '/borrow/borrowDetails',
+    nameISheet: '/checkSheetDetail/team',
   };
 
   export default {
@@ -180,7 +180,7 @@
     methods: {
       // 详情方法
       handleJumpDetail (index, row, source) {
-        let { paymentID, guid, instanceID, expenseID } = row; // 基本上都是给接口传参用
+        let { id, paymentID, guid, instanceID, expenseID } = row; // 基本上都是给接口传参用
         let keepWorkItemId = null;
 
         // 取出当前选中的 workItemID 与后端返回的做比较
@@ -205,7 +205,8 @@
           query: {
             pendingDetailPaymentId: paymentID,
             componentName: this.getWhichTab,
-            optionsGuid: guid,
+            guid: guid, // 报账单定义为 guid
+            id: id, // 报账单用
             instanceID: instanceID,
             workItemID: keepWorkItemId,
             whichTabName: this.whichTab,

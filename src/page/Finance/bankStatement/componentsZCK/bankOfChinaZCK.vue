@@ -137,7 +137,7 @@ export default {
           }
         })
         .then(function(obj) {
-          // console.log('中国银行',obj);
+  
           if (obj.data.isSuccess) {
             that.total1 = obj.data.total;
             that.tableData1 = obj.data.objects;

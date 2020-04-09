@@ -693,9 +693,11 @@
   </div>
 </template>
 <script type="text/javascript">
+
 import { formatDate } from "@/js/libs/publicMethod.js";
 import recognitionDo from "@/page/Finance/collectionManagement/pendingApproval/recognitionDo.vue";
 import recognitionDetail from "@/page/Finance/collectionManagement/pendingApproval/recognitionDetail.vue";
+import moment from 'moment'
 export default {
   name: "collectionDetail",
   components: {
@@ -788,6 +790,7 @@ export default {
     }
   },
   methods: {
+    moment,
     // 打印详情
     touchPrint() {
       this.$print(this.$refs.print);
@@ -952,7 +955,7 @@ export default {
           if (this.hasSubject) {
             this.tableAssociated.forEach(function(item, index, arr) {
               const dataLocal = JSON.parse(localStorage.getItem(item.id));
-              // console.log(dataLocal);
+              console.log(dataLocal);
               if (dataLocal.hasCharge) {
                 that.chargeSubmit(
                   item,
@@ -976,11 +979,13 @@ export default {
     axiosSubmit() {
       const that = this;
       const date = this.getMoment();
+      let getTime = moment().format('YYYY-MM-DD HH:mm:ss');
 
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
           datetime: date,
           spname: sessionStorage.getItem("name"),
+          sptime: getTime,
           spstate: this.approval_status,
           spcontent: this.approvalMark,
           checktype: this.approval_status,
@@ -1086,21 +1091,18 @@ export default {
               trade_Amount: 0 - parseFloat(charge),
               value_Date: row.value_Date,
               exchange_rate: row.exchange_rate,
-              transaction_reference_number:
-                row.transaction_reference_number + "-" + new Date().getTime(),
+              transaction_reference_number: row.transaction_reference_number + "-" + new Date().getTime(),
               record_ID: row.record_ID,
               reference: row.reference,
               purpose: row.purpose,
               remark: row.remark,
               transaction_Type: row.transaction_Type,
               business_type: row.business_type,
-              account_holding_bank_number_of_payer:
-                row.account_holding_bank_number_of_payer,
+              account_holding_bank_number_of_payer: row.account_holding_bank_number_of_payer,
               payer_account_bank: row.payer_account_bank,
               debit_Account_No: row.debit_Account_No,
               payer_s_Name: row.payer_s_Name,
-              account_holding_bank_number_of_beneficiary:
-                row.account_holding_bank_number_of_beneficiary,
+              account_holding_bank_number_of_beneficiary: row.account_holding_bank_number_of_beneficiary,
               beneficiary_account_bank: row.beneficiary_account_bank,
               payee_s_Account_Number: row.payee_s_Account_Number,
               payee_s_Name: row.payee_s_Name,
@@ -1292,6 +1294,7 @@ export default {
 
     // 认款接口 -- 将关联欠款的状态改成3(认款)
     getColl(item) {
+      let getTime = moment().format('YYYY-MM-DD HH:mm:ss');
       const that = this;
       const date = this.getMoment();
       this.$http
@@ -1299,9 +1302,10 @@ export default {
           datetime: date,
           spname: sessionStorage.getItem("name"),
           spstate: "认款",
+          sptime: getTime,
           spcontent: "",
-          checktype: 3,
-          id: item.id,
+          checktype: 1,
+          id: this.info.id,
           'SpCode': sessionStorage.getItem('userCode')
         })
         .then(function(response) {

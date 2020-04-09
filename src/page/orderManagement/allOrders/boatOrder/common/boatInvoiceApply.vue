@@ -308,10 +308,16 @@ export default {
   text-align: right;
   color: #999;
 }
- 
+ .Words{
+   width: 200px;
+ }
 .colse {
   margin-left: 230px;
   width: 100px;
 }
-.cancel{}
+.cancel{
+  width: 600px;
+  margin: 10px 0 10px 70%;
+}
+ 
 </style>

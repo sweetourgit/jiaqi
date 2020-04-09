@@ -5,11 +5,11 @@
 -->
 <template>
   <div class="loan-management">
-    <div style="text-align: right; margin: 25px 20px 0 0;">
+    <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button type="warning" plain @click="handleCancel">取消</el-button>
       <el-button type="primary" plain @click="handlePass">通过</el-button>
       <el-button type="danger" plain @click="handleRejected">驳回</el-button>
-      <el-button type="success" plain @click="handleTouchPrint" plain v-if="getOrgID === 491">打印本页</el-button>
+      <el-button type="success" plain @click="handleTouchPrint" plain v-if="getOrgID === 491 || 310 || 342 || 362 || 542 || 574">打印本页</el-button>
     </div>
     <div>
       <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -18,6 +18,423 @@
         <el-tag type="danger" v-if="fundamental.checkType === '2'" class="distributor-status">驳回</el-tag>
         <el-tag type="success" v-if="fundamental.checkType === '1'" class="distributor-status">通过</el-tag>
       </div>
+      <!-- 打印内容，含有直客，同业 -->
+      <div ref="print">
+        <div v-if="keepComponentName === 'nameIIICollectionTeamSame'">
+          <div v-for="item in tableAssociated" :key="item.id">
+            <div class="print-content" style="border-bottom: 1px dashed #ccc">
+              <div
+                style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;"
+              >大运通收款凭证</div>
+              <div class="print-same-table">
+                <!-- 确认日期 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>确认日期</th>
+                      <th>确认人</th>
+                      <th>收款状态</th>
+                      <th>收款单号</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{ printSureTime }}</td>
+                      <td>{{ getUserName }}</td>
+                      <td>{{ printSureState }}</td>
+                      <td>{{ fundamental.id }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 部门 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>部门</th>
+                      <th>申请人</th>
+                      <th>订单数</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{ fundamental.dept }}</td>
+                      <td>{{ fundamental.createUser }}</td>
+                      <td>1</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 交易方式 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>应收金额</th>
+                      <th>交易方式</th>
+                      <th>实收金额</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{item.payablePrice}}</td>
+                      <td>{{ fundamental.collectionNumber }}</td>
+                      <td>{{ item.matchingPrice }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 团号 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>团号</th>
+                      <th>订单号</th>
+                      <th>同业社名称</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{ item.groupCode }}</td>
+                      <td>{{item.orderCode}}</td>
+                      <td>{{ fundamental.localCompName }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div style="display: flex;justify-content: space-between;">
+                <p>
+                  合计人民币：
+                  <span>{{ item.matchingPrice }}</span>
+                </p>
+                <p>第一联 业务联</p>
+              </div>
+            </div>
+            <div class="print-content" style="border-bottom: 1px dashed #ccc">
+              <div
+                style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;"
+              >大运通收款凭证</div>
+              <div class="print-same-table">
+                <!-- 确认日期 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>确认日期</th>
+                      <th>确认人</th>
+                      <th>收款状态</th>
+                      <th>收款单号</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{ printSureTime }}</td>
+                      <td>{{ getUserName }}</td>
+                      <td>{{ printSureState }}</td>
+                      <td>{{ fundamental.id }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 部门 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>部门</th>
+                      <th>申请人</th>
+                      <th>订单数</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{ fundamental.dept }}</td>
+                      <td>{{ fundamental.createUser }}</td>
+                      <td>1</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 交易方式 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>应收金额</th>
+                      <th>交易方式</th>
+                      <th>实收金额</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{item.payablePrice}}</td>
+                      <td>{{ fundamental.collectionNumber }}</td>
+                      <td>{{ item.matchingPrice }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 团号 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>团号</th>
+                      <th>订单号</th>
+                      <th>同业社名称</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td>{{ item.groupCode }}</td>
+                      <td>{{item.orderCode}}</td>
+                      <td>{{ fundamental.localCompName }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!-- 发票 -->
+                <div>
+                  <table width="100%">
+                    <thead>
+                    <tr>
+                      <th>发票类型</th>
+                      <th>个人/单位</th>
+                      <th>纳税人识别号</th>
+                      <th>发票抬头</th>
+                      <th>发票项目</th>
+                      <th>金额</th>
+                      <th>账号</th>
+                      <th>开户行</th>
+                      <th>地址</th>
+                      <th>手机号</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="itemInvoice in tableInvoice" :key="itemInvoice.index">
+                      <!--<td>{{ itemInvoice.invoiceID }}纸质发票 = 1</td>-->
+                      <td>纸质发票</td>
+                      <td>{{ itemInvoice.invoiceType === 1 ? '个人' : '单位' }}</td>
+                      <td>{{ itemInvoice.invoiceNumber }}</td>
+                      <td>{{ itemInvoice.invoiceHeaderOrTel }}</td>
+                      <!--<td>{{ itemInvoice.invoiceItem }} 1旅游费</td>-->
+                      <td>旅游费</td>
+                      <td>{{ itemInvoice.invoicePrice }}</td>
+                      <td>{{ itemInvoice.cardNumber }}</td>
+                      <td>{{ itemInvoice.bankName }}</td>
+                      <td>{{ itemInvoice.address }}</td>
+                      <td>{{ itemInvoice.tel }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div style="display: flex;justify-content: space-between;">
+                <p>
+                  合计人民币：
+                  <span>{{ item.matchingPrice }}</span>
+                </p>
+                <p>第二联 财务联</p>
+              </div>
+            </div>
+            <div style="page-break-after: always;"></div>
+          </div>
+        </div>
+        <div v-if="keepComponentName === 'nameIIICollectionTeamDirect'">
+          <div class="print-content" style="border-bottom: 1px dashed #ccc;">
+            <div style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;">大运通收款凭证</div>
+            <div class="print-same-table">
+              <!-- 确认日期 -->
+              <div>
+                <table width="100%">
+                  <thead>
+                  <tr>
+                    <th>确认日期</th>
+                    <th>确认人</th>
+                    <th>收款状态</th>
+                    <th>收款单号</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{ printSureTime }}</td>
+                    <td>{{ getUserName }}</td>
+                    <td>{{ printSureState }}</td>
+                    <td>{{ fundamental.id }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- 部门 -->
+              <div>
+                <table width="100%">
+                  <thead>
+                  <tr>
+                    <th>部门</th>
+                    <th>申请人</th>
+                    <th>订单数</th>
+                    <th>团号</th>
+                    <th>订单号</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{fundamental.dept}}</td>
+                    <td>{{ fundamental.createUser }}</td>
+                    <td>1</td>
+                    <td>{{ printGroupCode }}</td>
+                    <td>{{ printOrderCode }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- 交易方式 -->
+              <div>
+                <table width="100%">
+                  <thead>
+                  <tr>
+                    <th>应收金额</th>
+                    <th>交易方式</th>
+                    <th>实收金额</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{ printPayablePrice }}</td>
+                    <td>{{ fundamental.collectionNumber }}</td>
+                    <td>{{ printMatchingPrice }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div style="display: flex;justify-content: space-between;">
+              <p>
+                合计人民币：
+                <span>{{ printMatchingPrice }}</span>
+              </p>
+              <p>第一联 业务联</p>
+            </div>
+          </div>
+          <div class="print-content" style="border-bottom: 1px dashed #ccc;">
+            <div
+              style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;"
+            >大运通收款凭证</div>
+            <div class="print-same-table" v-for="item in tableAssociated" :key="item.id">
+              <!-- 确认日期 -->
+              <div>
+                <table width="100%">
+                  <thead>
+                  <tr>
+                    <th>确认日期</th>
+                    <th>确认人</th>
+                    <th>收款状态</th>
+                    <th>收款单号</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{ printSureTime }}</td>
+                    <td>{{ getUserName }}</td>
+                    <td>{{ printSureState }}</td>
+                    <td>{{ fundamental.id }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- 部门 -->
+              <div>
+                <table width="100%">
+                  <thead>
+                  <tr>
+                    <th>部门</th>
+                    <th>申请人</th>
+                    <th>订单数</th>
+                    <th>团号</th>
+                    <th>订单号</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{fundamental.dept}}</td>
+                    <td>{{ fundamental.createUser }}</td>
+                    <td>1</td>
+                    <td>{{ printGroupCode }}</td>
+                    <td>{{ printOrderCode }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- 交易方式 -->
+              <div>
+                <table width="100%">
+                  <thead>
+                  <tr>
+                    <th>应收金额</th>
+                    <th>交易方式</th>
+                    <th>实收金额</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{ printPayablePrice }}</td>
+                    <td>{{ fundamental.collectionNumber }}</td>
+                    <td>{{ printMatchingPrice }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- 发票 -->
+              <div>
+                <table width="100%">
+                  <thead>
+                  <tr>
+                    <th>发票类型</th>
+                    <th>个人/单位</th>
+                    <th>纳税人识别号</th>
+                    <th>发票抬头</th>
+                    <th>发票项目</th>
+                    <th>金额</th>
+                    <th>账号</th>
+                    <th>开户行</th>
+                    <th>地址</th>
+                    <th>手机号</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="itemInvoice in tableInvoice" :key="itemInvoice.index">
+                    <!--<td>{{ itemInvoice.invoiceID }}纸质发票 = 1</td>-->
+                    <td>纸质发票</td>
+                    <td>{{ itemInvoice.invoiceType === 1 ? '个人' : '单位' }}</td>
+                    <td>{{ itemInvoice.invoiceNumber }}</td>
+                    <td>{{ itemInvoice.invoiceHeaderOrTel }}</td>
+                    <!--<td>{{ itemInvoice.invoiceItem }} 1旅游费</td>-->
+                    <td>旅游费</td>
+                    <td>{{ itemInvoice.invoicePrice }}</td>
+                    <td>{{ itemInvoice.cardNumber }}</td>
+                    <td>{{ itemInvoice.bankName }}</td>
+                    <td>{{ itemInvoice.address }}</td>
+                    <td>{{ itemInvoice.tel }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div style="display: flex;justify-content: space-between;">
+              <p>
+                合计人民币：
+                <span>{{ printMatchingPrice }}</span>
+              </p>
+              <p>第二联 财务联</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 打印内容，含有直客，同业 END -->
       <div v-if="keepComponentName === 'nameIIICollectionTeamDirect'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
@@ -92,68 +509,68 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-else-if="keepComponentName === 'nameIIICollectionTeamSame'">
-        <!-- 第一行 -->
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
-          </el-col>
-        </el-row>
-        <!-- 第一行 END -->
-        <!-- 第二行 -->
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">同业社名称:</div></el-col>
-            <el-col :span="18"><div class="grid-del">{{ fundamental.localCompName }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">收款账户:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.collectionNumber }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">收款金额:</div></el-col>
-            <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
-          </el-col>
-        </el-row>
-        <!-- 第二行 END -->
-        <!-- 第四行 -->
-        <el-row type="flex" class="row-bg" justify="space-around">
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
-            <el-col :span="18"><div class="grid-del">{{ fundamental.abstract }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">开发票:</div></el-col>
-            <el-col :span="18"><div class="grid-del">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div></el-col>
-          </el-col>
-          <el-col :span="6">
-            <el-col :span="6"><div class="grid-del label-color">凭证:</div></el-col>
-            <el-col :span="18">
-              <el-upload
-                class="upload-demo"
-                name="files"
-                :file-list="fundamental.files"
-                :show-file-list=true
-                action="test"
-                :disabled=true
-                :on-preview="handlePreview"
-              >
-              </el-upload>
-            </el-col>
-          </el-col>
-        </el-row>
-        <!-- 第四行 END -->
-      </div>
-      <div v-else-if="keepComponentName === 'nameIIICollectionTeamInner'">
+      <div v-if="keepComponentName === 'nameIIICollectionTeamSame'">
+         <!-- 第一行 -->
+         <el-row type="flex" class="row-bg" justify="space-around">
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
+             <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
+           </el-col>
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color ">申请人:</div></el-col>
+             <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
+           </el-col>
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color">创建时间:</div></el-col>
+             <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
+           </el-col>
+         </el-row>
+         <!-- 第一行 END -->
+         <!-- 第二行 -->
+         <el-row type="flex" class="row-bg" justify="space-around">
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color">同业社名称:</div></el-col>
+             <el-col :span="18"><div class="grid-del">{{ fundamental.localCompName }}</div></el-col>
+           </el-col>
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color">收款账户:</div></el-col>
+             <el-col :span="18"><div class="grid-del ">{{ fundamental.collectionNumber }}</div></el-col>
+           </el-col>
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color">收款金额:</div></el-col>
+             <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
+           </el-col>
+         </el-row>
+         <!-- 第二行 END -->
+         <!-- 第四行 -->
+         <el-row type="flex" class="row-bg" justify="space-around">
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
+             <el-col :span="18"><div class="grid-del">{{ fundamental.abstract }}</div></el-col>
+           </el-col>
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color">开发票:</div></el-col>
+             <el-col :span="18"><div class="grid-del">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div></el-col>
+           </el-col>
+           <el-col :span="6">
+             <el-col :span="6"><div class="grid-del label-color">凭证:</div></el-col>
+             <el-col :span="18">
+               <el-upload
+                 class="upload-demo"
+                 name="files"
+                 :file-list="fundamental.files"
+                 :show-file-list=true
+                 action="test"
+                 :disabled=true
+                 :on-preview="handlePreview"
+               >
+               </el-upload>
+             </el-col>
+           </el-col>
+         </el-row>
+         <!-- 第四行 END -->
+       </div>
+      <div v-if="keepComponentName === 'nameIIICollectionTeamInner'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
@@ -223,7 +640,7 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-else-if="keepComponentName === 'nameIIICollectionTeamReimburse'">
+      <div v-if="keepComponentName === 'nameIIICollectionTeamReimburse'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
@@ -271,7 +688,6 @@
         </el-row>
         <!-- 第四行 END -->
       </div>
-      <div v-else></div>
       <div v-if="keepComponentName !== 'nameIIICollectionTeamReimburse'">
         <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
@@ -335,9 +751,22 @@
             <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
             <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
             <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-            <el-table-column prop="prop" label="操作" align="center" v-if="collCheckout">
+            <el-table-column prop="prop" label="操作" align="center">
               <template slot-scope="scope">
-                <el-button type="primary" plain size="small" @click="handleRecognitionDetail(scope.row)">去认款</el-button>
+                <el-button
+                  v-if="scope.row.hasSubmitData"
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="recognitionDo(scope.row)"
+                >去认款</el-button>
+                <el-button
+                  v-else
+                  type="primary"
+                  plain
+                  size="small"
+                  @click="handleRecognitionDel(scope.row)"
+                >查看认款详情</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -370,48 +799,46 @@
         </el-dialog>
         <!-- 通过、驳回弹框 END -->
         <!-- 内部收款，关联欠款 END -->
-        <recognitionDetail :dialogFormVisible="dialogFormVisible" :msg="msg" @close="recognitionClose"></recognitionDetail>
+        <!-- 认款详情 -->
+        <recognitionDetail :dialogVisibleDel="dialogVisibleDel" :msg="msg" @close="recognitionClose"></recognitionDetail>
+        <!-- 认款详情 END -->
+        <!-- 去认款 -->
+        <recognitionDo :dialogVisibleDo="dialogVisibleDo" :msg="msg" @close="recognitionClose"></recognitionDo>
+        <!-- 去认款 EBD -->
       </div>
     </div>
   </div>
 </template>
 <script>
   import recognitionDetail from './recognitionDetail';
+  import recognitionDo from './recognitionDo';
   import collectTeamDetails from '../mixins/collectTeamDetails';
 
   export default {
     name: "collectionTeamDetails",
     components: {
-      recognitionDetail
+      recognitionDetail,
+      recognitionDo
     },
     data() {
       return {
-        orderID:0,
         refundList:{},
-        dialogFormVisible: false,
-        msg: "",
-        tableManyRow: 0,
-        getCollectionPriceTotal: 0
+        printMatchingPrice: null,
+        printPayablePrice: null,
+        printOrderCode: null,
+        printGroupCode: null,
+        getOrgID: null, // 财务id
+        printSureTime: null, // 打印用 - 确认时间
+        printSureState: null, // 状态
       };
     },
     mixins: [ collectTeamDetails ],
-    created () {
-      //    this.getOrder(this.refundList.orderID);
-    },
+    created () {},
+    mounted() {},
     methods: {
-      // 点击图片钩子
-      handlePreview (file) {
-        window.open(file.url);
-      },
-      recognitionClose (str) {
-        this.dialogFormVisible = false;
-      },
-      // 查看认款详情
-      handleRecognitionDetail (row) {
-        this.msg = {
-          id: row.id
-        };
-        this.dialogFormVisible = true;
+      // 打印
+      handleTouchPrint () {
+        this.$print(this.$refs.print);
       },
     }
   }
@@ -423,6 +850,10 @@
     margin: 25px auto 50px;
     height: auto;
     border: 1px solid #e6e6e6;
+    .print-content {
+      display: none;
+      width: 100%;
+    }
     .row-content{
       width: 95%;
       margin: 0 auto;

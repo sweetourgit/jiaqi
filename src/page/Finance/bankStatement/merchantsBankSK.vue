@@ -1,9 +1,10 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:56:21 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:56:21
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 14:47:16
  */
+<!-- 2020-3-31 -->
 <template>
   <div class="distributor-content" id="bankContent">
     <!-- 搜索表单 -->
@@ -169,7 +170,7 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import moment from "moment";
 import orderDetail from "@/page/Finance/bankStatement/orderDetails.vue";
@@ -214,7 +215,7 @@ export default {
   watch: {
     countTest: function(newV, oldV) {
       const that = this;
-      if (newV.indexOf("bankOfChinaSK") != -1 && newV != oldV) {
+      if (newV.indexOf("merchantsBankSK") != -1 && newV != oldV) {
         setTimeout(function() {
           // alert('数据改变，执行loadDataSK~')
           that.loadData();
@@ -261,7 +262,7 @@ export default {
         this.$message.success("招商银行流水单上传成功！");
         this.pageCurrent = 1;
         this.loadData();
-        this.$store.commit("changeBankData", "bankOfChinaSXF" + Math.random());
+        this.$store.commit("changeBankData", "merchantsBankSXF" + Math.random());
       } else {
         this.$message.warning("招商银行流水单上传失败！");
       }
@@ -270,7 +271,7 @@ export default {
       this.$message.warning(`文件上传失败，请重新上传！`);
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+    
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -316,7 +317,7 @@ export default {
                 that.loadData();
                 that.$store.commit(
                   "changeBankData",
-                  "merchantsBankSK" + Math.random()
+                  "merchantsBankSXF" + Math.random()
                 );
                 that.$message({
                   type: "info",
@@ -389,17 +390,17 @@ export default {
               transaction_reference_number: this.ruleForm.code,
               begin: dateStart ? dateStart : "2000-05-16",
               end: dateEnd ? dateEnd : "2099-05-16",
-              seachType: 0
+              seachType: 0,
               //若传入4D则无数据 测试暂时先不传
-              //   userid: data4D.userID, // 暂无数据 想看改成0,
-              // orgid: data4D.orgID, // 暂无数据 想看改成0,
-              // topid: data4D.topID, // 暂无数据 想看改成0,
-              // company: "",
+                userid: 0,// data4D.userID, // 暂无数据 想看改成0,
+              orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
             }
           }
         )
         .then(function(obj) {
-          console.log("中国招商银行", obj);
+       
           if (obj.data.isSuccess) {
             that.total = obj.data.total;
             that.tableData = obj.data.objects;
