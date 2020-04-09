@@ -274,17 +274,22 @@
             <el-col :span="3" class="title1">
               审批人
             </el-col>
-            <el-col :span="3" class="title1" style="">
+            <el-col :span="2" class="title1" style="">
               <div style="position:relative;z-index: 99;top: 16px;">计调</div>
             </el-col>
-            <el-col :span="4" class="">
+            <el-col :span="3" class="">
             </el-col>
-            <el-col :span="3" class="title1" style="border-bottom:0px solid #ccc;z-index: 99">
+            <el-col :span="2" class="title1" style="">
+              <div style="position:relative;z-index: 99;top: 16px;">部门经理</div>
+            </el-col>
+            <el-col :span="3" class="">
+            </el-col>
+            <el-col :span="2" class="title1" style="border-bottom:0px solid #ccc;z-index: 99">
               <div style="position:relative;z-index: 99;top: 16px;">财务部</div>
             </el-col>
-            <el-col :span="4" class="">
+            <el-col :span="3" class="">
             </el-col>
-            <el-col :span="3" class="title1" style="">
+            <el-col :span="2" class="title1" style="">
               <div style="position:relative;z-index: 99;top: 16px;">总经理</div>
             </el-col>
             <el-col :span="4" class="">
@@ -294,15 +299,19 @@
             <el-col :span="3" class="title1">
               签字
             </el-col>
-            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="2" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="2" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="3" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
-            <el-col :span="3" class="title1" style="border-top:0px solid #ccc;z-index: 10">
+            <el-col :span="2" class="title1" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+            <el-col :span="3" class="" style="border-top:0px solid #ccc;z-index: 10">
+            </el-col>
+            <el-col :span="2" class="title1" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
             <el-col :span="4" class="" style="border-top:0px solid #ccc;z-index: 10">
             </el-col>
@@ -678,7 +687,8 @@ export default {
           id: this.info.tour_id,
           bill_status: this.info.bill_status,
           tour_no: this.info.tour_no,
-          approved: this.info.approved
+          approved: this.info.approved,
+          returnPath: this.info.path ? this.info.path : ''
         }
       });
     },

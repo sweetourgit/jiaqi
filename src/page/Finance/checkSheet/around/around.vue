@@ -27,9 +27,19 @@
                 <span class="search_style">产品名称：</span>
                 <el-input v-model="productName" placeholder="请输入内容" class="search_input"></el-input>
               </el-col>
-              <el-col :span="9" :offset="7">
+              <el-col :span="7">
+                <span class="search_style">状态：</span>
+                <el-select v-model="billStatus" placeholder="请选择" class="search_input">
+                  <el-option key="" label="全部" value=""></el-option>
+                  <el-option key="5" label="报账中" value="5"></el-option>
+                  <el-option key="6" label="报账驳回" value="6"></el-option>
+                  <el-option key="7" label="已报账" value="7"></el-option>
+                </el-select>
+              </el-col>
+              <el-col :span="9">
                 <el-button type="primary" @click="resetFun" plain class="buttonSearch">重置</el-button>
                 <el-button type="primary" @click="searchFun" class="buttonSearch">搜索</el-button>
+                <el-button type="primary" @click="exportFun" class="buttonSearch" :disabled="canExport">导出</el-button>
               </el-col>
             </el-row>
           </div>
@@ -45,9 +55,16 @@
                 </template>
               </el-table-column>
               <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
+              <el-table-column prop="orgName" label="申请人部门" align="center"></el-table-column>
+              <el-table-column prop="info.total_income" label="收入" align="center"></el-table-column>
+              <el-table-column prop="info.total_cost" label="成本" align="center"></el-table-column>
+              <el-table-column prop="info.gross_profit" label="毛利" align="center"></el-table-column>
+              <el-table-column prop="info.team_num" label="人数" align="center"></el-table-column>
+              <el-table-column prop="info.gross_rate" label="人均毛利" align="center"></el-table-column>
               <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
               <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
               <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
+              <el-table-column prop="approval_at" label="审批时间" align="center"></el-table-column>
               <el-table-column prop="opinion" label="操作" align="center">
                 <template slot-scope="scope">
                   <div v-if="scope.row.bill_status=='5'">
@@ -110,7 +127,9 @@
           startTime: '',
           endTime: '',
           reimbursementPerID: '',
+          billStatus: '',
           operatorList: [],
+          canExport: true, // 导出按钮是否禁用
           // 切换字段
           activeName: 'first',
           // 分页字段
@@ -133,6 +152,10 @@
         }
       },
       methods: {
+        // 导出方法
+        exportFun(){
+          window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/exportbill?tour_no=" + this.plan + "&product_name=" + this.productName + "&create_uid=" + this.reimbursementPerID + "&start_time=" + this.startTime + "&end_time=" + this.endTime + "&bill_status=" + this.billStatus;
+        },
         // 表格头部背景颜色
         getRowClass({ row, column, rowIndex, columnIndex }) {
           if (rowIndex == 0) {
@@ -143,7 +166,7 @@
         },
         // tab栏点击事件
         handleClick(tab, event) {
-//          console.log(tab, event);
+          // console.log(tab, event);
         },
         // 操作人员
         querySearchOper(queryString, cb){
@@ -158,7 +181,7 @@
           };
         },
         handleSelectOper(item){
-          console.log(item);
+          // console.log(item);
           this.reimbursementPerID = item.id;
         },
         blurHand(){
@@ -183,6 +206,11 @@
         searchFun(){
           this.loading = true;
           this.reimList();
+          if(this.plan != '' || this.reimbursementPer != '' || this.productName != '' || this.startTime != '' || this.endTime != '' || this.billStatus != ''){
+            this.canExport = false;
+          }else{
+            this.canExport = true;
+          }
         },
         resetFun(){
           this.loading = true;
@@ -192,7 +220,9 @@
           this.startTime = '';
           this.endTime = '';
           this.reimbursementPerID = '';
+          this.billStatus = '';
           this.reimList();
+          this.canExport = true;
         },
         handleSizeChange(val) {
           this.loading = true;
@@ -216,24 +246,25 @@
             "start_time": this.startTime,
             "end_time": this.endTime,
             "create_uid": this.reimbursementPerID,
-            "bill_status": '5,6,7,8'
+            "bill_status": this.billStatus
           }, ).then(function(response) {
-//            console.log(response);
+            // console.log(response);
             if (response.data.code == '200') {
               console.log(response);
               that.loading = false;
               that.tableData = response.data.data.list;
               that.pageCount = response.data.data.total - 0;
               that.tableData.forEach(function (item, index, arr) {
-//                item.begin_at = formatDate(new Date(item.begin_at*1000));
-//                item.begin_at = item.begin_at.split(" ")[0];
-//                item.end_at = formatDate(new Date(item.end_at*1000));
-//                item.end_at = item.end_at.split(" ")[0];
                 item.createName = item.create_uid;
 
                 item.created_at = formatDate(new Date(item.created_at*1000));
                 item.created_at = item.created_at.split(" ")[0];
-
+                // approval_at
+                if(item.approval_at){
+                  item.approval_at = formatDate(new Date(item.approval_at*1000));
+                  item.approval_at = item.approval_at.split(" ")[0];
+                }
+                // 根据id获取审批人姓名
                 that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                   "id": item.create_uid
                 },{
@@ -241,11 +272,28 @@
                     'Authorization': 'Bearer ' + localStorage.getItem('token'),
                   }
                 }).then(function(response) {
-
+                  // console.log(response);
                   if (response.data.isSuccess) {
-                    item.create_uid = response.data.object.name
+                    item.create_uid = response.data.object.name;
                   } else {
                     that.$message.warning("加载数据失败~");
+                  }
+                }).catch(function(error) {
+                  console.log(error);
+                });
+                // 根据id获取审批人部门
+                that.$http.post(that.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
+                  "id": item.create_uid
+                },{
+                  headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                  }
+                }).then(function(response) {
+                  // console.log(ID,'组织名称',response);
+                  if (response.data.isSuccess) {
+                    item.orgName = response.data.objects[0].name
+                  } else {
+                    that.$message.success("加载数据失败~");
                   }
                 }).catch(function(error) {
                   console.log(error);
@@ -262,22 +310,20 @@
         approve(res){
           console.log(res);
           this.info = res;
+          res.path = '/checkSheet/around';
           this.dialogFormVisible = true;
-//          name: "Result",
-//          query: { name: 'name' },
-//          params: { usersitelist: 'userlist' }
         },
         // 详情
         detail(res){
           console.log(res);
           this.info = res;
+          res.path = '/checkSheet/around';
           this.dialogFormVisible = true;
         },
         // 关闭
         closeFun() {
           this.dialogFormVisible = false;
           this.reimList();
-//          alert(this.$refs.needApproval.pageSize);
           this.$refs.needApproval.loadData();
         },
         loadOper(){
@@ -319,7 +365,7 @@
           }).then(function(response) {
 
             if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
+              // console.log('操作人员列表',response.data.objects);
               let operatorList = [];
               response.data.objects.forEach(function (item, index, arr) {
                 const operator = {
@@ -352,7 +398,6 @@
               if (response.data.code == '200') {
                 that.$message.success("回冲报账单成功~");
                 that.reimList();
-//                that.closeAdd();
               } else {
                 if(response.data.message){
                   that.$message.warning(response.data.message);

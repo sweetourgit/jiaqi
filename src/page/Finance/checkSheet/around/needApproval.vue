@@ -29,22 +29,30 @@
             <el-col :span="9" :offset="7">
               <el-button type="primary" @click="resetFun" plain class="buttonSearch">重置</el-button>
               <el-button type="primary" @click="searchFun" class="buttonSearch">搜索</el-button>
+              <el-button type="primary" @click="exportFun" class="buttonSearch" :disabled="canExport">导出</el-button>
             </el-col>
           </el-row>
         </div>
         <div class="table_style">
           <el-table :data="tableData" :header-cell-style="getRowClass" border style="width: 100%;" v-loading="loading">
-            <el-table-column prop="tour_no" label="团期计划" width="180" align="center"></el-table-column>
-            <el-table-column prop="bill_status" label="状态" width="120" align="center">
+            <el-table-column prop="tour_no" label="团期计划" align="center"></el-table-column>
+            <el-table-column prop="bill_status" label="状态" align="center">
               <template>
                 <div style="color: #7F7F7F">报账中</div>
               </template>
             </el-table-column>
             <el-table-column prop="product_name" label="产品名称" align="center"></el-table-column>
-            <el-table-column prop="id" label="申请人" width="120" align="center"></el-table-column>
-            <el-table-column prop="created_at" label="申请时间" width="180" align="center"></el-table-column>
-            <el-table-column prop="mark" label="审批意见" width="250" align="center"></el-table-column>
-            <el-table-column prop="opinion" label="操作" align="center" width="100">
+            <el-table-column prop="orgName" label="申请人部门" align="center"></el-table-column>
+            <el-table-column prop="info.total_income" label="收入" align="center"></el-table-column>
+            <el-table-column prop="info.total_cost" label="成本" align="center"></el-table-column>
+            <el-table-column prop="info.gross_profit" label="毛利" align="center"></el-table-column>
+            <el-table-column prop="info.team_num" label="人数" align="center"></el-table-column>
+            <el-table-column prop="info.gross_rate" label="人均毛利" align="center"></el-table-column>
+            <el-table-column prop="id" label="申请人" align="center"></el-table-column>
+            <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
+            <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
+            <el-table-column prop="approval_at" label="审批时间" align="center"></el-table-column>
+            <el-table-column prop="opinion" label="操作" align="center">
               <template slot-scope="scope">
                 <el-button @click="approve(scope.row)" type="text" size="small" class="table_details">审批</el-button>
               </template>
@@ -90,6 +98,7 @@
         reimbursementPerID: '',
         operatorList: [],
 
+        canExport: true, // 导出按钮是否禁用
         activeName: 'first',
 
         pageSize: 10,
@@ -104,6 +113,10 @@
       };
     },
     methods: {
+      // 导出方法
+      exportFun(){
+        window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/exportbill?tour_no=" + this.plan + "&product_name=" + this.productName + "&create_uid=" + this.reimbursementPerID + "&start_time=" + this.startTime + "&end_time=" + this.endTime + "&bill_status=5";
+      },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -149,6 +162,11 @@
       searchFun(){
         this.loading = true;
         this.loadData();
+        if(this.plan != '' || this.reimbursementPer != '' || this.productName != '' || this.startTime != '' || this.endTime != ''){
+          this.canExport = false;
+        }else{
+          this.canExport = true;
+        }
       },
       resetFun(){
         this.loading = true;
@@ -159,9 +177,10 @@
         this.endTime = '';
         this.reimbursementPerID = '';
         this.loadData();
+        this.canExport = true;
       },
       handleClick(tab, event) {
-//        console.log(tab, event);
+        // console.log(tab, event);
         this.loading = true;
         this.loadData();
       },
@@ -178,6 +197,7 @@
       },
       approve(res){
         this.info = res;
+        res.path = '/checkSheet/around';
         this.dialogFormVisible = true;
       },
       closeFun(){
@@ -196,7 +216,7 @@
           "create_uid": this.reimbursementPerID,
           "bill_status": '5'
         }, ).then(function(response) {
-//            console.log(response);
+          // console.log(response);
           if (response.data.code == '200') {
             console.log('需要审批',response);
             that.loading = false;
@@ -206,6 +226,11 @@
             that.tableData.forEach(function (item, index, arr) {
               item.created_at = formatDate(new Date(item.created_at*1000));
               item.created_at = item.created_at.split(" ")[0];
+              // approval_at
+              if(item.approval_at){
+                item.approval_at = formatDate(new Date(item.approval_at*1000));
+                item.approval_at = item.approval_at.split(" ")[0];
+              }
 
               that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
@@ -219,6 +244,23 @@
                   item.id = response.data.object.name
                 } else {
                   that.$message.warning("获取申请人失败");
+                }
+              }).catch(function(error) {
+                console.log(error);
+              });
+              // 根据id获取审批人部门
+              that.$http.post(that.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
+                "id": item.create_uid
+              },{
+                headers: {
+                  'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                }
+              }).then(function(response) {
+                // console.log(ID,'组织名称',response);
+                if (response.data.isSuccess) {
+                  item.orgName = response.data.objects[0].name
+                } else {
+                  that.$message.success("加载数据失败~");
                 }
               }).catch(function(error) {
                 console.log(error);
@@ -270,7 +312,7 @@
         }).then(function(response) {
 
           if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
+            // console.log('操作人员列表',response.data.objects);
             let operatorList = [];
             response.data.objects.forEach(function (item, index, arr) {
               const operator = {
