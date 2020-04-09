@@ -160,7 +160,7 @@ export default {
                 if (response.data.message) {
                   that.$message.warning(response.data.result.message);
                 } else {
-                  that.$message.warning("删除失败~");
+                  that.$message.warning("有明细已关联订单，不允许删除~");
                 }
               }
             })

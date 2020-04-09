@@ -1,9 +1,9 @@
 /*
- * @Author: WZJ
- * @Date: 2020-03-25 14:55:44
- * @Last Modified by:   WZJ
- * @Last Modified time: 2020-03-25 14:55:44
- */
+* @Author: WZJ
+* @Date: 2020-03-25 14:55:44
+* @Last Modified by: WZJ
+* @Last Modified time: 2020-03-25 14:55:44
+*/
 <!-- 2020-3-31 -->
 <template>
   <div class="distributor-content">
@@ -18,7 +18,7 @@
           <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.surplus_Amount == scope.row.actualAmount">删除</el-button>
         </template>
       </el-table-column>
-       <el-table-column prop="id" label="明细ID" align="center">
+      <el-table-column prop="id" label="明细ID" align="center">
       </el-table-column>
       <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
       </el-table-column>
@@ -82,7 +82,8 @@
       </el-table-column> -->
     </el-table>
     <div class="block">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent" :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageCurrent"
+        :page-sizes="[5, 10, 50, 100]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total='total'>
       </el-pagination>
     </div>
     <!-- 表格 END -->
@@ -91,167 +92,180 @@
 </template>
 
 <script type="text/javascript">
-import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
+  import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
 
-export default {
-  components: {
-    orderDetail
-  },
-  data() {
-    return {
-      tableData: [], // 表格数据
+  export default {
+    components: {
+      orderDetail
+    },
+    data() {
+      return {
+        tableData: [], // 表格数据
+        pageCurrent: 1,
+        pageSize: 10,
+        total: 0,
 
-      pageCurrent: 1,
-      pageSize: 10,
-      total: 0,
-
-      info: '',
-      dialogFormVisible: false
-    }
-  },
-  created () {
-    this.loadData()
-  },
-  methods: {
-    getRowClass({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex == 0) {
-        return 'background:#F7F7F7;color:rgb(85, 85, 85);'
-      } else {
-        return ''
+        info: '',
+        dialogFormVisible: false
       }
     },
-    closeBtn(){
-      this.$router.push({
-        path: '/bankStatement',
-        name: '银行流水单管理',
-        params: {
-          tabStatus: 'fifth'
+    created() {
+      this.loadData()
+    },
+    methods: {
+      getRowClass({
+        row,
+        column,
+        rowIndex,
+        columnIndex
+      }) {
+        if (rowIndex == 0) {
+          return 'background:#F7F7F7;color:rgb(85, 85, 85);'
+        } else {
+          return ''
         }
-      });
-    },
-    orderDetail(row){
-      this.dialogFormVisible = true;
-      this.info = {
-        id: row.id,
-        type: 7
-      };
-
-    },
-    close(){
-      this.dialogFormVisible = false;
-      this.info = '';
-    },
-    deleteFun(row){
-      const that = this;
-      this.$confirm('是否需要删除', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/delete", {
-          "id": this.$route.query.purpose_Merchant_code,
-        }).then(function(response) {
-          if (response.statusText=='OK') {
-            that.loadData();
-            that.$message({
-              type: 'info',
-              message: '已删除'
-            });
-          } else {
-            if(response.data.message){
-              that.$message.warning(response.data.result.message);
-            }else{
-              that.$message.warning("删除失败~");
-            }
+      },
+      closeBtn() {
+        this.$router.push({
+          path: '/bankStatement',
+          name: '银行流水单管理',
+          params: {
+            tabStatus: 'fifth'
           }
-        }).catch(function(error) {
-          console.log(error);
-          that.$message.warning("删除失败~");
         });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      })
-    },
-    handleSizeChange(val){
-      this.pageSize = val;
-      this.pageCurrent = 1;
-      this.loadData();
-    },
-    handleCurrentChange(val){
-      this.pageCurrent = val;
-      this.loadData();
-    },
-    loadData(){
-      const that = this;
-      this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/search", {
-        "pageIndex": this.pageCurrent,
-        "pageSize": this.pageSize,
-        "object": {
-          "purpose_Merchant_cod": this.$route.query.purpose_Merchant_code,
-          // "purpose_Date": this.$route.query.purpose_Date,
-          "creditAmount":this.$route.query.creditAmount,
-          "remarkStartDate":this.$route.query.remarkStartDate,
-          "remarkEndDate":this.$route.query.remarkEndDate
-        }
-      }).then(function (obj) {
-        if(obj.data.isSuccess){
-          that.total = obj.data.total;
-          that.tableData = obj.data.objects;
-          // that.tableDataNBSK.forEach(function (item, index, arr) {
-          //   item.collectionTime = item.collectionTime.split('T')[0];
-          // });
-          // that.loadingNBSK = false;
-        }else{
-          // that.loadingNBSK = false;
-          that.total = 0;
-          that.tableData = [];
-        }
-      })
+      },
+      orderDetail(row) {
+        this.dialogFormVisible = true;
+        this.info = {
+          id: row.id,
+          type: 7
+        };
+
+      },
+      close() {
+        this.dialogFormVisible = false;
+        this.info = '';
+      },
+      deleteFun(row) {
+        const that = this;
+        this.$confirm('是否需要删除', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/delete", {
+            "id": this.$route.query.purpose_Merchant_code,
+          }).then(function(response) {
+            console.log('response', response)
+            if (response.data.isSuccess) {
+              that.loadData();
+              that.$message({
+                type: 'info',
+                message: '已删除'
+              });
+            } else {
+              that.isShowDelete = false
+              if (response.data.message) {
+                that.$message.warning(response.data.result.message);
+              } else {
+                that.$message.warning("有明细已关联订单，不允许删除");
+              }
+            }
+          }).catch(function(error) {
+            // console.log(error);
+            that.$message.warning("删除失败~");
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        })
+      },
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.pageCurrent = 1;
+        this.loadData();
+      },
+      handleCurrentChange(val) {
+        this.pageCurrent = val;
+        this.loadData();
+      },
+      loadData() {
+        const that = this;
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/search", {
+          "pageIndex": this.pageCurrent,
+          "pageSize": this.pageSize,
+          "object": {
+            "purpose_Merchant_cod": this.$route.query.purpose_Merchant_code,
+            // "purpose_Date": this.$route.query.purpose_Date,
+            "creditAmount": this.$route.query.creditAmount,
+            "remarkStartDate": this.$route.query.remarkStartDate,
+            "remarkEndDate": this.$route.query.remarkEndDate
+          }
+        }).then(function(obj) {
+          if (obj.data.isSuccess) {
+            that.total = obj.data.total;
+            that.tableData = obj.data.objects;
+            // that.tableDataNBSK.forEach(function (item, index, arr) {
+            //   item.collectionTime = item.collectionTime.split('T')[0];
+            // });
+            // that.loadingNBSK = false;
+          } else {
+            // that.loadingNBSK = false;
+            that.total = 0;
+            that.tableData = [];
+          }
+        })
+      }
     }
   }
-}
-
 </script>
 <style lang="scss" scoped>
-  .distributor-content{
+  .distributor-content {
     width: 99%;
     margin: 25px auto;
     height: auto;
     border: 1px solid #e6e6e6;
-    #form-content{
+
+    #form-content {
       background: #f7f7f7;
       padding: 20px 10px;
       margin: 20px 10px;
-      .buttonForm{
+
+      .buttonForm {
         text-align: end;
       }
-      .el-select{
+
+      .el-select {
         width: 100% !important;
       }
-      .line{
+
+      .line {
         text-align: center;
       }
     }
-    .buttonsDv{
+
+    .buttonsDv {
       width: 98%;
       margin-top: 10px;
       text-align: end;
     }
-    #table-content{
+
+    #table-content {
       width: 98%;
       margin: 40px auto 20px;
-      th, td{
+
+      th,
+      td {
         min-width: 60px;
       }
     }
-    .block{
+
+    .block {
       width: 100%;
       text-align: center;
       margin: 30px auto;
     }
   }
-
 </style>
