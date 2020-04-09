@@ -73,10 +73,18 @@ export default {
     skuPlanCache= null;
   },
 
+  data(){
+    return {
+      submitForm: {
+        cabin: [],
+      }
+    }
+  },
+
   methods: {
     init(){
       this.$refs.infoGround.init(skuPlanCache);
-      this.$refs.cabinGround.init(skuPlanCache);
+      this.$refs.cabinGround.init(this.submitForm.cabin, skuPlanCache);
     }
   }
 

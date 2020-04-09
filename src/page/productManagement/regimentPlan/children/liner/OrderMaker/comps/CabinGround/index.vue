@@ -10,7 +10,11 @@
         舱房
       </el-button>
     </div>
-    <TitleBar :options="{ deletable: true, badge: true }"></TitleBar>
+    <TitleBar 
+      :data-list="cabinTitles" 
+      :options="{ deletable: true, badge: true }"
+      @close="removeCabin">
+    </TitleBar>
     <div style="padding: 22px 0 40px 0;border-bottom: 1px solid #cecece; display: none;">
       <el-form
         label-width="120px" 
@@ -48,25 +52,47 @@ export default {
 
   components: { TitleBar, CabinEditor },
 
+  computed: {
+    cabinTitles(){
+      return this.cabin.map((el, index) => {
+        let skuPrice= el.sku_price;
+        let { id, title }= skuPrice;
+        return { key: id, label: title, selected: this.cabin.length=== index+ 1 };
+      })
+    }
+  },
+
   data(){
     return {
-      cabins: [],
       submitForm: {},
       rules: {},
       skuCabins: [],
+      cabin: [],
     }
   },
 
   methods: {
-    init(skuPlan){
+    init(cabin, skuPlan){
+      // SkuPrice字典
       this.skuCabins= skuPlan.price;
+      this.cabin= cabin;
     },
 
     awakeEditor(){
       this.$refs.editor.init();
     },
 
-    addCabin(){}
+    addCabin(cabin){
+      this.cabin.push(cabin);
+    },
+
+    removeCabin(id){
+      let result= this.cabin.splice(0).filter(el => {
+        if(el.sku_price.id=== id) el.sku_price.selected= false;
+        return el.sku_price.id!== id;
+      });
+      this.$nextTick(() => this.cabin.push(...result));  
+    }
   }
 
 }

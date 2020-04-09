@@ -87,53 +87,25 @@
 </style>
 
 <template>
-  <div class="title-bar">
+  <div class="title-bar" v-show="dataList.length">
+    {{ dataList }}
     <div class="control-btns">
       <i class="el-icon-d-arrow-left"></i>
     </div>
     <div class="scroll-container">
       <div class="scroll-body" style="width: 2000px;">
 
-        <div class="bar-outer selected">
+        <div :class="['bar-outer', el.selected && 'selected']"
+          v-for="el in dataList"
+          :key="el.id"
+          @click="clickHandler(el)">
           <div class="title-text"
-            :title="'123'">
-            123
+            :title="el.label">
+            {{ el.label }}
           </div>
           <div class="close-btn"
-            v-show="options.deletable">
-            <i class="el-icon-close"></i>
-          </div>
-        </div>
-
-        <div class="bar-outer">
-          <div class="title-text"
-            :title="'123'">
-            123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
-          </div>
-          <div class="close-btn"
-            v-show="options.deletable">
-            <i class="el-icon-close"></i>
-          </div>
-        </div>
-
-        <div class="bar-outer">
-          <div class="title-text"
-            :title="'123'">
-            123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
-          </div>
-          <div class="close-btn"
-            v-show="options.deletable">
-            <i class="el-icon-close"></i>
-          </div>
-        </div>
-
-        <div class="bar-outer">
-          <div class="title-text"
-            :title="'123'">
-            123123123123123123123123123123123123123123123123123123123123123123123123123123123123123123
-          </div>
-          <div class="close-btn"
-            v-show="options.deletable">
+            v-show="options.deletable"
+            @click.stop="closeHandler(el)">
             <i class="el-icon-close"></i>
           </div>
         </div>
@@ -150,7 +122,7 @@
 export default {
 
   props: {
-    list: Array,
+    dataList: Array,
     options: {
       type: Object,
       default(){
@@ -163,6 +135,25 @@ export default {
       }
     }
   },
+
+  methods: {
+    clickHandler(title){
+      if(typeof title=== 'number') title= this.dataList.find(el => el.key=== title);
+      let find= this.dataList.find(el => el.selected);
+      if(!find) return;
+      find.selected= false;
+      title.selected= true;
+      this.$forceUpdate();
+    },
+    closeHandler(title){
+      let index= this.dataList.findIndex(el => el=== title);
+      this.$emit('close', title.key);
+      if(this.dataList.length=== 0) return;
+      let find= this.dataList[index];
+      if(!find) return;
+      this.clickHandler(find);
+    },
+  }
 
 }
 </script>
