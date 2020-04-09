@@ -256,6 +256,7 @@
         handler: function () {
           if(this.dialogFormVisible){
             // this.loadSupplier();
+            this.tableDataChoose = [];
             if(storageLocal.get("supplier")){
               this.supplierList = storageLocal.get("supplier");
             }else{
