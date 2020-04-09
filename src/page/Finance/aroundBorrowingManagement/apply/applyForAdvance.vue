@@ -354,16 +354,17 @@
               });
               return;
             }
-            // console.log(this.ruleForm.supplierIDHC);
+            // console.log(this.tableDataChoose);
             let ids = '';
             if(this.tableDataChoose.length == 0){
 
             }else{
               this.tableDataChoose.forEach(function(item, index, arr){
-                ids = item.id + ','
+                ids += item.id + ','
               })
               ids = ids.substring(0, ids.length - 1)
             }
+            // alert(ids);
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
               "supplier_code": this.ruleForm.supplierID,
               "recoil_supplier_code": this.ruleForm.supplierIDHC,
