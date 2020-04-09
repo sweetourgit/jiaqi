@@ -352,7 +352,7 @@ export default {
     loadData(){
       const that = this;
       let dateStart = '', dateEnd = '';
-      let data4D=utils.getSession4D
+      let data4D=utils.getSession4D()
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }

@@ -387,7 +387,7 @@
         //       that.total = 100;
         //     that.tableData = obj.data.data;
         // })
-        let data4D = utils.getSession4D;
+        let data4D = utils.getSession4D();
         this.$http
           .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
             pageIndex: this.pageCurrent - 1,

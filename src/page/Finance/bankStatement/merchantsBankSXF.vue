@@ -437,7 +437,7 @@ export default {
     },
     loadData() {
       const that = this;
-      let data4D=utils.getSession4D
+      let data4D=utils.getSession4D()
       // this.$http.post("mock/zhaohangSXF", {}).then(function(obj) {
       //   that.total = 100;
       //   that.tableData = obj.data.data;

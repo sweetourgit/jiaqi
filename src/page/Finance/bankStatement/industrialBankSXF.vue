@@ -440,7 +440,7 @@ export default {
     },
     loadData() {
       const that = this;
-      let data4D = utils.getSession4D;
+      let data4D = utils.getSession4D();
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
           pageIndex: this.pageCurrent - 1,
