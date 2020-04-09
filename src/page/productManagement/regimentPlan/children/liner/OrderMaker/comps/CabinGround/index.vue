@@ -10,18 +10,19 @@
         舱房
       </el-button>
     </div>
-    <TitleBar 
-      :data-list="cabinTitles" 
-      :options="{ deletable: true, badge: true }"
-      @select="selectCabin"
-      @close="removeCabin">
-    </TitleBar>
-    <div style="padding: 22px 0 40px 0;border-bottom: 1px solid #cecece;">
+    <div style="padding-bottom: 22px;">
+      <TitleBar 
+        :data-list="cabinTitles" 
+        :options="{ deletable: true, badge: true }"
+        @select="selectCabin"
+        @close="removeCabin">
+      </TitleBar>
+    </div>
+    <div>
       <el-form
         label-width="120px" 
         ref="submitForm"
-        :model="submitForm"
-        :rules="rules">
+        :model="submitForm">
         <el-form-item label="拼住/整间：" prop="name"></el-form-item>
         <el-form-item label="报名人数：" prop="name" style="margin: 0;">
           <div style="display:flex;flex-direction:column;">
@@ -62,18 +63,26 @@ export default {
         let { id, title }= skuPrice;
         return { key: id, label: title, selected: this.cabin.length=== index+ 1 };
       })
-    }
+    },
   },
 
   data(){
-    return {
-      submitForm: {
-        num: 0,
+    return Object.assign(
+      {
+        submitForm: {
+          num: 0,
+        },
+        // 下单中报站的舱房类型
+        cabin: [],
+        // 是否是同业价格
+        isCommonPrice: false,
       },
-      rules: {},
-      skuCabins: [],
-      cabin: [],
-    }
+      // 字典 
+      {
+        skuCabins: [],
+        skuPrice: {},
+      }
+    )
   },
 
   methods: {
@@ -97,7 +106,8 @@ export default {
     },
 
     selectCabin(cabin){
-
+      let skuPrice= this.cabin.find(el => el.sku_price.id=== cabin.key).sku_price;
+      
     },
 
     removeCabin(id){

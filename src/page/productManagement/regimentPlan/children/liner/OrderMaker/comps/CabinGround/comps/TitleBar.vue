@@ -6,6 +6,7 @@
   height: 32px;
   line-height: 32px;
   box-sizing: border-box;
+  background-color: transparent;
   *{
     box-sizing: content-box;
   }
@@ -88,7 +89,6 @@
 
 <template>
   <div class="title-bar" v-show="dataList.length">
-    {{ dataList }}
     <div class="control-btns">
       <i class="el-icon-d-arrow-left"></i>
     </div>
