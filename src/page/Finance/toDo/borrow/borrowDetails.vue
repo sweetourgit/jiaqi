@@ -257,7 +257,7 @@
     </el-table>
     <!-- 收入明细 END -->
     <!-- 审批过程-查看弹窗 -->
-    <el-dialog width="45%" title="审批过程" :visible.sync="ifLookApproveProcessDialog" append-to-body>
+    <el-drawer direction="rtl" size="50%" title="审批过程" :visible.sync="ifLookApproveProcessDialog">
         <el-table :data="tableIncomeCheck" stripe border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
           <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
@@ -270,7 +270,7 @@
           </el-table-column>
           <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
         </el-table>
-    </el-dialog>
+    </el-drawer>
     <!-- 审批过程-查看弹窗 END -->
     <!-- 通过、驳回弹框 -->
     <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list">
