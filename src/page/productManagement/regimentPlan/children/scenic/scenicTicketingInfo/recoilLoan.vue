@@ -6,7 +6,7 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="关联" name="first">
             <el-button class="topButton" type="primary" @click="connect" :disabled="tableDataNoConnectChoose.length == 0">关联</el-button>
-            <el-table ref="singleTable" :data="tableDataNoConnect" border style="width: 100%" :header-cell-style="getRowClass" @selection-change="selectionChange">
+            <el-table ref="multipleTable" :data="tableDataNoConnect" border style="width: 100%" :header-cell-style="getRowClass" @selection-change="selectionChange">
               <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
               </el-table-column>
               <el-table-column prop="order_sn" label="订单ID" align="center" width="80%">
@@ -279,7 +279,24 @@ export default {
       }
     },
     selectionChange(val){
+      const that = this;
       this.tableDataNoConnectChoose = val;
+      let flagItem = true;
+      this.tableDataNoConnectChoose.forEach(function(item, index, arr){
+        that.tableDataNoConnectChoose.forEach(function(item1, index1, arr1){
+          if(item.supplier_id != item1.supplier_id){
+            flagItem = false;
+            return;
+          }
+        })
+      })
+      if(flagItem){
+        this.tableDataNoConnectChoose = val;
+      }else{
+        this.$message.warning("不同上级供应商不能同时选择！");
+        this.$refs.multipleTable.clearSelection();
+        this.tableDataNoConnectChoose = [];
+      }
     },
     selectInit(row, index){
       if(row.supplier_id){
