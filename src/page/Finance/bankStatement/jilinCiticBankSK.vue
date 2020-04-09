@@ -215,7 +215,7 @@ export default {
         this.loadData();
         this.$store.commit('changeBankData', 'jilinCitiBankSK' + Math.random());
       }else{
-        this.$message.warning("农业银行流水单上传失败！");
+        this.$message.warning("吉林中信银行流水单上传失败！");
       }
     },
     handleError(err, file, fileList){
