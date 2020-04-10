@@ -149,10 +149,7 @@ export default {
     },
     closeHandler(title){
       let index= this.dataList.findIndex(el => el=== title);
-      this.$emit('close', title.key);
-      if(this.dataList.length=== 0) return;
-      let find= this.dataList[index];
-      this.clickHandler(find);
+      this.$emit('close', index);
     },
   }
 

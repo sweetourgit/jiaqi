@@ -268,3 +268,8 @@ Vue.prototype.$uuid= function() {
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   )
 }
+
+Vue.filter('priceFilter', function(val){
+  if (!val) return 0;
+  return val.toFixed(2);
+})

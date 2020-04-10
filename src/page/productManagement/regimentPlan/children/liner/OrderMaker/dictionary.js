@@ -33,6 +33,11 @@ export const getCabinDTO= function(skuPrice){
     enumerable: false,
     configurable: false
   })
+  Object.defineProperty(cabin, 'selected', {
+    value: skuPrice,
+    enumerable: false,
+    configurable: true
+  })
   return cabin;
 }
 

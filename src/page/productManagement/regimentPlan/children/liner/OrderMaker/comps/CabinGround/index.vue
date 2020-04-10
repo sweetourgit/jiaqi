@@ -18,7 +18,7 @@
         @close="removeCabin">
       </TitleBar>
     </div>
-    <div>
+    <div v-show="cabin.length">
       <el-form
         label-width="120px" 
         ref="submitForm"
@@ -26,15 +26,19 @@
         <el-form-item label="拼住/整间：" prop="name"></el-form-item>
         <el-form-item label="报名人数：" prop="name" style="margin: 0;">
           <div style="display:flex;flex-direction:column;">
-            <div>成人 ￥16999.00 * 2</div>
-              <el-input-number v-model="submitForm.num" :min="1" :max="10000" :step="1" label="描述文字" size="small"
-                @change="changeHandler">
-              </el-input-number>
+            <div>
+              <span>成人 ￥</span>
+              <span>{{ computedPrice | priceFilter }}</span>
+              <span>{{ ` *${ currentCabin.guests.length }` }}</span>
+            </div>
+            <el-input-number v-model="submitForm.num" :min="1" :max="10000" :step="1" label="描述文字" size="small"
+              @change="changeHandler">
+            </el-input-number>
             <div>
               剩余完整房间：4间 可住16人  |   剩余拼住房间：1间 可住3人  |  可住19人
             </div>
             <div>
-              至少报名3人
+              {{ this.skuPrice }}
             </div>
           </div>
           
@@ -49,6 +53,8 @@
 </template>
 
 <script>
+import { getSkuPriceDTO } from '@/page/productManagement/planInventory/liner/dictionary'
+import { getCabinDTO } from '../../dictionary'
 import TitleBar from './comps/TitleBar'
 import CabinEditor from './comps/CabinEditor'
 
@@ -64,6 +70,10 @@ export default {
         return { key: id, label: title, selected: this.cabin.length=== index+ 1 };
       })
     },
+    computedPrice(){
+      // let { adult_same_price, adult_straight_price }= this.skuPrice;
+      return this.isCommonPrice? this.skuPrice.adult_same_price: this.skuPrice.adult_straight_price;
+    }
   },
 
   data(){
@@ -80,7 +90,8 @@ export default {
       // 字典 
       {
         skuCabins: [],
-        skuPrice: {},
+        currentCabin: getCabinDTO(),
+        skuPrice: getSkuPriceDTO(),
       }
     )
   },
@@ -103,19 +114,29 @@ export default {
 
     addCabin(cabin){
       this.cabin.push(cabin);
+      this.selectCabin(cabin);
     },
 
+    /**
+     * @description: 
+     * @param {CabinTitle/Cabin/Null} cabin: 由外向内选通过cabin, 由内向外选通过cabinTitle
+     */
     selectCabin(cabin){
-      let skuPrice= this.cabin.find(el => el.sku_price.id=== cabin.key).sku_price;
-      
+      if(!cabin) return this.$assign(this.skuPrice, getSkuPriceDTO());
+      if('key' in cabin) cabin= this.cabin.find(el => el.sku_price.id=== cabin.key);
+      this.currentCabin= cabin;
+      this.$assign(this.skuPrice, cabin.sku_price);
     },
 
-    removeCabin(id){
-      let result= this.cabin.splice(0).filter(el => {
-        if(el.sku_price.id=== id) el.sku_price.selected= false;
-        return el.sku_price.id!== id;
+    removeCabin(index){
+      let result= this.cabin.splice(0).filter((el, i) => {
+        if(index=== i) el.sku_price.selected= false;
+        return index!== i;
       });
-      this.$nextTick(() => this.cabin.push(...result));  
+      this.$nextTick(() => {
+        this.cabin.push(...result);
+        this.selectCabin(this.cabin[index]);
+      });  
     }
   }
 
