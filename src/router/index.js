@@ -990,6 +990,16 @@ export default new Router({
           keepAlive: true,
           auth: true
         },
+      },
+      // <!-- 2020-3-31 -->
+      {
+        path: 'curiseShip',
+        component: () => import('@/page/Finance/checkSheet/checkSheet-cruise_ship/cruiseShip'),
+        name: '报账单-游轮',
+        meta: {
+          keepAlive: true,
+          auth: true
+        },
       }
     ]
   }, {

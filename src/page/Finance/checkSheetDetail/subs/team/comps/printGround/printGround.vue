@@ -9,6 +9,12 @@
   font-weight: normal;
   box-sizing: border-box;
 }
+.review-collection{
+  margin:0px;
+}
+.review-collection>div{
+  font-size: 16px;
+}
 table {
   width: 100%;
 }
@@ -57,7 +63,8 @@ table {
   <div class="print-ground">
     <!-- <div style="white-space:pre-wrap" v-html="printData"></div> -->
     <header>
-      <div class="title">{{ pd.topOrgName }}旅游团队报账单</div>
+      <div class="title"><h1>{{ pd.topOrgName }}旅游团队报账单</h1></div>
+       <el-divider content-position="left"  class="review-collection">报账单详情</el-divider>
       <div class="time" v-if="pd.checkTime=== pd.createTime">报账时间：{{ dateFormator(pd.checkTime) }}</div>
     </header>
     <main>

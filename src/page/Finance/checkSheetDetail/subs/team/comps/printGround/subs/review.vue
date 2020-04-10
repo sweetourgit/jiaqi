@@ -4,10 +4,11 @@
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 09:48:04
  */
+<!-- 2020-3-31 -->
 <template>
   <div class="review-collection">
     <!-- 审核结果 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
+    <el-divider content-position="left"  class='title-margin title-margin-t'>审核结果</el-divider>
       <el-table :data="reviewList" border >
         <el-table-column prop="finishedTime" label="审批时间" width="150" align="center"></el-table-column>
         <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
@@ -27,5 +28,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.title-margin>div{
+font-size: 16px;
+}
 </style>
