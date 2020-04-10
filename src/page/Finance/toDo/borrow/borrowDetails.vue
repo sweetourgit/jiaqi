@@ -157,9 +157,9 @@
     </div>
     <!-- 基本信息 END -->
     <!-- 相关表格 -->
-    <el-collapse class="collapse-m" v-model="collapseName">
+    <el-collapse v-model="collapseName">
       <!-- 审核结果 -->
-      <el-collapse-item name="collapseApprove">
+      <el-collapse-item class="collapse-m" name="collapseApprove">
         <template slot="title">
           <el-divider content-position="left">审核结果</el-divider>
         </template>
@@ -178,7 +178,7 @@
       </el-collapse-item>
       <!-- 审核结果 END -->
       <!-- 相关信息 -->
-      <el-collapse-item name="collapseRelated">
+      <el-collapse-item class="collapse-m" name="collapseRelated">
         <template slot="title">
           <el-divider content-position="left">相关信息</el-divider>
         </template>
@@ -198,7 +198,7 @@
       </el-collapse-item>
       <!-- 相关信息 END -->
       <!-- 无收入借款明细 -->
-      <el-collapse-item name="collapseInCome">
+      <el-collapse-item class="collapse-m" name="collapseInCome">
         <template slot="title">
           <el-divider content-position="left">无收入借款明细</el-divider>
         </template>
@@ -218,14 +218,14 @@
           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
           <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)">查看</el-button>
+              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" :disabled='scope.row.guid === "" ? true : false'>查看</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-collapse-item>
       <!-- 无收入借款明细 END -->
       <!-- 预付款明细 -->
-      <el-collapse-item name="collapseAdvance">
+      <el-collapse-item class="collapse-m" name="collapseAdvance">
         <template slot="title">
           <el-divider content-position="left">预付款明细</el-divider>
         </template>
@@ -252,7 +252,7 @@
       </el-collapse-item>
       <!-- 预付款明细 END -->
       <!-- 收入明细 -->
-      <el-collapse-item name="collapseEarning">
+      <el-collapse-item class="collapse-m" name="collapseEarning">
         <template slot="title">
           <el-divider content-position="left">收入明细</el-divider>
         </template>
@@ -634,7 +634,7 @@
     margin: 0 auto;
   }
   .collapse-m{
-    margin: 50px 0;
+    margin: 30px 0;
   }
   .loan-management{
     width: 99%;
