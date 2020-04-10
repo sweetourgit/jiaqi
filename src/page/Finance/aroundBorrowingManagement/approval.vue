@@ -34,7 +34,7 @@
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>开户名：</span>{{baseInfo.accountName}}</p>
         <p class="inputLabel" v-if="baseInfo.type != 3"><span>支付账户：</span>{{baseInfo.accountPay}}</p>
         <p class="inputLabel"><span>已报销金额：</span>{{baseInfo.reimbursed_money}}</p>
-        <!-- <p class="inputLabel"><span>对公/对私：</span>{{baseInfo.account_type}}</p> -->
+        <p class="inputLabel" v-if="baseInfo.type != 3"><span>对公/对私：</span>{{baseInfo.account_type}}</p>
         <p class="inputLabel"><span>回冲供应商：</span>{{baseInfo.recoil_supplier}}</p>
         <div class="inputLabel">
           <span>附件：</span>
