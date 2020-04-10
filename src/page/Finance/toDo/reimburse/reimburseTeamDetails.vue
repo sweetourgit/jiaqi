@@ -7,9 +7,9 @@
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
-      <el-button type="warning" plain @click="handleCancel">取消</el-button>
-      <el-button type="success" plain @click="handlePassBtn">通过</el-button>
-      <el-button type="danger" plain @click="handleRejectBtn">驳回</el-button>
+      <el-button icon="el-icon-remove" type="warning" plain @click="handleCancel">取消</el-button>
+      <el-button icon="el-icon-circle-check" type="success" plain @click="handlePassBtn">通过</el-button>
+      <el-button icon="el-icon-circle-close" type="danger" plain @click="handleRejectBtn">驳回</el-button>
     </div>
     <!-- 报销信息 -->
     <el-divider content-position="left" class='title-margin'>报销信息</el-divider>
@@ -24,30 +24,30 @@
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="6">
-                <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
-                <el-col :span="17"><div class="grid-del">{{ tabItem.id }}</div></el-col>
+                <el-col :span="5"><div class="grid-del label-color">ID:</div></el-col>
+                <el-col :span="17" class="base-value"><div class="grid-del">{{ tabItem.id }}</div></el-col>
               </el-col>
               <el-col :span="6">
-                <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
-                <el-col :span="17"><div class="grid-del">{{ tabItem.createUser }}</div></el-col>
+                <el-col :span="5"><div class="grid-del label-color">申请人:</div></el-col>
+                <el-col :span="17" class="base-value"><div class="grid-del">{{ tabItem.createUser }}</div></el-col>
               </el-col>
               <el-col :span="6">
                 <el-col :span="9"><div class="grid-del label-color">创建时间:</div></el-col>
-                <el-col :span="15"><div class="grid-del">{{ tabItem.createTime | formatDate }}</div></el-col>
+                <el-col :span="15" class="base-value"><div class="grid-del">{{ tabItem.createTime | formatDate }}</div></el-col>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
               <el-col :span="6">
-                <el-col :span="7"><div class="grid-del label-color">团期计划:</div></el-col>
-                <el-col :span="17"><div class="grid-del">{{ tabItem.groupCode }}</div></el-col>
+                <el-col :span="5"><div class="grid-del label-color">团期计划:</div></el-col>
+                <el-col :span="17" class="base-value"><div class="grid-del">{{ tabItem.groupCode }}</div></el-col>
               </el-col>
               <el-col :span="6">
-                <el-col :span="7"><div class="grid-del label-color">产品名称:</div></el-col>
-                <el-col :span="17"><div class="grid-del ">{{ tabItem.productName }}</div></el-col>
+                <el-col :span="5"><div class="grid-del label-color">产品名称:</div></el-col>
+                <el-col :span="17" class="base-value"><div class="grid-del ">{{ tabItem.productName }}</div></el-col>
               </el-col>
               <el-col :span="6">
                 <el-col :span="9"><div class="grid-del label-color">摘要:</div></el-col>
-                <el-col :span="15"><div class="grid-del ">{{ tabItem.mark }}</div></el-col>
+                <el-col :span="15" class="base-value"><div class="grid-del ">{{ tabItem.mark }}</div></el-col>
               </el-col>
             </el-row>
             <el-row type="flex" class="row-bg row-content" justify="space-between">
@@ -91,7 +91,7 @@
                 <!-- 1-拆分，2-还款 -->
                 <el-table-column prop="expenseType" label="操作" align="center">
                   <template slot-scope="scope">
-                    <el-button @click="handleExpenseType(scope.$index, scope.row)" type="primary" plain size="small">查看</el-button>
+                    <el-button icon="el-icon-view" @click="handleExpenseType(scope.$index, scope.row)" type="primary" plain size="small">查看</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -141,7 +141,7 @@
               <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
               <el-table-column prop="opinion" label="操作" align="center">
                 <template slot-scope="scope">
-                  <el-button @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
+                  <el-button icon="el-icon-printer" @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -160,11 +160,11 @@
       <!-- 第一行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">ID:</div></el-col>
           <el-col :span="17"><div class="grid-del">{{ fundamental.id }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">申请人:</div></el-col>
           <el-col :span="17"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
         </el-col>
         <el-col :span="6">
@@ -184,7 +184,7 @@
           <el-col :span="15"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">供应商:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">供应商:</div></el-col>
           <el-col :span="17"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
         </el-col>
       </el-row>
@@ -587,6 +587,9 @@
     }
     .title-margin{
       margin-bottom: 30px;
+    }
+    .base-value{
+      color: #000;
     }
     .reimbursement-mt{
       margin: 20px 0;

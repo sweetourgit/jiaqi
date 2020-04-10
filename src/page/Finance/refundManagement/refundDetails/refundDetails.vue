@@ -369,6 +369,7 @@ export default {
       pid:0,
       invoiceShow:false,
       invoiceTable:[],
+      undoID:0,
     };
 
   },
@@ -524,6 +525,7 @@ export default {
             this.forbidden = false;
           }
           this.planId = res.data.object.planID;
+          this.undoID = res.data.object.id;
           this.getBorrowing(ID)
         }
       });
@@ -726,15 +728,27 @@ export default {
          cancelButtonText: "取消",
          type: "warning"
       }).then(() => {
-          this.dialogFormOrder = false;
-          this.EndProcessForJQ();
-          if(this.tableDate.length > 0){
-            this.updateUndo();
-            this.updateCode();
-          }else {
-            this.updateCode();
-          }
-          this.delRefund();
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
+            id: this.undoID
+          }).then(res => {
+            if (res.data.isSuccess == true) {
+              let refundStateType = res.data.objects.refundStateType;
+              if(refundStateType == 1){
+                this.$message.success("该订单已退款成功,不允许撤销");
+              } else {
+                this.dialogFormOrder = false;
+                this.EndProcessForJQ();
+                if(this.tableDate.length > 0){
+                  this.updateUndo();
+                  this.updateCode();
+                }else {
+                  this.updateCode();
+                }
+                this.delRefund();
+              }
+            }
+          });
+          
           //this.$parent.pageList(1);
         })
         .catch(() => {
