@@ -52,15 +52,15 @@
       <!-- 第一行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">ID:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.id }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">申请人:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">创建时间:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">创建时间:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
         </el-col>
       </el-row>
@@ -68,15 +68,15 @@
       <!-- 第二行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">团期计划:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">团期计划:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">产品名称:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">产品名称:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">供应商:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">供应商:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
         </el-col>
       </el-row>
@@ -84,25 +84,25 @@
       <!-- 第三行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">借款类型:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">借款类型:</div></el-col>
           <el-col :span="17">
             <div class="grid-del base-value">{{ fundamental.supplierTypeEX }}</div>
           </el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">借款金额:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">借款金额:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.price }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <!-- 摘要打印时隐藏 -->
-          <el-col :span="7" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
+          <el-col :span="5" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
           <el-col :span="17" class="print-hidden base-value"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第三行 END -->
       <!-- 支付账户 -->
       <el-row type="flex" class="row-bg print-acount" justify="start">
-        <el-col :span="7" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
+        <el-col :span="5" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
         <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
       </el-row>
       <!-- 支付账户 -->
@@ -115,15 +115,15 @@
       <!-- 第四行 -->
       <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">账号:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">账号:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">开户行:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">开户行:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
         </el-col>
         <el-col :span="6">
-          <el-col :span="7"><div class="grid-del label-color">开户名:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color">开户名:</div></el-col>
           <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
         </el-col>
       </el-row>
@@ -132,13 +132,13 @@
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <!-- 打印时隐藏 -->
-          <el-col :span="7" class="print-hidden"><div class="grid-del label-color">支付账户:</div></el-col>
+          <el-col :span="5" class="print-hidden"><div class="grid-del label-color">支付账户:</div></el-col>
           <el-col :span="17" class="print-hidden base-value">
             <div class="grid-del">{{ fundamental.accountsName }}</div>
           </el-col>
         </el-col>
         <el-col :span="14">
-          <el-col :span="7"><div class="grid-del label-color print-hidden">附件:</div></el-col>
+          <el-col :span="5"><div class="grid-del label-color print-hidden">附件:</div></el-col>
           <el-col :span="17">
             <el-upload
               class="upload-demo print-hidden"
@@ -457,7 +457,7 @@
       },
       // 审批过程-查看按钮触发（ GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType -> 这是查看审批之后的流程日子 ）
       handleLookApprovalProcess (index, row, type) {
-        
+
         if (row.guid === '') {
           this.$message({
             message: '该条信息无审批流程',
