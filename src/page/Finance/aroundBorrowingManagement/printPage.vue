@@ -53,7 +53,7 @@
       </el-row>
       <!-- 第三行 END -->
       <!-- 支付账户 -->
-      <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
+      <el-row type="flex" class="row-bg print-acount-padding" justify="space-around" :style="printMsg.presentRouter == '余额支付借款' ? 'display:none;' : ''">
         <el-col :span="14">
           <el-col :span="4"><div class="grid-del label-color">支付账户:</div></el-col>
           <el-col :span="19"><div class="grid-del">{{ printMsg.fundamental.accountPay }}</div></el-col>

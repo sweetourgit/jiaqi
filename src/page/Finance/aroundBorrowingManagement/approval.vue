@@ -329,15 +329,22 @@
 
       // 审批提交事件
       approvalSubmit(){
+        let last = 0;
+        if(this.approval_status == 3){
+          if(this.baseInfo.accountPay != '' && (sessionStorage.getItem('userCode') == 'TC00636' || sessionStorage.getItem('userCode') == 'KH00947')){
+            last = 1;
+          }
+        }
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/examine", {
           "id": this.info.id,
           "create_uid": sessionStorage.getItem('id'),
           "org_id": sessionStorage.getItem('orgID'),
           "approval_status": this.approval_status,
-          "approval_comments": this.approvalMark
+          "approval_comments": this.approvalMark,
+          "is_last": last
         }, ).then(function(response) {
-          console.log('审批操作',response);
+          // console.log('审批操作',response);
           if (response.data.code == '200') {
             that.$message.success("审批提交成功~");
             that.dialogVisibleApproval = false;
@@ -348,7 +355,7 @@
             if(response.data.message){
               that.$message.warning(response.data.message);
             }else{
-              that.$message.warning("撤销失败~");
+              that.$message.warning("撤销失败~"); 
             }
           }
         }).catch(function(error) {
