@@ -53,15 +53,15 @@
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
-          <el-col :span="17"><div class="grid-del">{{ fundamental.id }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.id }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">申请人:</div></el-col>
-          <el-col :span="17"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">创建时间:</div></el-col>
-          <el-col :span="17"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第一行 END -->
@@ -69,15 +69,15 @@
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">团期计划:</div></el-col>
-          <el-col :span="17"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.groupCode }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">产品名称:</div></el-col>
-          <el-col :span="17"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.productName }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">供应商:</div></el-col>
-          <el-col :span="17"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第二行 END -->
@@ -86,45 +86,45 @@
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">借款类型:</div></el-col>
           <el-col :span="17">
-            <div class="grid-del">{{ fundamental.supplierTypeEX }}</div>
+            <div class="grid-del base-value">{{ fundamental.supplierTypeEX }}</div>
           </el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">借款金额:</div></el-col>
-          <el-col :span="17"><div class="grid-del">{{ fundamental.price }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.price }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <!-- 摘要打印时隐藏 -->
           <el-col :span="7" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
-          <el-col :span="17" class="print-hidden"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
+          <el-col :span="17" class="print-hidden base-value"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第三行 END -->
       <!-- 支付账户 -->
       <el-row type="flex" class="row-bg print-acount" justify="start">
         <el-col :span="7" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
-        <el-col :span="17"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
+        <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
       </el-row>
       <!-- 支付账户 -->
       <!-- 审批人 打印时输出 -->
       <el-row type="flex" class="row-bg print-approve" justify="start">
         <el-col :span="2" :offset="1"><div class="grid-del label-color">审批人:</div></el-col>
-        <el-col :span="18"><div class="grid-del" v-html="printAuditingContent"></div></el-col>
+        <el-col :span="18" class="base-value"><div class="grid-del" v-html="printAuditingContent"></div></el-col>
       </el-row>
       <!-- 审批人 打印时输出 END -->
       <!-- 第四行 -->
       <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">账号:</div></el-col>
-          <el-col :span="17"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.cardNumber }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">开户行:</div></el-col>
-          <el-col :span="17"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del">{{ fundamental.bankName }}</div></el-col>
         </el-col>
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">开户名:</div></el-col>
-          <el-col :span="17"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
+          <el-col :span="17" class="base-value"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
         </el-col>
       </el-row>
       <!-- 第四行 END -->
@@ -133,7 +133,7 @@
         <el-col :span="6">
           <!-- 打印时隐藏 -->
           <el-col :span="7" class="print-hidden"><div class="grid-del label-color">支付账户:</div></el-col>
-          <el-col :span="17" class="print-hidden">
+          <el-col :span="17" class="print-hidden base-value">
             <div class="grid-del">{{ fundamental.accountsName }}</div>
           </el-col>
         </el-col>
@@ -220,7 +220,8 @@
           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
           <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" :disabled='scope.row.guid === "" ? true : false'>查看</el-button>
+              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-if="scope.row.guid !== ''">查看</el-button>
+              <el-button plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-else>查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -247,7 +248,8 @@
           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
           <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,2)">查看</el-button>
+              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-if="scope.row.guid !== ''">查看</el-button>
+              <el-button plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-else>查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -311,7 +313,7 @@
     </el-drawer>
     <!-- 通过、驳回弹框 END -->
     <!-- 付款账户弹窗 -->
-    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="ifLookAccountDialog">
+    <el-drawer class="drawer" direction="rtl" size="30%" :show-close="false" :visible.sync="ifLookAccountDialog">
       <el-divider class="mb-40">选择账户</el-divider>
       <el-table class="el-drawer-content" :data="tableAccount" stripe border :header-cell-style="getRowClass">
         <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
@@ -455,13 +457,27 @@
       },
       // 审批过程-查看按钮触发（ GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType -> 这是查看审批之后的流程日子 ）
       handleLookApprovalProcess (index, row, type) {
+        
+        if (row.guid === '') {
+          this.$message({
+            message: '该条信息无审批流程',
+            type: 'warning'
+          });
+        }
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jq_id:	row.guid,
           jQ_Type: type,
         }).then(obj => {
-          let keepObj = obj.data.extend.instanceLogInfo;
-          this.tableIncomeCheck = keepObj;
-          this.ifLookApproveProcessDialog = true;
+          let keepObj = obj.data;
+          if (keepObj.code !== -1) {
+            this.tableIncomeCheck = keepObj.extend.instanceLogInfo;
+            this.ifLookApproveProcessDialog = true;
+          } else {
+            this.$message({
+              message: '该条信息无审批流程',
+              type: 'warning'
+            });
+          }
         }).catch(err => {
           console.log( err );
         })
@@ -638,6 +654,12 @@
   }
   .collapse-m{
     margin: 30px 0;
+  }
+  .base-value{
+    color: #000;
+  }
+  .drawer{
+    overflow-y: auto;
   }
   .loan-management{
     width: 99%;
