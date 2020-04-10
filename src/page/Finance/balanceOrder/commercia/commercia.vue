@@ -339,27 +339,31 @@ export default {
               settlement !== ""? (object.settlement = settlement): settlement;
               startDate !== ""? (object.startDate = startDate): startDate;
               endDate !== ""? (object.endDate = endDate): endDate;
-            that.$http
-              .post(that.GLOBAL.serverSrc + "/exportoffice/excel/api/arrearsorder", {
-                object: object,
-               },{
-                  responseType: 'application/vnd.ms-excel'
-               }
-               
-               )
-               .then(function(obj) {
-                   if(obj.status == "200") {
-                            let a = document.createElement('a');
-                            let blob = new Blob([obj.data],{type:"application/vnd.ms-excel"});  
-                            let objectUrl = URL.createObjectURL(blob);
-                            a.setAttribute("href",objectUrl);
-                            a.setAttribute("download", '商户欠款订单.xls');
-                            a.click();
-                    }
-                     })
-              .catch(function(obj) {
-                console.log(obj);
-              });
+            const token = localStorage.getItem('token')
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', that.GLOBAL.serverSrc + "/exportoffice/excel/api/arrearsorder", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader("Authorization", 'Bearer ' + token);
+            xhr.responseType = 'blob';
+            xhr.onload = function (e) {
+              if (this.status == 200) {
+                    var blob = xhr.response;
+                    var filename = "商户欠款订单.xls";
+                    var a = document.createElement('a');
+                   // blob.type = "application/ms-excel";
+                    var url = URL.createObjectURL(blob);
+                    
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+
+                }
+            };
+            var sendData = {object:object};
+            xhr.send(JSON.stringify(sendData));
+        
+            
     },
     handleSizeChange(val) { //分页
     //console.log(val,'8585')
