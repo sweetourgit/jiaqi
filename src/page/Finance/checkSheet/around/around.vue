@@ -60,7 +60,7 @@
               <el-table-column prop="info.total_cost" label="成本" align="center"></el-table-column>
               <el-table-column prop="info.gross_profit" label="毛利" align="center"></el-table-column>
               <el-table-column prop="info.team_num" label="人数" align="center"></el-table-column>
-              <el-table-column prop="info.gross_rate" label="人均毛利" align="center"></el-table-column>
+              <el-table-column prop="info.team_gross_profit" label="人均毛利" align="center"></el-table-column>
               <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
               <el-table-column prop="created_at" label="申请时间" align="center"></el-table-column>
               <el-table-column prop="mark" label="审批意见" align="center"></el-table-column>
@@ -108,7 +108,8 @@
 <script>
     import NeedApproval from './needApproval';
     import checkSheetPreview from './checkSheetPreview';
-    import {formatDate} from '@/js/libs/publicMethod.js'
+    import {formatDate} from '@/js/libs/publicMethod.js';
+    import moment from 'moment'
     export default {
       name: "checkSheet",
       components:{
@@ -154,7 +155,26 @@
       methods: {
         // 导出方法
         exportFun(){
-          window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/exportbill?tour_no=" + this.plan + "&product_name=" + this.productName + "&create_uid=" + this.reimbursementPerID + "&start_time=" + this.startTime + "&end_time=" + this.endTime + "&bill_status=" + this.billStatus;
+          let start = '', end = '';
+          if(this.startTime){
+            start = moment(this.startTime).format('YYYY-MM-DD');
+          }
+          if(this.endTime){
+            end = moment(this.endTime).format('YYYY-MM-DD');
+          }
+          // this.$http.get(
+          //   this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/exportbill?tour_no=" + this.plan + "&product_name=" + this.productName + "&create_uid=" + this.reimbursementPerID + "&start_time=" + start + "&end_time=" + end + "&bill_status=" + this.billStatus,
+          // ).then(function (obj) {
+          //   console.log(obj);
+          // }).catch(function (response) {
+          //   console.log(response);
+          // });
+          
+          if(this.tableData.length == 0){
+            this.$message.warning("无搜索数据导出，请重新搜索！");
+          }else{
+            window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/exportbill?tour_no=" + this.plan + "&product_name=" + this.productName + "&create_uid=" + this.reimbursementPerID + "&start_time=" + start + "&end_time=" + end + "&bill_status=" + this.billStatus;
+          }
         },
         // 表格头部背景颜色
         getRowClass({ row, column, rowIndex, columnIndex }) {

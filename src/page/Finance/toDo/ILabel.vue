@@ -10,15 +10,9 @@
       <el-tab-pane :label="'无收入借款管理(' + countNoIn +')'" name="nameINoIn">
         <el-tabs v-model="tabIINoInShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + countNoInTeam +')'" name="nameIINoInTeam">
-
             <team-table :whichTab="whichTab" ref="noInTeamDom"></team-table>
-
-
-
           </el-tab-pane>
-          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIINoInShip">
-
-          </el-tab-pane>
+          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIINoInShip"></el-tab-pane>
         </el-tabs>
       </el-tab-pane>
       <!-- 无收入 END -->
@@ -26,14 +20,9 @@
       <el-tab-pane :label="'预付款管理(' + countAdvance +')'" name="nameIAdvance">
         <el-tabs v-model="tabIIAdvanceShowWhich" tab-position="left" @tab-click="handleClickIILabel">
           <el-tab-pane :label="'跟团(' + countAdvanceTeam +')'" name="nameIIAdvanceTeam">
-
             <team-table :whichTab="whichTab" ref="advanceTeamDom"></team-table>
-
-
           </el-tab-pane>
-          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIAdvanceShip">
-
-          </el-tab-pane>
+          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIAdvanceShip"></el-tab-pane>
         </el-tabs>
       </el-tab-pane>
       <!-- 预付款 END -->
@@ -44,7 +33,6 @@
             <team-table :whichTab="whichTab" ref="reimburseTeamDom"></team-table>
           </el-tab-pane>
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIReimburseShip">
-
           </el-tab-pane>
         </el-tabs>
       </el-tab-pane>
@@ -55,9 +43,7 @@
           <el-tab-pane :label="'跟团(' + countRefundTeam +')'" name="nameIIRefundTeam">
             <team-table :whichTab="whichTab" ref="refundTeamDom">></team-table>
           </el-tab-pane>
-          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIRefundShip">
-
-          </el-tab-pane>
+          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIIRefundShip"></el-tab-pane>
         </el-tabs>
       </el-tab-pane>
       <!-- 退款管理 END -->
@@ -67,9 +53,7 @@
           <el-tab-pane :label="'跟团(' + countSheetTeam +')'" name="nameIISheetTeam">
             <team-table :whichTab="whichTab" ref="sheetTeamDom"></team-table>
           </el-tab-pane>
-          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIISheetShip">
-
-          </el-tab-pane>
+          <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIISheetShip"></el-tab-pane>
         </el-tabs>
       </el-tab-pane>
       <!-- 报账单管理 -->
@@ -97,10 +81,8 @@
           <!-- 游轮tab -->
           <el-tab-pane :label="'游轮(' + 0 +')'" name="nameIICollectionShip">
             <el-tabs v-model="tabIIICollectionShipShowWhich" style="width: 98%;margin: 20px auto;">
-              <el-tab-pane :label="'直客(' + 0 +')'" name="nameIIICollectionShipDirect">
-              </el-tab-pane>
-              <el-tab-pane :label="'同业(' + 0 +')'" name="nameIIICollectionShipSame">
-              </el-tab-pane>
+              <el-tab-pane :label="'直客(' + 0 +')'" name="nameIIICollectionShipDirect"></el-tab-pane>
+              <el-tab-pane :label="'同业(' + 0 +')'" name="nameIIICollectionShipSame"></el-tab-pane>
             </el-tabs>
           </el-tab-pane>
           <!-- 游轮tab -->

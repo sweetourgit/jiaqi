@@ -250,7 +250,10 @@
     <!-- 收款 -->
     <boatReceipt :propsObj.sync="propsObj"></boatReceipt>
     <!-- 换舱 -->
-    <boatExchangeShip :propsObj.sync="propsObj"></boatExchangeShip>
+    <boatExchangeShip 
+    :propsObj.sync="propsObj"
+    :orderId="orderId"
+    ></boatExchangeShip>
     <!-- 退款 -->
     <boatRefundMoney :propsObj.sync="propsObj"></boatRefundMoney>
     <!-- 发票申请 -->

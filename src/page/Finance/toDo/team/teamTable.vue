@@ -26,8 +26,8 @@
             </el-col>
             <el-col :span="8" style="text-align: right">
               <el-form-item>
-                <el-button @click="HandleSearchPendingApprove(getWhichTab)" type="primary">搜索</el-button>
-                <el-button type="primary" plain @click="HandleResetPendingApproval('ruleFormSearch', getWhichTab)">重置</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="HandleSearchPendingApprove(getWhichTab)">搜索</el-button>
+                <el-button type="primary" icon="el-icon-s-open" plain @click="HandleResetPendingApproval('ruleFormSearch', getWhichTab)">重置</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -36,7 +36,17 @@
     </div>
     <!-- 检索 END -->
     <!-- 需要审批表格-无收入款 -->
-    <el-table :data="approvalNoInData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameINoIn'">
+    <el-table
+      border
+      stripe
+      :data="approvalNoInData"
+      :header-cell-style="getRowClass"
+      v-loading="listLoading"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      v-show="getWhichTab === 'nameINoIn'"
+      class="table-content"
+    >
       <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -51,7 +61,17 @@
       </el-table-column>
     </el-table>
     <!-- 需要审批表格-预付款 END -->
-    <el-table :data="approvalAdvanceData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameIAdvance'">
+    <el-table
+      border
+      stripe
+      :data="approvalAdvanceData"
+      :header-cell-style="getRowClass"
+      v-loading="listLoading"
+      v-show="getWhichTab === 'nameIAdvance'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      class="table-content"
+    >
       <el-table-column prop="paymentID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -67,7 +87,17 @@
     </el-table>
     <!-- 需要审批表格-预付款 END -->
     <!-- 需要审批表格-报销管理 -->
-    <el-table :data="approvalReimburseData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameIReimburse'">
+    <el-table
+      border
+      stripe
+      :data="approvalReimburseData"
+      :header-cell-style="getRowClass"
+      v-loading="listLoading"
+      v-show="getWhichTab === 'nameIReimburse'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      class="table-content"
+    >
       <el-table-column prop="expenseID" label="报销单号" align="center"></el-table-column>
       <el-table-column prop="createTime" :formatter='dateFormat' label="发起时间" width="180" align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
@@ -81,7 +111,17 @@
     </el-table>
     <!-- 需要审批表格-报销管理 END -->
     <!-- 需要审批表格-退款 -->
-    <el-table :data="approvalRefundData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameIRefund'">
+    <el-table
+      :data="approvalRefundData"
+      :header-cell-style="getRowClass"
+      class="table-content"
+      v-loading="listLoading"
+      border
+      stripe
+      v-show="getWhichTab === 'nameIRefund'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+    >
       <el-table-column prop="refundCode" label="退款单号" align="center"></el-table-column>
       <el-table-column prop="refundStateType" label="状态" align="center">
         <template slot-scope="scope">
@@ -103,7 +143,17 @@
     </el-table>
     <!-- 需要审批表格-退款 END -->
     <!-- 需要审批表格-报账单 -->
-    <el-table :data="approvalSheetData" :header-cell-style="getRowClass" class="table-content" v-loading="listLoading" border stripe v-show="getWhichTab === 'nameISheet'">
+    <el-table
+      border
+      stripe
+      :data="approvalSheetData"
+      :header-cell-style="getRowClass"
+      class="table-content"
+      v-loading="listLoading"
+      v-show="getWhichTab === 'nameISheet'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+    >
       <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="状态" align="center">
         <template slot-scope="scope">

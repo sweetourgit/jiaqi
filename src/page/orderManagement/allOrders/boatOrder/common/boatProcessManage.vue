@@ -334,13 +334,14 @@ export default {
     close(){//关闭
       this.$parent.resetDialogType();
       this.NewGetCabinData= []; // 用户信息
+      this.GetCabinData=[];//
     },
    
     processManage() {  //流程详情
      this.disperseOrderDisabled = false
-     this.$http  //查询一条订单信息
+     this.$http  //查询一条订单信息 this.orderId
         .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/info", {
-          id: this.orderId
+          id: 8
         })
         .then(res => {
            if (res.data.code == 200) {
@@ -431,7 +432,8 @@ export default {
             for(let i in res.data.data){
               res.data.data[i].id = res.data.data[i].id.toString();
             }
-            this.GetCabinData = res.data.data;
+            this.GetCabinData.push(res.data.data[0]);
+          
             }
         })
         .catch(err => {

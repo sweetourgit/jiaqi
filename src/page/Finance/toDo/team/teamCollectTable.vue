@@ -52,20 +52,21 @@
           </el-col>
           <el-col :span="8" style="text-align: left">
             <el-form-item>
-              <el-button @click="HandleSearchApproveCollect(whichCollectTeamTab)" type="primary">搜索</el-button>
-              <el-button type="primary" plain @click="HandleResetApprovalCollect('ruleFormSearch', whichCollectTeamTab)">重置</el-button>
+              <el-button type="primary" icon="el-icon-search"  @click="HandleSearchApproveCollect(whichCollectTeamTab)">搜索</el-button>
+              <el-button type="primary" icon="el-icon-s-open" plain @click="HandleResetApprovalCollect('ruleFormSearch', whichCollectTeamTab)">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="收款账户:" prop="collectionAccountSel">
-              <el-checkbox-group
-                v-model="ruleFormSearch.collectionAccountSel"
-                @change="handleCheckbox"
-              >
-                <el-checkbox :label="item.id" v-for="(item,index) in collectionAccountInfos" :key="index"> {{item.value}} </el-checkbox>
-              </el-checkbox-group>
+              <el-collapse class="collapse-m" v-model="collapseAccount">
+                <el-collapse-item name="collapseNameAccount">
+                  <el-checkbox-group v-model="ruleFormSearch.collectionAccountSel" @change="handleCheckbox">
+                    <el-checkbox :label="item.id" v-for="(item,index) in collectionAccountInfos" :key="index"> {{item.value}} </el-checkbox>
+                  </el-checkbox-group>
+                </el-collapse-item>
+              </el-collapse>
             </el-form-item>
           </el-col>
         </el-row>
@@ -73,7 +74,18 @@
     </div>
     <!-- 检索 END -->
     <!-- 直客表格 -->
-    <el-table class="table-content" :data="approvalTeamDirectData" stripe border :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamDirect'">
+    <el-table
+      stripe
+      border
+      :data="approvalTeamDirectData"
+      :highlight-current-row="true"
+      :header-cell-style="getRowClass"
+      v-loading="listLoading"
+      v-show="whichCollectTeamTab === 'nameIIICollectionTeamDirect'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      class="table-content"
+    >
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -112,7 +124,18 @@
     </el-table>
     <!-- 直客表格 END -->
     <!-- 同业表格 -->
-    <el-table class="table-content" :data="approvalTeamSameData" border stripe :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamSame'">
+    <el-table
+      border
+      stripe
+      class="table-content"
+      :data="approvalTeamSameData"
+      :highlight-current-row="true"
+      :header-cell-style="getRowClass"
+      v-loading="listLoading"
+      v-show="whichCollectTeamTab === 'nameIIICollectionTeamSame'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+    >
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -151,7 +174,18 @@
     </el-table>
     <!-- 同业表格 END -->
     <!-- 内部收款 -->
-    <el-table class="table-content" :data="approvalTeamInnerData" border stripe :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamInner'">
+    <el-table
+      border
+      stripe
+      :data="approvalTeamInnerData"
+      :highlight-current-row="true"
+      :header-cell-style="getRowClass"
+      v-loading="listLoading"
+      v-show="whichCollectTeamTab === 'nameIIICollectionTeamInner'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      class="table-content"
+    >
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -188,7 +222,18 @@
     </el-table>
     <!-- 内部收款 END -->
     <!-- 报销还款 -->
-    <el-table class="table-content" :data="approvalTeamReimburseData" border stripe :highlight-current-row="true" :header-cell-style="getRowClass" v-loading="listLoading" v-show="whichCollectTeamTab === 'nameIIICollectionTeamReimburse'">
+    <el-table
+      :data="approvalTeamReimburseData"
+      border
+      stripe
+      :highlight-current-row="true"
+      :header-cell-style="getRowClass"
+      v-loading="listLoading"
+      v-show="whichCollectTeamTab === 'nameIIICollectionTeamReimburse'"
+      element-loading-text="拼命加载中"
+      element-loading-spinner="el-icon-loading"
+      class="table-content"
+    >
       <el-table-column prop="id" label="收款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeStatus" label="状态" align="center">
         <template slot-scope="scope">
@@ -243,6 +288,7 @@
     mixins: [requestCollectTeamTableData],
     data () {
       return {
+        collapseAccount: ['collapseNameAccount'],
         ruleFormSearch: {
           endTime: '',
           startTime: '',

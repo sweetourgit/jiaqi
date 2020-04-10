@@ -178,7 +178,7 @@
         </el-tabs>
       </div>
       <div class="footer">
-        <el-button @click="saveFun" type="primary" size="small" class="table_details">保存</el-button>
+        <!-- <el-button @click="saveFun" type="primary" size="small" class="table_details">保存</el-button> -->
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
       <el-dialog :title="topTotle" :visible="dialogFormVisible1" width=60% @close="closeJK" append-to-body>
@@ -354,8 +354,9 @@ export default {
         if (response.data.code == '200') {
           that.$message.success("回冲成功！");
           that.closeJK();
-          that.loadData();
-          that.loadData1();
+          // that.loadData();
+          // that.loadData1();
+          that.closeAdd();
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);
@@ -394,8 +395,10 @@ export default {
       }, ).then(function(response) {
         // console.log(response);
         if (response.data.code == '200') {
-          that.loadData();
-          that.loadData1();
+          that.$message.success("解绑成功！");
+          that.closeAdd();
+          // that.loadData();
+          // that.loadData1();
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);

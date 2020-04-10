@@ -35,7 +35,7 @@
                 <el-form-item label="欠款逾期:" prop="user">
                  <el-select v-model="ruleForm.typeColl" placeholder="请选择逾期类型" class="status-length">
                      <el-option :label="item.label" :value="item.value" v-for="item in settlements" :key="item.value" /> 
-            </el-select>
+                 </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -47,6 +47,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item>
+                    <el-button type="primary" @click="exportSearch()">导出</el-button>
                     <el-button type="primary" @click="handleSearch()">搜索</el-button>
                     <el-button type="primary" @click="emptyButton()" >重置</el-button>
                 </el-form-item>
@@ -220,12 +221,9 @@ export default {
             let object={};
             //console.log(endDate);
             if(endDate == undefined && startDate == undefined ){
-              endDate = 0
-              startDate = 0
-            }else{
-              //  endDate = Date.parse(endDate);
-              //  startDate = Date.parse(startDate);
-            }
+                    endDate = 0
+                    startDate = 0
+              } 
               orderCode !== "" ? (object.orderCode = orderCode) : orderCode,
               localComp !== "" ? (object.localComp = localComp) : localComp,
               typeColl !== ""? (object.typeColl = typeColl): typeColl;
@@ -321,6 +319,47 @@ export default {
             this.currentPage4 = 1;
             this.pageList(1, this.pageSize);
             
+    },
+    exportSearch(){ // 导出
+            let that = this;
+            let object={};
+            let orderCode = this.ruleForm.orderid;//订单id
+            let localComp = this.ruleForm.ordertitle;//商户名称
+            let startDate= this.startDate;//开始时间
+            let endDate = this.endDate;//结束时间
+            let typeColl=this.ruleForm.typeColl;//选择逾期
+            let settlement=this.ruleForm.settlement;//结款方式
+            if(endDate == undefined && startDate == undefined ){
+                    endDate = 0
+                    startDate = 0
+              } 
+              orderCode !== "" ? (object.orderCode = orderCode) : orderCode,
+              localComp !== "" ? (object.localComp = localComp) : localComp,
+              typeColl !== ""? (object.typeColl = typeColl): typeColl;
+              settlement !== ""? (object.settlement = settlement): settlement;
+              startDate !== ""? (object.startDate = startDate): startDate;
+              endDate !== ""? (object.endDate = endDate): endDate;
+            that.$http
+              .post(that.GLOBAL.serverSrc + "/exportoffice/excel/api/arrearsorder", {
+                object: object,
+               },{
+                  responseType: 'application/vnd.ms-excel'
+               }
+               
+               )
+               .then(function(obj) {
+                   if(obj.status == "200") {
+                            let a = document.createElement('a');
+                            let blob = new Blob([obj.data],{type:"application/vnd.ms-excel"});  
+                            let objectUrl = URL.createObjectURL(blob);
+                            a.setAttribute("href",objectUrl);
+                            a.setAttribute("download", '商户欠款订单.xls');
+                            a.click();
+                    }
+                     })
+              .catch(function(obj) {
+                console.log(obj);
+              });
     },
     handleSizeChange(val) { //分页
     //console.log(val,'8585')
