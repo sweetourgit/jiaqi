@@ -1,9 +1,9 @@
 /*
- * @Author: WZJ
- * @Date: 2020-03-25 14:54:48
- * @Last Modified by: WZJ
- * @Last Modified time: 2020-03-30 15:34:45
- */
+* @Author: WZJ
+* @Date: 2020-03-25 14:54:48
+* @Last Modified by: WZJ
+* @Last Modified time: 2020-03-30 15:34:45
+*/
 <template>
   <div class="distributor-content">
     <div class="buttonsDv">
@@ -17,17 +17,8 @@
       </el-tab-pane>-->
 
       <el-tab-pane label="中国银行" name="first">
-        <el-table
-          :data="tableData1"
-          ref="multipleTable1"
-          border
-          :highlight-current-row="true"
-          :header-cell-style="getRowClass"
-          :stripe="true"
-          id="table-content1"
-          @row-click="handleRowClick1"
-          @selection-change="selectionChange1"
-        >
+        <el-table :data="tableData1" ref="multipleTable1" border :highlight-current-row="true" :header-cell-style="getRowClass"
+          :stripe="true" id="table-content1" @row-click="handleRowClick1" @selection-change="selectionChange1">
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
           <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
@@ -50,47 +41,24 @@
           <el-table-column prop="remark" label="交易附言" align="center"></el-table-column>
           <el-table-column prop="transaction_Type" label="交易类型" align="center"></el-table-column>
           <el-table-column prop="business_type" label="业务类型" align="center"></el-table-column>
-          <el-table-column
-            prop="account_holding_bank_number_of_payer"
-            label="付款人开户行号"
-            align="center"
-          ></el-table-column>
+          <el-table-column prop="account_holding_bank_number_of_payer" label="付款人开户行号" align="center"></el-table-column>
           <el-table-column prop="payer_account_bank" label="付款人开户行名" align="center"></el-table-column>
           <el-table-column prop="debit_Account_No" label="付款人账号" align="center"></el-table-column>
           <el-table-column prop="payer_s_Name" label="付款人姓名" align="center"></el-table-column>
-          <el-table-column
-            prop="account_holding_bank_number_of_beneficiary"
-            label="收款人开户行号"
-            align="center"
-          ></el-table-column>
+          <el-table-column prop="account_holding_bank_number_of_beneficiary" label="收款人开户行号" align="center"></el-table-column>
           <el-table-column prop="beneficiary_account_bank" label="收款人开户行名" align="center"></el-table-column>
           <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center"></el-table-column>
           <el-table-column prop="payee_s_Name" label="收款人姓名" align="center"></el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
-            @size-change="handleSizeChange1"
-            @current-change="handleCurrentChange1"
-            :current-page.sync="pageCurrent1"
-            :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSize1"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total1"
-          ></el-pagination>
+          <el-pagination @size-change="handleSizeChange1" @current-change="handleCurrentChange1" :current-page.sync="pageCurrent1"
+            :page-sizes="[5, 10, 50, 100]" :page-size="pageSize1" layout="total, sizes, prev, pager, next, jumper"
+            :total="total1"></el-pagination>
         </div>
       </el-tab-pane>
       <el-tab-pane label="兴业银行" name="second">
-        <el-table
-          :data="tableData2"
-          ref="multipleTable2"
-          border
-          :highlight-current-row="true"
-          :header-cell-style="getRowClass"
-          :stripe="true"
-          id="table-content2"
-          @row-click="handleRowClick2"
-          @selection-change="selectionChange2"
-        >
+        <el-table :data="tableData2" ref="multipleTable2" border :highlight-current-row="true" :header-cell-style="getRowClass"
+          :stripe="true" id="table-content2" @row-click="handleRowClick2" @selection-change="selectionChange2">
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>、
           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
           <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
@@ -127,30 +95,16 @@
           <el-table-column prop="remark" label="备注" align="center"></el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
-            @size-change="handleSizeChange2"
-            @current-change="handleCurrentChange2"
-            :current-page.sync="pageCurrent2"
-            :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSize2"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total2"
-          ></el-pagination>
+          <el-pagination @size-change="handleSizeChange2" @current-change="handleCurrentChange2" :current-page.sync="pageCurrent2"
+            :page-sizes="[5, 10, 50, 100]" :page-size="pageSize2" layout="total, sizes, prev, pager, next, jumper"
+            :total="total2"></el-pagination>
         </div>
       </el-tab-pane>
       <!-- ++++++农业银行+++++++ -->
       <el-tab-pane label="农业银行" name="third">
-        <el-table
-          :data="tableDataForNY"
-          ref="multipleTableForNY"
-          border
-          :highlight-current-row="true"
-          :header-cell-style="getRowClass"
-          :stripe="true"
-          id="table-contentForNY"
-          @row-click="handleRowClickForNY"
-          @selection-change="selectionChangeForNY"
-        >
+        <el-table :data="tableDataForNY" ref="multipleTableForNY" border :highlight-current-row="true"
+          :header-cell-style="getRowClass" :stripe="true" id="table-contentForNY" @row-click="handleRowClickForNY"
+          @selection-change="selectionChangeForNY">
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
           <el-table-column prop="surplusPrice" label="剩余金额" align="center"></el-table-column>
@@ -172,30 +126,16 @@
           <el-table-column prop="use" label="交易用途" align="center"></el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
-            @size-change="handleSizeChangeForNY"
-            @current-change="handleCurrentChangeForNY"
-            :current-page.sync="pageCurrentForNY"
-            :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSizeForNY"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalForNY"
-          ></el-pagination>
+          <el-pagination @size-change="handleSizeChangeForNY" @current-change="handleCurrentChangeForNY"
+            :current-page.sync="pageCurrentForNY" :page-sizes="[5, 10, 50, 100]" :page-size="pageSizeForNY" layout="total, sizes, prev, pager, next, jumper"
+            :total="totalForNY"></el-pagination>
         </div>
       </el-tab-pane>
       <!-- ++++++招商银行+++++++ -->
       <el-tab-pane label="招商银行" name="forth">
-        <el-table
-          :data="tableDataForZS"
-          ref="multipleTableForZS"
-          border
-          :highlight-current-row="true"
-          :header-cell-style="getRowClass"
-          :stripe="true"
-          id="table-contentForZS"
-          @row-click="handleRowClickForZS"
-          @selection-change="selectionChangeForZS"
-        >
+        <el-table :data="tableDataForZS" ref="multipleTableForZS" border :highlight-current-row="true"
+          :header-cell-style="getRowClass" :stripe="true" id="table-contentForZS" @row-click="handleRowClickForZS"
+          @selection-change="selectionChangeForZS">
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
           <el-table-column prop="surplusAmount" label="剩余金额" align="center"></el-table-column>
@@ -246,30 +186,16 @@
           <el-table-column prop="internalNumber" label="内部编号" align="center"></el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
-            @size-change="handleSizeChangeForZS"
-            @current-change="handleCurrentChangeForZS"
-            :current-page.sync="pageCurrentForZS"
-            :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSizeForZS"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalForZS"
-          ></el-pagination>
+          <el-pagination @size-change="handleSizeChangeForZS" @current-change="handleCurrentChangeForZS"
+            :current-page.sync="pageCurrentForZS" :page-sizes="[5, 10, 50, 100]" :page-size="pageSizeForZS" layout="total, sizes, prev, pager, next, jumper"
+            :total="totalForZS"></el-pagination>
         </div>
       </el-tab-pane>
       <!-- ++++++建设银行+++++++ -->
       <el-tab-pane label="建设银行" name="fifth">
-        <el-table
-          :data="tableDataForJS"
-          ref="multipleTableForJS"
-          border
-          :highlight-current-row="true"
-          :header-cell-style="getRowClass"
-          :stripe="true"
-          id="table-contentForJS"
-          @row-click="handleRowClickForJS"
-          @selection-change="selectionChangeForJS"
-        >
+        <el-table :data="tableDataForJS" ref="multipleTableForJS" border :highlight-current-row="true"
+          :header-cell-style="getRowClass" :stripe="true" id="table-contentForJS" @row-click="handleRowClickForJS"
+          @selection-change="selectionChangeForJS">
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="surplusAmount" label="剩余金额" align="center"></el-table-column>
           <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
@@ -299,30 +225,16 @@
           <el-table-column prop="certificateCode" label="凭证号" align="center"></el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
-            @size-change="handleSizeChangeForJS"
-            @current-change="handleCurrentChangeForJS"
-            :current-page.sync="pageCurrentForJS"
-            :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSizeForJS"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalForJS"
-          ></el-pagination>
+          <el-pagination @size-change="handleSizeChangeForJS" @current-change="handleCurrentChangeForJS"
+            :current-page.sync="pageCurrentForJS" :page-sizes="[5, 10, 50, 100]" :page-size="pageSizeForJS" layout="total, sizes, prev, pager, next, jumper"
+            :total="totalForJS"></el-pagination>
         </div>
       </el-tab-pane>
       <!-- ++++++中信银行+++++++ -->
       <el-tab-pane label="中信银行" name="sixth">
-        <el-table
-          :data="tableDataForZX"
-          ref="multipleTableForZX"
-          border
-          :highlight-current-row="true"
-          :header-cell-style="getRowClass"
-          :stripe="true"
-          id="table-contentForZX"
-          @row-click="handleRowClickForZX"
-          @selection-change="selectionChangeForZX"
-        >
+        <el-table :data="tableDataForZX" ref="multipleTableForZX" border :highlight-current-row="true"
+          :header-cell-style="getRowClass" :stripe="true" id="table-contentForZX" @row-click="handleRowClickForZX"
+          @selection-change="selectionChangeForZX">
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
 
@@ -353,30 +265,16 @@
           <el-table-column prop="jskh" label="单位结算卡号" align="center"></el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
-            @size-change="handleSizeChangeForZX"
-            @current-change="handleCurrentChangeForZX"
-            :current-page.sync="pageCurrentForZX"
-            :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSizeForZX"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalForZX"
-          ></el-pagination>
+          <el-pagination @size-change="handleSizeChangeForZX" @current-change="handleCurrentChangeForZX"
+            :current-page.sync="pageCurrentForZX" :page-sizes="[5, 10, 50, 100]" :page-size="pageSizeForZX" layout="total, sizes, prev, pager, next, jumper"
+            :total="totalForZX"></el-pagination>
         </div>
       </el-tab-pane>
       <!-- ++++++吉林中信银行+++++++ -->
       <el-tab-pane label="吉林中信银行" name="seventh">
-        <el-table
-          :data="tableDataForJLZX"
-          ref="multipleTableForJLZX"
-          border
-          :highlight-current-row="true"
-          :header-cell-style="getRowClass"
-          :stripe="true"
-          id="table-contentJLZX"
-          @row-click="handleRowClickForJLZX"
-          @selection-change="selectionChangeForJLZX"
-        >
+        <el-table :data="tableDataForJLZX" ref="multipleTableForJLZX" border :highlight-current-row="true"
+          :header-cell-style="getRowClass" :stripe="true" id="table-contentJLZX" @row-click="handleRowClickForJLZX"
+          @selection-change="selectionChangeForJLZX">
           <el-table-column prop="id" label fixed type="selection" :selectable="selectInit"></el-table-column>
           <el-table-column prop="id" label="明细ID" align="center"></el-table-column>
           <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
@@ -403,15 +301,9 @@
           <el-table-column prop="state" label="交易状态" align="center"></el-table-column>
         </el-table>
         <div class="block">
-          <el-pagination
-            @size-change="handleSizeChangeForJLZX"
-            @current-change="handleCurrentChangeForJLZX"
-            :current-page.sync="pageCurrentForJLZX"
-            :page-sizes="[5, 10, 50, 100]"
-            :page-size="pageSizeForJLZX"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalForJLZX"
-          ></el-pagination>
+          <el-pagination @size-change="handleSizeChangeForJLZX" @current-change="handleCurrentChangeForJLZX"
+            :current-page.sync="pageCurrentForJLZX" :page-sizes="[5, 10, 50, 100]" :page-size="pageSizeForJLZX" layout="total, sizes, prev, pager, next, jumper"
+            :total="totalForJLZX"></el-pagination>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -419,779 +311,782 @@
 </template>
 
 <script type="text/javascript">
-import BankOfChinaZCK from "./componentsZCK/bankOfChinaZCK.vue";
-import * as utils from "./utils.js";
-export default {
-  components: {
-    BankOfChinaZCK
-  },
-  data() {
-    return {
-      activeName: "first",
-      clickable: true,
-
-      tableData1: [], // 表格数据 -- 中国银行
-      pageCurrent1: 1,
-      pageSize1: 10,
-      total1: 0,
-      multipleSelection1: [],
-
-      tableData2: [], // 表格数据 -- 兴业银行
-      pageCurrent2: 1,
-      pageSize2: 10,
-      total2: 0,
-      multipleSelection2: [],
-
-      totalForNY: 0,
-      tableDataForNY: [],
-      pageCurrentForNY: 1,
-      pageSizeForNY: 10,
-      multipleSelectionForNY: [],
-
-      totalForZS: 0,
-      pageCurrentForZS: 1,
-      pageSizeForZS: 10,
-      tableDataForZS: [],
-      multipleSelectionForZS: [],
-
-      totalForJS: 0,
-      pageCurrentForJS: 1,
-      pageSizeForJS: 10,
-      tableDataForJS: [],
-      multipleSelectionForJS: [],
-
-      totalForZX: 0,
-      pageCurrentForZX: 1,
-      pageSizeForZX: 10,
-      tableDataForZX: [],
-      multipleSelectionForZX: [],
-
-      totalForJLZX: 0,
-      pageCurrentForJLZX: 1,
-      pageSizeForJLZX: 10,
-      tableDataForJLZX: [],
-      multipleSelectionForJLZX: []
-    };
-  },
-  created() {
-    this.loadData1();
-    this.loadData2();
-    this.loadDataForNY();
-    this.loadDataForZS();
-    this.loadDataForJS();
-    this.loadDataForZX();
-    this.loadDataForJLZX();
-    this.activeName = this.$route.query.searchType;
-  },
-  methods: {
-    getRowClass({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex == 0) {
-        return "background:#F7F7F7;color:rgb(85, 85, 85);";
-      } else {
-        return "";
-      }
+  import BankOfChinaZCK from "./componentsZCK/bankOfChinaZCK.vue";
+  import * as utils from "./utils.js";
+  export default {
+    components: {
+      BankOfChinaZCK
     },
-    handleClick(tab, event) {
-      if (tab.name == "first") {
-        if (this.multipleSelection1.length > 0) {
-          this.clickable = false;
-        } else {
-          this.clickable = true;
-        }
-      } else if (tab.name == "second") {
-        if (this.multipleSelection2.length > 0) {
-          this.clickable = false;
-        } else {
-          this.clickable = true;
-        }
-      } else if (tab.name == "third") {
-        if (this.multipleSelectionForNY.length > 0) {
-          this.clickable = false;
-        } else {
-          this.clickable = true;
-        }
-      } else if (tab.name == "forth") {
-        if (this.multipleSelectionForZS.length > 0) {
-          this.clickable = false;
-        } else {
-          this.clickable = true;
-        }
-      } else if (tab.name == "fifth") {
-        if (this.multipleSelectionForJS.length > 0) {
-          this.clickable = false;
-        } else {
-          this.clickable = true;
-        }
-      } else if (tab.name == "sixth") {
-        if (this.multipleSelectionForZX.length > 0) {
-          this.clickable = false;
-        } else {
-          this.clickable = true;
-        }
-      } else if (tab.name == "seventh") {
-        if (this.multipleSelectionForJLZX.length > 0) {
-          this.clickable = false;
-        } else {
-          this.clickable = true;
-        }
-      }
-    },
-    selectInit(row) {
-      if (row.is_ZCK == 1) {
-        return false; //不可勾选
-      } else {
-        return true; //可勾选
-      }
-    },
+    data() {
+      return {
+        activeName: "first",
+        clickable: true,
 
-    // 整行点击 -- 中国银行
-    handleRowClick1(row, column, event) {
-      if (row.is_ZCK == 0) {
-        this.$refs.multipleTable1.toggleRowSelection(row);
-      }
-    },
-    // 选择项更改
-    selectionChange1(val) {
-      if (val.length > 0 && this.activeName == "first") {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelection1 = val;
-    },
+        tableData1: [], // 表格数据 -- 中国银行
+        pageCurrent1: 1,
+        pageSize1: 10,
+        total1: 0,
+        multipleSelection1: [],
 
-    // 整行点击 -- 兴业银行
-    handleRowClick2(row, column, event) {
-      if (row.is_ZCK == 0) {
-        this.$refs.multipleTable2.toggleRowSelection(row);
-      }
+        tableData2: [], // 表格数据 -- 兴业银行
+        pageCurrent2: 1,
+        pageSize2: 10,
+        total2: 0,
+        multipleSelection2: [],
+
+        totalForNY: 0,
+        tableDataForNY: [],
+        pageCurrentForNY: 1,
+        pageSizeForNY: 10,
+        multipleSelectionForNY: [],
+
+        totalForZS: 0,
+        pageCurrentForZS: 1,
+        pageSizeForZS: 10,
+        tableDataForZS: [],
+        multipleSelectionForZS: [],
+
+        totalForJS: 0,
+        pageCurrentForJS: 1,
+        pageSizeForJS: 10,
+        tableDataForJS: [],
+        multipleSelectionForJS: [],
+
+        totalForZX: 0,
+        pageCurrentForZX: 1,
+        pageSizeForZX: 10,
+        tableDataForZX: [],
+        multipleSelectionForZX: [],
+
+        totalForJLZX: 0,
+        pageCurrentForJLZX: 1,
+        pageSizeForJLZX: 10,
+        tableDataForJLZX: [],
+        multipleSelectionForJLZX: []
+      };
     },
-    // 选择项更改
-    selectionChange2(val) {
-      if (val.length > 0 && this.activeName == "second") {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelection2 = val;
-    },
-
-    // 关闭当前页面
-    closeBtn() {
-      this.$router.push({
-        path: "/bankStatement",
-        name: "银行流水单管理",
-        params: {
-          tabStatus: this.$route.query.searchType
-        }
-      });
-    },
-
-    //---------------------------------------
-
-    //修改选择项更改    拆分bankOfChina 2020 3.13 拆不动了
-    updateSelectionChange1(clickable, multipleSelection) {
-      this.clickable = clickable;
-      this.multipleSelection1 = multipleSelection;
-    },
-
-    //---------------------------------------
-
-    // 提交暂存款选择项
-    submitBtn() {
-      const that = this;
-      let idsArr = [];
-      if (this.activeName == "first") {
-        // 中国银行暂存款提交
-        this.multipleSelection1.forEach(function(item, index, arr) {
-          idsArr.push(item.id);
-        });
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc +
-              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
-            {
-              ids: idsArr,
-              type: 0
-            }
-          )
-          .then(function(response) {
-            if (response.status == 200) {
-              that.$message.success("提交暂存款成功！");
-              that.loadData1();
-            } else {
-              if (response.statusText) {
-                that.$message.warning(response.data.statusText);
-              } else {
-                that.$message.warning("提交暂存款失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-            that.$message.warning("提交暂存款失败~");
-          });
-      } else if (this.activeName == "second") {
-        // 兴业银行暂存款提交
-        this.multipleSelection2.forEach(function(item, index, arr) {
-          idsArr.push(item.id);
-        });
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc +
-              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
-            {
-              ids: idsArr,
-              type: 1
-            }
-          )
-          .then(function(response) {
-            if (response.status == 200) {
-              that.$message.success("提交暂存款成功！");
-              that.loadData2();
-            } else {
-              if (response.statusText) {
-                that.$message.warning(response.data.statusText);
-              } else {
-                that.$message.warning("提交暂存款失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-            that.$message.warning("提交暂存款失败~");
-          });
-      } else if (this.activeName == "seventh") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
-        this.multipleSelectionForJLZX.forEach(function(item, index, arr) {
-          idsArr.push(item.id);
-        });
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc +
-              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
-            {
-              ids: idsArr,
-              type: 10
-            }
-          )
-          .then(function(response) {
-            if (response.status == 200) {
-              that.$message.success("提交暂存款成功！");
-              that.loadDataForJLZX();
-            } else {
-              if (response.statusText) {
-                that.$message.warning(response.data.statusText);
-              } else {
-                that.$message.warning("提交暂存款失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-            that.$message.warning("提交暂存款失败~");
-          });
-      } else if (this.activeName == "fifth") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
-        this.multipleSelectionForJS.forEach(function(item, index, arr) {
-          idsArr.push(item.id);
-        });
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc +
-              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
-            {
-              ids: idsArr,
-              type: 6
-            }
-          )
-          .then(function(response) {
-            if (response.status == 200) {
-              that.$message.success("提交暂存款成功！");
-              that.loadDataForJS();
-            } else {
-              if (response.statusText) {
-                that.$message.warning(response.data.statusText);
-              } else {
-                that.$message.warning("提交暂存款失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-            that.$message.warning("提交暂存款失败~");
-          });
-      } else if (this.activeName == "forth") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
-        this.multipleSelectionForZS.forEach(function(item, index, arr) {
-          idsArr.push(item.id);
-        });
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc +
-              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
-            {
-              ids: idsArr,
-              type: 5
-            }
-          )
-          .then(function(response) {
-            if (response.status == 200) {
-              that.$message.success("提交暂存款成功！");
-              that.loadDataForZS();
-            } else {
-              if (response.statusText) {
-                that.$message.warning(response.data.statusText);
-              } else {
-                that.$message.warning("提交暂存款失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-            that.$message.warning("提交暂存款失败~");
-          });
-      } else if (this.activeName == "third") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
-        this.multipleSelectionForNY.forEach(function(item, index, arr) {
-          idsArr.push(item.id);
-        });
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc +
-              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
-            {
-              ids: idsArr,
-              type: 4
-            }
-          )
-          .then(function(response) {
-            if (response.status == 200) {
-              that.$message.success("提交暂存款成功！");
-              that.loadDataForNY();
-            } else {
-              if (response.statusText) {
-                that.$message.warning(response.data.statusText);
-              } else {
-                that.$message.warning("提交暂存款失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-            that.$message.warning("提交暂存款失败~");
-          });
-      } else if (this.activeName == "sixth") {
-        this.multipleSelectionForZX.forEach(function(item, index, arr) {
-          idsArr.push(item.id);
-        });
-        this.$http
-          .post(
-            this.GLOBAL.serverSrc +
-              "/finance/bankofchina/api/ChangeZCK_ImportEBS",
-            {
-              ids: idsArr,
-              type: 8
-            }
-          )
-          .then(function(response) {
-            if (response.status == 200) {
-              that.$message.success("提交暂存款成功！");
-              that.loadDataForZX();
-            } else {
-              if (response.statusText) {
-                that.$message.warning(response.data.statusText);
-              } else {
-                that.$message.warning("提交暂存款失败~");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-            that.$message.warning("提交暂存款失败~");
-          });
-      }
-    },
-
-    handleSizeChange1(val) {
-      this.pageSize1 = val;
-      this.pageCurrent1 = 1;
+    created() {
       this.loadData1();
+      this.loadData2();
+      this.loadDataForNY();
+      this.loadDataForZS();
+      this.loadDataForJS();
+      this.loadDataForZX();
+      this.loadDataForJLZX();
+      this.activeName = this.$route.query.searchType;
     },
-    handleCurrentChange1(val) {
-      this.pageCurrent1 = val;
-      this.loadData1();
-    },
-    loadData1() {
-      const that = this;
-      let data4D = utils.getSession4D();
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-          pageIndex: this.pageCurrent1 - 1,
-          pageSize: this.pageSize1,
-          object: {
-            matching_State: 0,
-            transaction_reference_number: "",
-            begin: "2000-05-16",
-            end: "2099-05-16",
-            seachType: 3,
-           userid: 0,// data4D.userID, // 暂无数据 想看改成0,
-            orgid: 0,// data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
-          }
-        })
-        .then(function(obj) {
-          if (obj.data.isSuccess) {
-            that.total1 = obj.data.total;
-            that.tableData1 = obj.data.objects;
+    methods: {
+      getRowClass({
+        row,
+        column,
+        rowIndex,
+        columnIndex
+      }) {
+        if (rowIndex == 0) {
+          return "background:#F7F7F7;color:rgb(85, 85, 85);";
+        } else {
+          return "";
+        }
+      },
+      handleClick(tab, event) {
+        if (tab.name == "first") {
+          if (this.multipleSelection1.length > 0) {
+            this.clickable = false;
           } else {
-            that.total1 = 0;
-            that.tableData1 = [];
+            this.clickable = true;
           }
-        });
-    },
+        } else if (tab.name == "second") {
+          if (this.multipleSelection2.length > 0) {
+            this.clickable = false;
+          } else {
+            this.clickable = true;
+          }
+        } else if (tab.name == "third") {
+          if (this.multipleSelectionForNY.length > 0) {
+            this.clickable = false;
+          } else {
+            this.clickable = true;
+          }
+        } else if (tab.name == "forth") {
+          if (this.multipleSelectionForZS.length > 0) {
+            this.clickable = false;
+          } else {
+            this.clickable = true;
+          }
+        } else if (tab.name == "fifth") {
+          if (this.multipleSelectionForJS.length > 0) {
+            this.clickable = false;
+          } else {
+            this.clickable = true;
+          }
+        } else if (tab.name == "sixth") {
+          if (this.multipleSelectionForZX.length > 0) {
+            this.clickable = false;
+          } else {
+            this.clickable = true;
+          }
+        } else if (tab.name == "seventh") {
+          if (this.multipleSelectionForJLZX.length > 0) {
+            this.clickable = false;
+          } else {
+            this.clickable = true;
+          }
+        }
+      },
+      selectInit(row) {
+        if (row.is_ZCK == 1) {
+          return false; //不可勾选
+        } else {
+          return true; //可勾选
+        }
+      },
 
-    handleSizeChange2(val) {
-      this.pageSize2 = val;
-      this.loadData2();
-    },
-    handleCurrentChange2(val) {
-      this.pageCurrent2 = val;
-      this.loadData2();
-    },
-    loadData2() {
-      const that = this;
-      let data4D=utils.getSession4D()
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-          pageIndex: this.pageCurrent2 - 1,
-          pageSize: this.pageSize2,
-          object: {
-            matching_State: 0,
-            transaction_reference_number: "",
-            begin: "2000-05-16",
-            end: "2099-05-16",
-            seachType: 3,
-           userid: 0,// data4D.userID, // 暂无数据 想看改成0,
-            orgid: 0,//data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
-          }
-        })
-        .then(function(obj) {
-          if (obj.data.isSuccess) {
-            that.total2 = obj.data.total;
-            that.tableData2 = obj.data.objects;
-          } else {
-            that.total2 = 0;
-            that.tableData2 = [];
-          }
-        });
-    },
-    // 农业银行暂存款逻辑
-    loadDataForNY() {
-      const that = this;
-      let data4D = utils.getSession4D();
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
-          pageIndex: this.pageCurrentForNY - 1,
-          pageSize: this.pageSizeForNY,
-          object: {
-            type: 1,
-            // transaction_reference_number: "",
-            begin: "2000-05-16",
-            end: "2099-05-16",
-            userid: 0,// data4D.userID, // 暂无数据 想看改成0,
-            orgid: 0,// data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
-            seachType: 3
-          }
-        })
-        .then(function(obj) {
-          // console.log('兴业银行',obj);
-          if (obj.data.isSuccess) {
-            that.totalForNY = obj.data.total;
-            that.tableDataForNY = obj.data.objects;
-          } else {
-            that.totalForNY = 0;
-            that.tableDataForNY = [];
+      // 整行点击 -- 中国银行
+      handleRowClick1(row, column, event) {
+        if (row.is_ZCK == 0) {
+          this.$refs.multipleTable1.toggleRowSelection(row);
+        }
+      },
+      // 选择项更改
+      selectionChange1(val) {
+        if (val.length > 0 && this.activeName == "first") {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+        this.multipleSelection1 = val;
+      },
+
+      // 整行点击 -- 兴业银行
+      handleRowClick2(row, column, event) {
+        if (row.is_ZCK == 0) {
+          this.$refs.multipleTable2.toggleRowSelection(row);
+        }
+      },
+      // 选择项更改
+      selectionChange2(val) {
+        if (val.length > 0 && this.activeName == "second") {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+        this.multipleSelection2 = val;
+      },
+
+      // 关闭当前页面
+      closeBtn() {
+        this.$router.push({
+          path: "/bankStatement",
+          name: "银行流水单管理",
+          params: {
+            tabStatus: this.$route.query.searchType
           }
         });
-    },
-    handleSizeChangeForNY(val) {
-      this.pageSizeForNY = val;
-      this.loadDataForNY();
-    },
-    handleCurrentChangeForNY(val) {
-      this.pageCurrentForNY = val;
-      this.loadDataForNY();
-    },
-    handleRowClickForNY(row, column, event) {
-      if (row.is_ZCK == 0) {
-        this.$refs.multipleTableForNY.toggleRowSelection(row);
-      }
-    },
-    // 选择项更改
-    selectionChangeForNY(val) {
-      if (val.length > 0 && this.activeName == "third") {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelectionForNY = val;
-    },
-    //+++++++++++++++++++++招商银行暂存款逻辑+++++++++++++++++++++
-    loadDataForZS() {
-      const that = this;
-      let data4D = utils.getSession4D();
-      this.$http
-        .post(
-          this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
-          {
-            pageIndex: this.pageCurrentForZS - 1,
-            pageSize: this.pageSizeForZS,
+      },
+
+      //---------------------------------------
+
+      //修改选择项更改    拆分bankOfChina 2020 3.13 拆不动了
+      updateSelectionChange1(clickable, multipleSelection) {
+        this.clickable = clickable;
+        this.multipleSelection1 = multipleSelection;
+      },
+
+      //---------------------------------------
+
+      // 提交暂存款选择项
+      submitBtn() {
+        const that = this;
+        let idsArr = [];
+        if (this.activeName == "first") {
+          // 中国银行暂存款提交
+          this.multipleSelection1.forEach(function(item, index, arr) {
+            idsArr.push(item.id);
+          });
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS", {
+                ids: idsArr,
+                type: 0
+              }
+            )
+            .then(function(response) {
+              if (response.status == 200) {
+                that.$message.success("提交暂存款成功！");
+                that.loadData1();
+              } else {
+                if (response.statusText) {
+                  that.$message.warning(response.data.statusText);
+                } else {
+                  that.$message.warning("提交暂存款失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("提交暂存款失败~");
+            });
+        } else if (this.activeName == "second") {
+          // 兴业银行暂存款提交
+          this.multipleSelection2.forEach(function(item, index, arr) {
+            idsArr.push(item.id);
+          });
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS", {
+                ids: idsArr,
+                type: 1
+              }
+            )
+            .then(function(response) {
+              if (response.status == 200) {
+                that.$message.success("提交暂存款成功！");
+                that.loadData2();
+              } else {
+                if (response.statusText) {
+                  that.$message.warning(response.data.statusText);
+                } else {
+                  that.$message.warning("提交暂存款失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("提交暂存款失败~");
+            });
+        } else if (this.activeName == "seventh") {
+          //此处功能暂时没有接口
+          // 吉林中信银行暂存款提交
+          this.multipleSelectionForJLZX.forEach(function(item, index, arr) {
+            idsArr.push(item.id);
+          });
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS", {
+                ids: idsArr,
+                type: 10
+              }
+            )
+            .then(function(response) {
+              if (response.status == 200) {
+                that.$message.success("提交暂存款成功！");
+                that.loadDataForJLZX();
+              } else {
+                if (response.statusText) {
+                  that.$message.warning(response.data.statusText);
+                } else {
+                  that.$message.warning("提交暂存款失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("提交暂存款失败~");
+            });
+        } else if (this.activeName == "fifth") {
+          //此处功能暂时没有接口
+          // 吉林中信银行暂存款提交
+          this.multipleSelectionForJS.forEach(function(item, index, arr) {
+            idsArr.push(item.id);
+          });
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS", {
+                ids: idsArr,
+                type: 6
+              }
+            )
+            .then(function(response) {
+              if (response.status == 200) {
+                that.$message.success("提交暂存款成功！");
+                that.loadDataForJS();
+              } else {
+                if (response.statusText) {
+                  that.$message.warning(response.data.statusText);
+                } else {
+                  that.$message.warning("提交暂存款失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("提交暂存款失败~");
+            });
+        } else if (this.activeName == "forth") {
+          //此处功能暂时没有接口
+          // 吉林中信银行暂存款提交
+          this.multipleSelectionForZS.forEach(function(item, index, arr) {
+            idsArr.push(item.id);
+          });
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS", {
+                ids: idsArr,
+                type: 5
+              }
+            )
+            .then(function(response) {
+              if (response.status == 200) {
+                that.$message.success("提交暂存款成功！");
+                that.loadDataForZS();
+              } else {
+                if (response.statusText) {
+                  that.$message.warning(response.data.statusText);
+                } else {
+                  that.$message.warning("提交暂存款失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("提交暂存款失败~");
+            });
+        } else if (this.activeName == "third") {
+          //此处功能暂时没有接口
+          // 吉林中信银行暂存款提交
+          this.multipleSelectionForNY.forEach(function(item, index, arr) {
+            idsArr.push(item.id);
+          });
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS", {
+                ids: idsArr,
+                type: 4
+              }
+            )
+            .then(function(response) {
+              if (response.status == 200) {
+                that.$message.success("提交暂存款成功！");
+                that.loadDataForNY();
+              } else {
+                if (response.statusText) {
+                  that.$message.warning(response.data.statusText);
+                } else {
+                  that.$message.warning("提交暂存款失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("提交暂存款失败~");
+            });
+        } else if (this.activeName == "sixth") {
+          this.multipleSelectionForZX.forEach(function(item, index, arr) {
+            idsArr.push(item.id);
+          });
+          this.$http
+            .post(
+              this.GLOBAL.serverSrc +
+              "/finance/bankofchina/api/ChangeZCK_ImportEBS", {
+                ids: idsArr,
+                type: 8
+              }
+            )
+            .then(function(response) {
+              if (response.status == 200) {
+                that.$message.success("提交暂存款成功！");
+                that.loadDataForZX();
+              } else {
+                if (response.statusText) {
+                  that.$message.warning(response.data.statusText);
+                } else {
+                  that.$message.warning("提交暂存款失败~");
+                }
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+              that.$message.warning("提交暂存款失败~");
+            });
+        }
+      },
+
+      handleSizeChange1(val) {
+        this.pageSize1 = val;
+        this.pageCurrent1 = 1;
+        this.loadData1();
+      },
+      handleCurrentChange1(val) {
+        this.pageCurrent1 = val;
+        this.loadData1();
+      },
+      loadData1() {
+        const that = this;
+        let data4D = utils.getSession4D();
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
+            pageIndex: this.pageCurrent1 - 1,
+            pageSize: this.pageSize1,
             object: {
-              type: 1,
+              matching_State: 0,
               transaction_reference_number: "",
               begin: "2000-05-16",
               end: "2099-05-16",
               seachType: 3,
-              userid:0,//  data4D.userID, // 暂无数据 想看改成0,
-            orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
+              userid: 0, // data4D.userID, // 暂无数据 想看改成0,
+              orgid: 0, // data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
             }
-          }
-        )
-        .then(function(obj) {
-          // console.log('兴业银行',obj);
-          if (obj.data.isSuccess) {
-            that.totalForZS = obj.data.total;
-            that.tableDataForZS = obj.data.objects;
-          } else {
-            that.totalForZS = 0;
-            that.tableDataForZS = [];
-          }
-        });
-    },
-    handleSizeChangeForZS(val) {
-      this.pageSizeForZS = val;
-      this.loadDataForZS();
-    },
-    handleCurrentChangeForZS(val) {
-      this.pageCurrentForZS = val;
-      this.loadDataForZS();
-    },
-    // 整行点击 -- 吉林吉林中信银行
-    handleRowClickForZS(row, column, event) {
-      if (row.is_ZCK == 0) {
-        this.$refs.multipleTableForZS.toggleRowSelection(row);
+          })
+          .then(function(obj) {
+            if (obj.data.isSuccess) {
+              that.total1 = obj.data.total;
+              that.tableData1 = obj.data.objects;
+            } else {
+              that.total1 = 0;
+              that.tableData1 = [];
+            }
+          });
+      },
+
+      handleSizeChange2(val) {
+        this.pageSize2 = val;
+        this.loadData2();
+      },
+      handleCurrentChange2(val) {
+        this.pageCurrent2 = val;
+        this.loadData2();
+      },
+      loadData2() {
+        const that = this;
+        let data4D = utils.getSession4D()
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
+            pageIndex: this.pageCurrent2 - 1,
+            pageSize: this.pageSize2,
+            object: {
+              matching_State: 0,
+              transaction_reference_number: "",
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              seachType: 3,
+              userid: 0, // data4D.userID, // 暂无数据 想看改成0,
+              orgid: 0, //data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
+            }
+          })
+          .then(function(obj) {
+            if (obj.data.isSuccess) {
+              that.total2 = obj.data.total;
+              that.tableData2 = obj.data.objects;
+            } else {
+              that.total2 = 0;
+              that.tableData2 = [];
+            }
+          });
+      },
+      // 农业银行暂存款逻辑
+      loadDataForNY() {
+        const that = this;
+        let data4D = utils.getSession4D();
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/ABCBank/api/Search", {
+            pageIndex: this.pageCurrentForNY - 1,
+            pageSize: this.pageSizeForNY,
+            object: {
+              type: 1,
+              // transaction_reference_number: "",
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              userid: 0, // data4D.userID, // 暂无数据 想看改成0,
+              orgid: 0, // data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
+              seachType: 3
+            }
+          })
+          .then(function(obj) {
+            // console.log('兴业银行',obj);
+            if (obj.data.isSuccess) {
+              that.totalForNY = obj.data.total;
+              that.tableDataForNY = obj.data.objects;
+            } else {
+              that.totalForNY = 0;
+              that.tableDataForNY = [];
+            }
+          });
+      },
+      handleSizeChangeForNY(val) {
+        this.pageSizeForNY = val;
+        this.loadDataForNY();
+      },
+      handleCurrentChangeForNY(val) {
+        this.pageCurrentForNY = val;
+        this.loadDataForNY();
+      },
+      handleRowClickForNY(row, column, event) {
+        if (row.is_ZCK == 0) {
+          this.$refs.multipleTableForNY.toggleRowSelection(row);
+        }
+      },
+      // 选择项更改
+      selectionChangeForNY(val) {
+        if (val.length > 0 && this.activeName == "third") {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+        this.multipleSelectionForNY = val;
+      },
+      //+++++++++++++++++++++招商银行暂存款逻辑+++++++++++++++++++++
+      loadDataForZS() {
+        const that = this;
+        let data4D = utils.getSession4D();
+        this.$http
+          .post(
+            this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search", {
+              pageIndex: this.pageCurrentForZS - 1,
+              pageSize: this.pageSizeForZS,
+              object: {
+                type: 1,
+                transaction_reference_number: "",
+                begin: "2000-05-16",
+                end: "2099-05-16",
+                seachType: 3,
+                userid: 0, //  data4D.userID, // 暂无数据 想看改成0,
+                orgid: 0, // data4D.orgID, // 暂无数据 想看改成0,
+                topid: data4D.topID, // 暂无数据 想看改成0,
+                company: data4D.company,
+              }
+            }
+          )
+          .then(function(obj) {
+            // console.log('兴业银行',obj);
+            if (obj.data.isSuccess) {
+              that.totalForZS = obj.data.total;
+              that.tableDataForZS = obj.data.objects;
+            } else {
+              that.totalForZS = 0;
+              that.tableDataForZS = [];
+            }
+          });
+      },
+      handleSizeChangeForZS(val) {
+        this.pageSizeForZS = val;
+        this.loadDataForZS();
+      },
+      handleCurrentChangeForZS(val) {
+        this.pageCurrentForZS = val;
+        this.loadDataForZS();
+      },
+      // 整行点击 -- 吉林吉林中信银行
+      handleRowClickForZS(row, column, event) {
+        if (row.is_ZCK == 0) {
+          this.$refs.multipleTableForZS.toggleRowSelection(row);
+        }
+      },
+      // 选择项更改
+      selectionChangeForZS(val) {
+        if (val.length > 0 && this.activeName == "forth") {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+        this.multipleSelectionForZS = val;
+      },
+      //+++++++++++++++++++++建设银行暂存款逻辑+++++++++++++++++++++
+      loadDataForJS() {
+        const that = this;
+        let data4D = utils.getSession4D();
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
+            pageIndex: this.pageCurrentForJS - 1,
+            pageSize: this.pageSizeForJS,
+            object: {
+              matching_State: 0,
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              seachType: 3,
+              userid: 0, // data4D.userID, // 暂无数据 想看改成0,
+              orgid: 0, // data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
+            }
+          })
+          .then(function(obj) {
+            if (obj.data.isSuccess) {
+              that.totalForJS = obj.data.total;
+              that.tableDataForJS = obj.data.objects;
+              // that.tableDataNBSK.forEach(function (item, index, arr) {
+              //   item.collectionTime = item.collectionTime.split('T')[0];
+              // });
+              // that.loadingNBSK = false;
+            } else {
+              // that.loadingNBSK = false;
+              that.totalForJS = 0;
+              that.tableDataForJS = [];
+            }
+          });
+      },
+      handleSizeChangeForJS(val) {
+        this.pageSizeForJS = val;
+        this.loadDataForJS();
+      },
+      handleCurrentChangeForJS(val) {
+        this.pageCurrentForJS = val;
+        this.loadDataForJS();
+      },
+      // 整行点击 -- 吉林吉林中信银行
+      handleRowClickForJS(row, column, event) {
+        if (row.is_ZCK == 0) {
+          this.$refs.multipleTableForJS.toggleRowSelection(row);
+        }
+      },
+      // 选择项更改
+      selectionChangeForJS(val) {
+        if (val.length > 0 && this.activeName == "fifth") {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+        this.multipleSelectionForJS = val;
+      },
+      //+++++++++++++++++++++中信银行暂存款逻辑+++++++++++++++++++++
+      loadDataForZX() {
+        const that = this;
+        let data4D = utils.getSession4D();
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/citic_bank/api/search", {
+            pageIndex: this.pageCurrentForJS - 1,
+            pageSize: this.pageSizeForJS,
+            object: {
+              matching_State: 0,
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              seachType: 3,
+              userid: 0, // data4D.userID, // 暂无数据 想看改成0,
+              orgid: 0, // data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
+            }
+          })
+          .then(function(obj) {
+            if (obj.data.isSuccess) {
+              that.totalForZX = obj.data.total;
+              that.tableDataForZX = obj.data.objects;
+              // that.tableDataNBSK.forEach(function (item, index, arr) {
+              //   item.collectionTime = item.collectionTime.split('T')[0];
+              // });
+              // that.loadingNBSK = false;
+            } else {
+              // that.loadingNBSK = false;
+              that.totalForZX = 0;
+              that.tableDataForZX = [];
+            }
+          });
+      },
+      handleSizeChangeForZX(val) {
+        this.pageSizeForZX = val;
+        this.loadDataForZX();
+      },
+      handleCurrentChangeForZX(val) {
+        this.pageCurrentForZX = val;
+        this.loadDataForZX();
+      },
+      handleRowClickForZX(row, column, event) {
+        if (row.is_ZCK == 0) {
+          this.$refs.multipleTableForZX.toggleRowSelection(row);
+        }
+      },
+      // 选择项更改
+      selectionChangeForZX(val) {
+        if (val.length > 0 && this.activeName == "sixth") {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+        this.multipleSelectionForZX = val;
+      },
+      //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
+      loadDataForJLZX() {
+        const that = this;
+        let data4D = utils.getSession4D();
+        this.$http
+          .post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
+            pageIndex: this.pageCurrentForJLZX - 1,
+            pageSize: this.pageSizeForJLZX,
+            object: {
+              matching_State: 0,
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              userid: 0, //data4D.userID, // 暂无数据 想看改成0,
+              orgid: 0, //data4D.orgID, // 暂无数据 想看改成0,
+              topid: data4D.topID, // 暂无数据 想看改成0,
+              company: data4D.company,
+              seachType: 3,
+            }
+          })
+          .then(function(obj) {
+            if (obj.data.isSuccess) {
+              that.totalForJLZX = obj.data.total;
+              that.tableDataForJLZX = obj.data.objects;
+              // that.tableDataNBSK.forEach(function (item, index, arr) {
+              //   item.collectionTime = item.collectionTime.split('T')[0];
+              // });
+              // that.loadingNBSK = false;
+            } else {
+              // that.loadingNBSK = false;
+              that.totalForJLZX = 0;
+              that.tableDataForJLZX = [];
+            }
+          });
+      },
+      handleSizeChangeForJLZX(val) {
+        this.pageSizeForJLZX = val;
+        this.loadDataForJLZX();
+      },
+      handleCurrentChangeForJLZX(val) {
+        this.pageCurrentForJLZX = val;
+        this.loadDataForJLZX();
+      },
+      // 整行点击 -- 吉林吉林中信银行
+      handleRowClickForJLZX(row, column, event) {
+        if (row.is_ZCK == 0) {
+          this.$refs.multipleTableForJLZX.toggleRowSelection(row);
+        }
+      },
+      // 选择项更改
+      selectionChangeForJLZX(val) {
+        if (val.length > 0 && this.activeName == "seventh") {
+          this.clickable = false;
+        } else {
+          this.clickable = true;
+        }
+        this.multipleSelectionForJLZX = val;
       }
-    },
-    // 选择项更改
-    selectionChangeForZS(val) {
-      if (val.length > 0 && this.activeName == "forth") {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelectionForZS = val;
-    },
-    //+++++++++++++++++++++建设银行暂存款逻辑+++++++++++++++++++++
-    loadDataForJS() {
-      const that = this;
-      let data4D = utils.getSession4D();
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
-          pageIndex: this.pageCurrentForJS - 1,
-          pageSize: this.pageSizeForJS,
-          object: {
-            matching_State: 0,
-            begin: "2000-05-16",
-            end: "2099-05-16",
-            seachType: 3,
-            userid: 0,// data4D.userID, // 暂无数据 想看改成0,
-            orgid: 0,// data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
-          }
-        })
-        .then(function(obj) {
-          if (obj.data.isSuccess) {
-            that.totalForJS = obj.data.total;
-            that.tableDataForJS = obj.data.objects;
-            // that.tableDataNBSK.forEach(function (item, index, arr) {
-            //   item.collectionTime = item.collectionTime.split('T')[0];
-            // });
-            // that.loadingNBSK = false;
-          } else {
-            // that.loadingNBSK = false;
-            that.totalForJS = 0;
-            that.tableDataForJS = [];
-          }
-        });
-    },
-    handleSizeChangeForJS(val) {
-      this.pageSizeForJS = val;
-      this.loadDataForJS();
-    },
-    handleCurrentChangeForJS(val) {
-      this.pageCurrentForJS = val;
-      this.loadDataForJS();
-    },
-    // 整行点击 -- 吉林吉林中信银行
-    handleRowClickForJS(row, column, event) {
-      if (row.is_ZCK == 0) {
-        this.$refs.multipleTableForJS.toggleRowSelection(row);
-      }
-    },
-    // 选择项更改
-    selectionChangeForJS(val) {
-      if (val.length > 0 && this.activeName == "fifth") {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelectionForJS = val;
-    },
-    //+++++++++++++++++++++中信银行暂存款逻辑+++++++++++++++++++++
-    loadDataForZX() {
-      const that = this;
-      let data4D = utils.getSession4D();
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/citic_bank/api/search", {
-          pageIndex: this.pageCurrentForJS - 1,
-          pageSize: this.pageSizeForJS,
-          object: {
-            matching_State: 0,
-            begin: "2000-05-16",
-            end: "2099-05-16",
-            seachType: 3,
-             userid:0,// data4D.userID, // 暂无数据 想看改成0,
-            orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
-          }
-        })
-        .then(function(obj) {
-          if (obj.data.isSuccess) {
-            that.totalForZX = obj.data.total;
-            that.tableDataForZX = obj.data.objects;
-            // that.tableDataNBSK.forEach(function (item, index, arr) {
-            //   item.collectionTime = item.collectionTime.split('T')[0];
-            // });
-            // that.loadingNBSK = false;
-          } else {
-            // that.loadingNBSK = false;
-            that.totalForZX = 0;
-            that.tableDataForZX = [];
-          }
-        });
-    },
-    handleSizeChangeForZX(val) {
-      this.pageSizeForZX = val;
-      this.loadDataForZX();
-    },
-    handleCurrentChangeForZX(val) {
-      this.pageCurrentForZX = val;
-      this.loadDataForZX();
-    },
-    handleRowClickForZX(row, column, event) {
-      if (row.is_ZCK == 0) {
-        this.$refs.multipleTableForZX.toggleRowSelection(row);
-      }
-    },
-    // 选择项更改
-    selectionChangeForZX(val) {
-      if (val.length > 0 && this.activeName == "sixth") {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelectionForZX = val;
-    },
-    //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
-    loadDataForJLZX() {
-      const that = this;
-      let data4D = utils.getSession4D();
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
-          pageIndex: this.pageCurrentForJLZX - 1,
-          pageSize: this.pageSizeForJLZX,
-          object: {
-            matching_State: 0,
-            begin: "2000-05-16",
-            end: "2099-05-16",
-          userid: 0,//data4D.userID, // 暂无数据 想看改成0,
-            orgid: 0,//data4D.orgID, // 暂无数据 想看改成0,
-            topid: data4D.topID, // 暂无数据 想看改成0,
-            company: data4D.company,
-          }
-        })
-        .then(function(obj) {
-          if (obj.data.isSuccess) {
-            that.totalForJLZX = obj.data.total;
-            that.tableDataForJLZX = obj.data.objects;
-            // that.tableDataNBSK.forEach(function (item, index, arr) {
-            //   item.collectionTime = item.collectionTime.split('T')[0];
-            // });
-            // that.loadingNBSK = false;
-          } else {
-            // that.loadingNBSK = false;
-            that.totalForJLZX = 0;
-            that.tableDataForJLZX = [];
-          }
-        });
-    },
-    handleSizeChangeForJLZX(val) {
-      this.pageSizeForJLZX = val;
-      this.loadDataForJLZX();
-    },
-    handleCurrentChangeForJLZX(val) {
-      this.pageCurrentForJLZX = val;
-      this.loadDataForJLZX();
-    },
-    // 整行点击 -- 吉林吉林中信银行
-    handleRowClickForJLZX(row, column, event) {
-      if (row.is_ZCK == 0) {
-        this.$refs.multipleTableForJLZX.toggleRowSelection(row);
-      }
-    },
-    // 选择项更改
-    selectionChangeForJLZX(val) {
-      if (val.length > 0 && this.activeName == "seventh") {
-        this.clickable = false;
-      } else {
-        this.clickable = true;
-      }
-      this.multipleSelectionForJLZX = val;
     }
-  }
-};
+  };
 </script>
 <style lang="scss" scoped>
-.distributor-content {
-  width: 99%;
-  margin: 25px auto;
-  height: auto;
-  border: 1px solid #e6e6e6;
-  box-sizing: border-box;
-  padding: 20px;
-  .buttonsDv {
-    width: 98%;
-    margin-top: 10px;
-    text-align: end;
+  .distributor-content {
+    width: 99%;
+    margin: 25px auto;
+    height: auto;
+    border: 1px solid #e6e6e6;
+    box-sizing: border-box;
+    padding: 20px;
+
+    .buttonsDv {
+      width: 98%;
+      margin-top: 10px;
+      text-align: end;
+    }
+
+    .block {
+      width: 100%;
+      text-align: center;
+      margin: 30px auto;
+    }
+    .el-drawer{
+      overflow: auto;
+    }
   }
-  .block {
-    width: 100%;
-    text-align: center;
-    margin: 30px auto;
-  }
-}
 </style>

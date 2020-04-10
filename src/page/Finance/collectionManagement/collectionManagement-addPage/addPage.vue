@@ -2,15 +2,17 @@
 <template>
   <!-- 申请填写同业收款表单-弹窗 -->
   <article class="content">
-    <el-drawer  :show-close="false" :visible="dialogFormVisible"   @close="canelHandle">
+    <el-drawer style="" name="el-drawer" :show-close="false" :visible="dialogFormVisible" @close="canelHandle">
       <header class="header">
-        <section style="position:relative">
+        <section style="position:relative;">
           <!-- <el-button @click="canelHandle">取 消</el-button> -->
-          <el-button type="primary" @click="submitForm('ruleForm')" style="position:fixed;right:10px;top:1%;" :disabled="ifShowApply">申 请</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')" style="position:fixed;right:15px;top:1%;" :disabled="ifShowApply">申
+            请</el-button>
         </section>
       </header>
       <main>
-        <el-form label-position="right" :model="this[`${mode}`]['ruleForm']" id="ruleForm" :rules="this[`${mode}`]['rules']" ref="ruleForm">
+        <el-form label-position="right" :model="this[`${mode}`]['ruleForm']" id="ruleForm" :rules="this[`${mode}`]['rules']"
+          ref="ruleForm">
           <!-- 表单基本信息 -->
           <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
           <!-- 同业 -->
@@ -141,7 +143,7 @@
           this.arrearsList = []
         } else {
           this.arrearsList = obj.data.objects;
-           console.log('arrearsList',this.arrearsList)
+          console.log('arrearsList', this.arrearsList)
           this.ifShowApply = false
         }
       },
@@ -563,10 +565,10 @@
             this.$refs.sameTradeFrom.getArrearsList(undefined, this.travelMode);
             break;
           case 'ZK':
-              if(this.indent!=''){
-                this.receiptorder()
-              }
-              break;
+            if (this.indent != '') {
+              this.receiptorder()
+            }
+            break;
         }
       }
     }
@@ -668,4 +670,14 @@
     float: left;
     margin: 0 0 0 30px;
   }
+
+  .el-drawer {
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+  }
+
+  // .el-drawer__wrapper{
+  //   overflow: auto;
+  // }
 </style>
