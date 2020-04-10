@@ -329,6 +329,7 @@ export default {
           this.invoicePrice = res.data.object.invoicePrice; // 点击详情获取开票金额
           this.tableDate = res.data.object.ordelist; // 点击详情获取关联订单表格
           this.invoiceDate.push(res.data.object);
+          this.invoiceDate[0].approvalUserCode = sessionStorage.getItem('userCode');
           //this.invoiceDate[0].invoicePrice = "";
           this.originalBanks =  res.data.object.invoiceNumber; // 点击详情获取开票号
           this.invoiceDate[0].invoiceNumber = "";
