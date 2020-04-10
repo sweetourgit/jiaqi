@@ -2,11 +2,11 @@
 <template>
   <!-- 申请填写同业收款表单-弹窗 -->
   <article class="content">
-    <el-drawer style="" name="el-drawer" :show-close="false" :visible="dialogFormVisible" @close="canelHandle">
+    <el-drawer custom-class="overF" :show-close="false" :visible="dialogFormVisible" @close="canelHandle">
       <header class="header">
         <section style="position:relative;">
           <!-- <el-button @click="canelHandle">取 消</el-button> -->
-          <el-button type="primary" @click="submitForm('ruleForm')" style="position:fixed;right:15px;top:1%;" :disabled="ifShowApply">申
+          <el-button type="primary" @click="submitForm('ruleForm')" style="position:fixed;right:15px;top:1%;z-index: 2004;" :disabled="ifShowApply">申
             请</el-button>
         </section>
       </header>
@@ -677,7 +677,14 @@
     overflow: auto;
   }
 
-  // .el-drawer__wrapper{
-  //   overflow: auto;
-  // }
+  .el-drawer__container {
+    height: '';
+    bottom: ''
+  }
+</style>
+<style>
+  .el-drawer {
+
+    overflow: scroll
+  }
 </style>

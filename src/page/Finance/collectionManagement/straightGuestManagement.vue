@@ -102,7 +102,7 @@
       </div>
     </div>
     <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd" :dept="dept"></StraightGuestInfo>
-<!--   <addPage @getListForZK="getListForZK" :mode="mode" :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid"
+ <!-- <addPage @getListForZK="getListForZK" :mode="mode" :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid"
       :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList"
       @close="closeAdd" :dept="dept"></addPage> -->
     <!--查看详情-->
