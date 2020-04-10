@@ -40,6 +40,10 @@ export default {
     // this.height =
     //   document.getElementById("outDiv").parentElement.offsetHeight - 30;
     this.handleClick({ name: "team" });
+    if(localStorage.getItem("routePath")){
+      this.handleClick({ name: localStorage.getItem("routePath") });
+      localStorage.removeItem("routePath");
+    }
   },
   methods: {
     handleClick(tab, event) {

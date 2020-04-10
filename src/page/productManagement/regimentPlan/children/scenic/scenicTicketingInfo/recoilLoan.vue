@@ -6,7 +6,7 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="关联" name="first">
             <el-button class="topButton" type="primary" @click="connect" :disabled="tableDataNoConnectChoose.length == 0">关联</el-button>
-            <el-table ref="singleTable" :data="tableDataNoConnect" border style="width: 100%" :header-cell-style="getRowClass" @selection-change="selectionChange">
+            <el-table ref="multipleTable" :data="tableDataNoConnect" border style="width: 100%" :header-cell-style="getRowClass" @selection-change="selectionChange">
               <el-table-column prop="id" label="" fixed type="selection" :selectable="selectInit">
               </el-table-column>
               <el-table-column prop="order_sn" label="订单ID" align="center" width="80%">
@@ -178,7 +178,7 @@
         </el-tabs>
       </div>
       <div class="footer">
-        <el-button @click="saveFun" type="primary" size="small" class="table_details">保存</el-button>
+        <!-- <el-button @click="saveFun" type="primary" size="small" class="table_details">保存</el-button> -->
         <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
       <el-dialog :title="topTotle" :visible="dialogFormVisible1" width=60% @close="closeJK" append-to-body>
@@ -279,7 +279,24 @@ export default {
       }
     },
     selectionChange(val){
+      const that = this;
       this.tableDataNoConnectChoose = val;
+      let flagItem = true;
+      this.tableDataNoConnectChoose.forEach(function(item, index, arr){
+        that.tableDataNoConnectChoose.forEach(function(item1, index1, arr1){
+          if(item.supplier_id != item1.supplier_id){
+            flagItem = false;
+            return;
+          }
+        })
+      })
+      if(flagItem){
+        this.tableDataNoConnectChoose = val;
+      }else{
+        this.$message.warning("不同上级供应商不能同时选择！");
+        this.$refs.multipleTable.clearSelection();
+        this.tableDataNoConnectChoose = [];
+      }
     },
     selectInit(row, index){
       if(row.supplier_id){
@@ -337,8 +354,9 @@ export default {
         if (response.data.code == '200') {
           that.$message.success("回冲成功！");
           that.closeJK();
-          that.loadData();
-          that.loadData1();
+          // that.loadData();
+          // that.loadData1();
+          that.closeAdd();
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);
@@ -377,8 +395,10 @@ export default {
       }, ).then(function(response) {
         // console.log(response);
         if (response.data.code == '200') {
-          that.loadData();
-          that.loadData1();
+          that.$message.success("解绑成功！");
+          that.closeAdd();
+          // that.loadData();
+          // that.loadData1();
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);

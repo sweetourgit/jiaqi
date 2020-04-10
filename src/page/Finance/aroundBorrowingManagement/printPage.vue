@@ -67,7 +67,8 @@
       </el-row>
       <!-- 支付账户 -->
       <!-- 第四行 -->
-      <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
+      <!-- 余额支付借款没有账号信息 -->
+      <el-row type="flex" class="row-bg print-acount-padding" justify="space-around" :style="printMsg.presentRouter == '余额支付借款' ? 'display:none;' : ''">
         <el-col :span="6">
           <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
           <el-col :span="18"><div class="grid-del ">{{ printMsg.fundamental.account }}</div></el-col>

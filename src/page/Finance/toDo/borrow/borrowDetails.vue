@@ -8,7 +8,7 @@
   <div class="loan-management">
     <!-- 按钮组 -->
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
-      <el-button type="warning" plain @click="handleCancel">取消</el-button>
+      <el-button plain @click="handleCancel()">取消</el-button>
       <el-button
         @click="handlePass"
         type="primary"
@@ -18,7 +18,7 @@
       >
         通过
       </el-button>
-      <el-button @click="handlePass" type="primary" plain v-else>通过</el-button>
+      <el-button @click="handlePass" type="success" plain v-else>通过</el-button>
       <el-button @click="handleRejected" type="danger" plain>驳回</el-button>
       <el-button
         type="danger"
@@ -32,14 +32,14 @@
         @click="printDetails"
         type="success"
         plain
-        v-if="(ifDY100009 && creatUserOrgID === 490) || ( ifDY100042 && creatUserOrgID !== 490)"
+        v-if="(ifDY100009 && creatUserOrgID === 490) || (ifDY100042 && creatUserOrgID !== 490)"
       >
         打印本页详情
       </el-button>
     </div>
     <!-- 按钮组 END -->
     <!-- 查看无收入借款弹窗 -->
-    <el-divider content-position="left" class='title-margin print-hidden'>基本信息</el-divider>
+    <el-divider content-position="left" class='print-hidden'>基本信息</el-divider>
     <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
     <div ref="print">
       <div class="print-title">{{ getTopName }} - {{ whichComponentName == '无收入借款管理' ? '无收入借款' : '预付款' }} - 借款单 </div>
@@ -156,109 +156,135 @@
       <!-- 第五行 END -->
     </div>
     <!-- 基本信息 END -->
-    <!-- 审核结果 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
-    <el-table :data="tableAuditResults" stripe border :header-cell-style="getRowClass">
-      <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
-      <el-table-column prop="approvalName" label="审批结果" align="center">
-        <template slot-scope="scope">
-          <div v-if="scope.row.approvalName === '审批中'" style="color: #7F7F7F" >{{ scope.row.approvalName }}</div>
-          <div v-if="scope.row.approvalName === '驳回'" style="color: #FF4A3D" >{{ scope.row.approvalName }}</div>
-          <div v-if="scope.row.approvalName === '通过'" style="color: #33D174" >{{ scope.row.approvalName }}</div>
+    <!-- 相关表格 -->
+    <el-collapse v-model="collapseName">
+      <!-- 审核结果 -->
+      <el-collapse-item class="collapse-m" name="collapseApprove">
+        <template slot="title">
+          <el-divider content-position="left">审核结果</el-divider>
         </template>
-      </el-table-column>
-      <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
-      <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
-    </el-table>
-    <!-- 审核结果 END -->
-    <!-- 相关信息 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>相关信息</el-divider>
-    <el-table :data="tableMoney" stripe border :header-cell-style="getRowClass">
-      <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
-      <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
-      <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
-      <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
-      <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
-      <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
-      <el-table-column prop="paymentChecking" label="供应商欠款总额" align="center">
-        <template slot-scope="scope">
-          <div>{{ scope.row.payable - scope.row.price}}</div>
+        <el-table :data="tableAuditResults" stripe border :header-cell-style="getRowClass">
+          <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
+          <el-table-column prop="approvalName" label="审批结果" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.approvalName === '审批中'" style="color: #7F7F7F" >{{ scope.row.approvalName }}</div>
+              <div v-if="scope.row.approvalName === '驳回'" style="color: #FF4A3D" >{{ scope.row.approvalName }}</div>
+              <div v-if="scope.row.approvalName === '通过'" style="color: #33D174" >{{ scope.row.approvalName }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="comments" label="审批意见" align="center"></el-table-column>
+          <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <!-- 审核结果 END -->
+      <!-- 相关信息 -->
+      <el-collapse-item class="collapse-m" name="collapseRelated">
+        <template slot="title">
+          <el-divider content-position="left">相关信息</el-divider>
         </template>
-      </el-table-column>
-    </el-table>
-    <!-- 相关信息 END -->
-    <!-- 无收入借款明细 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
-<!--    <el-table :data="tableIncome" border :header-cell-style="getRowClass" :row-class-name="tableRowClassName">-->
-    <el-table :data="tableIncome" stripe border :header-cell-style="getRowClass">
-      <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
-      <el-table-column prop="checkTypeEX" label="审批状态" align="center">
-        <template slot-scope="scope">
-          <div v-if="scope.row.checkTypeEX === '审批中'" style="color: #7F7F7F" >{{ scope.row.checkTypeEX }}</div>
-          <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D" >{{ scope.row.checkTypeEX }}</div>
-          <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174" >{{ scope.row.checkTypeEX }}</div>
+        <el-table :data="tableMoney" stripe border :header-cell-style="getRowClass">
+          <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
+          <el-table-column prop="paymentChecking" label="审批中借款总额" align="center"></el-table-column>
+          <el-table-column prop="payment" label="已审批借款总额" align="center"></el-table-column>
+          <el-table-column prop="expenseChecking" label="报销中总额" align="center"></el-table-column>
+          <el-table-column prop="expense" label="已报销总额" align="center"></el-table-column>
+          <el-table-column prop="price" label="已收总额" align="center"></el-table-column>
+          <el-table-column prop="paymentChecking" label="供应商欠款总额" align="center">
+            <template slot-scope="scope">
+              <div>{{ scope.row.payable - scope.row.price}}</div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <!-- 相关信息 END -->
+      <!-- 无收入借款明细 -->
+      <el-collapse-item class="collapse-m" name="collapseInCome">
+        <template slot="title">
+          <el-divider content-position="left">无收入借款明细</el-divider>
         </template>
-      </el-table-column>
-      <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
-      <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-      <el-table-column prop="price" label="金额" align="center"></el-table-column>
-      <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
-      <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-      <el-table-column prop="process" label="审批过程" align="center">
-        <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)">查看</el-button>
+        <el-table :data="tableIncome" stripe border :header-cell-style="getRowClass">
+          <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
+          <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.checkTypeEX === '审批中'" style="color: #7F7F7F" >{{ scope.row.checkTypeEX }}</div>
+              <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D" >{{ scope.row.checkTypeEX }}</div>
+              <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174" >{{ scope.row.checkTypeEX }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" align="center">
+
+          </el-table-column>
+          <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+          <el-table-column prop="price" label="金额" align="center"></el-table-column>
+          <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
+          <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
+          <el-table-column prop="process" label="审批过程" align="center">
+            <template slot-scope="scope">
+              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" :disabled='scope.row.guid === "" ? true : false'>查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <!-- 无收入借款明细 END -->
+      <!-- 预付款明细 -->
+      <el-collapse-item class="collapse-m" name="collapseAdvance">
+        <template slot="title">
+          <el-divider content-position="left">预付款明细</el-divider>
         </template>
-      </el-table-column>
-    </el-table>
-    <!-- 无收入借款明细 END -->
-    <!-- 预付款明细 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
-    <el-table :data="tablePayment" stripe border :header-cell-style="getRowClass">
-      <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
-      <el-table-column prop="checkTypeEX" label="审批状态" align="center">
-        <template slot-scope="scope">
-          <div v-if="scope.row.checkTypeEX === '审批中'" style="color: #7F7F7F" >{{ scope.row.checkTypeEX }}</div>
-          <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D" >{{ scope.row.checkTypeEX }}</div>
-          <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174" >{{ scope.row.checkTypeEX }}</div>
+        <el-table :data="tablePayment" stripe border :header-cell-style="getRowClass">
+          <el-table-column prop="paymentID" label="ID" align="center"></el-table-column>
+          <el-table-column prop="checkTypeEX" label="审批状态" align="center">
+            <template slot-scope="scope">
+              <div v-if="scope.row.checkTypeEX === '审批中'" style="color: #7F7F7F" >{{ scope.row.checkTypeEX }}</div>
+              <div v-if="scope.row.checkTypeEX === '驳回'" style="color: #FF4A3D" >{{ scope.row.checkTypeEX }}</div>
+              <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174" >{{ scope.row.checkTypeEX }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
+          <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+          <el-table-column prop="price" label="金额" align="center"></el-table-column>
+          <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
+          <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
+          <el-table-column prop="process" label="审批过程" align="center">
+            <template slot-scope="scope">
+              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,2)">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <!-- 预付款明细 END -->
+      <!-- 收入明细 -->
+      <el-collapse-item class="collapse-m" name="collapseEarning">
+        <template slot="title">
+          <el-divider content-position="left">收入明细</el-divider>
         </template>
-      </el-table-column>
-      <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
-      <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-      <el-table-column prop="price" label="金额" align="center"></el-table-column>
-      <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
-      <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
-      <el-table-column prop="process" label="审批过程" align="center">
-        <template slot-scope="scope">
-          <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,2)">查看</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 预付款明细 END -->
-    <!-- 收入明细 -->
-    <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
-    <el-table :data="tableEarning" border stripe :header-cell-style="getRowClass">
-      <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-      <el-table-column prop="channel" label="订单来源" align="center"></el-table-column>
-      <el-table-column prop="person" label="订单联系人" align="center"></el-table-column>
-      <el-table-column prop="number" label="人数" align="center"></el-table-column>
-      <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
-      <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
-      <el-table-column label="欠款金额" align="center" prop="arrears"></el-table-column>
-      <el-table-column prop="arrearsDate" label="欠款日期" align="center">
-        <template slot-scope="scope">
-          <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.arrearsDate | formatDateDetailsAn }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="repaymentDate" label="应还日期" align="center">
-        <template slot-scope="scope">
-          <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.repaymentDate | formatDateDetailsAn }}</div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 收入明细 END -->
+        <el-table :data="tableEarning" border stripe :header-cell-style="getRowClass">
+          <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+          <el-table-column prop="channel" label="订单来源" align="center"></el-table-column>
+          <el-table-column prop="person" label="订单联系人" align="center"></el-table-column>
+          <el-table-column prop="number" label="人数" align="center"></el-table-column>
+          <el-table-column prop="payable" label="订单金额" align="center"></el-table-column>
+          <el-table-column prop="priceSum" label="已收金额" align="center"></el-table-column>
+          <el-table-column label="欠款金额" align="center" prop="arrears"></el-table-column>
+          <el-table-column prop="arrearsDate" label="欠款日期" align="center">
+            <template slot-scope="scope">
+              <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.arrearsDate | formatDateDetailsAn }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="repaymentDate" label="应还日期" align="center">
+            <template slot-scope="scope">
+              <div>{{ scope.row.orderChannel !== 1 ? '暂无' : scope.row.repaymentDate | formatDateDetailsAn }}</div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-collapse-item>
+      <!-- 收入明细 END -->
+    </el-collapse>
+    <!-- 相关表格 END -->
     <!-- 审批过程-查看弹窗 -->
-    <el-drawer direction="rtl" size="50%" title="审批过程" :visible.sync="ifLookApproveProcessDialog">
-        <el-table :data="tableIncomeCheck" stripe border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
+    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="ifLookApproveProcessDialog">
+        <el-divider class="mb-40">审批过程</el-divider>
+        <el-table class="el-drawer-content" :data="tableIncomeCheck" stripe border :header-cell-style="getRowClass">
           <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
           <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="approvalName" label="审批结果" align="center">
@@ -273,19 +299,21 @@
     </el-drawer>
     <!-- 审批过程-查看弹窗 END -->
     <!-- 通过、驳回弹框 -->
-    <el-dialog :title="approveDialogTitle" :visible.sync="ifShowApproveDialog" width="40%" custom-class="city_list">
-      <textarea rows="8" v-model="approvalOpinion" style="overflow: hidden; width: 99%; margin: 0 0 20px 0;"></textarea>
-      <el-row type="flex" class="row-bg">
-        <el-col :span="8" :offset="18">
-          <el-button @click="handleApproveDialogCancel">取消</el-button>
-          <el-button @click="handleApproveDialogConfirm" type="primary">确定</el-button>
-        </el-col>
-      </el-row>
-    </el-dialog>
+    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="ifShowApproveDialog">
+      <el-divider class="mb-40">{{ approveDialogTitle }}</el-divider>
+      <div class="el-drawer-content">
+        <el-input type="textarea" v-model="approvalOpinion"></el-input>
+      </div>
+      <div style="display: flex; justify-content: flex-end;margin:30px 2% 0 0;">
+        <el-button size="small" plain @click="handleApproveDialogCancel">取消</el-button>
+        <el-button size="small" type="primary" plain @click="handleApproveDialogConfirm">确定</el-button>
+      </div>
+    </el-drawer>
     <!-- 通过、驳回弹框 END -->
     <!-- 付款账户弹窗 -->
-    <el-dialog title="选择账户" :visible.sync="ifLookAccountDialog" width="1100px" custom-class="city_list">
-      <el-table :data="tableAccount" stripe border :header-cell-style="getRowClass">
+    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="ifLookAccountDialog">
+      <el-divider class="mb-40">选择账户</el-divider>
+      <el-table class="el-drawer-content" :data="tableAccount" stripe border :header-cell-style="getRowClass">
         <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
         <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
         <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
@@ -297,12 +325,14 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-dialog>
+    </el-drawer>
     <!-- 付款账户弹窗 END -->
+    <el-backtop></el-backtop>
   </div>
 </template>
 
 <!-- 依据审批状态显示不同行的背景颜色 -->
+<!-- :row-class-name="tableRowClassName" -->
 <style>
   .el-table .going-row {
     background: #7F7F7F;
@@ -322,6 +352,7 @@
     name: 'borrowDetails',
     data () {
       return {
+        collapseName: [], // 控制折叠面板是否折叠
         ifDY100009: false,
         ifDY100042: false,
         creatUserOrgID: 0,
@@ -331,7 +362,7 @@
         whichComponentName: null, // 组件名称
         tableIncomeCheck: null, // 审批过程-查看弹窗-数据
         fundamental: {}, // 打印详情数据
-        tableMoney: [], // 无收入借款金额表格
+        tableMoney: [], // 相关信息表格表格
         tablePayment:[], // 预付款明细表格
         tableIncome:[], // 无收入借款明细弹窗
         tableAccount:[], // 银行账户表格数据
@@ -443,8 +474,13 @@
           jQ_Type: paramJqType, // 无收入1 预付款2,
         }).then(obj => {
           // 裡面的具提屬性沒有調試
+          let keepApproveData = obj.data.extend.instanceLogInfo
           _this.tableAuditResults = [];
-          _this.tableAuditResults = obj.data.extend.instanceLogInfo;
+          _this.tableAuditResults = keepApproveData;
+          // 依据有无数据控制折叠面板显示
+          if (keepApproveData.length > 0) {
+            this.collapseName.push('collapseApprove')
+          }
           if (_this.tableAuditResults.length > 0) {
             _this.printAuditingContent = '<b>开始</b> -> ';
             _this.tableAuditResults.forEach(function (item) {
@@ -491,7 +527,11 @@
           }
         }).then(res => {
           if (res.data.isSuccess === true) {
-            _this.tableIncome = res.data.objects;
+            let keepRes = res.data.objects;
+            _this.tableIncome = keepRes;
+            if (keepRes.length > 0) {
+              this.collapseName.push('collapseInCome')
+            }
           }
         }).catch(err => {
           console.log( err )
@@ -522,7 +562,11 @@
           }
         }).then(res => {
           if (res.data.isSuccess === true) {
-            _this.tablePayment = res.data.objects
+            let keepRes = res.data.objects;
+            _this.tablePayment = keepRes;
+            if (keepRes.length > 0) {
+              this.collapseName.push('collapseAdvance')
+            }
           }
         }).catch(err => {
           console.log(err)
@@ -536,7 +580,11 @@
           }
         }).then(res => {
           if (res.data.isSuccess === true) {
-            _this.tableIncome = res.data.objects;
+            let keepRes = res.data.objects;
+            _this.tableIncome = keepRes;
+            if (keepRes.length > 0) {
+              this.collapseName.push('collapseInCome')
+            }
           }
         }).catch(err => {
           console.log( err )
@@ -547,8 +595,12 @@
           "id": val
         }).then(res => {
           if (res.data.isSuccess === true) {
+            let keepRes = res.data.object;
             _this.tableMoney = [];
-            _this.tableMoney.push(res.data.object);
+            _this.tableMoney.push(keepRes);
+            if (keepRes.length > 0) {
+              this.collapseName.push('collapseRelated')
+            }
           }
         }).catch(err => {
           console.log( err );
@@ -559,7 +611,11 @@
           "id": val,
         }).then(res => {
           if (res.data.isSuccess === true) {
+            let keepRes = res.data.objects;
             _this.tableEarning = res.data.objects;
+            if (keepRes.length > 0) {
+              this.collapseName.push('collapseEarning')
+            }
           }
         }).catch(err => {
           console.log( err );
@@ -570,6 +626,19 @@
 </script>
 
 <style scoped lang="scss">
+  .el-divider__text{
+    font-size: 16px !important
+  }
+  .mb-40{
+    margin-bottom: 40px;
+  }
+  .el-drawer-content{
+    width: 96%;
+    margin: 0 auto;
+  }
+  .collapse-m{
+    margin: 30px 0;
+  }
   .loan-management{
     width: 99%;
     margin: 25px auto 50px;
@@ -593,9 +662,6 @@
     }
     .print-approve{
       display: none;
-    }
-    .el-divider__text{
-      font-size: 17px !important
     }
     .distributor-status{
       margin-left: 40px;

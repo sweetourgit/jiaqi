@@ -290,7 +290,12 @@ export default {
       });
     },
     closeAdd() {
-//      this.$router.push({ path: "/regimentPlan/scenicTicketingList" });
+      if(this.$route.query.returnPath == '/doneAll/list'){// 已办中跳转团期，返回时需要的参数
+        this.$store.commit('doneAll/referDoneAllShowWhichTab', 'sheet')
+        this.$store.commit('doneAll/showSheetTab', 'sheetAround')
+      }else if(this.$route.query.returnPath == '/checkSheet/around'){// 报账单中跳转团期，返回时需要的参数
+        localStorage.setItem("routePath", 'around');
+      }
       this.$router.go(-1);
     },
     delInfo() {

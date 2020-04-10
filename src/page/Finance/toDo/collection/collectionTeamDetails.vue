@@ -7,9 +7,9 @@
   <div class="loan-management">
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button type="warning" plain @click="handleCancel">取消</el-button>
-      <el-button type="primary" plain @click="handlePass">通过</el-button>
+      <el-button type="success" plain @click="handlePass">通过</el-button>
       <el-button type="danger" plain @click="handleRejected">驳回</el-button>
-      <el-button type="success" plain @click="handleTouchPrint" plain v-if="getOrgID === 491 || 310 || 342 || 362 || 542 || 574">打印本页</el-button>
+      <el-button type="primary" plain @click="handleTouchPrint" plain v-if="getOrgID === 491 || 310 || 342 || 362 || 542 || 574">打印本页</el-button>
     </div>
     <div>
       <el-divider content-position="left" class='title-margin'>基本信息</el-divider>

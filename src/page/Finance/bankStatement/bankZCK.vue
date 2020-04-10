@@ -828,7 +828,7 @@ export default {
     },
     loadData1() {
       const that = this;
-      let data4D = utils.getSession4D;
+      let data4D = utils.getSession4D();
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
           pageIndex: this.pageCurrent1 - 1,
@@ -866,7 +866,7 @@ export default {
     },
     loadData2() {
       const that = this;
-      let data4D=utils.getSession4D
+      let data4D=utils.getSession4D()
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
           pageIndex: this.pageCurrent2 - 1,
@@ -949,7 +949,7 @@ export default {
     //+++++++++++++++++++++招商银行暂存款逻辑+++++++++++++++++++++
     loadDataForZS() {
       const that = this;
-      let data4D = utils.getSession4D;
+      let data4D = utils.getSession4D();
       this.$http
         .post(
           this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
@@ -1006,7 +1006,7 @@ export default {
     //+++++++++++++++++++++建设银行暂存款逻辑+++++++++++++++++++++
     loadDataForJS() {
       const that = this;
-      let data4D = utils.getSession4D;
+      let data4D = utils.getSession4D();
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
           pageIndex: this.pageCurrentForJS - 1,
@@ -1063,7 +1063,7 @@ export default {
     //+++++++++++++++++++++中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForZX() {
       const that = this;
-      let data4D = utils.getSession4D;
+      let data4D = utils.getSession4D();
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/citic_bank/api/search", {
           pageIndex: this.pageCurrentForJS - 1,
@@ -1119,7 +1119,7 @@ export default {
     //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForJLZX() {
       const that = this;
-      let data4D = utils.getSession4D;
+      let data4D = utils.getSession4D();
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search", {
           pageIndex: this.pageCurrentForJLZX - 1,
