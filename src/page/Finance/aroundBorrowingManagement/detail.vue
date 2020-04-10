@@ -519,11 +519,13 @@
       }
     },
     created() {
+
       if(sessionStorage.getItem('userCode') == 'TC00636' || sessionStorage.getItem('userCode') == 'KH00947') {
         this.isShowDY = true;
       } else {
         this.isShowDY = false;
       }
+      
     },
     mounted() {
 
