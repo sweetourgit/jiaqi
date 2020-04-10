@@ -211,7 +211,9 @@
               <div v-if="scope.row.checkTypeEX === '通过'" style="color: #33D174" >{{ scope.row.checkTypeEX }}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="supplierType" label="借款类型" align="center"></el-table-column>
+          <el-table-column prop="supplierTypeEX" label="借款类型" align="center">
+
+          </el-table-column>
           <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
           <el-table-column prop="price" label="金额" align="center"></el-table-column>
           <el-table-column prop="expensePrice" label="已核销金额" align="center"></el-table-column>
@@ -309,8 +311,9 @@
     </el-drawer>
     <!-- 通过、驳回弹框 END -->
     <!-- 付款账户弹窗 -->
-    <el-dialog title="选择账户" :visible.sync="ifLookAccountDialog" width="1100px" custom-class="city_list">
-      <el-table :data="tableAccount" stripe border :header-cell-style="getRowClass">
+    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="ifLookAccountDialog">
+      <el-divider class="mb-40">选择账户</el-divider>
+      <el-table class="el-drawer-content" :data="tableAccount" stripe border :header-cell-style="getRowClass">
         <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
         <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
         <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
@@ -322,7 +325,7 @@
           </template>
         </el-table-column>
       </el-table>
-    </el-dialog>
+    </el-drawer>
     <!-- 付款账户弹窗 END -->
     <el-backtop></el-backtop>
   </div>
