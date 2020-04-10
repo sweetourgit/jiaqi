@@ -12,7 +12,7 @@
       <el-button
         icon="el-icon-circle-close"
         @click="handlePass"
-        type="primary"
+        type="success"
         plain
         :disabled="ifPassClick"
         v-if="(ifDY100009 && creatUserOrgID === 490) || ( ifDY100042 && creatUserOrgID !== 490)"
@@ -31,6 +31,7 @@
         支付账户
       </el-button>
       <el-button
+        type="primary"
         icon="el-icon-printer"
         @click="printDetails"
         plain
