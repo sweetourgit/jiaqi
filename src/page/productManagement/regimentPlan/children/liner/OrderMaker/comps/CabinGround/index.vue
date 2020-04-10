@@ -1,9 +1,5 @@
-<style>
-
-</style>
-
 <template>
-  <div style="padding-bottom: 40px; border-bottom: 1px solid #cecece;">
+  <div style="padding-bottom: 40px;">
     <div style="padding: 10px 0 10px 0;">
       <el-button type="primary" size="small"
         @click="awakeEditor">
@@ -23,22 +19,30 @@
         label-width="120px" 
         ref="submitForm"
         :model="submitForm">
-        <el-form-item label="拼住/整间：" prop="name"></el-form-item>
+        <el-form-item label="拼住/整间：" prop="name">
+          {{ CABIN_SPLIT_TYPE.getLabel(submitForm.cabin_type) }}
+        </el-form-item>
         <el-form-item label="报名人数：" prop="name" style="margin: 0;">
           <div style="display:flex;flex-direction:column;">
             <div>
               <span>成人 ￥</span>
               <span>{{ computedPrice | priceFilter }}</span>
-              <span>{{ ` *${ currentCabin.guests.length }` }}</span>
+              <span>{{ ` * ${ currentCabin.guests.length }` }}</span>
             </div>
-            <el-input-number v-model="submitForm.num" :min="1" :max="10000" :step="1" label="描述文字" size="small"
+            <el-input-number size="small"
+              v-model="submitForm.num" 
+              :min="skuPrice.min_stay" 
+              :max="skuPrice.max_stay* skuPrice.room_stock"
+              :step="1"
               @change="changeHandler">
             </el-input-number>
             <div>
-              剩余完整房间：4间 可住16人  |   剩余拼住房间：1间 可住3人  |  可住19人
+              <span>{{ `剩余完整房间：${computedInfo.all_rooms}间 可住${computedInfo.all_total}人  ` }}</span>
+              <span>{{ `|   剩余拼住房间：${computedInfo.part_rooms}间 可住${computedInfo.part_total}人  |` }}</span>
+              <span>{{ `  可住${computedInfo.all_total+ computedInfo.part_total}人` }}</span>
             </div>
             <div>
-              {{ this.skuPrice }}
+              {{ `至少报名 ${skuPrice.min_stay} 人` }}
             </div>
           </div>
           
@@ -53,8 +57,10 @@
 </template>
 
 <script>
-import { getSkuPriceDTO } from '@/page/productManagement/planInventory/liner/dictionary'
-import { getCabinDTO } from '../../dictionary'
+import { 
+  CABIN_SPLIT_TYPE,
+  getSkuPriceDTO, getCabinDTO 
+} from '../../dictionary'
 import TitleBar from './comps/TitleBar'
 import CabinEditor from './comps/CabinEditor'
 
@@ -71,8 +77,36 @@ export default {
       })
     },
     computedPrice(){
-      // let { adult_same_price, adult_straight_price }= this.skuPrice;
-      return this.isCommonPrice? this.skuPrice.adult_same_price: this.skuPrice.adult_straight_price;
+      let { adult_same_price, adult_straight_price }= this.skuPrice;
+      return this.isCommonPrice? adult_same_price: adult_straight_price;
+    },
+    computedInfo(){
+      let all_rooms= 0;
+      let all_nums= 0;
+      let all_total= 0;
+      let part_rooms= 0;
+      let part_nums= 0;
+      let part_total= 0;
+      this.cabin.forEach(el => {
+        let { guests, cabin_type }= el;
+        let { room_stock, max_stay }= el.sku_price;
+        if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
+          all_total+= room_stock* max_stay
+          all_rooms+= room_stock;
+          all_rooms-= Math.ceil(guests.length/max_stay);
+          all_nums+= guests.length;
+          all_total-= guests.length;
+        }
+        if(cabin_type=== CABIN_SPLIT_TYPE.PART){
+          part_total+= room_stock* max_stay
+          part_rooms+= room_stock;
+          part_rooms-= Math.ceil(guests.length/max_stay);
+          part_nums+= guests.length;
+          console.log(guests)
+          part_total-= guests.length;
+        }
+      })
+      return { all_rooms, all_nums, all_total, part_rooms, part_nums, part_total };
     }
   },
 
@@ -80,7 +114,7 @@ export default {
     return Object.assign(
       {
         submitForm: {
-          num: 0,
+          num: 3,
         },
         // 下单中报站的舱房类型
         cabin: [],
@@ -92,6 +126,7 @@ export default {
         skuCabins: [],
         currentCabin: getCabinDTO(),
         skuPrice: getSkuPriceDTO(),
+        CABIN_SPLIT_TYPE
       }
     )
   },
@@ -109,7 +144,15 @@ export default {
 
     changeHandler(nval, oval){
       console.log(nval, oval)
-      this.submitForm.num+= 100;
+      this.currentCabin.guests.push({});
+    },
+
+    partChangeHandler(){
+
+    },
+
+    allChangeHandler(){
+
     },
 
     addCabin(cabin){
@@ -126,6 +169,7 @@ export default {
       if('key' in cabin) cabin= this.cabin.find(el => el.sku_price.id=== cabin.key);
       this.currentCabin= cabin;
       this.$assign(this.skuPrice, cabin.sku_price);
+      this.$assign(this.submitForm, { num: cabin.guests.length, cabin_type: cabin.cabin_type });
     },
 
     removeCabin(index){

@@ -188,7 +188,7 @@ export default {
 
     listAdaptor(sku_plan){
       let { set_out_year, set_out_month, set_out_day }= sku_plan;
-      sku_plan.status= Random.integer(1, 5);
+      sku_plan.status= 1 // Random.integer(1, 5);
       sku_plan.statusText= PLAN_STATUS.getLabel(sku_plan.status);
       sku_plan.billStatusText= CHECK_STATUS.getLabel(sku_plan.bill_status);
       sku_plan.time= set_out_year+ set_out_month.padStart(3, '-0')+ set_out_day.padStart(3, '-0');

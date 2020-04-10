@@ -91,7 +91,8 @@ export default {
       this.$refs.submitForm.validate(bol => {
         if(!bol) return;
         let skuPrice= this.skuCabinsOptions.find(el => el && el.id=== this.submitForm.id);
-        let cabin= getCabinDTO(skuPrice);
+        let cabin= getCabinDTO(skuPrice, true);
+        cabin.cabin_type= this.submitForm.cabin_type;
         skuPrice.selected= true;
         this.$emit('submit', cabin);
         this.handleClose();

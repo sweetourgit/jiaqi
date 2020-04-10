@@ -18,7 +18,20 @@ export const REFUND_STATUS= dictionaryMaker({
   SUCCESS: { label: '完成退款', value: 6 },
 })
 
-export const getCabinDTO= function(skuPrice){
+export const getSkuPriceDTO= function(){
+  return {
+    cabin_id: null,
+    title: '',
+    min_stay: null,
+    max_stay: null,
+    stock: null,
+    adult_same_price: null,
+    adult_straight_price: null,
+    line_status: 1
+  }
+}
+
+export const getCabinDTO= function(skuPrice, fillGuests){
   let cabin= {
     cabin_type: CABIN_SPLIT_TYPE.PART,
     adult_price: 0,
@@ -28,15 +41,11 @@ export const getCabinDTO= function(skuPrice){
     full: 0,
     guests: []
   }
+  for(let i=0; i< (fillGuests? skuPrice.min_stay: 0); i++) cabin.guests.push(getCabinGuestDTO(skuPrice));
   Object.defineProperty(cabin, 'sku_price', {
     value: skuPrice,
     enumerable: false,
     configurable: false
-  })
-  Object.defineProperty(cabin, 'selected', {
-    value: skuPrice,
-    enumerable: false,
-    configurable: true
   })
   return cabin;
 }
