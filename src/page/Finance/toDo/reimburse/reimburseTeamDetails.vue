@@ -7,7 +7,7 @@
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
-      <el-button icon="el-icon-remove" type="warning" plain @click="handleCancel">取消</el-button>
+      <el-button icon="el-icon-remove" plain @click="handleCancel">取消</el-button>
       <el-button icon="el-icon-circle-check" type="success" plain @click="handlePassBtn">通过</el-button>
       <el-button icon="el-icon-circle-close" type="danger" plain @click="handleRejectBtn">驳回</el-button>
     </div>
@@ -119,38 +119,42 @@
     </el-row>
     <!-- 审核结果 END -->
     <!-- 通过、驳回弹框 -->
-    <el-dialog :title="title" :visible.sync="transitShow" width="40%" custom-class="city_list">
-      <textarea rows="8" v-model="commentText" style="overflow: hidden; width:99%;margin:0 0 20px 0;"></textarea>
-      <el-row>
-        <el-col :span="2" :offset="21">
-          <el-button @click="handlePassConfirm" type="primary" :loading="loadingBtn">确定</el-button>
-        </el-col>
-      </el-row>
-    </el-dialog>
+    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="transitShow">
+      <el-divider class="mb-40">{{ approveDialogTitle }}</el-divider>
+      <div class="el-drawer-content">
+        <el-input type="textarea" v-model="commentText"></el-input>
+      </div>
+      <div style="display: flex; justify-content: flex-end;margin:30px 2% 0 0;">
+        <el-button icon="el-icon-close" size="small" plain @click="handlePassCancel">取消</el-button>
+        <el-button icon="el-icon-check" size="small" type="primary" plain @click="handlePassConfirm">确定</el-button>
+      </div>
+    </el-drawer>
     <!-- 通过、驳回弹框 END -->
-    <el-dialog width="60%" title="打印" :visible="ifShowPrintTable" :before-close="handlePrintClose">
-      <el-tabs>
-        <el-tab-pane v-for="item in changeData" :key="item.id" :label="'报销 - ' + String(item.id)">
-            <el-table :data="item.arr" stripe border style=" width:90%; margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
-              <el-table-column prop="parentID" label="拆分前借款单ID" width="150" align="center"></el-table-column>
-              <el-table-column prop="id" label="新无收入借款单ID" align="center"></el-table-column>
-              <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
-              <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
-              <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
-              <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
-              <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
-              <el-table-column prop="opinion" label="操作" align="center">
-                <template slot-scope="scope">
-                  <el-button icon="el-icon-printer" @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-        </el-tab-pane>
-      </el-tabs>
-    </el-dialog>
+    <el-drawer direction="rtl" size="42%" :show-close="false" :visible.sync="ifShowPrintTable" :before-close="handleApproveClose">
+      <el-divider class="mb-40">打印数据</el-divider>
+      <div class="el-drawer-content">
+        <el-tabs>
+          <el-tab-pane v-for="item in changeData" :key="item.id" :label="'报销 - ' + String(item.id)">
+              <el-table :data="item.arr" stripe border style=" width:98%; margin: 20px auto" :header-cell-style="getRowClass">
+                <el-table-column prop="parentID" label="拆分前借款单ID" width="150" align="center"></el-table-column>
+                <el-table-column prop="id" label="新无收入借款单ID" align="center"></el-table-column>
+                <el-table-column prop="supplierTypeEX" label="借款类型" align="center"></el-table-column>
+                <el-table-column prop="supplierName" label="供应商" align="center"></el-table-column>
+                <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
+                <el-table-column prop="mark" label="摘要" align="center"></el-table-column>
+                <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
+                <el-table-column prop="opinion" label="操作" align="center">
+                  <template slot-scope="scope">
+                    <el-button icon="el-icon-printer" @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </el-drawer>
     <!-- 打印信息 -->
     <div ref="print" v-if="isShowPrintContent">
-<!--      <div class="print-title">{{ getTopName }} - {{ presentRouter == '无收入借款管理' ? '无收入借款' : '预付款' }} - 借款单 </div>-->
       <!-- 基本信息 -->
       <div class="item-content print-hidden">
         <el-tag type="warning" v-if="fundamental.checkType === '0'" class="distributor-status">审批中</el-tag>
@@ -237,12 +241,15 @@
       </el-row>
     </div>
     <!-- 参看拆分/还款弹窗 -->
-    <el-dialog :title="title" :visible.sync="expenseType" width="40%" custom-class="city_list">
-      <p v-show="this.showExpenseType === 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
-      <p v-show="this.showExpenseType === 0"><span>没有进行相关操作</span></p>
-      <p style="margin-top: 10px;" v-show="this.showExpenseType === 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
-      <p style="margin-top: 10px;" v-show="this.showExpenseType === 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showAccountName }}</strong ></span></p>
-    </el-dialog>
+    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="expenseType">
+      <el-divider class="mb-40">借款状态</el-divider>
+      <div class="el-drawer-content">
+        <p v-show="this.showExpenseType === 1"><span>拆分/还款: <strong  style="margin-left: 10px;">拆分</strong ></span></p>
+        <p v-show="this.showExpenseType === 0"><span>没有进行相关操作</span></p>
+        <p style="margin-top: 10px;" v-show="this.showExpenseType === 2"><span>拆分/还款: <strong  style="margin-left: 10px;">还款</strong ></span></p>
+        <p style="margin-top: 10px;" v-show="this.showExpenseType === 2"><span>汇款/现金: <strong  style="margin-left: 10px;">{{ showAccountName }}</strong ></span></p>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -270,7 +277,7 @@
         getApproveListGuid: null, // 获取列表页的的guid
         commentText: '', // 驳回通过内容
         transitShow: false, // 通过驳回弹窗
-        title: '', // 通过驳回弹窗标题切换
+        approveDialogTitle: '', // 通过驳回弹窗标题切换
         getParamsWorkItemId: null, // 工作流接口参数
         keepTabId: [],
         tabCount: [], // 计数开关
@@ -345,6 +352,14 @@
         window.open(file.url);
       },
       moment,
+      handleApproveClose () {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            this.ifShowPrintTable = false;
+            done();
+          })
+          .catch(_ => {});
+      },
       // 获取审核结果
       auditResult (paramsGuid) {
         let that = this;
@@ -408,11 +423,14 @@
       // 通过审批/驳回，弹窗确定按钮
       handlePassConfirm () {
         this.loadingBtn = true;
-        if (this.title === "审批通过") {
+        if (this.approveDialogTitle === "审批通过") {
           this.handlePassApi();
         } else {
           this.handleRejectFn();
         }
+      },
+      handlePassCancel () {
+        this.transitShow = false;
       },
       // 工作流通过方法
       handlePassApi () {
@@ -455,9 +473,9 @@
             if (this.tabCount === 0) {
               this.ifShowPrintTable = true;
             }
-            console.log(this.changeData, '/api/listforexpense 进入打印方法')
+            // console.log(this.changeData, '/api/listforexpense 进入打印方法')
           } else {
-            console.log(keepObjLength);
+            // console.log(keepObjLength);
             this.backListPage();
           }
         })
@@ -470,7 +488,7 @@
        /* this.printExpenseType.forEach(item => {
           this.keepTabId.push(item);
         });*/
-        console.log(this.printExpenseType, '一共有多少个报销id')
+        // console.log(this.printExpenseType, '一共有多少个报销id')
         this.printExpenseType.forEach(item => {
           this.tabCount = this.printExpenseType.length; // 计数开关
           // 获取一条审批状态 checkType = 1 方可打印
@@ -478,7 +496,7 @@
             id: item // 报销ID
           })
           .then(obj => {
-            console.log(obj.data.object.isEBS)
+            // console.log(obj.data.object.isEBS)
             if (obj.data.object.isEBS === 1) {
               this.tabCount--;
               if (this.tabCount >= 0) {
@@ -487,7 +505,7 @@
               if (this.tabCount < 0) {
                 this.tabCount = 0
               }
-              console.log(this.tabCount,'checkType 已经等于 1 了，/api/getchecktype')
+              // console.log(this.tabCount,'checkType 已经等于 1 了，/api/getchecktype')
             } else {
               setTimeout(function () {
                 _this.handlePassFn()
@@ -538,7 +556,7 @@
       },
       // 通过
       handlePassBtn () {
-        this.title = "审批通过";
+        this.approveDialogTitle = "审批通过";
         this.transitShow = true;
       },
       // 驳回成功通过guid将checktype修改成2
@@ -552,7 +570,7 @@
       },
       // 驳回
       handleRejectBtn () {
-        this.title = "审批驳回";
+        this.approveDialogTitle = "审批驳回";
         this.transitShow = true;
       },
       // 取消
@@ -575,7 +593,23 @@
   }
 </script>
 
+<style lang="scss">
+  .el-drawer{
+    overflow-y: auto;
+  }
+  .el-divider__text{
+    font-size: 16px !important
+  }
+</style>
+
 <style scoped lang="scss">
+  .el-drawer-content{
+    width: 96%;
+    margin: 0 auto;
+  }
+  .mb-40{
+    margin-bottom: 40px;
+  }
   .loan-management{
     width: 99%;
     margin: 25px auto;
