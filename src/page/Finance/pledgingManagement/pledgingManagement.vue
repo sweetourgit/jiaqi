@@ -48,6 +48,7 @@
 import Record from '@/page/Finance/pledgingManagement/pledgingManagementInfo/record'
 import Approval from '@/page/Finance/pledgingManagement/pledgingManagementInfo/approval'
 import StartNumber from '@/page/Finance/pledgingManagement/pledgingManagementInfo/startNumber'
+import moment from 'moment'
 export default {
   name: "pledgingManagement",
   components: {
@@ -85,7 +86,18 @@ export default {
   watch: {},
   methods: {
     exportrecognition(){
-      window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/exportrecognition?tour_no=" + this.activeForm.tour + "&create_uid=" + this.activeForm.userID + "&start_time=" + this.activeForm.startTime + "&end_time=" + this.activeForm.endTime;
+      let start = '', end = '';
+      if(this.activeForm.startTime){
+        start = moment(this.activeForm.startTime).format('YYYY-MM-DD');
+      }
+      if(this.activeForm.endTime){
+        end = moment(this.activeForm.endTime).format('YYYY-MM-DD');
+      }
+      if(this.$refs.record.tableData == 0){
+        this.$message.warning("无搜索数据导出，请重新搜索！");
+      }else{
+        window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/exportrecognition?tour_no=" + this.activeForm.tour + "&create_uid=" + this.activeForm.userID + "&start_time=" + start + "&end_time=" + end;
+      }
     },
     getNumber(number) {
       this.number = number;

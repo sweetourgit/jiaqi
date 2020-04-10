@@ -139,7 +139,7 @@ export default {
 
     loadDataRecord(){
       const that = this;
-      console.log(this.$parent.$parent.$parent);
+      // console.log(this.$parent.$parent.$parent);
       this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/recognitionpage", {
         "pageIndex": this.pageIndex,
         "pageSize": this.pageSize,
@@ -150,7 +150,7 @@ export default {
         "end_time": this.$parent.$parent.$parent.activeForm.endTime
       }, ).then(function(response) {
         if (response.data.code == '200') {
-          console.log(response);
+          // console.log(response);
           that.tableData = response.data.data.list;
           that.total = response.data.data.total - 0;
           that.tableData.forEach(function (item, index, arr) {
