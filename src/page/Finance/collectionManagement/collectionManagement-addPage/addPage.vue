@@ -1,14 +1,12 @@
 <!-- 2020-3-31 -->
 <template>
   <!-- 申请填写同业收款表单-弹窗 -->
-
   <article class="content">
-    <el-dialog :title="getTitle(mode)" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" width=1100px
-      :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd">
+    <el-drawer  :show-close="false" :visible="dialogFormVisible"   @close="canelHandle">
       <header class="header">
-        <section style="position:absolute;z-index:9;top:8px;right:1%;">
-          <el-button @click="canelHandle">取 消</el-button>
-          <el-button type="primary" @click="submitForm('ruleForm')" :disabled="ifShowApply">申 请</el-button>
+        <section style="position:relative">
+          <!-- <el-button @click="canelHandle">取 消</el-button> -->
+          <el-button type="primary" @click="submitForm('ruleForm')" style="position:fixed;right:10px;top:1%;" :disabled="ifShowApply">申 请</el-button>
         </section>
       </header>
       <main>
@@ -53,7 +51,7 @@
         </el-form>
         <accountsReceivable @clickPlan="clickPlan" @chooseAccount="chooseAccount"></accountsReceivable>
       </main>
-    </el-dialog>
+    </el-drawer>
   </article>
   <!-- 申请同业收款 END -->
 </template>
@@ -136,7 +134,7 @@
       //修改关联欠款表 ++++++++++++++++++++++++
       updateArrearsList() {
         let obj = this.getArrearsList
-       
+
         if (obj.data.objects == null) {
           this.ifShowApply = true
           this.$message.success('该同业社下无关联欠款，无法申请同业收款');

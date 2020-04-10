@@ -1,48 +1,29 @@
 <template>
   <div>
-    <el-row :gutter="10">
-      <el-col :span="12">
-        <el-form-item label="收款时间" prop="collectionTime" label-width="120px">
-          <el-date-picker style="width:100%" v-model="ruleForm.collectionTime" type="date" placeholder="收款时间"></el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item label="同业社名称" prop="sameTrade" label-width="120px">
-          <el-autocomplete style="width:100%" v-model="ruleForm.sameTrade" :fetch-suggestions="getPeersList"
-            placeholder="请输入同业社名称" :trigger-on-focus="false" @select="getArrearsList"></el-autocomplete>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
-          <el-input style="width:78.5%" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
-          <el-button style="width:20%" class="collection" @click="account()" :disabled="change">选择</el-button>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item label="收款金额" prop="price" label-width="120px">
-          <el-input style="width:100%" v-model="ruleForm.price" placeholder="收款金额" :disabled="change"></el-input>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <el-form-item label="摘要" prop="abstract" label-width="120px">
-          <el-input style="width:100%" v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item label="凭证" prop="voucher" label-width="120px" ref="voucher">
-          <el-upload style="width:30%" :file-list="fileList" class="upload-demo" name="files" multiple :action="this.uploadUrl"
-            :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview">
-
-            <el-button size="small" type="primary">上传文件</el-button>
-          </el-upload>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-form-item label="是否选择发票" prop="isInvoice" label-width="120px">
+    <el-form-item label="收款时间" prop="collectionTime" label-width="20%">
+      <el-date-picker style="width:100%" v-model="ruleForm.collectionTime" type="date" placeholder="收款时间"></el-date-picker>
+    </el-form-item>
+    <el-form-item label="同业社名称" prop="sameTrade" label-width="20%">
+      <el-autocomplete style="width:100%" v-model="ruleForm.sameTrade" :fetch-suggestions="getPeersList" placeholder="请输入同业社名称"
+        :trigger-on-focus="false" @select="getArrearsList"></el-autocomplete>
+    </el-form-item>
+    <el-form-item label="收款账户" prop="collectionNumber" label-width="20%">
+      <el-input style="width:78.20%" v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
+      <el-button style="width:20%" class="collection" @click="account()" :disabled="change">选择</el-button>
+    </el-form-item>
+    <el-form-item label="收款金额" prop="price" label-width="20%">
+      <el-input style="width:100%" v-model="ruleForm.price" placeholder="收款金额" :disabled="change"></el-input>
+    </el-form-item>
+    <el-form-item label="摘要" prop="abstract" label-width="20%">
+      <el-input style="width:100%" v-model="ruleForm.abstract" placeholder="摘要" :disabled="change"></el-input>
+    </el-form-item>
+    <el-form-item label="凭证" prop="voucher" label-width="20%" ref="voucher">
+      <el-upload style="width:30%" :file-list="fileList" class="upload-demo" name="files" multiple :action="this.uploadUrl"
+        :on-error="handleError" :on-success="handleSuccess" :on-remove="handleRemove" :on-preview="handlePreview">
+        <el-button size="small" type="primary">上传文件</el-button>
+      </el-upload>
+    </el-form-item>
+    <el-form-item label="是否选择发票" prop="isInvoice" label-width="20%">
       <el-radio-group v-model="ruleForm.isInvoice" @change="isInvoiceHandle">
         <el-radio label="1">是</el-radio>
         <el-radio label="0">否</el-radio>
@@ -139,7 +120,7 @@
           }).then(obj => {
             if (obj.code == 422) {
               this.$message.success('该同业社下无关联欠款，无法申请同业收款');
-              return 
+              return
             }
             obj = utils.convertArrearsListForCruiseShip()
             that.setArrearsList(obj)

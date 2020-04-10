@@ -253,7 +253,7 @@ export default {
               this.GLOBAL.serverSrc + "/finance/bankofchina/api/ImportEBS",
               {
                 ids: idArr,
-                type: 1
+                type: 8
               }
             )
             .then(function(response) {

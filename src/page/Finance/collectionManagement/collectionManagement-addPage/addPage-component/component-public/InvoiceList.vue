@@ -3,7 +3,7 @@
   <!-- 但是每个子组件的data定义的字段又不一样 故还是用父子组件传参来实现 -->
   <!-- 这里需要改 -->
   <div label="" label-width="30px" label-height="auto" style="margin-top: -21px;" v-if="dialogVisibleInvoice">
-    <el-button style="margin: 5px 0 10px 0;" @click="handleEdit" type="primary">添加</el-button>
+    <el-button style="margin: 5px 0 10px 2%;" @click="handleEdit" type="primary">添加</el-button>
     <!-- 发票表格 -->
     <!-- 这里需要改 -->
     <el-table :data="ruleForm.invoiceList" border style="width: 100%;">
