@@ -8,8 +8,9 @@
   <div class="loan-management">
     <!-- 按钮组 -->
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
-      <el-button plain @click="handleCancel()">取消</el-button>
+      <el-button icon="el-icon-remove" plain @click="handleCancel()">取消</el-button>
       <el-button
+        icon="el-icon-circle-close"
         @click="handlePass"
         type="primary"
         plain
@@ -18,9 +19,10 @@
       >
         通过
       </el-button>
-      <el-button @click="handlePass" type="success" plain v-else>通过</el-button>
-      <el-button @click="handleRejected" type="danger" plain>驳回</el-button>
+      <el-button icon="el-icon-circle-check" @click="handlePass" type="success" plain v-else>通过</el-button>
+      <el-button icon="el-icon-circle-close" @click="handleRejected" type="danger" plain>驳回</el-button>
       <el-button
+        icon="el-icon-s-check"
         type="danger"
         :disabled="ifClick"
         @click="handleBankAccount"
@@ -29,8 +31,8 @@
         支付账户
       </el-button>
       <el-button
+        icon="el-icon-printer"
         @click="printDetails"
-        type="success"
         plain
         v-if="(ifDY100009 && creatUserOrgID === 490) || (ifDY100042 && creatUserOrgID !== 490)"
       >
@@ -220,8 +222,8 @@
           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
           <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-if="scope.row.guid !== ''">查看</el-button>
-              <el-button plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-else>查看</el-button>
+              <el-button icon="el-icon-view" type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-if="scope.row.guid !== ''">查看</el-button>
+              <el-button icon="el-icon-view" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-else>查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -248,8 +250,8 @@
           <el-table-column prop="createName" label="申请人" align="center"></el-table-column>
           <el-table-column prop="process" label="审批过程" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-if="scope.row.guid !== ''">查看</el-button>
-              <el-button plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-else>查看</el-button>
+              <el-button icon="el-icon-view" type="primary" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-if="scope.row.guid !== ''">查看</el-button>
+              <el-button icon="el-icon-view" plain size="small" @click="handleLookApprovalProcess(scope.$index, scope.row,1)" v-else>查看</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -307,29 +309,35 @@
         <el-input type="textarea" v-model="approvalOpinion"></el-input>
       </div>
       <div style="display: flex; justify-content: flex-end;margin:30px 2% 0 0;">
-        <el-button size="small" plain @click="handleApproveDialogCancel">取消</el-button>
-        <el-button size="small" type="primary" plain @click="handleApproveDialogConfirm">确定</el-button>
+        <el-button icon="el-icon-close" size="small" plain @click="handleApproveDialogCancel">取消</el-button>
+        <el-button icon="el-icon-check" size="small" type="primary" plain @click="handleApproveDialogConfirm">确定</el-button>
       </div>
     </el-drawer>
     <!-- 通过、驳回弹框 END -->
     <!-- 付款账户弹窗 -->
-    <el-drawer class="drawer" direction="rtl" size="30%" :show-close="false" :visible.sync="ifLookAccountDialog">
+    <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="ifLookAccountDialog">
       <el-divider class="mb-40">选择账户</el-divider>
       <el-table class="el-drawer-content" :data="tableAccount" stripe border :header-cell-style="getRowClass">
-        <el-table-column prop="cardType" label="类型" align="center"></el-table-column>
+        <el-table-column label="类型" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.cardType === 1">收款</span>
+            <span v-if="scope.row.cardType === 2">付款</span>
+            <span v-if="scope.row.cardType === 3">应收</span>
+            <span v-if="scope.row.cardType === 4">应付</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="title" label="账号名称" align="center"></el-table-column>
         <el-table-column prop="cardNum" label="卡号" align="center"></el-table-column>
         <el-table-column prop="openingBank" label="开户行" align="center"></el-table-column>
         <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="handleSelectBankAccount(scope.$index, scope.row)">选择</el-button>
+            <el-button icon="el-icon-check" type="primary" plain size="small" @click="handleSelectBankAccount(scope.$index, scope.row)">选择</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-drawer>
     <!-- 付款账户弹窗 END -->
-    <el-backtop></el-backtop>
   </div>
 </template>
 
@@ -365,9 +373,9 @@
         tableIncomeCheck: null, // 审批过程-查看弹窗-数据
         fundamental: {}, // 打印详情数据
         tableMoney: [], // 相关信息表格表格
-        tablePayment:[], // 预付款明细表格
-        tableIncome:[], // 无收入借款明细弹窗
-        tableAccount:[], // 银行账户表格数据
+        tablePayment: [], // 预付款明细表格
+        tableIncome: [], // 无收入借款明细弹窗
+        tableAccount: [], // 银行账户表格数据
         ifLookApproveProcessDialog: false, // 查看审批过程
         ifLookAccountDialog: false, // 银行账户弹窗
         tableEarning: [], // 收入明细表格
@@ -455,28 +463,30 @@
           console.log( err )
         })
       },
-      // 审批过程-查看按钮触发（ GetInstanceActityInfoListForJQ_Lite_BY_JQIDAndJQType -> 这是查看审批之后的流程日子 ）
-      handleLookApprovalProcess (index, row, type) {
-
-        if (row.guid === '') {
+      // 查看审批流程对异常情况做出提示（写的不太理想）
+      mesApprove (paramsGuid, paramsCode) {
+        if (paramsGuid === '' || paramsCode === -1) {
           this.$message({
-            message: '该条信息无审批流程',
+            message: '该条数据无审批流程',
             type: 'warning'
           });
         }
+      },
+      // 审批过程-查看按钮触发
+      handleLookApprovalProcess (index, row, type) {
+        this.mesApprove(row.guid);
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
           jq_id:	row.guid,
           jQ_Type: type,
         }).then(obj => {
           let keepObj = obj.data;
+          // 禁止直行两次
+          if ( row.guid !== '') {
+            this.mesApprove(row.guid, keepObj.code);
+          }
           if (keepObj.code !== -1) {
             this.tableIncomeCheck = keepObj.extend.instanceLogInfo;
             this.ifLookApproveProcessDialog = true;
-          } else {
-            this.$message({
-              message: '该条信息无审批流程',
-              type: 'warning'
-            });
           }
         }).catch(err => {
           console.log( err );
@@ -641,39 +651,37 @@
   }
 </script>
 
+<style lang="scss">
+  .el-drawer{
+    overflow-y: auto;
+  }
+</style>
+
 <style scoped lang="scss">
   .el-divider__text{
     font-size: 16px !important
-  }
-  .mb-40{
-    margin-bottom: 40px;
   }
   .el-drawer-content{
     width: 96%;
     margin: 0 auto;
   }
-  .collapse-m{
-    margin: 30px 0;
+  .mb-40{
+    margin-bottom: 40px;
   }
-  .base-value{
-    color: #000;
-  }
-  .drawer{
-    overflow-y: auto;
-  }
+
   .loan-management{
     width: 99%;
     margin: 25px auto 50px;
     height: auto;
     border: 1px solid #e6e6e6;
-    .title-margin{
-      margin-bottom: 30px;
-    }
     .item-content{
       margin-bottom: 20px;
     }
-    .title-margin-t{
-      margin-top: 45px;
+    .base-value{
+      color: #000;
+    }
+    .collapse-m{
+      margin: 30px 0;
     }
     /* 先隐藏打印的时候显示 */
     .print-title{
