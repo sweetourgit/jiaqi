@@ -35,6 +35,19 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="24">
+            <el-form-item label="收款账户:" prop="collectionAccountSel">
+              <el-collapse class="collapse-m" v-model="collapseAccount">
+                <el-collapse-item name="collapseNameAccount">
+                  <el-checkbox-group v-model="ruleFormSearch.collectionAccountSel" @change="handleCheckbox" style="margin: 0 auto; width: 98%;">
+                    <el-checkbox :label="item.id" v-for="(item,index) in collectionAccountInfos" :key="index"> {{item.value}} </el-checkbox>
+                  </el-checkbox-group>
+                </el-collapse-item>
+              </el-collapse>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="收款时间:">
               <el-col :span="11">
@@ -54,19 +67,6 @@
             <el-form-item>
               <el-button type="primary" icon="el-icon-search"  @click="HandleSearchApproveCollect(whichCollectTeamTab)">搜索</el-button>
               <el-button type="primary" icon="el-icon-s-open" plain @click="HandleResetApprovalCollect('ruleFormSearch', whichCollectTeamTab)">重置</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="收款账户:" prop="collectionAccountSel">
-              <el-collapse class="collapse-m" v-model="collapseAccount">
-                <el-collapse-item name="collapseNameAccount">
-                  <el-checkbox-group v-model="ruleFormSearch.collectionAccountSel" @change="handleCheckbox">
-                    <el-checkbox :label="item.id" v-for="(item,index) in collectionAccountInfos" :key="index"> {{item.value}} </el-checkbox>
-                  </el-checkbox-group>
-                </el-collapse-item>
-              </el-collapse>
             </el-form-item>
           </el-col>
         </el-row>

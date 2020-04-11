@@ -243,6 +243,16 @@ export default {
           this.fundamental = keepRes;
           this.tableInvoice = keepRes.invoiceTable;
           this.tableAuditResults = keepRes.spw;
+          // 控制折叠面板折叠
+          if (keepRes.spw.length > 0) {
+            this.collapseName.push('collapseApprove')
+          }
+          if (keepRes.invoiceTable.length > 0) {
+            this.collapseName.push('collapseInvoice')
+          }
+          if (keepRes.arrears.length > 0) {
+            this.collapseName.push('collapseAssociated')
+          }
           this.tour_id = keepRes.planID;
           this.tableManyRow = this.tableAssociated.length;
           this.tableAssociated.forEach(item => {
