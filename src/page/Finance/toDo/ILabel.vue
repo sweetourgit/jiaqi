@@ -138,13 +138,21 @@
         'countCollectTeamDirect',
         'countCollectTeamSame',
         'countCollectTeamInner',
-        'countCollectTeamReimburse'
+        'countCollectTeamReimburse',
+        'showTabI',
+        'showTabIII',
       ]),
     },
     created () {
 
     },
     mounted () {
+      console.log(this.showTabI)
+      this.tabIShowWhich = this.showTabI; // 通过在详情页取消时设置state，返回到当前组件时，取出这个状态值
+      this.tabIIICollectionTeamShowWhich = this.showTabIII;
+      this.handleClickILabel(this.showTabI);
+      this.handleClickIIITeamLabel(this.showTabIII);
+
       this.$refs.noInTeamDom.pendingApprovalTable('nameIINoInTeam'); // 跟团下的无收入（初始化加载所有tab下的表格数据，不能写在teamTable里面）
       this.$refs.advanceTeamDom.pendingApprovalTable('nameIIAdvanceTeam'); // 跟团下的预付款
       this.$refs.reimburseTeamDom.pendingApprovalTable('nameIIReimburseTeam'); // 跟团下的报销
@@ -157,8 +165,8 @@
     },
     methods: {
       // 一级标签切换时触发事件
-      handleClickILabel (tab, event) {
-        let keepTabName = tab.name;
+      handleClickILabel (tab) {
+        let keepTabName = tab.name ? tab.name : tab;
         this.whichTab = keepTabName;
         if (keepTabName === 'nameINoIn') {
           this.$refs.noInTeamDom.pendingApprovalTable('nameIINoInTeam');

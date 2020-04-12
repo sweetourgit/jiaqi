@@ -32,6 +32,8 @@ export default {
       'showCountCollectTeamSame',
       'showCountCollectTeamInner',
       'showCountCollectTeamReimburse',
+      'showWhichTabI',
+      'showWhichTabIII'
     ]),
     // 搜索
     HandleSearchApproveCollect (paramsModule) {
