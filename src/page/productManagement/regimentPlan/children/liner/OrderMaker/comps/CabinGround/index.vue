@@ -7,12 +7,13 @@
       </el-button>
     </div>
     <div style="padding-bottom: 22px;">
-      <TitleBar 
+      <LinkTitleBar
+        ref="titleBar" 
         :data-list="cabinTitles" 
         :options="{ deletable: true, badge: true }"
         @select="selectCabin"
         @close="removeCabin">
-      </TitleBar>
+      </LinkTitleBar>
     </div>
     <div v-show="cabin.length">
       <el-form
@@ -61,12 +62,12 @@ import {
   CABIN_SPLIT_TYPE,
   getSkuPriceDTO, getCabinDTO 
 } from '../../dictionary'
-import TitleBar from './comps/TitleBar'
+import LinkTitleBar from './comps/LinkTitleBar/index'
 import CabinEditor from './comps/CabinEditor'
 
 export default {
 
-  components: { TitleBar, CabinEditor },
+  components: { LinkTitleBar, CabinEditor },
 
   computed: {
     cabinTitles(){
@@ -157,17 +158,14 @@ export default {
 
     addCabin(cabin){
       this.cabin.push(cabin);
-      this.selectCabin(cabin);
     },
 
     /**
      * @description: 
      * @param {CabinTitle/Cabin/Null} cabin: 由外向内选通过cabin, 由内向外选通过cabinTitle
      */
-    selectCabin(cabin){
-      if(!cabin) return this.$assign(this.skuPrice, getSkuPriceDTO());
-      if('key' in cabin) cabin= this.cabin.find(el => el.sku_price.id=== cabin.key);
-      this.currentCabin= cabin;
+    selectCabin(index){
+      let cabin= this.cabin[index];
       this.$assign(this.skuPrice, cabin.sku_price);
       this.$assign(this.submitForm, { num: cabin.guests.length, cabin_type: cabin.cabin_type });
     },

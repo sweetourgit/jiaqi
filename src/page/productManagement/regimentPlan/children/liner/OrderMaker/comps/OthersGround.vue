@@ -3,8 +3,7 @@
 </style>
 
 <template>
-  <div style="padding:10px 0 40px 0; border-bottom: 1px solid #cecece; border-top: 1px solid #cecece;"
-    v-show="guestCount">
+  <div style="padding:10px 0 40px 0; border-bottom: 1px solid #cecece; border-top: 1px solid #cecece;">
     <el-form
       label-width="120px" 
       ref="submitForm">

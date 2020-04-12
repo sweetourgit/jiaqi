@@ -39,13 +39,19 @@
         剩余完整房间
       </div>
     </header>
-    <main>
+    <main style="padding-bottom: 80px;">
       <InfoGround ref="infoGround"></InfoGround>
       <ChannelGround ref="channelGround"></ChannelGround>
-      <CabinGround ref="cabinGround"></CabinGround>
+      <CabinGround ref="cabinGround"
+        @select-cabin="selectCabinHandler">
+      </CabinGround>
       <OthersGround ref="othersGround"
+        v-show="submitForm.cabin.length"
         :guest-count="guestCount">
       </OthersGround>
+      <GuestsGround ref="guestsGround"
+        v-show="submitForm.cabin.length">
+      </GuestsGround>
     </main>
   </div>
 </template>
@@ -61,12 +67,13 @@ import InfoGround from './comps/InfoGround'
 import ChannelGround from './comps/ChannelGround'
 import CabinGround from './comps/CabinGround'
 import OthersGround from './comps/OthersGround'
+import GuestsGround from './comps/GuestsGround'
 import { getSkuPlanInfo } from './api'
 
 let skuPlanCache;
 export default {
 
-  components: { InfoGround, ChannelGround, CabinGround, OthersGround },
+  components: { InfoGround, ChannelGround, CabinGround, OthersGround, GuestsGround },
   
   mounted(){
     let { sku_id, product_id }= this.$route.query;
@@ -102,6 +109,12 @@ export default {
       this.$refs.infoGround.init(skuPlanCache);
       this.$refs.cabinGround.init(this.submitForm.cabin, skuPlanCache);
       this.$refs.othersGround.init(skuPlanCache);
+      this.$refs.guestsGround.init(this.submitForm.cabin);
+    },
+
+    selectCabinHandler(cabin){
+      this.$refs.cabinGround.selectCabin(cabin);
+      this.$refs.guestsGround.selectCabin(cabin);
     }
   }
 
