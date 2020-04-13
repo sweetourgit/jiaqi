@@ -51,8 +51,8 @@ export default {
         dialogDate:false,
         guid:"",
         groupList: [],
-        multipleSelection: [],   //选中的list
-        forbidden:true,         //按钮是否禁用
+        multipleSelection: [],   
+        forbidden:true,         
         title:"",
         dialogFormVisible:false,
         rformB: {
@@ -85,7 +85,7 @@ export default {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun(val) {  
         this.multipleSelection=val;
         if(this.multipleSelection.length>0){
            this.forbidden=false;
@@ -93,11 +93,11 @@ export default {
            this.forbidden=true;
         }
       },
-      clickRow(row){    //选中行复选框勾选
-        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+      clickRow(row){    
+        this.$refs.multipleTable.clearSelection(); 
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){  
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
