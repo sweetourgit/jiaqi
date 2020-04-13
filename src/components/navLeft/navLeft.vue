@@ -42,7 +42,6 @@
     this.getMainList();
   },
   methods:{
-    //获取一级菜单
     getMainList(key,mainMenuId){
        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/initmenu').then(res => {
                 this.menu = res.data.objects;
@@ -51,7 +50,6 @@
                 }
         })
     },
-    //获取二级菜单
     getMenuList(key,mainMenuId){
        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/menus',{
              "object": {
