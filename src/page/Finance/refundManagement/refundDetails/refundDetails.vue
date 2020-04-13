@@ -540,6 +540,8 @@ export default {
       this.tableBorrowing = [];
       this.tableAccountt = [];
       this.activeName = 'first';
+      this.auidtName = [];
+      //document.getElementsByClassName("print")[0].style.display="none";
     },
     getJqId(result){ // 获取审批结果tableAudit
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ_BY_InstanceID',{
@@ -1025,7 +1027,7 @@ export default {
 .oh{overflow: hidden;}
 .opinions{float: left;margin: 0 0 0 13px; width: 500px;}
 .refundChargeClass{float: left;margin: 0 0 0 13px; width: 200px;}
-.print { width: 99%; color: black; margin: 0 auto 20px; overflow: hidden; line-height: 30px;display:none}
+.print{ width: 99%; color: black; margin: 0 auto 20px; overflow: hidden; line-height: 30px;display:block}
 .titlePrint{line-height: 40px;}
 .tc{text-align: center;}
 </style>
