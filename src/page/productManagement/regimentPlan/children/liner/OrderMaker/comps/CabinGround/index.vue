@@ -60,7 +60,7 @@
 <script>
 import { 
   CABIN_SPLIT_TYPE,
-  getSkuPriceDTO, getCabinDTO 
+  getSkuPriceDTO, getCabinDTO, getCabinGuestDTO 
 } from '../../dictionary'
 import LinkTitleBar from './comps/LinkTitleBar/index'
 import CabinEditor from './comps/CabinEditor'
@@ -144,8 +144,8 @@ export default {
     },
 
     changeHandler(nval, oval){
-      console.log(nval, oval)
-      this.currentCabin.guests.push({});
+      let skuPrice= this.currentCabin.sku_price;
+      this.currentCabin.guests.push(getCabinGuestDTO(skuPrice));
     },
 
     partChangeHandler(){
@@ -165,7 +165,9 @@ export default {
      * @param {CabinTitle/Cabin/Null} cabin: 由外向内选通过cabin, 由内向外选通过cabinTitle
      */
     selectCabin(index){
+      if(index < 0) return;
       let cabin= this.cabin[index];
+      this.currentCabin= cabin;
       this.$assign(this.skuPrice, cabin.sku_price);
       this.$assign(this.submitForm, { num: cabin.guests.length, cabin_type: cabin.cabin_type });
     },
@@ -177,7 +179,6 @@ export default {
       });
       this.$nextTick(() => {
         this.cabin.push(...result);
-        this.selectCabin(this.cabin[index]);
       });  
     }
   }

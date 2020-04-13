@@ -9,7 +9,8 @@
       ref="submitForm">
 
       <el-form-item label="大巴车：" prop="name">
-        <div style="display:flex;flex-direction:column;"
+        <div v-if="insure.length=== 0" style="color: gray;">(无)</div>
+        <div v-else style="display:flex;flex-direction:column;"
           v-for="(el, i) in deliver"
           :key="i">
           <label>
@@ -25,7 +26,8 @@
       </el-form-item>
 
       <el-form-item label="保险：" prop="name" style="margin: 0;">
-        <div style="display:flex;flex-direction:column;"
+        <div v-if="insure.length=== 0" style="color: gray;">(无)</div>
+        <div v-else style="display:flex;flex-direction:column;"
           v-for="(el, i) in insure"
           :key="i">
           <label>

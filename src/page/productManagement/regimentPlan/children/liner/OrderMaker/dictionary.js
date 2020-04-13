@@ -19,6 +19,7 @@ export const REFUND_STATUS= dictionaryMaker({
 })
 
 export const getSkuPriceDTO= function(){
+
   return {
     cabin_id: null,
     title: '',
@@ -29,9 +30,11 @@ export const getSkuPriceDTO= function(){
     adult_straight_price: null,
     line_status: 1
   }
+
 }
 
 export const getCabinDTO= function(skuPrice, fillGuests){
+
   let cabin= {
     cabin_type: CABIN_SPLIT_TYPE.PART,
     adult_price: 0,
@@ -41,17 +44,21 @@ export const getCabinDTO= function(skuPrice, fillGuests){
     full: 0,
     guests: []
   }
+
   for(let i=0; i< (fillGuests? skuPrice.min_stay: 0); i++) cabin.guests.push(getCabinGuestDTO(skuPrice));
+  
   Object.defineProperty(cabin, 'sku_price', {
     value: skuPrice,
     enumerable: false,
     configurable: false
   })
+  
   return cabin;
 }
 
-export const getCabinGuestDTO= function(skuPrice){
-  return {
+export const getCabinGuestDTO= function(skuPrice= {}){
+
+  let guest= {
     sku_price_id: skuPrice.id,
     cabin_id: skuPrice.cabin_id,
     name: '',
@@ -62,4 +69,14 @@ export const getCabinGuestDTO= function(skuPrice){
     sex: '',
     refund_status: 0
   }
+
+  Object.defineProperty(guest, 'isFilled', {
+    value: function(){
+      return this.name || this.passport || this.tel || this.id_card
+    }.bind(guest),
+    enumerable: false,
+    configurable: false
+  })
+
+  return guest;
 }

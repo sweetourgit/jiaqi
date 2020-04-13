@@ -29,6 +29,11 @@ const LinkTitleBar= {
     }
   },
   
+  beforeDestroy(){
+    let index= vmList.find(vm => vm=== this);
+    vmList.splice(index, 1);
+  },
+
   data(){
     return {
       marked: false,
@@ -76,61 +81,18 @@ const LinkTitleBar= {
   
   methods: {
     clickHandler(index){
-      // if(!title) return this.$emit('select');
-      // if(typeof title=== 'number') title= this.list.find(el => el.key=== title);
-      // let find= this.list.find(el => el.selected);
-      // if(!this.options.deletable)console.log(find, title, this.list)
-      // if(!find || find=== title) return;
-      // find.selected= false;
-      // title.selected= true;
-      // this.$forceUpdate();
-      // this.$emit('select', title);
       if(current) current.selected= false;
-      shareList[index].selected= true;
-      current= shareList[index];
-      this.$emit('select', index);
+      if(index>= 0){
+        shareList[index].selected= true;
+        current= shareList[index];
+      }
+      vmList.forEach(vm => vm.$emit('select', index));
     },
-    closeHandler(title){
-      let index= this.list.findIndex(el => el=== title);
-      this.$emit('close', index);
+    closeHandler(index, $event){
+      $event.stopPropagation();
+      vmList.forEach(vm => vm.$emit('close', index));
     },
   }
 }
 
 export default LinkTitleBar
-
-
-/**
- * 
-
-  <div class="title-bar" v-show="dataList.length">
-    <div class="control-btns">
-      <i class="el-icon-d-arrow-left"></i>
-    </div>
-    <div class="scroll-container">
-      <div class="scroll-body">
-
-        <div :class="['bar-outer', el.selected && 'selected']"
-          v-for="el in dataList"
-          :key="el.id"
-          @click="clickHandler(el)">
-          <div class="title-text"
-            :title="el.label">
-            {{ el.label }}
-          </div>
-          <div class="close-btn"
-            v-show="options.deletable"
-            @click.stop="closeHandler(el)">
-            <i class="el-icon-close"></i>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    <div class="control-btns">
-      <i class="el-icon-d-arrow-right"></i>
-    </div>
-  </div>
-
- * 
- */
