@@ -5,8 +5,8 @@
   // 测试
   // const serverSrc="http://223.100.19.245:3017";
   // const jqUrl = 'http://223.100.19.245:3020/h3wf'
-  const serverSrc="http://web.17lvju.com/app/jialv/server";
-  const jqUrl = 'http://web.17lvju.com/app/jialv/jq';
+  const serverSrc="http://192.168.2.81:3017";
+  const jqUrl = 'http://192.168.2.81:3019/h3wf';
 
   // const serverSrc="/api";
   // const jqUrl = '/api/h3bpm'
@@ -32,7 +32,7 @@
   // const jqUrl="http://test.dayuntong.com/h3wf";
   // const serverSrcPhp="http://www.around.com";
   const serverSrcPhp="http://zb.dayuntong.com";
-  const serverSrcYL="http://web.17lvju.com/app/jialv/yl";
+  const serverSrcYL="http://yl.dayuntong.com";
   const token="";
   const userId="";
   const hasEnter=false;
