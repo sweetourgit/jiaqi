@@ -340,7 +340,7 @@ export default {
               startDate !== ""? (object.startDate = startDate): startDate;
               endDate !== ""? (object.endDate = endDate): endDate;
             const token = localStorage.getItem('token')
-            var xhr = new XMLHttpRequest();
+            var xhr = new OriginXMLHttprequest();
             xhr.open('POST', that.GLOBAL.serverSrc + "/exportoffice/excel/api/arrearsorder", true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.setRequestHeader("Authorization", 'Bearer ' + token);
