@@ -8,8 +8,9 @@ import '../static/UE/ueditor.config.js'
 import '../static/UE/ueditor.all.min.js'
 import '../static/UE/lang/zh-cn/zh-cn.js'
 import '../static/UE/ueditor.parse.min.js'
+import OriginXML from './page/Finance/balanceOrder/OriginXML.js'
 import has from './js/libs/btnPermission.js'
-
+import Mock from './page/Finance/bankStatement/mock.js'
 // element-ui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -21,7 +22,7 @@ Vue.use(Print) // 打印
 
 //axios
 import axios from 'axios'
-import qs from 'qs'
+import qs from 'qs' 
 
 Vue.prototype.$http = axios
 Vue.prototype.qs = qs
@@ -29,12 +30,14 @@ import '@/style/main.css'
 //global variable
 Vue.prototype.GLOBAL = global
 Vue.config.productionTip = false
+
 import Storage from 'vue-ls';
 Vue.use(Storage, {
   namespace: 'vuejs__', // key prefix
   name: 'ls', // name variable Vue.[ls] or this.[$ls],
   storage: 'local', // storage name session, local, memory
 });
+
  //import '!style-loader!css-loader!less-loader!./style/libs/iconfont/iconfont.css'
 //http request 请求拦截器
 axios.interceptors.request.use(//不用获取token的时候可以整段去掉
