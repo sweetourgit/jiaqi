@@ -369,7 +369,6 @@ export default {
       pid:0,
       invoiceShow:false,
       invoiceTable:[],
-      undoID:0,
     };
 
   },
@@ -525,7 +524,6 @@ export default {
             this.forbidden = false;
           }
           this.planId = res.data.object.planID;
-          this.undoID = res.data.object.id;
           this.getBorrowing(ID)
         }
       });
@@ -719,7 +717,9 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/delete",{
         id:this.accountID
       }).then(res => {
-
+          if(res.data.isSuccess == false){
+            this.$message.success("退款完成后,不允许撤销");
+          }
         })
     },
     undoRefund(){ // 撤销该条退款
@@ -729,10 +729,10 @@ export default {
          type: "warning"
       }).then(() => {
           this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
-            id: this.undoID
+            id: this.accountID
           }).then(res => {
             if (res.data.isSuccess == true) {
-              let refundStateType = res.data.objects.refundStateType;
+              var refundStateType = res.data.object.refundStateType;
               if(refundStateType == 1){
                 this.$message.success("该订单已退款成功,不允许撤销");
               } else {
