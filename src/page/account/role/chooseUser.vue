@@ -91,7 +91,6 @@ export default {
           }
           return childNodes;
       },
-      // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
         if(!treeNode.isParent === true){
           this.parentID = treeNode.id;
@@ -105,21 +104,21 @@ export default {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun(val) {  
         this.multipleSelection=val;
         console.log(val);
       },
-      clickRow(row){    //选中行复选框勾选
+      clickRow(row){    
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){  
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      menuList(type){  //获取菜单列表
+      menuList(type){  
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlistwithorg',{
                "id": this.parentID,
             }).then(res => {

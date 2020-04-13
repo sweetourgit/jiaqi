@@ -70,7 +70,6 @@
                 <el-button type="primary" @click="changeForm('ruleForm')" v-if="buttonchange">修改</el-button>
                 <el-button @click="resetForm('ruleForm')">取消</el-button>
               </el-form-item>
-                <!--弹出框-->
                   <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="400px">
                     <div class="ztree-bg">
                        <ul id="tree" class="ztree"></ul>
@@ -80,7 +79,6 @@
                       <el-button size="mini" @click="addmaster" type="primary">确定</el-button>
                     </div>
                 </el-dialog>
-                <!--弹出框-->
             </el-form>
           </el-tab-pane>
          <!--
@@ -262,7 +260,6 @@ import '../../../../../static/ztree/jquery.ztree.core.js'
           }
           return childNodes;
       },
-      // 单击选中目录
       onNodeClick(e, treeId, treeNode){
         if(treeNode.isParent === true){
           this.parentID = treeNode.id;
@@ -475,9 +472,6 @@ import '../../../../../static/ztree/jquery.ztree.core.js'
                 .catch(function (obj) {
                   console.log(obj)
                 })
-              // 组织列表
-              // console.log(this.orilist)
-              // console.log(this.ruleForm1)
 
             } else {
               console.log('error submit!!');
@@ -530,9 +524,6 @@ import '../../../../../static/ztree/jquery.ztree.core.js'
                 .catch(function (obj) {
                   console.log(obj)
                 })
-              //组织列表
-              //console.log(this.orilist)
-             // console.log(this.ruleForm1)
 
             } else {
               console.log('error submit!!');

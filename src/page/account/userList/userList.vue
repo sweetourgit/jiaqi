@@ -289,7 +289,7 @@
          this.authData = [];
       },
       menuChanged(index){
-        if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
+        if(this.authData[index].isJur == false){  
             var actArray = this.authData[index].act.length;          
             var datajurArray = this.authData[index].dataJurisdiction.length;                          
             for(let i = 0;i<actArray;i++){
@@ -298,7 +298,7 @@
             for(let i = 0;i<datajurArray;i++){
                 this.authData[index].dataJurisdiction[i].isJur = false;      
             }
-        }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
+        }else if(this.authData[index].isJur = true){  
             var actArray = this.authData[index].act.length;
             if(actArray>0){
                 for(let i = 0,len = this.authData[index].act.length;i<len;i++){
@@ -320,7 +320,7 @@
                 unTickCount++;
             }
         }
-        if(tickCount == len){ //二级全勾选  一级勾选            
+        if(tickCount == len){         
             this.authData[index].isJur = true;
         }
       },
