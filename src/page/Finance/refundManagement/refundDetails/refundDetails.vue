@@ -6,7 +6,7 @@
       <div class="controlButton">
   	    <div class="floatL">
   	      <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
-          <el-button class="ml13" type="primary" @click="print()">打 印</el-button>
+          <el-button class="ml13" type="primary" @click="print()" v-has="'print_refund'">打 印</el-button>
   	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情' && refundList.refundStateType !='1'">撤 销</el-button>
   	    </div>
         <div class="floatL" v-if="title == '审批'">
@@ -235,6 +235,75 @@
           <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
+      <div ref="print" class="print" v-show="printShow">
+        <h2 class="tc">退款单</h2>
+        <div class="titlePrint">基本信息</div>
+        <table border="1" cellpadding="0" cellspacing="0" width="100%">
+          <tr>
+            <td width="33%">
+              <div width="80" class="floatL fb">退款单号:</div>
+              <div class="floatL ml13">{{refundList.refundCode}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">申请人:</div>
+              <div class="floatL ml13">{{refundList.name}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">申请时间:</div>
+              <div class="floatL ml13">{{refundList.createTime | formatDate}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%">
+              <div width="80" class="floatL fb">订单ID:</div>
+              <div class="floatL ml13">{{refundList.orderID}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">总退款:</div>
+              <div class="floatL ml13">{{refundList.allRefundPrice}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">实际退款金额:</div>
+              <div class="floatL ml13">{{refundList.realRefundPrice}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%">
+              <div width="80" class="floatL fb">汇款账号:</div>
+              <div class="floatL ml13">{{refundList.remittanceCode}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">汇款开户行:</div>
+              <div class="floatL ml13">{{refundList.remittanceBank}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">汇款开户人:</div>
+              <div class="floatL ml13">{{refundList.remittancePerson}}</div>
+            </td>
+          <tr>
+            <td width="33%">
+              <div width="80" class="floatL fb">支付账户:</div>
+              <div class="floatL ml13">{{payName}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">手续费:</div>
+              <div class="floatL ml13">{{refundList.refundCharge}}</div>
+            </td>
+            <td width="33%">
+              <div width="80" class="floatL fb">团期计划:</div>
+              <div class="floatL ml13">{{refundList.groupcode}}</div>
+            </td>
+          </tr>
+          <tr>
+            <td width="33%">
+              <div width="80" class="floatL fb">订单来源:</div>
+              <div class="floatL ml13">{{refundList.orderChannel}}</div>
+            </td>
+          </tr>
+        </table>
+        <div class="titlePrint">审核结果</div>
+        <span v-for="(item,index) in auidtName">{{item}}<span v-if="item != ''">>></span></span>
+      </div>
     </el-dialog>
     <!--借款、报销审批过程-->
     <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px" @close="closeApprova()">
@@ -315,75 +384,6 @@
         <el-input class="opinions" type="textarea" :rows="5" placeholder="请输入内容" v-model="opinion"> </el-input>
       </div>
     </el-dialog>
-    <div ref="print" class="print">
-      <h2 class="tc">退款单</h2>
-      <div class="titlePrint">基本信息</div>
-      <table border="1" cellpadding="0" cellspacing="0" width="100%">
-        <tr>
-          <td width="33%">
-            <div width="80" class="floatL fb">退款单号:</div>
-            <div class="floatL ml13">{{refundList.refundCode}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">申请人:</div>
-            <div class="floatL ml13">{{refundList.name}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">申请时间:</div>
-            <div class="floatL ml13">{{refundList.createTime | formatDate}}</div>
-          </td>
-        </tr>
-        <tr>
-          <td width="33%">
-            <div width="80" class="floatL fb">订单ID:</div>
-            <div class="floatL ml13">{{refundList.orderID}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">总退款:</div>
-            <div class="floatL ml13">{{refundList.allRefundPrice}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">实际退款金额:</div>
-            <div class="floatL ml13">{{refundList.realRefundPrice}}</div>
-          </td>
-        </tr>
-        <tr>
-          <td width="33%">
-            <div width="80" class="floatL fb">汇款账号:</div>
-            <div class="floatL ml13">{{refundList.remittanceCode}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">汇款开户行:</div>
-            <div class="floatL ml13">{{refundList.remittanceBank}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">汇款开户人:</div>
-            <div class="floatL ml13">{{refundList.remittancePerson}}</div>
-          </td>
-        <tr>
-          <td width="33%">
-            <div width="80" class="floatL fb">支付账户:</div>
-            <div class="floatL ml13">{{payName}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">手续费:</div>
-            <div class="floatL ml13">{{refundList.refundCharge}}</div>
-          </td>
-          <td width="33%">
-            <div width="80" class="floatL fb">团期计划:</div>
-            <div class="floatL ml13">{{refundList.groupcode}}</div>
-          </td>
-        </tr>
-        <tr>
-          <td width="33%">
-            <div width="80" class="floatL fb">订单来源:</div>
-            <div class="floatL ml13">{{refundList.orderChannel}}</div>
-          </td>
-        </tr>
-      </table>
-      <div class="titlePrint">审核结果</div>
-      <span v-for="(item,index) in auidtName">{{item}}<span v-if="item != ''">>></span></span>
-    </div>
   </div> 
 </template>
 <script>
@@ -440,6 +440,7 @@ export default {
       invoiceShow:false,
       invoiceTable:[],
       auidtName:[],
+      printShow:false,
     };
 
   },
