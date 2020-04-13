@@ -166,7 +166,7 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="报销" name="second">
-              <el-table :data="tableAccount" ref="multipleTable" class="table" border >
+              <el-table :data="tableAccountt" ref="multipleTable" class="table" border >
                 <el-table-column prop="id" label="报销单号" min-width="120" align="center"></el-table-column>
                 <el-table-column prop="checkType" label="状态" min-width="120" align="center">
                   <template slot-scope="scope">
@@ -891,7 +891,8 @@ export default {
         //报销
         that.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
           object: {
-            planID: this.planId
+            planID: this.planId,
+            checkType:-1
           }
         }).then(res => {
           if (res.data.isSuccess == true) {
