@@ -9,6 +9,8 @@ export const getSkuPlanInfo= function(id){
     .then(res => {
       let { code, message, data }= res.data;
       if(code!== 200) return reject('查询团期计划详情失败');
+      $message.info('cabin的max_stay做了千分处理');
+      data.price.forEach(el => el.max_stay= el.max_stay/1000);
       resolve(data);
     })
     .catch(err => {

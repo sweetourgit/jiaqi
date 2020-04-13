@@ -71,7 +71,7 @@ export default {
       state: false,
       submitForm: {
         id: null,
-        cabin_type: CABIN_SPLIT_TYPE.PART
+        cabin_type: CABIN_SPLIT_TYPE.ALL
       },
       rules: {
         id: { required: true, message: '请选择舱房', trigger: "blur" },
@@ -91,8 +91,7 @@ export default {
       this.$refs.submitForm.validate(bol => {
         if(!bol) return;
         let skuPrice= this.skuCabinsOptions.find(el => el && el.id=== this.submitForm.id);
-        let cabin= getCabinDTO(skuPrice, true);
-        cabin.cabin_type= this.submitForm.cabin_type;
+        let cabin= getCabinDTO(skuPrice, true).initGuests({ cabin_type: this.submitForm.cabin_type });
         skuPrice.selected= true;
         this.$emit('submit', cabin);
         this.handleClose();

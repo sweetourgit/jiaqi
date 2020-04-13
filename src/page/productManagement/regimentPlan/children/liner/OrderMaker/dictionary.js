@@ -33,7 +33,7 @@ export const getSkuPriceDTO= function(){
 
 }
 
-export const getCabinDTO= function(skuPrice, fillGuests){
+export const getCabinDTO= function(skuPrice){
 
   let cabin= {
     cabin_type: CABIN_SPLIT_TYPE.PART,
@@ -44,11 +44,24 @@ export const getCabinDTO= function(skuPrice, fillGuests){
     full: 0,
     guests: []
   }
-
-  for(let i=0; i< (fillGuests? skuPrice.min_stay: 0); i++) cabin.guests.push(getCabinGuestDTO(skuPrice));
   
   Object.defineProperty(cabin, 'sku_price', {
     value: skuPrice,
+    enumerable: false,
+    configurable: false
+  })
+
+  Object.defineProperty(cabin, 'initGuests', {
+    value: function({cabin_type}){
+      cabin.cabin_type= cabin_type;
+      for(
+        let i=0; 
+          // 判断是整间还是拼房, 拼房最少1人, 整租最少min_stay
+          i< (cabin_type=== CABIN_SPLIT_TYPE.PART? 1: skuPrice.min_stay);
+            i++
+      ) cabin.guests.push(getCabinGuestDTO(skuPrice));
+      return cabin;
+    },
     enumerable: false,
     configurable: false
   })
@@ -72,8 +85,8 @@ export const getCabinGuestDTO= function(skuPrice= {}){
 
   Object.defineProperty(guest, 'isFilled', {
     value: function(){
-      return this.name || this.passport || this.tel || this.id_card
-    }.bind(guest),
+      return guest.name || guest.passport || guest.tel || guest.id_card
+    },
     enumerable: false,
     configurable: false
   })

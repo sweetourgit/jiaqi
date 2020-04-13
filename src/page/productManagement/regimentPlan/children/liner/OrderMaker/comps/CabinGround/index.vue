@@ -31,8 +31,9 @@
               <span>{{ ` * ${ currentCabin.guests.length }` }}</span>
             </div>
             <el-input-number size="small"
+              ref="inputNumber"
               v-model="submitForm.num" 
-              :min="skuPrice.min_stay" 
+              :min="currentCabin.cabin_type=== CABIN_SPLIT_TYPE.PART?1: skuPrice.min_stay" 
               :max="skuPrice.max_stay* skuPrice.room_stock"
               :step="1"
               @change="changeHandler">
@@ -43,7 +44,7 @@
               <span>{{ `  可住${computedInfo.all_total+ computedInfo.part_total}人` }}</span>
             </div>
             <div>
-              {{ `至少报名 ${skuPrice.min_stay} 人` }}
+              {{ `至少报名 ${ computedInfo.least_add } 人, max_stay: ${skuPrice.max_stay}` }}
             </div>
           </div>
           
@@ -88,26 +89,28 @@ export default {
       let part_rooms= 0;
       let part_nums= 0;
       let part_total= 0;
+      let least_add= 0;
       this.cabin.forEach(el => {
         let { guests, cabin_type }= el;
-        let { room_stock, max_stay }= el.sku_price;
+        let { room_stock, max_stay, min_stay }= el.sku_price;
         if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
           all_total+= room_stock* max_stay
           all_rooms+= room_stock;
           all_rooms-= Math.ceil(guests.length/max_stay);
           all_nums+= guests.length;
           all_total-= guests.length;
+          least_add= all_total%max_stay=== 0? min_stay: 1;
         }
         if(cabin_type=== CABIN_SPLIT_TYPE.PART){
           part_total+= room_stock* max_stay
           part_rooms+= room_stock;
           part_rooms-= Math.ceil(guests.length/max_stay);
           part_nums+= guests.length;
-          console.log(guests)
           part_total-= guests.length;
+          least_add= 1;
         }
       })
-      return { all_rooms, all_nums, all_total, part_rooms, part_nums, part_total };
+      return { all_rooms, all_nums, all_total, part_rooms, part_nums, part_total, least_add };
     }
   },
 
@@ -115,7 +118,8 @@ export default {
     return Object.assign(
       {
         submitForm: {
-          num: 3,
+          num: 0,
+          cabin_type: CABIN_SPLIT_TYPE.PART
         },
         // 下单中报站的舱房类型
         cabin: [],
@@ -143,19 +147,52 @@ export default {
       this.$refs.editor.init();
     },
 
+    // 选择拼住，无需满足最少报名人数
     changeHandler(nval, oval){
-      console.log(nval, oval)
-      if(nval=== undefined) return this.submitForm.num= oval;
-      let skuPrice= this.currentCabin.sku_price;
-      this.currentCabin.guests.push(getCabinGuestDTO(skuPrice));
+      let step= nval- oval;
+      step> 0? this.plusChangeHandler(step, oval): this.minusChangeHandler(step, oval);
+      return;
     },
 
-    partChangeHandler(){
-
+    minusChangeHandler(step, oval){
+      let want= step;
+      let handWarn= false;
+      let { guests, cabin_type }= this.currentCabin;
+      let { min_stay, max_stay, room_stock }= this.skuPrice;
+      let currentGuestsNum= guests.length;
+      let deletableGuests= guests.filter(guest => !guest.isFilled());
+      step= Math.abs(step)> deletableGuests.length? deletableGuests.length: step;
+      if(step!== want) handWarn= true;
+      if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
+        let left= (currentGuestsNum+ step)% max_stay;
+        step+= (left>= min_stay? 0: (min_stay- left)); 
+      }
+      if(step!== want) 
+        this.$message.info(`预期减少${Math.abs(want)}人, 实际减少${Math.abs(step)}人${handWarn? ',填写过信息的旅客请手动删除': ''}`);
+      this.$refs.inputNumber.focus();
+      this.submitForm.num= 3;
     },
 
-    allChangeHandler(){
-
+    plusChangeHandler(step, oval){
+      console.log(step)
+      let want= step;
+      let { guests, cabin_type }= this.currentCabin;
+      let { min_stay, max_stay, room_stock }= this.skuPrice;
+      let currentGuestsNum= guests.length;
+      if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
+        let left= (currentGuestsNum+ step)% max_stay;
+        console.log(left)
+        step+= (left>= min_stay || left=== 0? 0: (min_stay- left)); 
+        console.log(step)
+      }
+      if(currentGuestsNum+ step> room_stock* max_stay) step= room_stock* max_stay- oval;
+      if(step!== want) 
+        this.$message.info(`预期增加${Math.abs(want)}人, 实际增加${Math.abs(step)}人`);
+        console.log(oval, step)
+      this.submitForm.num= oval+ step;
+      for(let i= 0; i< step; i++){
+        guests.push(getCabinGuestDTO(this.skuPrice));
+      }
     },
 
     addCabin(cabin){
@@ -187,4 +224,3 @@ export default {
 
 }
 </script>
-

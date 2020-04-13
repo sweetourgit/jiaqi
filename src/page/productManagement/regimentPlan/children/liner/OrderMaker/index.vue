@@ -39,7 +39,7 @@
         剩余完整房间
       </div>
     </header>
-    <main style="padding-bottom: 80px;">
+    <main style="padding-bottom: 40px;">
       <InfoGround ref="infoGround"></InfoGround>
       <ChannelGround ref="channelGround"></ChannelGround>
       <CabinGround ref="cabinGround"
