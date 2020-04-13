@@ -10,7 +10,7 @@
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button icon="el-icon-remove" plain @click="handleCancel()">取消</el-button>
       <el-button
-        icon="el-icon-circle-close"
+        icon="el-icon-circle-check"
         @click="handlePass"
         type="success"
         plain
@@ -19,8 +19,8 @@
       >
         通过
       </el-button>
-      <el-button icon="el-icon-circle-check" @click="handlePass" type="success" plain v-else>通过</el-button>
-      <el-button icon="el-icon-circle-close" @click="handleRejected" type="danger" plain>驳回</el-button>
+      <el-button icon="el-icon-circle-check" type="success" plain @click="handlePass" v-else>通过</el-button>
+      <el-button icon="el-icon-circle-close" type="danger" plain @click="handleRejected">驳回</el-button>
       <el-button
         icon="el-icon-s-check"
         type="danger"
@@ -33,8 +33,8 @@
       <el-button
         type="primary"
         icon="el-icon-printer"
-        @click="printDetails"
         plain
+        @click="printDetails"
         v-if="(ifDY100009 && creatUserOrgID === 490) || (ifDY100042 && creatUserOrgID !== 490)"
       >
         打印本页详情
@@ -656,12 +656,12 @@
   .el-drawer{
     overflow-y: auto;
   }
-</style>
-
-<style scoped lang="scss">
   .el-divider__text{
     font-size: 16px !important
   }
+</style>
+
+<style scoped lang="scss">
   .el-drawer-content{
     width: 96%;
     margin: 0 auto;

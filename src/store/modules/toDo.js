@@ -15,8 +15,16 @@ export default {
     countCollectTeamSame: 0,
     countCollectTeamInner: 0,
     countCollectTeamReimburse: 0,
+    showTabI: 'nameINoIn', // 显示哪个tab
+    showTabIII: 'nameIIICollectionTeamDirect',
   },
   mutations: {
+    showWhichTabI (state, data) {
+      state.showTabI = data
+    },
+    showWhichTabIII (state, data) {
+      state.showTabIII = data
+    },
     showCountNoInTeam (state, data) {
       state.countNoInTeam = data
     },

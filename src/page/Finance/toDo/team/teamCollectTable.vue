@@ -35,6 +35,19 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="24">
+            <el-form-item label="收款账户:" prop="collectionAccountSel">
+              <el-collapse class="collapse-m" v-model="collapseAccount">
+                <el-collapse-item name="collapseNameAccount">
+                  <el-checkbox-group v-model="ruleFormSearch.collectionAccountSel" @change="handleCheckbox" style="margin: 0 auto; width: 98%;">
+                    <el-checkbox :label="item.id" v-for="(item,index) in collectionAccountInfos" :key="index"> {{item.value}} </el-checkbox>
+                  </el-checkbox-group>
+                </el-collapse-item>
+              </el-collapse>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="收款时间:">
               <el-col :span="11">
@@ -54,19 +67,6 @@
             <el-form-item>
               <el-button type="primary" icon="el-icon-search"  @click="HandleSearchApproveCollect(whichCollectTeamTab)">搜索</el-button>
               <el-button type="primary" icon="el-icon-s-open" plain @click="HandleResetApprovalCollect('ruleFormSearch', whichCollectTeamTab)">重置</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="收款账户:" prop="collectionAccountSel">
-              <el-collapse class="collapse-m" v-model="collapseAccount">
-                <el-collapse-item name="collapseNameAccount">
-                  <el-checkbox-group v-model="ruleFormSearch.collectionAccountSel" @change="handleCheckbox">
-                    <el-checkbox :label="item.id" v-for="(item,index) in collectionAccountInfos" :key="index"> {{item.value}} </el-checkbox>
-                  </el-checkbox-group>
-                </el-collapse-item>
-              </el-collapse>
             </el-form-item>
           </el-col>
         </el-row>
@@ -118,7 +118,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row, 'nameIIICollectionTeamDirect')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -168,7 +168,7 @@
       </el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row, 'nameIIICollectionTeamSame')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -216,7 +216,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row, 'nameIIICollectionTeamInner')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -250,7 +250,7 @@
       <el-table-column prop="createUser" label="申请人" align="center"></el-table-column>
       <el-table-column label="操作" width="100" align="center">
         <template slot-scope="scope">
-          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row)" type="primary" plain size="small">审批</el-button>
+          <el-button icon="el-icon-edit" @click="handleJumpDetail(scope.$index, scope.row, 'nameIIICollectionTeamReimburse')" type="primary" plain size="small">审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -324,14 +324,14 @@
     },
     watch: {
       getWhichTab: function (newVal, oldValue) {
-        console.log(newVal)
+        // console.log(newVal)
       }
     },
     methods: {
       handleCheckbox () {
 
       },
-      handleJumpDetail (index, row) {
+      handleJumpDetail (index, row, source) {
         let { id, collectionType, invoiceTable, accountID } = row;
         this.$router.push({
           path: "/collection/collectionTeamDetails",
@@ -343,6 +343,10 @@
             componentName: this.whichCollectTeamTab
           }
         });
+
+        // 显示哪个tab，收款是固定的name名字因为收款组件与其他的组件是相互独立的
+        this.showWhichTabI('nameICollection');
+        this.showWhichTabIII(source);
       },
       // 直客同业的搜索 收款账户显示的集合
       getCollectionAccount () {

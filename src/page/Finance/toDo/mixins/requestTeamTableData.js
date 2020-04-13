@@ -31,7 +31,9 @@ export default {
       'showCountAdvanceTeam',
       'showCountReimburseTeam',
       'showCountRefundTeam',
-      'showCountSheetTeam'
+      'showCountSheetTeam',
+      'showWhichTabI',
+      'showWhichTabIII',
     ]),
     HandleSearchPendingApprove (paramsModule) {
       this.pendingApprovalTable(changeComName[paramsModule]);

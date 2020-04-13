@@ -239,6 +239,9 @@
         let { id, paymentID, guid, instanceID, expenseID } = row; // 基本上都是给接口传参用
         let keepWorkItemId = null;
 
+        // 显示哪个tab
+        this.showWhichTabI(source)
+
         // 取出当前选中的 workItemID 与后端返回的做比较
         this.noTaskArr.forEach(item => {
           if (row.guid === item.jq_ID) {
