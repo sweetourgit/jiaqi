@@ -235,7 +235,7 @@
           <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
-      <div ref="print" class="print" v-show="printShow">
+      <div ref="print" class="print">
         <h2 class="tc">退款单</h2>
         <div class="titlePrint">基本信息</div>
         <table border="1" cellpadding="0" cellspacing="0" width="100%">
@@ -993,6 +993,7 @@ export default {
       this.approvalTable = [];
     },
     print(formName) {
+      document.getElementsByClassName("print")[0].style.display="block";
       this.$print(this.$refs.print)
     },
   }
@@ -1025,7 +1026,7 @@ export default {
 .oh{overflow: hidden;}
 .opinions{float: left;margin: 0 0 0 13px; width: 500px;}
 .refundChargeClass{float: left;margin: 0 0 0 13px; width: 200px;}
-.print { width: 99%; color: black; margin: 0 auto 20px; overflow: hidden; line-height: 30px;}
+.print { width: 99%; color: black; margin: 0 auto 20px; overflow: hidden; line-height: 30px;display:none}
 .titlePrint{line-height: 40px;}
 .tc{text-align: center;}
 </style>
