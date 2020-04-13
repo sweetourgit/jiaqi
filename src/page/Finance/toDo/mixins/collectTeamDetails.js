@@ -34,6 +34,22 @@ export default {
       tableManyRow: 0,
       getCollectionPriceTotal: 0,
       msg: "",
+      // 基础信息
+      baseInfo: {
+        id: "",
+        createUser: "",
+        createTime: "",
+        collectionType: "",
+        distributor: "",
+        orderNumber: "",
+        localCompName: "",
+        price: "",
+        abstract: "",
+        invoice: "",
+        collectionTime: "",
+        moneyExplain: "",
+        collectionNumber: ""
+      },
     }
   },
   created () {
@@ -263,6 +279,42 @@ export default {
           _this.printOrderCode = keepRes.arrears[0].orderCode;
           _this.printGroupCode = keepRes.arrears[0].groupCode;
           _this.getAccount(keepRes.accountID, keepRes.arrears[0].id);
+
+          const hasInvoice = keepRes.invoiceTable.length > 0 ? "有" : "无";
+
+          let createTimeStr = "";
+          if (keepRes.createTime) {
+            createTimeStr = keepRes.createTime.split("T")[0];
+            if (keepRes.createTime.split("T")[1]) {
+              createTimeStr +=  " " + keepRes.createTime.split("T")[1].split(".")[0];
+            }
+          }
+
+          _this.baseInfo = {
+            id: keepRes.id,
+            createUser: keepRes.createUser,
+            // moment(date).format('YYYY-MM-DD HH:mm:ss');
+            createTime: createTimeStr ? createTimeStr : keepRes.createTime,
+            collectionType: keepRes.collectionType,
+            distributor: keepRes.distributor,
+            orderNumber: keepRes.serialNumber,
+            collectionNumber: keepRes.collectionNumber,
+            price: keepRes.price,
+            abstract: keepRes.abstract,
+            invoice: hasInvoice,
+            collectionTime: keepRes.collectionTime,
+            moneyExplain: keepRes.moneyExplain,
+            localCompName: keepRes.localCompName,
+            reimbursement: keepRes.reimbursement,
+            loan: keepRes.loan,
+            accountID: keepRes.accountID
+            //   keepRes.accountID == 13
+            //     ? (keepRes.accountID = "现金")
+            //     : (keepRes.accountID = "汇款")
+          };
+
+
+
           // 打印相关
           if (keepRes.spw.length > 0) {
             _this.printSureTime = keepRes.spw[0].createTime;
@@ -615,7 +667,6 @@ export default {
     /* 待整理 包括相关的 HTML */
 
     // 去认款
-    // recognitionDo(row) {
     recognitionDo(row) {
       this.dialogVisibleDo = true;
       this.msg = {
@@ -624,6 +675,7 @@ export default {
         tableDataOrder: row,
         fileList: this.fileList
       };
+      console.log(this.msg)
     },
     // 查看认款详情
     // recognitionDetail

@@ -1,16 +1,12 @@
 <template>
   <div class="oppo" style="position:relative">
     <!--认收款-->
-    <el-dialog
-      title="认收款"
-      :visible="dialogVisibleDo"
-      width="90%"
-      @close="closeAdd"
-      append-to-body
-    >
-      <div class="recognitionCls">
+    <el-drawer direction="rtl" size="60%" :show-close="false" :visible="dialogVisibleDo" @close="closeAdd">
+      <el-divider class="mb-40">认收款</el-divider>
+      <div class="recognitionCls el-drawer-content">
+        <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
         <!-- 报销还款begin -->
-        <div class="topMsg" v-if="collectionType == 6">
+        <div class="topMsg" v-if="collectionType === 6">
           <p class="inputLabel">
             <span>收款账户：</span>
             {{baseInfo.collectionNumber}}
@@ -34,15 +30,15 @@
         <div v-if="collectionType !== 6">
           <!-- 顶部基础信息 -->
           <div class="topMsg">
-            <p class="inputLabel" v-if="collectionType == 2">
+            <p class="inputLabel" v-if="collectionType === 2">
               <span>同业社名称：</span>
               {{baseInfo.localCompName}}
             </p>
-            <p class="inputLabel" v-if="collectionType == 1">
+            <p class="inputLabel" v-if="collectionType === 1">
               <span>交易流水号：</span>
               {{baseInfo.orderNumber}}
             </p>
-            <p class="inputLabel" v-if="collectionType == 5">
+            <p class="inputLabel" v-if="collectionType === 5">
               <span>分销商：</span>
               {{baseInfo.distributor}}
             </p>
@@ -54,7 +50,7 @@
               <span>收款金额：</span>
               {{baseInfo.price}}
             </p>
-            <p class="inputLabel" v-if="collectionType == 1 || collectionType == 2">
+            <p class="inputLabel" v-if="collectionType === 1 || collectionType === 2">
               <span>收款时间：</span>
               {{baseInfo.collectionTime.split('T')[0]}}
             </p>
@@ -73,6 +69,7 @@
           </div>
 
           <!-- 订单信息table -->
+          <el-divider content-position="left" class='title-margin'>订单信息</el-divider>
           <el-table
             ref="multipleTable"
             :data="tableDataOrder"
@@ -90,6 +87,7 @@
         <!-- 非报销还款显示的end -->
 
         <!-- 认款table -->
+        <el-divider content-position="left" class='title-margin'>认款银行</el-divider>
         <div class="recognition">
           <el-tabs :tab-position="tabPosition" v-model="activeName">
             <el-tab-pane label="中国银行" name="bankZH">
@@ -186,7 +184,7 @@
                 ></el-table-column>
                 <el-table-column prop="beneficiary_account_bank" label="收款人开户行名" align="center"></el-table-column>
                 <el-table-column prop="payee_s_Account_Number" label="收款人账号" align="center"></el-table-column>
-                <el-table-column prop="payee_s_Name" label="收款人姓名" align="center"></el-table-column>
+                <el-table-column fixed="right" prop="payee_s_Name" label="收款人姓名" align="center"></el-table-column>
               </el-table>
               <div class="block">
                 <el-pagination
@@ -243,7 +241,7 @@
                       type="text"
                       size="small"
                       class="table_details"
-                      v-if="scope.row.reference != '收付直通车支付结算'"
+                      v-if="scope.row.reference !== '收付直通车支付结算'"
                       :disabled="canClick"
                     >选择</el-button>
                     <el-button
@@ -251,7 +249,7 @@
                       type="text"
                       size="small"
                       class="table_details"
-                      v-if="scope.row.reference == '收付直通车支付结算'"
+                      v-if="scope.row.reference === '收付直通车支付结算'"
                     >查看微信支付宝明细</el-button>
                     <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" disabled>已选</el-button> -->
                   </template>
@@ -389,7 +387,7 @@
         </el-dialog>
       </div>
       <!--手续费结束-->
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 <script type="text/javascript">
@@ -402,7 +400,7 @@ export default {
     msg: ""
   },
   created() {
-    console.log(this.msg, '等会啊')
+    console.log(this.msg, 'msg')
   },
   data() {
     return {
@@ -412,7 +410,7 @@ export default {
 
       collectionType: "", // 认款订单类型（同业，直客，内部收款）
       tableDataOrder: [], // 订单table
-      tabPosition: "left", // tab位置
+      tabPosition: "top", // tab位置
       activeName: "bankZH", // 当前选中tab
 
       tableDataZH: [], // 中行table(当前页数，每页条数，总条数)
@@ -460,7 +458,7 @@ export default {
   watch: {
     dialogVisibleDo: {
       handler: function() {
-        // console.log(this.msg);
+        console.log(this.msg);
         if (this.msg == "") {
           this.closeAdd();
         } else {
@@ -613,98 +611,6 @@ export default {
       localStorage.setItem(this.tableDataOrder[0].id, dataStr);
       this.dialogVisibleSXF = false;
       this.closeAdd("success");
-      // const that = this;
-      // console.log(this.rowMsg);
-      // console.log(this.rowType);
-
-      // if(this.rowType == 0) {
-      //   this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/insert", {
-      //     "object": {
-      //       "id": this.rowMsg.id,
-      //       "transaction_Date": this.rowMsg.transaction_Date,
-      //       "transaction_Time": this.rowMsg.transaction_Time,
-      //       "transaction_DateTime": this.rowMsg.transaction_DateTime,
-      //       "trade_Currency": this.rowMsg.trade_Currency,
-      //       "trade_Amount": this.rowMsg.trade_Amount,
-      //       "value_Date": this.rowMsg.value_Date,
-      //       "exchange_rate": this.rowMsg.exchange_rate,
-      //       "transaction_reference_number": this.rowMsg.transaction_reference_number + '_' + new Date().getTime(),
-      //       "record_ID": this.rowMsg.record_ID,
-      //       "reference": this.rowMsg.reference,
-      //       "purpose": this.rowMsg.purpose,
-      //       "remark": this.rowMsg.remark,
-      //       "transaction_Type": this.rowMsg.transaction_Type,
-      //       "business_type": this.rowMsg.business_type,
-      //       "account_holding_bank_number_of_payer": this.rowMsg.account_holding_bank_number_of_payer,
-      //       "payer_account_bank": this.rowMsg.payer_account_bank,
-      //       "debit_Account_No": this.rowMsg.debit_Account_No,
-      //       "payer_s_Name": this.rowMsg.payer_s_Name,
-      //       "account_holding_bank_number_of_beneficiary": this.rowMsg.account_holding_bank_number_of_beneficiary,
-      //       "beneficiary_account_bank": this.rowMsg.beneficiary_account_bank,
-      //       "payee_s_Account_Number": this.rowMsg.payee_s_Account_Number,
-      //       "payee_s_Name": this.rowMsg.payee_s_Name,
-      //       "surplus_Amount": this.rowMsg.surplus_Amount,
-      //       "createTime": this.rowMsg.createTime,
-      //       "isDeleted": 0,
-      //       "is_ZCK": 0,
-      //       "is_EBS": 0,
-      //       "purpose_fee": this.service_charge
-      //     }
-      //   })
-      //   .then(function(obj) {
-      //     console.log('中国银行',obj);
-      //     if (obj.data.isSuccess) {
-      //       that.$message.success("添加手续费成功！");
-      //       that.dialogVisibleSXF = false;
-      //       that.canClick = true;
-      //       that.commitAxios(that.rowMsg, that.rowType);
-      //     } else {
-      //       that.tableDataZH = [];
-      //     }
-      //   });
-      // } else if(this.rowType == 1) {
-      //   this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/insert", {
-      //     "object": {
-      //       "id": this.rowMsg.id,
-      //       "bank_serial_number": this.rowMsg.bank_serial_number + '_' + new Date().getTime(),
-      //       "account_number": this.rowMsg.account_number,
-      //       "account_name": this.rowMsg.account_name,
-      //       "certificate_code": this.rowMsg.certificate_code,
-      //       "currency": this.rowMsg.currency,
-      //       "cash_or_transfer": this.rowMsg.cash_or_transfer,
-      //       "debit_amount": this.rowMsg.debit_amount,
-      //       "credit_amount": this.rowMsg.credit_amount,
-      //       "account_balance": this.rowMsg.account_balance,
-      //       "reference": this.rowMsg.reference,
-      //       "account_number_other": this.rowMsg.account_number_other,
-      //       "account_name_other": this.rowMsg.account_name_other,
-      //       "bank_other": this.rowMsg.bank_other,
-      //       "bank_Code_other": this.rowMsg.bank_Code_other,
-      //       "transaction_Date": this.rowMsg.transaction_Date,
-      //       "purpose": this.rowMsg.purpose,
-      //       "remark": this.rowMsg.remark,
-      //       "purpose_Date": this.rowMsg.purpose_Date,
-      //       "purpose_Merchant_code": this.rowMsg.purpose_Merchant_code,
-      //       "purpose_fee": this.service_charge,
-      //       "createTime": this.rowMsg.createTime,
-      //       "isDeleted": 0,
-      //       "surplus_Amount": this.rowMsg.surplus_Amount,
-      //       "is_ZCK": 0,
-      //       "is_EBS": 0
-      //     }
-      //   })
-      //   .then(function(obj) {
-      //     console.log('兴业银行',obj);
-      //     if (obj.data.isSuccess) {
-      //       that.$message.success("添加手续费成功！");
-      //       that.dialogVisibleSXF = false;
-      //       that.canClick = true;
-      //       that.commitAxios(that.rowMsg, that.rowType);
-      //     } else {
-      //       that.tableDataZH = [];
-      //     }
-      //   });
-      // }
     },
 
     // 加载认款数据(中国银行) -- 当前页数减一查询，后台分页从零开始
@@ -881,8 +787,28 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+  .el-drawer{
+    overflow-y: auto;
+  }
+  .el-divider__text{
+    font-size: 16px !important
+  }
+</style>
+
 <style lang="scss" scoped>
+  .el-drawer-content{
+    width: 96%;
+    margin: 0 auto;
+  }
+  .mb-40{
+    margin-bottom: 40px;
+  }
 .recognitionCls {
+  .title-margin{
+    margin-top: 50px;
+  }
   .topMsg {
     width: 96%;
     margin: 10px auto;

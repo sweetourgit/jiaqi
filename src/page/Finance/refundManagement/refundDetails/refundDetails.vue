@@ -17,13 +17,14 @@
         </div>
       </div>
       <div class="planBorder">
-        <div class="order-title"><span>基本信息</span></div>
-        <div>
-          <div v-if="refundList.refundStateType=='0'" class="state01">申请退款</div>
-          <div v-if="refundList.refundStateType=='1'" class="state02">退款完成</div>
-          <div v-if="refundList.refundStateType=='2'" class="state04">拒绝退款</div>
-        </div>
-        <div class="pro-info">
+        <div ref="print">
+          <div class="order-title"><span>基本信息</span></div>
+          <div>
+            <div v-if="refundList.refundStateType=='0'" class="state01">申请退款</div>
+            <div v-if="refundList.refundStateType=='1'" class="state02">退款完成</div>
+            <div v-if="refundList.refundStateType=='2'" class="state04">拒绝退款</div>
+          </div>
+          <div class="pro-info">
           <table width="100%">
             <tr>
               <td width="33%">
@@ -80,6 +81,9 @@
               </td>
             </tr>
           </table>
+        </div>
+          <div class="titlePrint">审核结果</div>
+          <span v-for="(item,index) in auidtName">{{item}}<span v-if="item != ''">>></span></span>
         </div>
         <div class="order-title"><span>订单详情</span></div>
         <div class="pro-info">
@@ -235,75 +239,6 @@
           <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
-      <div ref="print" class="print">
-        <h2 class="tc">退款单</h2>
-        <div class="titlePrint">基本信息</div>
-        <table border="1" cellpadding="0" cellspacing="0" width="100%">
-          <tr>
-            <td width="33%">
-              <div width="80" class="floatL fb">退款单号:</div>
-              <div class="floatL ml13">{{refundList.refundCode}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">申请人:</div>
-              <div class="floatL ml13">{{refundList.name}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">申请时间:</div>
-              <div class="floatL ml13">{{refundList.createTime | formatDate}}</div>
-            </td>
-          </tr>
-          <tr>
-            <td width="33%">
-              <div width="80" class="floatL fb">订单ID:</div>
-              <div class="floatL ml13">{{refundList.orderID}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">总退款:</div>
-              <div class="floatL ml13">{{refundList.allRefundPrice}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">实际退款金额:</div>
-              <div class="floatL ml13">{{refundList.realRefundPrice}}</div>
-            </td>
-          </tr>
-          <tr>
-            <td width="33%">
-              <div width="80" class="floatL fb">汇款账号:</div>
-              <div class="floatL ml13">{{refundList.remittanceCode}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">汇款开户行:</div>
-              <div class="floatL ml13">{{refundList.remittanceBank}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">汇款开户人:</div>
-              <div class="floatL ml13">{{refundList.remittancePerson}}</div>
-            </td>
-          <tr>
-            <td width="33%">
-              <div width="80" class="floatL fb">支付账户:</div>
-              <div class="floatL ml13">{{payName}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">手续费:</div>
-              <div class="floatL ml13">{{refundList.refundCharge}}</div>
-            </td>
-            <td width="33%">
-              <div width="80" class="floatL fb">团期计划:</div>
-              <div class="floatL ml13">{{refundList.groupcode}}</div>
-            </td>
-          </tr>
-          <tr>
-            <td width="33%">
-              <div width="80" class="floatL fb">订单来源:</div>
-              <div class="floatL ml13">{{refundList.orderChannel}}</div>
-            </td>
-          </tr>
-        </table>
-        <div class="titlePrint">审核结果</div>
-        <span v-for="(item,index) in auidtName">{{item}}<span v-if="item != ''">>></span></span>
-      </div>
     </el-dialog>
     <!--借款、报销审批过程-->
     <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px" @close="closeApprova()">
@@ -384,7 +319,7 @@
         <el-input class="opinions" type="textarea" :rows="5" placeholder="请输入内容" v-model="opinion"> </el-input>
       </div>
     </el-dialog>
-  </div> 
+  </div>
 </template>
 <script>
 import moment from "moment";
@@ -502,7 +437,7 @@ export default {
         return '';
       }
       return moment(date).format('YYYY-MM-DD')
-    }, 
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -571,7 +506,7 @@ export default {
           }
           this.nonPayment=this.nonPayment>0?this.nonPayment:0;
         }
-      })           
+      })
     },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
@@ -623,7 +558,7 @@ export default {
     },
     accountList() { // 点击支付账户查询列表
     console.log(sessionStorage.getItem("id"))
-    
+
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
@@ -744,17 +679,17 @@ export default {
           }else {
             this.$message.success("退款驳回失败");
           }
-          
+
         })
     },
     EndProcessForJQ(){
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcessForJQ', { 
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcessForJQ', {
         "jQ_id":this.orderCode,
         "jQ_Type":6,
       })
     },
     EndProcess(){
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', { 
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', {
         "jQ_id":this.orderCode,
         "jQ_Type":6,
       })
@@ -779,7 +714,7 @@ export default {
         this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
           objects:this.tableDate
         }).then(res => {
-          
+
         })
       }
     },
@@ -825,7 +760,7 @@ export default {
               }
             }
           });
-          
+
           //this.$parent.pageList(1);
         })
         .catch(() => {
@@ -994,7 +929,7 @@ export default {
       this.approvalTable = [];
     },
     print(formName) {
-      document.getElementsByClassName("print")[0].style.display="block";
+      // document.getElementsByClassName("print")[0].style.display="block";
       this.$print(this.$refs.print)
     },
   }
@@ -1027,7 +962,7 @@ export default {
 .oh{overflow: hidden;}
 .opinions{float: left;margin: 0 0 0 13px; width: 500px;}
 .refundChargeClass{float: left;margin: 0 0 0 13px; width: 200px;}
-.print{ width: 99%; color: black; margin: 0 auto 20px; overflow: hidden; line-height: 30px;display:block}
+.print{ width: 99%; color: black; margin: 0 auto 20px; overflow: hidden; line-height: 30px;}
 .titlePrint{line-height: 40px;}
 .tc{text-align: center;}
 </style>
