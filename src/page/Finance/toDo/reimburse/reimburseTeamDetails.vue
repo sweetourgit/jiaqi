@@ -335,15 +335,6 @@
           }
         })
       },
-      // 弹窗关闭回调
-      handlePrintClose () {
-        this.$confirm('确认关闭？')
-          .then(res => {
-            this.ifShowPrintTable = false;
-            this.backListPage();
-          })
-          .catch(res => {});
-      },
       handlePrint (index, row) {
         this.getLabel(row.id);
       },
@@ -356,6 +347,7 @@
         this.$confirm('确认关闭？')
           .then(_ => {
             this.ifShowPrintTable = false;
+            this.backListPage();
             done();
           })
           .catch(_ => {});

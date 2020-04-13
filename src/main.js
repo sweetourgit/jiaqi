@@ -8,6 +8,7 @@ import '../static/UE/ueditor.config.js'
 import '../static/UE/ueditor.all.min.js'
 import '../static/UE/lang/zh-cn/zh-cn.js'
 import '../static/UE/ueditor.parse.min.js'
+import OriginXML from './page/Finance/balanceOrder/OriginXML.js'
 import has from './js/libs/btnPermission.js'
 import Mock from './page/Finance/bankStatement/mock.js'
 // element-ui

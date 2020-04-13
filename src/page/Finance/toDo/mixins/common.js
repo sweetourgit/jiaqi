@@ -60,7 +60,7 @@ export default {
     },
     // 取消
     handleCancel (paramsTabName, paramsCollectionTab) {
-      console.log(paramsTabName, paramsCollectionTab)
+      // console.log(paramsTabName, paramsCollectionTab)
       this.handleGoBack();
     },
     // 审批弹窗确定回调
