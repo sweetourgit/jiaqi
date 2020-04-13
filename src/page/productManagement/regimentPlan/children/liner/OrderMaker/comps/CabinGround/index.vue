@@ -144,6 +144,8 @@ export default {
     },
 
     changeHandler(nval, oval){
+      console.log(nval, oval)
+      if(nval=== undefined) return this.submitForm.num= oval;
       let skuPrice= this.currentCabin.sku_price;
       this.currentCabin.guests.push(getCabinGuestDTO(skuPrice));
     },
