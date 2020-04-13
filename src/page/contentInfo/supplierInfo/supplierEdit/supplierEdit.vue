@@ -130,7 +130,7 @@ export default {
     getData(){
       let baseData= this.$refs.baseTab.getData();
       let banksData= this.$refs.banksTab.getData();
-      return { banks: banksData, ...baseData };
+      return { ...baseData, banks: banksData };
     },
 
     prePost(){
