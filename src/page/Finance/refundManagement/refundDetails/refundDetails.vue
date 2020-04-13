@@ -440,7 +440,6 @@ export default {
       invoiceShow:false,
       invoiceTable:[],
       auidtName:[],
-      printShow:false,
     };
 
   },
