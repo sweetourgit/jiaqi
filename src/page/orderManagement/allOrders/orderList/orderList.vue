@@ -1150,7 +1150,8 @@ export default {
         //判断订单是否有记录
          this.$http
         .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
-         id: this.orderId
+         id: this.orderId,
+         productType:1,//1.跟团 4.邮轮 
          })
         .then(res => {
           if (res.data.isExist == true) {

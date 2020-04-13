@@ -192,6 +192,7 @@ export default {
         pageIndex: 1, // 设定当前页数
         total: 0,
         currentPage4:1,
+        
     }
   },
   created() {
@@ -350,15 +351,13 @@ export default {
                     var blob = xhr.response;
                     var filename = "商户欠款订单.xls";
                     var a = document.createElement('a');
-                   // blob.type = "application/ms-excel";
+                    // blob.type = "application/ms-excel";
                     var url = URL.createObjectURL(blob);
-                    
                     a.href = url;
                     a.download = filename;
                     a.click();
                     window.URL.revokeObjectURL(url);
-
-                }
+                  }
             };
             var sendData = {object:object};
             xhr.send(JSON.stringify(sendData));

@@ -68,7 +68,6 @@
                 <td width="125">身份证</td>
                 <td width="125">性别</td>
                 <td width="125">拼住/整住</td>
-                
               </tr>
               <tr v-for="(guest, index) in NewGetcontext" :key="'g'+index">
                 <td>{{guest.name}}</td>
@@ -86,22 +85,24 @@
                 </td>
               </tr>
             </table>
-            <el-form-item label="舱房:" prop="user">
-                 <el-select v-model="CabinType" placeholder="请选择舱房类型" class="status-length">
-                     <el-option :label="item.name" :value="item.value" v-for="item in GetCabinsData" :key="item.name" /> 
-                 </el-select>
-                 <span>{{CabinTypeText}}</span>
-            </el-form-item>
-            <el-form-item label="免费/收费：">
-              <el-radio-group v-model="MoneyType">
-                <el-radio label="免费"></el-radio>
-                <el-radio label="收费"></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          <div class="cancel"  >
-              <el-button  @click="ExchangeCabinDel()">取 消</el-button>
-              <el-button  type="primary" @click="ExchangeCabinBtn()" >确定</el-button>
-          </div>
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" v-if='this.cabin_type == 1 ||this.cabin_type == 2'>
+              <el-form-item label="舱房:" prop="region">
+                  <el-select v-model="ruleForm.region" placeholder="请选择舱房类型" class="status-length">
+                      <el-option v-for="item in GetCabinsData" :key="item.cabin_id" :label="item.name" :value="item.cabin_id"  /> 
+                  </el-select>
+                  <span>{{CabinTypeText}}</span>
+              </el-form-item>
+              <el-form-item label="免费/收费:" prop="resource">
+                <el-radio-group v-model="ruleForm.resource">
+                  <el-radio label="免费"></el-radio>
+                  <el-radio label="收费"></el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <div class="cancel"  >
+                  <el-button  @click="ExchangeCabinDel()">取 消</el-button>
+                  <el-button  type="primary" @click="ExchangeCabinBtn" >确定</el-button>
+              </div>
+          </el-form>
        </el-dialog>
         <!--拆分弹窗-->
       <el-dialog width="50%" title="还需添加" :visible.sync="AddExchangeCabin" append-to-body @close="Amenddel()" >
@@ -159,10 +160,20 @@ export default {
       ExchangeCabinBox:false,//选择换仓弹框
       AddExchangeCabin:false,//还需添加
       plan_id:0,//团期计划id
-      CabinType:'',//舱房类型
-      MoneyType:'',//费用类型
       CabinTypeText:'',//舱房库存提示
       GetCabinsData:[],//舱房数组
+      ruleForm: {
+          region:'',
+          resource:'',
+        },
+       rules: {
+          resource: [
+            { required: true, message: '请选择免费/收费', trigger: 'change' }
+          ],
+          region: [
+            { required: true, message: '请选择舱房类型', trigger: 'change' }
+          ],
+        }
     
     };
   },
@@ -213,13 +224,9 @@ export default {
         })
         .then(res => {
               if(res.data.code === 200){
-               
-                let GetCabinsData = res.data.data.cabininfos;
-                console.log(GetCabinsData,'厂房')
-                for(let y in GetCabinsData){
-                   
-                  
-                }
+                this.GetCabinsData = res.data.data.cabininfos;
+                
+                
           }
       })
         .catch(err => {
@@ -227,6 +234,12 @@ export default {
         });
     },
     ExchangeCabinBtn(){//换仓提交
+    console.log(ruleForm,'啦啦啦');
+       this.$refs.submitForm.validate(validate => {
+        if(!validate) return this.$message.error('请完善表单信息');
+        this.$emit('save-guest', { guest: this.proto, formData: this.$deepCopy(this.submitForm) });
+        this.close();
+      })
 
     },
     GetCabinbtn(data){
@@ -235,9 +248,10 @@ export default {
 
     },
     perateBtn(data,index){//换仓
-    console.log(data,'fasfww')// this.cabin_type 判断拼住/整住 ||如果是整住 data.room_number判断分配房间没
+   // console.log(data,'换仓')// this.cabin_type 判断拼住/整住 ||如果是整住 data.room_number判断分配房间没
     if(this.cabin_type === 1 ){
       this.AddExchangeCabin = true;
+      this.getchangecabins(this.plan_id,data.cabin_id,data.id)
     }else if(this.cabin_type === 2 ){
       this.ExchangeCabinBox = true;
       this.getchangecabins(this.plan_id,data.cabin_id,data.id)
