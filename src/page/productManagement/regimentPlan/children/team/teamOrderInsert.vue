@@ -1274,6 +1274,7 @@ export default {
                 this.tour[i][j].singlePrice = this.salePrice[i].price_02;
               }
               guestAll.push(this.tour[i][j]);
+              this.tour[i][j].bornDate = new Date(this.tour[i][j].bornDate).getTime();
             }
           }
           // let guest = [];
