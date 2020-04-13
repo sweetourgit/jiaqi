@@ -54,6 +54,7 @@
             <div class="buttonDv">
               <el-button type="primary" @click="resetFun" plain>重置</el-button>
               <el-button type="primary" @click="searchFun">搜索</el-button>
+              <el-button type="primary" @click="exportFun" :disabled="canExport">导出</el-button>
             </div>
           </el-col>
         </el-row>
@@ -131,6 +132,7 @@
     },
     data() {
       return {
+        canExport: true,
         isShow: false,// 统计条是否显示
         num: '',
         totalMoney: '',
@@ -173,6 +175,21 @@
       };
     },
     methods: {
+      // 导出方法
+      exportFun(){
+        let start = '', end = '';
+        if(this.startTime){
+          start = moment(this.startTime).format('YYYY-MM-DD');
+        }
+        if(this.endTime){
+          end = moment(this.endTime).format('YYYY-MM-DD');
+        }
+        if(this.tableData.length == 0){
+          this.$message.warning("无搜索数据导出，请重新搜索！");
+        }else{
+          window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/exportloan?periphery_type=2&supplier_code=" + this.supplierID + "&create_uid=" + this.reimbursementPerID + "&start_time=" + start + "&end_time=" + end + "&approval_status=" + this.borrowStatus + "&account_type=" + this.accountType + "&reimbursed_status=" + this.reimbursed_status;
+        }
+      },
       // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
@@ -194,7 +211,7 @@
         };
       },
       handleSelectOper(item){
-        console.log(item);
+        // console.log(item);
         this.reimbursementPerID = item.id;
       },
       blurHand(){
@@ -217,7 +234,7 @@
       },
       // 申请
       applyFor(){
-        console.log('申请~');
+        // console.log('申请~');
         this.dialogFormVisible = true;
       },
       // 详情
@@ -250,6 +267,9 @@
       searchFun(){
         this.currentPage = 1;
         this.isShow = true;
+        if(this.supplier != '' || this.reimbursementPer != '' || this.startTime != '' || this.endTime != '' || this.borrowStatus != '' || this.accountType != '' || reimbursed_status != ''){
+          this.canExport = false;
+        }
         this.loadData();
       },
       // 重置
@@ -261,8 +281,10 @@
         this.reimbursementPerID = '';
         this.borrowStatus = '';
         this.accountType = '';
+        this.reimbursed_status = '';
         this.currentPage = 1;
         this.isShow = false;
+        this.canExport = true;
         this.loadData();
       },
       // 每页条数操作
@@ -292,19 +314,19 @@
           "account_type": this.accountType,
           "reimbursed_status": this.reimbursed_status
         }, ).then(function(response) {
-          console.log('无收入借款list',response);
+          // console.log('无收入借款list',response);
           if (response.data.code == '200') {
-//            console.log('无收入借款list',response);
+            // console.log('无收入借款list',response);
             that.tableData = response.data.data.list;
             that.num = response.data.data.list.length;
             that.pageCount = response.data.data.total - 0;
             let moneyAll = 0;
             that.tableData.forEach(function (item, index, arr) {
               moneyAll += parseFloat(item.loan_money);
-//              item.receivables_at = formatDate(new Date(item.receivables_at*1000));
-//              item.receivables_at = item.receivables_at.split(" ")[0];
+              // item.receivables_at = formatDate(new Date(item.receivables_at*1000));
+              // item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
-//              item.created_at = item.created_at.split(" ")[0];
+              // item.created_at = item.created_at.split(" ")[0];
               // 获取申请人
               that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
@@ -313,7 +335,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-//                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
@@ -331,7 +353,7 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.isSuccess) {
                   item.supplier_code = response.data.object.name
                 } else {
@@ -346,6 +368,7 @@
                 console.log(error);
               });
             })
+            that.sortTable(idsArr); // 根据工作流排序
             that.totalMoney = moneyAll.toFixed(2);
           } else {
             that.$message.success("加载数据失败~");
@@ -414,7 +437,6 @@
 
       // 时间限制（开始时间小于结束时间）
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
@@ -427,7 +449,6 @@
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
@@ -453,7 +474,7 @@
         };
       },
       handleSelectD(item){
-        console.log(item);
+        // console.log(item);
         this.supplierID = item.id;
         this.supplier = item.valueName;
       },
@@ -501,7 +522,7 @@
         }).catch(function(obj) {
           console.log(obj);
         });
-      },
+      }
     },
     created(){
       this.loadData();

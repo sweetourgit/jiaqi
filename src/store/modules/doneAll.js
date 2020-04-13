@@ -9,6 +9,7 @@ export default {
   state: {
     doneAllShowWhichTab: 'borrow',
     sheetCount: 0,
+    sheetAroundCount: 0,
     collectionWhichTab: 'direct',
     collectionNumDirect: 0,
     collectionNumSame: 0,
@@ -22,6 +23,9 @@ export default {
     },
     showSheetCount (state, data) {
       state.sheetCount = data
+    },
+    aroundSheetCount (state, data) {
+      state.sheetAroundCount = data
     },
     showCollectionTab (state, data) {
       state.collectionWhichTab = data

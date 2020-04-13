@@ -19,7 +19,7 @@
       <el-tab-pane :label="'退款管理(' + approveDataNumRefund +')'" name="refund">
         <refund :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumRefund"></refund>
       </el-tab-pane>
-      <el-tab-pane :label="'报账单管理(' + this.$store.state.doneAll.sheetCount +')'" name="sheet">
+      <el-tab-pane :label="'报账单管理(' + sheetCountTotal +')'" name="sheet">
 <!--        <check-sheet :whereTab="whereTab" @handleSheetPassVal="handleGetAlreadyNumSheet"></check-sheet>       -->
         <check-sheet :whereTab="whereTab"></check-sheet>
       </el-tab-pane>
@@ -65,6 +65,10 @@
     computed: {
       allCount: function () {
         return (this.$store.state.doneAll.collectionNumDirect + this.$store.state.doneAll.collectionNumSame + this.$store.state.doneAll.collectionNumInner + this.$store.state.doneAll.collectionNumReimburse)
+      },
+
+      sheetCountTotal: function () {
+        return (this.$store.state.doneAll.sheetCount + this.$store.state.doneAll.sheetAroundCount)
       }
     },
     methods: {
