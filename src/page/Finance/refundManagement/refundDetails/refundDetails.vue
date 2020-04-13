@@ -6,6 +6,7 @@
       <div class="controlButton">
   	    <div class="floatL">
   	      <el-button class="ml13" @click="cancelInfoOrder()">取 消</el-button>
+          <el-button class="ml13" type="primary" @click="print()" v-has="'print_refund'">打 印</el-button>
   	      <el-button class="ml13" type="primary" @click="undoRefund()" v-if="title == '详情' && refundList.refundStateType !='1'">撤 销</el-button>
   	    </div>
         <div class="floatL" v-if="title == '审批'">
@@ -16,13 +17,14 @@
         </div>
       </div>
       <div class="planBorder">
-        <div class="order-title"><span>基本信息</span></div>
-        <div>
-          <div v-if="refundList.refundStateType=='0'" class="state01">申请退款</div>
-          <div v-if="refundList.refundStateType=='1'" class="state02">退款完成</div>
-          <div v-if="refundList.refundStateType=='2'" class="state04">拒绝退款</div>
-        </div>
-        <div class="pro-info">
+        <div ref="print">
+          <div class="order-title"><span>基本信息</span></div>
+          <div>
+            <div v-if="refundList.refundStateType=='0'" class="state01">申请退款</div>
+            <div v-if="refundList.refundStateType=='1'" class="state02">退款完成</div>
+            <div v-if="refundList.refundStateType=='2'" class="state04">拒绝退款</div>
+          </div>
+          <div class="pro-info">
           <table width="100%">
             <tr>
               <td width="33%">
@@ -80,6 +82,9 @@
             </tr>
           </table>
         </div>
+          <div class="titlePrint">审核结果</div>
+          <span v-for="(item,index) in auidtName">{{item}}<span v-if="item != ''">>></span></span>
+        </div>
         <div class="order-title"><span>订单详情</span></div>
         <div class="pro-info">
           <table width="100%">
@@ -89,6 +94,16 @@
                 <div class="floatL ml13 cursor" @click="orderDetails(1)"><u>{{refundList.orderCode}}</u></div>
               </td>
               <td width="33%">
+                <div width="80" class="floatL fb">团期计划:</div>
+                <div class="floatL ml13 cursor">{{refundList.groupcode}}</div>
+              </td>
+              <td width="33%">
+                <div width="80" class="floatL fb">订单来源:</div>
+                <div class="floatL ml13 cursor">{{refundList.orderChannel}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td width="33%">
                 <div width="80" class="floatL fb">订单金额:</div>
                 <div class="floatL ml13">{{refundList.payable}}</div>
               </td>
@@ -96,12 +111,12 @@
                 <div width="80" class="floatL fb">已付金额:</div>
                 <div class="floatL ml13">{{refundList.paid}}</div>
               </td>
-            </tr>
-            <tr>
               <td width="33%">
                 <div width="80" class="floatL fb">未付金额:</div>
                 <div class="floatL ml13">{{nonPayment}}</div>
               </td>
+            </tr>
+            <tr>
               <td width="33%">
                 <div width="80" class="floatL fb">其他费用:</div>
                 <div class="floatL ml13">{{refundList.otherPrice}}</div>
@@ -129,6 +144,93 @@
           </template>
           </el-table-column>
         </el-table>
+        <div class="order-title"><span>财务信息</span></div>
+        <div>
+          <el-tabs v-model="activeName">
+            <el-tab-pane label="借款" name="first">
+              <el-table :data="tableBorrowing" ref="multipleTable" class="table" border>
+                <el-table-column prop="paymentID" label="ID" min-width="80" align="center"></el-table-column>
+                <el-table-column prop="checkType" label="审批状态" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F">{{scope.row.checkType}}</div>
+                    <div v-if="scope.row.checkType=='驳回'"style="color: #FF4A3D">{{scope.row.checkType}}</div>
+                    <div v-if="scope.row.checkType=='通过'"style="color: #33D174">{{scope.row.checkType}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="paymentType" label="借款类型" min-width="120" align="center"></el-table-column>
+                <el-table-column prop="supplierName" label="供应商" min-width="80" align="center"></el-table-column>
+                <el-table-column prop="price" label="金额" min-width="120" align="center"></el-table-column>
+                <el-table-column prop="expensePrice" label="已报销金额" min-width="120" align="center"></el-table-column>
+                <el-table-column prop="createUser" label="申请人" min-width="70" align="center"></el-table-column>
+                <el-table-column label="审批过程" min-width="70" align="center">
+                  <template slot-scope="scope">
+                    <span class="cursor blue" @click="approvalPay(scope.row)">查看</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="报销" name="second">
+              <el-table :data="tableAccountt" ref="multipleTable" class="table" border >
+                <el-table-column prop="id" label="报销单号" min-width="120" align="center"></el-table-column>
+                <el-table-column prop="checkType" label="状态" min-width="120" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.checkType=='审批中'" style="color: #7F7F7F">{{scope.row.checkType}}</div>
+                    <div v-if="scope.row.checkType=='驳回'" style="color: #FF4A3D">{{scope.row.checkType}}</div>
+                    <div v-if="scope.row.checkType=='通过'" style="color: #33D174">{{scope.row.checkType}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="createTime" label="发起时间" min-width="150"align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.createTime !='0'">{{formatDate01(new Date(scope.row.createTime))}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="price" label="该团期的报销金额" min-width="150" align="center"></el-table-column>
+                <el-table-column prop="createUser" label="申请人" min-width="80" align="center"></el-table-column>
+                <el-table-column label="审批过程" min-width="70" align="center">
+                  <template slot-scope="scope">
+                    <span class="cursor blue" @click="expense(scope.row)">查看</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <!-- <el-tab-pane label="发票" name="third">
+              <el-table :data="tableIncoice" ref="multipleTable" class="table" border >
+                <el-table-column prop="id" label="发票ID" align="center"></el-table-column>
+                <el-table-column prop="state" label="状态" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.state=='待开票'" style="color: #7F7F7F" >{{scope.row.state}}</div>
+                    <div v-if="scope.row.state=='开票驳回'" style="color: #FF4A3D" >{{scope.row.state}}</div>
+                    <div v-if="scope.row.state=='已开票'" style="color: #33D174" >{{scope.row.state}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="invoiceNumber" label="发票号码"align="center"></el-table-column>
+                <el-table-column prop="invoiceHeader" label="发票抬头" align="center"></el-table-column>
+                <el-table-column prop="taxpayerIDNumber" label="纳税人识别号" align="center"></el-table-column>
+                <el-table-column prop="collectionType" label="直客/商户" align="center"></el-table-column>
+                <el-table-column prop="localCompName" label="商户名称" align="center"></el-table-column>
+                <el-table-column prop="createTime" :formatter='dateFormat' label="申请日期" align="center"></el-table-column>
+                <el-table-column prop="endTime" label="开票日期" align="center">
+                  <template slot-scope="scope">
+                    <div v-if="scope.row.endTime !='0'">{{formatDate01(new Date(scope.row.endTime))}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="invoicePrice" label="发票金额" align="center">
+                  <template slot-scope="scope">
+                    <div>{{scope.row.invoicePrice}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="kpPrice" label="该订单开票金额" align="center"></el-table-column>
+                <el-table-column prop="num" label="关联订单数" align="center"></el-table-column>
+                <el-table-column prop="userName" label="申请人" align="center"></el-table-column>
+                <el-table-column label="审批过程" align="center">
+                  <template slot-scope="scope">
+                    <span class="cursor blue" @click="checkInvoice(scope.row.id)">查看</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane> -->
+          </el-tabs>
+        </div>
         <div class="order-title"><span>审核结果</span></div>
         <el-table :data="tableAudit" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass">
           <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
@@ -137,6 +239,36 @@
           <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
         </el-table>
       </div>
+    </el-dialog>
+    <!--借款、报销审批过程-->
+    <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px" @close="closeApprova()">
+      <el-table :data="approvalTable" border>
+        <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.approvalName !=='等待中'" style="color: #7F7F7F">{{scope.row.finishedTime}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="participantName" label="审批人" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="approvalName" label="审批结果" min-width="120" align="center"></el-table-column>
+        <el-table-column prop="No" label="审批意见" min-width="180" align="center"></el-table-column>
+      </el-table>
+    </el-dialog>
+    <!--发票审批过程-->
+    <el-dialog title="审批过程" :visible.sync="invoiceShow" width="800px" @close="closeInvoice()">
+      <el-table :data="invoiceTable" border>
+        <el-table-column prop="endTime" label="审批时间" min-width="180" align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.endTime !='0'">{{formatDate01(new Date(scope.row.endTime))}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="approvalUserCodeName" label="审批人" min-width="120" align="center"></el-table-column>
+        <el-table-column label="审批结果" min-width="120" align="center">
+          <template slot-scope="scope">
+            <span>通过</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="审批意见" min-width="180" align="center"></el-table-column>
+      </el-table>
     </el-dialog>
     <order-information :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
     <!--支付账户弹窗-->
@@ -187,7 +319,7 @@
         <el-input class="opinions" type="textarea" :rows="5" placeholder="请输入内容" v-model="opinion"> </el-input>
       </div>
     </el-dialog>
-  </div> 
+  </div>
 </template>
 <script>
 import moment from "moment";
@@ -232,6 +364,17 @@ export default {
       instanceID:0,
       refundCharge:'' ,//手续费
       refundChargeShow:false, // 手续费弹窗
+      activeName: "first", //财务信息切换
+      tableBorrowing:[], // 借款表格
+      tableAccountt:[], // 报销表格
+      tableIncoice:[], // 发票表格
+      planId:0,
+      approvalShow:false,
+      approvalTable:[],
+      pid:0,
+      invoiceShow:false,
+      invoiceTable:[],
+      auidtName:[],
     };
 
   },
@@ -258,7 +401,6 @@ export default {
       } else if(this.dialogType == 2){  // 审批详情
         setTimeout(() => {
           this.getInvoice(this.refundID,this.workID);
-          console.log(this.workID)
         },200);
         this.dialogFormOrder = true;
         this.title = "审批"
@@ -295,7 +437,7 @@ export default {
         return '';
       }
       return moment(date).format('YYYY-MM-DD')
-    }, 
+    },
     getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -330,6 +472,11 @@ export default {
       this.tableAudit = [];
       this.orderCode = '';
       this.payName = '';
+      this.tableBorrowing = [];
+      this.tableAccountt = [];
+      this.activeName = 'first';
+      this.auidtName = [];
+      //document.getElementsByClassName("print")[0].style.display="none";
     },
     getJqId(result){ // 获取审批结果tableAudit
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ_BY_InstanceID',{
@@ -339,12 +486,16 @@ export default {
       }).then(obj => {
         this.tableAudit = [];
         this.tableAudit = obj.data.extend.instanceLogInfo;
+        for(var i=0;i<obj.data.extend.instanceLogInfo.length;i++){
+          this.auidtName.push(obj.data.extend.instanceLogInfo[i].participantName)
+        }
+        console.log(this.auidtName)
         console.log(this.tableAudit)
       })
     },
     getOrder(ID){ // 点击退款获取详情信息
       this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
-              id:ID,
+          id:ID,
       }).then(res => {
         if (res.data.isSuccess == true){
           let orderInfo = res.data.object;
@@ -355,7 +506,7 @@ export default {
           }
           this.nonPayment=this.nonPayment>0?this.nonPayment:0;
         }
-      })           
+      })
     },
     getInvoice(ID){//详情弹窗
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
@@ -366,7 +517,6 @@ export default {
           this.orderCode = res.data.object.orderCode;
           this.indentID = res.data.object.orderID;
           this.instanceID = res.data.object.instanceID;
-          console.log(res.data.object.instanceID)
           this.getJqId(this.orderCode);
           this.tableDate = res.data.object.guests;
           this.mark = res.data.object.mark==""?[]:JSON.parse(res.data.object.mark);
@@ -385,6 +535,8 @@ export default {
           }else{
             this.forbidden = false;
           }
+          this.planId = res.data.object.planID;
+          this.getBorrowing(ID)
         }
       });
     },
@@ -406,7 +558,7 @@ export default {
     },
     accountList() { // 点击支付账户查询列表
     console.log(sessionStorage.getItem("id"))
-    
+
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list",
@@ -527,17 +679,17 @@ export default {
           }else {
             this.$message.success("退款驳回失败");
           }
-          
+
         })
     },
     EndProcessForJQ(){
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcessForJQ', { 
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcessForJQ', {
         "jQ_id":this.orderCode,
         "jQ_Type":6,
       })
     },
     EndProcess(){
-      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', { 
+      this.$http.post(this.GLOBAL.jqUrl + '/JQ/EndProcess', {
         "jQ_id":this.orderCode,
         "jQ_Type":6,
       })
@@ -562,7 +714,7 @@ export default {
         this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
           objects:this.tableDate
         }).then(res => {
-          
+
         })
       }
     },
@@ -577,7 +729,9 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/delete",{
         id:this.accountID
       }).then(res => {
-
+          if(res.data.isSuccess == false){
+            this.$message.success("退款完成后,不允许撤销");
+          }
         })
     },
     undoRefund(){ // 撤销该条退款
@@ -586,15 +740,27 @@ export default {
          cancelButtonText: "取消",
          type: "warning"
       }).then(() => {
-          this.dialogFormOrder = false;
-          this.EndProcessForJQ();
-          if(this.tableDate.length > 0){
-            this.updateUndo();
-            this.updateCode();
-          }else {
-            this.updateCode();
-          }
-          this.delRefund();
+          this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
+            id: this.accountID
+          }).then(res => {
+            if (res.data.isSuccess == true) {
+              var refundStateType = res.data.object.refundStateType;
+              if(refundStateType == 1){
+                this.$message.success("该订单已退款成功,不允许撤销");
+              } else {
+                this.dialogFormOrder = false;
+                this.EndProcessForJQ();
+                if(this.tableDate.length > 0){
+                  this.updateUndo();
+                  this.updateCode();
+                }else {
+                  this.updateCode();
+                }
+                this.delRefund();
+              }
+            }
+          });
+
           //this.$parent.pageList(1);
         })
         .catch(() => {
@@ -603,6 +769,168 @@ export default {
             message: "已取消"
           });
         });
+    },
+    getBorrowing(val) {
+        var that = this;
+        //借款
+        that.$http
+          .post(this.GLOBAL.serverSrc + "/finance/payment/api/list", {
+            object: {
+              planID: this.planId,
+              checkType:-1
+            }
+          })
+          .then(res => {
+            if (res.data.isSuccess == true) {
+              that.tableBorrowing = res.data.objects;
+              that.tableBorrowing.forEach(function(v, k, arr) {
+                if (arr[k]["checkType"] == 0) {
+                  arr[k]["checkType"] = "审批中";
+                } else if (arr[k]["checkType"] == 1) {
+                  arr[k]["checkType"] = "通过";
+                } else if (arr[k]["checkType"] == 2) {
+                  arr[k]["checkType"] = "驳回";
+                }
+                if (arr[k]["supplierType"] == 1) {
+                  arr[k]["supplierType"] = "地接";
+                } else if (arr[k]["supplierType"] == 2) {
+                  arr[k]["supplierType"] = "机票（本公司）";
+                } else if (arr[k]["supplierType"] == 3) {
+                  arr[k]["supplierType"] = "机票（非本公司）";
+                } else if (arr[k]["supplierType"] == 4) {
+                  arr[k]["supplierType"] = "小费";
+                } else if (arr[k]["supplierType"] == 5) {
+                  arr[k]["supplierType"] = "地接（其他）";
+                } else if (arr[k]["supplierType"] == 6) {
+                  arr[k]["supplierType"] = "火车票";
+                } else if (arr[k]["supplierType"] == 7) {
+                  arr[k]["supplierType"] = "汽车票";
+                } else if (arr[k]["supplierType"] == 8) {
+                  arr[k]["supplierType"] = "船票";
+                } else if (arr[k]["supplierType"] == 9) {
+                  arr[k]["supplierType"] = "其他";
+                } else if (arr[k]["supplierType"] == 10) {
+                  arr[k]["supplierType"] = "机票押金";
+                } else if (arr[k]["supplierType"] == 11) {
+                  arr[k]["supplierType"] = "火车票押金";
+                }
+                if (arr[k]["paymentType"] == 1) {
+                  arr[k]["paymentType"] = "无收入借款";
+                } else if (arr[k]["paymentType"] == 2) {
+                  arr[k]["paymentType"] = "预付款";
+                }
+              });
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        //报销
+        that.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
+          object: {
+            planID: this.planId,
+          }
+        }).then(res => {
+          if (res.data.isSuccess == true) {
+            that.tableAccountt = res.data.objects;
+            that.tableAccountt.forEach(function(v, k, arr) {
+              if (arr[k]["checkType"] == 0) {
+                arr[k]["checkType"] = "审批中";
+              } else if (arr[k]["checkType"] == 1) {
+                arr[k]["checkType"] = "通过";
+              } else if (arr[k]["checkType"] == 2) {
+                arr[k]["checkType"] = "驳回";
+              }
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+        // 发票
+        that.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/listbyordercode", {
+          //orderCode: "15841608842413527016"
+          orderCode: this.orderCode
+        }).then(res => {
+          if (res.data.isSuccess == true) {
+            that.tableIncoice = res.data.objects;
+            that.tableIncoice.forEach(function(v, k, arr) {
+              if(arr[k]['state'] == 1){
+                arr[k]['state'] = '待开票'
+              }else if(arr[k]['state'] == 2) {
+                arr[k]['state'] = '已开票'
+              }else if(arr[k]['state'] == 3) {
+                arr[k]['state'] = '开票驳回'
+              }
+              if(arr[k]['collectionType'] == 1){
+                arr[k]['collectionType'] = '商户'
+              }else if(arr[k]['collectionType'] == 2) {
+                arr[k]['collectionType'] = '直客'
+              };
+            })
+          }
+        })
+    },
+    checkInvoice(status){ // 点击发票出现弹窗
+      this.invoiceShow = true;
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/get",{
+        id:status
+      }).then (res => {
+        if(res.data.isSuccess == true){
+          this.invoiceTable.push(res.data.object);
+        }
+      })
+    },
+    closeInvoice(){
+      this.invoiceShow = false;
+      this.invoiceTable = [];
+    },
+    approvalPay(row) {
+      //点击借款出现弹窗
+      this.pid = row.guid; //
+      this.paymentType = row.paymentType;
+      this.infoForJQ();
+      this.approvalShow = true;
+    },
+    infoForJQ() {
+      //借款获取审批流程
+      var that = this;
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
+          jQ_ID: this.pid,
+          jQ_Type: this.paymentType == "无收入借款" ? 1 : 2
+        })
+        .then(obj => {
+          that.approvalTable = obj.data.extend.instanceLogInfo;
+        })
+        .catch(obj => {});
+    },
+    expense(row) {
+      //点击报销曲线弹窗并且获取guid
+      this.pid = row.guid;
+      this.expenserJQ();
+      this.approvalShow = true;
+    },
+    expenserJQ() {
+      //报销获取审批流程
+      var that = this;
+      this.$http
+        .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
+          jQ_ID: this.pid,
+          jQ_Type: 3
+        })
+        .then(obj => {
+          that.approvalTable = obj.data.extend.instanceLogInfo;
+        })
+        .catch(obj => {});
+    },
+    closeApprova() {
+      //关闭借款弹窗
+      this.approvalTable = [];
+    },
+    print(formName) {
+      // document.getElementsByClassName("print")[0].style.display="block";
+      this.$print(this.$refs.print)
     },
   }
 };
@@ -634,4 +962,7 @@ export default {
 .oh{overflow: hidden;}
 .opinions{float: left;margin: 0 0 0 13px; width: 500px;}
 .refundChargeClass{float: left;margin: 0 0 0 13px; width: 200px;}
+.print{ width: 99%; color: black; margin: 0 auto 20px; overflow: hidden; line-height: 30px;}
+.titlePrint{line-height: 40px;}
+.tc{text-align: center;}
 </style>
