@@ -189,7 +189,7 @@
                 </el-table-column>
               </el-table>
             </el-tab-pane>
-            <el-tab-pane label="发票" name="third">
+            <!-- <el-tab-pane label="发票" name="third">
               <el-table :data="tableIncoice" ref="multipleTable" class="table" border >
                 <el-table-column prop="id" label="发票ID" align="center"></el-table-column>
                 <el-table-column prop="state" label="状态" align="center">
@@ -224,7 +224,7 @@
                   </template>
                 </el-table-column>
               </el-table>
-            </el-tab-pane>
+            </el-tab-pane> -->
           </el-tabs>
         </div>
         <div class="order-title"><span>审核结果</span></div>
@@ -892,7 +892,6 @@ export default {
         that.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
           object: {
             planID: this.planId,
-            checkType:-1
           }
         }).then(res => {
           if (res.data.isSuccess == true) {
