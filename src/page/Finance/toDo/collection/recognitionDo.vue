@@ -43,12 +43,12 @@
               {{baseInfo.distributor}}
             </p>
             <p class="inputLabel">
-              <span>收款账户：</span>
-              {{baseInfo.collectionNumber}}
-            </p>
-            <p class="inputLabel">
               <span>收款金额：</span>
               {{baseInfo.price}}
+            </p>
+            <p class="inputLabel">
+              <span>收款账户：</span>
+              {{baseInfo.collectionNumber}}
             </p>
             <p class="inputLabel" v-if="collectionType === 1 || collectionType === 2">
               <span>收款时间：</span>
@@ -528,6 +528,7 @@ export default {
           type: type,
           hasCharge: false
         });
+        console.log(dateStr);
         localStorage.setItem(this.tableDataOrder[0].id, dateStr);
         this.closeAdd("success");
       }
