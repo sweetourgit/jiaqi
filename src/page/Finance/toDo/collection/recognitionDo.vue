@@ -85,7 +85,6 @@
           </el-table>
         </div>
         <!-- 非报销还款显示的end -->
-
         <!-- 认款table -->
         <el-divider content-position="left" class='title-margin'>认款银行</el-divider>
         <div class="recognition">
@@ -97,8 +96,8 @@
                 label-width="110px"
                 class="form-content"
               >
-                <el-row type="flex" class="row-bg">
-                  <el-col :span="6">
+                <el-row class="row-bg">
+                  <el-col :span="5">
                     <el-form-item prop="dateStart" label="起息日期：">
                       <el-date-picker
                         type="date"
@@ -108,23 +107,25 @@
                       ></el-date-picker>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="5">
                     <el-form-item label="付款人姓名：" prop="code">
                       <el-input v-model="ruleFormZH.name" placeholder="请输入"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="7">
                     <el-form-item label="交易金额：" prop="money">
-                      <el-col :span="11">
-                        <el-input v-model="ruleFormZH.moneyMin" placeholder="请输入"></el-input>
-                      </el-col>
-                      <el-col class="line" :span="2">-</el-col>
-                      <el-col :span="11">
-                        <el-input v-model="ruleFormZH.moneyMax" placeholder="请输入"></el-input>
-                      </el-col>
+                      <el-row>
+                        <el-col :span="11">
+                          <el-input v-model="ruleFormZH.moneyMin" placeholder="请输入"></el-input>
+                        </el-col>
+                        <el-col class="line" :span="2">-</el-col>
+                        <el-col :span="11">
+                          <el-input v-model="ruleFormZH.moneyMax" placeholder="请输入"></el-input>
+                        </el-col>
+                      </el-row>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="7">
                     <el-form-item class="buttonForm">
                       <el-button @click="searchHandInsideZH" type="primary" icon="el-icon-search">搜索</el-button>
                       <el-button @click="emptyButtonInsideZH" type="primary" icon="el-icon-s-open" plain>重置</el-button>
@@ -145,7 +146,9 @@
                   <template slot-scope="scope">
                     <el-button
                       @click="chooseRecognition(scope.row, 0)"
-                      type="text"
+                      icon="el-icon-finished"
+                      type="primary"
+                      plain
                       size="small"
                       class="table_details"
                       :disabled="canClick"
@@ -217,8 +220,8 @@
                   </el-col>
                   <el-col :span="7" :offset="7">
                     <el-form-item class="buttonForm">
-                      <el-button @click="searchHandInsideXY()" type="primary">搜索</el-button>
-                      <el-button @click="emptyButtonInsideXY()" type="primary" plain>重置</el-button>
+                      <el-button @click="searchHandInsideXY()" type="primary" icon="el-icon-search">搜索</el-button>
+                      <el-button @click="emptyButtonInsideXY()" type="primary" plain icon="el-icon-s-open">重置</el-button>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -232,11 +235,13 @@
                 :stripe="true"
                 id="table-content"
               >
-                <el-table-column label="操作" width="140" align="center" fixed>
+                <el-table-column label="操作" width="145" align="center" fixed>
                   <template slot-scope="scope">
                     <el-button
                       @click="chooseRecognition(scope.row, 1)"
-                      type="text"
+                      icon="el-icon-finished"
+                      type="primary"
+                      plain
                       size="small"
                       class="table_details"
                       v-if="scope.row.reference !== '收付直通车支付结算'"
@@ -244,7 +249,9 @@
                     >选择</el-button>
                     <el-button
                       @click="payDetail(scope.row)"
-                      type="text"
+                      icon="el-icon-finished"
+                      type="primary"
+                      plain
                       size="small"
                       class="table_details"
                       v-if="scope.row.reference === '收付直通车支付结算'"
@@ -398,7 +405,7 @@ export default {
     msg: ""
   },
   created() {
-    console.log(this.msg, 'msg')
+    // console.log(this.msg, 'msg')
   },
   data() {
     return {
@@ -497,9 +504,6 @@ export default {
 
     // 选择，提交认款
     chooseRecognition(row, type) {
-      // console.log(row);
-      // console.log(this.tableDataOrder, "出来没有");
-      // if (this.collectionType !== 6) {
       if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
         if (this.collectionType !== 6) {
           if (type == 2) {
@@ -788,10 +792,10 @@ export default {
 
 <style lang="scss">
   .el-drawer{
-    overflow-y: auto;
+    overflow-y: auto !important;
   }
   .el-divider__text{
-    font-size: 16px !important
+    font-size: 16px !important;
   }
 </style>
 
@@ -808,7 +812,7 @@ export default {
     margin-top: 50px;
   }
   .topMsg {
-    width: 96%;
+    width: 94%;
     margin: 10px auto;
     display: flex;
     justify-content: space-between;
@@ -816,6 +820,10 @@ export default {
     flex-wrap: wrap;
     .inputLabel {
       width: 33.33%;
+      font-size: 14px;
+      span{
+        color: #909399;
+      }
       ul {
         list-style: none;
         margin: 0;
@@ -839,9 +847,9 @@ export default {
   .line {
     text-align: center;
   }
-  .buttonForm {
+/*  .buttonForm {
     text-align: right;
-  }
+  }*/
 }
 .footer {
   text-align: right;
