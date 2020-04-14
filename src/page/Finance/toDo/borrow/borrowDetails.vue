@@ -653,11 +653,11 @@
 </script>
 
 <style lang="scss">
-  .el-drawer{
-    overflow-y: auto;
-  }
   .el-divider__text{
     font-size: 16px !important
+  }
+  .el-drawer{
+    overflow-y: auto;
   }
 </style>
 
