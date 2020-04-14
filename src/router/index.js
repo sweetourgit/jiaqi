@@ -756,10 +756,29 @@ export default new Router({
     }
   },
 //测试why无借款管理开始
+  
   {
     path: '/testLoanManagement',
     component: () => import('@/page/Finance/testLoanManagement/testLoanManagement'),
-    name: '无收入借款管理测试why',
+    name: '无收入借款管理',
+    meta: {
+      keepAlive: true,
+      auth: true
+    },
+  },
+  {
+    path: '/testadvancePayment',
+    component: () => import('@/page/Finance/testadvancePayment/testadvancePayment'),
+    name: '预付款管理',
+    meta: {
+      keepAlive: true,
+      auth: true
+    },
+  },
+  {
+    path: '/applyDetail',
+    component: () => import('@/page/Finance/testLoanManagement/testformQuery/applyDetail'),
+    name: '借款申请详情',
     meta: {
       keepAlive: true,
       auth: true
