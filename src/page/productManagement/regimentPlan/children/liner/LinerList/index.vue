@@ -1,6 +1,6 @@
 <style lang="scss" scoped>
 .list-page{
-  height: 100%;
+  height: 100%; 
   overflow: auto;
 }
 </style>
@@ -13,7 +13,7 @@
     <main>
       <div style="padding-top: 20px;">
         <el-table border style="width: 100%"
-          :data="tableData"
+          :data="tableData" 
           :highlight-current-row="false"
           header-row-class-name="row-header">
           <el-table-column label="标题" prop="tour_no" header-align="center" align="center"></el-table-column>
@@ -25,7 +25,7 @@
           <el-table-column label="剩余房间" prop="surplus_room_stock" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="人数库存" prop="number_stock" header-align="center" align="center" width="80"></el-table-column>
           <el-table-column label="剩余人数" prop="surplus_room_num" header-align="center" align="center" width="80"></el-table-column>
-          <el-table-column label="操作人员" props="id" header-align="center" align="center" width="120"></el-table-column>
+          <el-table-column label="操作人员" header-align="center" align="center" width="120"></el-table-column>
           <el-table-column label="操作" header-align="center" align="center">
             <template slot-scope="scope">
               <div style="display:inline-block" v-show="scope.row.status=== PLAN_STATUS.NORMAL">
@@ -58,10 +58,8 @@
               </div>
 
               <div style="display:inline-block;padding-left: 10px;">
-              <!--  <el-button type="text" size="mini"
-                  @click="awakeEditor(scope.row)"> -->
-                  <el-button type="text" size="mini"
-                    @click="test(scope.row)">
+                <el-button type="text" size="mini"
+                  @click="awakeEditor(scope.row)">
                   详情
                 </el-button>
                 <el-button type="text" size="mini"
@@ -89,7 +87,7 @@
         ></el-pagination>
       </div>
     </footer>
-  </div>
+  </div>  
 </template>
 
 <script>
@@ -122,9 +120,7 @@ export default {
   },
 
   methods: {
-  test(row){
-    console.log('row',row)
-  },
+
     init(){
       let payload= this.routeQueryHandler();
       if(payload) this.reappearConditions(payload);
@@ -173,7 +169,6 @@ export default {
       let conditions= this.getListActionConditions();
       getSkuPlanListPage(conditions)
       .then(res => {
-        console.log('res',res)
         let { total, list }= res;
         this.pageInfo.total= total;
         this.tableData= list.map(this.listAdaptor);
