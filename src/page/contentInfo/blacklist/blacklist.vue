@@ -170,14 +170,14 @@ export default {
           }
         }
       },
-      handleSizeChange(val){
+      handleSizeChange(val) {
         this.pageSize = val;
         this.pageIndex = 1;
-        //this.moduleList();
+        this.pageList(this.pageIndex,val);
       },
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         this.pageIndex = val;
-        //this.moduleList();
+        this.pageList(val,this.pageSize);
       },
       //添加、编辑列表弹窗
       saveModule(formName){ //判断显示编辑或者添加弹窗
@@ -257,38 +257,40 @@ export default {
       },
       //编辑黑名单
       editLabelTheme(formName){
-        var that = this
-          this.$http.post(
-            this.GLOBAL.serverSrc + "/order/blacklist/api/save",
-            {
-              "object": {
-                "id": this.multipleSelection[0].id,
-                "isDeleted": 0,
-                "name": this.rformA.name,
-                "mobile": this.rformA.mobile,
-                "idCard": this.rformA.idCard,
-                "passport": this.rformA.passport,
-                "source": this.rformA.source,
-                "sex": this.rformA.sex,
-                "reason": this.rformA.reason,
-                "cityID": this.rformA.cityID,
-                "mark": this.rformA.mark,
-                "createTime": 0
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            var that = this
+            this.$http.post(this.GLOBAL.serverSrc + "/order/blacklist/api/save",{
+                "object": {
+                  "id": this.multipleSelection[0].id,
+                  "isDeleted": 0,
+                  "name": this.rformA.name,
+                  "mobile": this.rformA.mobile,
+                  "idCard": this.rformA.idCard,
+                  "passport": this.rformA.passport,
+                  "source": this.rformA.source,
+                  "sex": this.rformA.sex,
+                  "reason": this.rformA.reason,
+                  "cityID": this.rformA.cityID,
+                  "mark": this.rformA.mark,
+                  "createTime": 0
+                }
+              },
+            )
+            .then(res => {
+              if(res.data.isSuccess == true){                
+                this.pageList();
+                this.dialogFormVisible = false
+                this.$refs[formName].resetFields();
+              }else{
+                this.$message.success(res.data.result.message);
               }
-            },
-          )
-          .then(res => {
-            if(res.data.isSuccess == true){                
-              this.pageList();
-              this.dialogFormVisible = false
-              this.$refs[formName].resetFields();
-            }else{
-              this.$message.success(res.data.result.message);
-            }
-          })
-          .catch(function (obj) {
-            console.log(obj)
-          })
+            })
+            .catch(function (obj) {
+              console.log(obj)
+            })
+          }
+        });
       },
       //删除黑名单
       deleteLabel(){
