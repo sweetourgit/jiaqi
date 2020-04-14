@@ -48,7 +48,8 @@ const LinkTitleBar= {
     }
     return this.list.length=== 0? null:
     <div class="title-bar" link-title-bar>
-      <div class="control-btns">
+      <div class="control-btns"
+        onClick={ this.btnHandler.bind(this, -1) }>
         <i class="el-icon-d-arrow-left"></i>
       </div>
       <div class="scroll-container">
@@ -73,13 +74,19 @@ const LinkTitleBar= {
           }
         </div>
       </div>
-      <div class="control-btns">
+      <div class="control-btns"
+        onClick={ this.btnHandler.bind(this, 1) }>
         <i class="el-icon-d-arrow-right"></i>
       </div>
     </div>
   },
   
   methods: {
+    btnHandler(step){
+      let index= shareList.findIndex(el => el.selected);
+      if(!shareList[index+ step]) return;
+      this.clickHandler(index+ step);
+    },
     clickHandler(index){
       if(current) current.selected= false;
       if(index>= 0){

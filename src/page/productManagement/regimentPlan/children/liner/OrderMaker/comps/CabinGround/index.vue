@@ -122,7 +122,9 @@ export default {
   watch:{
     currentCabin:{
       deep: true,
-      handler(nval){
+      handler(nval, oval){
+        // 切换cabin不激活这个handler
+        if(nval.sku_price!== oval.sku_price) return;
         let { max_stay, min_stay }= this.skuPrice;
         let { guests, cabin_type }= nval;
         let left;
