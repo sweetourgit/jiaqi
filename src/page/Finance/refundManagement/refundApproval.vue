@@ -25,7 +25,7 @@
             <div v-if="scope.row.refundStateType=='申请退款'" style="color: #7F7F7F" >{{scope.row.refundStateType}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+        <!-- <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column> -->
         <el-table-column prop="createTime" label="申请日期" align="center">
           <template slot-scope="scope">
             <div v-if="scope.row.createTime !='0'">{{formatDate(new Date(scope.row.createTime))}}</div>
