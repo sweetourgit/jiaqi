@@ -98,7 +98,7 @@
                 class="form-content"
               >
                 <el-row type="flex" class="row-bg">
-                  <el-col :span="7">
+                  <el-col :span="6">
                     <el-form-item prop="dateStart" label="起息日期：">
                       <el-date-picker
                         type="date"
@@ -108,12 +108,12 @@
                       ></el-date-picker>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="7">
+                  <el-col :span="6">
                     <el-form-item label="付款人姓名：" prop="code">
                       <el-input v-model="ruleFormZH.name" placeholder="请输入"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="10">
+                  <el-col :span="6">
                     <el-form-item label="交易金额：" prop="money">
                       <el-col :span="11">
                         <el-input v-model="ruleFormZH.moneyMin" placeholder="请输入"></el-input>
@@ -124,12 +124,10 @@
                       </el-col>
                     </el-form-item>
                   </el-col>
-                </el-row>
-                <el-row type="flex">
-                  <el-col :span="8" :offset="16">
+                  <el-col :span="6">
                     <el-form-item class="buttonForm">
-                      <el-button @click="searchHandInsideZH()" type="primary">搜索</el-button>
-                      <el-button @click="emptyButtonInsideZH()" type="primary" plain>重置</el-button>
+                      <el-button @click="searchHandInsideZH" type="primary" icon="el-icon-search">搜索</el-button>
+                      <el-button @click="emptyButtonInsideZH" type="primary" icon="el-icon-s-open" plain>重置</el-button>
                     </el-form-item>
                   </el-col>
                 </el-row>
