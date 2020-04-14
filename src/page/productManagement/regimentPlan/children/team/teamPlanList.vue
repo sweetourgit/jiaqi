@@ -595,9 +595,9 @@ export default {
         }
       })
     },
-    reimbursement(status,checkSheet){ // 报账单
+    reimbursement(status,checkSheet,productType){ // 报账单
       setTimeout(() => {
-        this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.checkSheet});
+        this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.checkSheet + "&productType=" + "1"});
       },200);
     },
   }

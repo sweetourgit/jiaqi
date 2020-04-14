@@ -340,6 +340,7 @@ export default {
         }else{
         let newTabName = ++this.tabIndex + '';
         if(this.addVisa.copy ==1){
+          this.ruleForm.caption = '';
           this.editableTabs.push({
             id:0,
             title: '签证信息' + (this.editableTabs.length + 1),
@@ -352,7 +353,6 @@ export default {
             content: 'New Tab content'
           });
         }
-        
         this.editableTabsValue = (newTabName-1).toString();
         }
       }
