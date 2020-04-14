@@ -2,6 +2,7 @@ import Vue from 'vue'
 let { $http, GLOBAL, $message, $isArray }= Vue.prototype;
 
 export const getCheckSheetList= function(conditions){
+  console.log('conditions',conditions)
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/page", conditions)
     .then(res => {
@@ -14,7 +15,8 @@ export const getCheckSheetList= function(conditions){
     })
     .catch(err => {
       console.error(err);
-      err && $message.error(err.toString());
+	  $message.error('网络延迟，稍后刷新');
+      // err && $message.error(err.toString());
     })
   })
 }

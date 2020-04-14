@@ -20,7 +20,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="跟团游" name="team"></el-tab-pane>
       <el-tab-pane label="周边游" name="around"></el-tab-pane>
-      <el-tab-pane label="游轮" name="curiseShip"></el-tab-pane>
+      <el-tab-pane label="邮轮" name="curiseShip"></el-tab-pane>
     </el-tabs>
     <router-view></router-view>
   </div>

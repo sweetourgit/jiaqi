@@ -63,7 +63,9 @@
     agreeForJQ,
     endForJQ,
     saveChcektype,
-    getFlowFinishedList
+    getFlowFinishedList,
+    getBatchplaninfos,
+    updplanstatus
   } from "./api";
   import printGround from "./comps/printGround/printGround";
   import approvalForm from "./comps/approvalForm";
@@ -119,7 +121,11 @@
             }
           )
           .then(obj => {
-            this.setReviewList(obj.data.extend.instanceLogInfo)
+            if (obj.data.code == -1) {
+              this.$message.error(obj.data.msg)
+            } else {
+              this.setReviewList(obj.data.extend.instanceLogInfo)
+            }
             // 裡面的具提屬性沒有調試
             // _this.tableCourse = [];
             // _this.tableCourse = obj.data.data;
@@ -132,15 +138,29 @@
         this.type = this.choosePageType();
         this[this.type + "Init"]();
       },
-
       // 新增
-      addInit() {
+      async addInit() {
         let {
-          planID
+          planID,
+          productType
         } = this.$route.query;
-        getPreCheckSheetByPlanID(planID).then(res => {
-          this.groupCode = res.groupCode; // 作为草稿唯一标识
+        //测试 记得删
+        productType = 4
+        let response = await getBatchplaninfos(planID)
+        if (productType == 4) {
+
+          if (response == false) return
+          response = response[0][0]
+        }
+
+        getPreCheckSheetByPlanID(planID, productType).then(res => {
           this.getCacheCheckSheet(planID, res);
+          if (productType == 4) {
+            res.teamProTitle = response.product_name
+            res.groupCode = response.tour_no
+            res.date = response.set_out_time
+          }
+          this.groupCode = res.groupCode; // 作为草稿唯一标识
           this.$refs.printGround.init(res, this.type);
         });
       },
@@ -148,10 +168,11 @@
       // 需要我审批
       mineInit() {
         let {
-          id
+          id,
+          productType
         } = this.$route.query;
         let payload;
-        getCheckSheetByID(id)
+        getCheckSheetByID(id, productType)
           .then(res => {
             payload = res;
             let {
@@ -169,17 +190,18 @@
 
       // 普通
       normalInit() {
+
         let {
           id,
-          planID
+          planID,
+          productType
         } = this.$route.query;
         let payload;
         new Promise((resolve, reject) => {
-            if (id) return resolve(getCheckSheetByID(id));
-            if (planID) return resolve(getCheckSheetByPlanID(planID));
+            if (id) return resolve(getCheckSheetByID(id, productType));
+            if (planID) return resolve(getCheckSheetByPlanID(planID, productType));
           })
           .then(res => {
-
             payload = res;
             let {
               guid
@@ -187,11 +209,11 @@
             return getFlowFinishedList(guid);
           })
           .then(res => {
-            // console.log('res',res)
             Object.assign(payload, {
               finishedList: res
             });
             this.$refs.printGround.init(payload, this.type);
+
           });
       },
 
@@ -213,13 +235,21 @@
           conditions,
           workItemID,
           guid,
-          comeFrom
+          comeFrom,
+          productType
         } = query;
 
         this.cacheConditions = conditions;
         this.isFromCheckSheet = tab ? true : false;
+        let name = ''
+        if (productType == 1) {
+          name = '报账单详情-跟团游'
+        } else if (productType == 4) {
+          name = '报账单详情-邮轮'
+        }
         this.$router.replace({
           path,
+          name,
           query: {
             id,
             planID,
@@ -227,7 +257,8 @@
             tab,
             workItemID,
             guid,
-            comeFrom
+            comeFrom,
+            productType
           }
         });
         if (isCheckSheet === "0") return "add";
@@ -239,10 +270,23 @@
 
       postCheckSheetAction() {
         let object = this.$refs.printGround.getData();
+        //上线记得替换
+        // object.productType=this.$route.query.productType
+        object.productType = 4
         if (!object) return;
         this.cacheCheckSheet(object);
         this.createTimeMaker(object.expenses);
-        postCheckSheet(object).then(res => {
+        postCheckSheet(object).then(async res => {
+          let flag = true
+          //上线记得删
+          // this.$route.query.productType = 4
+          let name = null
+
+          if (this.$route.query.productType == 4) {
+            flag = await updplanstatus(this.$route.query.planID, 2)
+            name = '报账单-游轮'
+          }
+          if (flag == false) return
           let {
             path,
             query
@@ -254,7 +298,9 @@
             path,
             query: {
               planID,
-              isCheckSheet: 1
+              name,
+              isCheckSheet: 1,
+              productType: this.$route.query.productType
             }
           });
           this.init();
@@ -304,18 +350,28 @@
             path: "/doneAll/list"
           });
         }
+        let isFromToDO = false
+        if (this.$route.sourceToDo != undefined) {
+          isFromToDO = true
+        }
+        if (isFromToDO) {
+          this.$router.replace({
+            path: "/toDo/ILabel"
+          })
+        } else {
+          this.isFromCheckSheet ?
+            this.$router.replace({
+              path: "/checkSheet/team",
+              query: {
+                tab,
+                conditions: this.cacheConditions
+              }
+            }) :
+            this.$router.replace({
+              path: "/regimentPlan/teamPlanList"
+            });
+        }
 
-        this.isFromCheckSheet ?
-          this.$router.replace({
-            path: "/checkSheet/team",
-            query: {
-              tab,
-              conditions: this.cacheConditions
-            }
-          }) :
-          this.$router.replace({
-            path: "/regimentPlan/teamPlanList"
-          });
       },
 
       approvalHandler(isAgree) {
@@ -339,7 +395,6 @@
         } = this.$route.query;
         // 1587
         let rejectWorkItemID = this.$refs.printGround.finishedList[0].objectId;
-
         let userCode = sessionStorage.getItem("tel");
         let action;
         action = isAgree ?
@@ -362,8 +417,11 @@
             checkType: 2
           }));
         action
-          .then(() => {
-            // 重置页面按钮 防止点击
+          .then(async () => {
+            let status = isAgree ? 4 : 3
+            if (this.$route.query.productType == 4) {
+              await updplanstatus(this.$route.query.planID, status) // 重置页面按钮 防止点击 审批页面planID 为id
+            }
             this.type = "normal";
             this.$message.success(isAgree ? "审批完成" : "驳回完成");
             this.backPage();

@@ -66,6 +66,7 @@ table {
       <div class="title"><h1>{{ pd.topOrgName }}旅游团队报账单</h1></div>
        <el-divider content-position="left"  class="review-collection">报账单详情</el-divider>
       <div class="time" v-if="pd.checkTime=== pd.createTime">报账时间：{{ dateFormator(pd.checkTime) }}</div>
+      <div class="time review-collection" v-else>&nbsp</div>
     </header>
     <main>
       <table cellspacing="0" cellpadding="0" border="0">
@@ -293,6 +294,7 @@ import expenseForm from "./subs/expenseForm";
 import expenseEditForm from "./subs/expenseEditForm";
 import markForm from "./subs/markForm";
 import Review from './subs/review.vue'
+import moment from 'moment'
 export default {
   components: {
     incomeBar,
@@ -307,14 +309,16 @@ export default {
 
   filters: {
     dateFilter(val) {
-      let year, month, day;
-      year = ~~(val / 10000);
-      month = ~~((val - year * 10000) / 100);
-      day = val - year * 10000 - month * 100;
-      // return `${year}年${month}月${day}日`
-      if (month < 10) month = "0" + month;
-      if (day < 10) day = "0" + day;
-      return `${year}.${month}.${day}`;
+    if(val==0)return '00.00.00'
+    return moment(val*1000).format('YYYY.MM.DD')
+      // let year, month, day;
+      // year = ~~(val / 10000);
+      // month = ~~((val - year * 10000) / 100);
+      // day = val - year * 10000 - month * 100;
+      // // return `${year}年${month}月${day}日`
+      // if (month < 10) month = "0" + month;
+      // if (day < 10) day = "0" + day;
+      // return `${year}-${month}-${day}`;
     },
     priceFilter(val) {
       if (!val) return 0;
