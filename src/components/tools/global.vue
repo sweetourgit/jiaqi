@@ -30,9 +30,10 @@
   // const jqUrl="http://49.4.10.11:3019"
   // const jqUrl="117.78.20.162:3019"
   // const jqUrl="http://test.dayuntong.com/h3wf";
-  // const serverSrcPhp="http://www.around.com";
-  const serverSrcPhp="http://zb.dayuntong.com";
-  const serverSrcYL="http://yl.dayuntong.com";
+  // const serverSrcPhp="http://zb.dayuntong.com";
+  const serverSrcPhp="http://192.168.2.17";
+  // const serverSrcYL="http://yl.dayuntong.com";
+  const serverSrcYL="http://192.168.2.17";
   const token="";
   const userId="";
   const hasEnter=false;

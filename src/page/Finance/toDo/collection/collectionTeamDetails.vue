@@ -7,7 +7,7 @@
   <div class="loan-management">
     <div style="text-align: right; margin: 25px 20px 0 0;position: sticky;top: 0;right: 0;z-index: 100;">
       <el-button icon="el-icon-remove" plain @click="handleCancel">取消</el-button>
-      <el-button icon="el-icon-circle-check" type="success" plain @click="handlePass">通过</el-button>
+      <el-button icon="el-icon-circle-check" type="success" plain :disabled="passDisabled" @click="handlePass">通过</el-button>
       <el-button icon="el-icon-circle-close" type="danger" plain @click="handleRejected">驳回</el-button>
       <el-button type="primary" icon="el-icon-printer" plain @click="handleTouchPrint" v-if="getOrgID === 491 || 310 || 342 || 362 || 542 || 574">打印本页</el-button>
     </div>
@@ -861,6 +861,7 @@
         getOrgID: null, // 财务id
         printSureTime: null, // 打印用 - 确认时间
         printSureState: null, // 状态
+        passDisabled: false, // 通过按钮是否禁用
       };
     },
     mixins: [ collectTeamDetails ],

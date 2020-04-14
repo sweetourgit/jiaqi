@@ -174,7 +174,7 @@ export default {
           if (this.hasSubject) {
             this.tableAssociated.forEach(function(item, index, arr) {
               let dataLocal = JSON.parse(localStorage.getItem(item.id));
-              // console.log(dataLocal);
+              console.log(dataLocal);
               if (dataLocal.hasCharge) {
                 _this.chargeSubmit(
                   item,
@@ -346,7 +346,7 @@ export default {
           });
         } else {
           // alert("有科目值");
-          console.log(_this.tableAssociated)
+          // console.log(_this.tableAssociated)
           _this.tableAssociated.forEach(item => {
             _this.getCollectionPriceTotal += item.matchingPrice;
             // console.log("submitData", localStorage.getItem(item.id));
