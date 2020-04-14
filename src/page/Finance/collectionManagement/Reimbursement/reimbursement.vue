@@ -40,8 +40,8 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button @click="searchHandInside()" type="primary" :disabled="ifShowsearch">搜索</el-button>
-            <el-button @click="emptyButtonInside('ruleForm')" type="primary">重置</el-button>
+            <el-button @click="searchHandInside()"  type="primary" icon="el-icon-search" :disabled="ifShowsearch">搜索</el-button>
+            <el-button @click="emptyButtonInside('ruleForm')" type="primary" icon="el-icon-s-open" plain>重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -93,7 +93,7 @@
     <!-- 翻页 END -->
     <el-dialog title="报销详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
-        <el-button @click="closeDetailstShow()">取消</el-button>
+        <el-button  icon="el-icon-remove" plain @click="closeDetailstShow()">取消</el-button>
       </div>
       <div class="item-content">
         <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>

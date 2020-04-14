@@ -18,8 +18,8 @@
           <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')" :disabled="ifShowApply">申 请</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销收款</el-button>
           <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button>
-          <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
-          <el-button v-if="this.find == 2" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
+          <el-button v-if="this.find == 2"  icon="el-icon-circle-check" type="success" plain @click="adoptForm('ruleForm')">通过</el-button>
+          <el-button v-if="this.find == 2" icon="el-icon-circle-close" type="danger" plain @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
         <!-- 表单基本信息 -->
         <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -203,7 +203,7 @@
         <div style="width: 100%">
           <div class="button_select" style="margin-bottom: 30px;margin-top: -30px;">
             <el-input v-model="applyUserInput" class="input" style='margin-left: 0px;'></el-input>
-            <el-button type="primary" @click="searchHand2()" size="medium">搜索</el-button>
+            <el-button  type="primary" icon="el-icon-search" @click="searchHand2()" size="medium">搜索</el-button>
           </div>
           <div class="table_trip" style=" width: 100%;">
             <el-table :data="assistTransactionData" border style="width: 100%" :highlight-current-row="true" @row-click="clickBanle" :header-cell-style="getRowClass">

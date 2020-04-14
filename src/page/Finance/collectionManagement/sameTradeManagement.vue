@@ -1,3 +1,4 @@
+<!-- 2020-3-31 -->
 <template>
   <!--  收款管理 同业 -->
   <div class="distributor-content">
@@ -49,8 +50,8 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button @click="searchHandInside()" type="primary" :disabled="ifShowsearch">搜索</el-button>
-            <el-button @click="emptyButtonInside('ruleForm')" type="primary">重置</el-button>
+            <el-button  @click="searchHandInside()"  type="primary" icon="el-icon-search" :disabled="ifShowsearch">搜索</el-button>
+            <el-button icon="el-icon-s-open" @click="emptyButtonInside('ruleForm')" type="primary"  plain>重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -108,8 +109,7 @@
     </div>
     <!-- 翻页 END -->
     <!-- 添加同业数据弹窗 -->
- <!-- <addPage :mode="mode" @getListForTY="getListForTY" :dialogFormVisible="dialogFormVisible" :find="find"
-      @close="closeAdd"></addPage> -->
+    <!-- <addPage :mode="mode" @getListForTY="getListForTY" :dialogFormVisible="dialogFormVisible" :find="find" @close="closeAdd"></addPage> -->
 
     <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo>
     <!-- 添加同业数据弹窗 END -->
@@ -117,9 +117,9 @@
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list"
       :show-close='false'>
       <div style="position:absolute; top:8px; right:10px;">
-        <el-button @click="closeDetailstShow()">取消</el-button>
+        <el-button icon="el-icon-remove" plain @click="closeDetailstShow()">取消</el-button>
         <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType == 0 || getRowCheckType == 2 ">撤销</el-button>
-        <el-button type="success" @click="touchPrint" plain v-if="getOrgID == 491">
+        <el-button type="primary" icon="el-icon-printer" plain @click="touchPrint" plain v-if="getOrgID == 491">
           打印本页详情信息
         </el-button>
       </div>

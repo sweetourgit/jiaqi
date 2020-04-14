@@ -31,8 +31,8 @@
           </el-col>
           <el-col :span="7">
             <div class="buttonDv">
-              <el-button type="primary" @click="resetFun" plain>重置</el-button>
-              <el-button type="primary" @click="searchFun">搜索</el-button>
+              <el-button type="primary" icon="el-icon-s-open"  @click="resetFun" plain>重置</el-button>
+              <el-button  type="primary" icon="el-icon-search" @click="searchFun">搜索</el-button>
             </div>
           </el-col>
         </el-row>

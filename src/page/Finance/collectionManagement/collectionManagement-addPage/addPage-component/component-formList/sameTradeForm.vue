@@ -44,14 +44,23 @@
     props: ['ruleForm'],
     data() {
       return {
-        change: false,
+        change: false, //之前版本留下字段 本组件这个值都是false 没什么用
         sameTradeData: [], // 同业社名称模糊查询
-        fileList: [],
+        fileList: [], //上传文件列表
         //点击上传文件获取uid 与 imgBigName
-        uid: '',
-        imgBigName: '',
+        uid: '', // 没什么用 之前版本留的字段 本组件并没有用到
+        imgBigName: '', // 同上
+        /**
+         * 这个是用于控制同业表单 同业社名称已选的情况 同业社ID赋予sameTradeId
+         * 关联欠款表格里的tab切换时 取这个值来获取关联欠款数据
+         * 默认是1 不给值会报错
+         */
         sameTradeId: '1',
+        /**
+         * 同上 这个存的是同业社的name
+         */
         sameTradeValue: '',
+        //打开组件是默认是同业表格
         travelMode: 'GroupTour'
       }
     },
@@ -66,6 +75,7 @@
       ...mapActions('collectionManagement', {
         getCollectionList: 'getCollectionList'
       }),
+      //储存关联欠款数据
       ...mapMutations('collectionManagement', {
         setArrearsList: "setArrearsList"
       }),
@@ -94,6 +104,7 @@
           return (restaurant.value);
         }
       },
+      //获取关联欠款列表
       getArrearsList(item, type = this.travelMode) {
         if (item == undefined) {
           item = {

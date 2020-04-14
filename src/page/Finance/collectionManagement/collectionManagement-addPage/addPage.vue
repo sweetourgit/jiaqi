@@ -2,7 +2,9 @@
 <template>
   <!-- 申请填写同业收款表单-弹窗 -->
   <article class="content">
-    <el-drawer custom-class="overF" :show-close="false" :visible="dialogFormVisible" @close="canelHandle">
+    <el-drawer custom-class="overF" size="45%" :show-close="false" :visible="dialogFormVisible" @close="canelHandle">
+      <el-divider class='title-margin title-margin-t'>{{getTitle(mode)}}</el-divider>
+      <article class="el-drawer-content">
       <header class="header">
         <section style="position:relative;">
           <!-- <el-button @click="canelHandle">取 消</el-button> -->
@@ -44,8 +46,8 @@
                  -->
                 <el-input placeholder="请输入" v-model="indent"></el-input>
               </el-form-item>
-              <el-button v-if="mode=='ZK'" type="primary" @click="receiptorder">搜索</el-button>
-              <el-button v-if="mode=='ZK'" type="primary" @click="()=>{indent=''}">重置</el-button>
+              <el-button v-if="mode=='ZK'"  type="primary" icon="el-icon-search" @click="receiptorder">搜索</el-button>
+              <el-button v-if="mode=='ZK'" type="primary" icon="el-icon-s-open" plain @click="()=>{indent=''}">重置</el-button>
               <relatedArrears :arrearsList="arrearsList" @handleCollectionPrice="handleCollectionPrice"></relatedArrears>
             </el-tab-pane>
           </el-tabs>
@@ -53,6 +55,7 @@
         </el-form>
         <accountsReceivable @clickPlan="clickPlan" @chooseAccount="chooseAccount"></accountsReceivable>
       </main>
+      </article>
     </el-drawer>
   </article>
   <!-- 申请同业收款 END -->
@@ -77,20 +80,21 @@
   export default {
     mixins: [mixin],
     components: {
-      sameTradeFrom,
-      accountsReceivable,
-      straightGuestForm,
-      InvoiceList,
-      relatedArrears
+      sameTradeFrom, // 同业表单
+      accountsReceivable, // 账户列表dialog
+      straightGuestForm, // 直客表单
+      InvoiceList, // 发票表格
+      relatedArrears //关联欠款表格
     },
     props: {
       dialogFormVisible: false, // 是否显示弹窗
       find: 0,
-      mode: ''
+      mode: '' //用于判断从哪个父组件过来的
     },
     data() {
+      //data都放mixin.js里了 包括同业和直客的字段
       return {
-        travelMode: 'GroupTour',
+        travelMode: 'GroupTour', // 用于区分关联欠款表格里的tab选项
         travelTabPanes: [{
           label: '跟团游',
           name: 'GroupTour'
@@ -98,10 +102,11 @@
           label: '游轮',
           name: 'CruiseShip'
         }],
-        indent: '',
+        indent: '', // ZK里叫订单号 TY忘了
       }
     },
     computed: {
+      // vuex 里获取关联欠款列表
       ...mapGetters('collectionManagement', {
         getArrearsList: 'getArrearsList'
       }),
@@ -135,8 +140,8 @@
       },
       //修改关联欠款表 ++++++++++++++++++++++++
       updateArrearsList() {
+        // vuex 里取欠款列表
         let obj = this.getArrearsList
-
         if (obj.data.objects == null) {
           this.ifShowApply = true
           this.$message.success('该同业社下无关联欠款，无法申请同业收款');
@@ -191,7 +196,7 @@
           console.log(obj)
         })
       },
-      //这里这么起名的原因是为了以后 增加新功能 逻辑与当前方法无差时方便调用
+      //这里这么起名的原因是为了以后 增加新功能 逻辑与当前方法无差时方便调用 例：签证QZgetArrearsList
       ZKgetArrearsList() {
         let that = this
         if (that.travelMode == 'GroupTour') {
@@ -219,6 +224,7 @@
         }
 
       },
+      //修改直客的欠款表格的数据格式 格式一律跟同业的格式看齐
       ZKsetArrearsLis(obj) {
         obj.data.object.uncollectedMoney = obj.data.object.payable - obj.data.object.collPrice // 订单金额 - 已收金额
         obj.data.object.matchingPrice = 0
@@ -326,6 +332,9 @@
           this.handleApplication(objectRequest)
         }
       },
+      /**
+       * 以下是通用方法 不同组件皆可调用
+       */
       //获取图片列表
       getPictureList() {
         let pictureList = [];
@@ -526,6 +535,7 @@
         _this.dialogVisibleInvoice = false;
         this.$refs.sameTradeFrom.sameTradeId = 1
       },
+      //重置直客数据
       ZKresetFields() {
         this.arrearsList = [];
         this.indent = '';
@@ -558,6 +568,7 @@
             });
           });
       },
+      //关联欠款表格 tab选项切换
       travelModeChange(tab, event) {
         this.travelMode = tab.name
         switch (this.mode) {
@@ -681,10 +692,15 @@
     height: '';
     bottom: ''
   }
+  .el-drawer-content{
+    width: 96%;
+    margin: 0 auto;
+  }
 </style>
 <style>
   .el-drawer {
 
     overflow: scroll
   }
+
 </style>

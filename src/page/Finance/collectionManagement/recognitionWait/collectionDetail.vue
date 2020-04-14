@@ -2,7 +2,7 @@
   <div class="vivo" style="position:relative" id="collectionDetail">
     <el-dialog title="详情" :visible="dialogFormVisible1" @close="closeAdd" custom-class="city_list" :show-close="false" style="margin:-80px 0 0 0;width: 100%;">
       <div class="buttonDv">
-        <el-button type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
+        <el-button  icon="el-icon-remove"  type="primary" @click="closeAdd" style="margin-right: 10px" plain>取消</el-button>
         <!--<el-button type="primary" @click="deleteDo" v-if="baseInfo.approved != 1">删除</el-button>-->
         <el-button type="primary" @click="backoutBtn" v-if="baseInfo.rec_mode!='票付通余额支付' && baseInfo.status_rece != 12">撤销</el-button>
       </div>

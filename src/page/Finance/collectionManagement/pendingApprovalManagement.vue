@@ -47,9 +47,9 @@
          <!-- 同业审批弹窗 -->
          <el-dialog width="80%" :title="title" :visible.sync="customerApproval" style="margin:-80px 0 0 0;" append-to-body custom-class="city_list" >
             <div style="position:absolute; top:8px; right:10px;">
-              <el-button @click="closeApprove()">取消</el-button>
+              <el-button  icon="el-icon-remove" plain @click="closeApprove()">取消</el-button>
               <el-button type="primary" @click="passHandle">通过</el-button>
-              <el-button type="danger" @click="rejectHandle">驳回</el-button>
+              <el-button icon="el-icon-circle-close" type="danger" plain @click="rejectHandle">驳回</el-button>
             </div>
             <div>
               <el-divider content-position="left" class='title-margin'>基本信息</el-divider>

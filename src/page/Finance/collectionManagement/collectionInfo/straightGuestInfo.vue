@@ -18,8 +18,8 @@
           <el-button v-if="this.find == 0" type="primary" @click="submitForm('ruleForm')">申 请</el-button>
           <el-button v-if="this.find == 1" type="danger" @click="chanelSubmit('ruleForm')" plain>撤销申请</el-button>
           <!-- <el-button v-if="this.find == 2" type="primary" @click="Transfer ('ruleForm')">转办</el-button> -->
-          <el-button v-if="this.find == 2" type="primary" @click="adoptForm('ruleForm')">通过</el-button>
-          <el-button v-if="this.find == 2" type="danger" @click="boSubmit('ruleForm')">驳回</el-button>
+          <el-button v-if="this.find == 2"  icon="el-icon-circle-check" type="success" plain @click="adoptForm('ruleForm')">通过</el-button>
+          <el-button v-if="this.find == 2" icon="el-icon-circle-close" type="danger" plain @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
         <!-- 表单基本信息 -->
         <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
@@ -189,8 +189,8 @@
             <el-input placeholder="请输入" v-model="indentPeople" :disabled="change"></el-input>
           </el-form-item> -->
           <div style="float:left;">
-            <el-button type="primary" @click="receiptorder()">搜索</el-button>
-            <el-button type="primary" @click="resetIndent()">重置</el-button>
+            <el-button  type="primary" icon="el-icon-search" @click="receiptorder()">搜索</el-button>
+            <el-button type="primary" icon="el-icon-s-open" plain @click="resetIndent()">重置</el-button>
           </div>
           <el-table :data="arrearsList" border style="width: 1030px; margin:10px 0 20px 25px;":header-cell-style="getRowClass">
              <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>

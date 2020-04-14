@@ -2,14 +2,14 @@
   <div class="distributor-content">
     <el-row type="flex" class="row-bg">
       <el-col :span="4" :offset="19" class="btn-operator">
-        <el-button @click="cancelHand()" type="primary" plain size="small">取消</el-button>
+        <el-button  icon="el-icon-remove" @click="cancelHand()" type="primary" plain size="small">取消</el-button>
     <!--<el-button @click="emptyButton()" type="primary" size="small">撤销</el-button>-->
       </el-col>
     </el-row>
     <!-- 基本信息 -->
     <el-divider content-position="left">基本信息</el-divider>
     <div class="item-content">
-      <el-tag type="success" class="distributor-status">通过</el-tag>
+      <el-tag   class="distributor-status">通过</el-tag>
     </div>
     <!-- 第一行 -->
     <el-row type="flex" class="row-bg" justify="space-around">

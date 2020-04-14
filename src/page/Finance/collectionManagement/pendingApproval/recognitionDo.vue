@@ -130,8 +130,8 @@
                 <el-row type="flex">
                   <el-col :span="8" :offset="16">
                     <el-form-item class="buttonForm">
-                      <el-button @click="searchHandInsideZH()" type="primary">搜索</el-button>
-                      <el-button @click="emptyButtonInsideZH()" type="primary" plain>重置</el-button>
+                      <el-button @click="searchHandInsideZH()"  type="primary" icon="el-icon-search">搜索</el-button>
+                      <el-button @click="emptyButtonInsideZH()" type="primary" icon="el-icon-s-open" plain>重置</el-button>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -221,8 +221,8 @@
                   </el-col>
                   <el-col :span="7" :offset="7">
                     <el-form-item class="buttonForm">
-                      <el-button @click="searchHandInsideXY()" type="primary">搜索</el-button>
-                      <el-button @click="emptyButtonInsideXY()" type="primary" plain>重置</el-button>
+                      <el-button @click="searchHandInsideXY()"  type="primary" icon="el-icon-search">搜索</el-button>
+                      <el-button @click="emptyButtonInsideXY()" type="primary" icon="el-icon-s-open" plain>重置</el-button>
                     </el-form-item>
                   </el-col>
                 </el-row>

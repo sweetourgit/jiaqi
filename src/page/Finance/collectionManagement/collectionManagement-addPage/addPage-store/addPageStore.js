@@ -13,6 +13,7 @@ export default {
   },
 
   getters: {
+    // 获取关联欠款列表
     getArrearsList: state => state.ArrearsList,
     //通过计算属性获取收款用户列表
     getCollection: state => state.Collection,

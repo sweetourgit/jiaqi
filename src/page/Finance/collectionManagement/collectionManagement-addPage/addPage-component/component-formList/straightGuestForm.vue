@@ -16,8 +16,8 @@
     <el-row :gutter="10">
       <el-col :span="12">
         <el-form-item label="收款账户" prop="collectionNumber" label-width="120px">
-          <el-input style="width:78.5%;"  v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
-          <el-button style="width:20%;" class="collection" @click="account()" :disabled="change">选择</el-button>
+          <el-input style="width:60.5%;"  v-model="ruleForm.collectionNumber" placeholder="请输入收款账户" :disabled="change"></el-input>
+          <el-button style="width:30%;" class="collection" @click="account()" :disabled="change">选择</el-button>
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -41,6 +41,7 @@
   </div>
 </template>
 <script type="text/javascript">
+  // 这个组件设计的逻辑不多 当时没拆好 逻辑放父组件离了
   import {
     mapMutations,
     mapGetters,
@@ -67,6 +68,7 @@
       ...mapActions('collectionManagement', {
         getCollectionList: 'getCollectionList'
       }),
+      //获取同业社列表
       account() {
         this.getCollectionList()
       },

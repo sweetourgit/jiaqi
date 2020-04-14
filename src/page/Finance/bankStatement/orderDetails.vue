@@ -124,7 +124,7 @@
         </div>
       </div>
       <div class="footer">
-        <el-button @click="closeAdd" size="small" class="table_details">取消</el-button>
+        <el-button  icon="el-icon-remove" plain @click="closeAdd" size="small" class="table_details">取消</el-button>
       </div>
     </el-dialog>
   </div>

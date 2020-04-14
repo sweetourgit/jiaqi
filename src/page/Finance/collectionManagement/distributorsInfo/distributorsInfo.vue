@@ -46,8 +46,8 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button @click="searchHandInside()" type="primary">搜索</el-button>
-            <el-button @click="emptyButtonInside('ruleForm')" type="primary">重置</el-button>
+            <el-button @click="searchHandInside()"  type="primary" icon="el-icon-search">搜索</el-button>
+            <el-button @click="emptyButtonInside('ruleForm')" type="primary" icon="el-icon-s-open" plain>重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>

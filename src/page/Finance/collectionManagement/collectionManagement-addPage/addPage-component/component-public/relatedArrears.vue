@@ -24,9 +24,10 @@
   export default {
     props:['arrearsList'],
     computed: {
-      ...mapGetters('collectionManagement', {
-        getArrearsList: 'getArrearsList'
-      }),
+      // 忘了用没用 代码出错了打开就行 
+      // ...mapGetters('collectionManagement', {
+      //   getArrearsList: 'getArrearsList'
+      // }),
     },
     methods:{
       ...mapMutations('collectionManagement',{getRowClass:'getRowClass'}),

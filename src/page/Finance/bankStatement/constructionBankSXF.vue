@@ -45,8 +45,8 @@
       <el-row type="flex">
         <el-col :span="8" :offset="16">
           <el-form-item class="buttonForm">
-            <el-button @click="searchHandInside()" type="primary">搜索</el-button>
-            <el-button @click="emptyButtonInside('ruleForm')" type="primary" plain>重置</el-button>
+            <el-button @click="searchHandInside()"  icon="el-icon-search" type="primary">搜索</el-button>
+            <el-button @click="emptyButtonInside('ruleForm')"  icon="el-icon-s-open" plain type="primary" plain>重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>

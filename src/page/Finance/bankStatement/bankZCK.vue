@@ -8,7 +8,7 @@
   <div class="distributor-content">
     <div class="buttonsDv">
       <el-button @click="submitBtn" type="primary" :disabled="clickable">确认</el-button>
-      <el-button @click="closeBtn" type="primary" plain>取消</el-button>
+      <el-button @click="closeBtn" type="primary"  icon="el-icon-remove" plain>取消</el-button>
     </div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <!-- 改天再拆 -->

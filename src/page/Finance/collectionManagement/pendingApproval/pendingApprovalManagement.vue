@@ -38,8 +38,8 @@
             <el-option label="审批中" value="0"></el-option>
           </el-select>
           <span class="searchInput btn"></span>
-          <el-button type="primary" class="searchBtn" @click="handleSearchBtnZK">搜索</el-button>
-          <el-button type="primary" class="searchBtn" @click="handleResetBtnZK">重置</el-button>
+          <el-button  type="primary" icon="el-icon-search" class="searchBtn" @click="handleSearchBtnZK">搜索</el-button>
+          <el-button type="primary" icon="el-icon-s-open" plain class="searchBtn" @click="handleResetBtnZK">重置</el-button>
           <br />
           <br />
           <span class="searchName">收款账户</span>
@@ -165,8 +165,8 @@
             <el-option label="审批中" value="0"></el-option>
           </el-select>
           <span class="searchInput btn"></span>
-          <el-button type="primary" class="searchBtn" @click="handleSearchBtnTY">搜索</el-button>
-          <el-button type="primary" class="searchBtn" @click="handleResetBtnTY">重置</el-button>
+          <el-button  type="primary" icon="el-icon-search" class="searchBtn" @click="handleSearchBtnTY">搜索</el-button>
+          <el-button type="primary" icon="el-icon-s-open" plain class="searchBtn" @click="handleResetBtnTY">重置</el-button>
           <br />
           <br />
           <span class="searchName">收款账户</span>

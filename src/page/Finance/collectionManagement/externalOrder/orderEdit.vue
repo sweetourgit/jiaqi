@@ -4,12 +4,12 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <!--添加弹框按钮-->
         <div class="buttonDv" v-if="info == ''">
-          <el-button type="primary" @click="cancelBtnTJ" style="margin-right: 10px" plain>取消</el-button>
+          <el-button type="primary"  icon="el-icon-remove" @click="cancelBtnTJ" style="margin-right: 10px" plain>取消</el-button>
           <el-button type="primary" @click="submitBtnTJ('ruleForm')" style="margin: 0">添加</el-button>
         </div>
         <!--编辑弹框按钮-->
         <div class="buttonDv" v-if="info != ''">
-          <el-button type="primary" @click="cancelBtnXG" style="margin-right: 10px" plain>取消</el-button>
+          <el-button type="primary"  icon="el-icon-remove" @click="cancelBtnXG" style="margin-right: 10px" plain>取消</el-button>
           <el-button type="primary" @click="submitBtnXG('ruleForm')" style="margin: 0">保存</el-button>
         </div>
         <!--<p class="stepTitle">基本信息</p>-->
