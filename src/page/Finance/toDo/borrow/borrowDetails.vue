@@ -654,10 +654,10 @@
 
 <style lang="scss">
   .el-divider__text{
-    font-size: 16px !important
+    font-size: 16px !important;
   }
   .el-drawer{
-    overflow-y: auto;
+    overflow-y: auto !important;
   }
 </style>
 
