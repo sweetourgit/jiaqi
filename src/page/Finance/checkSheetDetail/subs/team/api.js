@@ -8,10 +8,11 @@ let {
 } = Vue.prototype;
 let DATA4D = utils.getSession4D()
 // 获取未报账的报账单
-export const getPreCheckSheetByPlanID = function(id) {
+export const getPreCheckSheetByPlanID = function(id,productType) {
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/getforother", {
-        id
+        id,
+        productType
       })
       .then(res => {
         let {
@@ -27,13 +28,29 @@ export const getPreCheckSheetByPlanID = function(id) {
       })
   })
 }
+//游轮先通过PHP接口获取产品信息 再获取getPreCheckSheetByPlanID信息
+ export const getBatchplaninfos=function(planID){
+  return new Promise((res,rej)=>{
+    $http.post(GLOBAL.serverSrcYL+'/linerapi/v1/sku/sku-plan/batchplaninfos',{
+      plan_id:planID
+    }).then(response=>{
+      if(response.data.message=='OK'){
+          res(response.data.data)
+      }else{
+       $message.error(response.data.message);
+       res(false)
+      }
 
+    })
+  })
+}
 // 获取已报账的报账单
-export const getCheckSheetByPlanID = function(id) {
+export const getCheckSheetByPlanID = function(id,productType) {
 
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/finance/checksheet/api/getforplan", {
-        id
+        id,
+		productType
       })
       .then(res => {
         let {
@@ -87,7 +104,28 @@ export const postCheckSheet = function(object) {
       })
   })
 }
-
+export const updplanstatus = function(planID,status) {
+  return new Promise((resolve, reject) => {
+    $http.post(GLOBAL.serverSrcYL + "/linerapi/v1/sku/sku-plan/updplanstatus", {
+        plan_id:planID,
+        bill_status:status
+      })
+      .then(res => {
+        let {
+          message
+        } = res.data;
+        console.log('message',res)
+        if (message!='OK') {
+           resolve(false)
+        return $message.error(message);
+              }
+        resolve(true)
+      })
+      .catch(err => {
+        if (typeof err === 'string') return $message.error(err);
+      })
+  })
+}
 
 // 模糊查询供应商
 export const getSupplierlist = function(object) {

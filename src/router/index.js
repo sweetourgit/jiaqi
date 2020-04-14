@@ -1038,6 +1038,15 @@ export default new Router({
           keepAlive: true,
           auth: true,
         },
+      },
+      {
+        path: 'team',
+        component: () => import('@/page/Finance/checkSheetDetail/subs/team/team'),
+        name: '报账单详情-邮轮',
+        meta: {
+          keepAlive: true,
+          auth: true,
+        },
       }
     ]
   }, {

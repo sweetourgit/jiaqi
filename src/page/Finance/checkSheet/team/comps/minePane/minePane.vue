@@ -20,7 +20,7 @@
 <template>
   <div class="mine-pane">
     <header>
-      <mine-pane-conditions 
+      <mine-pane-conditions
         ref="minePaneConditions"
         @reset-pageinfo="resetPageInfo">
       </mine-pane-conditions>
@@ -112,10 +112,13 @@ export default {
       },
 
       toDetailPage(row){
+
         let tab= 'mine';
-        let { id, workItemID, guid }= row;
+        let { id, workItemID, guid,productType,planID }= row;
+          console.log('productType',productType)
+            console.log('planID',planID)
         this.$router.push({ path: '/checkSheetDetail/team', query: {
-          id, workItemID, guid, tab
+          id, workItemID, guid, tab,productType,planID
         }})
       },
 
