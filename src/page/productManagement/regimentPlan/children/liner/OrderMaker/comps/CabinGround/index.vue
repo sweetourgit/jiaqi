@@ -33,7 +33,7 @@
             <el-input-number size="small"
               ref="inputNumber"
               v-model="submitForm.num" 
-              :min="currentCabin.cabin_type=== CABIN_SPLIT_TYPE.PART?1: skuPrice.min_stay" 
+              :min="0" 
               :max="skuPrice.max_stay* skuPrice.room_stock"
               :step="1"
               @change="changeHandler">
@@ -44,7 +44,7 @@
               <span>{{ `  可住${computedInfo.all_total+ computedInfo.part_total}人` }}</span>
             </div>
             <div>
-              {{ `至少报名 ${ computedInfo.least_add } 人, max_stay: ${skuPrice.max_stay}` }}
+              {{ `至少报名 ${ computedInfo.least_add } 人, max_stay: ${skuPrice.max_stay}, min_stay: ${skuPrice.min_stay}, ${computedInfo.part_price}, ${computedInfo.all_price}` }}
             </div>
           </div>
           
@@ -86,19 +86,23 @@ export default {
       let all_rooms= 0;
       let all_nums= 0;
       let all_total= 0;
+      let all_price= 0;
       let part_rooms= 0;
       let part_nums= 0;
       let part_total= 0;
+      let part_price= 0;
       let least_add= 0;
       this.cabin.forEach(el => {
         let { guests, cabin_type }= el;
-        let { room_stock, max_stay, min_stay }= el.sku_price;
+        let { room_stock, max_stay, min_stay, adult_same_price, adult_straight_price }= el.sku_price;
+        let price= this.isCommonPrice? adult_same_price: adult_straight_price;
         if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
           all_total+= room_stock* max_stay
           all_rooms+= room_stock;
           all_rooms-= Math.ceil(guests.length/max_stay);
           all_nums+= guests.length;
           all_total-= guests.length;
+          all_price+= (guests.length* (price* 100))/100;
           least_add= all_total%max_stay=== 0? min_stay: 1;
         }
         if(cabin_type=== CABIN_SPLIT_TYPE.PART){
@@ -107,10 +111,39 @@ export default {
           part_rooms-= Math.ceil(guests.length/max_stay);
           part_nums+= guests.length;
           part_total-= guests.length;
+          part_price+= (guests.length* (price* 100))/100;
           least_add= 1;
         }
       })
-      return { all_rooms, all_nums, all_total, part_rooms, part_nums, part_total, least_add };
+      return { all_rooms, all_nums, all_total, all_price, part_rooms, part_nums, part_total, part_price, least_add };
+    }
+  },
+
+  watch:{
+    currentCabin:{
+      deep: true,
+      handler(nval){
+        let { max_stay, min_stay }= this.skuPrice;
+        let { guests, cabin_type }= nval;
+        let left;
+        this.submitForm.num= guests.length;
+        if(cabin_type=== CABIN_SPLIT_TYPE.PART) return;
+        left= guests.length% max_stay;
+        if(left>= min_stay || (guests.length && left=== 0)) return nval.short= 0;
+        if(guests.length< min_stay) {
+          this.$message.error({
+            message: `还需增加${min_stay- guests.length}个报名,才能满足下单条件`,
+            duration: 5000
+          });
+          return nval.short= (min_stay- guests.length)* -1;
+        }
+        let short= min_stay- left;
+        this.$message.error({
+          message: `还需减少${short}个或增加${min_stay- short}个报名,才能满足下单条件`,
+          duration: 5000
+        });
+        return nval.short= short;
+      },
     }
   },
 
@@ -146,50 +179,61 @@ export default {
     awakeEditor(){
       this.$refs.editor.init();
     },
-
     // 选择拼住，无需满足最少报名人数
     changeHandler(nval, oval){
+      if(!nval && nval!== 0) return this.$nextTick(() => this.submitForm.num= oval);
       let step= nval- oval;
       step> 0? this.plusChangeHandler(step, oval): this.minusChangeHandler(step, oval);
       return;
     },
 
     minusChangeHandler(step, oval){
-      let want= step;
-      let handWarn= false;
+      let want= step; // 预期
+      let handWarn= 0;  // 手动值
+      let clear= false; // 是否为空
+      let removed= []; // 移除数组
+      let pointer= 0;  // 跳人指针
       let { guests, cabin_type }= this.currentCabin;
       let { min_stay, max_stay, room_stock }= this.skuPrice;
       let currentGuestsNum= guests.length;
       let deletableGuests= guests.filter(guest => !guest.isFilled());
-      step= Math.abs(step)> deletableGuests.length? deletableGuests.length: step;
-      if(step!== want) handWarn= true;
+      let minHold= cabin_type=== CABIN_SPLIT_TYPE.ALL? min_stay: 1;
+      step= Math.abs(step)> deletableGuests.length? deletableGuests.length* -1: step;
+      if(step!== want) handWarn= step- want;
       if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
         let left= (currentGuestsNum+ step)% max_stay;
-        step+= (left>= min_stay? 0: (min_stay- left)); 
+        step+= (left>= min_stay || left=== 0? 0: (min_stay- left)); 
       }
-      if(step!== want) 
-        this.$message.info(`预期减少${Math.abs(want)}人, 实际减少${Math.abs(step)}人${handWarn? ',填写过信息的旅客请手动删除': ''}`);
-      this.$refs.inputNumber.focus();
-      this.submitForm.num= 3;
+      if(step=== 0 && deletableGuests.length!== 0) step= min_stay* -1;
+      if(step=== 0) this.$nextTick(() => this.submitForm.num= oval);
+      clear= Math.abs(step)=== guests.length;
+      while(guests.length> minHold && removed.length< Math.abs(step) && pointer< guests.length){
+        let max= guests.length- 1- pointer;
+        if(!guests[max].isFilled()){
+          removed.push(guests.splice(max, 1)[0]);
+        } else {
+          pointer++;
+        }
+      }
+      // bug min_stay为2, guests为2时, 手动删减一个, 再手动归0
+      minHold= guests.length< minHold? guests.length: minHold;
+      if(clear) this.$nextTick(() => this.submitForm.num= minHold);
+      if(step!== want || clear)  
+        this.$message.info(`预期减少${Math.abs(want)}人, 实际减少${Math.abs(step)- (clear? minHold: 0)}人, ${handWarn? `${handWarn}名填写过信息的旅客请手动删除`: ''}`);
     },
 
     plusChangeHandler(step, oval){
-      console.log(step)
       let want= step;
       let { guests, cabin_type }= this.currentCabin;
       let { min_stay, max_stay, room_stock }= this.skuPrice;
       let currentGuestsNum= guests.length;
       if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
         let left= (currentGuestsNum+ step)% max_stay;
-        console.log(left)
         step+= (left>= min_stay || left=== 0? 0: (min_stay- left)); 
-        console.log(step)
       }
       if(currentGuestsNum+ step> room_stock* max_stay) step= room_stock* max_stay- oval;
       if(step!== want) 
         this.$message.info(`预期增加${Math.abs(want)}人, 实际增加${Math.abs(step)}人`);
-        console.log(oval, step)
-      this.submitForm.num= oval+ step;
       for(let i= 0; i< step; i++){
         guests.push(getCabinGuestDTO(this.skuPrice));
       }

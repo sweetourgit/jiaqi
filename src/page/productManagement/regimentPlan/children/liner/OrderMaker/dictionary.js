@@ -28,7 +28,9 @@ export const getSkuPriceDTO= function(){
     stock: null,
     adult_same_price: null,
     adult_straight_price: null,
-    line_status: 1
+    line_status: 1,
+    
+    inGuestsWarning: 0,
   }
 
 }
@@ -49,6 +51,17 @@ export const getCabinDTO= function(skuPrice){
     value: skuPrice,
     enumerable: false,
     configurable: false
+  })
+
+  /**
+   * @description: 整间报名下,该舱房报名信息是否可下单
+   * 小于0: 需增加min_stay 大于0: 需减少short 
+   */
+  Object.defineProperty(cabin, 'short', {
+    value: 0,
+    enumerable: false,
+    configurable: false,
+    writable: true
   })
 
   Object.defineProperty(cabin, 'initGuests', {
@@ -74,6 +87,7 @@ export const getCabinGuestDTO= function(skuPrice= {}){
   let guest= {
     sku_price_id: skuPrice.id,
     cabin_id: skuPrice.cabin_id,
+    //name: Math.random() > 0.5? '123': '',
     name: '',
     enroll_type: ENROLL_TYPE.ADULT,
     passport: '',

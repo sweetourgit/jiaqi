@@ -23,7 +23,8 @@
               @click="awakeEditor(scope.row)">
               编辑
             </el-button>
-            <el-button type="text">
+            <el-button type="text"
+              @click="removeHandler(scope.$index)">
               删除
             </el-button>
           </template>
@@ -38,6 +39,7 @@
 
 <script>
 import {
+  CABIN_SPLIT_TYPE,
   getCabinDTO 
 } from '../../dictionary'
 import LinkTitleBar from '../CabinGround/comps/LinkTitleBar/index'
@@ -76,6 +78,13 @@ export default {
     awakeEditor(guest){
       this.$refs.editor.awake(guest);
     },
+
+    removeHandler(index){
+      let { cabin_type, sku_price, guests }= this.currentCabin;
+      if(cabin_type=== CABIN_SPLIT_TYPE.ALL && guests.length<= sku_price.min_stay)
+        return this.$message.error(`${sku_price.title}最少报名${sku_price.min_stay}人`);
+      this.currentCabin.guests.splice(index, 1);
+    }
   }
 }
 </script>
