@@ -279,7 +279,7 @@
               >发票申请</el-breadcrumb-item>
               
               <el-breadcrumb-item 
-                @click.native="operation(item,4)"
+                @click.native="collect()"
                 class="breadCrumbPointer"
               >收款</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
@@ -349,13 +349,7 @@
         :orderRefund="variable" 
         :dialogType="dialogType"
       ></orderRefund>
-      <!-- 收款 -->
-      <order-Management
-        :a_variable="a_variable"
-        :dialogType="dialogType"
-        :getListOneMessage="getListOneMessage"
-        :namefirst='namefirst' 
-      ></order-Management>
+     
     </div>
   </div>
 </template>
@@ -366,7 +360,6 @@ import invoiceApply from "./common/invoiceApply";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
 import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund";
-import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement';
 import moment from "moment";
 export default {
   components: {
@@ -374,8 +367,7 @@ export default {
     "remarks-infor": remarksInfor,
     "order-transfer": orderTransfer,
     "order-invoiceApply": invoiceApply,
-    'order-Management':collectionManagement,
-    orderRefund,
+     orderRefund,
   },
   data() {
     return {
@@ -1130,12 +1122,16 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
-    //operation(item,orderId, i, orderCode) {
-      //this.orderId = orderId;
-      //this.variable++;
-      //this.dialogType = i;
-      //if(i == 5) this.orderRefundDialog = 1
-    //},
+    collect() {
+      console.log(this.getListOneMessage,'fasrw');
+     this.$router.push({
+        path: '/doneAll/collectionDetails',
+        query: {
+         name:'first',
+         getListOneMessage:this.getListOneMessage
+         }
+        });
+    },
     
     operation(item, i, orderCode) {
       this.orderId = item.id;
