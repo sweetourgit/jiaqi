@@ -1122,10 +1122,10 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
-    collect() {
+    collect() {// 收款
       console.log(this.getListOneMessage,'fasrw');
      this.$router.push({
-        path: '/doneAll/collectionDetails',
+        path: '/collectionManagement',
         query: {
          name:'first',
          getListOneMessage:this.getListOneMessage
