@@ -26,92 +26,92 @@
 
 <script>
 export default {
-  props:{
-    id:0,
-    variable:0,
-    dialogType:0,
-    userType:0,
-  },
-  data() {
+  data () {
     return {
-       authDiocss:{
-　　　　　　height:'',
-            overflowY:'scroll'
+       authDiocss: {
+　　　　　　height: '',
+            overflowY: 'scroll'
 　　　 },
-       authData:[],
-       dialogFormAuth:false,
+       authData: [],
+       dialogFormAuth: false,
     }
   },
+  props: {
+    id: 0,
+    variable: 0,
+    dialogType: 0,
+    userType: 0,
+  },
   watch: {
-      variable:function(){        
-        if(this.dialogType==1){
+      variable: function(){        
+        if (this.dialogType == 1) {
           this.getHeight();
           this.getActs(this.id);   
-          this.dialogFormAuth=true;    
+          this.dialogFormAuth = true;    
         }
      }
   },
   methods: {
-      cenclePer(){
+      cenclePer () {
          this.dialogFormAuth = false;
          this.authData = [];
       },
-      menuChanged(index){
-        if(this.authData[index].isJur == false){  
+      menuChanged (index) {
+        if (this.authData[index].isJur == false) {  
             var actArray = this.authData[index].act.length;          
             var datajurArray = this.authData[index].dataJurisdiction.length;                          
-            for(let i = 0;i<actArray;i++){
+            for (let i = 0; i < actArray; i++) {
                 this.authData[index].act[i].isJur = false;
             }
-            for(let i = 0;i<datajurArray;i++){
+            for (let i = 0; i < datajurArray; i++) {
                 this.authData[index].dataJurisdiction[i].isJur = false;      
             }
-        }else if(this.authData[index].isJur = true){  
+        }else if (this.authData[index].isJur = true) {  
             var actArray = this.authData[index].act.length;
-            if(actArray>0){
-                for(let i = 0,len = this.authData[index].act.length;i<len;i++){
+            if (actArray > 0) {
+                for (let i = 0,len = this.authData[index].act.length;i < len; i++) {
                     this.authData[index].act[i].isJur = true;
                 }
             } 
         }
       },
-      actChanged(index){
+      actChanged (index) {
         var childrenArray = this.authData[index].act;
         var tickCount = 0,
             len = childrenArray.length
-        for(var i = 0; i < len; i++) {
+        for (var i = 0; i < len; i++) {
             if(childrenArray[i].isJur == true){
                 tickCount++;
             }
         }
-        if(tickCount == len){  
+        if (tickCount == len) {  
             this.authData[index].isJur = true;
         }
       },
-      dataChanged(index,indexD){
-         for(let i=0;i<this.authData[index].dataJurisdiction.length;i++){
-            if(i!=indexD){
-              this.authData[index].dataJurisdiction[i].isJur=false;
+      dataChanged (index,indexD) {
+         for (let i = 0; i < this.authData[index].dataJurisdiction.length; i++) {
+            if (i != indexD){
+              this.authData[index].dataJurisdiction[i].isJur = false;
             }
          }  
       },
-      getHeight(){
-        this.authDiocss.height=document.body.clientHeight-200+"px";
+      getHeight () {
+        this.authDiocss.height = document.body.clientHeight - 200 + "px";
       },
-      getActs(){
+      getActs () {
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
                 "userID":this.id,
               }).then(res => {              
-                this.authData=res.data.objects;           
+                this.authData = res.data.objects;           
           })
       },
-      perSubmit(){
-        if(this.userType==1){
+      perSubmit () {
+        if (this.userType == 1) {
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
                  "userID": this.id,
                  "object": this.authData
               }).then(res => {         
-                if(res.data.isSuccess == true){
+                if (res.data.isSuccess == true) {
                    this.$message.success('提交成功');
                    this.cenclePer();
                 }

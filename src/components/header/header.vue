@@ -35,17 +35,17 @@
     	data () {
     	  return {
           name: '',
-          timeName:null,
-          onlineNumber:0,
-          dialogFormVisible:false,
-          peoList:[],
+          timeName: null,
+          onlineNumber: 0,
+          dialogFormVisible: false,
+          peoList: [],
 	      }
 	    },
-      created (){
+      created () {
         this.name = localStorage.getItem('name')
       },
       
-      mounted(){
+      mounted () {
         new ClipboardJS('.clip-btn');
         this.play();
         this.getonlineNumber();
@@ -57,10 +57,10 @@
           sessionStorage.clear();
           window.clearInterval(this.timeName);  
         },
-        listUser() {
+        listUser () {
           this.$router.push({ path: '/accountInfor' })
         },
-        bugReporter(){
+        bugReporter () {
           let { path, query, name }= this.$route;
           let queryStr= '?';
           Object.keys(query).forEach(attr => {
@@ -71,19 +71,19 @@
           this.$refs.clipInput.value= bugStr;
           this.$refs.clipBtn.click();
         },
-        play(){
+        play () {
           this.timeName = window.setInterval(() => {
-            setTimeout(this.getonlineNumber(),0)
+            setTimeout(this.getonlineNumber(), 0)
           },60000)
         },
-        getonlineNumber(){
+        getonlineNumber () {
           this.$http.post(this.GLOBAL.serverSrc + '/org/user/api/online').then(res => {
             this.onlineNumber = res.data.count;
             }).catch(err => {
               console.log(err)
             })
         },
-        onlineList(){
+        onlineList () {
            this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/ollist').then(res => {
               this.peoList = res.data.objects;
               this.dialogFormVisible = true;

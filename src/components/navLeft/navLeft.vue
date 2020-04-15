@@ -32,48 +32,48 @@
   data(){
     return {
         menu:[],
-        isRouter:true,
-        menuNumber:[],
+        isRouter: true,
+        menuNumber: [],
         index: '',
-        img:['account.png','content.png','product.png','order.png','order.png']
+        img: ['account.png','content.png','product.png','order.png','order.png']
     }
   },
-  mounted(){
+  mounted () {
     this.getMainList();
   },
-  methods:{
-    getMainList(key,mainMenuId){
+  methods: {
+    getMainList (key,mainMenuId) {
        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/initmenu').then(res => {
                 this.menu = res.data.objects;
-                for(let i=0;i<this.menu.length;i++){
+                for(let i = 0; i < this.menu.length; i++){
                    this.menu[i].img = this.img[i];
                 }
         })
     },
-    getMenuList(key,mainMenuId){
+    getMenuList (key,mainMenuId) {
        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/menus',{
              "object": {
                 "id": mainMenuId,
               }
             }).then(res => {
-              for(let i=0;i<this.menu.length;i++){
+              for(let i = 0; i < this.menu.length; i++){
                  if(i == key){
-                    this.$set(this.menu[i],"items",res.data.objects);
+                    this.$set(this.menu[i], "items", res.data.objects);
                  }else{
-                    this.$set(this.menu[i],"items",[]);
+                    this.$set(this.menu[i], "items", []);
                  }
               }
         })
     },
-    handleOpen(key){
-      this.getMenuList(key,this.menu[key].id);
+    handleOpen (key) {
+      this.getMenuList(key, this.menu[key].id);
       let aa = Number(key)
-      for(let i=0;i<this.menu.length;i++){
+      for(let i = 0; i < this.menu.length; i++){
         this.menuNumber[i] = i
       }
-      if(this.menuNumber.indexOf(aa) !== -1){
-        for(let i=0;i<this.menuNumber.length;i++){
-          if(aa !== this.menuNumber[i]){
+      if (this.menuNumber.indexOf(aa) !== -1) {
+        for (let i=0;i<this.menuNumber.length;i++) {
+          if (aa !== this.menuNumber[i]) {
             let bb = String(this.menuNumber[i])
             this.$refs.menu.close(bb);
           }

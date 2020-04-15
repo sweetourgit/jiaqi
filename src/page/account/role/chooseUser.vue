@@ -31,19 +31,14 @@ import '../../../../static/ztree/zTreeStyle/zTreeStyle.css'
 import '../../../../static/ztree/jquery-1.4.4.min.js'
 import '../../../../static/ztree/jquery.ztree.core.js'
 export default {
-  props:{
-    roleId:0,
-    variable:0,
-    dialogType:0
-  },
-  data() {
+  data () {
     return {
-       authDiocss:{
-　　　　　　height:'',
-            overflowY:'scroll'
+       authDiocss: {
+　　　　　　height: '',
+            overflowY: 'scroll'
 　　　 },
-       dialogFormUser:false,
-       showList:false,
+       dialogFormUser: false,
+       showList: false,
        setting: {
           async: {
               enable: true,
@@ -62,73 +57,77 @@ export default {
         multipleSelection: [], 
     }
   },
+  props: {
+    roleId: 0,
+    variable: 0,
+    dialogType: 0
+  },
   watch: {
-      variable:function(){        
-        if(this.dialogType==2){
+      variable: function(){        
+        if(this.dialogType == 2){
           this.getHeight();
-          setTimeout(()=>{
+          setTimeout(() => {
             this.zTreeInit();
           })
-          this.dialogFormUser=true;    
+          this.dialogFormUser = true;    
         }
      } 
   },
   methods: {
-      cenclePer(){
+      cenclePer () {
          this.dialogFormUser = false;
       },
-      getHeight(){
-        this.authDiocss.height=document.body.clientHeight-200+"px";
+      getHeight () {
+        this.authDiocss.height = document.body.clientHeight - 200 + "px";
       },
-      zTreeInit(){
+      zTreeInit () {
           var ztree = $.fn.zTree.init($("#tree"), this.setting);
       },
-      filter(treeId, parentNode, childNodes) {
+      filter (treeId, parentNode, childNodes) {
           if (!childNodes) return null;
           for (var i = 0, l = childNodes.length; i < l; i++) {
               childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
           }
           return childNodes;
       },
-      onNodeClick(e, treeId, treeNode) {
+      onNodeClick (e, treeId, treeNode) {
         if(!treeNode.isParent === true){
           this.parentID = treeNode.id;
           this.menuList();         
         } 
       },
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
         }
       },
-      changeFun(val) {  
-        this.multipleSelection=val;
-        console.log(val);
+      changeFun (val) {  
+        this.multipleSelection = val;
       },
-      clickRow(row){    
+      clickRow (row) {    
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  
-       for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
+      rowClass ({row, rowIndex}) {  
+       for (var i = 0; i < this.multipleSelection.length; i++) {
+          if(this.multipleSelection[i].id == row.id){
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      menuList(type){  
+      menuList (type) {  
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/userlistwithorg',{
                "id": this.parentID,
             }).then(res => {
-                this.groupList=[];
+                this.groupList = [];
                 if(res.data.isSuccess == true){
-                   this.groupList=res.data.objects;
-                   this.showList=true;
+                   this.groupList = res.data.objects;
+                   this.showList = true;
                 }
         })
       },
-      perSubmit(){
+      perSubmit () {
 
       }
 
