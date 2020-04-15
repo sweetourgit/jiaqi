@@ -145,7 +145,7 @@
           productType
         } = this.$route.query;
         //测试 记得删
-        productType = 4
+        // productType = 4
         let response = await getBatchplaninfos(planID)
         if (productType == 4) {
 
@@ -272,7 +272,7 @@
         let object = this.$refs.printGround.getData();
         //上线记得替换
         // object.productType=this.$route.query.productType
-        object.productType = 4
+        // object.productType = 4
         if (!object) return;
         this.cacheCheckSheet(object);
         this.createTimeMaker(object.expenses);
