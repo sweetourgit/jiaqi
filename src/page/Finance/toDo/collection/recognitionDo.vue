@@ -151,7 +151,6 @@
                       class="table_details"
                       :disabled="canClick"
                     >选择</el-button>
-                    <!-- <el-button type="text" size="small" class="table_details" disabled>已选</el-button> -->
                   </template>
                 </el-table-column>
                 <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
@@ -253,7 +252,6 @@
                       class="table_details"
                       v-if="scope.row.reference === '收付直通车支付结算'"
                     >查看微信支付宝明细</el-button>
-                    <!-- <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" disabled>已选</el-button> -->
                   </template>
                 </el-table-column>
                 <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
@@ -313,7 +311,6 @@
                       class="table_details"
                       :disabled="canClick"
                     >选择</el-button>
-                    <!-- <el-button type="text" size="small" class="table_details" disabled>已选</el-button> -->
                   </template>
                 </el-table-column>
                 <el-table-column prop="surplus_Amount" label="剩余金额" align="center"></el-table-column>
@@ -362,7 +359,6 @@
         </div>
       </div>
       <div class="footer">
-        <!-- <el-button class="el-button" type="primary" @click="submitFun">确 定</el-button> -->
         <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
       </div>
       <!--手续费弹窗-->
@@ -451,9 +447,6 @@ export default {
       keepRow: null
     };
   },
-  computed: {
-    // 计算属性的 getter
-  },
   watch: {
     dialogVisibleDo: {
       handler: function() {
@@ -477,7 +470,6 @@ export default {
     }
   },
   methods: {
-    // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
         return "background:#F7F7F7;color:rgb(85, 85, 85);";
@@ -485,19 +477,17 @@ export default {
         return "";
       }
     },
-    // 关闭弹窗
-    closeAdd() {
+    closeAdd () {
       this.$emit("close", "success");
     },
-    payDetail(row) {
+    payDetail (row) {
       this.keepRow = row
       this.isShow = true;
       this.loadDataMX(row);
       this.activeName = "bankMX";
     },
-
     // 选择，提交认款
-    chooseRecognition(row, type) {
+    chooseRecognition (row, type) {
       if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
         if (this.collectionType !== 6) {
           if (type === 2) {
@@ -526,78 +516,66 @@ export default {
         localStorage.setItem(this.tableDataOrder[0].id, dateStr);
         this.closeAdd("success");
       }
-      // } else {
-      //   if (row.surplus_Amount < this.baseInfo.price) {
-      //     this.$message.warning("不能进行选择，剩余金额不足~");
-      //   } else {
-      //     this.canClick = true;
-      //     // this.commitAxios(row, type);
-      //   }
-      // }
     },
     // 提交认款的请求
-    commitAxios(row, type) {
+    commitAxios (row, type) {
       // console.log(this.tableDataOrder, "提交请求");
-      const that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
-          object: {
-            arrID: that.tableDataOrder[0].id,
-            price: that.tableDataOrder[0].matchingPrice,
-            bangID: row.id,
-            type: type
-          }
-        })
-        .then(function(response) {
-          // console.log(response);
-          if (response.data.isSuccess) {
-            that.getColl();
+      let _this = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
+        object: {
+          arrID: _this.tableDataOrder[0].id,
+          price: _this.tableDataOrder[0].matchingPrice,
+          bangID: row.id,
+          type: type
+        }
+      })
+      .then(res => {
+        // console.log(res);
+        if (res.data.isSuccess) {
+          _this.getColl();
+        } else {
+          if (res.data.message) {
+            _this.$message.warning(res.result.message);
           } else {
-            if (response.data.message) {
-              that.$message.warning(response.result.message);
-            } else {
-              that.$message.warning("认款提交失败~");
-            }
+            _this.$message.warning("认款提交失败~");
           }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     },
-
     // 认款接口 -- 将关联欠款的状态改成3(认款)
-    getColl() {
-      const that = this;
+    getColl () {
+      let _this = this;
       const date = this.getMoment();
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
-          datetime: date,
-          spname: sessionStorage.getItem("name"),
-          spstate: "认款",
-          spcontent: "",
-          checktype: 3,
-          id: that.tableDataOrder[0].id,
-          'SpCode': sessionStorage.getItem('userCode')
-        })
-        .then(function(response) {
-          if (response.data.isSuccess) {
-            that.$message.success("认款提交成功~");
-            that.closeAdd();
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
+        datetime: date,
+        spname: sessionStorage.getItem("name"),
+        spstate: "认款",
+        spcontent: "",
+        checktype: 3,
+        id: _this.tableDataOrder[0].id,
+        'SpCode': sessionStorage.getItem('userCode')
+      })
+      .then(res => {
+        if (res.data.isSuccess) {
+          _this.$message.success("认款提交成功~");
+          _this.closeAdd();
+        } else {
+          if (res.data.message) {
+            _this.$message.warning(res.data.message);
           } else {
-            if (response.data.message) {
-              that.$message.warning(response.data.message);
-            } else {
-              that.$message.warning("认款提交失败~");
-            }
+            _this.$message.warning("认款提交失败~");
           }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     },
-
     // 插入一条手续费
-    chargeSubmit() {
+    chargeSubmit () {
       const dataStr = JSON.stringify({
         row: this.rowMsg,
         type: this.rowType,
@@ -608,24 +586,23 @@ export default {
       this.dialogVisibleSXF = false;
       this.closeAdd("success");
     },
-
     // 加载认款数据(中国银行) -- 当前页数减一查询，后台分页从零开始
-    handleSizeChangeZH(val) {
+    handleSizeChangeZH (val) {
       this.pageSizeZH = val;
       this.pageCurrentZH = 1;
       this.loadDataZH();
     },
-    handleCurrentChangeZH(val) {
+    handleCurrentChangeZH (val) {
       this.pageCurrentZH = val;
       this.loadDataZH();
     },
     // 搜索
-    searchHandInsideZH() {
+    searchHandInsideZH () {
       this.pageCurrentZH = 1;
       this.loadDataZH();
     },
     // 重置
-    emptyButtonInsideZH() {
+    emptyButtonInsideZH () {
       this.ruleFormZH = {
         dateStart: "",
         name: "",
@@ -635,61 +612,55 @@ export default {
       this.pageCurrentZH = 1;
       this.loadDataZH();
     },
-    loadDataZH() {
-      const that = this;
+    loadDataZH () {
+      let _this = this;
       let dateStart = 0;
       if (this.ruleFormZH.dateStart) {
         dateStart = moment(this.ruleFormZH.dateStart).format("YYYYMMDD");
       }
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
-          pageIndex: this.pageCurrentZH - 1,
-          pageSize: this.pageSizeZH,
-          object: {
-            matching_State: 2,
-            transaction_reference_number: "",
-            begin: "1970-05-16",
-            end: "2099-05-16",
-            seachType: 0,
-            import_State: 0,
-            value_Date: dateStart ? dateStart : 0,
-            payer_s_Name: this.ruleFormZH.name,
-            trade_Amount1: this.ruleFormZH.moneyMin
-              ? this.ruleFormZH.moneyMin
-              : 0,
-            trade_Amount2: this.ruleFormZH.moneyMax
-              ? this.ruleFormZH.moneyMax
-              : 0
-          }
-        })
-        .then(function(obj) {
-          // console.log('中国银行',obj);
-          if (obj.data.isSuccess) {
-            that.totalZH = obj.data.total;
-            that.tableDataZH = obj.data.objects;
-          } else {
-            that.tableDataZH = [];
-          }
-        });
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/Search", {
+        pageIndex: this.pageCurrentZH - 1,
+        pageSize: this.pageSizeZH,
+        object: {
+          matching_State: 2,
+          transaction_reference_number: "",
+          begin: "1970-05-16",
+          end: "2099-05-16",
+          seachType: 0,
+          import_State: 0,
+          value_Date: dateStart ? dateStart : 0,
+          payer_s_Name: this.ruleFormZH.name,
+          trade_Amount1: this.ruleFormZH.moneyMin ? this.ruleFormZH.moneyMin : 0,
+          trade_Amount2: this.ruleFormZH.moneyMax ? this.ruleFormZH.moneyMax : 0
+        }
+      })
+      .then(res => {
+        // console.log('中国银行',res);
+        if (res.data.isSuccess) {
+          _this.totalZH = res.data.total;
+          _this.tableDataZH = res.data.objects;
+        } else {
+          _this.tableDataZH = [];
+        }
+      });
     },
-
     // 加载认款数据(兴业银行) -- 当前页数减一查询，后台分页从零开始
-    handleSizeChangeXY(val) {
+    handleSizeChangeXY (val) {
       this.pageSizeXY = val;
       this.pageCurrentXY = 1;
       this.loadDataXY();
     },
-    handleCurrentChangeXY(val) {
+    handleCurrentChangeXY (val) {
       this.pageCurrentXY = val;
       this.loadDataXY();
     },
     // 搜索
-    searchHandInsideXY() {
+    searchHandInsideXY () {
       this.pageCurrentXY = 1;
       this.loadDataXY();
     },
     // 重置
-    emptyButtonInsideXY() {
+    emptyButtonInsideXY () {
       this.ruleFormXY = {
         moneyMin: "",
         moneyMax: ""
@@ -697,87 +668,71 @@ export default {
       this.pageCurrentXY = 1;
       this.loadDataXY();
     },
-    loadDataXY() {
-      const that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
-          pageIndex: this.pageCurrentXY - 1,
-          pageSize: this.pageSizeXY,
-          object: {
-            matching_State: 2,
-            transaction_reference_number: "",
-            begin: "1970-01-11",
-            end: "2099-05-16",
-            seachType: 0,
-            import_State: 0,
-            credit_amount1: this.ruleFormXY.moneyMin
-              ? this.ruleFormXY.moneyMin
-              : 0,
-            credit_amount2: this.ruleFormXY.moneyMax
-              ? this.ruleFormXY.moneyMax
-              : 0
-          }
-        })
-        .then(function(obj) {
-          // console.log('兴业银行',obj);
-          if (obj.data.isSuccess) {
-            that.totalXY = obj.data.total;
-            that.tableDataXY = obj.data.objects;
-          } else {
-            that.totalXY = 0;
-            that.tableDataXY = [];
-          }
-        });
+    loadDataXY () {
+      let _this = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/Search", {
+        pageIndex: this.pageCurrentXY - 1,
+        pageSize: this.pageSizeXY,
+        object: {
+          matching_State: 2,
+          transaction_reference_number: "",
+          begin: "1970-01-11",
+          end: "2099-05-16",
+          seachType: 0,
+          import_State: 0,
+          credit_amount1: this.ruleFormXY.moneyMin ? this.ruleFormXY.moneyMin : 0,
+          credit_amount2: this.ruleFormXY.moneyMax ? this.ruleFormXY.moneyMax : 0
+        }
+      })
+      .then(res => {
+        // console.log('兴业银行',res);
+        if (res.data.isSuccess) {
+          _this.totalXY = res.data.total;
+          _this.tableDataXY = res.data.objects;
+        } else {
+          _this.totalXY = 0;
+          _this.tableDataXY = [];
+        }
+      });
     },
-
     // 加载认款数据(微信支付宝明细)
-    handleSizeChangeMX(val) {
+    handleSizeChangeMX (val) {
       this.pageSizeMX = val;
       this.pageCurrentMX = 1;
       this.loadDataMX();
     },
-    handleCurrentChangeMX(val) {
+    handleCurrentChangeMX (val) {
       this.pageCurrentMX = val;
       this.loadDataMX();
     },
-    loadDataMX() {
-      const that = this;
-      this.$http
-        .post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search", {
-          pageIndex: this.pageCurrentMX,
-          pageSize: this.pageSizeMX,
-          object: {
-            purpose_Merchant_code: this.keepRow.purpose_Merchant_code,
-            purpose_Date: this.keepRow.purpose_Date
-          }
-        })
-        .then(function(obj) {
-          // console.log("微信支付宝明细", obj);
-          if (obj.data.isSuccess) {
-            that.totalMX = obj.data.total;
-            that.tableDataMX = obj.data.objects;
-            // that.tableDataNBSK.forEach(function (item, index, arr) {
-            //   item.collectionTime = item.collectionTime.split('T')[0];
-            // });
-            // that.loadingNBSK = false;
-          } else {
-            // that.loadingNBSK = false;
-            that.totalMX = 0;
-            that.tableDataMX = [];
-          }
-        });
+    loadDataMX () {
+      let _this = this;
+      this.$http.post(this.GLOBAL.serverSrc + "/finance/wa_payment/api/Search", {
+        pageIndex: this.pageCurrentMX,
+        pageSize: this.pageSizeMX,
+        object: {
+          purpose_Merchant_code: this.keepRow.purpose_Merchant_code,
+          purpose_Date: this.keepRow.purpose_Date
+        }
+      })
+      .then(res => {
+        // console.log("微信支付宝明细", res);
+        if (res.data.isSuccess) {
+          _this.totalMX = res.data.total;
+          _this.tableDataMX = res.data.objects;
+        } else {
+          _this.totalMX = 0;
+          _this.tableDataMX = [];
+        }
+      });
     },
-
-    submitFun() {},
-
+    submitFun () {},
     // 获取当前年月日 string
-    getMoment() {
+    getMoment () {
       const now = new Date();
-
       const year = now.getFullYear().toString();
       const month = (now.getMonth() + 1).toString();
       const day = now.getDate().toString();
-
       return year + month + day;
     }
   },
@@ -841,15 +796,9 @@ export default {
   .line {
     text-align: center;
   }
-/*  .buttonForm {
-    text-align: right;
-  }*/
 }
 .footer {
   text-align: right;
   overflow: hidden;
-  // .el-button{
-  //   float: right;
-  // }
 }
 </style>

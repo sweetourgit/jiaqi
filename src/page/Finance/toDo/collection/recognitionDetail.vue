@@ -122,7 +122,6 @@
             this.isShowMX = false;
             this.loadData();
           }
-
         }
       }
     },
@@ -141,7 +140,7 @@
         const that = this;
         this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindFlow", {
           "id": this.msg.id
-        }, ).then(function(response) {
+        }).then(function(response) {
           console.log(response.data);
           if (response.data.isSuccess) {
             if (response.data.object.type === 0) {

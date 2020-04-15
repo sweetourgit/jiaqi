@@ -108,8 +108,8 @@ export default {
           _this.$message.warning("获取收款信息审批状态失败~");
         }
       })
-      .catch(function(error) {
-        console.log(error);
+      .catch(err => {
+        console.log(err);
       });
     },
     // 通过弹窗显示
@@ -233,7 +233,7 @@ export default {
     // 通过动作
     handleAuditApproved () {
       // 报销还款不需要发票  _this.info.collectionType == 6则不走insert 直接走ebs接口
-      if(this.paramsCollectionType !== 6) {
+      if (this.paramsCollectionType !== 6) {
         // 插入发票
         this.insert();
         this.tbEBS();
@@ -281,7 +281,6 @@ export default {
           _this.getAccount(keepRes.accountID, keepRes.arrears[0].id);
 
           const hasInvoice = keepRes.invoiceTable.length > 0 ? "有" : "无";
-
           let createTimeStr = "";
           if (keepRes.createTime) {
             createTimeStr = keepRes.createTime.split("T")[0];
@@ -289,11 +288,9 @@ export default {
               createTimeStr +=  " " + keepRes.createTime.split("T")[1].split(".")[0];
             }
           }
-
           _this.baseInfo = {
             id: keepRes.id,
             createUser: keepRes.createUser,
-            // moment(date).format('YYYY-MM-DD HH:mm:ss');
             createTime: createTimeStr ? createTimeStr : keepRes.createTime,
             collectionType: keepRes.collectionType,
             distributor: keepRes.distributor,
@@ -308,9 +305,6 @@ export default {
             reimbursement: keepRes.reimbursement,
             loan: keepRes.loan,
             accountID: keepRes.accountID
-            //   keepRes.accountID == 13
-            //     ? (keepRes.accountID = "现金")
-            //     : (keepRes.accountID = "汇款")
           };
           // 打印相关
           if (keepRes.spw.length > 0) {
@@ -322,8 +316,8 @@ export default {
         console.log( err )
       })
     },
-    getAccount(id, arrearsID) {
-      const _this = this;
+    getAccount (id, arrearsID) {
+      let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
         id: id
       })
@@ -387,7 +381,7 @@ export default {
     },
     // 认款接口 -- 将关联欠款的状态改成3(认款)
     getColl (item) {
-      const _this = this;
+      let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/getCollIDTG", {
         datetime: this.paramsChangeDate,
         spname: this.getUserName,
@@ -410,7 +404,7 @@ export default {
         }
       })
       .catch(err => {
-        console.log(error);
+        console.log(err);
       });
     },
     // 报销发票的接口
@@ -454,9 +448,9 @@ export default {
         console.log(err);
       });
     },
-    // / 插入一条手续费 插入手续费（审批通过，有科目值，剩余金额少于收款金额产生手续费）
-    chargeSubmit(item, row, type, charge) {
-      const _this = this;
+    // 插入一条手续费 插入手续费（审批通过，有科目值，剩余金额少于收款金额产生手续费）
+    chargeSubmit (item, row, type, charge) {
+      let _this = this;
       if (type === 0) {
         this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/insert", {
           object: {
@@ -491,9 +485,9 @@ export default {
             purpose_fee: charge
           }
         })
-        .then(function(obj) {
-          // console.log('中国银行',obj);
-          if (obj.data.isSuccess) {
+        .then(function(res){
+          // console.log('中国银行',res);
+          if (res.data.isSuccess) {
             _this.$message.success("添加手续费成功！");
             _this.dialogVisibleSXF = false;
             _this.canClick = true;
@@ -502,6 +496,7 @@ export default {
             _this.tableDataZH = [];
           }
         });
+
         this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/save", {
           object: {
             id: row.id,
@@ -535,9 +530,9 @@ export default {
             purpose_fee: charge
           }
         })
-        .then(function(obj) {
-          // console.log('中国银行',obj);
-          if (obj.data.isSuccess) {
+        .then(function(res){
+          // console.log('中国银行',res);
+          if (res.data.isSuccess) {
             _this.$message.success("更新手续费成功！");
             _this.dialogVisibleSXF = false;
             _this.canClick = true;
@@ -547,11 +542,11 @@ export default {
           }
         });
       } else if (type === 1) {
+
         this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/insert", {
           object: {
             id: row.id,
-            bank_serial_number:
-              row.bank_serial_number + "-" + new Date().getTime(),
+            bank_serial_number:  row.bank_serial_number + "-" + new Date().getTime(),
             account_number: row.account_number,
             account_name: row.account_name,
             certificate_code: row.certificate_code,
@@ -578,9 +573,9 @@ export default {
             is_EBS: 0
           }
         })
-        .then(function(obj) {
-          // console.log('兴业银行',obj);
-          if (obj.data.isSuccess) {
+        .then(function(res){
+          // console.log('兴业银行',res);
+          if (res.data.isSuccess) {
             _this.$message.success("添加手续费成功！");
             _this.dialogVisibleSXF = false;
             _this.canClick = true;
@@ -589,6 +584,7 @@ export default {
             _this.tableDataZH = [];
           }
         });
+
         this.$http.post(this.GLOBAL.serverSrc + "/finance/industrialbank/api/save", {
           object: {
             id: row.id,
@@ -619,9 +615,9 @@ export default {
             is_EBS: 0
           }
         })
-        .then(function(obj) {
-          // console.log('兴业银行',obj);
-          if (obj.data.isSuccess) {
+        .then(function(res) {
+          // console.log('兴业银行',res);
+          if (res.data.isSuccess) {
             _this.$message.success("更新手续费成功！");
             _this.dialogVisibleSXF = false;
             _this.canClick = true;
@@ -630,12 +626,13 @@ export default {
             _this.tableDataZH = [];
           }
         });
+
       }
     },
     // 提交认款的请求（提交认款请求（申请通过，有科目值））
-    commitAxios(item, row, type) {
+    commitAxios (item, row, type) {
       // console.log(this.tableDataOrder, "提交请求");
-      const _this = this;
+      let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/CollectionBank/api/insert", {
         object: {
           arrID: item.id,
@@ -644,8 +641,7 @@ export default {
           type: type
         }
       })
-      .then(function(res) {
-        // console.log(res);
+      .then(res => {
         if (res.data.isSuccess) {
           _this.getColl(item);
         } else {
@@ -656,15 +652,15 @@ export default {
           }
         }
       })
-      .catch(function(error) {
-        console.log(error);
+      .catch(err => {
+        console.log(err);
       });
     },
 
     /* 待整理 包括相关的 HTML */
 
     // 去认款
-    recognitionDo(row) {
+    recognitionDo (row) {
       this.dialogVisibleDo = true;
       this.msg = {
         collectionType: this.paramsCollectionType,
@@ -672,18 +668,16 @@ export default {
         tableDataOrder: row,
         fileList: this.fileList
       };
-      // console.log(this.msg)
     },
     // 查看认款详情
-    // recognitionDetail
-    handleRecognitionDel(row) {
+    handleRecognitionDel (row) {
       this.msg = {
         id: row.id
       };
       this.dialogVisibleDel = true;
     },
     // 关闭认款弹窗
-    recognitionClose(str) {
+    recognitionClose (str) {
       this.getLabel(this.keepPaymentId);
       this.dialogVisibleDo = false;
       this.dialogVisibleDel = false;
@@ -700,7 +694,7 @@ export default {
       this.dialogFormVisible = true;
     },
     // 转换为数字连接的时间格式，接口传值用
-    getMoment() {
+    getMoment () {
       const now = new Date();
       const year = now.getFullYear().toString();
       const month = (now.getMonth() + 1).toString();
@@ -709,7 +703,7 @@ export default {
     },
     dateFormatDetails (row, column) {
       let date = row[column.property];
-      if(date === undefined) {
+      if (date === undefined) {
         return '';
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss');
