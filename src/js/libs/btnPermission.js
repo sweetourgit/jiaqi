@@ -3,7 +3,7 @@ import Vue from 'vue'
 Vue.directive('has', {
   bind: function (el, binding) {
     if (!Vue.prototype.$_has(binding.value)) {
-       if(el.parentNode!=null){
+       if(el.parentNode != null){
          el.parentNode.removeChild(el);        
        }
     }
@@ -13,8 +13,8 @@ Vue.directive('readonly', {
   bind: function (el, binding) {
     if (!Vue.prototype.$_has(binding.value)) {
        if(el.getElementsByTagName('input')[0]){
-         el.getElementsByTagName('input')[0].readOnly="readonly";
-         el.getElementsByTagName('input')[0].style.backgroundColor='#eee';
+         el.getElementsByTagName('input')[0].readOnly = "readonly";
+         el.getElementsByTagName('input')[0].style.backgroundColor = '#eee';
        }
     }
   }
@@ -25,7 +25,7 @@ Vue.prototype.$_has = function (value) {
   if (buttonpermsStr == undefined || buttonpermsStr == null) {
     return false;
   }
-  for (let i = 0; i < buttonpermsStr.length; i++){
+  for (let i = 0; i < buttonpermsStr.length; i++) {
     if (value == buttonpermsStr[i]) {
       isExist = true;
       break;

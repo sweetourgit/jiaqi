@@ -45,25 +45,21 @@
 import grantAuth from './grantAuth'
 import chooseUser from './chooseUser'
 export default {
-  components:{
-    "grant-auth":grantAuth,
-    "choose-user":chooseUser,
-  }, 
-  data() {
+  data () {
     return {
-        guid:"",
+        guid: "",
         dataList: [],
         pageSize: 10, 
         pageIndex: 1, 
         total: 0,
-        variable:0,
-        dialogType:0,
-        userType:0,
-        id:0,
+        variable: 0,
+        dialogType: 0,
+        userType: 0,
+        id: 0,
         multipleSelection: [],   
-        forbidden:true,        
-        title:"",
-        dialogFormVisible:false,
+        forbidden: true,        
+        title: "",
+        dialogFormVisible: false,
         rform: {
           title: "",
           count: "",
@@ -74,46 +70,50 @@ export default {
         }
     }
   },
-  mounted(){
+  components: {
+    "grant-auth": grantAuth,
+    "choose-user": chooseUser,
+  }, 
+  mounted () {
     this.roleList()
   },
   methods: {
-      getRowClass({ row, column, rowIndex, columnIndex }){
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
         }
       },
-      changeFun(val) {  
-        this.multipleSelection=val;
-        if(this.multipleSelection.length>0){
-           this.forbidden=false;
+      changeFun (val) {  
+        this.multipleSelection = val;
+        if (this.multipleSelection.length > 0) {
+           this.forbidden = false;
         }else{
-           this.forbidden=true;
+           this.forbidden = true;
         }
       },
-      clickRow(row){    
+      clickRow (row) {    
         this.$refs.multipleTable.clearSelection(); 
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      rowClass({row, rowIndex}){  
-       for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
+      rowClass ({row, rowIndex}) {  
+       for(var i = 0; i < this.multipleSelection.length; i++){
+          if(this.multipleSelection[i].id == row.id){
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      handleSizeChange(val){
+      handleSizeChange (val) {
         this.pageSize = val;
         this.pageIndex = 1;
         this.roleList(1,val);
       },
-      handleCurrentChange(val){
-        this.roleList(val,this.pageSize);
-        this.pageIndex=val;
+      handleCurrentChange (val) {
+        this.roleList(val, this.pageSize);
+        this.pageIndex = val;
       },
-      roleList(pageIndex=this.pageIndex,pageSize=this.pageSize,){  
+      roleList (pageIndex = this.pageIndex, pageSize = this.pageSize) {  
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/rolepage',{
               "pageIndex": pageIndex,
               "pageSize": pageSize,
@@ -121,14 +121,14 @@ export default {
                 "isDeleted": 0
               },
             }).then(res => {
-              this.dataList=[];
-              this.total=res.data.total;
+              this.dataList = [];
+              this.total = res.data.total;
               if(res.data.isSuccess == true){
-                 this.dataList=res.data.objects;
+                 this.dataList = res.data.objects;
               }
           })      
       },
-      delRole(){ 
+      delRole () { 
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -138,7 +138,7 @@ export default {
               this.$http.post(this.GLOBAL.serverSrc + '/org/api/roledelete',{
                     "id": this.multipleSelection[0].id
                   }).then(res => {
-                      if(res.data.isSuccess == true){
+                      if (res.data.isSuccess == true) {
                          this.$message.success("删除成功");
                          this.roleList();
                   }
@@ -151,31 +151,31 @@ export default {
           });
         });
       },
-      saveRole(formName){
-         if(this.title == "新增"){
+      saveRole (formName) {
+         if (this.title == "新增") {
             this.insertRole(formName,'/org/api/roleinsert');
          }else{
             this.insertRole(formName,'/org/api/rolesave');
          }
       },
-      openRole(index,title){  
-        this.title=title;
+      openRole (index, title) {  
+        this.title = title;
         this.dialogFormVisible = true;
-        if(index===2){
+        if (index === 2) {
           this.getRole();
         }
       },
-      getRole(){   
+      getRole () {   
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/roleget',{
-           "id":this.multipleSelection[0].id
+           "id": this.multipleSelection[0].id
           }).then(res => {
-              if(res.data.isSuccess == true){
+              if (res.data.isSuccess == true) {
                  let data = res.data.object;
-                 this.rform=data;
+                 this.rform = data;
               }
         }) 
       },
-      insertRole(formName,url) {  
+      insertRole (formName,url) {  
         this.$refs[formName].validate((valid) => {
           if(valid){
                    this.$http.post(this.GLOBAL.serverSrc + url,{
@@ -185,12 +185,12 @@ export default {
                         "mark": this.rform.mark
                     }
                   }).then(res => {
-                      if(res.data.isSuccess == true){
+                      if (res.data.isSuccess == true) {
                          this.roleList();
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
-                         this.rform.id=0;
-                      }else{
+                         this.rform.id = 0;
+                      } else {
                          this.$message.success(res.data.result.message);
                       }
                   })
@@ -200,15 +200,15 @@ export default {
           }
         })
       },
-      cancel(){
+      cancel () {
         this.dialogFormVisible = false;
         this.$refs["rform"].resetFields();
       },
-      operation(i,type){
-          this.id=this.multipleSelection[0].id;
+      operation (i,type) {
+          this.id = this.multipleSelection[0].id;
           this.variable++;
           this.dialogType = i;
-          this.userType=type;
+          this.userType = type;
       },
   }
 }
