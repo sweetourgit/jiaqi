@@ -50,8 +50,8 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button  @click="searchHandInside()"  type="primary" icon="el-icon-search" :disabled="ifShowsearch">搜索</el-button>
-            <el-button icon="el-icon-s-open" @click="emptyButtonInside('ruleForm')" type="primary"  plain>重置</el-button>
+            <el-button @click="searchHandInside()" type="primary" icon="el-icon-search" :disabled="ifShowsearch">搜索</el-button>
+            <el-button icon="el-icon-s-open" @click="emptyButtonInside('ruleForm')" type="primary" plain>重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -109,13 +109,203 @@
     </div>
     <!-- 翻页 END -->
     <!-- 添加同业数据弹窗 -->
-    <!-- <addPage :mode="mode" @getListForTY="getListForTY" :dialogFormVisible="dialogFormVisible" :find="find" @close="closeAdd"></addPage> -->
+    <addPage :mode="mode" @getListForTY="getListForTY" :dialogFormVisible="dialogFormVisible" :find="find" @close="closeAdd"></addPage>
 
-    <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo>
+    <!-- <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo> -->
     <!-- 添加同业数据弹窗 END -->
     <!-- 查看详情 弹窗 -->
-    <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list"
-      :show-close='false'>
+    <el-drawer :visible.sync="detailstShow" size="45%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
+      <div style="margin-top: 7%;">
+        <el-divider> 详情</el-divider>
+      </div>
+      <el-collapse v-model="activeNames">
+        <el-collapse-item class="collapse-m" name="1">
+          <template slot="title" name="template">
+            <el-divider content-position="left">基本信息</el-divider>
+          </template>
+          <!-- 基本信息 -->
+          <div class="item-content">
+            <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
+            <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
+            <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
+            <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag>
+          </div>
+          <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
+          <div>
+            <!-- 第一行 -->
+            <el-row type="flex" class="row-bg" justify="space-around">
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color ">ID:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del ">{{ fundamental.id }}</div>
+                </el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color ">申请人:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del ">{{ fundamental.createUser }}</div>
+                </el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">创建时间:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del ">{{ fundamental.createTime | formatDate }}</div>
+                </el-col>
+              </el-col>
+            </el-row>
+            <!-- 第一行 END -->
+            <!-- 第二行 -->
+            <el-row type="flex" class="row-bg" justify="space-around">
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">同业社名称:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del">{{ fundamental.localCompName }}</div>
+                </el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">收款账户:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del ">{{ fundamental.collectionNumber }}</div>
+                </el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">收款金额:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del ">{{ fundamental.price }}</div>
+                </el-col>
+              </el-col>
+            </el-row>
+            <!-- 第二行 END -->
+            <!-- 第三行 -->
+            <el-row type="flex" class="row-bg" justify="space-around">
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">收款时间:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del">{{ fundamental.collectionTime | formatDate }}</div>
+                </el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">摘要:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del">{{ fundamental.abstract }}</div>
+                </el-col>
+              </el-col>
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">开发票:</div>
+                </el-col>
+                <el-col :span="18">
+                  <div class="grid-del ">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div>
+                </el-col>
+              </el-col>
+            </el-row>
+            <!-- 第三行 END -->
+            <!-- 第四行 -->
+            <el-row type="flex" class="row-bg" justify="space-around">
+              <el-col :span="6">
+                <el-col :span="6">
+                  <div class="grid-del label-color">凭证:</div>
+                </el-col>
+                <el-col :span="18">
+                  <el-upload class="upload-demo" name="files" ref="upload" :file-list="fundamental.files"
+                    :show-file-list=true action="test" :disabled=true :on-preview="handlePreview">
+                  </el-upload>
+                </el-col>
+              </el-col>
+              <el-col :span="6"></el-col>
+              <el-col :span="6"></el-col>
+            </el-row>
+            <!-- 第四行 END -->
+            <!-- 基本信息 -->
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+
+      <el-collapse v-model="activeNames">
+        <el-collapse-item class="collapse-m">
+          <template slot="title" name="template">
+            <el-divider content-position="left" >审核结果</el-divider>
+          </template>
+          <el-table :data="tableAudit" border :header-cell-style="getRowClass">
+            <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
+            <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
+            <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
+            <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
+          </el-table>
+        </el-collapse-item>
+      </el-collapse>
+
+      <el-collapse v-model="activeNames">
+        <el-collapse-item class="collapse-m">
+          <template slot="title" name="template">
+            <el-divider content-position="left" >发票</el-divider>
+          </template>
+          <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
+            <el-table-column prop="invoiceID" label="发票类型" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.invoiceID == 1">纸质发票</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="invoiceType" label="个人/单位" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.invoiceType == 1">个人</div>
+                <div v-if="scope.row.invoiceType == 2">单位</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
+            <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
+            <el-table-column prop="invoiceItem" label="发票项目" align="center">
+              <template slot-scope="scope">
+                <div v-if="scope.row.invoiceItem == 1">旅游费</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="invoicePrice" label="金额" align="center"></el-table-column>
+            <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
+            <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
+            <el-table-column prop="address" label="地址" align="center"></el-table-column>
+            <el-table-column prop="tel" label="手机号" align="center"></el-table-column>
+          </el-table>
+        </el-collapse-item>
+      </el-collapse>
+      <el-collapse v-model="activeNames">
+        <el-collapse-item class="collapse-m">
+          <template slot="title" name="template">
+            <el-divider content-position="left" >关联欠款</el-divider>
+          </template>
+         <div class="associated">
+           <div class="associatedIcon"><i class="el-icon-warning"></i></div>
+           <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
+           <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
+         </div>
+         <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
+           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+           <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+           <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+           <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
+           <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
+           <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
+           <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
+           <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
+         </el-table>
+        </el-collapse-item>
+      </el-collapse>
       <div style="position:absolute; top:8px; right:10px;">
         <el-button icon="el-icon-remove" plain @click="closeDetailstShow()">取消</el-button>
         <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType == 0 || getRowCheckType == 2 ">撤销</el-button>
@@ -339,19 +529,19 @@
         </div>
       </div>
       <!-- print END -->
-      <div>
-        <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
+      <!-- <div> -->
+        <!-- <el-divider content-position="left" class='title-margin'>基本信息</el-divider> -->
         <!-- 基本信息 -->
-        <div class="item-content">
-          <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
-          <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
-          <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
-          <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag>
-        </div>
+        <!-- <div class="item-content"> -->
+          <!-- <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag> -->
+          <!-- <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag> -->
+          <!-- <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag> -->
+          <!-- <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag> -->
+        <!-- </div> -->
         <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
-        <div>
+        <!-- <div> -->
           <!-- 第一行 -->
-          <el-row type="flex" class="row-bg" justify="space-around">
+      <!--    <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="6">
               <el-col :span="6">
                 <div class="grid-del label-color ">ID:</div>
@@ -376,10 +566,10 @@
                 <div class="grid-del ">{{ fundamental.createTime | formatDate }}</div>
               </el-col>
             </el-col>
-          </el-row>
+          </el-row> -->
           <!-- 第一行 END -->
           <!-- 第二行 -->
-          <el-row type="flex" class="row-bg" justify="space-around">
+        <!--  <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="6">
               <el-col :span="6">
                 <div class="grid-del label-color">同业社名称:</div>
@@ -404,10 +594,10 @@
                 <div class="grid-del ">{{ fundamental.price }}</div>
               </el-col>
             </el-col>
-          </el-row>
+          </el-row> -->
           <!-- 第二行 END -->
           <!-- 第三行 -->
-          <el-row type="flex" class="row-bg" justify="space-around">
+     <!--     <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="6">
               <el-col :span="6">
                 <div class="grid-del label-color">收款时间:</div>
@@ -432,10 +622,10 @@
                 <div class="grid-del ">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div>
               </el-col>
             </el-col>
-          </el-row>
+          </el-row> -->
           <!-- 第三行 END -->
           <!-- 第四行 -->
-          <el-row type="flex" class="row-bg" justify="space-around">
+<!--          <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="6">
               <el-col :span="6">
                 <div class="grid-del label-color">凭证:</div>
@@ -448,21 +638,21 @@
             </el-col>
             <el-col :span="6"></el-col>
             <el-col :span="6"></el-col>
-          </el-row>
+          </el-row> -->
           <!-- 第四行 END -->
           <!-- 基本信息 -->
-        </div>
+        <!-- </div> -->
         <!-- 审核结果 -->
-        <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
+<!--        <el-divider content-position="left" >审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
           <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
           <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
           <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
           <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
-        </el-table>
+        </el-table> -->
         <!-- 审核结果 END -->
         <!-- 发票 -->
-        <el-divider content-position="left" class='title-margin title-margin-t'>发票</el-divider>
+     <!--   <el-divider content-position="left" >发票</el-divider>
         <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
           <el-table-column prop="invoiceID" label="发票类型" align="center">
             <template slot-scope="scope">
@@ -487,10 +677,10 @@
           <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
           <el-table-column prop="address" label="地址" align="center"></el-table-column>
           <el-table-column prop="tel" label="手机号" align="center"></el-table-column>
-        </el-table>
+        </el-table> -->
         <!-- 发票 END -->
         <!-- 关联欠款 -->
-        <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
+   <!--     <el-divider content-position="left" >关联欠款</el-divider>
         <div class="associated">
           <div class="associatedIcon"><i class="el-icon-warning"></i></div>
           <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
@@ -507,8 +697,8 @@
           <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
           <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
         </el-table>
-      </div>
-    </el-dialog>
+      </div> -->
+    </el-drawer>
     <!-- 查看详情 END -->
   </div>
   <!--  收款管理 同业 END -->
@@ -567,12 +757,17 @@
         currentRowId: null, // 当前行id
         keepBorrowerUserCode: null, // 模糊查询之后选中事件获得 借款人对应的 usercode
         ifShowsearch: false,
+        activeNames: ['1']
       }
     },
     created() {
       this.getListForTY()
       this.getOrgID = sessionStorage.getItem('orgID')
       this.getUserName = sessionStorage.getItem('name')
+    },
+    mounted() {
+      // let list =this.$refs.divider
+
     },
     filters: {
       formatDate: function(value) {
@@ -669,13 +864,16 @@
           _this.total = obj.data.total;
           _this.tableData = obj.data.objects;
           _this.listLoading = false
+          //方法直接报错 貌似并没什么卵用
           _this.tableData.forEach(function(v, k, arr) {
             arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
             arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
             arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
             arr[k]['createTime'] = arr[k]['createTime'].replace('T', " ").split('.')[0]
           })
-        }).catch(function(obj) {})
+        }).catch(function(obj) {
+          console.log('obj', obj)
+        })
       },
       moment,
       // 重置
@@ -948,4 +1146,17 @@
     float: left;
     margin: 0 0 0 10px;
   }
+
+  .collapse-m {
+    margin: 30px 0;
+  }
+</style>
+<style>
+  /* .SameTradecollapse-item>div>.el-collapse-item__header {
+    border-bottom: 0px
+  }
+
+  .title-margin+i {
+    margin: 16px 8px 0 auto;
+  } */
 </style>

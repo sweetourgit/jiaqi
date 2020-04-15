@@ -22,7 +22,7 @@
           <el-button v-if="this.find == 2" icon="el-icon-circle-close" type="danger" plain @click="boSubmit('ruleForm')">驳回</el-button>
         </div>
         <!-- 表单基本信息 -->
-        <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
+        <el-divider content-position="left">基本信息</el-divider>
         <el-form-item label="收款时间" prop="collectionTime" label-width="120px">
           <el-date-picker v-model="ruleForm.collectionTime" type="date" class="inputWidth" placeholder="收款时间" :disabled="change"></el-date-picker>
         </el-form-item>

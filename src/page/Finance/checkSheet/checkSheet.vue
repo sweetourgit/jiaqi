@@ -1,26 +1,26 @@
 <!-- 2020-3-31 -->
 <template>
   <!--   //跟团游 去掉待审批 -->
-  <!-- <div id="outDiv" :style="{'minHeight':height+'px'}"> -->
-  <!-- <el-container style="height:100%;">
+<!--  <div id="outDiv" :style="{'minHeight':height+'px'}">
+  <el-container style="height:100%;">
       <el-header>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="跟团游" name="team"></el-tab-pane>
           <el-tab-pane label="周边游" name="around"></el-tab-pane>
         </el-tabs>
-  </el-header>-->
+  </el-header> -->
   <!-- 只有周边游组件下会生成报账单 需要您审批 -->
-  <!-- <AroundLayout v-show="activeName=='around'" :parentHeight="height"></AroundLayout>
+<!--  <AroundLayout v-show="activeName=='around'" :parentHeight="height"></AroundLayout>
       <el-main v-show="activeName!='around'">
         <router-view></router-view>
       </el-main>
-  </el-container>-->
-  <!-- </div> -->
-  <div style="padding-bottom: 80px;">
+  </el-container>
+  </div> -->
+ <div style="padding-bottom: 80px;">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="跟团游" name="team"></el-tab-pane>
       <el-tab-pane label="周边游" name="around"></el-tab-pane>
-      <el-tab-pane label="邮轮" name="curiseShip"></el-tab-pane>
+      <!-- <el-tab-pane label="邮轮" name="curiseShip"></el-tab-pane> -->
     </el-tabs>
     <router-view></router-view>
   </div>

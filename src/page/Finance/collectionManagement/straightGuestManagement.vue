@@ -44,7 +44,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item>
-            <el-button @click="searchHandInside()"  type="primary" icon="el-icon-search" :disabled="ifShowsearch">搜索</el-button>
+            <el-button @click="searchHandInside()" type="primary" icon="el-icon-search" :disabled="ifShowsearch">搜索</el-button>
             <el-button @click="emptyButtonInside('ruleForm')" type="primary" icon="el-icon-s-open" plain>重置</el-button>
           </el-form-item>
         </el-col>
@@ -102,10 +102,12 @@
         <!-- 分页 END -->
       </div>
     </div>
-    <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd" :dept="dept"></StraightGuestInfo>
-   <!-- <addPage @getListForZK="getListForZK" :mode="mode" :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid"
+  <!--  <StraightGuestInfo :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid" :change="change" :org="org"
+      @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList" @close="closeAdd"
+      :dept="dept"></StraightGuestInfo> -->
+    <addPage @getListForZK="getListForZK" :mode="mode" :dialogFormVisible="dialogFormVisible" :find="find" :pid="pid"
       :change="change" :org="org" @searchHand="searchHand" :collectionAccountList="collectionAccountList" :accountList="accountList"
-      @close="closeAdd" :dept="dept"></addPage> -->
+      @close="closeAdd" :dept="dept"></addPage>
     <!--查看详情-->
     <el-dialog title="详情" :visible.sync="detailstShow" width="80%" style="margin:-80px 0 0 0;" custom-class="city_list"
       :show-close='false'>
@@ -638,6 +640,10 @@
             that.total = obj.data.total;
             that.tableData = obj.data.objects;
             that.tableData.forEach(function(v, k, arr) {
+              console.log('v', v)
+              console.log('k', k)
+              console.log('arr', arr)
+              console.log('collectionNumber', arr[k]['collectionNumber'])
               arr[k]['collectionNumber'] = that.accountList[arr[k]['collectionNumber']]
               arr[k]['checkTypeStatus'] = that.checkTypeList[arr[k]['checkType']]
               arr[k]['collectionTime'] = arr[k]['collectionTime'].replace('T', " ").split('.')[0]
