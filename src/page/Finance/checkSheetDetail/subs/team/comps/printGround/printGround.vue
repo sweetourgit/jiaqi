@@ -65,7 +65,7 @@ table {
     <header>
       <div class="title"><h1>{{ pd.topOrgName }}旅游团队报账单</h1></div>
        <el-divider content-position="left"  class="review-collection">报账单详情</el-divider>
-      <div class="time" v-if="pd.checkTime=== pd.createTime">报账时间：{{ dateFormator(pd.checkTime) }}</div>
+      <div class="time" v-if="pd.checkTime!=undefined">报账时间：{{ dateFormator(pd.checkTime) }}</div>
       <div class="time review-collection" v-else>&nbsp</div>
     </header>
     <main>

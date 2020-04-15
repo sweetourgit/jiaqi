@@ -114,8 +114,15 @@
     <!-- <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo> -->
     <!-- 添加同业数据弹窗 END -->
     <!-- 查看详情 弹窗 -->
-    <el-drawer :visible.sync="detailstShow" size="45%" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close='false'>
-      <div style="margin-top: 7%;">
+    <el-drawer :visible.sync="detailstShow" size="45%" :show-close='false'>
+      <div style="position:absolute; top:8px; right:10px;">
+        <el-button icon="el-icon-remove" plain @click="closeDetailstShow()">取消</el-button>
+        <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType == 0 || getRowCheckType == 2 ">撤销</el-button>
+        <el-button type="primary" icon="el-icon-printer" plain @click="touchPrint" >
+          打印本页详情信息
+        </el-button>
+      </div>
+      <div>
         <el-divider> 详情</el-divider>
       </div>
       <el-collapse v-model="activeNames">
@@ -131,6 +138,220 @@
             <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag>
           </div>
           <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
+          <div ref="print">
+            <div v-for="item in tableAssociated" :key="item.id">
+              <div class="print-content" style="border-bottom: 1px dashed #ccc">
+                <div style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;">大运通收款凭证</div>
+                <div class="print-same-table">
+                  <!-- 确认日期 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>确认日期</th>
+                          <th>确认人</th>
+                          <th>收款状态</th>
+                          <th>收款单号</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ printSureTime }}</td>
+                          <td>{{ getUserName }}</td>
+                          <td>{{ printSureState }}</td>
+                          <td>{{ fundamental.id }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- 部门 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>部门</th>
+                          <th>申请人</th>
+                          <th>订单数</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{fundamental.dept}}</td>
+                          <td>{{ fundamental.createUser }}</td>
+                          <td>1</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- 交易方式 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>应收金额</th>
+                          <th>交易方式</th>
+                          <th>实收金额</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{item.payablePrice}}</td>
+                          <td>{{ fundamental.collectionNumber }}</td>
+                          <td>{{ item.matchingPrice }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- 团号 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>团号</th>
+                          <th>订单号</th>
+                          <th>同业社名称</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ item.groupCode }}</td>
+                          <td>{{item.orderCode}}</td>
+                          <td>{{ fundamental.localCompName }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div style="display: flex;justify-content: space-between;">
+                  <p>合计人民币： <span>{{ item.matchingPrice }}</span></p>
+                  <p>第一联 业务联</p>
+                </div>
+              </div>
+              <div class="print-content" style="border-bottom: 1px dashed #ccc">
+                <div style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;">大运通收款凭证</div>
+                <div class="print-same-table">
+                  <!-- 确认日期 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>确认日期</th>
+                          <th>确认人</th>
+                          <th>收款状态</th>
+                          <th>收款单号</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ printSureTime }}</td>
+                          <td>{{ getUserName }}</td>
+                          <td>{{ printSureState }}</td>
+                          <td>{{ fundamental.id }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- 部门 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>部门</th>
+                          <th>申请人</th>
+                          <th>订单数</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{fundamental.dept}}</td>
+                          <td>{{ fundamental.createUser }}</td>
+                          <td>1</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- 交易方式 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>应收金额</th>
+                          <th>交易方式</th>
+                          <th>实收金额</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{item.payablePrice}}</td>
+                          <td>{{ fundamental.collectionNumber }}</td>
+                          <td>{{ item.matchingPrice }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- 团号 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>团号</th>
+                          <th>订单号</th>
+                          <th>同业社名称</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ item.groupCode }}</td>
+                          <td>{{item.orderCode}}</td>
+                          <td>{{ fundamental.localCompName }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- 发票 -->
+                  <div>
+                    <table width="100%">
+                      <thead>
+                        <tr>
+                          <th>发票类型</th>
+                          <th>个人/单位</th>
+                          <th>纳税人识别号</th>
+                          <th>发票抬头</th>
+                          <th>发票项目</th>
+                          <th>金额</th>
+                          <th>账号</th>
+                          <th>开户行</th>
+                          <th>地址</th>
+                          <th>手机号</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="itemInvoice in tableInvoice">
+                          <!--<td>{{ itemInvoice.invoiceID }}纸质发票 = 1</td>-->
+                          <td>纸质发票</td>
+                          <td>{{ itemInvoice.invoiceType == 1 ? '个人' : '单位' }}</td>
+                          <td>{{ itemInvoice.invoiceNumber }}</td>
+                          <td>{{ itemInvoice.invoiceHeaderOrTel }}</td>
+                          <!--<td>{{ itemInvoice.invoiceItem }} 1旅游费</td>-->
+                          <td>旅游费</td>
+                          <td>{{ itemInvoice.invoicePrice }}</td>
+                          <td>{{ itemInvoice.cardNumber }}</td>
+                          <td>{{ itemInvoice.bankName }}</td>
+                          <td>{{ itemInvoice.address }}</td>
+                          <td>{{ itemInvoice.tel }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div style="display: flex;justify-content: space-between;">
+                  <p>合计人民币： <span>{{ item.matchingPrice }}</span></p>
+                  <p>第二联 财务联</p>
+                </div>
+              </div>
+              <div style="page-break-after: always;"></div>
+            </div>
+          </div>
           <div>
             <!-- 第一行 -->
             <el-row type="flex" class="row-bg" justify="space-around">
@@ -240,7 +461,7 @@
       <el-collapse v-model="activeNames">
         <el-collapse-item class="collapse-m">
           <template slot="title" name="template">
-            <el-divider content-position="left" >审核结果</el-divider>
+            <el-divider content-position="left">审核结果</el-divider>
           </template>
           <el-table :data="tableAudit" border :header-cell-style="getRowClass">
             <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
@@ -254,7 +475,7 @@
       <el-collapse v-model="activeNames">
         <el-collapse-item class="collapse-m">
           <template slot="title" name="template">
-            <el-divider content-position="left" >发票</el-divider>
+            <el-divider content-position="left">发票</el-divider>
           </template>
           <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
             <el-table-column prop="invoiceID" label="发票类型" align="center">
@@ -286,418 +507,26 @@
       <el-collapse v-model="activeNames">
         <el-collapse-item class="collapse-m">
           <template slot="title" name="template">
-            <el-divider content-position="left" >关联欠款</el-divider>
+            <el-divider content-position="left">关联欠款</el-divider>
           </template>
-         <div class="associated">
-           <div class="associatedIcon"><i class="el-icon-warning"></i></div>
-           <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
-           <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
-         </div>
-         <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
-           <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-           <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
-           <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-           <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
-           <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
-           <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
-           <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
-           <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
-           <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-         </el-table>
+          <div class="associated">
+            <div class="associatedIcon"><i class="el-icon-warning"></i></div>
+            <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
+            <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
+          </div>
+          <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
+            <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
+            <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
+            <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
+            <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
+            <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
+            <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
+            <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
+            <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
+            <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
+          </el-table>
         </el-collapse-item>
       </el-collapse>
-      <div style="position:absolute; top:8px; right:10px;">
-        <el-button icon="el-icon-remove" plain @click="closeDetailstShow()">取消</el-button>
-        <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType == 0 || getRowCheckType == 2 ">撤销</el-button>
-        <el-button type="primary" icon="el-icon-printer" plain @click="touchPrint" plain v-if="getOrgID == 491">
-          打印本页详情信息
-        </el-button>
-      </div>
-      <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
-      <div ref="print">
-        <div v-for="item in tableAssociated" :key="item.id">
-          <div class="print-content" style="border-bottom: 1px dashed #ccc">
-            <div style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;">大运通收款凭证</div>
-            <div class="print-same-table">
-              <!-- 确认日期 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>确认日期</th>
-                      <th>确认人</th>
-                      <th>收款状态</th>
-                      <th>收款单号</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ printSureTime }}</td>
-                      <td>{{ getUserName }}</td>
-                      <td>{{ printSureState }}</td>
-                      <td>{{ fundamental.id }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- 部门 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>部门</th>
-                      <th>申请人</th>
-                      <th>订单数</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{fundamental.dept}}</td>
-                      <td>{{ fundamental.createUser }}</td>
-                      <td>1</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- 交易方式 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>应收金额</th>
-                      <th>交易方式</th>
-                      <th>实收金额</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{item.payablePrice}}</td>
-                      <td>{{ fundamental.collectionNumber }}</td>
-                      <td>{{ item.matchingPrice }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- 团号 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>团号</th>
-                      <th>订单号</th>
-                      <th>同业社名称</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ item.groupCode }}</td>
-                      <td>{{item.orderCode}}</td>
-                      <td>{{ fundamental.localCompName }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div style="display: flex;justify-content: space-between;">
-              <p>合计人民币： <span>{{ item.matchingPrice }}</span></p>
-              <p>第一联 业务联</p>
-            </div>
-          </div>
-          <div class="print-content" style="border-bottom: 1px dashed #ccc">
-            <div style="width: 100%;height: 40px; line-height: 40px; margin: 10px 0;text-align: center; font-weight: 500;font-size: 24px;">大运通收款凭证</div>
-            <div class="print-same-table">
-              <!-- 确认日期 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>确认日期</th>
-                      <th>确认人</th>
-                      <th>收款状态</th>
-                      <th>收款单号</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ printSureTime }}</td>
-                      <td>{{ getUserName }}</td>
-                      <td>{{ printSureState }}</td>
-                      <td>{{ fundamental.id }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- 部门 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>部门</th>
-                      <th>申请人</th>
-                      <th>订单数</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{fundamental.dept}}</td>
-                      <td>{{ fundamental.createUser }}</td>
-                      <td>1</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- 交易方式 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>应收金额</th>
-                      <th>交易方式</th>
-                      <th>实收金额</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{item.payablePrice}}</td>
-                      <td>{{ fundamental.collectionNumber }}</td>
-                      <td>{{ item.matchingPrice }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- 团号 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>团号</th>
-                      <th>订单号</th>
-                      <th>同业社名称</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{ item.groupCode }}</td>
-                      <td>{{item.orderCode}}</td>
-                      <td>{{ fundamental.localCompName }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <!-- 发票 -->
-              <div>
-                <table width="100%">
-                  <thead>
-                    <tr>
-                      <th>发票类型</th>
-                      <th>个人/单位</th>
-                      <th>纳税人识别号</th>
-                      <th>发票抬头</th>
-                      <th>发票项目</th>
-                      <th>金额</th>
-                      <th>账号</th>
-                      <th>开户行</th>
-                      <th>地址</th>
-                      <th>手机号</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="itemInvoice in tableInvoice">
-                      <!--<td>{{ itemInvoice.invoiceID }}纸质发票 = 1</td>-->
-                      <td>纸质发票</td>
-                      <td>{{ itemInvoice.invoiceType == 1 ? '个人' : '单位' }}</td>
-                      <td>{{ itemInvoice.invoiceNumber }}</td>
-                      <td>{{ itemInvoice.invoiceHeaderOrTel }}</td>
-                      <!--<td>{{ itemInvoice.invoiceItem }} 1旅游费</td>-->
-                      <td>旅游费</td>
-                      <td>{{ itemInvoice.invoicePrice }}</td>
-                      <td>{{ itemInvoice.cardNumber }}</td>
-                      <td>{{ itemInvoice.bankName }}</td>
-                      <td>{{ itemInvoice.address }}</td>
-                      <td>{{ itemInvoice.tel }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div style="display: flex;justify-content: space-between;">
-              <p>合计人民币： <span>{{ item.matchingPrice }}</span></p>
-              <p>第二联 财务联</p>
-            </div>
-          </div>
-          <div style="page-break-after: always;"></div>
-        </div>
-      </div>
-      <!-- print END -->
-      <!-- <div> -->
-        <!-- <el-divider content-position="left" class='title-margin'>基本信息</el-divider> -->
-        <!-- 基本信息 -->
-        <!-- <div class="item-content"> -->
-          <!-- <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag> -->
-          <!-- <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag> -->
-          <!-- <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag> -->
-          <!-- <el-tag type="success" v-if="fundamental.checkType=='3'" class="distributor-status">已认款</el-tag> -->
-        <!-- </div> -->
-        <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
-        <!-- <div> -->
-          <!-- 第一行 -->
-      <!--    <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color ">ID:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del ">{{ fundamental.id }}</div>
-              </el-col>
-            </el-col>
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color ">申请人:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del ">{{ fundamental.createUser }}</div>
-              </el-col>
-            </el-col>
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">创建时间:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del ">{{ fundamental.createTime | formatDate }}</div>
-              </el-col>
-            </el-col>
-          </el-row> -->
-          <!-- 第一行 END -->
-          <!-- 第二行 -->
-        <!--  <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">同业社名称:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del">{{ fundamental.localCompName }}</div>
-              </el-col>
-            </el-col>
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">收款账户:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del ">{{ fundamental.collectionNumber }}</div>
-              </el-col>
-            </el-col>
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">收款金额:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del ">{{ fundamental.price }}</div>
-              </el-col>
-            </el-col>
-          </el-row> -->
-          <!-- 第二行 END -->
-          <!-- 第三行 -->
-     <!--     <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">收款时间:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del">{{ fundamental.collectionTime | formatDate }}</div>
-              </el-col>
-            </el-col>
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">摘要:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del">{{ fundamental.abstract }}</div>
-              </el-col>
-            </el-col>
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">开发票:</div>
-              </el-col>
-              <el-col :span="18">
-                <div class="grid-del ">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div>
-              </el-col>
-            </el-col>
-          </el-row> -->
-          <!-- 第三行 END -->
-          <!-- 第四行 -->
-<!--          <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="6">
-              <el-col :span="6">
-                <div class="grid-del label-color">凭证:</div>
-              </el-col>
-              <el-col :span="18">
-                <el-upload class="upload-demo" name="files" ref="upload" :file-list="fundamental.files" :show-file-list=true
-                  action="test" :disabled=true :on-preview="handlePreview">
-                </el-upload>
-              </el-col>
-            </el-col>
-            <el-col :span="6"></el-col>
-            <el-col :span="6"></el-col>
-          </el-row> -->
-          <!-- 第四行 END -->
-          <!-- 基本信息 -->
-        <!-- </div> -->
-        <!-- 审核结果 -->
-<!--        <el-divider content-position="left" >审核结果</el-divider>
-        <el-table :data="tableAudit" border :header-cell-style="getRowClass">
-          <el-table-column prop="createTime" label="审批时间" align="center"></el-table-column>
-          <el-table-column prop="spName" label="审批人" align="center"></el-table-column>
-          <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
-          <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
-        </el-table> -->
-        <!-- 审核结果 END -->
-        <!-- 发票 -->
-     <!--   <el-divider content-position="left" >发票</el-divider>
-        <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
-          <el-table-column prop="invoiceID" label="发票类型" align="center">
-            <template slot-scope="scope">
-              <div v-if="scope.row.invoiceID == 1">纸质发票</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="invoiceType" label="个人/单位" align="center">
-            <template slot-scope="scope">
-              <div v-if="scope.row.invoiceType == 1">个人</div>
-              <div v-if="scope.row.invoiceType == 2">单位</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="invoiceNumber" label="纳税人识别号" align="center"></el-table-column>
-          <el-table-column prop="invoiceHeaderOrTel" label="发票抬头" align="center"></el-table-column>
-          <el-table-column prop="invoiceItem" label="发票项目" align="center">
-            <template slot-scope="scope">
-              <div v-if="scope.row.invoiceItem == 1">旅游费</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="invoicePrice" label="金额" align="center"></el-table-column>
-          <el-table-column prop="cardNumber" label="账号" align="center"></el-table-column>
-          <el-table-column prop="bankName" label="开户行" align="center"></el-table-column>
-          <el-table-column prop="address" label="地址" align="center"></el-table-column>
-          <el-table-column prop="tel" label="手机号" align="center"></el-table-column>
-        </el-table> -->
-        <!-- 发票 END -->
-        <!-- 关联欠款 -->
-   <!--     <el-divider content-position="left" >关联欠款</el-divider>
-        <div class="associated">
-          <div class="associatedIcon"><i class="el-icon-warning"></i></div>
-          <div class="associatedItems">已关联<span style="font-weight: bold;">{{ tableManyRow }}</span>项</div>
-          <div class="associatedMoney">总计：{{ getCollectionPriceTotal }}元</div>
-        </div>
-        <el-table :data="tableAssociated" border :header-cell-style="getRowClass">
-          <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
-          <el-table-column prop="productName" label="产品名称" align="center"></el-table-column>
-          <el-table-column prop="groupCode" label="团期计划" align="center"></el-table-column>
-          <el-table-column prop="date" label="出发日期" align="center"></el-table-column>
-          <el-table-column prop="payablePrice" label="订单金额" align="center"></el-table-column>
-          <el-table-column prop="arrearsPrice" label="欠款金额" align="center"></el-table-column>
-          <el-table-column prop="repaidPrice" label="已还金额" align="center"></el-table-column>
-          <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
-          <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-        </el-table>
-      </div> -->
     </el-drawer>
     <!-- 查看详情 END -->
   </div>

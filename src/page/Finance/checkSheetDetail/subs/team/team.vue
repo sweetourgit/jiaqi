@@ -271,7 +271,7 @@
       postCheckSheetAction() {
         let object = this.$refs.printGround.getData();
         //上线记得替换
-        // object.productType=this.$route.query.productType
+        object.productType=this.$route.query.productType
         // object.productType = 4
         if (!object) return;
         this.cacheCheckSheet(object);
@@ -284,7 +284,7 @@
 
           if (this.$route.query.productType == 4) {
             flag = await updplanstatus(this.$route.query.planID, 2)
-            name = '报账单-游轮'
+            name = '报账单详情-邮轮'
           }
           if (flag == false) return
           let {
