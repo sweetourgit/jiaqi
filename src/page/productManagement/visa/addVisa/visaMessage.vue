@@ -32,7 +32,7 @@
                 <el-input v-model="ruleForm.caption" class="messagename" placeholder="请输入重要提示" @change="stateTitle('ruleForm')"></el-input>
                 <span class="numbers">{{ruleForm.caption.length}}/30字</span>
               </el-form-item>
-              <el-button type="primary" class="addline" @click="addLine()">新增一行</el-button>
+              <el-button type="primary" class="addline" @click="addLine()" :disabled="forbidden">新增一行</el-button>
               <div style="clear:both;">
                 <el-radio-group v-model="tabPosition" style="margin:0 0 0 30px;" @change="tabPositionClick">
                   <el-radio-button label="1">在职</el-radio-button>
@@ -218,6 +218,7 @@ export default {
       multipleSelection: [],   //选中的list
       lineID:0,
       crowdFile:[],
+      forbidden:false,
     };
   },
   watch: {
@@ -291,6 +292,7 @@ export default {
             }).then(res => {
                 if(res.data.isSuccess == true){
                    this.addVisaMessageShow = false;
+                   this.forbidden = false;
                    this.pageList();
                    this.a = 0;
                 }else{
@@ -340,13 +342,19 @@ export default {
         }else{
         let newTabName = ++this.tabIndex + '';
         if(this.addVisa.copy ==1){
-          this.ruleForm.caption = '';
           this.editableTabs.push({
             id:0,
             title: '签证信息' + (this.editableTabs.length + 1),
-            content: 'New Tab content'
+            content: 'New Tab content',
           });
           this.tableDate = [] ;
+          for(let i = 0; i < this.editableTabs.length; i++){
+            if(this.editableTabs[i].id == 0){
+              this.forbidden=true;
+            } else {
+              this.forbidden = false;
+            }
+          }
         }else{
           this.editableTabs.push({
             title: this.messageTitle,
@@ -365,7 +373,13 @@ export default {
            type: "warning"
         })
         .then(() => {
-          if(this.tableDate.length > 0){
+          var allow = [];
+          if(this.editableTabs[this.editableTabsValue].id == 0){
+            allow = [];
+          } else {
+            allow = this.editableTabs[this.editableTabsValue].crowdType
+          }
+          if(allow.length > 0){
             this.$message.success("该主题存在签证信息人群，不允许删除");
           } else{
             if(this.editableTabs[this.editableTabsValue].id == 0){

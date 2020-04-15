@@ -1006,14 +1006,11 @@ export default {
     },
     stamp(){
       this.printShow = true;
+      this.getJqId();
     },
     print(formName) {
-      // document.getElementsByClassName("print")[0].style.display="block";
       this.printShow = false;
       this.$print(this.$refs.print);
-      // setTimeout(() => {
-      //   this.$print(this.$refs.print)
-      // },200);
     },
     cancelPrint(){
       this.printShow = false;
