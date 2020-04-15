@@ -22,6 +22,33 @@
       padding-top: 10px;
     }
   }
+  & >>> .no-wrap{
+    word-break:keep-all;/* 不换行 */
+    white-space:nowrap;/* 不换行 */
+    overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+    text-overflow:ellipsis;
+  }
+  & >>> .info-bar{
+    position: relative;
+    padding-left: 150px;
+    color: #606266;
+    div{
+      display: inline-block;
+    }
+    .title{
+      color: #333;
+      font-weight: bold;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 150px;
+    }
+    .money{
+      color: #333;
+      font-weight: bold;
+      padding: 0 5px;
+    }
+  }
 }
 </style>
 
@@ -106,12 +133,15 @@ export default {
     },
 
     calculaPriceHandler(){
+      console.log('emit calcula-price')
       let guestCount= 0;  // 总数
       let warnArr= [];  // 报警数组
       let cabins= this.submitForm.cabin;
       cabins.forEach(cabin => {
-        let { sku_price, short,  }= cabin;
+        let { sku_price, short, guests }= cabin;
+        guestCount+= guests.length;
       })
+      this.guestCount= guestCount;
     },
   }
 

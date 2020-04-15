@@ -25,10 +25,12 @@
         </el-form-item>
         <el-form-item label="报名人数：" prop="name" style="margin: 0;">
           <div style="display:flex;flex-direction:column;">
-            <div>
-              <span>成人 ￥</span>
-              <span>{{ computedPrice | priceFilter }}</span>
-              <span>{{ ` * ${ currentCabin.guests.length }` }}</span>
+            <div class="info-bar">
+              <div class="title no-wrap">成人</div>
+              <div class="sign">￥</div>
+              <div class="money">{{ computedPrice | priceFilter }}</div>
+              <div class="sign">*</div>
+              <div class="money">{{ currentCabin.guests.length }}</div>
             </div>
             <el-input-number size="small"
               ref="inputNumber"
@@ -259,7 +261,7 @@ export default {
       let removed= this.cabin[index];
       let isFilled= removed.guests.find(guest => guest.isFilled());
       removed.sku_price.selected= false;
-      if(isFilled) return this.$message.error('该报名类型下有已完善的游客信息,请手动删除游客后,再执行删除操作');
+      if(isFilled) return this.$message.error('该报名类型下存在游客信息,请手动删除游客后,再执行删除操作');
       this.cabin.splice(index, 1);
       removed= null;
       // 如果删除的是当前选择,则watch里会emit,如果删除的不是当前选择,则手动触发一次

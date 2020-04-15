@@ -13,8 +13,12 @@
         <div v-else style="display:flex;flex-direction:column;"
           v-for="(el, i) in deliver"
           :key="i">
-          <label>
-            <span>{{ `${el.title} ￥${el.sale_price} *${el.deliver_num}` }}</span>
+          <label class="info-bar">
+            <div class="title">{{ el.title }}</div>
+            <div class="sign">￥</div>
+            <div class="money">{{ el.sale_price }}</div>
+            <div class="sign">*</div>
+            <div class="money">{{ el.deliver_num }}</div>
           </label>
           <el-input-number size="small"
             v-model="el.deliver_num" 
@@ -30,8 +34,12 @@
         <div v-else style="display:flex;flex-direction:column;"
           v-for="(el, i) in insure"
           :key="i">
-          <label>
-            <span>{{ `${el.title} ￥${el.sale_price} *${el.insure_num}` }}</span>
+          <label class="info-bar">
+            <div class="title">{{ el.title }}</div>
+            <div class="sign">￥</div>
+            <div class="money">{{ el.sale_price }}</div>
+            <div class="sign">*</div>
+            <div class="money">{{ el.insure_num }}</div>
           </label>
           <el-input-number size="small"
             v-model="el.insure_num" 
@@ -50,6 +58,15 @@
 export default {
   props: {
     guestCount: Number,
+  },
+
+  watch: {
+    // 
+    guestCount(nval, oval){
+      if(nval> oval) return;
+      this.deliver.forEach(item => item.deliver_num> nval && (item.deliver_num= nval));
+      this.insure.forEach(item => item.insure_num> nval && (item.insure_num= nval));
+    }
   },
 
   data(){

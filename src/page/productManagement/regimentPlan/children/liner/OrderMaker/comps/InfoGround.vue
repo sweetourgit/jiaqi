@@ -1,12 +1,3 @@
-<style>
-.no-wrap{
-  word-break:keep-all;/* 不换行 */
-  white-space:nowrap;/* 不换行 */
-  overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
-  text-overflow:ellipsis;
-}
-</style>
-
 <template>
   <el-card shadow="never">
     <div slot="header">
