@@ -1,5 +1,6 @@
 <template>
   <div style="padding: 40px 0 40px 0; border-bottom: 1px solid #cecece;">
+    {{ submitForm }}
     <el-form
       label-width="120px" 
       ref="submitForm"
@@ -11,33 +12,39 @@
           <el-radio :label="1">商户（同业、门店）</el-radio>
         </el-radio-group>
       </el-form-item>
+
       <template v-if="submitForm.orderChannel=== 1">
         <el-form-item label="商户名称：" prop="merchant">
           <el-autocomplete size="small" style="width: 300px;" placeholder="输入商户名称"
             v-model="submitForm.merchant"
-            :fetch-suggestions="getMerchantAction"
-            :trigger-on-focus="false">
+            :fetch-suggestions="getMerchantAction">
           </el-autocomplete>
         </el-form-item>
         <el-form-item label="销售：" prop="indirectSaler">
-          <el-input size="small" style="width: 300px;" placeholder="输入销售名称"
-            v-model="submitForm.indirectSaler">
-          </el-input>
+          <el-autocomplete size="small" style="width: 300px;" placeholder="输入销售名称"
+            v-model="submitForm.indirectSaler"
+            :fetch-suggestions="getIndirectSalerAction">
+          </el-autocomplete>
         </el-form-item>
-        <el-form-item label="商户销售：" prop="replaceSaler">
+        <el-form-item label="商户销售：" prop="user">
           <el-autocomplete size="small" style="width: 300px;" placeholder="输入商户销售名称"
-            v-model="submitForm.replaceSaler"
-            :fetch-suggestions="getReplaceSalerAction"
-            :trigger-on-focus="false"
+            v-model="submitForm.user"
+            :fetch-suggestions="getUserAction"
             @select="selectSupplier">
           </el-autocomplete>
         </el-form-item>
       </template>
-      <el-form-item label="销售：" prop="indirectSaler">
-        <el-input size="small" style="width: 300px;" placeholder="输入销售名称"
-          v-model="submitForm.indirectSaler">
-        </el-input>
-      </el-form-item>
+
+      <template v-else>
+        <el-form-item label="销售：" prop="replaceSaler">
+          <el-autocomplete size="small" style="width: 300px;" placeholder="输入商户销售名称"
+            v-model="submitForm.replaceSaler"
+            :fetch-suggestions="getReplaceSalerAction"
+            @select="selectSupplier">
+          </el-autocomplete>
+        </el-form-item>
+      </template>
+
       <el-form-item label="价格选择：" prop="priceType" style="margin:0;">
         <el-radio-group v-model="submitForm.priceType">
           <el-radio :label="1">线下直客</el-radio>
@@ -50,6 +57,20 @@
 
 <script>
 export default {
+  
+  watch: {
+    'submitForm.merchant': function(nval, oval){
+      let find= this.merchantOptions.find(merchant => merchant.value=== nval);
+      if(find) {
+        this.getIndirectSalerAction();
+        this.getUserAction();
+      } else {
+        this.indirectSaler= null;
+        this.user= null;
+      }
+      this.$emit('select-merchant', find);
+    }
+  },
 
   data(){
     return Object.assign(
@@ -59,6 +80,7 @@ export default {
           // replacesale: 0, // 销售 id
           orderChannel: 3,
           merchant: null,
+          user: null,
           indirectSaler: null,
           replaceSaler: null,
           priceType: 1
@@ -68,6 +90,8 @@ export default {
       {
         merchantOptions: [],
         replaceSalerOptions: [],
+        indirectSalerOptions: [],
+        userOptions: []
       }
     )
   },
@@ -102,6 +126,29 @@ export default {
       },
 
       selectSupplier(){},
+
+      getReplaceSalerAction(name, cb){
+        this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist", {
+          object: {
+            name,
+            isDeleted: 0
+          }
+        })
+        .then(res => {
+          let { objects, isSuccess }= res.data;
+          if(!isSuccess){
+            this.replaceSalerOptions= [];
+          } else {
+            this.replaceSalerOptions= objects.map(item => {
+              return {
+                id: item.id,
+                value: item.name
+              }
+            });
+            cb(this.replaceSalerOptions);
+          }
+        })
+      },
 
       getMerchantAction(selName, cb) {
         this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/listname", {
@@ -138,7 +185,7 @@ export default {
         return this.merchantOptions.find(merchant => merchant.value=== this.submitForm.merchant);
       },
 
-      getReplaceSalerAction(str, cb) {
+      getIndirectSalerAction(str, cb) {
         let merchant= this.getMerchant();
         if(!merchant) return cb([]);
         this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/PeerUser_AdminList", {
@@ -152,15 +199,34 @@ export default {
         .then(res => {
           let { objects, isSuccess }= res.data;
           if(!isSuccess){
-            this.replaceSalerOptions= [];
+            this.indirectSalerOptions= [];
           } else {
-            this.replaceSalerOptions= objects.map(item => {
+            this.indirectSalerOptions= objects.map(item => {
               return { id: item.id, value: item.name, userCode: item.userCode };
             });
           }
-          cb(this.replaceSalerOptions);
+          if(cb) cb(this.indirectSalerOptions);
         })
-      }
+      },
+
+      getUserAction(str, cb){
+        let merchant= this.getMerchant();
+        if(!merchant) return cb([]);
+        this.$http.post(this.GLOBAL.serverSrc + "/universal/localcomp/api/get", {
+          id: merchant.id
+        })
+        .then(res => {
+          let { object, isSuccess }= res.data;
+          if(!isSuccess){
+            this.userOptions= [];
+          } else {
+            this.userOptions= object.useList.map(item => {
+              return { id: item.id, value: item.name };
+            });
+          }
+          if(cb) cb(this.userOptions);
+        })
+      },
     }
   )
 

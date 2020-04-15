@@ -19,6 +19,8 @@
       border-bottom: 1px solid #f4f4f4;
     }
     .total-ground{
+      font-size: 14px;
+      line-height: 40px;
       padding-top: 10px;
     }
   }
@@ -63,12 +65,20 @@
       </div>
       <!-- <PositionPreview></!-->
       <div class="total-ground">
-        剩余完整房间
+        <span>总价:</span>
+      </div>
+      <div class="total-ground">
+        <span>剩余预存款和额度:</span>
+      </div>
+      <div class="total-ground">
+        <span>剩余预存款:</span>
       </div>
     </header>
     <main style="padding-bottom: 40px;">
       <InfoGround ref="infoGround"></InfoGround>
-      <ChannelGround ref="channelGround"></ChannelGround>
+      <ChannelGround ref="channelGround"
+        @select-merchant="selectMerchantHandler">
+      </ChannelGround>
       <CabinGround ref="cabinGround"
         @calcula-price="calculaPriceHandler">
       </CabinGround>
@@ -130,6 +140,10 @@ export default {
       this.$refs.cabinGround.init(this.submitForm.cabin, skuPlanCache);
       this.$refs.othersGround.init(skuPlanCache);
       this.$refs.guestsGround.init(this.submitForm.cabin);
+    },
+
+    selectMerchantHandler(merchant){
+      
     },
 
     calculaPriceHandler(){
