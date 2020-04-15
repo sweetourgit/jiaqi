@@ -354,7 +354,7 @@
         :a_variable="a_variable"
         :dialogType="dialogType"
         :getListOneMessage="getListOneMessage"
-        :name='first' 
+        :namefirst='namefirst' 
       ></order-Management>
     </div>
   </div>
@@ -405,6 +405,7 @@ export default {
       ],
       refundStatus: 0,
       refundNum: null,
+      namefirst:'namefirst',
       orderCode: "", //订单ID
       orderCodeSon: null, //传给子组件
       teamID: "", //产品ID
