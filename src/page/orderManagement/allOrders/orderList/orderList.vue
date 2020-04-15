@@ -380,6 +380,7 @@
       :dialogType="dialogType" 
       :orderRefundDialog="orderRefundDialog"
        ></orderRefund>
+      
     </div>
   </div>
 </template>
@@ -389,7 +390,7 @@ import invoiceApply from "./common/invoiceApply";
 import processManage from "./common/processManage";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
-import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
+import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund";
 import moment from "moment";
 export default {
   components: {
