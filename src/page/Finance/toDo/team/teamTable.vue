@@ -236,6 +236,7 @@
     methods: {
       // 详情方法
       handleJumpDetail (index, row, source) {
+        console.log(row)
         let { id, paymentID, guid, instanceID, expenseID } = row; // 基本上都是给接口传参用
         let keepWorkItemId = null;
 
@@ -269,8 +270,9 @@
             instanceID: instanceID,
             workItemID: keepWorkItemId,
             whichTabName: this.whichTab,
-            queryApproveExpenseID: expenseID // 报销用
-          }
+            queryApproveExpenseID: expenseID, // 报销用
+          },
+          // name: '报账单详情-邮轮'
         });
       },
     }

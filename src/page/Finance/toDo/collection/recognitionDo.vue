@@ -25,7 +25,6 @@
           </p>
         </div>
         <!-- 报销还款end -->
-
         <!-- 非报销还款显示的begin -->
         <div v-if="collectionType !== 6">
           <!-- 顶部基础信息 -->
@@ -140,7 +139,6 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content"
               >
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
@@ -233,7 +231,6 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content"
               >
                 <el-table-column label="操作" width="145" align="center" fixed>
                   <template slot-scope="scope">
@@ -306,7 +303,6 @@
                 :highlight-current-row="true"
                 :header-cell-style="getRowClass"
                 :stripe="true"
-                id="table-content"
               >
                 <el-table-column label="操作" width="100" align="center" fixed>
                   <template slot-scope="scope">
@@ -365,12 +361,10 @@
           </el-tabs>
         </div>
       </div>
-
       <div class="footer">
         <!-- <el-button class="el-button" type="primary" @click="submitFun">确 定</el-button> -->
         <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
       </div>
-
       <!--手续费弹窗-->
       <div>
         <el-dialog
@@ -463,8 +457,8 @@ export default {
   watch: {
     dialogVisibleDo: {
       handler: function() {
-        console.log(this.msg);
-        if (this.msg == "") {
+        // console.log(this.msg);
+        if (this.msg === "") {
           this.closeAdd();
         } else {
           this.baseInfo = this.msg.baseInfo;
@@ -485,7 +479,7 @@ export default {
   methods: {
     // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
-      if (rowIndex == 0) {
+      if (rowIndex === 0) {
         return "background:#F7F7F7;color:rgb(85, 85, 85);";
       } else {
         return "";
@@ -506,7 +500,7 @@ export default {
     chooseRecognition(row, type) {
       if (row.surplus_Amount < this.tableDataOrder[0].matchingPrice) {
         if (this.collectionType !== 6) {
-          if (type == 2) {
+          if (type === 2) {
             this.$message.warning("不能进行选择，剩余金额不足~");
           } else {
             this.dialogVisibleSXF = true;
@@ -541,7 +535,6 @@ export default {
       //   }
       // }
     },
-
     // 提交认款的请求
     commitAxios(row, type) {
       // console.log(this.tableDataOrder, "提交请求");

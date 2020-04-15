@@ -771,7 +771,7 @@
               <el-table-column prop="repaidPrice" label="已收金额" align="center"></el-table-column>
               <el-table-column prop="amountPrice" label="待审核金额" align="center"></el-table-column>
               <el-table-column prop="matchingPrice" label="本次收款金额" align="center"></el-table-column>
-              <el-table-column prop="prop" label="操作" align="center">
+              <el-table-column prop="prop" label="操作" align="center" v-if="hasSubject">
                 <template slot-scope="scope">
                   <el-button
                     v-if="scope.row.hasSubmitData"
@@ -853,7 +853,7 @@
     data() {
       return {
         collapseName: [], // 控制折叠面板是否折叠
-        refundList:{},
+        refundList: {},
         printMatchingPrice: null,
         printPayablePrice: null,
         printOrderCode: null,
