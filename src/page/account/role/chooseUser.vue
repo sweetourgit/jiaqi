@@ -1,6 +1,5 @@
 <template>
   <div>
-       <!-- 用户授权 -->
         <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormUser" width="1000px" class="abow_dialog" @close="cenclePer">
         <div :style="authDiocss">
           <div class="ztree-bg">

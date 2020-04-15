@@ -1,17 +1,13 @@
 <template>
   <div>
-       <!--备注信息弹窗-->
        <el-dialog title="详情" :visible.sync="dialogForm" class="city_list" width="1200px">
             <div class="loan-management">
-            <!-- 查看无收入借款弹窗 -->
             <el-divider content-position="left" class='title-margin'>基本信息</el-divider>
-            <!-- 基本信息 -->
             <div class="item-content">
               <el-tag type="warning" v-if="fundamental.checkType=='0'" class="distributor-status">审批中</el-tag>
               <el-tag type="danger" v-if="fundamental.checkType=='2'" class="distributor-status">驳回</el-tag>
               <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
             </div>
-            <!-- 第一行 -->
             <el-row type="flex" class="row-bg" justify="space-around">
               <el-col :span="6">
                 <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
@@ -31,8 +27,6 @@
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime  | formatDate  }}</div></el-col>
               </el-col>
             </el-row>
-            <!-- 第一行 END -->
-            <!-- 第二行 -->
             <el-row type="flex" class="row-bg" justify="space-around">
               <el-col :span="6">
                 <el-col :span="6"><div class="grid-del label-color">团期计划:</div></el-col>
@@ -47,8 +41,6 @@
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.supplierName }}</div></el-col>
               </el-col>
             </el-row>
-            <!-- 第二行 END -->
-            <!-- 第三行 -->
             <el-row type="flex" class="row-bg" justify="space-around">
               <el-col :span="6">
                 <el-col :span="6">
@@ -70,8 +62,6 @@
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.mark }}</div></el-col>
               </el-col>
             </el-row>
-            <!-- 第三行 END -->
-            <!-- 第四行 -->
             <el-row type="flex" class="row-bg" justify="space-around">
               <el-col :span="6">
                 <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
@@ -86,8 +76,6 @@
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.cardName }}</div></el-col>
               </el-col>
             </el-row>
-            <!-- 第四行 END -->
-            <!-- 第五行 -->
             <el-row type="flex" class="row-bg" justify="space-around" style="height:80px">
               <el-col :span="6">
                 <el-col :span="6"><div class="grid-del label-color">支付账户:</div></el-col>
@@ -111,9 +99,6 @@
                 </el-col>
               </el-col>
             </el-row>
-            <!-- 第五行 END -->
-            <!-- 基本信息 END -->
-            <!-- 审核结果 -->
             <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
             <el-table :data="tableCourse" border :header-cell-style="getRowClass">
               <el-table-column prop="participantName" label="审批人" align="center"></el-table-column>
@@ -121,8 +106,6 @@
               <el-table-column prop="No" label="审批意见" align="center"></el-table-column>
               <el-table-column prop="finishedTime" label="审批时间" align="center"></el-table-column>
             </el-table>
-            <!-- 审核结果 END -->
-            <!-- 相关信息 -->
             <el-divider content-position="left" class='title-margin title-margin-t'>相关信息</el-divider>
             <el-table :data="tableMoney" border :header-cell-style="getRowClass">
               <el-table-column prop="payable" label="订单总额" align="center"></el-table-column>
@@ -137,8 +120,6 @@
                 </template>
               </el-table-column>
             </el-table>
-            <!-- 相关信息 END -->
-            <!-- 无收入借款明细 -->
             <el-divider content-position="left" class='title-margin title-margin-t'>无收入借款明细</el-divider>
             <el-table :data="tableIncome" border :header-cell-style="getRowClass">
               <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
@@ -160,8 +141,6 @@
                 </template>
               </el-table-column>
             </el-table>
-            <!-- 无收入借款明细 END -->
-            <!-- 预付款明细 -->
             <el-divider content-position="left" class='title-margin title-margin-t'>预付款明细</el-divider>
             <el-table :data="tablePayment" border :header-cell-style="getRowClass">
               <el-table-column prop="paymentID" label="ID" width="50" align="center"></el-table-column>
@@ -178,8 +157,6 @@
                 </template>
               </el-table-column>
             </el-table>
-            <!-- 预付款明细 END -->
-            <!-- 收入明细 -->
             <el-divider content-position="left" class='title-margin title-margin-t'>收入明细</el-divider>
             <el-table :data="tableEarning" border :header-cell-style="getRowClass">
               <el-table-column prop="orderCode" label="订单编号" align="center"></el-table-column>
@@ -201,8 +178,6 @@
                 </template>
               </el-table-column>
             </el-table>
-            <!-- 收入明细 END -->
-            <!-- 审批过程-查看弹窗 -->
             <el-dialog width="45%" title="审批过程" :visible.sync="dialogFormVisible_Income" append-to-body>
               <div class="indialog">
                 <el-table :data="tableIncomeCheck" border style=" width:90%;margin:30px 0 20px 25px;" :header-cell-style="getRowClass">
@@ -213,7 +188,6 @@
                 </el-table>
               </div>
             </el-dialog>
-            <!-- 审批过程-查看弹窗 END -->
           </div>
        </el-dialog>
   </div>
@@ -230,18 +204,17 @@ export default {
     return {
       dialogForm:false,
       fundamental:{},
-      tableMoney:[], // 相关信息表格
-      tableEarning:[], // 收入明细表格
-      tableCourse:[], // 审核结果表格
-      tablePayment:[], // 预付款明细表格
-      tableIncome:[], // 无收入借款明细表格
-      dialogFormVisible_Income:false, // 预付款无收入借款明细查看弹窗            
+      tableMoney:[], 
+      tableEarning:[], 
+      tableCourse:[], 
+      tablePayment:[], 
+      tableIncome:[],
+      dialogFormVisible_Income:false,           
       planID:'',
-      keepPaymentType: null, // 弹窗中调用获取一条详情，保存paymentType类型
-      tableIncomeCheck: null, // 审批过程-查看弹窗-数据
+      keepPaymentType: null, 
+      tableIncomeCheck: null, 
     }
   },
-  // 关于时间的过滤
   filters: {
     formatDate: function (value) {
       return moment(value).format('YYYY-MM-DD HH:mm:ss')
@@ -262,7 +235,6 @@ export default {
   },
   methods: {
       moment,
-    //起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if(date == undefined || date == '') {
@@ -270,11 +242,9 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD')
     },
-    // 点击图片钩子
     handlePreview(file) {
       window.open(file.url);
     },
-    // 表格表头颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
@@ -282,7 +252,6 @@ export default {
         return ''
       }
     },
-    // 审批过程-查看
     processIncome(index,row, type){
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: row.guid,
@@ -292,7 +261,6 @@ export default {
         this.dialogFormVisible_Income = true;
       }).catch(obj => {})
     },
-    // 审核结果
     auditResult(result, paramJqType) {
       var that =this
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
@@ -303,7 +271,6 @@ export default {
         that.tableCourse = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
     },
-    // 获取一条信息
     getLabel(){
       this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
           "id":this.paymentID
@@ -326,13 +293,12 @@ export default {
         }
      })
     },
-    // 无收入没有订单号根据登录人员查询无收入借款明细
     bbb(params){
       console.log(params)
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
-          "paymentType": 1, // 1 无收入 2 预付款
+          "paymentType": 1,
           "createUser": params, 
         }
       }).then(res => {
@@ -375,10 +341,8 @@ export default {
         console.log(err)
       })
     },
-    // 获取相关表格信息
     getPaymentdetails(val) {
       var that = this
-      //预付付款明细
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
           "paymentType": 2,
@@ -391,7 +355,6 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-      // 无收入借款明细
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
           "paymentType": 1,
@@ -436,7 +399,6 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-      //根据计划ID获取订单总额,已收款总额,总人数,已审批借款总额，审批中借款总额/
       that.$http.post(this.GLOBAL.serverSrc + '/teamquery/get/api/fivetotal', {
         "id": val
       }).then(res => {
@@ -447,7 +409,6 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-      // 收入明细
       that.$http.post(this.GLOBAL.serverSrc + '/orderquery/api/income/detail', {
         "id": val,
       }).then(res => {
@@ -497,11 +458,8 @@ export default {
         margin-top: 3px;
       }
     }
-    /*表格*/
   .labelTable{margin: 0 30px 20px 30px; text-align: center;max-width: 1581px;}
   .multipleTable{margin: 0 30px 20px 30px; text-align: center;width: 1161px;}
-
-  /*申请无收入借款弹窗*/
   .mask{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
   .noIncome{width:1100px; position:absolute; top:3%;left:50%; margin-left:-550px; background:#fff; z-index:1000; border-radius:3px;max-height: 95%;overflow:scroll;overflow-x:hidden;}
   .noIncomeTitle{margin: 30px; overflow: hidden;}
@@ -511,18 +469,15 @@ export default {
   .name_input01{width: 700px;}
   .name_button{margin-left:-5px; background:#eaeaea;color:#a4a4a4;}
   .name_button:hover{color:#a4a4a4;}
-  /*申请无收入借款中借款人弹窗*/
   .indialog{min-height: 300px; overflow: hidden;}
   .mask_name{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 101;}
   .number_button{float:right; margin: 0 0 20px 0;}
-  /*申请无收入借款中团期计划弹窗*/
   .plan_indialog{float:left; line-height: 40px;}
   .indialog_plan{float:left; margin: 0 10px 0 10px;}
   .indialog_input{float:left; width: 150px;}
   .indialog_input01{float:left; width: 80px;}
   .plan_indialog span{float:left; margin: 0 10px 0 10px;}
   .indialog_button{margin: 0 0 0 10px;}
-  /*申请无收入借款中附件*/
   .upload-demo{width: 400px;margin-top:-30px}
   .upload-demo>>>.el-upload-list__item{ width: 300px;}
 
@@ -530,7 +485,6 @@ export default {
   .upload-demo>>>.el-upload-list__item:first-child {
     margin-top: 5px;
   }
-  /*基本信息*/
   .basictable{margin:0 0 0 25px;}
   .basictd{width:400px; padding:15px 0 0 0;}
   .basicspan_01{width:80px; text-align:right;}

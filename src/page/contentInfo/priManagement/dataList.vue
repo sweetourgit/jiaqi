@@ -6,16 +6,13 @@
            <el-button :disabled="forbidden" @click="delJurisdiction">删除</el-button>
            <el-button :disabled="forbidden" @click="openJurisdiction(2,'编辑')">编辑</el-button>
          </el-row>
-        <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
            <el-table-column  prop="symbol" label="标识" min-width="210" align="center"></el-table-column>   
            <el-table-column  prop="name" label="名称" min-width="200" align="center"></el-table-column>
            <el-table-column  prop="match" label="匹配" min-width="150" align="center"></el-table-column>
            <el-table-column  prop="mark" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
-         
-      </el-dialog> 
-       <!-- 新增、编辑弹框界面 -->
+      </el-dialog>
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
              <el-form-item label="名称" prop="name">
