@@ -29,8 +29,9 @@
           <div class="labelBorder" v-if="this.editableTabs.length > 0">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm mt30">
               <el-form-item label="标题：" prop="caption">
-                <el-input v-model="ruleForm.caption" class="messagename" placeholder="请输入重要提示" @change="stateTitle('ruleForm')"></el-input>
-                <span class="numbers">{{ruleForm.caption.length}}/30字</span>
+                <el-input v-model="caption" class="messagename" placeholder="请输入重要提示" @change="stateTitle('ruleForm')"></el-input>
+                <span class="numbers">{{caption.length}}/30字</span>
+                <div style="color:red;clear:both;" v-show="titleShow">标题不能为空</div>
               </el-form-item>
               <el-button type="primary" class="addline" @click="addLine()" :disabled="forbidden">新增一行</el-button>
               <div style="clear:both;">
@@ -151,9 +152,10 @@ export default {
       ruleForm:{
         caption:'',
       },
+      caption:'',
       rules: {
         caption: [
-          { required: true, message: '请输入标题', trigger: 'change' },
+          // { required: true, message: '请输入标题', trigger: 'change' },
           { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change' }
         ],
         type: [
@@ -219,6 +221,8 @@ export default {
       lineID:0,
       crowdFile:[],
       forbidden:false,
+      titleShow:false,
+      crowdTypeList : []
     };
   },
   watch: {
@@ -251,7 +255,7 @@ export default {
       this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/update",{
         object: {
           id:this.sid,
-          title: this.ruleForm.caption,
+          title: this.caption,
           visaID:sessionStorage.getItem('productID')
         }
       }).then(res => {
@@ -265,7 +269,7 @@ export default {
         if(res.data.isSuccess == true){
           if(res.data.objects){
             this.editableTabs = res.data.objects;
-            this.ruleForm.caption = this.editableTabs[this.editableTabsValue].title;
+            this.caption = this.editableTabs[this.editableTabsValue].title;
           }
         }else{
           this.editableTabs = []
@@ -275,23 +279,30 @@ export default {
       })
     },
     handleClick(tab, event){
-      this.ruleForm.caption = tab.label;
+      this.titleShow = false;
+      this.caption = tab.label;
       this.tableDate=[];
       this.rowList();
+      if(this.editableTabs[tab.index].id == 0){
+        this.forbidden=true;
+      } else {
+        this.forbidden=false;
+      }
     },
     stateTitle(formName){
-      this.editableTabs[this.editableTabsValue].title = this.ruleForm.caption;
+      this.editableTabs[this.editableTabsValue].title = this.caption;
       if(this.a == 1){
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
               object: {
-                title: this.ruleForm.caption,
+                title: this.caption,
                 visaID:sessionStorage.getItem('productID')
               }
             }).then(res => {
                 if(res.data.isSuccess == true){
                    this.addVisaMessageShow = false;
+                   this.titleShow = false;
                    this.forbidden = false;
                    this.pageList();
                    this.a = 0;
@@ -347,6 +358,7 @@ export default {
             title: '签证信息' + (this.editableTabs.length + 1),
             content: 'New Tab content',
           });
+          this.titleShow = true;
           this.tableDate = [] ;
           for(let i = 0; i < this.editableTabs.length; i++){
             if(this.editableTabs[i].id == 0){
@@ -360,6 +372,8 @@ export default {
             title: this.messageTitle,
             content: 'New Tab content'
           });
+          this.tableDate = this.crowdTypeList;
+          this.titleShow = false;
         }
         this.editableTabsValue = (newTabName-1).toString();
         }
@@ -399,6 +413,7 @@ export default {
               }
               this.editableTabsValue = String(this.editableTabs.length);
               this.$message.success("删除成功");
+              this.titleShow = false;
               return;
             }else {
               this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
@@ -422,6 +437,7 @@ export default {
                   }       
                   this.editableTabsValue = String(this.editableTabs.length);
                   this.$message.success("删除成功");
+                  this.titleShow = false;
                 } else {
                   this.$message.success("该主题存在签证信息人群，不允许删除");
                 }
@@ -439,7 +455,7 @@ export default {
     },
     addVisaMessage(formName){ // 新增签证信息
       if(this.addVisa.copy == 1){
-        this.ruleForm.caption = '';
+        this.caption = '';
         this.handleTabsEdit(this.tabIndex, "add");
         this.addVisaMessageShow = false;
         this.$refs[formName].resetFields();
@@ -448,6 +464,7 @@ export default {
         for(let i = 0; i < this.copyList.length; i++){
           if(this.addVisa.copy == this.copyList[i].id){
             this.messageTitle = this.copyList[i].title
+            this.crowdTypeList = this.copyList[i].crowdType
           }
         }
         this.$http.post(this.GLOBAL.serverSrc + "/visa/info/api/insert",{
@@ -456,7 +473,7 @@ export default {
           }
         }).then(res => {
             if(res.data.isSuccess == true){
-               this.ruleForm.caption = this.messageTitle;
+               this.caption = this.messageTitle;
                this.handleTabsEdit(this.tabIndex, "add");
                this.addVisaMessageShow = false
                this.$refs[formName].resetFields();

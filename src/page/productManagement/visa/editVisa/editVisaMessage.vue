@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="right">
-          <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick()">
+          <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick">
             <el-tab-pane :key="item.name" v-for="(item, index) in editableTabs" :label="item.title" :name="index + ''" ></el-tab-pane>
           </el-tabs>
           <div class="labelBorder" v-if="this.editableTabs.length > 0">
@@ -31,6 +31,7 @@
               <el-form-item label="标题：" prop="caption">
                 <el-input v-model="caption" class="messagename" placeholder="请输入重要提示" @change="stateTitle('ruleForm')"></el-input>
                 <span class="numbers">{{caption.length}}/30字</span>
+                <div style="color:red;clear:both;" v-show="titleShow">标题不能为空</div>
               </el-form-item>
               <el-button type="primary" class="addline" @click="addLine()" :disabled="forbidden">新增一行</el-button>
               <div style="clear:both;">
@@ -149,12 +150,12 @@ export default {
       tabIndex: 0,
       addVisaMessageShow:false, // 增加签证信息弹窗
       ruleForm:{
-        //caption:'',
+        caption:'',
       },
       caption:'',
       rules: {
         caption: [
-          { required: true, message: '请输入标题', trigger: 'change' },
+          // { required: true, message: '请输入标题', trigger: 'change' },
           { min: 1, max: 30, message: '长度在 1 到 30 个字符', trigger: 'change' }
         ],
         type: [
@@ -220,6 +221,7 @@ export default {
       lineID:0,
       crowdFile:[],
       forbidden:false,
+      titleShow:false,
     };
   },
   watch: {
@@ -276,6 +278,7 @@ export default {
       })
     },
     handleClick(tab, event){
+      this.titleShow = false;
       this.caption = tab.label;
       this.tableDate=[];
       this.rowList();
@@ -298,6 +301,7 @@ export default {
             }).then(res => {
                 if(res.data.isSuccess == true){
                    this.addVisaMessageShow = false;
+                   this.titleShow = false;
                    this.forbidden = false;
                    this.pageList();
                    this.a = 0;
@@ -353,6 +357,7 @@ export default {
             title: '签证信息' + (this.editableTabs.length + 1),
             content: 'New Tab content',
           });
+          this.titleShow = true;
           this.tableDate = [] ;
           for(let i = 0; i < this.editableTabs.length; i++){
             if(this.editableTabs[i].id == 0){
@@ -366,7 +371,8 @@ export default {
             title: this.messageTitle,
             content: 'New Tab content'
           });
-          this.tableDate = this.crowdTypeList
+          this.tableDate = this.crowdTypeList;
+          this.titleShow = false;
         }
         this.editableTabsValue = (newTabName-1).toString();
         console.log(this.editableTabsValue)
@@ -407,6 +413,7 @@ export default {
               this.editableTabsValue = String(this.editableTabs.length);
               this.$message.success("删除成功");
               this.forbidden=false;
+              this.titleShow = false;
               return;
             }else {
               this.$http.post(this.GLOBAL.serverSrc + '/visa/info/api/delete',{
@@ -431,6 +438,7 @@ export default {
                   this.editableTabsValue = String(this.editableTabs.length);
                   this.$message.success("删除成功");
                   this.forbidden=false;
+                  this.titleShow = false;
                 } else {
                   this.$message.success("该主题存在签证信息人群，不允许删除");
                 }
