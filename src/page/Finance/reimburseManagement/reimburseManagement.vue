@@ -1914,13 +1914,13 @@ export default {
                                 }
                                for(var n in submitForm_list.payments){//判断填写的报销金额
                                 if(submitForm_list.payments[n].price === "0" || submitForm_list.payments[n].price === ""){
-                                   this.$message({
-                                                message:'请填写本次报销金额',
-                                                type: 'warning'
-                                              });
-                                              this.submitformBtn=false;
-                                              verify = 0
-                                              return;
+                                  //  this.$message({
+                                  //               message:'请填写本次报销金额',
+                                  //               type: 'warning'
+                                  //             });
+                                  //             this.submitformBtn=false;
+                                  //             verify = 0
+                                  //             return;
                                 }else if(submitForm_list.payments[n].peopled === 0 || submitForm_list.payments[n].peopled === ""){
                                           this.$message({
                                                 message:'人数不能为空',

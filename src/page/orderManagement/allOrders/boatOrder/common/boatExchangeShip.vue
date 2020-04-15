@@ -193,11 +193,12 @@ export default {
       this.$parent.resetDialogType();
       this.GetCabinData=[];
        this.cabin_type = 0;
+        this.dialogFormMark = false;
     },
-    orderData(){ // 获取客人信息 this.orderId
+    orderData(){ // 获取客人信息 
       this.$http
         .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/guestinfo", {
-          id: 8
+          id: this.orderId
         })
         .then(res => {
               if(res.data.code === 200){
