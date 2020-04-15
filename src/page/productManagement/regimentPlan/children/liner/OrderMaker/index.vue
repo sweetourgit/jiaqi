@@ -43,7 +43,7 @@
       <InfoGround ref="infoGround"></InfoGround>
       <ChannelGround ref="channelGround"></ChannelGround>
       <CabinGround ref="cabinGround"
-        @select-cabin="selectCabinHandler">
+        @calcula-price="calculaPriceHandler">
       </CabinGround>
       <OthersGround ref="othersGround"
         v-show="submitForm.cabin.length"
@@ -88,19 +88,12 @@ export default {
     skuPlanCache= null;
   },
 
-  computed: {
-    guestCount(){
-      let count= 0;
-      this.submitForm.cabin.forEach(el => count+= el.guests.length);
-      return count;
-    }
-  },
-
   data(){
     return {
       submitForm: {
         cabin: [],
-      }
+      },
+      guestCount: 0
     }
   },
 
@@ -112,10 +105,14 @@ export default {
       this.$refs.guestsGround.init(this.submitForm.cabin);
     },
 
-    selectCabinHandler(cabin){
-      this.$refs.cabinGround.selectCabin(cabin);
-      this.$refs.guestsGround.selectCabin(cabin);
-    }
+    calculaPriceHandler(){
+      let guestCount= 0;  // 总数
+      let warnArr= [];  // 报警数组
+      let cabins= this.submitForm.cabin;
+      cabins.forEach(cabin => {
+        let { sku_price, short,  }= cabin;
+      })
+    },
   }
 
 }

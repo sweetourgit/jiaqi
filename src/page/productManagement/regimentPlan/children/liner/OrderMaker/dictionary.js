@@ -28,9 +28,7 @@ export const getSkuPriceDTO= function(){
     stock: null,
     adult_same_price: null,
     adult_straight_price: null,
-    line_status: 1,
-    
-    inGuestsWarning: 0,
+    line_status: 1
   }
 
 }

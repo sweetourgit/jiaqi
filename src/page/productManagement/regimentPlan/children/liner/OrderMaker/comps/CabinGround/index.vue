@@ -124,27 +124,27 @@ export default {
       deep: true,
       handler(nval, oval){
         // 切换cabin不激活这个handler
-        if(nval.sku_price!== oval.sku_price) return;
+        if(nval.sku_price!== oval.sku_price) return this.$emit('calcula-price');
         let { max_stay, min_stay }= this.skuPrice;
         let { guests, cabin_type }= nval;
         let left;
         this.submitForm.num= guests.length;
         if(cabin_type=== CABIN_SPLIT_TYPE.PART) return;
         left= guests.length% max_stay;
-        if(left>= min_stay || (guests.length && left=== 0)) return nval.short= 0;
+        if(left>= min_stay || (guests.length && left=== 0)) return this.setCabinShort(0);
         if(guests.length< min_stay) {
           this.$message.error({
             message: `还需增加${min_stay- guests.length}个报名,才能满足下单条件`,
             duration: 5000
           });
-          return nval.short= (min_stay- guests.length)* -1;
+          return this.setCabinShort((min_stay- guests.length)* -1);
         }
         let short= min_stay- left;
         this.$message.error({
           message: `还需减少${short}个或增加${min_stay- short}个报名,才能满足下单条件`,
           duration: 5000
         });
-        return nval.short= short;
+        return this.setCabinShort(short);
       },
     }
   },
@@ -195,11 +195,12 @@ export default {
       let clear= false; // 是否为空
       let removed= []; // 移除数组
       let pointer= 0;  // 跳人指针
+      let minHold;  // 最少人数
       let { guests, cabin_type }= this.currentCabin;
       let { min_stay, max_stay, room_stock }= this.skuPrice;
       let currentGuestsNum= guests.length;
       let deletableGuests= guests.filter(guest => !guest.isFilled());
-      let minHold= cabin_type=== CABIN_SPLIT_TYPE.ALL? min_stay: 1;
+      minHold= cabin_type=== CABIN_SPLIT_TYPE.ALL? min_stay: 1;
       step= Math.abs(step)> deletableGuests.length? deletableGuests.length* -1: step;
       if(step!== want) handWarn= step- want;
       if(cabin_type=== CABIN_SPLIT_TYPE.ALL){
@@ -211,11 +212,7 @@ export default {
       clear= Math.abs(step)=== guests.length;
       while(guests.length> minHold && removed.length< Math.abs(step) && pointer< guests.length){
         let max= guests.length- 1- pointer;
-        if(!guests[max].isFilled()){
-          removed.push(guests.splice(max, 1)[0]);
-        } else {
-          pointer++;
-        }
+        guests[max].isFilled()? pointer++: removed.push(guests.splice(max, 1)[0]);
       }
       // bug min_stay为2, guests为2时, 手动删减一个, 再手动归0
       minHold= guests.length< minHold? guests.length: minHold;
@@ -241,10 +238,6 @@ export default {
       }
     },
 
-    addCabin(cabin){
-      this.cabin.push(cabin);
-    },
-
     /**
      * @description: 
      * @param {CabinTitle/Cabin/Null} cabin: 由外向内选通过cabin, 由内向外选通过cabinTitle
@@ -257,15 +250,26 @@ export default {
       this.$assign(this.submitForm, { num: cabin.guests.length, cabin_type: cabin.cabin_type });
     },
 
+    // watch里会触发calcula-price
+    addCabin(cabin){
+      this.cabin.push(cabin);
+    },
+
     removeCabin(index){
-      let result= this.cabin.splice(0).filter((el, i) => {
-        if(index=== i) el.sku_price.selected= false;
-        return index!== i;
-      });
-      this.$nextTick(() => {
-        this.cabin.push(...result);
-      });  
-    }
+      let removed= this.cabin[index];
+      let isFilled= removed.guests.find(guest => guest.isFilled());
+      removed.sku_price.selected= false;
+      if(isFilled) return this.$message.error('该报名类型下有已完善的游客信息,请手动删除游客后,再执行删除操作');
+      this.cabin.splice(index, 1);
+      removed= null;
+      // 如果删除的是当前选择,则watch里会emit,如果删除的不是当前选择,则手动触发一次
+      if(this.currentCabin!== removed) this.$emit('calcula-price'); 
+    },
+
+    setCabinShort(short){
+      this.currentCabin.short= short;
+      this.$emit('calcula-price')
+    },
   }
 
 }
