@@ -3,7 +3,7 @@
     <!--收款信息弹窗begin-->
     <el-dialog
       :title="'申请同业收款'"
-      :visible.sync="propsObj.dialogType === 1"
+      :visible.sync="dialogFormMark"
       :close-on-click-modal="false"
       class
       width="1100px"
@@ -200,13 +200,17 @@ export default {
   name: "boatReceipt",
 
   props: {
-    propsObj: { type: Object }
+    orderId:0,//订单id
+    orderCodeSon:'',
+    a_variable: 0,
+    dialogType: 0,
   },
 
   data() {
     return {
       isChooseAccountDialog: false, //控制选择收款账户弹窗的显示隐藏
       isAddInvoiceDialog: false, //控制添加开发票弹窗的显示隐藏
+      dialogFormMark: false,   //收款弹窗
       form: {
         date: "", //收款时间
         name: "", //同业社名称  同业的显示
@@ -288,7 +292,14 @@ export default {
       ] //选择账户的集合
     };
   },
-
+  watch: {
+      a_variable: function() {
+        if (this.dialogType == 1) {
+          //this.orderGetFun(this.orderId,this.orderCodeSon);//调用进入页面获取信息方法
+          this.dialogFormMark = true;
+        }
+      }
+    },
   created() {},
 
   methods: {
@@ -360,6 +371,7 @@ export default {
     // 收款信息弹窗关闭事件
     btReceiptDialogClose() {
       this.$parent.resetDialogType();
+      this.dialogFormMark = false;
     }
   },
   mounted() {}

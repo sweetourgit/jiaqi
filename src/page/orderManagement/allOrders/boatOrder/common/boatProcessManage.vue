@@ -2,15 +2,13 @@
     <div>
        <el-dialog
       title="流程管理"
-      :visible.sync="propsObj.dialogType === 7"
+      :visible.sync="dialogFormMark"
       :close-on-click-modal="false"
       class="city_list"
       width="870px"
       style="margin-top:-50px"
-      @open="processManage"
       @close="close"
-      
-    >
+     >
     <!--订单状态begin-->
       <div style="position:relative;height:50px">
         <el-button type="primary" plain icon="el-icon-check" circle size="medium"></el-button>
@@ -242,11 +240,14 @@ export default {
   name: "boatProcessManage",
   components: {guestEditDialog },
   props: {
-    propsObj: {type:Object },
-    orderId:0,//订单id
+    orderId: 0,
+    a_variable: 0,
+    dialogType: 0,
+    orderCodeSon:""
   },
   data() {
     return {
+      dialogFormMark:false,//弹框
       orderinfo:{},//info详情
       statusNow: "", // 订单进度状态
       statusNext: "",// 订单进度状态
@@ -329,12 +330,21 @@ export default {
     };
   },
   created() {},
+   watch: {
+    a_variable: function() {
+      if (this.dialogType == 7) {
+        this.processManage();
+        this.dialogFormMark = true;
+      }
+    }
+  },
   methods: {
     moment,
     close(){//关闭
       this.$parent.resetDialogType();
       this.NewGetCabinData= []; // 用户信息
       this.GetCabinData=[];//
+      this.dialogFormMark = false;
     },
    
     processManage() {  //流程详情

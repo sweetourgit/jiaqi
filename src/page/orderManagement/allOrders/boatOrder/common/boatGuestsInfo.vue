@@ -2,11 +2,10 @@
   <!--客人信息弹窗-->
   <el-dialog
     title="客人信息"
-    :visible.sync="propsObj.dialogType === 5"
+    :visible.sync="dialogFormMark"
     :close-on-click-modal="false"
     class
     width="780px"
-    @open="orderData"
     @close="btReceiptDialogClose"
   >
     <!-- tabs  begin -->
@@ -64,8 +63,10 @@ import "swiper/dist/css/swiper.min.css";
 export default {
   name: "boatReceipt",
   props: {
-    propsObj: { type: Object },
-    orderId:0
+    orderId: 0,
+    a_variable: 0,
+    dialogType: 0,
+    orderCodeSon:""
   },
   data() {
     return {
@@ -73,13 +74,23 @@ export default {
       choosetext:"1",
       NewGetCabinData:{},//客人信息
       NewGetcontext:[],//信息
+      dialogFormMark:false,//弹框
     
     };
   },
   created() {},
+  watch: {
+    a_variable: function() {
+      if (this.dialogType == 3) {
+        this.orderData(this.orderId,this.orderCodeSon);
+        this.dialogFormMark = true;
+      }
+    }
+  },
   methods: {
     btReceiptDialogClose() {  // 客人信息弹窗关闭事件
       this.$parent.resetDialogType();
+      this.dialogFormMark = false;//弹框
     },
     orderData(){ // 获取客人信息
       this.$http

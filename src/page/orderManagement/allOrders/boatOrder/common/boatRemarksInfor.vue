@@ -3,11 +3,10 @@
     <!--备注信息弹窗-->
     <el-dialog
       title="备注"
-      :visible.sync="propsObj.dialogType === 0"
+      :visible.sync="dialogFormMark"
       :close-on-click-modal="false"
       class
       width="780px"
-      @open="orderGetFun"
       @close="btRemarkDialogClose"
     >
       <el-form
@@ -54,13 +53,15 @@ import moment from "moment"
 export default {
   name: "boatRemarksInfor",
   props: {
-    propsObj: { type: Object },
     orderId:0,//订单id
     orderCodeSon:'',
-  },
+    a_variable: 0,
+    dialogType: 0,
+   },
   data() {
     return {
       name: localStorage.getItem("name"),
+      dialogFormMark: false,   //备注信息弹窗
       markFormAdd: {
         orderCode: "",
         mark: "",
@@ -73,18 +74,21 @@ export default {
       }
     };
   },
-
-  watch: { },
+  watch: {
+      a_variable: function() {
+        if (this.dialogType == 2) {
+          this.orderGetFun(this.orderId,this.orderCodeSon);
+          this.dialogFormMark = true;
+        }
+      }
+    },
   created() {},
   methods: {
     // 关闭弹窗事件
     btRemarkDialogClose() {
-      this.$emit(
-        "update:this.propsObj.dialogType",
-        (this.propsObj.dialogType = -1)
-      );
-      this.markFormAdd.mark = ""
-    },
+      this.dialogFormMark = false;
+      this.$refs["markFormAdd"].resetFields();
+     },
     orderGetFun() { // 获取备注信息
       this.$http
           .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order-comment/listall", {

@@ -2,11 +2,10 @@
   <!--换仓弹窗-->
   <el-dialog
     title="换仓"
-    :visible.sync="propsObj.dialogType === 2"
+    :visible.sync="dialogFormMark"
     :close-on-click-modal="false"
     class
     width="780px"
-    @open="orderData"
     @close="btReceiptDialogClose"
   >
     <el-tabs v-model="activebox" type="card" @tab-click="GetCabinbtn" style="float:left;width: 100%;">
@@ -94,8 +93,8 @@
               </el-form-item>
               <el-form-item label="免费/收费:" prop="resource">
                 <el-radio-group v-model="ruleForm.resource">
-                  <el-radio label="免费"></el-radio>
-                  <el-radio label="收费"></el-radio>
+                  <el-radio label="1">免费</el-radio>
+                  <el-radio label="2">收费</el-radio>
                 </el-radio-group>
               </el-form-item>
               <div class="cancel"  >
@@ -147,8 +146,10 @@ import "swiper/dist/css/swiper.min.css";
 export default {
   name: "boatDivideRoomInfo",
   props: {
-    propsObj: { type: Object },
-    orderId:0
+      orderId:0,//订单id
+      orderCodeSon:'',
+      a_variable: 0,
+      dialogType: 0,
   },
   data() {
     return {
@@ -162,6 +163,7 @@ export default {
       plan_id:0,//团期计划id
       CabinTypeText:'',//舱房库存提示
       GetCabinsData:[],//舱房数组
+      dialogFormMark:false,//弹框隐藏
       ruleForm: {
           region:'',
           resource:'',
@@ -177,6 +179,14 @@ export default {
     
     };
   },
+   watch: {
+      a_variable: function() {
+        if (this.dialogType == 0) {
+          this.orderData(this.orderId,this.orderCodeSon);
+          this.dialogFormMark = true;
+        }
+      }
+    },
   created() {},
   methods: {
     btReceiptDialogClose() {  // 客人信息弹窗关闭事件
@@ -234,12 +244,30 @@ export default {
         });
     },
     ExchangeCabinBtn(){//换仓提交
-    console.log(ruleForm,'啦啦啦');
-       this.$refs.submitForm.validate(validate => {
+    console.log(this.ruleForm,'啦啦啦');
+       this.$refs.ruleForm.validate(validate => {
         if(!validate) return this.$message.error('请完善表单信息');
-        this.$emit('save-guest', { guest: this.proto, formData: this.$deepCopy(this.submitForm) });
-        this.close();
-      })
+       })
+       alert('客官换舱吗')
+        // this.$http  //jenny04/13后期调试打开
+        // .post(this.GLOBAL.serverSrcYL + "/linerapi/v1/order/order/changecabin", {
+        //       id: 0,//订单id
+        //       order_code: "string",//订单编码
+        //       guest_id: "string",//客人id
+        //       old_cabin_id: cabin_id,//原舱id
+        //       new_cabin_id: this.ruleForm.region,//新舱id
+        //       is_free: this.ruleForm.resource,//是否免费
+        //       create_uid: 0,//创建者
+        //       org_id: 0,//部门id
+        //      })
+        // .then(res => {
+        //       if(res.data.code === 200){
+        //         console.log(res.data,'换仓提交返回结果')
+        //       }
+        //      })
+        // .catch(err => {
+        //   console.log(err);
+        // });
 
     },
     GetCabinbtn(data){
@@ -292,6 +320,7 @@ export default {
   border: 1px solid #ebebeb;
   border-collapse: collapse;
   border-spacing: 0;
+  margin: 40px auto;
 }
 .costList_01 {
   background: #f3f3f3;
@@ -306,5 +335,8 @@ export default {
 }
 .m_top_20{
   margin: 20px 0 20px 620px;
+}
+.cancel{
+  margin-left: 80%;
 }
 </style>

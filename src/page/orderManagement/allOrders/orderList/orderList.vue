@@ -311,33 +311,34 @@
 
       <!--出团通知书弹窗begin-->
       <el-dialog
-        title="出团通知书"
-        :visible.sync="dialogAdviceNote"
-        :close-on-click-modal="false"
-        width="780px"
-        @open="getActiceNote"
-        @close="closeActiceNote"
-      >
-        <div class="adviceNote">
-          <el-upload
-            class="uploadDemo"
-            action
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            multiple
-            :disabled="true"
-            :file-list="fileList"
-          >
-            <span>出团通知书 :</span>
-          </el-upload>
-          <div class="adviceNoteBtn">
-            <el-button type="info" @click="dialogAdviceNote = false">取消</el-button>
-            <el-button type="primary" @click="$picDownloader(fileList[0].url,fileList[0].name)">下载</el-button>
-            <!-- <el-button type="primary" @click="adviceNoteSend">发送</el-button> -->
+          title="出团通知书"
+          :visible.sync="dialogAdviceNote"
+          :close-on-click-modal="false"
+          width="780px"
+          @open="getActiceNote"
+          @close="closeActiceNote"
+        >
+          <div class="adviceNote">
+            <el-upload
+              class="uploadDemo"
+              action
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              multiple
+              :disabled="true"
+              :file-list="fileList"
+            >
+              <span>出团通知书 :</span>
+            </el-upload>
+            <div class="adviceNoteBtn">
+              <el-button type="info" @click="dialogAdviceNote = false">取消</el-button>
+              <el-button type="primary" @click="$picDownloader(fileList[0].url,fileList[0].name)">下载</el-button>
+              <!-- <el-button type="primary" @click="adviceNoteSend">发送</el-button> -->
+            </div>
           </div>
-        </div>
       </el-dialog>
       <!--出团通知书弹窗end-->
+      
       <!--流程管理弹窗-->
       <process-manage
         :orderId="orderId"
@@ -353,6 +354,7 @@
         @childByValue="childByValue"
       ></process-manage>
        <!--流程管理弹窗and-->
+
        <!--备注信息弹窗-->
       <remarks-infor
         :orderId="orderId"
