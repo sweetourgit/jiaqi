@@ -7,7 +7,6 @@
            <el-button :disabled="forbidden" @click="operation(1,2)">授权</el-button>
            <el-button :disabled="forbidden" @click="operation(2)">选择用户</el-button>
          </el-row>
-        <!--list-->
          <el-table :data="dataList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
            <el-table-column  prop="title" label="模板名称" min-width="210" align="center"></el-table-column>   
            <el-table-column  prop="count" label="人数" min-width="150" align="center"></el-table-column>

@@ -173,37 +173,41 @@
             <el-breadcrumb separator="|" class="confirm-time">
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,0,item.orderCode)"
+                @click.native="operation(item,2,item.order_code)"
               >备注</el-breadcrumb-item>
+
               <el-breadcrumb-item 
-              class="breadCrumbPointer"
-              @click.native="operation(item,1,item.orderCode)"
+                class="breadCrumbPointer"
+                @click.native="operation(item,1,item.order_code)"
               >收款</el-breadcrumb-item>
-              <el-breadcrumb-item 
-              class="breadCrumbPointer"
-               @click.native="operation(item,2,item.orderCode)"
+
+               <el-breadcrumb-item 
+                class="breadCrumbPointer"
+                @click.native="operation(item,0,item.order_code)"
               >换仓</el-breadcrumb-item> 
               <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,7,item.orderCode)"
+                @click.native="operation(item,7,item.order_code)"
               >流程管理</el-breadcrumb-item>
-              <el-breadcrumb-item
-                class="breadCrumbPointer"
-                @click.native="operation(item,3)"
-              >退款</el-breadcrumb-item>
-              <!-- v-if="getListOneMessage.paid > 0" -->
                <el-breadcrumb-item
                 class="breadCrumbPointer"
-                @click.native="operation(item,6,item.orderCode)"
+                @click.native="operation(item,5,item.order_code)"
+              >退款</el-breadcrumb-item>
+              <el-breadcrumb-item
+                class="breadCrumbPointer"
+                @click.native="operation(item,6,item.order_code)"
               >发票申请</el-breadcrumb-item>
+               <el-breadcrumb-item
+               class="breadCrumbPointer"
+              @click.native="operation(item,3)"
+               >客人信息</el-breadcrumb-item>
               <el-breadcrumb-item 
                 class="breadCrumbPointer"
                 @click.native="operation(item,4)"
               >出团通知书</el-breadcrumb-item>
-              <el-breadcrumb-item
-               class="breadCrumbPointer"
-              @click.native="operation(item,5)"
-               >客人信息</el-breadcrumb-item>
+              
+              
+             
              
             </el-breadcrumb>
             <div class="but-row">
@@ -244,58 +248,87 @@
 
     <!-- 备注 -->
     <boatRemarksInfor
-      :propsObj.sync="propsObj"
       :orderId="orderId"
+      :a_variable="a_variable"
+      :dialogType="dialogType"
+      :orderCodeSon="orderCodeSon"
      ></boatRemarksInfor>
     <!-- 收款 -->
-    <boatReceipt :propsObj.sync="propsObj"></boatReceipt>
+    <boatReceipt 
+      :orderId="orderId"
+      :a_variable="a_variable"
+      :dialogType="dialogType"
+      :orderCodeSon="orderCodeSon"
+     ></boatReceipt>
     <!-- 换舱 -->
     <boatExchangeShip 
-    :propsObj.sync="propsObj"
-    :orderId="orderId"
+     :orderId="orderId"
+     :a_variable="a_variable"
+     :dialogType="dialogType"
+     :orderCodeSon="orderCodeSon"
     ></boatExchangeShip>
-    <!-- 退款 -->
-    <boatRefundMoney :propsObj.sync="propsObj"></boatRefundMoney>
-    <!-- 发票申请 -->
-    <boatInvoiceApply :propsObj.sync="propsObj"></boatInvoiceApply>
+     <!-- 发票申请 -->
+    <invoiceApply 
+     :orderId="orderId"
+     :variable_s='variable_s'
+     :dialogType="dialogType"
+     :orderCodeSon="orderCodeSon"
+    ></invoiceApply>
     <!-- 出团通知书 -->
-    <boatAppearBook :propsObj.sync="propsObj"></boatAppearBook>
-    <!-- 客人信息 -->
-    <boatGuestsInfo 
-    :propsObj.sync="propsObj"
+    <boatAppearBook 
+    :a_variable='a_variable'
     :orderId="orderId"
+    :dialogType="dialogType"
+    :orderCodeSon="orderCodeSon" 
+    ></boatAppearBook>
+    <!-- 退款 -->
+    <!-- <boatRefundMoney :propsObj.sync="propsObj"></boatRefundMoney> -->
+    <orderRefund 
+     :orderRefundID="orderId"
+     :orderRefund="variable" 
+     :dialogType="dialogType"
+     :orderCodeSon="orderCodeSon" 
+      ></orderRefund>
+   <!-- 客人信息 -->
+    <boatGuestsInfo 
+    :a_variable='a_variable'
+    :orderId="orderId"
+    :dialogType="dialogType"
+    :orderCodeSon="orderCodeSon" 
     ></boatGuestsInfo>
     <!-- 流程管理-->
     <boatProcessManage 
-     :propsObj.sync="propsObj"
-     :orderId="orderId"
-     :orderCodeSon='orderCodeSon'
+      :a_variable='a_variable'
+      :orderId="orderId"
+      :dialogType="dialogType"
+      :orderCodeSon="orderCodeSon" 
     ></boatProcessManage>
       
   </div>
 </template>
 
 <script>
-import boatRemarksInfor from "./common/boatRemarksInfor";
-import boatReceipt from "./common/boatReceipt";
-import boatExchangeShip from "./common/boatExchangeShip";
-import boatRefundMoney from "./common/boatRefundMoney";
-import boatAppearBook from "./common/boatAppearBook";
-import boatGuestsInfo from "./common/boatGuestsInfo";
-import boatInvoiceApply from './common/boatInvoiceApply'; 
-import boatProcessManage from "./common/boatProcessManage";
+import boatRemarksInfor from "./common/boatRemarksInfor"; //2
+import boatReceipt from "./common/boatReceipt"; //1
+import boatExchangeShip from "./common/boatExchangeShip";//2
+import invoiceApply from '@/page/orderManagement/allOrders/orderList/common/invoiceApply'; //3
+import boatAppearBook from "./common/boatAppearBook"; // 4
+import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund";//5
+import boatGuestsInfo from "./common/boatGuestsInfo";//6
+import boatProcessManage from "./common/boatProcessManage";//7
 import moment from "moment";
 
 export default {
   
   components: {
+    //boatRefundMoney
     boatRemarksInfor,
     boatReceipt,
     boatExchangeShip,
-    boatRefundMoney,
+    orderRefund,
     boatAppearBook,
     boatGuestsInfo,
-    boatInvoiceApply,
+    invoiceApply,
     boatProcessManage,
   },
 
@@ -337,6 +370,11 @@ export default {
       orderId:0,
       orderCodeSon: null, //传给子组件
       order_status: 0,//订单状态
+      variable: 0, //退款
+      a_variable:0,//设置一个变量展示弹窗
+      variable_s:0,//发票申请
+      dialogType: 0, //弹窗类型  1：流程管理  2：备注信息 3出团通知书
+      orderCode: "", //订单编号
 
     };
   },
@@ -406,12 +444,61 @@ export default {
         });
     },
     // 操作
-    operation(val, index) {
-      // console.log(val,'val');
-      // console.log(index,'index');
-      this.propsObj = {
-        dialogType: index
-      };
+    operation(val,index,orderCode) {
+       console.log(val,'val');
+     // console.log(orderCode,'orderCode');
+    //  if (index == 3) { // 出团通知书
+    //     this.dialogAdviceNote = true;
+    //   }
+       this.orderId = val.id;
+      this.dialogType = index;
+      this.planID = val.planID;
+       if(index == 5) {
+        //判断订单是否有记录
+         this.$http
+        .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
+         id: this.orderId,
+         productType:1,//1.跟团 4.邮轮 
+         })
+        .then(res => {
+          if (res.data.isExist == true) {
+              this.variable = 0;
+              this.$message.error("该订单下有报账申请或报账通过记录，无法申请退款");
+               return;
+           } else{
+              this.variable++;
+           }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+         this.a_variable = 0;
+      }else if(index == 6){
+        //判断是否能开发票
+       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
+            "object": {
+              "orderCode":orderCode,
+              "localCompName":"",
+              "collectionID":0,
+            },
+          }).then(res => {
+              if (res.data.isSuccess == false) {
+                  this.variable_s = 0;
+                  this.$message.error(res.data.result.message);
+                  return false;
+              } else{
+                  this.variable_s++;
+              }
+          })
+            .catch(function (res) {
+               console.log(res)
+             })
+            this.a_variable = 0;   
+      }else{
+        this.a_variable++;
+       
+      }
+       
     },
 
     // 子组件关闭弹窗的时候重置propsObj.dialogType = -1

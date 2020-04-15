@@ -12,7 +12,6 @@
        <el-button :disabled="forbidden" @click="operation(1)">页面权限</el-button>
        <el-button :disabled="forbidden" @click="operation(2)">数据权限</el-button>
      </el-row>
-    <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
        <el-table-column  prop="id" label="ID" min-width="60" align="center"></el-table-column>
        <el-table-column  prop="name" label="功能名称" min-width="150" align="center"></el-table-column>
@@ -26,7 +25,6 @@
        </el-table-column> 
      </el-table>
      </div>
-      <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
              <el-form-item label="名称" prop="name">
@@ -142,7 +140,6 @@ export default {
           }
           return childNodes;
       },
-      // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
         if(treeNode.isParent === true){
           this.parentID = treeNode.id;

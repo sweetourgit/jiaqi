@@ -312,9 +312,6 @@ export default {
             //     ? (keepRes.accountID = "现金")
             //     : (keepRes.accountID = "汇款")
           };
-
-
-
           // 打印相关
           if (keepRes.spw.length > 0) {
             _this.printSureTime = keepRes.spw[0].createTime;
@@ -675,7 +672,7 @@ export default {
         tableDataOrder: row,
         fileList: this.fileList
       };
-      console.log(this.msg)
+      // console.log(this.msg)
     },
     // 查看认款详情
     // recognitionDetail
@@ -687,6 +684,7 @@ export default {
     },
     // 关闭认款弹窗
     recognitionClose(str) {
+      this.getLabel(this.keepPaymentId);
       this.dialogVisibleDo = false;
       this.dialogVisibleDel = false;
       this.msg = "";

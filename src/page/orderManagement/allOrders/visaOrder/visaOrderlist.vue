@@ -157,7 +157,7 @@
 <script>
 import visaRemarksinfor from './common/visaRemarksInfor';
 import visaProcessmanage from './common/visaProcessManage';
-import boatInvoiceApply from '@/page/orderManagement/allOrders/boatOrder/common/boatInvoiceApply';  // 申请开发票
+import boatInvoiceApply from '@/page/orderManagement/allOrders/orderList/common/invoiceApply';  // 申请开发票
 import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund" // 退款
 export default {
   components:{

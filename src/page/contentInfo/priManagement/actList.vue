@@ -6,7 +6,6 @@
            <el-button :disabled="forbidden" @click="delAct">删除</el-button>
            <el-button :disabled="forbidden" @click="openAct(2,'编辑动作')">编辑</el-button>
          </el-row>
-        <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
            <el-table-column  prop="characteristic" label="标识" min-width="60" align="center"></el-table-column>
            <el-table-column  prop="uri" label="地址" min-width="150" align="center"></el-table-column>
@@ -19,9 +18,7 @@
            </el-table-column>
            <el-table-column  prop="remarks" label="备注" min-width="150" align="center"></el-table-column>
          </el-table>
-         
       </el-dialog> 
-       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
              <el-form-item label="标识" prop="characteristic">

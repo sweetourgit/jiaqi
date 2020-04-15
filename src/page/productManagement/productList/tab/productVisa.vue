@@ -210,7 +210,7 @@ export default {
     },
     querySearch(queryString1, cb) { // 搜索国家地区模糊查询
       this.vague = [];
-      this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist", {
+      this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforbynamelist", {
         object: {
           areaName: queryString1
         }

@@ -2,7 +2,7 @@
   <!--出团通知书弹窗-->
   <el-dialog
     title="出团通知书"
-    :visible.sync="propsObj.dialogType === 4"
+    :visible.sync="dialogFormMark"
     :close-on-click-modal="false"
     class
     width="780px"
@@ -34,12 +34,24 @@
 export default {
   name: "boatReceipt",
   props: {
-    propsObj: { type: Object }
+    orderId: 0,
+    a_variable: 0,
+    dialogType: 0,
+    orderCodeSon:""
   },
   data() {
     return {
-      fileList: [] //出团通知书的图片
+      fileList: [] ,//出团通知书的图片
+      dialogFormMark:false,//弹框
     };
+  },
+  watch: {
+    a_variable: function() {
+      if (this.dialogType == 4) {
+        this.getActiceNote();
+        this.dialogFormMark = true;
+      }
+    }
   },
   created() {},
   methods: {
@@ -67,6 +79,7 @@ export default {
     btReceiptDialogClose() {
       this.$parent.resetDialogType();
       this.fileList = [];
+      this.dialogFormMark = false;
     }
   },
   mounted() {}

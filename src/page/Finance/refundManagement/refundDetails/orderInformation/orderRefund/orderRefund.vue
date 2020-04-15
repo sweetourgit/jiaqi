@@ -128,7 +128,6 @@ export default {
     orderRefundID:0,
     orderRefund:0,
     dialogType:0,
-    orderRefundDialog:0,
   },
   data() {
     return {

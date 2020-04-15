@@ -46,7 +46,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <!-- 编辑部门弹框 -->
     <el-dialog class="updataPopup" title="编辑部门" :visible.sync="editDepartment" custom-class="city_list" width="550px">
       <div class="boom">
         <el-form style="padding-left:90px" :model="updata" :rules="rules">
@@ -92,7 +91,6 @@
         <!-- <el-button class="btn_foot" type="danger"  @click="deleted = false">删除</el-button> -->
       </div>
     </el-dialog>
-    <!-- 添加子部门弹框 -->
     <el-dialog class="Popup" :visible.sync="addSubdivision" title="添加子部门" custom-class="city_list" width="570px">
       <el-form style="padding-left:95px" :model="addInput" :rules="rules" status-icon ref="addInput">
         <el-form-item label="部门名称" :label-width="Width" prop="name" class="add_title">
@@ -134,7 +132,6 @@
         <el-button class="oppp" type="primary" @click="appendSave('addInput')">保存</el-button>
       </div>
     </el-dialog>
-    <!-- 添加成员弹框 -->
     <el-dialog title="添加成员"  class="popup" :visible.sync="addPersonnel" custom-class="city_list" width="1000px" @close="addPersonnel2">
         <el-form class="booms" :model="updata1">
             <el-form-item>
@@ -168,7 +165,6 @@
           <el-button class="oppp" type="primary" @click="userInsert">添加</el-button>
         </div>
     </el-dialog>
-    <!-- 设置职位弹框 -->
     <el-dialog class="Popup" title="设置职位" :visible.sync="position" custom-class="city_list" width="550px">
       <el-form style="padding-left:60px" :model="setPosition">
         <el-form-item label="姓名" :label-width="setLabelWidth" class="setinput">
@@ -196,7 +192,6 @@ export default {
   }, 
   data() {
     return {
-      // 获取组织的ID
       org:'',
       data: [],
       data1: [],
@@ -205,9 +200,7 @@ export default {
       removes: "",
       option: "",
       switchs: true,
-      // 子部门临时数据
       tableData: [],
-      // 编辑部门
       editDepartment: false,
       updata: {
         radio: "1",
@@ -221,7 +214,6 @@ export default {
       },
       updata1: {},
       updataLabelWidth: "90px",
-      // 级联选择器
       options: [],
       value: "",
       options1: [],
@@ -235,7 +227,6 @@ export default {
       arr2: [],
       bumen2: false,
       bumen1: false,
-      // 添加子部门
       addSubdivision: false,
       addInput: {
         name: "",
@@ -261,7 +252,6 @@ export default {
         orgName:[{required: true, message: "请输入部门名称", trigger: "blur"}]
       },
       Width: "90px",
-      // 添加成员
       addPersonnel: false,
       person: {
         search: ""
@@ -269,15 +259,11 @@ export default {
       LabelWidth: "87%",
       members: [],
       oppo: [],
-      //成员列表临时数据
       tableList: [],
       members1: [],
-      //每页的数据条数
       pageSize: 10,
-      //默认开始页面
       currentPage: 1,
       total: 1,
-      // 设置成员
       position: false,
       setPosition: {},
       setLabelWidth: "90px",
@@ -289,7 +275,7 @@ export default {
       treeKey: [],
       Parents: [],
       key: -1,
-      flag: true, // 调用数组第一个
+      flag: true, 
       props: {
         value: "value",
         children: "cities"
@@ -311,7 +297,6 @@ export default {
     this.optionList();
   },
   methods: {
-    //职位
     editPosition(index, row){
       this.position = true;
       this.setPosition = row;
@@ -320,7 +305,6 @@ export default {
       this.addSubdivision = false;
       this.$refs[a].resetFields();
     },
-    // 添加部门
     appendSave(addInput) {
       this.$refs[addInput].validate((valid) => {
         if(valid){
@@ -403,7 +387,6 @@ export default {
         this.dataNum = [];
       }
     },
-    //子部门删除
     remove(index, rows) {
       let _this = this;
       this.$confirm("是否删除该部门?", "提示", {
@@ -420,7 +403,6 @@ export default {
         });
       });
     },
-    // 删除当前部门的子级部门
     remove1(id, index) {
       var _this = this;
       this.deleteNum.push(id);
@@ -439,7 +421,6 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-      //子部门列表
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
         object: {
           parentID: id
@@ -480,7 +461,6 @@ export default {
         });
       });
     },
-    //添加成员
     addPersonnel1(){
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/userpage", {
         object: {
@@ -532,7 +512,6 @@ export default {
       this.currentPage = 1;
       this.dataNum = [];
     },
-    // 单击tree节点
     treeClick(a, b, c) {
       console.log(a)
       this.data = [];
@@ -543,7 +522,6 @@ export default {
       this.addInput.topDepartment = a.label;
       this.dbSave = a;
       var _this = this;
-      //下级部门
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
         object: {
           ParentID: a.id
@@ -567,7 +545,6 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-      //部门人员
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlistwithorg", {
         id:a.id
       },{
@@ -594,7 +571,6 @@ export default {
         console.log(error)
       })
     },
-    //树形控件父级数据加载
     loadNode(node, resolve) {
       this.node = node.data
       this.removes = resolve
@@ -711,7 +687,6 @@ export default {
         this.addSubdivision = true;
       }
     },
-    // 双击展开
     treeDblclick(a) {
       this.treeKey = [];
       if (this.dbSave.isLeaf == 2 || this.dbSave.isLeaf == 0) {
@@ -719,7 +694,6 @@ export default {
       }
       this.dbSave = ''
     },
-    // 编辑部门
     editDepartment1(id) {
       this.updata = {
         radio: "1",
@@ -789,7 +763,6 @@ export default {
         );
       }
     },
-    // 编辑部门弹窗
     updataEditSave(updata) {
       let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptsave", {
@@ -824,7 +797,6 @@ export default {
         console.log(error);
       });
     },
-    //选中一个部门,s点击编辑部门里的删除
     deleteOrg(updata){
       this.$confirm("是否删除该部门，所子部门则自动删除?", "提示", {
          confirmButtonText: "确定",
@@ -858,7 +830,6 @@ export default {
       });
       
     },
-    //职位列表
     optionList(){
       this.option = [];
       var _this = this;
