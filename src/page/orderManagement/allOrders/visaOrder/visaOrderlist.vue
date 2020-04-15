@@ -121,7 +121,7 @@
                   <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item>
                   <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,2,item.orderCode)">流程管理</el-breadcrumb-item>
                   <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item,5,item.orderCode)">退款</el-breadcrumb-item>
-                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operInvoice(item,6,item.orderCode)">发票申请</el-breadcrumb-item>
+                  <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item,6,item.orderCode)">发票申请</el-breadcrumb-item>
                   <el-breadcrumb-item class="breadCrumbPointer">出团通知书</el-breadcrumb-item>
                 </el-breadcrumb>
                 <div class="but-row">
@@ -148,7 +148,7 @@
           </el-pagination>
           <visa-remarksinfor :orderId="orderId" :variable="variable" :dialogType="dialogType"></visa-remarksinfor>
           <visa-processmanage :orderId="orderId" :variable="variable" :dialogType="dialogType" @orderPage="orderPage"></visa-processmanage>
-          <visa-invoiceApply :propsObj.sync="propsObj"></visa-invoiceApply>
+          <visa-invoiceApply :orderId="orderId" :variable_s="variable" :dialogType="dialogType"></visa-invoiceApply>
           <visa-orderRefund :orderRefundID="orderId" :orderRefund="variable" :dialogType="dialogType" :orderRefundDialog="orderRefundDialog"></visa-orderRefund>
      </div>
   </div>
@@ -218,6 +218,7 @@ export default {
        total: 0,
        orderpage:[],
        orderId:0,
+       variable_s:0,
        variable:0, //设置一个变量展示弹窗
        dialogType:0,//弹窗类型  1：流程管理  2：备注信息
        propsObj: { dialogType: -1 }, //传给组件的值
@@ -544,11 +545,11 @@ export default {
           this.variable++;
           this.dialogType=i;         
       },
-      operInvoice(val,index){
-        this.propsObj = {
-          dialogType: index
-        };
-      }
+      // operInvoice(val,index){
+      //   this.propsObj = {
+      //     dialogType: index
+      //   };
+      // }
    }
 }
 </script>

@@ -50,23 +50,18 @@
 
 <script>
 export default {
-  props:{
-    menuId:0,
-    variable:0,
-    dialogType:0
-  },
-  data() {
+  data () {
     return {
-        dialogAct:false,
-        guid:"",
+        dialogAct: false,
+        guid: "",
         groupList: [],
         multipleSelection: [],   
-        forbidden:true,         
-        title:"",
-        dialogFormVisible:false,
+        forbidden: true,         
+        title: "",
+        dialogFormVisible: false,
         rformB: {
-          id:0,
-          characteristic:"",
+          id: 0,
+          characteristic: "",
           uri: "",
           name: "",
           overt: "2",
@@ -80,56 +75,61 @@ export default {
         }
     }
   },
+  props: {
+    menuId: 0,
+    variable: 0,
+    dialogType: 0
+  },
   watch: {
-      variable:function(){        
-        if(this.dialogType == 1){
+      variable: function () {        
+        if (this.dialogType == 1) {
           this.actList();   
           this.dialogAct = true;  
         }  
      }
   },
   methods: {
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
         }
       },
-      changeFun(val) { 
-        this.multipleSelection=val;
-        if(this.multipleSelection.length>0){
-           this.forbidden=false;
-        }else{
-           this.forbidden=true;
+      changeFun (val) { 
+        this.multipleSelection = val;
+        if (this.multipleSelection.length > 0) {
+           this.forbidden = false;
+        } else {
+           this.forbidden = true;
         }
       },
-      clickRow(row){   
+      clickRow (row) {   
         this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      rowClass({row, rowIndex}){  
-       for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
+      rowClass ({row, rowIndex}) {  
+       for (var i = 0; i < this.multipleSelection.length; i++) {
+          if (this.multipleSelection[i].id == row.id) {
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      close(){
-        this.dialogAct=false;
+      close () {
+        this.dialogAct = false;
       },
-      actList(){  
-        this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/list',{
+      actList () {  
+        this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/list', {
              "object": {
                "menuID": this.menuId
               }
             }).then(res => {
                 if(res.data.isSuccess == true){
-                   this.groupList=res.data.objects;
+                   this.groupList = res.data.objects;
                 }
         })
       },
-      delAct(){ 
+      delAct () { 
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -152,35 +152,35 @@ export default {
           });
         });
       },
-      saveAct(formName){
-         if(this.title == "新增动作"){
-            this.insertAct(formName,'/org/act/api/insert');
+      saveAct (formName) {
+         if (this.title == "新增动作") {
+            this.insertAct(formName, '/org/act/api/insert');
          }else{
-            this.insertAct(formName,'/org/act/api/save');
+            this.insertAct(formName, '/org/act/api/save');
          }
       },
-      openAct(index,title){  
-        this.title=title;
+      openAct (index,title) {  
+        this.title = title;
         this.dialogFormVisible = true;
-        if(index===2){
+        if (index === 2) {
           this.getAct();
         }
       },
-      getAct(){  
+      getAct () {  
         this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.rformB=data;
+                 this.rformB = data;
                  this.rformB.overt += '';
               }
         }) 
       },
-      insertAct(formName,url) {  
+      insertAct (formName, url) {  
         console.log()
         this.$refs[formName].validate((valid) => {
-          if(valid){
+          if (valid) {
                    this.$http.post(this.GLOBAL.serverSrc + url,{
                      "object": {
                         "id": this.rformB.id,
@@ -194,12 +194,12 @@ export default {
                         "remarks": this.rformB.remarks
                     }
                   }).then(res => {
-                      if(res.data.isSuccess == true){
+                      if (res.data.isSuccess == true) {
                          this.actList();
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
-                         this.rformB.id=0;
-                      }else{
+                         this.rformB.id = 0;
+                      } else {
                          this.$message.success(res.data.result.message);
                       }
                   })
@@ -209,7 +209,7 @@ export default {
           }
         })
       },
-      cancel(){
+      cancel () {
         this.dialogFormVisible = false
         this.$refs["rformB"].resetFields();
       }

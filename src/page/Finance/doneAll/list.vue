@@ -26,6 +26,9 @@
       <el-tab-pane :label="'收款管理(' + allCount +')'" name="collection">
         <collection :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumCollection"></collection>
       </el-tab-pane>
+      <el-tab-pane :label="'周边借款管理(' + approveDataNumBorrowing +')'" name="borrowing">
+        <borrowing :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumBorrowing"></borrowing>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -37,6 +40,7 @@
   import refund from './refund'
   import checkSheet from './checkSheet'
   import collection from './collection'
+  import borrowing from './aroundBorrowing/borrowing'
   export default {
     name: "approveList",
     components: {
@@ -45,7 +49,8 @@
       refund,
       reimbursement,
       checkSheet,
-      collection
+      collection,
+      borrowing
     },
     data(){
       return{
@@ -56,6 +61,7 @@
         approveDataNumRefund:0,
         approveDataNumSheet:0,
         approveDataNumCollection:0,
+        approveDataNumBorrowing:0,
         tabShowWhich: 'borrow',
       }
     },
@@ -89,6 +95,9 @@
       },
       handleGetAlreadyNumCollection(paramsPassCount){
         this.approveDataNumCollection = paramsPassCount
+      },
+      handleGetAlreadyNumBorrowing(paramsPassCount){
+        this.approveDataNumBorrowing = paramsPassCount
       }
      /* handleGetAlreadyNumSheet(paramsPassCount){
         this.approveDataNumSheet = paramsPassCount

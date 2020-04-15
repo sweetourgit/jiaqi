@@ -13,9 +13,9 @@
         </el-col>
         <el-col :span="9">
           <span class="search_style">发起时间：</span>
-          <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+          <el-date-picker v-model="startTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" style="width:32.5%"></el-date-picker>
           <div class="date-line"></div>
-          <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled"></el-date-picker>
+          <el-date-picker v-model="endTime" type="date" placeholder="请选择日期" class="start-time" :editable="disabled" style="width:32.5%"></el-date-picker>
         </el-col>
       </el-row>
       <el-row>
@@ -392,12 +392,13 @@
     /* margin-top: 11px; */
   }
   .search{
-    float: left;
+    /* float: left; */
     /* margin-top: 30px; */
+    box-sizing: border-box;
     width: 100%;
     background-color: #f7f7f7;
     padding: 20px 10px;
-    margin: 20px 10px;
+    margin: 0 10px 20px;
   }
   .date-line {
     width: 10px;
@@ -407,7 +408,7 @@
   }
   .table_style{
     width: 100%;
-    padding: 0 20px;
+    /* padding: 0 20px; */
     float: left;
     box-sizing: border-box;
   }
@@ -427,7 +428,7 @@
     width: 65%;
   }
   .start-time{
-    width: 32.5%;
+    width: 32.5% !important;
   }
   .buttonSearch{
     float: right;

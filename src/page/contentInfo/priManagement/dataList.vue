@@ -38,23 +38,18 @@
 
 <script>
 export default {
-  props:{
-    menuId:0,
-    variable:0,
-    dialogType:0
-  },
-  data() {
+  data () {
     return {
-        dialogDate:false,
-        guid:"",
+        dialogDate: false,
+        guid: "",
         groupList: [],
         multipleSelection: [],   
-        forbidden:true,         
-        title:"",
-        dialogFormVisible:false,
+        forbidden: true,         
+        title: "",
+        dialogFormVisible: false,
         rformB: {
-          id:0,
-          symbol:"",
+          id: 0,
+          symbol: "",
           match: "",
           name: "",
           mark: ""
@@ -66,8 +61,13 @@ export default {
         }
     }
   },
+  props: {
+    menuId: 0,
+    variable: 0,
+    dialogType: 0
+  },
   watch: {
-      variable:function(){           
+      variable: function() {           
         if(this.dialogType == 2){
           this.dialogDate = true;
           this.jurisdictionList();   
@@ -75,48 +75,48 @@ export default {
      }
   },
   methods: {
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
         }
       },
-      changeFun(val) {  
-        this.multipleSelection=val;
-        if(this.multipleSelection.length>0){
-           this.forbidden=false;
+      changeFun (val) {  
+        this.multipleSelection = val;
+        if (this.multipleSelection.length > 0) {
+           this.forbidden = false;
         }else{
-           this.forbidden=true;
+           this.forbidden = true;
         }
       },
-      clickRow(row){    
+      clickRow (row) {    
         this.$refs.multipleTable.clearSelection(); 
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      rowClass({row, rowIndex}){  
-       for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
+      rowClass ({row, rowIndex}) {  
+       for (var i = 0; i < this.multipleSelection.length; i++) {
+          if (this.multipleSelection[i].id==row.id) {
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      close(){
-        this.dialogDate=false;
+      close () {
+        this.dialogDate = false;
       },
-      jurisdictionList(){  
-        this.groupList=[];
+      jurisdictionList () {  
+        this.groupList = [];
         this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/data/list',{
              "object": {
                "menuId": this.menuId
               }
             }).then(res => {
-                if(res.data.isSuccess == true){
-                   this.groupList=res.data.objects;
+                if (res.data.isSuccess == true) {
+                   this.groupList = res.data.objects;
                 }
         })
       },
-      delJurisdiction(){ 
+      delJurisdiction () { 
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -139,33 +139,33 @@ export default {
           });
         });
       },
-      saveJurisdiction(formName){
+      saveJurisdiction (formName) {
          if(this.title == "新增"){
-            this.insertJurisdiction(formName,'/org/jurisdiction/data/bind');
+            this.insertJurisdiction(formName, '/org/jurisdiction/data/bind');
          }else{
-            this.insertJurisdiction(formName,'/org/jurisdiction/data/save');
+            this.insertJurisdiction(formName, '/org/jurisdiction/data/save');
          }
       },
-      openJurisdiction(index,title){  
-        this.title=title;
+      openJurisdiction (index,title) {  
+        this.title = title;
         this.dialogFormVisible = true;
-        if(index===2){
+        if(index === 2){
           this.getJurisdiction();
         }
       },
-      getJurisdiction(){   
-        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/data/get',{
-           "id":this.multipleSelection[0].id
+      getJurisdiction () {   
+        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/data/get', {
+           "id": this.multipleSelection[0].id
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
-                 this.rformB=data;
+                 this.rformB = data;
               }
         }) 
       },
-      insertJurisdiction(formName,url) {  
+      insertJurisdiction (formName,url) {  
         this.$refs[formName].validate((valid) => {
-          if(valid){
+          if (valid) {
                    this.$http.post(this.GLOBAL.serverSrc + url,{
                      "object": {
                         "id": this.rformB.id,
@@ -177,12 +177,12 @@ export default {
                         "mark": this.rformB.mark
                     }
                   }).then(res => {
-                      if(res.data.isSuccess == true){
+                      if (res.data.isSuccess == true) {
                          this.jurisdictionList();
                          this.dialogFormVisible = false
                          this.$refs[formName].resetFields();
-                         this.rformB.id=0;
-                      }else{
+                         this.rformB.id = 0;
+                      } else {
                          this.$message.success(res.data.result.message);
                       }
                   })
@@ -192,7 +192,7 @@ export default {
           }
         })
       },
-      cancel(){
+      cancel () {
         this.dialogFormVisible = false
         this.$refs["rformB"].resetFields();
       }

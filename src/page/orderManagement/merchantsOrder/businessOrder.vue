@@ -278,7 +278,10 @@
                 @click.native="operation(item,6,item.orderCode)"
               >发票申请</el-breadcrumb-item>
               
-              <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
+              <el-breadcrumb-item 
+                @click.native="operation(item,4)"
+                class="breadCrumbPointer"
+              >收款</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
             <div class="but-row">
@@ -346,7 +349,13 @@
         :orderRefund="variable" 
         :dialogType="dialogType"
       ></orderRefund>
-     
+      <!-- 收款 -->
+      <order-Management
+        :a_variable="a_variable"
+        :dialogType="dialogType"
+        :getListOneMessage="getListOneMessage"
+        :namefirst='namefirst' 
+      ></order-Management>
     </div>
   </div>
 </template>
@@ -356,7 +365,8 @@ import processManage from "./common/processManage";
 import invoiceApply from "./common/invoiceApply";
 import remarksInfor from "./common/remarksInfor";
 import orderTransfer from "./common/orderTransfer";
-import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund"
+import orderRefund from "@/page/Finance/refundManagement/refundDetails/orderInformation/orderRefund/orderRefund";
+import collectionManagement from '@/page/Finance/collectionManagement/collectionManagement';
 import moment from "moment";
 export default {
   components: {
@@ -364,6 +374,7 @@ export default {
     "remarks-infor": remarksInfor,
     "order-transfer": orderTransfer,
     "order-invoiceApply": invoiceApply,
+    'order-Management':collectionManagement,
     orderRefund,
   },
   data() {
@@ -394,6 +405,7 @@ export default {
       ],
       refundStatus: 0,
       refundNum: null,
+      namefirst:'namefirst',
       orderCode: "", //订单ID
       orderCodeSon: null, //传给子组件
       teamID: "", //产品ID

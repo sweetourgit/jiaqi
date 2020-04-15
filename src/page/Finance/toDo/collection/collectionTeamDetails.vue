@@ -623,7 +623,6 @@
             <el-col :span="6"><div class="grid-del label-color">凭证:</div></el-col>
             <el-col :span="16">
               <el-upload
-
                 class="upload-demo"
                 name="files"
                 :file-list="fundamental.files"

@@ -77,15 +77,11 @@ import '../../../../static/ztree/jquery.ztree.core.js'
 import actList from './actList'
 import dataList from './dataList'
 export default {
-  components:{
-    "act-list":actList,
-    "data-list":dataList,
-  }, 
-  data() { 
+  data () { 
     return {
-        dialogType:0,
-        menuId:0,
-        variable:0,
+        dialogType: 0,
+        menuId: 0,
+        variable: 0,
         setting: {
           async: {
               enable: true,
@@ -102,20 +98,20 @@ export default {
         zNodes: [],
         groupList: [],
         multipleSelection: [],   
-        forbidden:true,         
-        title:"",
-        dialogFormVisible:false,
-        showList:false,
-        parentID:0,
+        forbidden: true,         
+        title: "",
+        dialogFormVisible: false,
+        showList: false,
+        parentID: 0,
         rformA: {
-          id:0,
+          id: 0,
           name: "",
           uri: "",
           overt: "2",
           sort: "0",
           isLeaf: "2",
           remarks: "",
-          inmenu:"1"
+          inmenu: "1"
         },
         rules: {
           name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
@@ -126,60 +122,64 @@ export default {
         }
     }
   },
-  mounted(){
+  components: {
+    "act-list": actList,
+    "data-list": dataList,
+  },
+  mounted () {
     this.zTreeInit();
   },
   methods: {
-      zTreeInit(){
+      zTreeInit () {
           var ztree = $.fn.zTree.init($("#tree"), this.setting);
       },
-      filter(treeId, parentNode, childNodes) {
+      filter (treeId, parentNode, childNodes) {
           if (!childNodes) return null;
           for (var i = 0, l = childNodes.length; i < l; i++) {
               childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
           }
           return childNodes;
       },
-      onNodeClick(e, treeId, treeNode) {
-        if(treeNode.isParent === true){
+      onNodeClick (e, treeId, treeNode) {
+        if (treeNode.isParent === true) {
           this.parentID = treeNode.id;
-        }else{
+        } else {
           this.parentID = treeNode.parentID;       
         }
         this.menuList();         
       },
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
         }
       },
-      changeFun(val) {  
-        this.multipleSelection=val;  
-        if(this.multipleSelection.length>0){
-           this.forbidden=false;
-        }else{
-           this.forbidden=true;
+      changeFun (val) {  
+        this.multipleSelection = val;  
+        if (this.multipleSelection.length > 0) {
+           this.forbidden = false;
+        } else {
+           this.forbidden = true;
         }
       },
-      clickRow(row){    
+      clickRow (row) {    
         this.$refs.multipleTable.clearSelection(); //清空用户的选择  
         this.$refs.multipleTable.toggleRowSelection(row);
         this.menuId = this.multipleSelection[0].id;
       },
-      rowClass({row, rowIndex}){ 
-       for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
+      rowClass ({row, rowIndex}) { 
+       for (var i = 0; i < this.multipleSelection.length; i++) {
+          if (this.multipleSelection[i].id==row.id) {
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      operation(i){
+      operation (i) {
           this.variable++;
           this.dialogType = i;     
       },
-      menuList(type){  
+      menuList (type) {  
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
              "object": {
                "id": this.parentID,
@@ -188,7 +188,7 @@ export default {
                 if(res.data.isSuccess == true){
                    this.groupList=res.data.objects;
                    this.showList=true;
-                   if(type==="add"){
+                   if(type === "add"){
                       var treeObj = $.fn.zTree.getZTreeObj("tree");
                       var selectedNode = treeObj.getSelectedNodes();
                       var newNode = this.groupList[this.groupList.length-1];
@@ -196,12 +196,12 @@ export default {
                         newNode = treeObj.addNodes(selectedNode[0], newNode);
                       }
                    }
-                }else{
+                } else {
                    this.groupList=[];
                 }
         })
       },
-      delMenu(){ 
+      delMenu () { 
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -224,23 +224,23 @@ export default {
           });
         });
       },
-      openMenu(index,title){  
-        this.title=title;
+      openMenu (index,title) {  
+        this.title = title;
         this.dialogFormVisible = true;
-        if(index===2){
+        if(index === 2){
           this.getMenu(); 
         }
       },
-      saveMenu(formName){ 
-         if(this.title == "添加菜单"){
+      saveMenu (formName) { 
+         if (this.title == "添加菜单") {
             this.insertMenu(formName,'/org/menu/api/insert','add');
-         }else{
+         } else {
             this.insertMenu(formName,'/org/menu/api/save');
          }
       },
-      getMenu(){  
+      getMenu () {  
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/get',{
-           "id":this.multipleSelection[0].id
+           "id": this.multipleSelection[0].id
           }).then(res => {
               if(res.data.isSuccess == true){
                  let data = res.data.object;
@@ -250,9 +250,9 @@ export default {
               }
         }) 
       },
-      insertMenu(formName,url,type){  
+      insertMenu (formName,url,type) {  
         this.$refs[formName].validate((valid) => {
-          if(valid){
+          if (valid) {
                    this.$http.post(this.GLOBAL.serverSrc + url,{
                      "object": {
                       "id": this.rformA.id,
@@ -265,7 +265,7 @@ export default {
                       "overt": this.rformA.overt,
                       "remarks": this.rformA.remarks,
                       "isLeaf": this.rformA.isLeaf,
-                      "inmenu":this.rformA.inmenu
+                      "inmenu": this.rformA.inmenu
                     }
                   }).then(res => {
                       if(res.data.isSuccess == true){
@@ -274,7 +274,7 @@ export default {
                          this.$refs[formName].resetFields();
                       }else{
                          this.$message.success(res.data.result.message);
-                         this.rformA.id=0;
+                         this.rformA.id = 0;
                       }
                   })
           } else {
@@ -283,7 +283,7 @@ export default {
           }
         })
       },
-      cancel(){
+      cancel () {
         this.dialogFormVisible = false
         this.$refs["rformA"].resetFields();
       }
