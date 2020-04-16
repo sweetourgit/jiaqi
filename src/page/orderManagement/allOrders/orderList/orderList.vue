@@ -1192,8 +1192,6 @@ export default {
       }
     },
     collect () {// 收款
-      console.log(this.orderChannels,'fasrw');
-       console.log(this.orgID,'fasrw');
       this.$router.push({
         path: '/collectionManagement',
         query: {
@@ -1201,6 +1199,7 @@ export default {
          productType:'1',//1跟团 4 游轮
          orgID:this.orgID,
          orderChannels:this.orderChannels,
+         orderCode:this.orderCodeSon,
          }
         });
     },
