@@ -75,7 +75,10 @@
   <div class="order-page">
     <header v-fixed-bar>
       <div class="btn-ground">
-        <el-button size="small" type="info">取消</el-button>
+        <el-button size="small" type="info"
+          @click="$router.go(-1)">
+          取消
+        </el-button>
         <el-button size="small" type="primary">预定不占</el-button>
         <el-button size="small" type="primary">预定占位</el-button>
         <el-button size="small" type="primary">确定占位</el-button>

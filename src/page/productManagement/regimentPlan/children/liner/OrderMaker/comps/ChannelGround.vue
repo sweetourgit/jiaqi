@@ -1,6 +1,5 @@
 <template>
   <div style="padding: 40px 0 40px 0; border-bottom: 1px solid #cecece;">
-    {{ submitForm }}
     <el-form
       label-width="120px" 
       ref="submitForm"

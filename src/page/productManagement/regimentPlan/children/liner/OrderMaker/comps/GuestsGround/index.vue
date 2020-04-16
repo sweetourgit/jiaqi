@@ -16,7 +16,9 @@
         <el-table-column label="护照" prop="passport" header-align="center" align="center" width="150"></el-table-column>
         <el-table-column label="电话" prop="tel" header-align="center" align="center" width="150"></el-table-column>
         <el-table-column label="身份证" prop="id_card" header-align="center" align="center" width="200"></el-table-column>
-        <el-table-column label="性别" prop="sex" header-align="center" align="center" width="100"></el-table-column>
+        <el-table-column label="性别" prop="sex" header-align="center" align="center" width="100">
+          <span slot-scope="scope">{{ getSexText(scope.row.sex) }}</span>
+        </el-table-column>
         <el-table-column label="操作" prop="sale_price" header-align="center" align="center">
           <template slot-scope="scope">
             <el-button type="text"
@@ -68,6 +70,10 @@ export default {
   methods: {
     init(cabin){
       this.cabin= cabin;
+    },
+
+    getSexText(sex){
+      return sex? (sex=== 1? '男': '女'): '--';
     },
     
     selectCabin(index){
