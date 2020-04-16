@@ -106,6 +106,7 @@
       },
       //获取关联欠款列表
       getArrearsList(item, type = this.travelMode) {
+        console.log('item',item)
         if (item == undefined) {
           item = {
             id: this.sameTradeId,

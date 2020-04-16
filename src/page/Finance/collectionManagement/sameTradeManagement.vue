@@ -118,7 +118,7 @@
       <div style="position:absolute; top:8px; right:10px;">
         <el-button icon="el-icon-remove" plain @click="closeDetailstShow()">取消</el-button>
         <el-button type="danger" @click="repealDetailstShow" plain v-if="getRowCheckType == 0 || getRowCheckType == 2 ">撤销</el-button>
-        <el-button type="primary" icon="el-icon-printer" plain @click="touchPrint" >
+        <el-button type="primary" icon="el-icon-printer" plain @click="touchPrint" v-if="getOrgID == 491">
           打印本页详情信息
         </el-button>
       </div>
@@ -596,7 +596,9 @@
     },
     mounted() {
       // let list =this.$refs.divider
-
+      if(this.$route.query.getListOneMessage!=undefined){
+        this.addSameGathering()
+      }
     },
     filters: {
       formatDate: function(value) {
