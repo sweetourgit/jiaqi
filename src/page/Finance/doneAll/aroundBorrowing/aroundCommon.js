@@ -39,7 +39,6 @@ export default{
 		},
 		// 获取工作流未完成任务
 		loadFinished(ruleForm, loan){
-			// alert(loan);
       const that = this;
 			this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GettingfinishedTasksForJQ", {
 				"userCode": sessionStorage.getItem('tel'),
@@ -51,8 +50,6 @@ export default{
 			}, ).then(function(response) {
 				// console.log('获取已办任务', response);
 				let noIncomeIDs = '', noIncomeNum = 0, advanceIDs = '', advanceNum = 0, balanceIDs = '', balanceNum = 0;
-				// 用ids 字符串调用loadData接口，获取已办
-				// that.unfinishWorking = that.unfinishWorking.concat(response.data);
 				if(loan == 'NoIncomeLoan_ZB'){
 					if(response.data.length !== 0){
 						response.data.forEach(function (item, index, arr) {
@@ -137,7 +134,8 @@ export default{
           that.tableData = response.data.data.list;
           that.tableData.forEach(function (item, index, arr) {
             idArr.push(item.id);
-          })
+					})
+					
           that.sortTable(idArr, periphery_type, that.totalNum);
 				} else {
 					that.$message.success("加载数据失败~");
@@ -181,17 +179,20 @@ export default{
             that.tableData1 = response.data.list;
             that.pageCount1 = num;
             that.totalMoney1 = moneyAll.toFixed(2);
-            that.num1 = response.data.list.length;
+						that.num1 = response.data.list.length;
+						that.$store.commit('doneAll/updateBorrowAroundNoIncomeNum', num)
           }else if(type == 2){
             that.tableData2 = response.data.list;
             that.pageCount2 = num;
             that.totalMoney2 = moneyAll.toFixed(2);
-            that.num2 = response.data.list.length;
+						that.num2 = response.data.list.length;
+						that.$store.commit('doneAll/updateBorrowAroundAdvanceNum', num)
           }else if(type == 3){
             that.tableData3 = response.data.list;
             that.pageCount3 = num;
             that.totalMoney3 = moneyAll.toFixed(2);
-            that.num3 = response.data.list.length;
+						that.num3 = response.data.list.length;
+						that.$store.commit('doneAll/updateBorrowAroundBalanceNum', num)
 					}
 					that.$emit('handlePassVal', num);
         }

@@ -15,7 +15,10 @@ export default {
     collectionNumSame: 0,
     collectionNumInner: 0,
     collectionNumReimburse: 0,
-    showSheetWhichTab: 'sheetTeam'  // 报账单的tab
+    showSheetWhichTab: 'sheetTeam',  // 报账单的tab
+    borrowAroundNoIncomeNum: 0,
+    borrowAroundAdvanceNum: 0,
+    borrowAroundBalanceNum: 0
   },
   mutations: {
     referDoneAllShowWhichTab (state, data) {
@@ -44,6 +47,15 @@ export default {
     },
     updateCollectionReimburseNum (state, data) {
       state.collectionNumReimburse = data
-    }
+    },
+    updateBorrowAroundNoIncomeNum (state, data) {
+      state.borrowAroundNoIncomeNum = data
+    },
+    updateBorrowAroundAdvanceNum (state, data) {
+      state.borrowAroundAdvanceNum = data
+    },
+    updateBorrowAroundBalanceNum (state, data) {
+      state.borrowAroundBalanceNum = data
+    },
   }
 }

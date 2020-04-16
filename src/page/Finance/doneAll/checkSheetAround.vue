@@ -296,7 +296,7 @@
       // 获取已办报账单列表数据
       loadData(str){
         const that = this;
-        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/listpage", {
+        this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/checksheet/bill/billdone", {
           "pageIndex": this.currentPage,
           "pageSize": this.pageSize,
           "product_name": this.productName,
@@ -311,7 +311,7 @@
             that.loading = false;
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
-            if(str == 'created'){ // 只有created时定义报账单已办个数
+            if(str == 'created'){
               that.$emit('handlePassVal', that.pageCount);
               that.$store.commit('doneAll/aroundSheetCount', that.pageCount);
             }

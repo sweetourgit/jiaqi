@@ -26,7 +26,7 @@
       <el-tab-pane :label="'收款管理(' + allCount +')'" name="collection">
         <collection :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumCollection"></collection>
       </el-tab-pane>
-      <el-tab-pane :label="'周边借款管理(' + approveDataNumBorrowing +')'" name="borrowing">
+      <el-tab-pane :label="'周边借款管理(' + totalBorrowing +')'" name="borrowing">
         <borrowing :whereTab="whereTab" @handlePassVal="handleGetAlreadyNumBorrowing"></borrowing>
       </el-tab-pane>
     </el-tabs>
@@ -75,6 +75,10 @@
 
       sheetCountTotal: function () {
         return (this.$store.state.doneAll.sheetCount + this.$store.state.doneAll.sheetAroundCount)
+      },
+
+      totalBorrowing: function () {
+        return (this.$store.state.doneAll.borrowAroundNoIncomeNum + this.$store.state.doneAll.borrowAroundAdvanceNum + this.$store.state.doneAll.borrowAroundBalanceNum)
       }
     },
     methods: {
