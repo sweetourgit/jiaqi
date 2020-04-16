@@ -59,16 +59,24 @@
 export default {
   
   watch: {
-    'submitForm.merchant': function(nval, oval){
+    ['submitForm.orderChannel'](nval){
+      this.submitForm.merchant= null;
+      this.submitForm.user= null;
+      this.submitForm.indirectSaler= null;
+      this.submitForm.replaceSaler= null;
+    },
+    ['submitForm.merchant'](nval, oval){
       let find= this.merchantOptions.find(merchant => merchant.value=== nval);
+      this.submitForm.indirectSaler= null;
+      this.submitForm.user= null;
       if(find) {
         this.getIndirectSalerAction();
         this.getUserAction();
-      } else {
-        this.indirectSaler= null;
-        this.user= null;
       }
       this.$emit('select-merchant', find);
+    },
+    ['submitForm.priceType'](nval){
+      this.$emit('select-pricetype', nval);
     }
   },
 

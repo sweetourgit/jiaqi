@@ -19,9 +19,26 @@
       border-bottom: 1px solid #f4f4f4;
     }
     .total-ground{
+      display: flex;
+      justify-content: space-between;
       font-size: 14px;
       line-height: 40px;
       padding-top: 10px;
+      color: #606266;
+      .money{
+        position: relative;
+        color: #333;
+        font-weight: bold;
+        padding-right: 20px; 
+      }
+      .money::before{
+        content: '￥';
+        color: #606266;
+        font-weight: normal;
+        position: absolute;
+        left: 0;
+        transform: translateX(-20px);
+      }
     }
   }
   & >>> .no-wrap{
@@ -66,25 +83,33 @@
       <!-- <PositionPreview></!-->
       <div class="total-ground">
         <span>总价:</span>
+        <span class="money">{{ priceCount }}</span>
       </div>
-      <div class="total-ground">
+      <div class="total-ground"
+        v-if="merchantState=== 'month'">
         <span>剩余预存款和额度:</span>
+        <span class="money">{{ merchant.balance+ merchant.deposit }}</span>
       </div>
-      <div class="total-ground">
+      <div class="total-ground"
+        v-if="merchantState=== 'not_month'">
         <span>剩余预存款:</span>
+        <span class="money">{{ merchant.deposit }}</span>
       </div>
     </header>
     <main style="padding-bottom: 40px;">
       <InfoGround ref="infoGround"></InfoGround>
       <ChannelGround ref="channelGround"
-        @select-merchant="selectMerchantHandler">
+        @select-merchant="merchant= $event"
+        @select-pricetype="selectPriceTypeHandler">
       </ChannelGround>
       <CabinGround ref="cabinGround"
-        @calcula-price="calculaPriceHandler">
+        :price-type="priceType"
+        @calcula="calculaHandler">
       </CabinGround>
       <OthersGround ref="othersGround"
         v-show="submitForm.cabin.length"
-        :guest-count="guestCount">
+        :guest-count="guestCount"
+        @calcula="calculaHandler">
       </OthersGround>
       <GuestsGround ref="guestsGround"
         v-show="submitForm.cabin.length">
@@ -125,12 +150,29 @@ export default {
     skuPlanCache= null;
   },
 
+  computed: {
+    merchantState(){
+      if(!this.merchant) return;
+      if(this.merchant.settlementType=== 1) return 'month';
+      if(this.merchant.deposit!== 0) return 'not_month'
+    }
+  },
+
   data(){
     return {
       submitForm: {
         cabin: [],
       },
-      guestCount: 0
+      priceType: 1,
+      guestCount: 0,
+      priceCount: 0,
+      merchant: {
+        id: null, 
+        value: null,
+        settlementType: null,
+        deposit: 0,
+        balance: 0
+      }
     }
   },
 
@@ -142,20 +184,30 @@ export default {
       this.$refs.guestsGround.init(this.submitForm.cabin);
     },
 
-    selectMerchantHandler(merchant){
-      
+    selectPriceTypeHandler(pricetype){
+      this.priceType= pricetype;
+      this.calculaHandler();
     },
 
-    calculaPriceHandler(){
-      console.log('emit calcula-price')
-      let guestCount= 0;  // 总数
-      let warnArr= [];  // 报警数组
-      let cabins= this.submitForm.cabin;
-      cabins.forEach(cabin => {
-        let { sku_price, short, guests }= cabin;
-        guestCount+= guests.length;
+    calculaHandler(){
+      console.log('calculaHandler')
+      this.$nextTick(() => {
+        let guestCount= 0;  // 总数
+        let priceCount= 0;  // 总价
+        let warnArr= [];  // 报警数组
+        let cabins= this.submitForm.cabin;
+        let isCommonPrice= this.priceType=== 2;
+        cabins.forEach(cabin => {
+          let { sku_price, short, guests }= cabin;
+          let { room_stock, adult_same_price, adult_straight_price }= sku_price;
+          if(short) warnArr.push(cabin);
+          guestCount+= guests.length;
+          priceCount+= guests.length* (isCommonPrice? adult_same_price: adult_straight_price);
+        })
+        let othersCost= this.$refs.othersGround.getCost();
+        this.guestCount= guestCount;
+        this.priceCount= priceCount+ othersCost;
       })
-      this.guestCount= guestCount;
     },
   }
 

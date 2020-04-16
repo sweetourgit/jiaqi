@@ -61,12 +61,23 @@ export default {
   },
 
   watch: {
-    // 
     guestCount(nval, oval){
       if(nval> oval) return;
       this.deliver.forEach(item => item.deliver_num> nval && (item.deliver_num= nval));
       this.insure.forEach(item => item.insure_num> nval && (item.insure_num= nval));
-    }
+    },
+    deliver:{
+      deep: true,
+      handler(){
+        this.$emit('calcula');
+      }
+    },
+    insure:{
+      deep: true,
+      handler(){
+        this.$emit('calcula');
+      }
+    },
   },
 
   data(){
@@ -102,15 +113,14 @@ export default {
     },
 
     getData(){
-      let max= this.guestCount;
-      if(this.deliver.deliver_num> max) this.deliver.deliver_num= max;
-      if(this.insure.insure_num> max) this.insure.insure_num= max;
       return { deliver:this.deliver, insure: this.insure }
     },
 
     getCost(){
-      let { deliver, insure }= this.getData();
-      return deliver.deliver_num* deliver.sale_price+ insure.insure_num* insure.sale_price;
+      let cost= 0;
+      this.deliver.forEach(item => cost+= item.deliver_num* item.sale_price);
+      this.insure.forEach(item => cost+= item.insure_num* item.sale_price);
+      return cost;
     }
   }
 }

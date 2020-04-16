@@ -10,7 +10,8 @@
       label-width="120px" 
       ref="submitForm"
       :model="submitForm"
-      :rules="rules">
+      :rules="rules"
+      @validate="hasChanged= true">
 
       <el-form-item label="姓名：" prop="name">
         <el-input placeholder="请输入姓名" style="width: 360px;"
@@ -61,14 +62,20 @@
 import { getCabinGuestDTO } from '../../dictionary'
 
 let cache;
-let checkCache;
 export default {
 
   data(){
     return {
       state: false,
+      hasChanged: false,
       submitForm: getCabinGuestDTO(),
-      rules: {}
+      rules: {
+        name: { pattern: /\S/, message:'请输入10字以内的正确名称,含汉字、字母和数字', trigger: 'blur' },
+        passport: { pattern: /\S/, message:'护照格式不正确', trigger: 'blur' },
+        tel: { pattern: /\S/, message:'护照格式不正确', trigger: 'blur' },
+        id_card: { pattern: /\S/, message:'护照格式不正确', trigger: 'blur' },
+        sex: { pattern: /\S/, message:'护照格式不正确', trigger: ['blur', 'change'] },
+      }
     }
   },
 
@@ -78,21 +85,20 @@ export default {
       this.state= true;
       this.$assign(this.submitForm, guest);
       cache= guest;
-      checkCache= this.$deepCopy(this.submitForm);
     },
 
     handleClose(){
       this.$refs.submitForm.resetFields();
       this.$refs.submitForm.clearValidate();
       cache= null;
-      checkCache= null;
       this.state= false;
+      this.hasChanged= false;
     },
 
     submitHandler(){
       this.$refs.submitForm.validate(bol => {
         if(!bol) return;
-        if(!this.$checkLooseEqual(this.submitForm, checkCache)) this.$assign(cache, this.submitForm, true);
+        if(this.hasChanged) this.$assign(cache, this.submitForm, true);
         this.handleClose();
       })
     }

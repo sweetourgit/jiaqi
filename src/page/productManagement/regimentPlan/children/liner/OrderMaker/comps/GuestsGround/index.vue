@@ -7,7 +7,7 @@
       </LinkTitleBar>
     </div>
     <main>
-      <el-table border size="small" style="width: 100%"
+      <el-table border size="small" style="width: 100%; max-width: 1000px;"
         :data="currentCabin.guests" 
         :highlight-current-row="false"
         header-row-class-name="row-header">

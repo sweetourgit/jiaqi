@@ -21,7 +21,9 @@
         ref="submitForm"
         :model="submitForm">
         <el-form-item label="拼住/整间：" prop="name">
-          {{ CABIN_SPLIT_TYPE.getLabel(submitForm.cabin_type) }}
+          <div style="color: #333;font-weight: bold;">
+            {{ CABIN_SPLIT_TYPE.getLabel(submitForm.cabin_type) }}
+          </div>
         </el-form-item>
         <el-form-item label="报名人数：" prop="name" style="margin: 0;">
           <div style="display:flex;flex-direction:column;">
@@ -40,13 +42,30 @@
               :step="1"
               @change="changeHandler">
             </el-input-number>
-            <div>
-              <span>{{ `剩余完整房间：${computedInfo.all_rooms}间 可住${computedInfo.all_total}人  ` }}</span>
-              <span>{{ `|   剩余拼住房间：${computedInfo.part_rooms}间 可住${computedInfo.part_total}人  |` }}</span>
-              <span>{{ `  可住${computedInfo.all_total+ computedInfo.part_total}人` }}</span>
+            <div class="info-bar" style="padding-left: 0;">
+              <div class="sign">剩余完整房间:</div>
+              <div class="money">{{ computedInfo.all_rooms }}</div>
+              <div class="sign">间&nbsp;</div>
+              <div class="sign">可住:</div>
+              <div class="money">{{ computedInfo.all_total }}</div>
+              <div class="sign">人&nbsp;|&nbsp;</div>
+              <div class="sign">剩余拼住房间:</div>
+              <div class="money">{{ computedInfo.part_rooms }}</div>
+              <div class="sign">间&nbsp;</div>
+              <div class="sign">可住:</div>
+              <div class="money">{{ computedInfo.part_total }}</div>
+              <div class="sign">人&nbsp;|&nbsp;</div>
+              <div class="sign">共可住:</div>
+              <div class="money">{{ computedInfo.all_total+ computedInfo.part_total }}</div>
+              <div class="sign">人</div>
             </div>
-            <div>
-              {{ `至少报名 ${ computedInfo.least_add } 人, max_stay: ${skuPrice.max_stay}, min_stay: ${skuPrice.min_stay}, ${computedInfo.part_price}, ${computedInfo.all_price}` }}
+            <div class="info-bar" style="padding-left: 0;">
+              <div class="sign">至少报名:</div>
+              <div class="money">{{ computedInfo.least_add }}</div>
+              <div class="sign">人&nbsp;|&nbsp;</div>
+              <div class="sign">最多容纳:</div>
+              <div class="money">{{ skuPrice.max_stay }}</div>
+              <div class="sign">人</div>
             </div>
           </div>
           
@@ -72,6 +91,10 @@ export default {
 
   components: { LinkTitleBar, CabinEditor },
 
+  props: {
+    priceType: Number
+  },
+
   computed: {
     cabinTitles(){
       return this.cabin.map((el, index) => {
@@ -80,6 +103,9 @@ export default {
         return { key: id, label: title, selected: this.cabin.length=== index+ 1 };
       })
     },
+    isCommonPrice(){
+      return this.priceType=== 2;
+    }, 
     computedPrice(){
       let { adult_same_price, adult_straight_price }= this.skuPrice;
       return this.isCommonPrice? adult_same_price: adult_straight_price;
@@ -126,7 +152,7 @@ export default {
       deep: true,
       handler(nval, oval){
         // 切换cabin不激活这个handler
-        if(nval.sku_price!== oval.sku_price) return this.$emit('calcula-price');
+        if(nval.sku_price!== oval.sku_price) return this.$emit('calcula');
         let { max_stay, min_stay }= this.skuPrice;
         let { guests, cabin_type }= nval;
         let left;
@@ -160,8 +186,6 @@ export default {
         },
         // 下单中报站的舱房类型
         cabin: [],
-        // 是否是同业价格
-        isCommonPrice: false,
       },
       // 字典 
       {
@@ -252,7 +276,7 @@ export default {
       this.$assign(this.submitForm, { num: cabin.guests.length, cabin_type: cabin.cabin_type });
     },
 
-    // watch里会触发calcula-price
+    // watch里会触发calcula
     addCabin(cabin){
       this.cabin.push(cabin);
     },
@@ -260,17 +284,17 @@ export default {
     removeCabin(index){
       let removed= this.cabin[index];
       let isFilled= removed.guests.find(guest => guest.isFilled());
-      removed.sku_price.selected= false;
       if(isFilled) return this.$message.error('该报名类型下存在游客信息,请手动删除游客后,再执行删除操作');
       this.cabin.splice(index, 1);
+      removed.sku_price.selected= false;
       removed= null;
       // 如果删除的是当前选择,则watch里会emit,如果删除的不是当前选择,则手动触发一次
-      if(this.currentCabin!== removed) this.$emit('calcula-price'); 
+      if(this.currentCabin!== removed) this.$emit('calcula'); 
     },
 
     setCabinShort(short){
       this.currentCabin.short= short;
-      this.$emit('calcula-price')
+      this.$emit('calcula')
     },
   }
 
