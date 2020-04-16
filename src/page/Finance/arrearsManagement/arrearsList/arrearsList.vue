@@ -51,76 +51,76 @@
 
 <script>
   import arrearsDetail from './comp/arrearsDetail';
-  export default{
-    components:{
-      "arrears-detail":arrearsDetail
-    },
-    data(){
+  export default {
+    data () {
       return {
-        supplierName:"",
-        groupCode:"",
-        op:"",
-        date:[],
-        pageshow:true,
+        supplierName: "",
+        groupCode: "",
+        op: "",
+        date: [],
+        pageshow: true,
         pageSize: 10,
         pageIndex: 1,
         total: 0,
         arrearsList: [],
         multipleSelection: [],
-        forbidden:true,
-        paymentID:0,
-        variable:0,
+        forbidden: true,
+        paymentID: 0,
+        variable: 0,
       }
     },
+    components: {
+      "arrears-detail": arrearsDetail
+    },
     watch: {
-      date:function(){
-        if(this.date==null){
+      date: function () {
+        if (this.date == null) {
           this.date = [];
         }
       }
     },
-    mounted(){
+    mounted () {
       this.paymentpage();
     },
-    methods:{
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+    methods: {
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
         }
       },
-      getCellClass(){
+      getCellClass () {
         return 'textAlign:center'
       },
-      changeFun(val) {  
-        this.multipleSelection=val;
-        if(this.multipleSelection.length>0){
-          this.forbidden=false;
+      changeFun (val) {  
+        this.multipleSelection = val;
+        if (this.multipleSelection.length > 0) {
+          this.forbidden = false;
         }else{
-          this.forbidden=true;
+          this.forbidden = true;
         }
       },
-      clickRow(row){   
+      clickRow (row) {   
         this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  
-        for(var i=0;i<this.multipleSelection.length;i++){
-          if(this.multipleSelection[i].id==row.id){
+      rowClass ({row, rowIndex}) {  
+        for (var i = 0; i < this.multipleSelection.length; i++) {
+          if (this.multipleSelection[i].id == row.id) {
             return { "background-color": "#ecf5ff" }
           }
         }
       },
-      handleSizeChange(val){
+      handleSizeChange (val) {
         this.pageSize = val;
         this.pageIndex = 1;
-        this.paymentpage(1,val);
+        this.paymentpage(1, val);
       },
-      handleCurrentChange(val){
-        this.paymentpage(val,this.pageSize);
+      handleCurrentChange (val) {
+        this.paymentpage(val, this.pageSize);
       },
-      search(){
+      search () {
         this.pageIndex = 1;
         this.pageshow = false;
         this.paymentpage();
@@ -128,13 +128,13 @@
           this.pageshow = true;
         })
       },
-      reset(){
+      reset () {
         this.supplierName = "";
         this.groupCode = "";
         this.op = "";
         this.date = [];
       },
-      formatDate(date) {
+      formatDate (date) {
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
         m = m < 10 ? "0" + m : m;
@@ -148,38 +148,38 @@
         second = second < 10 ? "0" + second : second;
         return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
       },
-      paymentpage(pageIndex=this.pageIndex,pageSize=this.pageSize,supplierName=this.supplierName,groupCode=this.groupCode,startDate=this.date[0],endDate=this.date[1],op=this.op){
-        if(startDate){
-          let y=startDate.getFullYear();
-          let m=(startDate.getMonth()+1)>9?startDate.getMonth()+1:'0'+(startDate.getMonth()+1);
-          let d=startDate.getDate()>9?startDate.getDate():'0'+startDate.getDate();
-          startDate=''+ y +"-" + m + "-" + d;
-        }else{
+      paymentpage (pageIndex = this.pageIndex, pageSize = this.pageSize, supplierName = this.supplierName, groupCode = this.groupCode, startDate = this.date[0], endDate = this.date[1], op = this.op) {
+        if (startDate) {
+          let y = startDate.getFullYear();
+          let m = (startDate.getMonth() +1 ) > 9 ? startDate.getMonth() + 1 : '0' + (startDate.getMonth() + 1);
+          let d = startDate.getDate() > 9 ? startDate.getDate() : '0' + startDate.getDate();
+          startDate = '' + y + "-" + m + "-" + d;
+        } else {
           startDate = "0001-01-01";
         }
-        if(endDate){
-          let y=endDate.getFullYear();
-          let m=(endDate.getMonth()+1)>9?endDate.getMonth()+1:'0'+(endDate.getMonth()+1);
-          let d=endDate.getDate()>9?endDate.getDate():'0'+endDate.getDate();
-          endDate=''+ y +"-" + m + "-" + d;
-        }else{
+        if (endDate) {
+          let y = endDate.getFullYear();
+          let m = (endDate.getMonth() + 1) > 9 ? endDate.getMonth() + 1 : '0' + (endDate.getMonth() + 1);
+          let d = endDate.getDate() > 9 ? endDate.getDate() : '0' + endDate.getDate();
+          endDate = '' + y + "-" + m + "-" + d;
+        } else {
           endDate = "0001-01-01";
         }
         this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentpage',{
           "pageIndex": pageIndex,
           "pageSize": pageSize,
-          "object":{
-            "supplierName":supplierName,
+          "object": {
+            "supplierName": supplierName,
             "groupCode": groupCode,
             "beginTime": startDate,
             "endTime": endDate,
-            "name":op,
+            "name": op,
           }
         }).then(res => {
-          this.arrearsList=[];
-          this.total=res.data.total;
+          this.arrearsList = [];
+          this.total = res.data.total;
           if(res.data.isSuccess == true){
-            this.arrearsList=res.data.objects;
+            this.arrearsList = res.data.objects;
             this.arrearsList.forEach(function(v,k,arr){
               switch(arr[k]['supplierType']){
                 case 1:

@@ -29,68 +29,65 @@
 <script>
 import supplierDetail from './comp/supplierDetail';
 export default{
-  components:{
-    "supplier-detail":supplierDetail
-  },
-  data(){
+  data () {
     return {
-      name:"",
-      pageshow:true,
+      name: "",
+      pageshow: true,
       pageSize: 10, 
       pageIndex: 1,
       total: 0,
       arrearsList: [],
       multipleSelection: [],
-      forbidden:true,
-      supplierID:0,
-      variable:0,
-
-
-
+      forbidden: true,
+      supplierID: 0,
+      variable: 0,
     }
   },
-  mounted(){
+  components: {
+    "supplier-detail": supplierDetail
+  },
+  mounted () {
     this.paymentpage();
   },
-  methods:{
-    getRowClass({ row, column, rowIndex, columnIndex }) {
+  methods: {
+    getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
       } else {
         return ''
       }
     },
-    getCellClass(){
+    getCellClass () {
       return 'textAlign:center'
     },
-    changeFun(val) { 
-      this.multipleSelection=val;
-      if(this.multipleSelection.length>0){
-         this.forbidden=false;
-      }else{
-         this.forbidden=true;
+    changeFun (val) { 
+      this.multipleSelection = val;
+      if (this.multipleSelection.length > 0) {
+         this.forbidden = false;
+      } else {
+         this.forbidden = true;
       }
     },
-    clickRow(row){    
+    clickRow (row) {    
       this.$refs.multipleTable.clearSelection();
       this.$refs.multipleTable.toggleRowSelection(row);        
     },
-    rowClass({row, rowIndex}){  
-     for(var i=0;i<this.multipleSelection.length;i++){
-        if(this.multipleSelection[i].id==row.id){
+    rowClass ({row, rowIndex}) {  
+     for (var i = 0; i < this.multipleSelection.length; i++) {
+        if (this.multipleSelection[i].id == row.id) {
            return { "background-color": "#ecf5ff" }
         }
       }
     },
-    handleSizeChange(val){
+    handleSizeChange (val) {
       this.pageSize = val;
       this.pageIndex = 1;
-      this.paymentpage(1,val);
+      this.paymentpage(1, val);
     },
-    handleCurrentChange(val){
-      this.paymentpage(val,this.pageSize);
+    handleCurrentChange (val) {
+      this.paymentpage(val, this.pageSize);
     },
-    search(){
+    search () {
       this.pageIndex = 1;
       this.pageshow = false;
       this.paymentpage();
@@ -98,27 +95,27 @@ export default{
           this.pageshow = true;
       })
     },
-    reset(){
-      this.name="";
+    reset () {
+      this.name = "";
     },
-    paymentpage(pageIndex=this.pageIndex,pageSize=this.pageSize,name=this.name){
+    paymentpage (pageIndex = this.pageIndex, pageSize = this.pageSize, name = this.name) {
         this.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/supplierpage',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
-            "object":{            
-              "name":name,
+            "object": {            
+              "name": name,
              }
           }).then(res => {
-            this.arrearsList=[];
-            this.total=res.data.total;
-            if(res.data.isSuccess == true){
-               this.arrearsList=res.data.objects;              
+            this.arrearsList = [];
+            this.total = res.data.total;
+            if (res.data.isSuccess == true) {
+               this.arrearsList = res.data.objects;              
             }
           }).catch(err => {
             console.log(err)
           })
     },
-    operation(){
+    operation () {
         this.supplierID = this.multipleSelection[0].id;
         this.variable++;       
     },

@@ -9,13 +9,13 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       activeName: '1',
     };
   },
   methods: {
-    handleClick(tab, event) {
+    handleClick (tab, event) {
       if (tab.name == 1) {
         this.$router.push({ path: "/arrearsManagement/arrearsList" });
       } else if (tab.name == 2) {
@@ -28,14 +28,14 @@ export default {
       handler: function(val, oldVal){
         if (val.path == "/arrearsManagement/supplierArrears"){
           this.activeName = "2"
-        }else if(val.path == "/arrearsManagement/arrearsList"){
+        } else if(val.path == "/arrearsManagement/arrearsList"){
           this.activeName = "1"
         }
       },
       deep: true
     }
   },
-  created() {
+  created () {
     if (this.$route.path == "/arrearsManagement/supplierArrears") {
       this.activeName = "2"
     }

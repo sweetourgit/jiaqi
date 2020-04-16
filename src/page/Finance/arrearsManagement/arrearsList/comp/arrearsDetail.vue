@@ -196,30 +196,30 @@
 <script>
 import moment from 'moment'
 export default {
-  props:{
-    paymentID:0,
-    variable:0
-  },
-  data() {
+  data () {
     return {
-      dialogForm:false,
-      fundamental:{},
-      tableMoney:[], 
-      tableEarning:[], 
-      tableCourse:[], 
-      tablePayment:[], 
-      tableIncome:[],
-      dialogFormVisible_Income:false,           
-      planID:'',
+      dialogForm: false,
+      fundamental: {},
+      tableMoney: [], 
+      tableEarning: [], 
+      tableCourse: [], 
+      tablePayment: [], 
+      tableIncome: [],
+      dialogFormVisible_Income: false,           
+      planID: '',
       keepPaymentType: null, 
       tableIncomeCheck: null, 
     }
+  },
+  props: {
+    paymentID: 0,
+    variable: 0
   },
   filters: {
     formatDate: function (value) {
       return moment(value).format('YYYY-MM-DD HH:mm:ss')
     },
-    formatDateDetails:function (value) {
+    formatDateDetails: function (value) {
       if(typeof value == 'string'){
         return ''
       } else {
@@ -228,8 +228,8 @@ export default {
     }
   },
   watch: {
-      variable:function(){        
-        this.dialogForm=true;    
+      variable: function () {        
+        this.dialogForm = true;    
         this.getLabel();
      }
   },
@@ -242,17 +242,17 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD')
     },
-    handlePreview(file) {
+    handlePreview (file) {
       window.open(file.url);
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {
+    getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
       } else {
         return ''
       }
     },
-    processIncome(index,row, type){
+    processIncome (index,row, type) {
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: row.guid,
         jQ_Type: type,
