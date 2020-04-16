@@ -416,7 +416,7 @@ export default {
       productType: "", //产品类型  Team = 1 跟团游 Free = 2 自由行
       priceType: null, //价格类型  1直客  2同业价格
       // localCompName: "", //商户名称
-      // orderChannels: "", //商户名称
+      orderChannels: "", //商户名称
       localcompID: 0,
       orgID: 0, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
@@ -576,55 +576,14 @@ export default {
           // console.log("请求一条数据的",res)
           let enrolls=[];//标题
           let guest;//全部数据
+          let date = res.data.object.date.toString();
           this.enrollDetailShow = "";
           this.getListOneMessage = res.data.object;
-          // let enrollDetail = this.getListOneMessage.enrollDetail;
-          // this.formatData(enrollDetail);
-          // console.log(enrollDetail);
-          // if (enrollDetail.substr(enrollDetail.length - 1, 1) == ",") {
-          //   this.getListOneMessage.enrollDetail = enrollDetail.substring(
-          //     0,
-          //     enrollDetail.length - 1
-          //   );
-          // enrollDetail = enrollDetail.replace(/\s*/g, "");
-          // let _arr = enrollDetail.split(",");
-          // _arr.splice(_arr.length - 1, 1);
-          // // console.log(_arr)
-          // let _res = [];
-          // _arr.sort();
-          // for (let i = 0; i < _arr.length; ) {
-          //   let count = 0;
-          //   for (let j = i; j < _arr.length; j++) {
-          //     if (_arr[i] == _arr[j]) {
-          //       count++;
-          //     }
-          //   }
-          //   _res.push([_arr[i], count]);
-          //   i += count;
-          // }
-          // // console.log(_res)
-          // //_res 二维数维中保存了 值和值的重复数
-          // let _newArr = [];
-          // for (let i = 0; i < _res.length; i++) {
-          //   let a = _res[i][0].split("*");
-          //   _newArr.push(a[0] + "x" + _res[i][1] + ")");
-          // }
-          // this.getListOneMessage.enrollDetail = _newArr.toString();
-          // }
-
-          let date = res.data.object.date.toString();
+          this.orderChannels = this.getListOneMessage.orderChannels;
+          this.orgID = this.getListOneMessage.orgID;
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;
-          //订单来源
-          // if (this.getListOneMessage.orderChannel == 1) {
-          //   this.getListOneMessage.orderChannel = "同业";
-          // } else if (this.getListOneMessage.orderChannel == 2) {
-          //   this.getListOneMessage.orderChannel = "线上直客";
-          // } else {
-          //   this.getListOneMessage.orderChannel = "线下直客";
-          // }
-
           // 下单平台
           if (this.getListOneMessage.platform == 1) {
             this.getListOneMessage.platform = "ERP系统";
@@ -1123,12 +1082,15 @@ export default {
       return y + "-" + m + "-" + d + " " + h + ":" + minute + ":" + second;
     },
     collect() {// 收款
-      console.log(this.getListOneMessage,'fasrw');
-     this.$router.push({
+      console.log(this.orderChannels,'fasrw');
+       console.log(this.orgID,'fasrw');
+      this.$router.push({
         path: '/collectionManagement',
         query: {
          name:'first',
-         getListOneMessage:this.getListOneMessage
+         productType:'1',//1跟团 4 游轮
+         orgID:this.orgID,
+         orderChannels:this.orderChannels,
          }
         });
     },

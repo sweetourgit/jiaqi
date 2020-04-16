@@ -12,14 +12,14 @@
               <el-col :span="6">
                 <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.id }}</div></el-col>
-              </el-col>
+              </el-col> 
               <el-col :span="6">
                 <el-col :span="6">
                   <div class="grid-del label-color ">
                     <span v-if="keepPaymentType==1">申请人</span>
                     <span v-if="keepPaymentType==2">借款人</span>:
                   </div>  
-                </el-col>
+                </el-col> 
                 <el-col :span="18"><div class="grid-del ">{{ fundamental.createUser }}</div></el-col>
               </el-col>
               <el-col :span="6"> 
@@ -261,8 +261,8 @@ export default {
         this.dialogFormVisible_Income = true;
       }).catch(obj => {})
     },
-    auditResult(result, paramJqType) {
-      var that =this
+    auditResult (result, paramJqType) {
+      var that = this
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ', {
         jQ_ID: result,
         jQ_Type: paramJqType, // 无收入1 预付款2
@@ -271,11 +271,11 @@ export default {
         that.tableCourse = obj.data.extend.instanceLogInfo;
       }).catch(obj => {})
     },
-    getLabel(){
+    getLabel () {
       this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get',{
-          "id":this.paymentID
+          "id": this.paymentID
       }).then(res => {
-        if(res.data.isSuccess == true){
+        if (res.data.isSuccess == true) {
           this.tablePayment = []
           this.tableIncome = []
           this.tableMoney = []
@@ -283,17 +283,17 @@ export default {
           let createUserCode = res.data.object.creatUserCode;
           let getPaymentType = res.data.object.paymentType;
           this.keepPaymentType = getPaymentType;
-          this.fundamental=res.data.object;
+          this.fundamental = res.data.object;
           this.auditResult(res.data.object.guid, getPaymentType);
-          if(res.data.object.planID>0){
+          if (res.data.object.planID > 0) {
             this.getPaymentdetails(res.data.object.planID);
-          }else{
+          } else {
             this.bbb(createUserCode);
           }
         }
      })
     },
-    bbb(params){
+    bbb (params) {
       console.log(params)
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
@@ -341,7 +341,7 @@ export default {
         console.log(err)
       })
     },
-    getPaymentdetails(val) {
+    getPaymentdetails (val) {
       var that = this
       that.$http.post(this.GLOBAL.serverSrc + '/financequery/get/api/paymentdetails', {
         "object": {
@@ -419,11 +419,6 @@ export default {
         console.log(err)
       })
     },
-     
-
-
-
-
     }
 }
 </script>
