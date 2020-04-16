@@ -256,7 +256,6 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,2,item.orderCode)"
               >备注</el-breadcrumb-item>
-              <!-- <el-breadcrumb-item class="breadCrumbPointer">收款</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer" @click.native="operation(item.id,4)">转团</el-breadcrumb-item> -->
               <el-breadcrumb-item
                 class="breadCrumbPointer"
@@ -275,6 +274,10 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,6,item.orderCode)"
               >发票申请</el-breadcrumb-item>
+              <el-breadcrumb-item 
+                @click.native="collect()"
+                class="breadCrumbPointer"
+              >收款</el-breadcrumb-item>
               <!-- <el-breadcrumb-item class="breadCrumbPointer">活动详情</el-breadcrumb-item> -->
               <!-- <el-breadcrumb-item class="breadCrumbPointer">未申请退款</el-breadcrumb-item> -->
             </el-breadcrumb>
@@ -447,7 +450,7 @@ export default {
       productType: "", //产品类型  Team = 1 跟团游 Free = 2 自由行
       priceType: null, //价格类型  1直客  2同业价格
       // localCompName: "", //商户名称
-      // orderChannels: "", //商户名称
+      orderChannels: "", //商户名称
       localCompID:0,
       orgID: 0, //商户名称搜索传给后台的id
       orgIDValue: "", //商户名称 搜索时显示的字段
@@ -630,20 +633,13 @@ export default {
           let guest;//全部数据
           this.enrollDetailShow = "";
           this.getListOneMessage = res.data.object;
-          
-
+          this.orderChannels = this.getListOneMessage.orderChannels;
+          this.orgID = this.getListOneMessage.orgID;
           let date = res.data.object.date.toString();
           this.getListOneMessage.date = moment(date).format("YYYY-MM-DD");
           this.orderCodeSon = res.data.object.orderCode;
           this.priceType = res.data.object.priceType;
-          //订单来源
-          // if (this.getListOneMessage.orderChannel == 1) {
-          //   this.getListOneMessage.orderChannel = "同业";
-          // } else if (this.getListOneMessage.orderChannel == 2) {
-          //   this.getListOneMessage.orderChannel = "线上直客";
-          // } else {
-          //   this.getListOneMessage.orderChannel = "线下直客";
-          // }
+          
 
           // 下单平台
           if (this.getListOneMessage.platform == 1) {
@@ -1195,8 +1191,21 @@ export default {
        
       }
     },
-    // 出团通知书获取
-    getActiceNote() {
+    collect () {// 收款
+      console.log(this.orderChannels,'fasrw');
+       console.log(this.orgID,'fasrw');
+      this.$router.push({
+        path: '/collectionManagement',
+        query: {
+         name:'second',
+         productType:'1',//1跟团 4 游轮
+         orgID:this.orgID,
+         orderChannels:this.orderChannels,
+         }
+        });
+    },
+  
+    getActiceNote () {   // 出团通知书获取
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/get", {
           id: this.planID
