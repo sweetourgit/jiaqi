@@ -296,7 +296,7 @@
             console.log(error);
           });
 
-          this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/EndProcessForZB", {
+          this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/EndProcess", {
             "jq_id": this.info.id,
             "jQ_Type": this.baseInfo.type
           }, ).then(function(response) {
