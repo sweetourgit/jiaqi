@@ -1,3 +1,11 @@
+<!-- 报销管理
+     因接手时这样就把
+     所有功能写在一起
+     submitForm 保存报销
+     chanceSubmit 取消报销
+     chanelSubmit 撤销申请 后台找 刘晓婷
+-->
+
 <template>
   <div class="all">
     <el-tabs v-model="activeName" @tab-click="handleClick">

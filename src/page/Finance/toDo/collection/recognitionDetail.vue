@@ -1,6 +1,5 @@
 <template>
   <div style="position:relative">
-    <!--认收款-->
     <el-drawer direction="rtl" size="60%" :show-close="false" :visible="dialogVisibleDel" @close="closeAdd">
       <el-divider class="mb-40">查看认款详情</el-divider>
       <div class="el-drawer-content">
@@ -55,7 +54,6 @@
           <el-table-column prop="remark" label="备注" align="center" fixed="right"></el-table-column>
         </el-table>
 
-        <!-- 微信支付宝明细认款信息 -->
         <el-table v-if="isShowMX" :data="tableDataMX" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content3">
           <el-table-column prop="transaction_time" label="交易时间" align="center" fixed="left">
             <template slot-scope="scope">
@@ -93,6 +91,7 @@
     </el-drawer>
   </div>
 </template>
+
 <script type="text/javascript">
   export default {
     name: "recognitionDetail",
@@ -113,10 +112,9 @@
     watch: {
       dialogVisibleDel: {
         handler: function () {
-          // console.log('this.msg',this.msg);
-          if(this.msg === ''){
+          if (this.msg === '') {
             this.closeAdd();
-          }else{
+          } else {
             this.isShowZH = false;
             this.isShowXY = false;
             this.isShowMX = false;
@@ -127,7 +125,7 @@
     },
     methods: {
       getRowClass ({ row, column, rowIndex, columnIndex }) {
-        if (rowIndex == 0) {
+        if (rowIndex === 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
         } else {
           return ''
@@ -137,37 +135,25 @@
         this.$emit('close', false);
       },
       loadData () {
-        const that = this;
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindFlow", {
-          "id": this.msg.id
-        }).then(function(response) {
-          console.log(response.data);
-          if (response.data.isSuccess) {
-            if (response.data.object.type === 0) {
-              that.tableDataZH[0] = response.data.object.data;
-              that.isShowZH = true;
-            } else if (response.data.object.type === 1) {
-              that.tableDataXY[0] = response.data.object.data;
-              that.isShowXY = true;
-            } else if (response.data.object.type === 2) {
-              that.tableDataMX[0] = response.data.object.data;
-              that.isShowMX = true;
-            }
-          } else {
-            if (response.data.message) {
-              that.$message.warning(response.data.message);
-            } else {
-              that.$message.warning("认款提交失败~");
-            }
-          }
-        }).catch(function(error) {
-          console.log(error);
-        });
+        let _this = this;
+        let data = JSON.parse(localStorage.getItem(this.msg.id));
+        let keepType = data.type;
+        if (keepType === 0) {
+          _this.tableDataZH[0] = data.row;
+          _this.isShowZH = true;
+        } else if (keepType === 1) {
+          _this.tableDataXY[0] = data.row;
+          _this.isShowXY = true;
+        } else if (keepType === 2) {
+          _this.tableDataMX[0] = data.row;
+          _this.isShowMX = true;
+        }
       }
     },
   }
 
 </script>
+
 <style lang="scss" scoped>
   .el-drawer-content{
     width: 96%;

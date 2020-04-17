@@ -1,3 +1,9 @@
+<!-- 
+     邮轮同业管理 唐爱妮
+     开发到最后也没有一条正式数据，后期开发联调 后台在找孙宏宇
+   
+-->
+
 <template>
   <div>
     <!-- 游轮列表搜索begin -->
@@ -178,7 +184,7 @@
 
               <el-breadcrumb-item 
                 class="breadCrumbPointer"
-                @click.native="operation(item,1,item.order_code)"
+                @click.native="collect()"
               >收款</el-breadcrumb-item>
 
                <el-breadcrumb-item 
@@ -193,7 +199,7 @@
                 class="breadCrumbPointer"
                 @click.native="operation(item,5,item.order_code)"
               >退款</el-breadcrumb-item>
-              <el-breadcrumb-item
+              <el-breadcrumb-item  
                 class="breadCrumbPointer"
                 @click.native="operation(item,6,item.order_code)"
               >发票申请</el-breadcrumb-item>
@@ -443,8 +449,18 @@ export default {
           console.log(err);
         });
     },
-    // 操作
-    operation(val,index,orderCode) {
+    collect () {// 收款
+      this.$router.push({
+        path: '/collectionManagement',
+        query: {
+         productType:'4',//1跟团 4 游轮
+         orgID:this.orgID,
+         orderChannels:this.orderChannels,
+         orderCode:this.orderCodeSon,
+         }
+        });
+    },
+   operation(val,index,orderCode) {   // 操作
        console.log(val,'val');
      // console.log(orderCode,'orderCode');
     //  if (index == 3) { // 出团通知书

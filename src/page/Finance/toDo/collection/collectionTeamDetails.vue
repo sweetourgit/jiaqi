@@ -434,7 +434,6 @@
           </div>
         </div>
       </div>
-      <!-- 打印内容，含有直客，同业 END -->
       <div v-if="keepComponentName === 'nameIIICollectionTeamDirect'">
         <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
@@ -815,8 +814,6 @@
           </el-collapse-item>
           <!-- 内部收款，关联欠款 END -->
         </el-collapse>
-        <!-- 表格信息 END -->
-        <!-- 通过、驳回弹框 -->
         <el-drawer direction="rtl" size="30%" :show-close="false" :visible.sync="ifShowApproveDialog">
           <el-divider class="mb-40">{{ approveDialogTitle }}</el-divider>
           <div class="el-drawer-content">
@@ -827,13 +824,8 @@
             <el-button icon="el-icon-check" size="small" type="primary" plain @click="handleApproveDialogConfirm">确定</el-button>
           </div>
         </el-drawer>
-        <!-- 通过、驳回弹框 END -->
-        <!-- 认款详情 -->
         <recognitionDetail :dialogVisibleDel="dialogVisibleDel" :msg="msg" @close="recognitionClose"></recognitionDetail>
-        <!-- 认款详情 END -->
-        <!-- 去认款 -->
         <recognitionDo :dialogVisibleDo="dialogVisibleDo" :msg="msg" @close="recognitionClose"></recognitionDo>
-        <!-- 去认款 EBD -->
       </div>
     </div>
   </div>

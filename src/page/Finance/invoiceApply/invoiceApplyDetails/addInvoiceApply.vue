@@ -1,3 +1,9 @@
+<!-- 
+      申请发票管理
+
+      后台找 郭喜
+
+-->
 <template>
   <div>
     <el-dialog title="申请发票管理" :visible="dialogFormVisible"    style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeAdd()">

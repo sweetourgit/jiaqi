@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--详情-->
+    <!--详情  后台找郭喜-->
     <el-dialog title="详情" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
       @close="cancelInfoOrder()">
       <div class="controlButton">
