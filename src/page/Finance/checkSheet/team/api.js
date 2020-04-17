@@ -15,7 +15,7 @@ export const getCheckSheetList= function(conditions){
     })
     .catch(err => {
       console.error(err);
-	  $message.error('网络延迟，稍后刷新');
+	  // $message.error('网络延迟，稍后刷新');
       // err && $message.error(err.toString());
     })
   })

@@ -9,10 +9,10 @@
   font-weight: normal;
   box-sizing: border-box;
 }
-.review-collection{
-  margin:0px;
+.review-collection {
+  margin: 0px;
 }
-.review-collection>div{
+.review-collection > div {
   font-size: 16px;
 }
 table {
@@ -63,10 +63,15 @@ table {
   <div class="print-ground">
     <!-- <div style="white-space:pre-wrap" v-html="printData"></div> -->
     <header>
-      <div class="title"><h1>{{ pd.topOrgName }}旅游团队报账单</h1></div>
-       <el-divider content-position="left"  class="review-collection">报账单详情</el-divider>
-      <div class="time" v-if="pd.checkTime!=undefined">报账时间：{{ dateFormator(pd.checkTime) }}</div>
-      <div class="time review-collection" v-else>&nbsp</div>
+      <div class="title">
+        <h1>{{ pd.topOrgName }}旅游团队报账单</h1>
+      </div>
+      <el-divider content-position="left" class="review-collection">报账单详情</el-divider>
+      <div style="display:flex;justify-content:space-between">
+        <div style="line-height:2.5">报账单ID：{{id}}</div>
+        <div class="time" v-if="pd.checkTime!=undefined">报账时间：{{ dateFormator(pd.checkTime) }}</div>
+        <div class="time review-collection" v-else>&nbsp</div>
+      </div>
     </header>
     <main>
       <table cellspacing="0" cellpadding="0" border="0">
@@ -279,9 +284,7 @@ table {
       <!-- 注释编辑 -->
       <mark-form ref="markForm"></mark-form>
     </footer>
-    <Review>
-
-    </Review>
+    <Review></Review>
   </div>
 </template>
 
@@ -293,8 +296,8 @@ import basicForm from "./subs/basicForm";
 import expenseForm from "./subs/expenseForm";
 import expenseEditForm from "./subs/expenseEditForm";
 import markForm from "./subs/markForm";
-import Review from './subs/review.vue'
-import moment from 'moment'
+import Review from "./subs/review.vue";
+import moment from "moment";
 export default {
   components: {
     incomeBar,
@@ -309,8 +312,8 @@ export default {
 
   filters: {
     dateFilter(val) {
-    if(val==0)return '00.00.00'
-    return moment(val*1000).format('YYYY.MM.DD')
+      if (val == 0) return "00.00.00";
+      return moment(val * 1000).format("YYYY.MM.DD");
       // let year, month, day;
       // year = ~~(val / 10000);
       // month = ~~((val - year * 10000) / 100);
@@ -363,7 +366,8 @@ export default {
         expenseSum: 0, // 总支出
         profitSum: 0, // 毛利额
         profitRate: 0, // 毛利率
-        finishedList: []
+        finishedList: [],
+        id: "" // 报账单ID
       },
       {
         pd: {}, // printData缩写
@@ -374,7 +378,9 @@ export default {
 
   methods: {
     init(printData, pageType) {
+      console.log("printData", printData);
       let {
+        id,
         incomes,
         expenses,
         otherIncomes,
@@ -382,6 +388,7 @@ export default {
         ...pdData
       } = printData;
       if (finishedList) this.finishedList = finishedList;
+      this.id = id;
       this.pageType = pageType;
       this.pd = pdData;
       this.incomes = incomes;
@@ -474,12 +481,11 @@ export default {
       this.$refs.expenseForm.wakeup(this.expenses);
     },
 
-    awakeEditForm(expense,type) {
-      this.$refs.expenseEditForm.wakeup(expense, this.pd,type);
+    awakeEditForm(expense, type) {
+      this.$refs.expenseEditForm.wakeup(expense, this.pd, type);
     },
 
     expenseSave(payload) {
-
       let { isSave, expense } = payload;
       if (isSave) return this.changeHandler();
       this.expenses.push(expense);

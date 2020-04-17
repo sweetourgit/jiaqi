@@ -122,7 +122,7 @@
           )
           .then(obj => {
             if (obj.data.code == -1) {
-              this.$message.error(obj.data.msg)
+              // this.$message.error(obj.data.msg)
             } else {
               this.setReviewList(obj.data.extend.instanceLogInfo)
             }
@@ -148,11 +148,9 @@
         // productType = 4
         let response = await getBatchplaninfos(planID)
         if (productType == 4) {
-
           if (response == false) return
           response = response[0][0]
-        }
-
+        } 
         getPreCheckSheetByPlanID(planID, productType).then(res => {
           this.getCacheCheckSheet(planID, res);
           if (productType == 4) {
