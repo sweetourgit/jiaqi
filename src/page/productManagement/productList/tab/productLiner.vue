@@ -90,7 +90,7 @@
       </el-table-column>
       <el-table-column prop="price" label="价格" align="center">
       </el-table-column>
-      <el-table-column prop="create_third_user" label="操作人员" align="center">
+      <el-table-column prop="create_uid" label="操作人员" align="center">
       </el-table-column>
       <el-table-column prop="line_status" label="线上状态" align="center">
         <template slot-scope="scope">
@@ -278,6 +278,7 @@ export default {
     },
     // 搜索
     searchHandInside(){
+      this.pageCurrent = 1;
       this.loadData();
     },
     // 重置
@@ -420,10 +421,12 @@ export default {
     handleSizeChange(val){
       this.pageSize = val;
       this.pageCurrent = 1;
+      this.loadData();
     },
     // 改变页数
     handleCurrentChange(val){
       this.pageCurrent = val;
+      this.loadData();
     },
     // 加载数据
     loadData(){
@@ -444,6 +447,25 @@ export default {
         if (response.data.code == '200') {
           that.tableData = response.data.data.list;
           that.totalNum = response.data.data.total - 0;
+          that.tableData.forEach(function(item, index, arr){
+            // 根据id获取审批人姓名
+            that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
+              "id": item.create_uid
+            },{
+              headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              }
+            }).then(function(response) {
+              // console.log(response);
+              if (response.data.isSuccess) {
+                item.create_uid = response.data.object.name;
+              } else {
+                that.$message.warning("加载数据失败~");
+              }
+            }).catch(function(error) {
+              console.log(error);
+            });
+          })
         } else {
           if(response.data.message){
             that.$message.warning(response.data.message);

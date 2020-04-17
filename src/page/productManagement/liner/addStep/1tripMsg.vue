@@ -1,23 +1,24 @@
 <template>
   <div class="curiseShip">
-    <el-form>
-      <div class="buttonDv">
-        <el-button class="el-button" type="primary" @click="saveFun(1)">保 存</el-button>
-        <el-button class="el-button" type="primary" @click="saveFun(2)">下一步</el-button>
-        <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
-      </div>
-      <div class="topIn">
-        <p><span class="leftSpan">*</span>行程天数：</p>
-        <el-input v-model="day" placeholder="请输入" class="inputWidth" aria-required="true" type="number" @blur="tabShow"></el-input><span>天</span>
-        <el-input v-model="night" placeholder="请输入" class="inputWidth" aria-required="true" type="number"></el-input><span>晚</span>
-      </div>
-      <el-tabs v-model="editableTabsValue" type="card" style="margin: 50px 0;">
-        <el-tab-pane
-          :key="item.name"
-          v-for="item in editableTabs"
-          :label="item.title"
-          :name="item.name"
-        >
+    
+    <div class="buttonDv">
+      <el-button class="el-button" type="primary" @click="saveFun(1)">保 存</el-button>
+      <el-button class="el-button" type="primary" @click="saveFun(2)">下一步</el-button>
+      <el-button class="el-button" type="danger" @click="cancalBtn">取 消</el-button>
+    </div>
+    <div class="topIn">
+      <p><span class="leftSpan">*</span>行程天数：</p>
+      <el-input v-model="day" placeholder="请输入" class="inputWidth" aria-required="true" type="number" @blur="tabShow"></el-input><span>天</span>
+      <el-input v-model="night" placeholder="请输入" class="inputWidth" aria-required="true" type="number"></el-input><span>晚</span>
+    </div>
+    <el-tabs v-model="editableTabsValue" type="card" style="margin: 50px 0;">
+      <el-tab-pane
+        :key="item.name"
+        v-for="item in editableTabs"
+        :label="item.title"
+        :name="item.name"
+      >
+        <el-form :model="item.content.ruleForm" :rules="item.content.rules">
           <!-- 每天的行程信息 form -->
           <el-form-item label="标题：" prop="title" label-width="140px" :rules="[{ required: true, message: '标题不能为空', trigger: 'blur'}]">
             <el-input v-model="item.content.ruleForm.title" placeholder="请输入" class="inputWidth" maxlength="30" show-word-limit></el-input>
@@ -82,9 +83,10 @@
             </el-table-column>
           </el-table>
           <!-- 每天的行程信息 form end-->
-        </el-tab-pane>
-      </el-tabs>
-    </el-form>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
+    
     
     <tripMsgAdd :dialogFormVisible='dialogFormVisible' :info='info' @close="closeAdd"></tripMsgAdd>
   </div>
@@ -119,6 +121,9 @@ export default {
             "dinner_mark": '',
             "detail": '',
             "tableData": []
+          },
+          "rules": {
+            title: ''
           }
         }
       }],

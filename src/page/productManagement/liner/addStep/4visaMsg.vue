@@ -21,7 +21,7 @@
         :name="item.name"
       >
         <p class="topTitle"><span>*</span>标题：</p>
-        <el-input v-model="item.content.title" class="inputWidth" placeholder="请输入" style="width: 68%;"></el-input>
+        <el-input v-model="item.content.title" class="inputWidth" placeholder="请输入" style="width: 68%;" @blur="getTitle(item.content.title)"></el-input>
         <el-button type="warning" @click='addVisa' class="addBtn">新增一行</el-button>
         <el-radio-group v-model="item.content.crowdID" style="margin-bottom:12px;" @change="loadList()">
           <el-radio-button v-for="item in typeArr" :key="item.id" :label="item.id">{{item.name}}</el-radio-button>
@@ -108,6 +108,7 @@ export default {
   },
   computed: {},
   methods: {
+    // 删除tab
     removeTab(targetName){
       console.log(targetName);
       const that = this;
@@ -154,9 +155,11 @@ export default {
         
       });
     },
+    // 添加签证tab
     addTab(){
       this.dialogFormVisibleCopy = true;
     },
+    // 复制签证
     closeCopy(str){
       // alert(str);
       if(str == 'copy'){
@@ -180,6 +183,11 @@ export default {
         this.dialogFormVisibleCopy = false;
       }
     },
+    getTitle(str){
+      // alert(str);
+      const num = this.editableTabsValue - 1;
+      this.editableTabs[num].title = str;
+    },
     // 表格header设置
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -188,6 +196,7 @@ export default {
         return ''
       }
     },
+    // 取消
     cancalBtn(){
       const that = this;
       this.$confirm("是否取消本次添加?", "提示", {
@@ -206,6 +215,7 @@ export default {
         }
       });
     },
+    // 保存
     saveFun(type){
       const that = this;
       let visaList = [];
@@ -251,6 +261,7 @@ export default {
         console.log(error);
       });
     },
+    // 添加
     addVisa(){
       const num = parseInt(this.editableTabsValue - 1);
       // alert(num);
@@ -265,6 +276,7 @@ export default {
       }
       
     },
+    // 编辑
     edit(row){
       const num = parseInt(this.editableTabsValue - 1);
       this.dialogFormVisible = true;
@@ -279,6 +291,7 @@ export default {
       this.info = '';
       this.loadList();
     },
+    // 删除
     deleteFun(row){
       const that = this;
       this.$confirm("是否删除本条签证信息?", "提示", {
@@ -286,7 +299,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/liner/liner-entertainment/dellinerentertainment", {
+        this.$http.post(this.GLOBAL.serverSrcYL + "/linerapi/v1/product/product-visa-info/del", {
           "id": row.id
         }, ).then(function(response) {
           // console.log('del信息',response);
@@ -307,6 +320,7 @@ export default {
         that.$message.warning("已取消~");
       });
     },
+    // 加载签证信息表格数据
     loadList(){
       const that = this;
       const num = parseInt(this.editableTabsValue - 1);
@@ -344,6 +358,7 @@ export default {
         console.log(error);
       });
     },
+    // 加载签证数据
     loadData(){
       const that = this;
       
@@ -356,7 +371,7 @@ export default {
             that.editableTabs = [];
             response.data.data.list.forEach(function(item, index, arr){
               that.editableTabs.push({
-                title: '签证信息'+ (index + 1),
+                title: item.title,
                 name: (index + 1).toString(),
                 content: {
                   "id": item.id,

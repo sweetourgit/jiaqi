@@ -1,4 +1,5 @@
 import {formatDate} from '@/js/libs/publicMethod.js'
+import moment from 'moment'
 export default{
   data() {
     return {
@@ -7,6 +8,7 @@ export default{
     }
   },
 	methods: {
+    moment,
 		// 导出方法
 		exportFun(ruleForm, type){
 			let start = '', end = '';
@@ -43,7 +45,7 @@ export default{
 			this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GettingfinishedTasksForJQ", {
 				"userCode": sessionStorage.getItem('tel'),
 				"startTime": "1970-07-23T01:30:54.452Z",
-				"endTime": new Date(),
+				"endTime": moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
 				"startIndex": -1,
 				"endIndex": -1,
 				"workflowCode": loan
