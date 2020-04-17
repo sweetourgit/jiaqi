@@ -109,9 +109,9 @@
     </div>
     <!-- 翻页 END -->
     <!-- 添加同业数据弹窗 -->
-    <addPage :mode="mode" @getListForTY="getListForTY" :dialogFormVisible="dialogFormVisible" :find="find" @close="closeAdd"></addPage>
+    <!-- <addPage :mode="mode" @getListForTY="getListForTY" :dialogFormVisible="dialogFormVisible" :find="find" @close="closeAdd"></addPage> -->
 
-    <!-- <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo> -->
+    <SameTradeInfo :dialogFormVisible="dialogFormVisible" :find="find" :change="change" @close="closeAdd"></SameTradeInfo>
     <!-- 添加同业数据弹窗 END -->
     <!-- 查看详情 弹窗 -->
     <el-drawer :visible.sync="detailstShow" size="45%" :show-close='false'>
