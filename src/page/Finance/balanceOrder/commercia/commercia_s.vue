@@ -1,11 +1,7 @@
-<!-- 商户欠款订单管理
-     线上功能完好 
-     搜索 emptyButton
-     重置 handleSearch
-     导出 exportSearch 导出用原生写的，后台找刘洋大哥 导出文件流找徐众鑫
-     2020/04/17 唐爱妮
+<!-- 
+2020/4/16
+欠款订单数据融合，搜索 导出 修改时间 后台找郭喜/李健
 -->
-
 <template>
    <div  class="distributor-content" style="position:relative; width:100%;">
      <div label="商户欠款订单">
@@ -152,14 +148,13 @@
 .el-table .warning-red-jenny {color: red;}
 </style>
 <script>
-import commercia from "./commercia";
 import moment from "moment";
+import commercia_s from "./commercia_s";
 export default {
-  name: "commercia",
+  name: "commercia_s",
   components: {
-    commercia
-   
-  },
+    commercia_s
+   },
   data() {
      return {
        activeName: 'first',
@@ -219,33 +214,33 @@ export default {
       pageList(
             pageIndex = this.pageIndex,
             pageSize = this.pageSize,
-            orderCode = this.ruleForm.orderid,//订单id
-            localComp = this.ruleForm.ordertitle,//商户名称
-            startDate= this.startDate,//开始时间
-            endDate = this.endDate,//结束时间
-            typeColl=this.ruleForm.typeColl,//选择逾期
+            ordercode = this.ruleForm.orderid,//订单id
+            localcomp = this.ruleForm.ordertitle,//商户名称
+            startdate= this.startDate,//开始时间
+            enddate = this.endDate,//结束时间
+            typecoll=this.ruleForm.typeColl,//选择逾期
             settlement=this.ruleForm.settlement,//结款方式
         ){
             var that = this;
             let object={};
             //console.log(endDate);
-            if(endDate == undefined && startDate == undefined ){
-                    endDate = 0
-                    startDate = 0
+            if(enddate == undefined && startdate == undefined ){
+                    enddate = 0
+                    startdate = 0
               } 
-              orderCode !== "" ? (object.orderCode = orderCode) : orderCode,
-              localComp !== "" ? (object.localComp = localComp) : localComp,
-              typeColl !== ""? (object.typeColl = typeColl): typeColl;
+              ordercode !== "" ? (object.ordercode = ordercode) : ordercode,
+              localcomp !== "" ? (object.localcomp = localcomp) : localcomp,
+              typecoll !== ""? (object.typecoll = typecoll): typecoll;
               settlement !== ""? (object.settlement = settlement): settlement;
-              startDate !== ""? (object.startDate = startDate): startDate;
-              endDate !== ""? (object.endDate = endDate): endDate;
+              startdate !== ""? (object.startdate = startdate): startdate;
+              enddate !== ""? (object.enddate = enddate): enddate;
              
             that.$http
-              .post(that.GLOBAL.serverSrc + "/orderquery/get/api/SIArreaPage", {
+              .post(that.GLOBAL.serverSrc + "/fusion/arrears/api/page", {
                 total: 0,
-                object: object,
                 pageSize: this.pageSize,
                 pageIndex: this.currentPage4,
+                object: object,
               })
               .then(function(obj) {
                 that.tableData=[];
@@ -263,19 +258,19 @@ export default {
                   let arrears = obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice;
                       arrears = arrears.toFixed(2);  
                   that.tableData.push({
-                        ID:obj.data.objects[j].orderCode,//id+
+                        ID:obj.data.objects[j].ordercode,//id+
                         planid:obj.data.objects[j].id,//id+
-                        name:obj.data.objects[j].localComp,//商户名称+
+                        name:obj.data.objects[j].localcomp,//商户名称+
                         moneyType:moneyType,//结款方式+
                         productName:obj.data.objects[j].title, //产品名称+
-                        plan:obj.data.objects[j].groupCode,//团期计划
-                        order:obj.data.objects[j].orderPrice.toFixed(2),//订单金额+
+                        plan:obj.data.objects[j].groupcode,//团期计划
+                        order:obj.data.objects[j].orderprice.toFixed(2),//订单金额+
                         //arrears: obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice, //欠款金额
                         arrears: arrears, //欠款金额
-                        also:obj.data.objects[j].collectionPrice.toFixed(2), //已还金额
-                        examine:obj.data.objects[j].approvedPrice.toFixed(2),//待审批金额
-                        arrearsDate:obj.data.objects[j].createDate,//欠款日期
-                        alsoDate:obj.data.objects[j].arrearsDate,//应还日期
+                        also:obj.data.objects[j].collectionprice.toFixed(2), //已还金额
+                        examine:obj.data.objects[j].approvedprice.toFixed(2),//待审批金额
+                        arrearsDate:obj.data.objects[j].createdate,//欠款日期
+                        alsoDate:obj.data.objects[j].arrearsdate,//应还日期
                         date:nawdata,//出团日期
                   })
                 }

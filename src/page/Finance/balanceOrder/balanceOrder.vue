@@ -1,3 +1,10 @@
+<!-- 欠款订单管理
+     tab 分页
+     商户 
+     分销 
+     供应商 
+     2020/04/17 唐爱妮后台找 刘洋大哥
+-->
 <template>
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick" v-if="url_is">

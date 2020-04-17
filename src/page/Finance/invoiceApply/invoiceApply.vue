@@ -1,6 +1,6 @@
 <template>
   <div style="border:1px solid #e6e6e6; max-width:1420px; overflow:hidden;margin:0 0 80px 0;">
-    <!--搜索框-->
+    <!--搜索框  后台找郭喜-->
     <div class="demo-input-suffix">
       <div>
         <span class="search-title" style="margin:0 0 0 35px;">发票号码</span>

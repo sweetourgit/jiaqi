@@ -1,3 +1,6 @@
+<!-- 发票管理
+     后台找郭喜
+-->
 <template>
   <div style="border:1px solid #e6e6e6; max-width:1420px; overflow:hidden;margin:0 0 80px 0;">
     <!--搜索框 2020/03/16-->
