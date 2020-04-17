@@ -656,9 +656,7 @@ export default {
         console.log(err);
       });
     },
-
     /* 待整理 包括相关的 HTML */
-
     // 去认款
     recognitionDo (row) {
       this.dialogVisibleDo = true;
@@ -678,6 +676,7 @@ export default {
     },
     // 关闭认款弹窗
     recognitionClose (str) {
+      console.log(str, '详情里面的取消按钮')
       this.getLabel(this.keepPaymentId);
       this.dialogVisibleDo = false;
       this.dialogVisibleDel = false;
@@ -709,7 +708,23 @@ export default {
       return moment(date).format('YYYY-MM-DD HH:mm:ss');
     },
     handleGoBack () {
-      this.$router.go(-1);
+      console.log('详情页的取消事件')
+      this.baseInfo = {
+        id: "",
+        createUser: "",
+        createTime: "",
+        collectionType: "",
+        distributor: "",
+        orderNumber: "",
+        localCompName: "",
+        price: "",
+        abstract: "",
+        invoice: "",
+        collectionNumber: ""
+      };
+
+      this.$emit("close", false);
+      // this.$router.go(-1);
     },
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {
