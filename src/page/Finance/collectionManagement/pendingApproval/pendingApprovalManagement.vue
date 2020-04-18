@@ -498,10 +498,10 @@ export default {
       this.loadDataTY();
       this.loadDataNBSK();
       this.loadDataBXHK();
-      this.$parent.$parent.$parent.$refs.SameTradeManagement.getList();
-      this.$parent.$parent.$parent.$refs.StraightGuestManagement.getStraightGuestManagement();
-      this.$parent.$parent.$parent.$refs.distributorsInfo.getDataInside();
-      this.$parent.$parent.$parent.$refs.reimbursement.getList();
+      // this.$parent.$parent.$parent.$refs.SameTradeManagement.getList();
+      // this.$parent.$parent.$parent.$refs.StraightGuestManagement.getStraightGuestManagement();
+      // this.$parent.$parent.$parent.$refs.distributorsInfo.getDataInside();
+      // this.$parent.$parent.$parent.$refs.reimbursement.getList();
     },
     // 加载直客信息及处理分页
     handleSizeChangeZK(val) {

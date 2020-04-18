@@ -782,6 +782,7 @@
         this.dialogFormVisible3 = true;
       },
       recognitionClose(str) {
+        console.log('点击取消嗲用')
         this.dialogFormVisible2 = false;
         this.dialogFormVisible3 = false;
         this.msg = "";

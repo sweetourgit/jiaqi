@@ -340,11 +340,9 @@ export default {
           // console.log(_this.tableAssociated)
           _this.tableAssociated.forEach(item => {
             _this.getCollectionPriceTotal += item.matchingPrice;
-            // console.log("submitData", localStorage.getItem(item.id));
             if (localStorage.getItem(item.id) == null) {
-              // alert('true');
-              // item.hasSubmitData = true;
               _this.$set(item, "hasSubmitData", true);
+              // item.hasSubmitData = true;
             } else {
               // item.hasSubmitData = false;
               _this.$set(item, "hasSubmitData", false);
@@ -683,6 +681,7 @@ export default {
       this.msg = "";
       if (str === "success") {
         this.passDisabled = false;
+
       }
     },
     // 查看认款详情
@@ -708,7 +707,6 @@ export default {
       return moment(date).format('YYYY-MM-DD HH:mm:ss');
     },
     handleGoBack () {
-      console.log('详情页的取消事件')
       this.baseInfo = {
         id: "",
         createUser: "",
@@ -722,9 +720,16 @@ export default {
         invoice: "",
         collectionNumber: ""
       };
-
-      this.$emit("close", false);
-      // this.$router.go(-1);
+      // this.getLabel(this.keepPaymentId);
+      // this.$emit("close", false);
+      const reg = /^\d{1,}$/;
+      const pattern = new RegExp(reg);
+      for (let i = 0; i < localStorage.length; i++) {
+        if (pattern.test(localStorage.key(i))) {
+          localStorage.removeItem(localStorage.key(i));
+        }
+      }
+      this.$router.go(-1);
     },
     getRowClass ({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === 0) {

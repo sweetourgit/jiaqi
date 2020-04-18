@@ -426,6 +426,7 @@
             hasCharge: false
           });
           console.log(dateStr);
+          console.log(this.tableDataOrder[0].id);
           localStorage.setItem(this.tableDataOrder[0].id, dateStr);
           this.closeAdd("success");
         }
