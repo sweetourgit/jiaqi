@@ -91,6 +91,8 @@
           </el-table-column>
           <el-table-column prop="create_uid" label="申请人" align="center"></el-table-column>
           <el-table-column prop="approval_comments" label="审批意见" align="center"></el-table-column>
+         <!-- 2020-4-20 添加审批时间 -->
+          <el-table-column prop="approval_at" label="审批时间" align="center"></el-table-column>
           <el-table-column prop="opinion" label="操作" align="center" width="150">
             <template slot-scope="scope">
               <el-button @click="detail(scope.row)" type="text" size="small" class="table_details">详情</el-button>
@@ -125,6 +127,8 @@
   import {formatDate} from '@/js/libs/publicMethod.js'
   import { storageLocal } from '@/js/libs/storage'
   import moment from 'moment'
+  //2020-4-20
+  import {getApprovalTime} from './utils.js'
   export default {
     name: "tradeList",
     components:{
@@ -189,7 +193,9 @@
         if(this.tableData.length == 0){
           this.$message.warning("无搜索数据导出，请重新搜索！");
         }else{
-          window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/exportloan?periphery_type=1&supplier_code=" + this.supplierID + "&create_uid=" + this.reimbursementPerID + "&start_time=" + start + "&end_time=" + end + "&approval_status=" + this.borrowStatus + "&account_type=" + this.accountType + "&reimbursed_status=" + this.reimbursed_status;
+          //2020-4-20 导出时增加userID
+          let USERID=parseInt(window.sessionStorage.getItem('id'))
+          window.location.href = this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/exportloan?periphery_type=1&supplier_code=" + this.supplierID + "&create_uid=" + this.reimbursementPerID + "&start_time=" + start + "&end_time=" + end + "&approval_status=" + this.borrowStatus + "&account_type=" + this.accountType + "&reimbursed_status=" + this.reimbursed_status+"&USERID="+USERID;
         }
       },
       // 表格头部背景颜色
@@ -317,15 +323,17 @@
           "account_type": this.accountType,
           "reimbursed_status": this.reimbursed_status
         }, ).then(function(response) {
-          // console.log('无收入借款list',response);
           if (response.data.code == '200') {
             // console.log('无收入借款list',response);
             that.tableData = response.data.data.list;
             that.num = response.data.data.list.length;
             that.pageCount = response.data.data.total - 0;
             let moneyAll = 0;
-            that.tableData.forEach(function (item, index, arr) {
+            that.tableData.forEach( async function (item, index, arr) {
+              // 2020-4-20 添加审批时间字段
+               item.approval_at= await getApprovalTime(item.id,1)
               moneyAll += parseFloat(item.loan_money);
+              
               // item.receivables_at = formatDate(new Date(item.receivables_at*1000));
               // item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));

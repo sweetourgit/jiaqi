@@ -305,6 +305,7 @@
         }, ).then(function(response) {
           console.log('详情',response);
           if (response.data.code == '200') {
+            console.log('response',response)
             response.data.data.info.created_at = formatDate(new Date(response.data.data.info.created_at*1000));
 
             that.baseInfo = {
@@ -491,7 +492,6 @@
           console.log(error);
         });
       },
-
       // 获取审批节点
       getApproval(){
         const that = this;
@@ -499,7 +499,7 @@
           "jq_id": this.info,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
-//          console.log('获取审批节点', response);
+         console.log('获取审批节点', response);
           if(response.status == 200){
             response.data.extend.instanceLogInfo.forEach(function (item, index, arr) {
               if(item.finishedTime == '' && item.approvalName == '等待中'){
@@ -519,7 +519,6 @@
       }
     },
     created() {
-
       if(sessionStorage.getItem('userCode') == 'TC00636' || sessionStorage.getItem('userCode') == 'KH00947') {
         this.isShowDY = true;
       } else {
