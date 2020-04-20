@@ -292,9 +292,6 @@
           </el-tabs>
         </div>
       </div>
-      <div class="footer">
-        <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
-      </div>
       <!--手续费弹窗-->
       <div>
         <el-dialog style="text-align: left;" title="手续费" :visible.sync="dialogVisibleSXF" width="30%" top="20vh" append-to-body>
@@ -425,8 +422,6 @@
             type: type,
             hasCharge: false
           });
-          console.log(dateStr);
-          console.log(this.tableDataOrder[0].id);
           localStorage.setItem(this.tableDataOrder[0].id, dateStr);
           this.closeAdd("success");
         }

@@ -85,9 +85,6 @@
           <el-table-column prop="remark" label="付款备注" align="center" fixed="right"></el-table-column>
         </el-table>
       </div>
-      <div class="footer">
-        <el-button class="el-button" type="warning" @click="closeAdd">取 消</el-button>
-      </div>
     </el-drawer>
   </div>
 </template>

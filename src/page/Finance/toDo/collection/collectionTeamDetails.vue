@@ -857,7 +857,7 @@
     },
     mixins: [ collectTeamDetails ],
     created () {},
-    mounted() {},
+    mounted () {},
     methods: {
       // 打印
       handleTouchPrint () {
