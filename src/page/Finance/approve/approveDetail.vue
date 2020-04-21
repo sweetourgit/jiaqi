@@ -135,7 +135,7 @@
               <el-table-column prop="price" label="借款金额" align="center"></el-table-column>
               <el-table-column prop="opinion" label="操作" align="center">
                 <template slot-scope="scope">
-                  <el-button @click="handlePrint(scope.$index, scope.row)" type="primary" plain size="small">打印</el-button>
+                  <el-button @click="handlePrint(scope.$index, scope.row, item.id)" type="primary" plain size="small">打印</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -152,6 +152,14 @@
         <el-tag type="success" v-if="fundamental.checkType === '1'" class="distributor-status">通过</el-tag>
       </div>
       <!-- 第一行 -->
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="6">
+          <el-col :span="8"><div class="grid-del label-color">报销单号:</div></el-col>
+          <el-col :span="16"><div class="grid-del">{{ printReimburseId }}</div></el-col>
+        </el-col>
+        <el-col :span="6"></el-col>
+        <el-col :span="6"></el-col>
+      </el-row>
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
@@ -204,7 +212,7 @@
       <!-- 第三行 END -->
       <!-- 支付账户 -->
       <el-row type="flex" class="row-bg print-acount" justify="start">
-        <el-col :span="2" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
+        <el-col :span="3" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
         <el-col :span="18"><div class="grid-del">{{ fundamental.accountsName }}</div></el-col>
       </el-row>
       <!-- 支付账户 -->
@@ -269,7 +277,8 @@
         keepTabId: [],
         tabCount: [], // 计数开关
         ifExpenseType: false, // 是否有拆分类型的数据
-        printExpenseType: [] // 过滤出将被打印的 报销id
+        printExpenseType: [], // 过滤出将被打印的 报销id
+        printReimburseId: null,  // 打印时显示在打印单上
       }
     },
     // 关于时间的过滤
@@ -317,7 +326,8 @@
         })
       },
       // 获取一条信息
-      getLabel (paramPaymentID) {
+      getLabel (paramPaymentID, reimburseId) {
+        this.printReimburseId = reimburseId
         this.$http.post(this.GLOBAL.serverSrc + '/finance/payment/api/get', {
           "id": paramPaymentID
         }).then(res => {
