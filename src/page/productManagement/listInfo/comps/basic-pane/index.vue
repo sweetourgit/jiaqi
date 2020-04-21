@@ -269,7 +269,7 @@ export default {
           night: [
             { 
               required: true, 
-              validator: this.simpleValidator, 
+              validator: this.nightsimpleValidator, 
               message: '行程晚数不能为空', 
               trigger: 'blur' 
             },{
@@ -319,7 +319,7 @@ export default {
           advanceDay: [
             { 
               required: true, 
-              validator: this.simpleValidator, 
+              validator: this.nightsimpleValidator, 
               message: '提前天数不能为空', 
               trigger: 'blur' 
             },{
@@ -466,6 +466,11 @@ export default {
       let reg= /^(0|[1-9][0-9]*)$/;
       if(reg.test(val)) return cb();
       return cb(this.makeErrorQueueMsg(message));
+    },
+    nightsimpleValidator(rule, val, cb){
+      let { message }= rule;
+      if(val==='') return cb(this.makeErrorQueueMsg(message));
+      cb();
     },
     notNullArrayValidator(rule, val, cb){
       let { message, numLimit }= rule;
