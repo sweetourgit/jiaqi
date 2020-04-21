@@ -273,7 +273,7 @@ export default {
               message: '行程晚数不能为空', 
               trigger: 'blur' 
             },{
-              validator: this.numberValidator, 
+              validator: this.nightValidator, 
               message: '行程晚数必须为正整数', 
               trigger: 'blur'
             }
@@ -323,7 +323,7 @@ export default {
               message: '提前天数不能为空', 
               trigger: 'blur' 
             },{
-              validator: this.numberValidator, 
+              validator: this.nightValidator, 
               message: '提前天数须为正整数', 
               trigger: 'blur'
             }
@@ -461,7 +461,12 @@ export default {
       if(reg.test(val)) return cb();
       return cb(this.makeErrorQueueMsg(message));
     },
-
+    nightValidator(rule, val, cb){
+      let { message }= rule; 
+      let reg= /^(0|[1-9][0-9]*)$/;
+      if(reg.test(val)) return cb();
+      return cb(this.makeErrorQueueMsg(message));
+    },
     notNullArrayValidator(rule, val, cb){
       let { message, numLimit }= rule;
       if(!val || val.length=== 0) return cb(this.makeErrorQueueMsg(message));
