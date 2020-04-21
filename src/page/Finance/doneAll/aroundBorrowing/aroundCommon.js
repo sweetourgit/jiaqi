@@ -128,22 +128,20 @@ export default{
 				"reimbursed_status": ruleForm.reimbursed_status,
 				"id": ids
 			}, ).then(function(response) {
-		// console.log(response);
+		console.log(response);
 		// 2020-4-20 预付款和余额借款被驳回后在已办不显示
 				if (response.data.code == '200') {
-					if(periphery_type!=1){
-						for(let i=0;i<response.data.data.list.length;i++){
-							if(response.data.data.list[i].approval_status==2){
-								response.data.data.list.splice(i,1)
-								i=i-1
-							}
-						}
-					}
+					// if(periphery_type!=1){
+					// 	for(let i=0;i<response.data.data.list.length;i++){
+					// 		if(response.data.data.list[i].approval_status==2){
+					// 			response.data.data.list.splice(i,1)
+					// 			i=i-1
+					// 		}
+					// 	}
+					// }
           let idArr = [];
-          that.totalNum =response.data.data.list.length - 0;
+          that.totalNum =response.data.data.total - 0;
 		  that.tableData = response.data.data.list;
-		//   that.totalNum = newList.length - 0;
-        //   that.tableData = newList;
           that.tableData.forEach(function (item, index, arr) {
             idArr.push(item.id);
 					})
