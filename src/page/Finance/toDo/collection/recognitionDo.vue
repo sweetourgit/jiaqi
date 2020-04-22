@@ -460,6 +460,165 @@
                 ></el-pagination>
               </div>
             </el-tab-pane>
+            <el-tab-pane label="中信银行" name="bankZX">
+              <el-form :model="ruleFormZH" ref="ruleFormZX" label-width="110px" class="form-content">
+                <el-row type="flex" class="row-bg">
+                  <el-col :span="10">
+                    <el-form-item label="贷方发生额：" prop="money">
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormZX.moneyMin" placeholder="请输入"></el-input>
+                      </el-col>
+                      <el-col class="line" :span="2">-</el-col>
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormZX.moneyMax" placeholder="请输入"></el-input>
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="7" :offset="7">
+                    <el-form-item class="buttonForm">
+                      <el-button @click="searchHandInsideZX()" type="primary" icon="el-icon-search">搜索</el-button>
+                      <el-button @click="emptyButtonInsideZX()" type="primary" plain icon="el-icon-s-open">重置</el-button>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+              <el-table :data="tableDataZX" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true">
+                <el-table-column label="操作" width="145" align="center" fixed>
+                  <template slot-scope="scope">
+                    <el-button @click="chooseRecognition(scope.row, 1)" icon="el-icon-finished" type="primary" plain size="small" class="table_details" v-if="scope.row.reference !== '收付直通车支付结算'" :disabled="canClick">选择</el-button>
+                    <el-button @click="payDetail(scope.row)" icon="el-icon-finished" type="primary" plain size="small" class="table_details" v-if="scope.row.reference === '收付直通车支付结算'">查看微信支付宝明细</el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="surplusAmount" label="剩余金额" align="center"></el-table-column>
+                <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.is_ZCK == 0">未设置</span>
+                    <span v-if="scope.row.is_ZCK == 1">已设置</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="surplusPrice" label="剩余金额" align="center"></el-table-column>
+                <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.is_ZCK == 0">未设置</span>
+                    <span v-if="scope.row.is_ZCK == 1">已设置</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="transaction_Date" label="交易日期" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.transaction_Date.split('T')[0]}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="transaction_Date" label="交易时间" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.transaction_Date.split('T')[1]}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="guestAccount" label="对方账号" align="center"></el-table-column>
+                <el-table-column prop="accountName" label="对方账户名称" align="center"></el-table-column>
+                <el-table-column prop="openAccountBankName" label="对方账号开户网点名称" align="center"></el-table-column>
+                <el-table-column prop="jF_Price" label="借方发生额" align="center"></el-table-column>
+                <el-table-column prop="dF_Price" label="贷方发生额" align="center"></el-table-column>
+                <el-table-column prop="accountSurplus" label="账户余额" align="center"></el-table-column>
+                <el-table-column prop="reference" label="摘要" align="center"></el-table-column>
+                <el-table-column prop="tK_Sign" label="退汇标识" align="center"></el-table-column>
+                <el-table-column prop="tK_DateTime" label="退汇日期" align="center"></el-table-column>
+                <el-table-column prop="gyjY_Number" label="柜员交易号" align="center"></el-table-column>
+                <el-table-column prop="postscript" label="附言" align="center"></el-table-column>
+                <el-table-column prop="currency" label="币种" align="center"></el-table-column>
+                <el-table-column prop="jY_Number" label="交易账号" align="center"></el-table-column>
+                <el-table-column prop="jY_AccountBankName" label="交易账号开户网点名称" align="center"></el-table-column>
+                <el-table-column prop="dzbh" label="对账编号" align="center"></el-table-column>
+                <el-table-column prop="jskh" label="单位结算卡号" align="center"></el-table-column>
+              </el-table>
+              <div class="block">
+                <el-pagination
+                  @size-change="handleSizeChangeZX"
+                  @current-change="handleCurrentChangeZX"
+                  :current-page.sync="pageCurrentZX"
+                  :page-sizes="[5, 10, 50, 100]"
+                  :page-size="pageSizeZX"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="totalZX"
+                ></el-pagination>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="吉林中信银行" name="bankJLZX">
+              <el-form :model="ruleFormZH" ref="ruleFormJLZX" label-width="110px" class="form-content">
+                <el-row type="flex" class="row-bg">
+                  <el-col :span="10">
+                    <el-form-item label="收入金额：" prop="money">
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormJLZX.moneyMin" placeholder="请输入"></el-input>
+                      </el-col>
+                      <el-col class="line" :span="2">-</el-col>
+                      <el-col :span="11">
+                        <el-input v-model="ruleFormJLZX.moneyMax" placeholder="请输入"></el-input>
+                      </el-col>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="7" :offset="7">
+                    <el-form-item class="buttonForm">
+                      <el-button @click="searchHandInsideJLZX()" type="primary" icon="el-icon-search">搜索</el-button>
+                      <el-button @click="emptyButtonInsideJLZX()" type="primary" plain icon="el-icon-s-open">重置</el-button>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+              <el-table :data="tableDataJLZX" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true">
+                <el-table-column label="操作" width="145" align="center" fixed>
+                  <template slot-scope="scope">
+                    <el-button @click="chooseRecognition(scope.row, 1)" icon="el-icon-finished" type="primary" plain size="small" class="table_details" v-if="scope.row.reference !== '收付直通车支付结算'" :disabled="canClick">选择</el-button>
+                    <el-button @click="payDetail(scope.row)" icon="el-icon-finished" type="primary" plain size="small" class="table_details" v-if="scope.row.reference === '收付直通车支付结算'">查看微信支付宝明细</el-button>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
+                </el-table-column>
+                <el-table-column prop="is_ZCK" label="暂存款状态" align="center">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.is_ZCK == 0">未设置</span>
+                    <span v-if="scope.row.is_ZCK == 1">已设置</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="transaction_serial_number" label="交易流水号" align="center">
+                </el-table-column>
+                <el-table-column  label="交易日期" align="center">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.transaction_time.split('T')[0]}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="amount_of_income" label="收入金额" align="center">
+                </el-table-column>
+                <el-table-column prop="amount_of_expenditure" label="支出金额" align="center">
+                </el-table-column>
+                <el-table-column prop="account_balance" label="账户余额" align="center">
+                </el-table-column>
+                <el-table-column prop="other_Name" label="对方名称" align="center">
+                </el-table-column>
+                <el-table-column prop="other_Account" label="对方账号" align="center">
+                </el-table-column>
+                <el-table-column prop="receiving_body" label="受理机构" align="center">
+                </el-table-column>
+                <el-table-column prop="abstract" label="摘要" align="center">
+                </el-table-column>
+                <el-table-column prop="transaction_card_number" label="交易卡号" align="center">
+                </el-table-column>
+                <el-table-column prop="state" label="状态" align="center">
+                </el-table-column>
+                <el-table-column prop="GLJE" label="关联金额" align="center">
+                </el-table-column>
+              </el-table>
+              <div class="block">
+                <el-pagination
+                  @size-change="handleSizeChangeJLZX"
+                  @current-change="handleCurrentChangeJLZX"
+                  :current-page.sync="pageCurrentJLZX"
+                  :page-sizes="[5, 10, 50, 100]"
+                  :page-size="pageSizeJLZX"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="totalJLZX"
+                ></el-pagination>
+              </div>
+            </el-tab-pane>
             <el-tab-pane label="所选明细" v-if="isShow" name="bankMX">
               <el-table :data="tableDataMX" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true">
                 <el-table-column label="操作" width="100" align="center" fixed>
@@ -574,6 +733,14 @@
           moneyMin: "",
           moneyMax: ""
         },
+        tableDataJLZX: [], // 吉林中信
+        pageCurrentJLZX: 1,
+        pageSizeJLZX: 10,
+        totalJLZX: 0,
+        ruleFormJLZX: {
+          moneyMin: "",
+          moneyMax: ""
+        },
         tableDataZS: [], //  招商银行的table
         pageCurrentZS: 1,
         pageSizeZS: 10,
@@ -591,13 +758,20 @@
           moneyMin: "",
           moneyMax: ""
         },
+        tableDataZX: [], //  中信银行的table
+        pageCurrentZX: 1,
+        pageSizeZX: 10,
+        totalZX: 0,
+        ruleFormZX: {
+          moneyMin: "",
+          moneyMax: ""
+        },
         tableDataMX: [], // 微信支付宝明细table(当前页数，每页条数，总条数)
         pageCurrentMX: 1,
         pageSizeMX: 10,
         totalMX: 0,
         isShow: false, // 微信支付宝明细显示隐藏
-        // 设置手续费弹框
-        dialogVisibleSXF: false,
+        dialogVisibleSXF: false, // 设置手续费弹框
         service_charge: "",
         rowMsg: [],
         rowType: "",
@@ -622,6 +796,8 @@
             this.loadDataNY();
             this.loadDataZS();
             this.loadDataJS();
+            this.loadDataZX();
+            this.loadDataJLZX();
             this.isShow = false;
             this.canClick = false;
             this.activeName = "bankZH";
@@ -925,7 +1101,7 @@
         let _this = this;
         let company=sessionStorage.getItem('topName')
         let topID=parseInt(sessionStorage.getItem('topID'))
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search",
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search",
           {
             pageIndex: this.pageCurrentJS - 1,
             pageSize: this.pageSizeJS,
@@ -949,6 +1125,116 @@
             } else {
               _this.totalJS = 0;
               _this.tableDataJS = [];
+            }
+          });
+      },
+      // 中信
+      handleSizeChangeZX (val) {
+        this.pageSizeZX = val;
+        this.pageCurrentZX = 1;
+        this.loadDataZX();
+      },
+      handleCurrentChangeZX (val) {
+        this.pageCurrentZX = val;
+        this.loadDataZX();
+      },
+      // 搜索
+      searchHandInsideZX () {
+        this.pageCurrentZX = 1;
+        this.loadDataZX();
+      },
+      // 重置
+      emptyButtonInsideZX () {
+        this.ruleFormZX = {
+          moneyMin: "",
+          moneyMax: ""
+        };
+        this.pageCurrentZX = 1;
+        this.loadDataZX();
+      },
+      loadDataZX () {
+        let _this = this;
+        let company=sessionStorage.getItem('topName')
+        let topID=parseInt(sessionStorage.getItem('topID'))
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/citic_bank/api/search",
+          {
+            pageIndex: this.pageCurrentZX - 1,
+            pageSize: this.pageSizeZX,
+            object: {
+              matching_State: 0,
+              transaction_reference_number: '',
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              seachType: 0,
+              userid: 0,// data4D.userID, // 暂无数据 想看改成0,
+              orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
+              topid: topID, // 暂无数据 想看改成0,
+              company: company,
+            }
+          })
+          .then(function(obj) {
+            if (obj.data.isSuccess) {
+              _this.totalZX = obj.data.total;
+              _this.tableDataZX = obj.data.objects;
+
+            } else {
+              _this.totalZX = 0;
+              _this.tableDataZX = [];
+            }
+          });
+      },
+      // 吉林中信
+      handleSizeChangeJLZX (val) {
+        this.pageSizeJLZX = val;
+        this.pageCurrentJLZX = 1;
+        this.loadDataJLZX();
+      },
+      handleCurrentChangeJLZX (val) {
+        this.pageCurrentJLZX = val;
+        this.loadDataJLZX();
+      },
+      // 搜索
+      searchHandInsideJLZX () {
+        this.pageCurrentJLZX = 1;
+        this.loadDataJLZX();
+      },
+      // 重置
+      emptyButtonInsideJLZX () {
+        this.ruleFormJLZX = {
+          moneyMin: "",
+          moneyMax: ""
+        };
+        this.pageCurrentJLZX = 1;
+        this.loadDataJLZX();
+      },
+      loadDataJLZX () {
+        let _this = this;
+        let company=sessionStorage.getItem('topName')
+        let topID=parseInt(sessionStorage.getItem('topID'))
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/citic_bank_jl/api/Search",
+          {
+            pageIndex: this.pageCurrentJLZX - 1,
+            pageSize: this.pageSizeJLZX,
+            object: {
+              matching_State: 0,
+              transaction_reference_number: '',
+              begin: "2000-05-16",
+              end: "2099-05-16",
+              seachType: 0,
+              userid: 0,// data4D.userID, // 暂无数据 想看改成0,
+              orgid:0,// data4D.orgID, // 暂无数据 想看改成0,
+              topid: topID, // 暂无数据 想看改成0,
+              company: company,
+            }
+          })
+          .then(function(obj) {
+            if (obj.data.isSuccess) {
+              _this.totalJLZX = obj.data.total;
+              _this.tableDataJLZX = obj.data.objects;
+
+            } else {
+              _this.totalJLZX = 0;
+              _this.tableDataJLZX = [];
             }
           });
       },
@@ -980,7 +1266,7 @@
         let _this = this;
         let company=sessionStorage.getItem('topName')
         let topID=parseInt(sessionStorage.getItem('topID'))
-        this.$http.post(this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/search", {
+        this.$http.post(this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/search", {
           "pageIndex": this.pageCurrentZS- 1,
           "pageSize": this.pageSizeZS,
           "object": {

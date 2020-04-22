@@ -150,7 +150,7 @@
         if (productType == 4) {
           if (response == false) return
           response = response[0][0]
-        } 
+        }
         getPreCheckSheetByPlanID(planID, productType).then(res => {
           this.getCacheCheckSheet(planID, res);
           if (productType == 4) {
@@ -341,11 +341,15 @@
         } = this.$route.query;
 
         // 来自已办的逻辑
-        if (comeFrom) {
+        if (comeFrom === 'processed') {
           this.$store.commit("doneAll/referDoneAllShowWhichTab", "sheet");
           this.$store.commit("doneAll/showSheetTab", "sheetTeam");
           return this.$router.replace({
             path: "/doneAll/list"
+          });
+        } else if (comeFrom === 'toDo') {
+          return this.$router.replace({
+            path: "/toDo/ILabel"
           });
         }
         let isFromToDO = false
@@ -354,7 +358,7 @@
         }
         if (isFromToDO) {
           this.$router.replace({
-            path: "/toDo/ILabel"
+            path: "/toDo/ILabel"    // 这里包含的应该没什么用了
           })
         } else {
           this.isFromCheckSheet ?
