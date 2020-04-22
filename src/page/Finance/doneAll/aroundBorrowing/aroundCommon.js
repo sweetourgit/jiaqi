@@ -144,8 +144,7 @@ export default{
 		  that.tableData = response.data.data.list;
           that.tableData.forEach(function (item, index, arr) {
             idArr.push(item.id);
-					})
-					
+					})	
           that.sortTable(idArr, periphery_type, that.totalNum);
 				} else {
 					that.$message.success("加载数据失败~");

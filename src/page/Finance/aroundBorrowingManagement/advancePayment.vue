@@ -380,8 +380,9 @@
                 console.log(error);
               });
             })
-            that.sortTable(idsArr); // 根据工作流排序
-            that.totalMoney = moneyAll.toFixed(2);
+            // that.sortTable(idsArr); // 根据工作流排序 2020-4-21 这个没用到 
+              // 2020-4-21 总计添加定时器 解决forEach 异步
+            setTimeout(function(){ that.totalMoney = moneyAll.toFixed(2); console.log('totalMoney',that.totalMoney) }, 1000);
           } else {
             that.$message.success("加载数据失败~");
           }

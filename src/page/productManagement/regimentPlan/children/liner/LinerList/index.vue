@@ -169,6 +169,7 @@ export default {
       let conditions= this.getListActionConditions();
       getSkuPlanListPage(conditions)
       .then(res => {
+        console.log('res',res)
         let { total, list }= res;
         this.pageInfo.total= total;
         this.tableData= list.map(this.listAdaptor);
@@ -180,11 +181,13 @@ export default {
     },
 
     listAdaptor(item){
+      console.log('beforeItem',item.bill_status)
       let { set_out_year, set_out_month, set_out_day }= item;
-      item.status= Random.integer(1, 5);
+      // item.status= Random.integer(1, 5);
       item.statusText= PLAN_STATUS.getLabel(item.status);
       item.bill_status= CHECK_STATUS.getLabel(item.bill_status);
       item.time= set_out_year+ set_out_month.padStart(3, '-0')+ set_out_day.padStart(3, '-0');
+        // console.log('afterItem',item)
       return item;
     }
   }

@@ -347,7 +347,8 @@
                 console.log(error);
               });
             })
-            that.totalMoney = moneyAll.toFixed(2);
+             // 2020-4-21 总计添加定时器 解决forEach 异步
+            setTimeout(function(){   that.totalMoney = moneyAll.toFixed(2); }, 1000);
           } else {
             that.$message.success("加载数据失败~");
           }

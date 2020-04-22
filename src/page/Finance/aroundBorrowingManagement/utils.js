@@ -17,8 +17,12 @@ export const getApprovalTime= (jq_id,jQ_Type) =>{
            */
           "jQ_Type": jQ_Type 
         }, ).then(response =>{
+          console.log('response',response)
             // console.log('获取工作流res',new moment(response.data.list[0].finishTime).format('YYYY-MM-DD h:mm:ss'))
             res(new moment(response.data.list[0].finishTime).format('YYYY-MM-DD h:mm:ss'))
+            //2020-4-21 添加catch 打印出错信息
+           }).catch((errmsg)=>{
+            console.log('errmsg',errmsg)
            })
        })
     }

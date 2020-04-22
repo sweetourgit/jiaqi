@@ -330,10 +330,11 @@
             that.pageCount = response.data.data.total - 0;
             let moneyAll = 0;
             that.tableData.forEach( async function (item, index, arr) {
+              console.log('item',item)
               // 2020-4-20 添加审批时间字段
                item.approval_at= await getApprovalTime(item.id,1)
               moneyAll += parseFloat(item.loan_money);
-              
+              console.log('moneyAll',moneyAll)
               // item.receivables_at = formatDate(new Date(item.receivables_at*1000));
               // item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
@@ -379,7 +380,8 @@
                 console.log(error);
               });
             })
-            that.totalMoney = moneyAll.toFixed(2);
+            // 2020-4-21 总计添加定时器 解决forEach 异步
+            setTimeout(function(){   that.totalMoney = moneyAll.toFixed(2); }, 1000);
           } else {
             that.$message.success("加载数据失败~");
           }
