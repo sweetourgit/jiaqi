@@ -24,7 +24,7 @@ export default {
     navLeft
   },
   created() {
-    this.getBrowserInfo()
+    // this.getBrowserInfo()
   },
   watch:{
     $route: {
