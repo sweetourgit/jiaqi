@@ -207,23 +207,8 @@
         </div> 
       </div> 
     </el-dialog>
-
-
-
-
-
-
-
-
-
-
-           
-   
 </div>
- 
-
 </template>
-
 <script scoped>
   import Swiper from "swiper"
   import 'swiper/dist/css/swiper.min.css';
@@ -314,10 +299,10 @@
         this.pageIndex = 1;
         this.albumPage(1,val,this.data.id,this.searchName);
       },
-      handleCurrentChange(val){
+      handleCurrentChange (val) {
         this.albumPage(val,this.pageSize,this.data.id,this.searchName);
       },
-      albumtypeget(){
+      albumtypeget () {
         this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/albumtypeget').then(res => {
             if(res.data.isSuccess == true){
                this.albumtype=res.data.objects
@@ -326,16 +311,14 @@
             console.log(err)
         })
       },
-      // 关闭相册弹窗
-      albumClose(){
+      albumClose () {
         this.$refs["picForm"].resetFields();
         this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
         this.addAlbum = false;
         this.leftTree1=false; 
         this.isDest = '';
         },
-      // 相册添加成功
-      albumInsert(formName){
+      albumInsert (formName) {
         if(this.picForm.destinationId == 0) {
           this.isDest = 'destint'
         } else {
@@ -370,11 +353,10 @@
           }
         })
       },
-      loadNode1(node, resolve) {
+      loadNode1 (node, resolve) {
         this.node = node.data
         this.resolve = resolve
         this.level = node.level
-        /*添加第一级*/
         if (node.level === 0) {
           this.list=[];
           this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",{
@@ -407,8 +389,7 @@
           );
         }
       },
-      /*获取子集的方法*/
-      getSon(key, label, id, isLeaf, resolve, level){
+      getSon (key, label, id, isLeaf, resolve, level) {
         this.$http.post(this.GLOBAL.serverSrc + "/universal/area/api/areainforlist",
           {
             "object": {
@@ -437,24 +418,19 @@
           console.log(error);
         });
       },
-      // 单击tree节点
-      treeClick(data,node){  
+      treeClick (data,node) {  
       console.log(data)
         if (data.isLeaf == 1) {
-              //添加相册tree
               this.picForm.destination=data.name;
               this.picForm.destinationId=data.id;
-              // 选中后赋值样式
               this.isDest = 'destints';
               this.leftTree1=false; 
             if(this.getAlbumForm == true){
-             //修改相册tree
               this.albumInfo.areaName=data.name;
               this.albumInfo.areaID=data.id;
               this.leftTree2=false;
            }else{
               this.data = data;
-             //左侧导航tree
               this.geography = 1;
               this.searchName = "";
               this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
@@ -485,12 +461,11 @@
       //     }
       //   }
       // },
-      sealbumPage(){
+      sealbumPage () {
         this.geography = 1;
         this.albumPage(this.pageIndex,this.pageSize,0,this.searchName);
       },
-      //相册list
-      albumPage(pageIndex=this.pageIndex,pageSize=this.pageSize,areaID=0,name=""){
+      albumPage (pageIndex=this.pageIndex,pageSize=this.pageSize,areaID=0,name="") {
         this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/page',{
             "pageIndex": pageIndex,
             "pageSize": pageSize,
@@ -511,8 +486,7 @@
             console.log(err)
           })
       },
-      //获取一个相册信息
-      getAlbum(id){ 
+      getAlbum (id) { 
         this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/get',{
             "id": id,
           }).then(res => {
@@ -541,7 +515,7 @@
             console.log(err)
           })
       },
-      saveAlbum(){
+      saveAlbum () {
         if(this.albumDisabled){
           this.albumDisabled=false;
           this.saveAlbumBut="保存属性";
@@ -568,14 +542,14 @@
           })          
         }        
       },
-      albumInfoClose(){//关闭相册弹窗
+      albumInfoClose () {
         this.albumPage(this.pageIndex,this.pageSize,this.data.id?this.data.id:0,this.searchName);
         this.getAlbumForm = false;
         this.leftTree2=false; 
         this.albumDisabled=true;
         this.saveAlbumBut="修改属性";
       },
-      mySwiper(index){
+      mySwiper (index) {
          var galleryThumbs = new Swiper('.gallery-thumbs', {
             spaceBetween: 10,
             slidesPerView: 4,
@@ -584,14 +558,14 @@
             watchSlidesProgress: true,
             slideToClickedSlide: true,
             initialSlide: index,  
-            observer:true,//修改swiper自己或子元素时，自动初始化swiper 
-            observeParents:true,//修改swiper的父元素时，自动初始化swiper 
+            observer:true, 
+            observeParents:true,
           });
           var galleryTop = new Swiper('.gallery-top', {
             spaceBetween: 10,
             initialSlide: index,  
-            observer:true,//修改swiper自己或子元素时，自动初始化swiper 
-            observeParents:true,//修改swiper的父元素时，自动初始化swiper 
+            observer:true, 
+            observeParents:true,
             navigation: {
               nextEl: '.swiper-button-next',
               prevEl: '.swiper-button-prev',
@@ -601,21 +575,20 @@
             }
           });
       },
-      slideTo(index){
+      slideTo (index) {
          this.getPicture(index);
       },
-      prevSwiper(){
+      prevSwiper () {
         this.getPicture(this.activeIndex-1);
       },
-      nextSwiper(){
+      nextSwiper () {
         this.getPicture(this.activeIndex+1);
       },
-      pictureFormClose(){
+      pictureFormClose () {
         this.fileList = [];
         this.getPictureForm=false;
       },
-      //查询一个素材信息
-      getPicture(index){
+      getPicture (index) {
         this.picDisabled=true;
         this.savPicBut="修改属性";
         this.$http.post(this.GLOBAL.serverSrc + '/tpk/picture/api/get',{
@@ -631,8 +604,7 @@
              }
           })
       },
-      //删除一张照片
-      delPic(){
+      delPic () {
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -656,8 +628,7 @@
           });
         });
       },
-      //保存照片信息
-      savPic(){
+      savPic () {
         if(this.picDisabled){
           this.picDisabled=false;
           this.savPicBut="保存属性";
@@ -691,8 +662,7 @@
           })          
         }  
       },
-      //获取公司
-      getCompany(){
+      getCompany () {
         this.$http.post(this.GLOBAL.serverSrc + '/tpk/picture/api/companyget')
         .then(res => {
             this.insertCheCompany=[];
@@ -702,22 +672,20 @@
             }            
           })
       },
-      //添加素材弹窗
-      createPic(){
+      createPic () {
         this.getPictureForm=true;
       },
-      handleError(err, file) {
+      handleError (err, file) {
           console.log('失败')
           this.fileList = []
       },
-      handleSuccess(res, file ,fileList) {
-          //多次添加图片判断，如果是第一次添加修改全部图片数据，否则修改新添加项数据            
-          if(this.time!=fileList.length){  //多张图片情况只在第一次执行数组操作，用time标识
+      handleSuccess (res, file ,fileList) {            
+          if(this.time!=fileList.length){  
             this.time=fileList.length;         
             if(this.fileList.length==0){
                this.fileList=fileList;
             }else{
-               this.len=this.fileList.length;  //len循环初始值
+               this.len=this.fileList.length; 
                for(let i=this.len;i<fileList.length;i++){
                  this.fileList.push(fileList[i]);
                }
@@ -733,15 +701,13 @@
            this.$set(this.fileList[i],"length",paths.Length);
            this.$set(this.fileList[i],"name",paths.Name);
           }
-          this.uid=fileList[0].uid;  //编辑上传图片时默认到第一张图片  
+          this.uid=fileList[0].uid;  
           
       },
-      //选中待上传的图片
-      handlePreview(file) {
+      handlePreview (file) {
         this.uid=file.uid;
       },
-      //删除待上传的图片
-      handleRemove(file, fileList) {
+      handleRemove (file, fileList) {
         this.uid=fileList[0].uid;
         for(let i=0;i<this.fileList.length;i++){
            if(file.uid==this.fileList[i].uid){
@@ -750,12 +716,11 @@
         }       
         this.time=this.fileList.length;       
       },
-      //添加素材
-      pictureInsert(){
+      pictureInsert () {
         // if(value.length > 20) {
         //   this.pictureName = true;
         // }
-        let pictureList=[];  //图片数据字段转换
+        let pictureList=[];  
         let fileList=this.fileList;
         for(let i=0;i<fileList.length;i++){
            let picture={};
@@ -796,15 +761,6 @@
           })
           
       },
-
-      
-  
-
-
-
-
-  
-    
     }    
   }
 </script>
