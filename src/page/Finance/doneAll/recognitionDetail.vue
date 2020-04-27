@@ -1,18 +1,8 @@
 <template>
   <div class="vivo" style="position:relative">
-    <!--认收款-->
     <el-dialog title="查看认款详情" :visible="dialogFormVisible" width=90% @close="closeAdd" append-to-body>
       <div class="tableDv">
-        <!-- 中国银行认款信息 -->
         <el-table v-if="isShowZH" :data="tableDataZH" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content1">
-          <!-- <el-table-column label="操作" width="100" align="center" fixed>
-            <template slot-scope="scope">
-              <el-button @click="chooseRecognition(scope.row)" type="text" size="small" class="table_details">选择</el-button>
-              <el-button type="text" size="small" class="table_details" disabled>已选</el-button>
-            </template>
-          </el-table-column> -->
-          <!-- <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
-          </el-table-column> -->
           <el-table-column prop="transaction_reference_number" label="交易流水号" align="center">
           </el-table-column>
           <el-table-column prop="transaction_Date" label="交易日期" align="center">
@@ -57,19 +47,7 @@
           </el-table-column>
         </el-table>
 
-        <!-- 兴业银行认款信息 -->
         <el-table v-if="isShowXY" :data="tableDataXY" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content2">
-          <!-- <el-table-column label="操作" width="140" align="center" fixed>
-            <template slot-scope="scope">
-              <el-button @click="choose(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference != '收付直通车支付结算'">选择</el-button>
-              <el-button @click="payDetail(scope.row)" type="text" size="small" class="table_details" v-if="scope.row.reference == '收付直通车支付结算'">查看微信支付宝明细</el-button>
-              <el-button @click="deleteFun(scope.row)" type="text" size="small" class="table_details" disabled>已选</el-button>
-            </template>
-          </el-table-column> -->
-          <!-- <el-table-column prop="account_balance" label="剩余金额" align="center">
-          </el-table-column> -->
-          <!-- <el-table-column prop="purpose_fee" label="手续费" align="center">
-          </el-table-column> -->
           <el-table-column prop="bank_serial_number" label="银行流水号" align="center">
           </el-table-column>
           <el-table-column prop="reference" label="摘要" align="center">
@@ -110,16 +88,7 @@
           </el-table-column>
         </el-table>
 
-        <!-- 微信支付宝明细认款信息 -->
         <el-table v-if="isShowMX" :data="tableDataMX" border max-height="700" :highlight-current-row="true" :header-cell-style="getRowClass" :stripe="true" id="table-content3">
-          <!-- <el-table-column label="操作" width="100" align="center" fixed>
-            <template slot-scope="scope">
-              <el-button @click="orderDetail(scope.row)" type="text" size="small" class="table_details">选择</el-button>
-              <el-button type="text" size="small" class="table_details" disabled>已选</el-button>
-            </template>
-          </el-table-column> -->
-          <!-- <el-table-column prop="surplus_Amount" label="剩余金额" align="center">
-          </el-table-column> -->
           <el-table-column prop="transaction_time" label="交易时间" align="center">
             <template slot-scope="scope">
               <span>{{scope.row.transaction_time.split('T')[0] + ' ' + scope.row.transaction_time.split('T')[1]}}</span>
@@ -200,7 +169,6 @@
       }
     },
     computed: {
-      // 计算属性的 getter
     },
     watch: {
       dialogFormVisible: {
@@ -221,7 +189,6 @@
     created(){
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -236,20 +203,6 @@
 
       loadData(){
         const that = this;
-        // console.log(this.msg.id);
-       /* const data = JSON.parse(localStorage.getItem(this.msg.id));
-        // console.log(data);
-        if(data.type === 0){
-          that.tableDataZH[0] = data.row;
-          that.isShowZH = true;
-        }else if(data.type === 1){
-          that.tableDataXY[0] = data.row;
-          that.isShowXY = true;
-        }else if(data.type === 2){
-          that.tableDataMX[0] = data.row;
-          that.isShowMX = true;
-        }*/
-
         this.$http.post(this.GLOBAL.serverSrc + "/finance/bankofchina/api/FindFlow", {
           "id": this.msg.id
         }, ).then(function(response) {
@@ -277,9 +230,6 @@
         });
       }
     },
-    created(){
-
-    }
   }
 
 </script>

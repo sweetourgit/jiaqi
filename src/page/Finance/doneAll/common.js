@@ -9,11 +9,10 @@ export default {
   },
   filters: {
     numFilter (value) {
-      // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
     },
-    formatDate: function (value) {//截取详情时间格式
+    formatDate: function (value) {
       return moment(value).format('YYYY-MM-DD')
     },
     formatDateCreateAn: function (value) {
