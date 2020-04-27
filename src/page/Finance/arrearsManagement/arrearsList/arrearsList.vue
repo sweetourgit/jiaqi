@@ -1,27 +1,21 @@
 <template>
   <div>
     <div class="demo-input-suffix">
-      <!--供应商-->
       <span class="search-title">供应商</span>
       <el-input placeholder="请输入" v-model="supplierName" class="group-no"></el-input>
-      <!--团期计划-->
       <span class="search-title">团期计划</span>
       <el-input placeholder="请输入" v-model="groupCode" class="group-no"></el-input>
-      <!--操作-->
       <span class="search-title">操作</span>
       <el-input placeholder="请输入" v-model="op" class="group-no"></el-input>
-      <!--出行日期-->
       <span class="search-title">起始时间</span>
       <el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"
                       align="right" class="group-no" style="width:380px;"></el-date-picker>
       <br />
-      <!--搜索-->
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
       <el-button type="primary" plain @click="reset">重置</el-button>
     </div>
     </br></br>
     <el-button type="primary" :disabled="forbidden" @click="operation">查看关联单据</el-button>
-    <!--list-->
     <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
       <el-table-column prop="id" label="欠款单号" min-width="60" header-align="center"></el-table-column>
       <el-table-column prop="groupCode" label="团期计划" min-width="140" header-align="center"></el-table-column>
@@ -47,11 +41,6 @@
                    :total="total">
     </el-pagination>
     <arrears-detail :paymentID="paymentID" :variable="variable"></arrears-detail>
-
-
-
-
-
   </div>
 </template>
 
@@ -99,7 +88,7 @@
       getCellClass(){
         return 'textAlign:center'
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun(val) {  
         this.multipleSelection=val;
         if(this.multipleSelection.length>0){
           this.forbidden=false;
@@ -107,11 +96,11 @@
           this.forbidden=true;
         }
       },
-      clickRow(row){    //选中行复选框勾选
+      clickRow(row){   
         this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){  
         for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
             return { "background-color": "#ecf5ff" }

@@ -80,7 +80,6 @@ export default {
 
   data(){
     return Object.assign(
-      // 数据
       {
         submitForm: {
           name: null,
@@ -89,7 +88,6 @@ export default {
           supplierType: null,
         }
       },
-      // options
       {
         SupplierTypeOptions: [],
         IsMonthlyOptions: [],
@@ -118,7 +116,6 @@ export default {
       }
     },
 
-    // 业务有关方法
     {
       makeOptions(){
         Promise.all([

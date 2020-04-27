@@ -5,9 +5,9 @@
     padding: 10px 0;
   }
   .no-wrap{
-    word-break:keep-all;/* 不换行 */
-    white-space:nowrap;/* 不换行 */
-    overflow:hidden;/* 内容超出宽度时隐藏超出部分的内容 */
+    word-break:keep-all;
+    white-space:nowrap;
+    overflow:hidden;
     text-overflow:ellipsis;
   }
 }
@@ -102,11 +102,9 @@ export default {
 
   data(){
     return Object.assign(
-      // 分页信息
       {
         pageInfo: getPageInfo(),
       },
-      // 数据
       {
         tableData: [],
       }
@@ -130,7 +128,6 @@ export default {
         return result;
       },
 
-      // 重现条件和页数
       reappearConditions(payload){
         let { conditions, pageInfo }= payload;
         this.$refs.searchConditions.init(conditions);
@@ -142,7 +139,6 @@ export default {
         this.getListAction();
       },
 
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -200,7 +196,6 @@ export default {
         }).join(`,`)
       },
 
-      // 导向新增，携带本页当前状态
       routerToAdd(){
         let conditions= JSON.stringify( this.$refs.searchConditions.getConditions() );
         let pageInfo= JSON.stringify( this.pageInfo );

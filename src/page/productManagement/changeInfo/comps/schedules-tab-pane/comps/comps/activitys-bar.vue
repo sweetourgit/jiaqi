@@ -99,7 +99,6 @@
 </template>
  
 <script>
-// 第三方组件
 import VueEditor from '@/components/tinymce'
 import imageInput from './image-input'
 

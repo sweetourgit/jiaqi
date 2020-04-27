@@ -72,7 +72,6 @@
         </el-table>
       </el-form>
     </el-dialog>
-    <!--添加订单弹窗-->
     <el-dialog title="添加订单" :visible="addOrderShow" style="margin:-80px 0 0 0;" width=1100px :show-close="false" custom-class="city_list" class="addReceivables" @close="closeOrderShow()">
       <div class="cancel">
         <el-button class="ml13" @click="closeOrderShow()">取 消</el-button>
@@ -139,22 +138,22 @@ export default {
     return {
       dialogFormVisible :false,
       ruleForm:{
-        unitPersonal:'1', // 单位/个人
-        invoiceTitle:'', //发票抬头
-        taxpayerNumber:'', // 纳税人识别号
-        phone:'', // 手机号
-        account:'', // 账号
-        partCardBank:'', // 开户行
-        address:'', // 地址
-        invoicePrice:'', // 开票金额
-        invoiceType:'1', // 发票类型
-        invoiceProject:'1', // 发票项目
+        unitPersonal:'1', 
+        invoiceTitle:'', 
+        taxpayerNumber:'', 
+        phone:'', 
+        account:'', 
+        partCardBank:'', 
+        address:'', 
+        invoicePrice:'', 
+        invoiceType:'1', 
+        invoiceProject:'1', 
       },
-      invoiceTypeList:[{ // 发票类型
+      invoiceTypeList:[{ 
         value: '1',
         label: '纸质发票'
       }],
-      projectList:[{ // 发票项目
+      projectList:[{ 
         value: '1',
         label: '旅游费'
       }],
@@ -185,29 +184,28 @@ export default {
       forbidden: true,
       tableDate:[],
       tableDatebox:[],
-      addOrderShow:false, // 添加订单弹窗
-      find:0,//没内容隐藏
-      orderID:'', // 添加订单中订单ID
-      merchantsName:'', // 添加订单中商户名称
-      collectionNumber:'', // 添加订单中收款单号
-      multipleSelection: [],   //选中的list
+      addOrderShow:false, 
+      find:0,
+      orderID:'', 
+      merchantsName:'', 
+      collectionNumber:'', 
+      multipleSelection: [],   
       addOrderTable:[],
       newtabledate:[],
       collectionID:'',
       nape:0,
-      residuePrice:0, // 获取添加订单剩余开票金额总和
-      residuePD:0,//选择后的总价格
-      loadingbut:false,//审核提交加载中
+      residuePrice:0, 
+      residuePD:0,
+      loadingbut:false,
 	    loadingbuttext:'申 请',
     };
   },
   filters: {
     numFilter (value) {
-      // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
     },
-    formatDate01: function (value) {//截取详情时间格式
+    formatDate01: function (value) {
       return moment(value).format('YYYY-MM-DD')
     }
   },
@@ -219,7 +217,7 @@ export default {
   created() {
   },
   methods: {
-    formatDate(date) {//时间转化
+    formatDate(date) {
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       m = m < 10 ? "0" + m : m;
@@ -233,7 +231,7 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
       } else {
@@ -243,7 +241,7 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    rowClass({row, rowIndex}){  //选中行样式改变
+    rowClass({row, rowIndex}){ 
      for(var i=0;i<this.multipleSelection.length;i++){
         if(this.multipleSelection[i].collectionID==row.collectionID){
            return { "background-color": "#ecf5ff" }
@@ -251,10 +249,9 @@ export default {
       }
     },
     changeFun(val) {
-      //保存选中项的数据
       this.multipleSelection = val;
     },
-    clickRow(row) {//选中行复选框勾选
+    clickRow(row) {
       this.$refs.multipleTable.toggleRowSelection(row);
       let arr = {} ;
       
@@ -268,18 +265,18 @@ export default {
       this.$parent.pageList();
        
     },
-    ruleNull(){ // 清空内容
+    ruleNull(){ 
             this.ruleForm= {
-                  unitPersonal:'1', // 单位/个人
-                  invoiceTitle:'', //发票抬头
-                  taxpayerNumber:'', // 纳税人识别号
-                  phone:'', // 手机号
-                  account:'', // 账号
-                  partCardBank:'', // 开户行
-                  address:'', // 地址
-                  invoicePrice:'', // 开票金额
-                  invoiceType:'1', // 发票类型
-                  invoiceProject:'1', // 发票项目
+                  unitPersonal:'1', 
+                  invoiceTitle:'', 
+                  taxpayerNumber:'', 
+                  phone:'', 
+                  account:'', 
+                  partCardBank:'',
+                  address:'', 
+                  invoicePrice:'',
+                  invoiceType:'1', 
+                  invoiceProject:'1',
                   }
     },
     closeApply(ruleForm){
@@ -356,19 +353,19 @@ export default {
         "object": {
           "receipt":{
                 "createTime":mydatas,
-                "invoiceType":ruleForm.unitPersonal,//单位个人
-                "invoiceID":ruleForm.invoiceType,//发票类型
-                "taxpayerIDNumber":ruleForm.taxpayerNumber,//纳税人识别号
-                "invoiceHeader":ruleForm.invoiceTitle,//发票抬头
-                "tel":ruleForm.phone,//手机号
-                "invoiceItem":ruleForm.invoiceProject,//发票项目
-                "invoicePrice":ruleForm.invoicePrice,//发票金额
-                "cardNumber":ruleForm.account,//账号
-                "bankName":ruleForm.partCardBank,//开户行
-                "address":ruleForm.address,//地址
-                "userCode":sessionStorage.getItem('userCode'),//申请人
-                "cosList":this.newtabledate,//关联订单
-                "receiptType":2,//发票申请
+                "invoiceType":ruleForm.unitPersonal,
+                "invoiceID":ruleForm.invoiceType,
+                "taxpayerIDNumber":ruleForm.taxpayerNumber,
+                "invoiceHeader":ruleForm.invoiceTitle,
+                "tel":ruleForm.phone,
+                "invoiceItem":ruleForm.invoiceProject,
+                "invoicePrice":ruleForm.invoicePrice,
+                "cardNumber":ruleForm.account,
+                "bankName":ruleForm.partCardBank,
+                "address":ruleForm.address,
+                "userCode":sessionStorage.getItem('userCode'),
+                "cosList":this.newtabledate,
+                "receiptType":2,
                 },
             "cosList":this.newtabledate
          
@@ -419,18 +416,18 @@ export default {
     addOrderopen(){
       this.addOrderShow = true;
    },
-    orderSearch(){ // 添加订单搜索
+    orderSearch(){ 
       this.addOrder();
        this.find = 1;
     },
-    orderReset(){ // 添加订单重置
+    orderReset(){ 
       this.orderID = '';
       this.merchantsName = '';
       this.collectionNumber = '';
       this.addOrder();
       this.find = 0;
     },
-    allChoose(row){ // 添加订单全选
+    allChoose(row){ 
       let arr = [...this.addOrderTable];
       for( var i = 0 ; i < arr.length ; i ++){
         arr[i].choose=true;
@@ -439,7 +436,7 @@ export default {
       this.nape = arr.length;
       this.price();
     },
-    cancelChoose(){ // 添加订单取消全选
+    cancelChoose(){ 
       let arr = [...this.addOrderTable];
       for( var i = 0 ; i < arr.length ; i ++){
         arr[i].choose=false;
@@ -448,7 +445,7 @@ export default {
       this.nape = 0;
       this.price();
     },
-    napeNumber(){ // 添加订单选择获取几项数据
+    napeNumber(){ 
       let count = 0;
       for( var i = 0 ; i < this.addOrderTable.length ; i ++){
         if(this.addOrderTable[i].choose==true){
@@ -457,7 +454,7 @@ export default {
       }
       this.nape = count;
     },
-    price(){ // 添加订单获取剩余开票金额总和
+    price(){ 
       this.residuePrice = 0 ;
       for( var i = 0 ; i < this.addOrderTable.length ; i ++){
         if(this.addOrderTable[i].choose==true){
@@ -490,13 +487,13 @@ export default {
        }
       
     },
-    price_ed(){ // 添加订单获取剩余开票金额总和
+    price_ed(){ 
       this.residuePD = 0 ;
       for( var i = 0 ; i < this.tableDate.length ; i ++){
            this.residuePD += Number(this.tableDate[i].syje);
       }
     },
-    closeOrderShow(){ // 关闭添加订单弹窗
+    closeOrderShow(){ 
       this.addOrderShow = false;
       this.residuePrice = 0 ;
       this.newtabledate = [];
@@ -506,7 +503,7 @@ export default {
       this.addOrderTable = [] ;
       this.nape= 0 ;
     },
-    closeOrderadd(){// 确认添加订单
+    closeOrderadd(){
     if(this.tableDate.length == 0 ){
        this.tableDate =  this.tableDatebox;
         this.addOrderShow = false;

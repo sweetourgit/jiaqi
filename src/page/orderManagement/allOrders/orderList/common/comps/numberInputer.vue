@@ -46,7 +46,6 @@ export default {
     changeHandler(nval, oval){
       console.log('changeHandler')
       let varied;
-      // 未输入值就blur的情况
       if(this.$isNull(nval)){
         this.$refs.mainer.focus();
         return this.$nextTick(() => this.num= oval);

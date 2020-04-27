@@ -2,7 +2,6 @@
    <div  class="distributor-content" style="position:relative; width:100%;">
      <div label="商户欠款订单">
   
-       <!-- 搜索表单 -->
           <el-form :model="ruleForm" ref="ruleForm"  label-width="80px" id="form-content">
             <el-row type="flex" class="row-bg">
               <el-col :span="8">
@@ -55,7 +54,6 @@
             </el-row>
           </el-form>
  
-        <!--表格-->
     <div class="table_style">
          <el-table 
          :data="tableData" 
@@ -110,13 +108,11 @@
   </div>
 </template>
 <style scoped>
-  /*搜索框*/
   .search_input{ width: 200px;float:left; line-height: 30px;margin: 0 0 0 10px; }
   .fl{float:left; margin: 20px 0 20px 0;}
   .emptyPlan{margin: 0 0 0 30px; float:left; width:80px; text-align:right; line-height:40px;}
   .planTime{width: 135px; line-height: 30px;margin: 0 0 0 10px;}
   .time{margin: 0 0 0 10px;}
-  /*表格*/
   .table_style {width: 98%;margin-left: 20px;margin-top: 20px;}
   .labelTable{margin: 20px 30px 100px 0;overflow: hidden;clear:both;}
   .pageList{float:right; margin: -70px 0 60px 0;}
@@ -155,16 +151,15 @@ export default {
   data() {
      return {
        activeName: 'first',
-       //搜索栏
        ruleForm: {
-        orderid:"",//订单id
-        ordertitle:'',//商户名称
-        planTime:"",//time
-        typeColl:-1, //欠款逾期
-        settlement:-1,//结款类型
+        orderid:"",
+        ordertitle:'',
+        planTime:"",
+        typeColl:-1, 
+        settlement:-1,
        },
-      amendTime:'',//修改时间
-       dialogFormVisible:false,//修改时间弹框
+      amendTime:'',
+       dialogFormVisible:false,
        
         moneydata:[{
           value:  -1,
@@ -186,10 +181,9 @@ export default {
           value:  0,
           label: '有逾期'
          }],
-        tableData:[],//列表数据
-        //分页
-        pageSize:10, // 设定默认分页每页显示数
-        pageIndex: 1, // 设定当前页数
+        tableData:[],
+        pageSize:10, 
+        pageIndex: 1, 
         total: 0,
         currentPage4:1,
         
@@ -200,23 +194,22 @@ export default {
   },
   mounted () {
   },
-  filters: {// 时间过滤
+  filters: {
       formatDate: function (value) {
         return moment(value).format('YYYY-MM-DD HH:mm:ss')
       },
     },
   methods: {
         moment,
-      //查询列表
       pageList(
             pageIndex = this.pageIndex,
             pageSize = this.pageSize,
-            orderCode = this.ruleForm.orderid,//订单id
-            localComp = this.ruleForm.ordertitle,//商户名称
-            startDate= this.startDate,//开始时间
-            endDate = this.endDate,//结束时间
-            typeColl=this.ruleForm.typeColl,//选择逾期
-            settlement=this.ruleForm.settlement,//结款方式
+            orderCode = this.ruleForm.orderid,
+            localComp = this.ruleForm.ordertitle,
+            startDate= this.startDate,
+            endDate = this.endDate,
+            typeColl=this.ruleForm.typeColl,
+            settlement=this.ruleForm.settlement,
         ){
             var that = this;
             let object={};
@@ -255,20 +248,20 @@ export default {
                   let arrears = obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice;
                       arrears = arrears.toFixed(2);  
                   that.tableData.push({
-                        ID:obj.data.objects[j].orderCode,//id+
-                        planid:obj.data.objects[j].id,//id+
-                        name:obj.data.objects[j].localComp,//商户名称+
-                        moneyType:moneyType,//结款方式+
-                        productName:obj.data.objects[j].title, //产品名称+
-                        plan:obj.data.objects[j].groupCode,//团期计划
-                        order:obj.data.objects[j].orderPrice.toFixed(2),//订单金额+
-                        //arrears: obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice, //欠款金额
-                        arrears: arrears, //欠款金额
-                        also:obj.data.objects[j].collectionPrice.toFixed(2), //已还金额
-                        examine:obj.data.objects[j].approvedPrice.toFixed(2),//待审批金额
-                        arrearsDate:obj.data.objects[j].createDate,//欠款日期
-                        alsoDate:obj.data.objects[j].arrearsDate,//应还日期
-                        date:nawdata,//出团日期
+                        ID:obj.data.objects[j].orderCode,
+                        planid:obj.data.objects[j].id,
+                        name:obj.data.objects[j].localComp,
+                        moneyType:moneyType,
+                        productName:obj.data.objects[j].title, 
+                        plan:obj.data.objects[j].groupCode,
+                        order:obj.data.objects[j].orderPrice.toFixed(2),
+                        //arrears: obj.data.objects[j].orderPrice - obj.data.objects[j].collectionPrice, 
+                        arrears: arrears, 
+                        also:obj.data.objects[j].collectionPrice.toFixed(2), 
+                        examine:obj.data.objects[j].approvedPrice.toFixed(2),
+                        arrearsDate:obj.data.objects[j].createDate,
+                        alsoDate:obj.data.objects[j].arrearsDate,
+                        date:nawdata,
                   })
                 }
               })
@@ -290,7 +283,6 @@ export default {
               } 
           },
       
-    //重置
     emptyButton(){
       this.ruleForm.orderid ='',
       this.ruleForm.ordertitle ='',
@@ -302,7 +294,6 @@ export default {
       this.ruleForm.settlement = -1;
       this.pageList(1, this.pageSize);
     },
-    //判断结束时间不能在开始时间之前
     endDateChange() {
      if (this.ruleForm.planTime == null){
               this.ruleForm.planTime = "";
@@ -315,21 +306,21 @@ export default {
             // }
          }
     },
-    handleSearch() {// 搜索
+    handleSearch() {
             this.pageIndex = 1;
             this.currentPage4 = 1;
             this.pageList(1, this.pageSize);
             
     },
-    exportSearch(){ // 导出
+    exportSearch(){ 
             let that = this;
             let object={};
-            let orderCode = this.ruleForm.orderid;//订单id
-            let localComp = this.ruleForm.ordertitle;//商户名称
-            let startDate= this.startDate;//开始时间
-            let endDate = this.endDate;//结束时间
-            let typeColl=this.ruleForm.typeColl;//选择逾期
-            let settlement=this.ruleForm.settlement;//结款方式
+            let orderCode = this.ruleForm.orderid;
+            let localComp = this.ruleForm.ordertitle;
+            let startDate= this.startDate;
+            let endDate = this.endDate;
+            let typeColl=this.ruleForm.typeColl;
+            let settlement=this.ruleForm.settlement;
             if(endDate == undefined && startDate == undefined ){
                     endDate = 0
                     startDate = 0
@@ -364,29 +355,29 @@ export default {
         
             
     },
-    handleSizeChange(val) { //分页
+    handleSizeChange(val) { 
     //console.log(val,'8585')
      this.pageSize = val;
             this.currentPage4 = 1
           this.pageList();
         },  
-     handleCurrentChange(val) { // 换每页数量
+     handleCurrentChange(val) { 
       //console.log(val,'8787')
           this.currentPage4 = val;
           this.pageList();
         },
-     dateFormat: function(row, column) { // 起始时间格式转换
+     dateFormat: function(row, column) { 
           let date = row[column.property];
           if(date == undefined || date == '') {
             return '';
           }
           return moment(date).format('YYYY-MM-DD')
         },
-    dialogchange(id) {  // 修改时间弹窗
+    dialogchange(id) {  
          this.planid = id.row.planid 
          this.dialogFormVisible = true;
         },
-         // 表格头部背景颜色
+         
     getRowClass({row, column, rowIndex, columnIndex}) {
       if (rowIndex == 0) {
         return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -394,7 +385,7 @@ export default {
         return ''
       }
     },
-    chanceSubmit() { // 取消按钮
+    chanceSubmit() { 
             this.$confirm("是否取消修改时间", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
@@ -413,7 +404,7 @@ export default {
           
          
         },
-    submitForm(amendTime){//提交修改时间
+    submitForm(amendTime){
         let myDate = new Date();
         let amendTime_s = moment(amendTime).format("YYYYMMDD");
         let mydatas = moment(myDate).format("YYYYMMDD");

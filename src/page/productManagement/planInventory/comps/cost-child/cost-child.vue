@@ -140,12 +140,10 @@ export default {
 
     saveRateAction(){
       let rate= this.vm.rate;
-      // 未过验证
       if(!this.vm.rateReg.test(rate+ '')){
         this.vm.rate= this.checkProto.rate;
         return this.$message.error('请输入正确的毛利率格式');
       };
-      // 未变化
       if(this.checkProto.rate=== parseFloat(rate)) return;
       let { id }= this.checkProto;
       saveRate({ id, rate }).then(() => {

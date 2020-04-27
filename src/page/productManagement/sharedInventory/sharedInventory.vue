@@ -200,13 +200,11 @@
     </main>
     <footer>
       
-      <!-- 添加表单 -->
       <add-inventory-form
         ref="addRef"
         @add-callback="emitAddCallback"
       ></add-inventory-form>
       
-      <!-- 编辑表单 -->
       <edit-inventory-form
         ref="editRef"
         :proto="current"
@@ -226,13 +224,11 @@ export default {
   components: { sharedHeader, addInventoryForm, editInventoryForm },
 
   mounted(){
-    // 修改页面高度问题
     document.querySelector(".content-body1").style.height= "100%";
     this.init();
   },
 
   beforeDestroy(){
-    // 修改页面高度问题
     document.querySelector(".content-body1").style.height= null;
   },
 
@@ -240,12 +236,11 @@ export default {
     return {
       vm: {
         mainAsync: false,
-        index: null,  // 左侧菜单指针
+        index: null, 
         currentDate: new Date(),
         teamId: null,
       },
       inventorys: [],
-      // 当前选择的库存
       current: {},
       plans: []
     }
@@ -264,34 +259,25 @@ export default {
       dcRef.init(timestamp);
     },
 
-    // 唤醒新增界面
     wakeAddForm(){
       this.$refs.addRef.handleOpen(this.vm.currentDate);
     },
 
-    // 唤醒编辑界面
     wakeEditForm(){
       this.$refs.editRef.handleOpen(this.vm.currentDate);
     },
 
-    /**
-     * @description: $refs.addRef添加动作成功后提交
-     */
     emitAddCallback(payload){
       let { date, id }= payload;
       this.$refs.dateControllerRef.init(date);
     },
 
-    /**
-     * @description: $refs.dateControllerRef时间改变时提交
-     */
     emitSubmitInventory(day){
       let { children, date }= day;
       this.vm.index= null;
       this.vm.currentDate= date;
       this.inventorys.splice(0);
       children && this.inventorys.push(...children);
-      // 如果指定了inventoryId, 则选中，否则选中第一个
       let pointer= 0;
       if(this.vm.inventoryId){
         pointer= children.findIndex(child => child.id=== this.vm.inventoryId);
@@ -300,17 +286,10 @@ export default {
       this.selectInventory(pointer);
     },
 
-    /**
-     * @description: 面板收起则将异步loading显示在main上
-     */
     emitInAsync(bol){
       this.vm.mainAsync= bol;
     },
 
-    /**
-     * @description: slider中选择一条库存
-     * @update @497，由原来的剩余= 总数- 各个plan售出 变为 各个plan的售出就是总售出
-     */
     selectInventory(i){
       if(this.vm.index=== i) return;
       let inventory= this.inventorys[i];
@@ -325,11 +304,7 @@ export default {
         let { object, plans }= res;
         
         let count= object.count;
-        // @497
-        // 原逻辑
-        // plans.forEach(plan => left-= plan.saleCount);
-        // object.left= left;
-        // 新逻辑
+
         object.left= count- (plans && plans[0]? plans[0].saleCount: 0);
 
         this.current= object;
@@ -357,7 +332,6 @@ export default {
       })
     },
 
-    // 删除
     deleteAction(){
       this.$confirm(`确定要删除当前库存吗?`, '提示', {
         confirmButtonText: '确定',
@@ -373,7 +347,6 @@ export default {
       })
     },
 
-    // 将数字解析成双位小数
     parseDouble(val){
       val= parseFloat(val);
       return val.toFixed(2)

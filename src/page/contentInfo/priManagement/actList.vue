@@ -6,7 +6,6 @@
            <el-button :disabled="forbidden" @click="delAct">删除</el-button>
            <el-button :disabled="forbidden" @click="openAct(2,'编辑动作')">编辑</el-button>
          </el-row>
-        <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
            <el-table-column  prop="characteristic" label="标识" min-width="60" align="center"></el-table-column>
            <el-table-column  prop="uri" label="地址" min-width="150" align="center"></el-table-column>
@@ -21,7 +20,6 @@
          </el-table>
          
       </el-dialog> 
-       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
              <el-form-item label="标识" prop="characteristic">
@@ -63,8 +61,8 @@ export default {
         dialogAct:false,
         guid:"",
         groupList: [],
-        multipleSelection: [],   //选中的list
-        forbidden:true,         //按钮是否禁用
+        multipleSelection: [],  
+        forbidden:true,         
         title:"",
         dialogFormVisible:false,
         rformB: {
@@ -99,7 +97,7 @@ export default {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun(val) {  
         this.multipleSelection=val;
         if(this.multipleSelection.length>0){
            this.forbidden=false;
@@ -107,11 +105,11 @@ export default {
            this.forbidden=true;
         }
       },
-      clickRow(row){    //选中行复选框勾选
-        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+      clickRow(row){    
+        this.$refs.multipleTable.clearSelection();  
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){  
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
@@ -121,7 +119,7 @@ export default {
       close(){
         this.dialogAct=false;
       },
-      actList(){  //获取Act
+      actList(){  
         this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/list',{
              "object": {
                "menuID": this.menuId
@@ -132,7 +130,7 @@ export default {
                 }
         })
       },
-      delAct(){ //删除Act
+      delAct(){
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -162,14 +160,14 @@ export default {
             this.insertAct(formName,'/org/act/api/save');
          }
       },
-      openAct(index,title){  //弹窗
+      openAct(index,title){ 
         this.title=title;
         this.dialogFormVisible = true;
         if(index===2){
           this.getAct();
         }
       },
-      getAct(){   //获取一条Act
+      getAct(){   
         this.$http.post(this.GLOBAL.serverSrc + '/org/act/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -180,7 +178,7 @@ export default {
               }
         }) 
       },
-      insertAct(formName,url) {  //新增保存
+      insertAct(formName,url) {  
         console.log()
         this.$refs[formName].validate((valid) => {
           if(valid){

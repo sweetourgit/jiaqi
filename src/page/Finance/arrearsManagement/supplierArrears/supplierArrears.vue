@@ -1,16 +1,12 @@
 <template>
   <div>
     <div class="search">
-      <!--供应商-->
       <span class="search-title">供应商</span>
       <el-input placeholder="请输入" v-model="name" class="group-no"></el-input>
-      <!--搜索-->
       <el-button type="primary" class="search-but" @click="search">搜索</el-button>
       <el-button type="primary" plain @click="reset">重置</el-button>
-    
       </br></br>
       <el-button type="primary" :disabled="forbidden" @click="operation" v-show="false">查看</el-button>
-      <!--list-->
       <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
           <el-table-column prop="name" label="供应商名称" min-width="140" header-align="center"></el-table-column>
           <el-table-column prop="price" label="欠款金额" min-width="60" header-align="center"></el-table-column>
@@ -48,9 +44,6 @@ export default{
       forbidden:true,
       supplierID:0,
       variable:0,
-
-
-
     }
   },
   mounted(){
@@ -67,7 +60,7 @@ export default{
     getCellClass(){
       return 'textAlign:center'
     },
-    changeFun(val) {  //保存选中项的数据
+    changeFun(val) {  
       this.multipleSelection=val;
       if(this.multipleSelection.length>0){
          this.forbidden=false;
@@ -75,11 +68,11 @@ export default{
          this.forbidden=true;
       }
     },
-    clickRow(row){    //选中行复选框勾选
+    clickRow(row){    
       this.$refs.multipleTable.clearSelection();
       this.$refs.multipleTable.toggleRowSelection(row);        
     },
-    rowClass({row, rowIndex}){  //选中行样式改变
+    rowClass({row, rowIndex}){  
      for(var i=0;i<this.multipleSelection.length;i++){
         if(this.multipleSelection[i].id==row.id){
            return { "background-color": "#ecf5ff" }
@@ -131,7 +124,6 @@ export default{
 </script>
  
 <style lang="scss" scoped>
-/*search*/
 .search{
   padding-left: 20px;
   width:800px;

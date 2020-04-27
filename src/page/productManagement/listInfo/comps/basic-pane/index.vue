@@ -182,12 +182,10 @@
 </template>
 
 <script>
-/**
- * @description: 基本信息表单
- */
+
 import ValidateMsgMixin from '@/mixin/ValidateMsgMixin'
 
-// 第三方组件
+
 import VueEditor from '@/components/tinymce'
 
 import labelInput from './comps/label-input/index'
@@ -229,7 +227,6 @@ export default {
     return Object.assign(
       {
         vm: {
-          // label-input中给普通输入框传入的props，和elementUI文档中的一样
           strengthsInputProps:{ 
             showWordLimit: true, 
             maxlength: 8,
@@ -237,7 +234,6 @@ export default {
           },
           crowdlistOptions: [],
           themelistOptions: [],
-          // 暂时变量，用来禁用天数编辑
           isSave: false,
         },
         submitForm: {},
@@ -296,7 +292,6 @@ export default {
             message: '订单确认类型不能为空', 
             trigger: ['blur', 'change']
           },
-          // 亮点词
           strengths: {
             required: true,
             validator: this.notNullArrayValidator, 
@@ -339,16 +334,12 @@ export default {
             validator: this.pepeatpicValidator,
             trigger: 'blur'
           }
-          // 选填
-          // label:{}
-          // vedioID: null,
-          // pepeatpic: [],
-          // mark: ''
+
         }
       },
-      // config
+ 
       {
-        PEPEAT_PIC_MAX: 6, // 轮播图最大数
+        PEPEAT_PIC_MAX: 6, 
         PEPEAT_PIC_MIN: 3
       }
     )
@@ -357,11 +348,8 @@ export default {
   methods: {
     init(){
       this.submitForm= this.$deepCopy(this.proto);
-      // 人群
       this.initCrowdlist();
-      // 主题
       this.initThemelist();
-      // 暂时方案
       this.vm.isSave= !!this.$route.query.id || false;
     },
     refresh(){
@@ -391,14 +379,6 @@ export default {
       })
     },
 
-    /**
-     * @description: 获取地点后加工成aotucomplte可用的形式
-     * @param {type} val 搜索框的值
-     * @param {type} cb autocomplete的回调
-     * @param {type} cbLabel 以下都是数据转接用的
-     * @param {type} tagValueAttr
-     * @param {type} tagLabelAttr 
-     */
     getAreaSuggestions(val, cb, cbLabel, tagValueAttr, tagLabelAttr){
       let factory= (el) => {
         let teamID= parseInt(this.PROVIDE_TEAM_ID);
@@ -422,7 +402,7 @@ export default {
       })
     },
 
-    // 获取运营标签
+
     getGlabelfuzzyAction(val, cb, cbLabel, tagValueAttr, tagLabelAttr){
       console.log(tagValueAttr, tagLabelAttr)
       let factory= (el) => {
@@ -447,7 +427,7 @@ export default {
       })
     },
     
-    // 将字符串加工成strengths对象
+ 
     strengthsFactory(strength){
       if(!strength) return null;
       let teamID= parseInt(this.PROVIDE_TEAM_ID);
@@ -508,7 +488,7 @@ export default {
       return copy
     },
 
-    // 头图选择
+
     pictureSelectHandler(idList){
       let cb= (list) => {
         if(list.length> 1){
@@ -521,12 +501,10 @@ export default {
       this.$refs.materialListRef.wakeup(idList, cb);
     },
     
-    // 头图删除
     removePictureHandler(){
       this.submitForm.pictureID= null;
     },
 
-    // 轮播图选择
     pepeatpicSelectHandler(idList){
       let cb= (list) => {
         if(list.length> this.PEPEAT_PIC_MAX){
@@ -545,12 +523,10 @@ export default {
       this.$refs.materialListRef.wakeup(idList, cb);
     },
 
-    // 轮播图删除
     removePepeatpicHandler(i){
       this.submitForm.pepeatpic.splice(i, 1);
     },
 
-    // 预览
     wakeupPreviewHandler(item){
       this.$refs.previewDialogRef.wakeup(item);
     }

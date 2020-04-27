@@ -88,7 +88,6 @@
 <script>
 import { TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK } from '../dictionary'
 import ErrorHandlerMixin from './traffic-tab-pane/comps/mixins/ErrorHandlerMixin'
-// 组件
 import trafficTabPane from './traffic-tab-pane'
 import schedulesTabPane from './schedules-tab-pane'
 
@@ -152,26 +151,19 @@ export default {
   },
 
   methods: {
-    /**
-     * @description: 初始化submitForm，剥离交通信息，日程信息，保存基础信息快照
-     * @bug 127: 产品修改出发地和目的地后，套餐的出发地和目的地不存在在新数据中
-     */
     init(){
       Object.keys(this.proto).forEach(attr => {
         attr!== 'schedules' 
           && attr!== 'traffic'
             && (this.submitForm[attr]= this.proto[attr]);
       });
-      // bug 127: 这里记录原始数据
       this.checkProto= this.$deepCopy(this.submitForm);
       this.checkIfLoseInfo();
       this._provided.PROVIDE_PACKAGE_ID= this.proto.id;
     },
 
-    // bug 127:检查套餐目的地和出发地是否还在产品的池子中
     checkIfLoseInfo(){
       let { podID, destinationID }= this.submitForm;
-      // 判断是否是新增套餐
       if(!podID && !destinationID) return;
       let podLose= !this.pods.find(pod => pod.podID=== podID);
       let desLose= !this.destinations.find(destination => destination.destinationID=== destinationID);
@@ -188,41 +180,29 @@ export default {
       );
     },
 
-    /**
-     * @description: 表单验证
-     * @TODO 提交错误信息，监控是否有数据变化
-     * @TODO 如果没有其他操作貌似可以合并成一个方法
-     */
     nameValidator(rule, value, callback){
       if(!value) return callback(this.makeErrorQueueMsg('套餐名不能为空'));
       if(this.nameChecker.includes(value)) return callback(this.makeErrorQueueMsg('套餐名已存在'));
       return callback();
     },
 
-    /**
-     * @description: 检查是否有数据变动
-     */
+
     checkHasChange(){
       let bol= false;
-      //检查基础信息
       bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
-      //检查交通信息，如果基础信息中存在变动，则中断接下来的检查，提高性能，这递归大对象伤不起啊
       !bol && (bol= this.$refs.traffic.checkHasChange());
       !bol && (bol= this.$refs.schedules.checkHasChange());
       bol && console.warn(`changeinfo-package checkHasChange: ${bol}`)
       return bol;
     },
 
-    /**
-     * @description: 获取数据
-     */
+
     getData(){
       let hasChange= this.checkHasChange();
       if(!hasChange) return this.$message.info('无数据变动');
       let { traffic, briefMark }= this.$refs.traffic.getData();
       let schedules= this.$refs.schedules.getData();
       let data= this.$deepCopy(this.submitForm);
-      // 保存互斥，简要则清空详细，详细则清空简要
       data.traffic= briefMark? [
         TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK
       ]: traffic;
@@ -241,9 +221,7 @@ export default {
       return bol;
     },
 
-    /**
-     * @description: 下拉选择联动赋值
-     */
+
     podChange(nval){
       let hit= this.pods.find(el => el.podID=== nval);
       this.submitForm.pod= hit.pod;

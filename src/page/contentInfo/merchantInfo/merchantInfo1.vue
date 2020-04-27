@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--搜索heard-->
     <div>
       <div class="search">
         <div>
@@ -35,8 +34,6 @@
         </div>
       </div>
     </div>
-    <!--end-->
-    <!--功能button-->
     <div class="button_style">
       <el-button type="primary" @click="add_info () ">添加</el-button>
       <!-- <el-button type="primary" v-if="tid <= 0" disabled>编辑</el-button>
@@ -44,8 +41,6 @@
       <!-- <el-button type="danger" v-if="tid <= 0" disabled @click="open7" plain>删除</el-button>
       <el-button type="danger" v-else @click="open7" plain>删除</el-button>-->
     </div>
-    <!--end-->
-    <!--商户信息-->
     <div class="info_table">
       <el-table :data="tableData" border :highlight-current-row="true" @row-click="handleClick">
         <el-table-column prop="id" label="ID" align="center"></el-table-column>
@@ -80,8 +75,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <!--end-->
-    <!--分页-->
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -94,8 +87,6 @@
         :total="total"
       ></el-pagination>
     </div>
-    <!--end-->
-    <!--弹窗-->
     <el-dialog
       title="基本信息"
       :visible.sync="dialogFormVisible"
@@ -106,7 +97,6 @@
     >
       <div class="dialog">
         <template v-if="btnindex !== 1">
-          <!-- 点击页面的添加按钮或者列表的编辑出现的dialog是form -->
           <el-form
             :model="ruleForm"
             :rules="rules"
@@ -438,7 +428,6 @@
             <label style="margin-right: 10px;">周边授信额度:</label>
             <el-input v-model.number="AbouQuota" placeholder="请输入"></el-input>
           </div>
-          <!-- 账户信息 -->
           <div class="accountInfo">
             <h3>账户信息</h3>
             <el-button type="primary" @click="addAccount(1)">添加</el-button>
@@ -468,10 +457,7 @@
             </el-table>
           </div>
         </template>
-        <!-- 点击页面的详情出现的dialog是table -->
-        <!-- 点击页面的详情出现的dialog是table -->
         <div class="dialogTable" v-if="btnindex == 1">
-          <!-- 点击详情基本信息 -->
           <table>
             <tr>
               <td class="tr">ID：&nbsp;&nbsp;</td>
@@ -585,7 +571,6 @@
               </div>
             </tr>
           </table>
-          <!-- 点击详情账户信息 -->
           <div class="accountInfo">
             <h3>账户信息</h3>
             <el-button type="primary" v-if="btnindex !== 1">添加</el-button>
@@ -600,7 +585,6 @@
               <el-table-column prop="peerUserType" label="职务" width="120" align="center"></el-table-column>
             </el-table>
           </div>
-          <!-- 周边信息 -->
           <div class="rimInfDetails">
             <h3>周边信息</h3>
             <div>
@@ -622,7 +606,6 @@
               </table>
             </div>
           </div>
-          <!-- 点击详情欠款信息begin -->
           <div class="relevanceDept">
             <h3>关联欠款</h3>
             <div class="relevanceDeptWarn">
@@ -643,7 +626,6 @@
               <el-table-column prop="createTime" label="欠款日期" align="center"></el-table-column>
               <el-table-column prop="repaymentDate" label="应还日期" align="center"></el-table-column>
             </el-table>
-            <!-- 关联欠款分页begin -->
             <el-pagination
               class="pagination"
               @size-change="handleGlSizeChange"
@@ -655,11 +637,7 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="glTotal"
             ></el-pagination>
-            <!-- 关联欠款分页end -->
           </div>
-          <!-- 点击详情欠款信息end -->
-
-          <!-- 详情页下级商户begin -->
           <div class="relevanceDept" v-if="ruleForm.parentID == -1">
             <h3>下级商户</h3>
             <div class="relevanceDeptWarn">
@@ -705,7 +683,6 @@
               </tr>
             </table>
           </div>
-          <!-- 详情页下级商户end -->
         </div>
         <div class="ButtonCls">
           <el-button type="primary" v-if="tid==0" @click="submitForm('ruleForm')">确定</el-button>
@@ -791,7 +768,6 @@ import moment from "moment";
 export default {
   name: "merchantInfo",
   data() {
-    //效验添加账户信息弹窗中微信字段
     let wechatvalidator = (rule, value, callback) => {
       if (/[\u4E00-\u9FA5]/g.test(value)) {
         return callback("请输入正确格式");
@@ -799,7 +775,6 @@ export default {
         return callback();
       }
     };
-    //商户编码唯一性验证
     let localCompCode = (rule, value, callback) => {
       if (this.btnindex !== 2) {
         if (this.ruleForm.localCompCode == "") {
@@ -827,7 +802,6 @@ export default {
         return callback();
       }
     };
-    // 商户名称唯一性验证
     let nameValidator = (rule, value, callback) => {
       if (this.btnindex !== 2) {
         if (this.ruleForm.name == "") {
@@ -859,7 +833,6 @@ export default {
         return callback();
       }
     };
-    //商户其他名称验证唯一性
     let otherNamesValidator = (rule, value, callback) => {
       if (this.ruleForm.otherNames) {
         if (this.ruleForm.otherNames.length > 40) {
@@ -893,61 +866,60 @@ export default {
     };
     // let that = this;
     return {
-      otherNamesObj: {}, //添加商户其他名称enter接收
-      // isBusinessTrue: false, //添加商户其他名称是判断issuccess false则此名字已存在
-      // orgsAddArr: [], //添加商户信息是存储区域可见的数组
-      AbouArrears: null, //周边欠款
-      AbouBalance: null, //周边剩余授信额度
-      AbouDeposit: null, //周边预存款
-      arrears: null, //关联欠款总计多少
-      page_order_total: null, //关联数量 不准确到时和后台确认参数名
-      AbouQuota: null, //周边授信额度
-      // editAdmin: [], //点击编辑页的admin 用来接收修改之前的
-      businewwInfPageId: "", //商户信息详情页的ID 同时也是商户其他名称添加接口的localCompID
-      vague: [], //模糊搜索的数组
-      vagueDiQu: [], // 地区模糊搜索数组
+      otherNamesObj: {}, 
+      // isBusinessTrue: false,
+      // orgsAddArr: [], 
+      AbouArrears: null, 
+      AbouBalance: null, 
+      AbouDeposit: null, 
+      arrears: null, 
+      page_order_total: null, 
+      AbouQuota: null, 
+      // editAdmin: [],  
+      businewwInfPageId: "", 
+      vague: [], 
+      vagueDiQu: [], 
       // cascaderArr: [],
-      isAddAccountBtn: 0, //判断账户信息弹窗是从添加按钮进入还是编辑进入
-      accountArr: [], //用来接收本地添加账户的字段
-      tableRelevanceDeptInfo: [], //点击详情欠款信息
-      isAddAccount: false, // 判断添加账户弹窗的出现
-      scoperangeList: [], //区域可见接口接收
-      businessOtherNamesArr: [], //商户其他名称tag列表
-      adminArr: [], //管理人员tag列表
-      salesArr: [], //销售人员tag列表
-      fileList: [], //上传图片
-      imgnum: 1, //图片位置显示
-      btnindex: 0, //编辑还是详情判断弹窗按钮的字段
-      readonly: true, // 点击表单修改然后只读
-      statesValue: "", //搜索状态字段
-      payValue: "", //搜过结算字段
-      isInputVisible: false, //商户其他名称tags显示隐藏
-      isOtherSuccess: true, //商户其他名称唯一性判断  false则有重复的 则不能添加到businessOtherNamesArr
-      isAccountValidator: null, //账户信息添加时验证唯一性 后台返回false则重复
-      isChooseAccount: false, //选择人员的dialog tree是否显示
-      isHavePhoneOrEmail: null, //tid为0的时候（大保存）添加账户信息手机号和邮箱的判断
-      tid: 0, //tid为0新大保存的添加 不为0则是编辑页的添加账户信息（目前我的理解）
-      pageSize: 10, //每页条数 默认10
-      pageIndex: 1, //每页
-      total: 1, //总条数
-      currentPage4: 1, //当前页数
-      glPageSize: 10, //详情页关联欠款表格的条数显示
-      glPageIndex: 1, //详情页关联欠款表格的条数显示
-      glTotal: 0, //关联欠款表格的总条数
-      // editAccouontScopeid: null, //账户信息修改时需要的scopeid
+      isAddAccountBtn: 0, 
+      accountArr: [], 
+      tableRelevanceDeptInfo: [], 
+      isAddAccount: false, 
+      scoperangeList: [], 
+      businessOtherNamesArr: [], 
+      adminArr: [], 
+      salesArr: [], 
+      fileList: [], 
+      imgnum: 1, 
+      btnindex: 0, 
+      readonly: true, 
+      statesValue: "", 
+      payValue: "", 
+      isInputVisible: false, 
+      isOtherSuccess: true,  
+      isAccountValidator: null, 
+      isChooseAccount: false, 
+      isHavePhoneOrEmail: null, 
+      tid: 0, 
+      pageSize: 10,  
+      pageIndex: 1, 
+      total: 1, 
+      currentPage4: 1, 
+      glPageSize: 10, 
+      glPageIndex: 1, 
+      glTotal: 0, 
+      // editAccouontScopeid: null, 
       accountForm: {
-        name: "", //账户信息名字
-        phone: "", //手机号
-        email: "", //邮箱
-        sex: "", //性别
-        wx: "", //微信号
-        qq: "", //qq号
-        state: null, //状态 2正常 3 停用
-        passWord: "", //密码
-        peerUserType: null //职位  1管理员 2销售
+        name: "", 
+        phone: "", 
+        email: "", 
+        sex: "", 
+        wx: "", 
+        qq: "", 
+        state: null, 
+        passWord: "",
+        peerUserType: null 
         //id:"",
-      }, //添加账户信息的对象
-      // 添加账号信息的验证
+      }, 
       accountFormRules: {
         name: [
           { required: true, message: "请输入名字", trigger: "blur" },
@@ -962,7 +934,6 @@ export default {
           { type: "email", message: "请输入正确格式的邮箱", trigger: "blur" }
         ],
         // sex: [{ required: true, message: "请选择性别", trigger: "change" }],
-        // rules中 正则
         wx: [{ validator: wechatvalidator, trigger: "blur" }]
         // qq: [
         //   {
@@ -984,34 +955,34 @@ export default {
       },
       sonList: [],
       ruleForm: {
-        name: "", //
-        storeType: "", //门市类型默认是无
-        localCompType: "", //类别
-        state: null, //状态默认是正常
-        expTime: "", //到期时间
-        areaInformationID: null, //地区id
-        areaInformationName: "", //地区
-        settlementType: null, //结算方式
-        quota: "", //额度
+        name: "", 
+        storeType: "", 
+        localCompType: "", 
+        state: null, 
+        expTime: "", 
+        areaInformationID: null, 
+        areaInformationName: "", 
+        settlementType: null, 
+        quota: "", 
         //department: "",
         // people: "",
-        scopeExt: [], //经营范围
-        orgs: [], //区域可见
-        address: "", //地址
-        linker: "", //联系人姓名
-        phone: "", //联系人电话
-        publicName: "", //对公户名
-        bankName: "", //开户行
-        bankcardNo: "", //对公账号
-        localCompRole: "", //商户角色
-        salesman: "", //销售人员
-        administrative: "", //管理人员
-        otherNames: "", //商户其他名字
-        localCompCode: "", //商户编码
-        ImgUrl: "", //logo
-        fileUrl: "", //附件
-        parentID: -1, //所属上级商户id
-        parentName: "" //所属上级商户名字
+        scopeExt: [], 
+        orgs: [], 
+        address: "", 
+        linker: "", 
+        phone: "", 
+        publicName: "", 
+        bankName: "", 
+        bankcardNo: "", 
+        localCompRole: "", 
+        salesman: "", 
+        administrative: "", 
+        otherNames: "", 
+        localCompCode: "", 
+        ImgUrl: "", 
+        fileUrl: "", 
+        parentID: -1, 
+        parentName: "" 
       },
       rules: {
         // expTime: [{ required: true, message: "请选择日期", trigger: "change" }],
@@ -1098,9 +1069,9 @@ export default {
         ]
       },
       dialogFormVisible: false,
-      input: "", //搜索输入框
+      input: "", 
       tableData: [],
-      useList: [], //弹窗中的账户信息
+      useList: [], 
       statesOptions: [
         {
           value: 2,
@@ -1121,12 +1092,12 @@ export default {
           label: "非月结"
         }
       ],
-      fileList2: [], //图片
-      fileList1: [], //附件
-      isSelect: false, // 判断是否进入select
-      areaInformationName: "", //地区value
-      superiorMerchants: [], //所属上级商户的集合
-      parentSettlementType: null //判断所选的父级商户的结算方式是否月月结
+      fileList2: [], 
+      fileList1: [], 
+      isSelect: false, 
+      areaInformationName: "", 
+      superiorMerchants: [], 
+      parentSettlementType: null 
     };
   },
   components: {
@@ -1134,7 +1105,6 @@ export default {
   },
   methods: {
     moment,
-    // 所属上级商户
     querySearchAsyncName(queryString, cb) {
       this.superiorMerchants = [];
       this.$http
@@ -1160,28 +1130,21 @@ export default {
           console.log(err);
         });
     },
-    // 选择所属上级商户
     handleSelectName(item) {
-      // console.log(item)
-      // 父级是月结并且子集也是月结 则额度不显示
       this.parentSettlementType = item.settlementType;
       this.ruleForm.parentID = item.id;
       this.ruleForm.parentName = item.value;
-      // console.log(item);
     },
-    // 图片上传
     imgUpload() {
       return this.GLOBAL.serverSrc + "/upload/obs/api/picture";
       // return this.GLOBAL.jqUrl + '/upload/obs/api/picture'
     },
-    // 点击添加商户其他名称事件
     showInput() {
       this.isInputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
-    // 时间格式转换
     dataPickerFocus() {
       if (this.btnindex == 2) {
         if (this.ruleForm.expTime.toString().length !== 8) {
@@ -1193,7 +1156,6 @@ export default {
         }
       }
     },
-    // 地区的远程获取数据
     querySearchdiqu(queryString, cb) {
       this.vagueDiQu = [];
       this.$http
@@ -1223,7 +1185,6 @@ export default {
       // let areaInformationName
       // this.ruleForm.areaInformationName = ""
     },
-    // 地区选择失去焦点
     handleBlurdiqu() {
       setTimeout(() => {
         if (this.isSelect === false) {
@@ -1234,20 +1195,17 @@ export default {
         }
       }, 200);
     },
-    // 地区选择
     handleSelectdiqu(item) {
       this.ruleForm.areaInformationID = item.id;
       // this.form.areaId = item;
       this.ruleForm.areaInformationName = item.value;
       this.isSelect = true;
     },
-    // 搜索方法
     createFilter(queryString) {
       return restaurant => {
         return restaurant.value;
       };
     },
-    // 管理人员的模糊查询
     querySearchAsync(queryString, cb) {
       this.vague = [];
       this.$http
@@ -1279,7 +1237,6 @@ export default {
         return restaurant.value;
       };
     },
-    // 商户其他名称添加请求
     adminOtherAxios() {
       this.$http
         .post(
@@ -1303,7 +1260,6 @@ export default {
           console.log(err);
         });
     },
-    // 商户其他名字enter触发的事件
     handleEnterOtherNames() {
       // console.log(this.isOtherSuccess);
       let obj = {};
@@ -1360,7 +1316,6 @@ export default {
       //   }
       //   this.ruleForm.otherNames = "";
     },
-    // 商户其他人员tag删除
     businessHandleClose(tag) {
       this.businessOtherNamesArr.splice(
         this.businessOtherNamesArr.indexOf(tag),
@@ -1381,28 +1336,22 @@ export default {
       //     console.log(err);
       //   });
     },
-
-    // 管理人员focus触发的事件
     handleFocusAdminNames() {
       // this.ruleForm.administrative = "";
     },
-    // 销售人员focus触发的事件
     handleFocusSalesNames() {
       this.ruleForm.salesman = "";
     },
-    // 管理人员select触发的事件
     handleSelectAdminNames(item) {
       item.jqUserType = 1;
       item.isDeleted = 1;
       this.adminArr.push(item);
       // this.handleBlurAdminNames();
     },
-    // 销售人员select触发的事件
     handleSelectSalesNames(item) {
       this.salesArr.push(item);
       this.handleBlurSalesNames();
     },
-    // 管理人员blur触发的事
     // handleBlurAdminNames() {
     // let arr = [];
     // for (let i = 0; i < this.adminArr.length; i++) {
@@ -1412,7 +1361,6 @@ export default {
     // }
     // this.ruleForm.administrative = arr.join(",");
     // },
-    // 销售人员blur触发的事件
     handleBlurSalesNames() {
       let arr = [];
       for (let i = 0; i < this.salesArr.length; i++) {
@@ -1422,7 +1370,6 @@ export default {
       }
       this.ruleForm.salesman = arr.join(",");
     },
-    // 管理 tag 删除
     // handleAdminClose(tag, arr) {
     //   arr.forEach((v, k, arr) => {
     //     if (arr[k].name == tag.name) {
@@ -1432,7 +1379,6 @@ export default {
     //   this.adminArr = arr;
     //   this.handleBlurAdminNames();
     // },
-    // 销售 tag 删除
     handleSalesClose(tag, arr) {
       arr.forEach((v, k, arr) => {
         if (arr[k].name == tag.name) {
@@ -1442,12 +1388,9 @@ export default {
       this.salesArr = arr;
       this.handleBlurSalesNames();
     },
-
-    // 删除账户信息按钮
     accountDelete(index, row) {
       this.useList.splice(index, 1);
     },
-    //编辑账户信息按钮
     accountEdit(idx, index, row) {
       if (row.peerUserType == "销售") {
         row.peerUserType = 2;
@@ -1459,12 +1402,10 @@ export default {
       this.accountForm = Object.assign({}, row);
       this.isAddAccountBtn = idx;
     },
-    // 从编辑按钮进入的弹窗的取消按钮
     addAccountEditCancel() {
       this.isAddAccount = false;
       this.isAddAccountBtn = 0;
     },
-    //添加账户信息弹窗的取消按钮事件
     addAccountCancelBtn(accountForm) {
       this.accountForm = {
         name: "",
@@ -1475,14 +1416,13 @@ export default {
         qq: "",
         state: "",
         passWord: "",
-        peerUserType: [] //职位
+        peerUserType: [] 
         //id:"",
       };
       this.$refs[accountForm].resetFields();
       this.isAddAccount = false;
       this.isAddAccountBtn = 0;
     },
-    // 点击添加按钮的大保存时 账户信息添加 tid为0时的
     bigSaveAccount() {
       if (this.accountForm.state == 2) {
         this.accountForm.state = "正常";
@@ -1505,22 +1445,17 @@ export default {
       } else {
         this.accountForm.peerUserType = "销售";
       }
-      // console.log(this.accountForm)
       this.useList.push(this.accountForm);
-      // console.log(this.useList,"this.userlist")
       this.isAddAccount = false;
       this.$message({
         message: "添加成功",
         type: "success"
       });
     },
-
-    //添加账户信息弹窗的添加账户按钮事件
     addAccountAddBtn(accountForm) {
       // debugger
-      // isAddAccountBtn == 1 是第一次添加保存到本地
-      // isAddAccountBtn == 2 是此时没有删除按钮 只可编辑 掉接口
-      // 现在判断的依据是tid为0则是大保存的添加 不是则是编辑进入的添加
+      // isAddAccountBtn == 1 
+      // isAddAccountBtn == 2 
       // if (this.isAddAccountBtn == 1) {
       if (this.tid === 0) {
         this.$refs[accountForm].validate(valid => {
@@ -1529,9 +1464,7 @@ export default {
             this.bigSaveAccountValidator().then(obj => {
               if (obj == true) {
                 let istype;
-                // 长度为0时直接走后台接口验证，大于0本地验证
                 if (this.useList.length > 0) {
-                  // 邮箱为空只验证手机号，不为空则手机号和邮箱验证
                   let [phone, email] = [false, false];
                   if (this.accountForm.email == "") {
                     this.useList.some(item => {
@@ -1560,7 +1493,6 @@ export default {
                     this.bigSaveAccount();
                   }
                 } else {
-                  // console.log("此时第一条");
                   this.bigSaveAccount();
                 }
               }
@@ -1618,7 +1550,6 @@ export default {
                   });
               }
             });
-            // // 修改验证手机号和邮箱的接口的接口
             // this.$http
             //   .post(
             //     this.GLOBAL.serverSrc +
@@ -1663,9 +1594,7 @@ export default {
         });
       }
     },
-    // 修改验证手机号和邮箱的接口的接口
     accountValidator() {
-      // console.log(this.accountForm.id,"this.accountForm.id")
       return this.$http
         .post(
           this.GLOBAL.serverSrc + "/universal/localcomp/api/isexistpeeruser",
@@ -1688,7 +1617,6 @@ export default {
           return "";
         });
     },
-    // 大保存的时候验证手机号和邮箱的接口的接口 此时没有id走这个验证接口
     bigSaveAccountValidator() {
       return this.$http
         .post(
@@ -1711,7 +1639,6 @@ export default {
           return "";
         });
     },
-    // 更改账户
     editAccountAddBtn() {
       // this.accountForm.id = this.editAccouontScopeid;
       this.accountForm.localCompID = this.tid;
@@ -1786,7 +1713,6 @@ export default {
         }
       });
     },
-    // 点击添加商户或者编辑出现的dialog上的添加账户信息
     addAccount(index) {
       this.isAddAccountBtn = index;
       this.isAddAccount = true;
@@ -1799,7 +1725,7 @@ export default {
         qq: "",
         state: null,
         passWord: "",
-        peerUserType: null //职位
+        peerUserType: null
         //id:"",
       };
       // if (this.$refs[this.addForm] !== undefined) {
@@ -1818,8 +1744,6 @@ export default {
     // handleRemove(file, fileList) {
     // console.log(file, fileList);
     // },
-
-    // dialog关闭的回调
     closeDialog() {
       this.btnindex = 0;
       this.arrears = 0;
@@ -1828,7 +1752,6 @@ export default {
       this.glPageIndex = 1;
       this.glPageSize = 10;
     },
-    // 重置
     handleReset() {
       this.pageIndex = 1;
       this.input = "";
@@ -1838,23 +1761,19 @@ export default {
       this.pageList(1, this.pageSize);
       this.currentPage4 = 1;
     },
-    // pageSize 改变时会触发
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageList(1, val);
     },
-    // currentPage 改变时会触发
     handleCurrentChange(val) {
       this.pageIndex = val;
       this.pageList(val, this.pageSize);
     },
-    // 搜索
     handleSearch() {
       this.pageIndex = 1;
       this.pageList(1, this.pageSize);
       this.currentPage4 = 1;
     },
-    //查询列表
     pageList(
       pageIndex = this.pageIndex,
       pageSize = this.pageSize,
@@ -1868,9 +1787,6 @@ export default {
         settlementType !== ""
           ? (object.settlementType = settlementType)
           : settlementType;
-      // 1月结 2非月结
-      // 2正常 3停用
-      // jqUserType 1 管理员  2 销售
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
           pageIndex: this.pageIndex,
@@ -1908,18 +1824,15 @@ export default {
           console.log(obj);
         });
     },
-    // 添加按钮 新增商户信息的
     add_info() {
       this.tid = 0;
       this.clear();
       this.readonly = false;
       this.dialogFormVisible = true;
     },
-    // 详情弹窗上的点击编辑
     editBtn(index) {
       this.edit_info(2, this.tid);
     },
-    // 编辑和详情  详情为1 编辑为2
     edit_info(index, row) {
       // this.businessOtherNamesArr = [];
       index === 1 ? (this.readonly = true) : (this.readonly = false);
@@ -1928,15 +1841,14 @@ export default {
       this.getOneMess(this.tid);
       this.dialogFormVisible = true;
     },
-    // 关联欠款表格的接口
     getDebitTable(id) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: this.glPageIndex,
           pageSize: this.glPageSize,
-          // total: 1, //总条数
+          // total: 1, 
           object: {
-            // isDeleted: 0 //是否删除
+            // isDeleted: 0 
             orgID: id
           }
         })
@@ -1957,7 +1869,6 @@ export default {
           console.log(err);
         });
     },
-    // 关联欠款的表格的总价计算
     getDebitTablePrice(id, total) {
       this.arrears = 0;
       console.log(this.arrears)
@@ -1965,9 +1876,9 @@ export default {
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page_order", {
           pageIndex: 1,
           pageSize: total,
-          total: total, //总条数
+          total: total, 
           object: {
-            // isDeleted: 0 //是否删除
+            // isDeleted: 0 
             orgID: id
           }
         })
@@ -1978,7 +1889,6 @@ export default {
         })
         .catch(err => {});
     },
-    // 关联欠款表格的分页
     handleGlSizeChange(val) {
       this.glPageSize = val;
       this.glPageIndex = 1;
@@ -1989,9 +1899,7 @@ export default {
       this.glPageIndex = val;
       this.getDebitTable(this.tid);
     },
-    //提交
     submitForm(ruleForm) {
-      // 判断添加是是否有账户 有则可以添加 无则不可添加
       if (this.useList.length == 0) {
         this.$message.error("请添加账户信息");
       } else {
@@ -2005,32 +1913,31 @@ export default {
         });
       }
     },
-    // 重置
     resetForm(ruleForm) {
       //this.$refs[formName].resetFields();
       this.ruleForm = {
-        name: "", //
-        storeType: "无", //门市类型默认是无
+        name: "", 
+        storeType: "无",
         localCompType: "",
-        state: "正常", //状态默认是正常
+        state: "正常", 
         expTime: "",
-        settlementType: "非月结", //结算方式
+        settlementType: "非月结", 
         quota: "",
         // department: "",
         // people: "",
-        scopeExt: [], //经营范围
-        orgs: [], //区域可见
+        scopeExt: [], 
+        orgs: [], 
         address: "",
         linker: "",
         phone: "",
         publicName: "",
         bankName: "",
         bankcardNo: "",
-        localCompRole: "", //商户角色
-        salesman: "", //销售人员
-        administrative: "", //管理人员
-        ImgUrl: "", //logo
-        fileUrl: "", //附件
+        localCompRole: "", 
+        salesman: "", 
+        administrative: "", 
+        ImgUrl: "", 
+        fileUrl: "", 
         parentName: "",
         parentID: -1,
         areaInformationName: "",
@@ -2044,10 +1951,9 @@ export default {
       this.businessOtherNamesArr = [];
       this.sonList = [];
       this.arrears = 0;
-      // this.$refs.uploadImg.clearFiles(); // 上传图片隐藏 要不报错先影藏
+      // this.$refs.uploadImg.clearFiles();
       // this.orgsAddArr = []
     },
-    // 修改
     editorForm(ruleForm) {
       this.$refs[ruleForm].validate(valid => {
         if (valid) {
@@ -2058,16 +1964,15 @@ export default {
         }
       });
     },
-    //列表
     list() {
       var that = this;
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/localcomp/api/page", {
           pageIndex: this.pageIndex,
           pageSize: this.pageSize,
-          // total: 1, //总条数
+          // total: 1, 
           object: {
-            // isDeleted: 0 //是否删除
+            // isDeleted: 0 
           }
         })
         .then(function(obj) {
@@ -2101,9 +2006,7 @@ export default {
           console.log(obj);
         });
     },
-    //添加
     addMerchan(ruleForm) {
-      //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
         if (this.businessOtherNamesArr.length > 50) {
           this.$message.error("商户其他名称不可超过50个");
@@ -2120,7 +2023,6 @@ export default {
       //   return;
       // }
 
-      // 商户角色
       // console.log("商户角色", this.ruleForm.localCompRole);
       if ((this.ruleForm.localCompRole = "旅游组团社")) {
         this.ruleForm.localCompRole = 1;
@@ -2129,7 +2031,6 @@ export default {
       } else {
         this.ruleForm.localCompRole = 3;
       }
-      // 类别
       // console.log("类别",this.ruleForm.localCompType)
       // if ((this.ruleForm.localCompType = "门店")) {
       //   this.ruleForm.localCompType = 1;
@@ -2141,7 +2042,6 @@ export default {
       //   this.ruleForm.localCompType = 4;
       // }
 
-      // 判断商户名称是否是具有唯一性
       // if (
       //   this.tableData.filter(v => this.ruleForm.name == v.name).length != 0
       // ) {
@@ -2150,14 +2050,12 @@ export default {
       //   return;
       // }
 
-      // 状态
       if (this.ruleForm.state == "停用") {
         this.ruleForm.state = 3;
       } else {
         this.ruleForm.state = 2;
       }
 
-      // 结算方式
       if (this.ruleForm.settlementType == "非月结") {
         this.ruleForm.settlementType = 2;
         this.ruleForm.quota = 0;
@@ -2169,7 +2067,6 @@ export default {
         this.ruleForm.quota = 0;
       }
       //console.log("门市类型",this.ruleForm.storeType)
-      // 门市类型
       if (this.ruleForm.storeType == "无") {
         this.ruleForm.storeType = 0;
       } else if (this.ruleForm.storeType == "大运通自营") {
@@ -2180,12 +2077,10 @@ export default {
         this.ruleForm.storeType = 3;
       }
 
-      // 经营范围
       let scopeExt = "";
       if (this.ruleForm.scopeExt.length !== 0) {
         let scopeExt = this.ruleForm.scopeExt.join(",");
       }
-      // 区域可见
       let orgs = [];
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
         let org = {};
@@ -2195,9 +2090,8 @@ export default {
         orgs.push(org);
       }
       this.ruleForm.orgs = orgs;
-      // 添加账户
 
-      // jqAdminList 管理和销售人员
+      // jqAdminList 
       // let adminAndSalesArr = [...this.salesArr];
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {
@@ -2210,7 +2104,6 @@ export default {
         };
       });
 
-      // useList
       this.useList.forEach((val, idx, arr) => {
         if (arr[idx].peerUserType == "管理员") {
           arr[idx].peerUserType = 1;
@@ -2231,7 +2124,6 @@ export default {
         }
       });
       // console.log(this.useList, "上传的账号信息");
-      // 周边授信额度
       if (this.AbouQuota == null) {
         this.AbouQuota = 0;
       }
@@ -2239,7 +2131,6 @@ export default {
         this.ruleForm.quota = 0;
       }
 
-      // 到期时间
       if (this.ruleForm.expTime == "") {
         this.ruleForm.expTime = 0;
       }
@@ -2276,9 +2167,9 @@ export default {
             orgs: this.ruleForm.orgs,
             useList: this.useList,
             jqAdminList: adminAndSalesArr,
-            localCompAliasList: this.businessOtherNamesArr, //商户其他名称
-            abouQuota: this.AbouQuota, //周边授信额度
-            localCompCode: this.ruleForm.localCompCode, //商户编码
+            localCompAliasList: this.businessOtherNamesArr, 
+            abouQuota: this.AbouQuota, 
+            localCompCode: this.ruleForm.localCompCode, 
             localCompAliasList: this.businessOtherNamesArr,
             areaInformationID: this.ruleForm.areaInformationID,
             areaInformationName: this.ruleForm.areaInformationName,
@@ -2297,13 +2188,13 @@ export default {
               message: "添加成功",
               type: "success"
             });
-            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+            this.$refs.uploadImg.clearFiles(); 
           } else {
             this.$message({
               message: "添加失败",
               type: "error"
             });
-            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+            this.$refs.uploadImg.clearFiles(); 
           }
         })
         .catch(obj => {
@@ -2311,12 +2202,10 @@ export default {
             message: "添加失败",
             type: "error"
           });
-          this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+          this.$refs.uploadImg.clearFiles(); 
         });
     },
-    //修改
     editMerchan(ruleForm) {
-      //判断商户其他名称是否具有唯一性 并且输个个数不可超过五十个
       if (this.businessOtherNamesArr.length !== 0) {
         if (this.businessOtherNamesArr.length > 50) {
           this.$message.error("商户其他名称不可超过50个");
@@ -2324,8 +2213,6 @@ export default {
           return;
         }
       }
-
-      // 门市类型
       if (this.ruleForm.storeType == "无") {
         this.ruleForm.storeType = 0;
       } else if (
@@ -2345,7 +2232,6 @@ export default {
       ) {
         this.ruleForm.storeType = 3;
       }
-      // 商户角色
       if (
         this.ruleForm.localCompRole == "旅游组团社" ||
         this.ruleForm.localCompRole == 1
@@ -2364,7 +2250,6 @@ export default {
       } else {
         this.ruleForm.localCompRole = 0;
       }
-      //类别
       if (
         this.ruleForm.localCompType == "门店" ||
         this.ruleForm.localCompType == 1
@@ -2386,13 +2271,11 @@ export default {
       ) {
         this.ruleForm.localCompType = 4;
       }
-      // 状态
       if (this.ruleForm.state == "停用" || this.ruleForm.state == 3) {
         this.ruleForm.state = 3;
       } else if (this.ruleForm.state == "正常" || this.ruleForm.state == 2) {
         this.ruleForm.state = 2;
       }
-      //结算方式
       if (
         this.ruleForm.settlementType == "非月结" ||
         this.ruleForm.settlementType == 2
@@ -2406,13 +2289,11 @@ export default {
         this.ruleForm.settlementType = 1;
       }
 
-      // 经营范围
       let scopeExt = "";
       if (this.ruleForm.scopeExt.length !== 0) {
         scopeExt = this.ruleForm.scopeExt.join(",");
       }
 
-      // 到期时间
       // console.log(this.ruleForm.expTime, 22);
       if (this.ruleForm.expTime == "Invalid Date") {
         this.ruleForm.expTime = 0;
@@ -2423,7 +2304,6 @@ export default {
       }
       // console.log(this.ruleForm.expTime);
 
-      // 区域可见
       let orgs = [];
 
       for (let i = 0; i < this.ruleForm.orgs.length; i++) {
@@ -2434,8 +2314,7 @@ export default {
         orgs.push(org);
       }
       this.ruleForm.orgs = orgs;
-      // 添加账户
-      // jqAdminList 管理和销售人员
+      // jqAdminList 
       let adminAndSalesArr = [...this.adminArr, ...this.salesArr];
       adminAndSalesArr = adminAndSalesArr.map(item => {
         return {
@@ -2447,7 +2326,6 @@ export default {
         };
       });
 
-      // useList
       this.useList.forEach((val, idx, arr) => {
         if (arr[idx].peerUserType == "管理员") {
           arr[idx].peerUserType = 1;
@@ -2497,7 +2375,7 @@ export default {
             orgs: this.ruleForm.orgs,
             jqAdminList: adminAndSalesArr,
             localCompAliasList: this.businessOtherNamesArr,
-            abouQuota: this.AbouQuota, //周边授信额度
+            abouQuota: this.AbouQuota, 
             localCompCode: this.localCompCode,
             useList: this.useList,
             areaInformationID: this.ruleForm.areaInformationID,
@@ -2516,10 +2394,10 @@ export default {
             this.currentPage4 = this.currentPage4;
             this.list();
             this.$message.success("修改成功");
-            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+            this.$refs.uploadImg.clearFiles();
           } else {
             this.$message.error("修改失败");
-            this.$refs.uploadImg.clearFiles(); // 上传图片隐藏
+            this.$refs.uploadImg.clearFiles(); 
           }
         })
         .catch(obj => {
@@ -2534,25 +2412,25 @@ export default {
       this.salesArr = [];
       this.useList = [];
       this.ruleForm = {
-        name: "", //
-        storeType: "无", //门市类型默认是无
+        name: "", 
+        storeType: "无", 
         localCompType: "",
-        state: "正常", //状态默认是正常
+        state: "正常", 
         expTime: "",
-        settlementType: "非月结", //结算方式
+        settlementType: "非月结", 
         quota: "",
         //department: "",
         //people: "",
-        scopeExt: [], //经营范围
-        orgs: [], //区域可见
+        scopeExt: [], 
+        orgs: [], 
         address: "",
         linker: "",
         phone: "",
         publicName: "",
         bankName: "",
         bankcardNo: "",
-        localCompRole: "", //商户角色
-        salesman: "", //销售人员
+        localCompRole: "", 
+        salesman: "", 
         administrative: "",
         parentID: -1,
         parentName: "",
@@ -2563,7 +2441,6 @@ export default {
         this.$refs["ruleForm"].resetFields();
       }
     },
-    //周边信息 整数转浮点数
     toDecimal2(x) {
       let f = Math.round(x * 100) / 100;
       var s = f.toString();
@@ -2577,7 +2454,6 @@ export default {
       }
       return s;
     },
-    //获取一条信心
     getOneMess(id) {
       if (this.btnindex == 1) {
         this.rimResidue(id);
@@ -2596,7 +2472,6 @@ export default {
           } = obj.data.object;
 
           object.imgUrl != null ? (this.imgnum = 2) : (this.imgnum = 1);
-          // 父级的结算方式
           this.parentSettlementType = object.parentSettlementType;
           this.ruleForm.name = object.name;
           this.ruleForm.imgUrl = object.imgUrl;
@@ -2604,7 +2479,6 @@ export default {
           this.AbouQuota = object.abouQuota;
           this.ruleForm.balance = object.balance;
           // this.ruleForm.localCompType = String(object.localCompType);
-          // 商户信息详情页的ID
           this.businewwInfPageId = object.id;
           if (this.btnindex == 1) this.getDebitTable(id);
           this.useList = useList;
@@ -2629,13 +2503,11 @@ export default {
               arr[idx].peerUserType = "销售";
             }
           });
-          // 状态
           if (object.state == 2) {
             this.ruleForm.state = "正常";
           } else {
             this.ruleForm.state = "停用";
           }
-          // 类别
           if (object.localCompType == 1) {
             this.ruleForm.localCompType = "门店";
           } else if (object.localCompType == 2) {
@@ -2645,7 +2517,6 @@ export default {
           } else if (object.localCompType == 4) {
             this.ruleForm.localCompType = "个体分销";
           }
-          // 商户角色
           if (object.localCompRole == 1) {
             this.ruleForm.localCompRole = "旅游组团社";
           } else if (object.localCompRole == 2) {
@@ -2653,7 +2524,6 @@ export default {
           } else if (object.localCompRole == 3) {
             this.ruleForm.localCompRole = "个人/独立旅游顾问";
           }
-          // 门市类型
           if (object.storeType == 0) {
             this.ruleForm.storeType = "无";
           } else if (object.storeType == 1) {
@@ -2663,11 +2533,9 @@ export default {
           } else {
             this.ruleForm.storeType = "第三方门市";
           }
-          // 到期时间 详情为1 编辑 为2
           if (object.expTime === 0) {
             this.ruleForm.expTime = "";
           }
-          // 经营范围
           if (object.scopeExt !== null) {
             if (this.btnindex == 1) {
               this.ruleForm.scopeExt = object.scopeExt;
@@ -2687,7 +2555,6 @@ export default {
           });
           // let adminArr = [],
           let salesArr = [];
-          // 从商户详情页点击编辑进入编辑页然后管理人员与销售人员去重
           if (this.btnindex == 2) {
             // this.adminArr = this.removalData(this.adminArr);
             this.salesArr = this.removalData(this.salesArr);
@@ -2700,8 +2567,6 @@ export default {
           });
           // this.ruleForm.administrative = adminArr.join(",");
           this.ruleForm.salesman = salesArr.join(",");
-
-          // 区域可见
           let areaDetails = [],
             areaEdit = [];
           for (let i = 0; i < orgs.length; i++) {
@@ -2718,8 +2583,6 @@ export default {
           } else {
             this.ruleForm.orgs = areaEdit;
           }
-
-          // 商户其他名称 btnindex为1则是详情页 2是编辑页展现形式
           if (this.btnindex == 2) {
             let businessNamesArr = [];
             localCompAliasList.forEach((val, idx, arr) => {
@@ -2773,7 +2636,7 @@ export default {
           this.ruleForm.parentName = object.parentName;
           this.ruleForm.quota = object.quota;
 
-          //todo    部门和人员 预留
+          //todo    
           // this.ruleForm.department = "1";
           //this.ruleForm.people = "2";
           // this.ruleForm.scopeExt = object.scopeExt.split(",");
@@ -2792,7 +2655,6 @@ export default {
           // this.AbouDeposit = this.toDecimal2(object.abouDeposit);
           this.AbouQuota = this.toDecimal2(object.abouQuota);
           this.AbouBalance = this.toDecimal2(object.abouBalance);
-          // 关联欠表的欠款总计计算
           // if (this.btnindex == 1) {
           //   this.arrears = this.toDecimal2(object.arrears);
           // }
@@ -2801,7 +2663,6 @@ export default {
           console.log(obj);
         });
     },
-    // 周边剩余授信额度接口请求 tid就是此id
     rimResidue(id) {
       this.$http
         .post(
@@ -2819,29 +2680,24 @@ export default {
           console.log(err);
         });
     },
-    // 数组里面对象去重方法
     removalData(arrData) {
       var hash = {};
       arrData = arrData.reduce((item, next) => {
-        //name是你要以什么属性去重
         hash[next.name] ? "" : (hash[next.name] = true && item.push(next));
         return item;
       }, []);
       return arrData;
     },
-    //图片上传失败
     handleError(err, file) {
       this.$message.error("图片上传失败重新上传");
       this.fileList2 = [];
       this.imgnum = 2;
     },
-    // 附件上传失败
     handleErrorFileUrl(err, file) {
       this.$message.error("附件上传失败重新上传");
       this.fileList1 = [];
       this.fileUrl = 2;
     },
-    //图片上传成功
     handleSuccess(response, file, fileList2) {
       console.log(file, "logo");
       if (file.status == "success") {
@@ -2853,7 +2709,6 @@ export default {
         this.$message.error("图片上传失败重新上传");
       }
     },
-    //附件上传成功
     handleSuccessFileUrl(response, file, fileList1) {
       console.log(file, "附件");
       if (file.status == "success") {
@@ -2865,7 +2720,6 @@ export default {
         this.$message.error("附件上传失败重新上传");
       }
     },
-    //删除
     // rowDelete() {
     //   var that = this;
     //   this.$http
@@ -2877,7 +2731,6 @@ export default {
     //       console.log(obj);
     //     });
     // },
-    // //删除弹框
     // open7() {
     //   this.$confirm("此操作将永久删除该条记录, 是否继续?", "提示", {
     //     confirmButtonText: "确定",
@@ -2901,11 +2754,9 @@ export default {
     //       });
     //     });
     // },
-    //选中待上传的图片
     handlePreview(file) {
       // this.uid=file.uid;
     },
-    //删除待上传的图片
     handleRemove(file, fileList) {
       // this.uid=fileList[0].uid;
       // for(let i=0;i<this.fileList.length;i++){
@@ -2915,11 +2766,9 @@ export default {
       // }
       // this.time=this.fileList.length;
     },
-    // 商户信息
     handleClick(row, event, column) {
       this.tid = row.id;
     },
-    // dialog中区域可见获取数据
     areaAxios() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
@@ -2947,7 +2796,6 @@ export default {
 .paddingTd {
   padding: 12px 2px;
 }
-/* 图片上传 */
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -2969,7 +2817,6 @@ export default {
   width: 178px;
   display: block;
 }
-/* 图片end */
 .BodyTableCenter {
   margin: 0 60px 0 100px;
 }
@@ -3114,7 +2961,6 @@ export default {
 .dialogTableTr {
   line-height: 40px;
 }
-/* 详情页关联欠款表格的分页 */
 .pagination {
   margin-top: 40px;
   text-align: right;

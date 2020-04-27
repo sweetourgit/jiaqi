@@ -12,7 +12,6 @@
        <el-button :disabled="forbidden" @click="operation(1)">页面权限</el-button>
        <el-button :disabled="forbidden" @click="operation(2)">数据权限</el-button>
      </el-row>
-    <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
        <el-table-column  prop="id" label="ID" min-width="60" align="center"></el-table-column>
        <el-table-column  prop="name" label="功能名称" min-width="150" align="center"></el-table-column>
@@ -26,7 +25,6 @@
        </el-table-column> 
      </el-table>
      </div>
-      <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
              <el-form-item label="名称" prop="name">
@@ -142,7 +140,6 @@ export default {
           }
           return childNodes;
       },
-      // 单击选中目录
       onNodeClick(e, treeId, treeNode) {
         if(treeNode.isParent === true){
           this.parentID = treeNode.id;
@@ -158,7 +155,7 @@ export default {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun(val) {  
         this.multipleSelection=val;  
         if(this.multipleSelection.length>0){
            this.forbidden=false;
@@ -166,12 +163,12 @@ export default {
            this.forbidden=true;
         }
       },
-      clickRow(row){    //选中行复选框勾选
-        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+      clickRow(row){    
+        this.$refs.multipleTable.clearSelection();  
         this.$refs.multipleTable.toggleRowSelection(row);
         this.menuId = this.multipleSelection[0].id;
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){  
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
@@ -182,7 +179,7 @@ export default {
           this.variable++;
           this.dialogType = i;     
       },
-      menuList(type){  //获取菜单列表
+      menuList(type){  
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
              "object": {
                "id": this.parentID,
@@ -192,13 +189,9 @@ export default {
                    this.groupList=res.data.objects;
                    this.showList=true;
                    if(type==="add"){
-                      //1、获取zTree对象
                       var treeObj = $.fn.zTree.getZTreeObj("tree");
-                      //2、获取当前选中的节点
                       var selectedNode = treeObj.getSelectedNodes();
-                      //3、给定一个要添加的新节点
                       var newNode = this.groupList[this.groupList.length-1];
-                      //4、把这个新节点添加到当前选中的节点下，作为它的子节点
                       if(selectedNode.length > 0){
                         newNode = treeObj.addNodes(selectedNode[0], newNode);
                       }
@@ -208,7 +201,7 @@ export default {
                 }
         })
       },
-      delMenu(){ //删除Module
+      delMenu(){ 
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -231,7 +224,7 @@ export default {
           });
         });
       },
-      openMenu(index,title){  //弹窗
+      openMenu(index,title){  
         this.title=title;
         this.dialogFormVisible = true;
         if(index===2){
@@ -245,7 +238,7 @@ export default {
             this.insertMenu(formName,'/org/menu/api/save');
          }
       },
-      getMenu(){   //获取一条Module
+      getMenu(){  
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -257,7 +250,7 @@ export default {
               }
         }) 
       },
-      insertMenu(formName,url,type){  //新增保存
+      insertMenu(formName,url,type){ 
         this.$refs[formName].validate((valid) => {
           if(valid){
                    this.$http.post(this.GLOBAL.serverSrc + url,{
@@ -312,7 +305,6 @@ $(document).ajaxSend(function(event, jqxhr, settings){
        .confirm{margin:0 140px 0 20px}
        .demo-ruleForm{margin:20px}
        .demo-ruleForm .el-input{width:300px}
-       /*ztree*/
        .ztree-bg{float: left;width: 220px;height:600px;margin-top: 20px;padding: 10px;border:1px solid #fff;box-shadow:3px 3px 3px #EDEDED,3px -3px 3px #EDEDED,-3px 3px 3px #EDEDED,-3px -3px 3px #EDEDED;}
 </style>
 </style>

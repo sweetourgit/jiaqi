@@ -20,7 +20,6 @@
           </span>
         </el-dialog>
       </div>
-      <!--搜索框内容-->
       <div style="width: 1200px; height: 223px; margin-left: 20px">
         <div class="select_two">
           <div class="id">
@@ -156,8 +155,6 @@
           <!-- <el-table-column prop="price" label="价格" align="center" width="80%"></el-table-column> -->
         </el-table>
       </div>
-
-      <!--分页-->
       <div class="block" style="margin-top: 30px;">
         <el-pagination
           @size-change="handleSizeChange"
@@ -170,9 +167,7 @@
           :total="total"
         ></el-pagination>
       </div>
-      <!--分页-->
     </div>
-    <!-- 团期/库存的弹窗 -->
     <el-dialog
       :close-on-click-modal="false"
       class="merchandise"
@@ -185,18 +180,14 @@
       <div style="float: left; margin-bottom: 20px; margin-left: 40% ;">
         <el-radio-group v-model="isCollapse" @change="qqq">
           <el-radio-button class="group" :label="true">库存</el-radio-button>
-          <!-- 点击时会出现弹窗 -->
-          <!-- 30日改过 -->
           <el-radio-button :label="false" :disabled="tabDisable">价格</el-radio-button>
         </el-radio-group>
       </div>
-      <!-- 库存 -->
       <div v-if="isCollapse==true">
         <div class="ButtonCls">
           <el-button @click="BandCancel">取消</el-button>
           <el-button type="primary" @click="BandSave">保存</el-button>
         </div>
-        <!-- sku -->
         <el-table
           v-show="skuList"
           :data="ccc"
@@ -280,8 +271,6 @@
             </template>
           </el-table-column>
         </el-table>
-
-        <!--成本弹窗-->
         <el-dialog title="成本" :visible.sync="basicbutton" width="50%" append-to-body>
           <div>
             <el-button type="primary" :disabled="idDisabledCostAdd" @click="addcost">添加</el-button>
@@ -328,7 +317,6 @@
             </el-table>
           </div>
         </el-dialog>
-        <!-- 添加成本列表弹窗 -->
         <el-dialog title="提示" :visible.sync="cost" width="40%" append-to-body @close="cancel()">
           <el-form
             :model="ruleForm1"
@@ -367,10 +355,7 @@
             </el-form-item>
           </el-form>
         </el-dialog>
-        <!-- 添加成本列表弹窗 END -->
       </div>
-      <!-- 价格 -->
-      <!-- 传递到子组件中的值 -->
       <div v-else style="overflow:hidden;margin-top: 60px;">
         <DateList
           v-on:merchandises="headCall"
@@ -395,21 +380,21 @@ export default {
   },
   data() {
     return {
-      forbidden_a: true, // 是否禁用成立里的编辑，删除按钮
-      isUsePrice: true, // 判断价格按钮是否可点击 (团号 成本三个都填完才为true)
-      isUseLine: true, // 判断上线按钮是否可点击 (价格添加完毕后才可以点击上线按钮)
+      forbidden_a: true, 
+      isUsePrice: true,
+      isUseLine: true,
       activeName: "first",
       tabBtnDisabled: true,
       ruleForm1: {
-        name: "", // 金额
-        region: "", // 供应商
-        region1: "", // 供应商
-        costType: "", // 供应商类型（成本类型？）
-        supplierTypeEX: "", // 供应商类型中文
-        supplierID: "" // 供应商id
+        name: "", 
+        region: "", 
+        region1: "", 
+        costType: "", 
+        supplierTypeEX: "", 
+        supplierID: "" 
       },
       options2: [],
-      options3: [], // 成本类型
+      options3: [], 
       value2: "",
       rules1: {
         name: [
@@ -427,19 +412,19 @@ export default {
           { required: true, message: "请选择成本类型", trigger: "change" }
         ]
       },
-      cost: false, // 添加成本列表弹窗
+      cost: false, 
       tableData12: [],
       multipleSelection12: [],
-      count: 0, // 人均结算价
+      count: 0, 
       lilv: "",
       basicbutton: false,
       isInfo: false,
       productId: "",
       productTitle: "",
       productPos: "",
-      originPlace: "", //出发地
+      originPlace: "", 
       productMod: "",
-      originMod: "", //目的地
+      originMod: "", 
       productUser: "",
       productPrefix: "",
       productBehind: "",
@@ -448,7 +433,7 @@ export default {
       codeSuffix: "",
       pagesize: 10,
       total: 0,
-      reable: true, //控制列表上方按钮的显示
+      reable: true, 
       fid: 0,
       buttonlist: [],
       pid: "",
@@ -506,7 +491,6 @@ export default {
       ],
       typeList: [
         {
-          //状态搜索
           value: "0",
           label: "未上架"
         },
@@ -537,29 +521,29 @@ export default {
       listId: "",
       io: 0,
       lm: "",
-      forbidden: true, // 属性按钮禁用
-      mm: true, // 属性按钮选中效果
-      pp: true, // 添加值按钮
-      qq: false, // 确认属性值按钮
-      aa: true, // 输入框隐藏
-      bb: false, //输入框变为按钮
-      again: false, // 重新设计属性
-      close: false, // 关闭添加属性按钮
-      select: false, // 属性按钮选择
-      addsku: false, // 生成sku按钮
-      skuList: true, // sku列表
-      ccc: [], // 显示sku的数组
-      skuid: 0, // sku的id
-      xianshi: false, // 属相按钮的禁用
-      arr: [], // 禁用时,未被禁用的按钮的key值数组
-      accretion: true, // 添加增值(整个大块)
-      accretionBall: false, // 添加增值(弹框)
-      accretionTable: true, // 增值服务(表格)
+      forbidden: true, 
+      mm: true, 
+      pp: true, 
+      qq: false, 
+      aa: true, 
+      bb: false, 
+      again: false, 
+      close: false, 
+      select: false, 
+      addsku: false, 
+      skuList: true, 
+      ccc: [], 
+      skuid: 0, 
+      xianshi: false, 
+      arr: [], 
+      accretion: true, 
+      accretionBall: false,
+      accretionTable: true, 
       ruleForm: {
         name: "",
         priceSelect: "",
         explain: ""
-      }, // 增值表单
+      }, 
       Addprice: [
         {
           id: 1,
@@ -575,8 +559,8 @@ export default {
           explain: "给小费鼓励一下吧",
           type: false
         }
-      ], // 增值服务数组
-      AddpriceId: 0, // 增值服务的id
+      ], 
+      AddpriceId: 0, 
       rules: {
         name: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
@@ -589,18 +573,15 @@ export default {
           { required: true, message: "请填写活动形式", trigger: "blur" },
           { max: 50, message: "不超过50个汉字", trigger: "blur" }
         ]
-      }, // 增值服务的验证
-      Online: true, // 上线
-      Offline: false, // 下线
-      shuxingz: [], // 判断属性输入属性值不为空
+      }, 
+      Online: true, 
+      Offline: false, 
+      shuxingz: [], 
       buttonList: [
-        // pp 是开关
-        // forbidden 禁用按钮
         {
           id: "0",
           button: "出发地",
           pp: false,
-          //每个按钮的验证v-model
           forbidden: false,
           verifier: " Origin"
         },
@@ -660,7 +641,7 @@ export default {
           forbidden: false,
           verifier: "SetMeal"
         }
-      ], // 按钮列表
+      ], 
       Day: [
         {
           value: "2天",
@@ -722,7 +703,7 @@ export default {
           value: "16天",
           label: "16天"
         }
-      ], // 天数选择
+      ], 
       NightNum: [
         {
           value: "1晚",
@@ -784,7 +765,7 @@ export default {
           value: "15晚",
           label: "15晚"
         }
-      ], // 晚数列表
+      ], 
       Accommodation: [
         {
           value: "豪华型",
@@ -814,9 +795,9 @@ export default {
           value: "农家乐",
           label: "农家乐"
         }
-      ], // 住宿等级
-      addtable: [], // 列表数组
-      sku: [], // sku数组
+      ], 
+      addtable: [], 
+      sku: [], 
       options: [
         {
           value: "选项1",
@@ -842,20 +823,20 @@ export default {
       type: [],
       value: "",
       piaid: "",
-      tableData: [], //存放下面产品列表的数据
-      price: [], // 属性输入框
+      tableData: [], 
+      price: [], 
       abc: false,
       array1: "",
       team: "",
       chengben: [],
       supplier_id: 0,
       team_01: 0,
-      selRowsCount: 0, // 监测有没有被选中的行
-      watchCostLength: null, // 成本里的数据长度
-      watchPrefixStatus: null, // 监听前后缀
-      keepPrefixAndCostStatus: false, // 前缀后缀验证结果（布尔值）
-      hasCostLength: false, // 成本里面有数据（不是默认添加的，手动添加之后的）
-      InputDisable: false //控制前后缀输入是否禁用
+      selRowsCount: 0, 
+      watchCostLength: null, 
+      watchPrefixStatus: null, 
+      keepPrefixAndCostStatus: false, 
+      hasCostLength: false, 
+      InputDisable: false 
     };
   },
   watch: {
@@ -910,7 +891,6 @@ export default {
     }
   },
   computed: {
-    // 成本提示弹窗，显示添加还是编辑
     isShowAddOfEdict: function() {
       if (this.selRowsCount.length > 0) {
         return false;
@@ -918,7 +898,6 @@ export default {
         return true;
       }
     },
-    //检测上方的价格按钮
     tabDisable: function() {
       let toggle = true;
       for (let i = 0; i < this.ccc.length; i++) {
@@ -930,7 +909,6 @@ export default {
       console.log("computed===", toggle);
       return toggle;
     },
-    // 如果成本列表有选中的就禁止其添加功能只能修改
     idDisabledCostAdd: function() {
       if (this.selRowsCount.length > 0) {
         return true;
@@ -939,20 +917,16 @@ export default {
       }
     }
   },
-  //人均结算价保留小数点后两位
   filters: {
     numFilter(value) {
-      // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2);
       return realVal;
     }
   },
   methods: {
-    // merchandise 弹窗出现时判断团号和成本是否已填写如果已填写则价格按钮可点击  否则禁用
     merchandiseDialogOpen() {
       // for (let i = 1)
     },
-    //供应商模糊查询
     querySearch5(queryString3, cb) {
       this.tableData2 = [];
       this.$http
@@ -992,13 +966,11 @@ export default {
       // this.productPos = item.id;
       // this.originPlace = item.value;
     },
-    // 成本类型
     themeList() {
       this.borrowingType = [];
       this.$http
         .post(
           this.GLOBAL.serverSrc +"/universal/supplier/api/dictionaryget?enumname=SupplierType"
-          // SupplierType 之前的   PaymentType 无收入借款
         )
         .then(res => {
           // console.log("themeList",res)
@@ -1016,11 +988,9 @@ export default {
     handleClick(tab, event) {
       //          console.log(tab, event);
     },
-    // 表格行选中事件
     changselet(selection, row) {
       this.chengben = selection;
     },
-    // 毛利率输入框change事件
     changinpt() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/team/cost/api/saverate", {
@@ -1046,7 +1016,7 @@ export default {
             .then(res => {
               console.log(res, 666);
               this.count = res.data.average;
-              // this.ccc = [];//问题利率？
+              // this.ccc = [];
               for (let i = 0; i < this.ccc.length; i++) {
                 if (this.ccc[i].value == 0) {
                   this.ccc[i].value = "";
@@ -1098,7 +1068,6 @@ export default {
          //类型ty
          console.log(  res.slice(res.indexOf("*")+1))*/
     },
-    // 添加成本列表的弹窗，添加事件
     submitForm1(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -1123,7 +1092,6 @@ export default {
             .then(res => {
               this.$http
                 .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-                  // 通过套餐获取人均结算价
                   id: this.team
                 })
                 .then(res => {
@@ -1160,11 +1128,9 @@ export default {
                       arr[k]["suppliertype"] = "汽车票";
                     }
                   });
-                  // 监听成本列表数据长度
                   this.watchCostLength = res.data.objects;
                 });
               this.cost = false;
-              // 28日修改过
               this.chongzhi();
               this.$refs.ruleForm1.resetFields();
             });
@@ -1174,7 +1140,6 @@ export default {
         }
       });
     },
-    // 重置表单
     chongzhi() {
       this.ruleForm1.region = "";
       this.ruleForm1.costType = "";
@@ -1184,7 +1149,6 @@ export default {
       this.chongzhi();
       this.$refs.ruleForm1.resetFields();
     },
-    // 修改成本信息
     submitForm2(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -1202,7 +1166,7 @@ export default {
                 packageID: this.team,
                 supplierID: this.supplier_id,
                 name: this.ruleForm1.region,
-                suppliertype: this.ruleForm1.costType, // 供应商类型
+                suppliertype: this.ruleForm1.costType, 
                 money: this.ruleForm1.name
               }
             })
@@ -1254,11 +1218,9 @@ export default {
         }
       });
     },
-    // 重置
     resetForm1(formName) {
       this.$refs[formName].resetFields();
     },
-    // 成本弹窗编辑事件
     editorcb() {
       this.chongzhi();
       // var arry = [];
@@ -1305,7 +1267,6 @@ export default {
       /* console.log(this.chengben[0].id)*/
       this.$http
         .post(this.GLOBAL.serverSrc + "/team/cost/api/get", {
-          // 对正本提示的弹窗进行赋值
           id: this.chengben[0].id
         })
         .then(res => {
@@ -1315,7 +1276,6 @@ export default {
           this.ruleForm1.name = res.data.object.money;
         });
     },
-    // 成本弹窗，删除事件
     delcb() {
       this.$confirm("确认删除?", "提示", {
         confirmButtonText: "确定",
@@ -1325,17 +1285,15 @@ export default {
         for (var i = 0; i < this.chengben.length; i++) {
           this.$http
             .post(this.GLOBAL.serverSrc + "/team/cost/api/delete", {
-              // 删除一条成本
               id: this.chengben[i].id
             })
             .then(res => {
               if (res.data.isSuccess == true) {
                 this.$message.success("删除成功");
-                this.$refs.multipleTable12.clearSelection(); // 因为你之前会有行被选中，要取消选中状态，否则会影响弹窗(虽然删除了但是UI记住了选中的状态)，编辑弹窗的修改，添加的显示
-                this.selRowsCount = 0; // 删除之后手动把监听列表行选中的状态置位0（没有选中状态）
+                this.$refs.multipleTable12.clearSelection();
+                this.selRowsCount = 0;
                 this.$http
                   .post(this.GLOBAL.serverSrc + "/team/cost/api/getaverage", {
-                    // 删除之后重新计算人均结算价
                     id: this.team
                   })
                   .then(res => {
@@ -1343,7 +1301,6 @@ export default {
                   });
                 this.$http
                   .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-                    // 成本信息无分页列表
                     object: { packageID: this.team }
                   })
                   .then(res => {
@@ -1401,7 +1358,6 @@ export default {
         }
       });
     },
-    // 成本弹窗的添加列表方法
     addcost() {
       // console.log(this.chengben);
       // var arry = [];
@@ -1453,7 +1409,6 @@ export default {
       this.chongzhi();
       this.cost = true;
     },
-    // 成本弹窗列表，选择项发生变化时触发
     handleSelectionChange(val) {
       this.selRowsCount = val;
       this.multipleSelection = val;
@@ -1463,7 +1418,6 @@ export default {
         this.forbidden_a = true;
       }
     },
-    // 请求数据成功时显示当前的列表以及价格的
     basicPrice(id, rate, ShowBase, boon) {
       this.tableData12 = [];
       let that = this;
@@ -1480,7 +1434,6 @@ export default {
           }
         })
         .then(res => {
-          // 成本为空null时报错  所以判断
           if (res.data.isSuccess) {
             for (let i = 0; i < this.ccc.length; i++) {
               if (this.team === this.ccc[i].id) {
@@ -1523,7 +1476,6 @@ export default {
               }
             });
           } else {
-            //控制下方价格的显示以及上面价格的显示
             for (let i = 0; i < this.ccc.length; i++) {
               if (this.team === this.ccc[i].id) {
                 this.ccc[i].btnDisabled = true;
@@ -1541,7 +1493,6 @@ export default {
           this.count = res.data.average;
         });
     },
-    // 判断输入的值是否在数据库中
     fucking(index) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/team/package/codeisexist", {
@@ -1575,7 +1526,6 @@ export default {
           }
         });
     },
-    // 控制价格按钮显示
     changeFun(id, rate, ifShowBase,boon) {
       // basicPrice(ccc[scope.$index].id,ccc[scope.$index].rate)
       this.basicPrice(id, rate, ifShowBase, boon);
@@ -1598,7 +1548,6 @@ export default {
         }
       }
     },
-    // 出发地
     querySearch3(queryString1, cb) {
       this.vague = [];
       this.$http
@@ -1623,7 +1572,7 @@ export default {
           console.log(err);
         });
     },
-    /*querySearch1(queryString1, cb1) {//搜索出发地方法
+    /*querySearch1(queryString1, cb1) {
        var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
        cb1(results1);
        },*/
@@ -1632,14 +1581,12 @@ export default {
         return restaurant.value;
       };
     },
-    // originPlace代表的是出发地
     departure(item) {
       /*this.productPos = item.id;
          this.originPlace = item.value;*/
       this.productPos = item.id;
       this.originPlace = item.value;
     },
-    //目的地
     querySearch4(queryString2, cb) {
       this.tableData1 = [];
       this.$http
@@ -1677,7 +1624,6 @@ export default {
         return restaurant.value;
       };
     },
-    // originPlace代表的是出发地
     departure1(item) {
       /*this.productPos = item.id;
          this.originPlace = item.value;*/
@@ -1693,7 +1639,6 @@ export default {
         .catch(function(obj) {});
     },
     reset() {
-      //重置29日改过
       this.productId = "";
       this.productTitle = "";
       this.productPos = "";
@@ -1867,7 +1812,6 @@ export default {
         }
       });
     },
-    // fucking()两个可能是判断重复了
     bandlePrice(item) {
       this.piaid = this.ccc[item].id;
       this.codePrefix = this.ccc[item].codePrefix;
@@ -1879,7 +1823,6 @@ export default {
         this.isCollapse = false;
       }
     },
-    //库存修改
     inventorysave() {
       var that = this;
       /* this.$http.post(
@@ -1912,7 +1855,6 @@ export default {
 
          })*/
     },
-    // 团期/库存弹窗的保存按钮
     BandSave() {
       for (let i = 0; i < this.ccc.length; i++) {
         this.$http
@@ -1951,7 +1893,6 @@ export default {
           })
           .catch(function(obj) {});
       }},
-      // 团期/库存按钮 获取dialog数据
       groupStag2e() {
         return this.$router.push(`/planInventory?id=${this.pid}`);
         // this.ccc = [];
@@ -2047,11 +1988,8 @@ export default {
           return "";
         }
       },
-      // 点击属性按钮的时候
       begin(e, key) {
-        // 按下按钮
         if (e.pp == false) {
-          // 给点击之后的样式
           this.arr.push({
             id: key
           });
@@ -2067,11 +2005,9 @@ export default {
       }
     },
     BandCancel() {
-      // 点击取消时让弹窗隐藏
       this.merchandise = false;
       this.isCollapse = true;
     },
-    //搜索
     searchHand() {
       this.pageNum = 1;
       if (!this.productTitle) {
@@ -2156,7 +2092,6 @@ export default {
       //        }
     },
     handleClick(row) {},
-    // 列表
     handleSizeChange(val) {
       if (!this.productTitle) {
         this.productTitle = "";
@@ -2283,11 +2218,9 @@ export default {
         })
         .catch(function(obj) {});
     },
-    // 团期/库存按钮 获取dialog数据
     groupStage() {
       if(this.$route.query.user!== 'yang') return this.$router.push(`/planInventory?id=${this.pid}`);
       this.ccc = [];
-      //1号修改过
       this.tabBtnDisabled = true;
       var that = this;
       this.$http
@@ -2321,11 +2254,9 @@ export default {
               that.ccc[i].value = "";
             }
           }
-          //请求成本的接口判断里面是否有数据
           for (let i = 0; i < this.ccc.length; i++) {
             this.$http
               .post(this.GLOBAL.serverSrc + "/team/cost/api/list", {
-                // 成本信息无分页列表
                 object: { packageID: this.ccc[i].id }
               })
               .then(res => {
@@ -2360,18 +2291,14 @@ export default {
         return "";
       }
     },
-    // 点击属性按钮的时候
     begin(e, key) {
-      // 按下按钮
       if (e.pp == false) {
-        // 给点击之后的样式
         this.arr.push({
           id: key
         });
         // console.log(this.arr);
         document.getElementById("kk" + key).style.border = "solid 1px #409EFF";
         document.getElementById("kk" + key).style.color = "#409EFF";
-        // 当不符合属性条件时先将全部的按钮都禁用
         if (this.addtable[this.addtable.length - 1].allprice.length >= 3) {
           // console.log("超过了")
           for (var po = 0; po < this.buttonList.length; po++) {
@@ -2382,7 +2309,6 @@ export default {
             document.getElementById("kk" + po).style.color = "#c0c4cc";
             document.getElementById("kk" + po).style.background = "#fff";
           }
-          // 然后再将点击了的按钮存在一个数组里面,再将这个数组里面的按钮取消禁用.
           for (var lo = 0; lo < this.arr.length; lo++) {
             this.buttonList[this.arr[lo].id].forbidden = false;
             document.getElementById("kk" + this.arr[lo].id).style.border =
@@ -2391,16 +2317,13 @@ export default {
               "#409EFF";
           }
         }
-        // 点击向数组中添加数值
         this.addtable[this.addtable.length - 1].allprice.push({
           id: e.id,
           property: e.button,
           verifier: e.verifier,
           value: []
         });
-        // 按下按钮给一个true表示按下
         this.buttonList[key].pp = true;
-        // 判断表格中的数据条数,如果数据只有一条那么生成一条确认属性值
         if (this.addtable[this.addtable.length - 1].allprice.length == 1) {
           this.addtable[this.addtable.length - 1].allprice.push({
             ll: ""
@@ -2409,7 +2332,6 @@ export default {
           this.buttonList[key].key =
             this.addtable[this.addtable.length - 1].allprice.length - 2;
         } else {
-          // 如果数据条数大于一条,则吧str,也就是确认属性值这条代码拿出来在重新放到数据尾部
           var str = this.addtable[this.addtable.length - 1].allprice.splice(
             this.addtable[this.addtable.length - 1].allprice.length - 2,
             1
@@ -2420,8 +2342,6 @@ export default {
           // console.log(e);
         }
       } else if (e.pp) {
-        // 当按钮抬起了
-        // 这个地方删除有些问题!
         this.addtable[this.addtable.length - 1].allprice.splice(e.key, 1);
         for (
           let i = 0;
@@ -2436,7 +2356,6 @@ export default {
           this.addtable[this.addtable.length - 1].allprice.splice(0, 1);
         }
         this.buttonList[key].pp = false;
-        // 当抬起按钮的时候,如果符合属性数量的要求,那么将所有的禁用关闭
         if (this.addtable[this.addtable.length - 1].allprice.length < 4) {
           for (var po = 0; po < this.buttonList.length; po++) {
             this.buttonList[po].forbidden = false;
@@ -2446,7 +2365,6 @@ export default {
           }
           this.arr.splice(e.key, 1);
         }
-        // 在其他按钮禁用的情况下也显示已经选中的按钮
         for (var lo = 0; lo < this.arr.length; lo++) {
           document.getElementById("kk" + this.arr[lo].id).style.border =
             "solid 1px #409EFF";
@@ -2473,11 +2391,9 @@ export default {
       }
       this.merchandise = data;
     },
-    // 添加增值
     // appreciation(){
     //   this.accretionBall = true;
     // },
-    // 保存增值
     // save(formName){
     //   this.$refs[formName].validate((valid) =>{
     //     if (valid){
@@ -2497,7 +2413,6 @@ export default {
     //       })
     //       this.accretionTable = true;
     //       console.log(this.Addprice);
-    //       // 清空输入框的数据
     //       this.ruleForm.name = '';
     //       this.ruleForm.priceSelect = '';
     //       this.ruleForm.explain = '';
@@ -2508,15 +2423,12 @@ export default {
     //     }
     //   });
     // },
-    // 删除sku
     // delSku(a){
     //   this.ccc.splice(a,1);
     // },
-    // 删除增值服务
     // delPrice(b){
     //   this.Addprice.splice(b,1);
     // },
-    // sku上线
     online(index) {
       this.ccc[index].type = true;
     },
@@ -2525,19 +2437,15 @@ export default {
     //     this.$message.error("错了哦，必须添加套餐");
     //   }
     // },
-    // sku下线
     offline(index) {
       this.ccc[index].type = false;
     },
-    // 增值服务上线
     addOnline(index) {
       this.Addprice[index].type = true;
     },
-    // 增值服务下线
     addOffline(index) {
       this.Addprice[index].type = false;
     },
-    //获取id
     clickBanle(row, event, column) {
       this.pid = row["id"];
       this.reable = false;
@@ -2553,7 +2461,6 @@ export default {
   },
   created() {
     this.themeList();
-    //产品列表
     var that = this;
     this.pageNum = 1;
     if (!this.productTitle) {
@@ -2605,7 +2512,6 @@ export default {
       })
       .catch(function(obj) {});
 
-    //出行模板data
     this.$http
       .post(
         this.GLOBAL.serverSrc + "/universal/template/api/templatelist",
@@ -2744,7 +2650,6 @@ export default {
   margin: 37px auto;
 }
 
-// 限制字体
 .astrict {
   color: #ff4b3d;
   margin-left: 30px;

@@ -164,7 +164,7 @@ export default {
     return {
       vm: {
         state: false,
-        previous: false,  // 是否过期
+        previous: false,  
         dateText: '',
         share: '',
         name: '',
@@ -173,8 +173,8 @@ export default {
         count: 0,
         inventoryID: null,
         planID: null,
-        average: 0, // 用来和价格比较显示红色
-        averageCost: 0  // 用来传递给编辑表单，保存时带回
+        average: 0, 
+        averageCost: 0  
       },
       enrolls: [],
     }
@@ -182,11 +182,9 @@ export default {
 
   methods: {
     init(){
-      // 再manager上挂载该实例
       this.poolManager.initShowVM({ vm: this });
     },
 
-    // 实质上的初始化方法
     setState(state, day){
       if(state=== DAY_STATE.MULTIPLE || state=== DAY_STATE.UNDO) return this.vm.state= false;
       this.vm.state= true;
@@ -197,7 +195,6 @@ export default {
       let { after, dayInt, vm }= day;
       this.vm.previous= !after;
       this.vm.dateText= this.dayIntToText(dayInt);
-      // 均价
       this.vm.average= this.poolManager.getAverage();
       this.vm.planID= vm.planID;
       this.enrolls.splice(0);
@@ -216,15 +213,12 @@ export default {
           this.vm.share= share;
           this.vm.name= name;
           this.vm.count= count;
-          // 用来传递给编辑表单
           this.vm.averageCost= averageCost;
-          // 如果是共享库存，则均价需要另行计算
           if(share=== DAY_STATE.SHARE) this.getShareCost(averageCost)
         })
       })
     },
 
-    // 删除共享计划
     deleteSharePlanAction(){
       this.$confirm(`确定要删除当前计划吗?`, '提示', {
         confirmButtonText: '确定',
@@ -241,7 +235,6 @@ export default {
       })
     },
 
-    // 删除非共享计划
     deleteNotSharePlanAction(){
       this.$confirm(`确定要删除当前计划吗?`, '提示', {
         confirmButtonText: '确定',
@@ -260,7 +253,6 @@ export default {
       })
     },
 
-    // dayInt转字符串
     dayIntToText(dayInt){
       dayInt= (dayInt+ '').split('');
       dayInt.splice(4, 0, '年');
@@ -272,7 +264,6 @@ export default {
       return parseFloat(price)< parseFloat(this.vm.average);
     },
 
-    // 跳转到共享库存页
     toSharedInventoryPage(){
       let day= this.poolManager.currentDay;
       this.$router.push({ 

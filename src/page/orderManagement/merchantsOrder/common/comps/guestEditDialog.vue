@@ -5,7 +5,6 @@
 </style>
 
 <template>
-  <!--填写游客信息-->
   <el-dialog class="city_list" width="700px" height="500px"
     :title="'出行人信息（'+ title +'）'"
     :visible.sync="visible"
@@ -74,7 +73,6 @@ export default {
         credCode: null,
       },
       rules: {
-        //变更数量
         price: [{ required: true, message: "请选择价格", trigger: "change" }],
         contactName: [
           { message: "联系人不能为空", trigger: "blur" },
@@ -95,7 +93,6 @@ export default {
             message: "必须为数字值，并且不允许是负数"
           }
         ],
-        //游客信息
         cnName: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         enName: [
           { required: true, message: "请输入姓（拼音）", trigger: "blur" },

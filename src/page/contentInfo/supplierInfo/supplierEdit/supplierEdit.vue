@@ -59,16 +59,14 @@ export default {
 
   data(){
     return Object.assign(
-      // 状态
       {
-        isSave: false, // 是新增还是编辑
+        isSave: false, 
         currentTabName: 'base',
       }
     )
   },
 
   methods: {
-    // 进入页面后的预处理
     preHandler(){
       this.isSave= this.$route.path=== '/supplierEdit';
       let { conditions, pageInfo, id }= this.$route.query;
@@ -90,14 +88,13 @@ export default {
       this.$router.replace({ path: '/supplierInfo', query: this.backQuery });
     },
 
-    // 获取数据原型
     getProto(){
       let id= this.$route.query.id;
       if(!id) return Promise.resolve(getSupplierDTO());
       return getSupplierById(id)
     },
 
-    // 拆分数据原型
+
     protoSplitHandler(proto){
       let id= this.$route.query.id;
       let baseProto= {}; 
@@ -116,7 +113,7 @@ export default {
       return bol;
     },
 
-    // 返回的是Promise
+
     validate(){
       return new Promise((resolve, reject) => {
         let bol= this.$refs.banksTab.validate();

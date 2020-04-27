@@ -95,17 +95,11 @@ export default {
       if(!id) return;
       this.list.splice(0);
       this.list.push(...this.PACKAGE_LIST);
-      // 取消之前的选中
       this.PACKAGE_LIST[this.currentIndex].selected= false;
-      // 选中新的
       this.currentIndex= this.list.findIndex(el => el.id=== id);
       this.PACKAGE_LIST[this.currentIndex].selected= true;
     },
 
-    /**
-     * @description: 目前的逻辑是侧边栏提交点击的条目到上一级，上一级会调用侧边栏的初始化方法，这样改变侧边栏指针
-     * 感觉设计有问题
-     */
     select(pac, i){
       if(i=== this.currentIndex) return;
       if(!pac.inited) return this.$message.error('请先设置套餐团号');

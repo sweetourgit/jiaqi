@@ -42,10 +42,6 @@
 </template>
 
 <script>
-/**
- * @description: 未富文本编辑器包裹一层
- */
-// 第三方组件
 import VueEditor from '@/components/tinymce'
  
 import ValidateMsgMixin from '@/mixin/ValidateMsgMixin'

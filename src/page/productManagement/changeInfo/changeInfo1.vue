@@ -67,9 +67,7 @@ export default {
   },
 
   provide: {
-    // 行程总天数
     PROVIDE_DAY: 0,
-    // 校验错误收集队列
     ERROR_QUEUE: []
   },
 
@@ -77,7 +75,6 @@ export default {
     return {
       vm: {
         currentPackage: null,
-        // 当发生需要先保存再新增的情况，这个标志为true, changeTab中赋值
         addAfterSave: false,
       },
       pods: [],
@@ -91,10 +88,7 @@ export default {
   },
 
   methods: {
-    /**
-     * @description: TEAM_TRAFFIC_DTO_BACK会默认给一个天数最大值
-     * 目前有两个地方 TrafficFormMixin和这里
-     */
+
     addTab(){
       let newTabName= this.getNewPackageName();
       TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
@@ -124,9 +118,7 @@ export default {
       this.$nextTick(() => this.changeTab(newTabName, this.vm.currentPackage));
     },
 
-    /**
-     * @description: 移除Tab
-     */
+
     removeTab(name) {
       let index= this.packages.findIndex(el => el.name=== name);
       let id= this.packages[index].id;
@@ -140,7 +132,6 @@ export default {
     },
 
     changeTab(activeName, oldActiveName){
-      // 切换tab前先保存的逻辑
       if(this.vm.addAfterSave){
         this.vm.currentPackage= this.vm.addAfterSave;
         return !!this.vm.addAfterSave;
@@ -149,7 +140,6 @@ export default {
       if(!current) return true;
       let hasChange= current.checkHasChange();
       if(!hasChange) return true;
-      // 切换tab前先保存的逻辑
       this.vm.addAfterSave= activeName;
       return new Promise((res, rej) => {
         this.$confirm(`信息已经修改，是否需要保存?`, '保存提示', {
@@ -158,19 +148,15 @@ export default {
           type: 'warning'
         }).then(() => {
           this.addOrSave()
-          // 需要保存
           res(false);
         }).catch(() => {
           this.vm.currentPackage= activeName;
-          // 放弃保存
           rej(true);
         });
       })
     },
 
-    /**
-     * @description: 新增套餐时，生成不重复的新套餐的名字
-     */
+ 
     getNewPackageName(){
       let hit;
       let num= this.packages.length;
@@ -181,9 +167,7 @@ export default {
       return '未命名套餐'+ num;
     },
 
-    /**
-     * @description: 获取初始化信息
-     */
+ 
     teaminfogetAction(refresh){
       return new Promise((resolve, reject) => {
         this.$http.post(
@@ -208,7 +192,7 @@ export default {
           this.proto= object;
           this.vm.currentPackage= this.packages[0].name;
 
-          // 只有addAfterSave时是先保存再创建，有refresh的情况是addAction和saveAction后刷新
+      
           this.vm.addAfterSave && this.$nextTick(() => {
             this.vm.currentPackage= null;
             this.$nextTick(() => {
@@ -218,16 +202,13 @@ export default {
           })
           resolve();
         }).catch(err => {
-          //TODO: 错误日志
           this.$message.error(err);
           reject();
         })
       })
     },
 
-    /**
-     * @description: 保存按钮触发的事件，先判断是保存还是新增
-     */
+
     addOrSave(){
       let current= this.getPackageRef();
       let hasChange= current.checkHasChange();
@@ -240,7 +221,6 @@ export default {
       if(!isSave) return this.addAction(object);
       return this.saveAction(object); 
     },
-    // 获取当前套餐实例
     getPackageRef(){
       let packages= this.$refs.packageRef;
       if(!packages || packages.length=== 0) return;
@@ -252,9 +232,7 @@ export default {
       return current.id=== 0 || !!current.id;
     },
 
-    /**
-     * @description: 添加删除都返回Promise，且回调中刷新数据
-     */
+
     addAction(object){
       return new Promise((resolve, reject) => {
         this.$http.post(
@@ -304,7 +282,6 @@ export default {
           this.vm.currentPackage= current.name;
         })
       }
-      // 删除的是尚未存入数据库的
       if(!id) {
         return successFunc();
       }
@@ -313,9 +290,7 @@ export default {
       }).then(successFunc);
     },
 
-    /**
-     * @description: 显示表单验证信息队列
-     */
+
     showValidateError(){
       let ERROR_QUEUE= this._provided.ERROR_QUEUE;
       const h = this.$createElement;

@@ -2,9 +2,7 @@ import Vue from 'vue'
 import { storageLocal } from '@/js/libs/storage.js'
 let { $http, GLOBAL, $message, $isArray }= Vue.prototype;
 
-/**
- * @description: 字典接口
- */
+
 export const getDicOptions= function(enumname){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/dictionaryget?enumname=${enumname}`)
@@ -20,7 +18,6 @@ export const getDicOptions= function(enumname){
   })
 }
 
-// 供应商分页接口
 export const getSupplierList= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/supplierpage`, {
@@ -40,7 +37,6 @@ export const getSupplierList= function(object){
   })
 }
 
-// 供应商单独查询
 export const getSupplierById= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/supplierget`, {
@@ -58,7 +54,6 @@ export const getSupplierById= function(id){
   })
 }
 
-// 供应商编码是否重复
 export const checkSupplierCode= function(supplierCode){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/isexistsuppliercode`, {
@@ -76,7 +71,6 @@ export const checkSupplierCode= function(supplierCode){
   })
 }
 
-// 供应商名称是否重复
 export const checkSupplierName= function(name){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/isexistsuppliername`, {
@@ -94,7 +88,6 @@ export const checkSupplierName= function(name){
   })
 }
 
-// 新增供应商
 export const postSupplier= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/supplierinsert`, {
@@ -112,7 +105,6 @@ export const postSupplier= function(object){
   })
 }
 
-// 修改供应商
 export const putSupplier= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/universal/supplier/api/suppliersave`, {
@@ -132,8 +124,8 @@ export const putSupplier= function(object){
 
 class OrgMaker {
   constructor(){
-    this._count= 3;  // 可用线程
-    this._queue= []; // 等待队列
+    this._count= 3;  
+    this._queue= []; 
   }
 
   make(){

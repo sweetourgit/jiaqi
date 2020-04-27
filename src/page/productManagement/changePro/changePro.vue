@@ -6,22 +6,18 @@
         <el-button class="btn-button" style="background:#3095fa;color:#fff" @click="addsave('ruleForm')">保存</el-button>
       </div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <!-- 基本信息 -->
         <el-tab-pane label="基本信息" name="first">
           <div>
-            <!--产品名称-->
             <el-form-item label="产品名称" prop="productNamel" label-width="120px">
               <el-input v-model="ruleForm.productNamel" @input="myInput" class="productName" placeholder="请输入正确产品名称"></el-input>
               <span class="Numbers"><span v-bind:class="{ active: isActive }">{{ruleForm.productNamel.length}}</span>/30字</span>
             </el-form-item>
-            <!--出游类型-->
             <el-form-item label="出游类型" prop="travelType" label-width="120px">
               <el-radio-group v-model="ruleForm.travelType" class="travelType">
                 <el-radio label="1" value="1">境外</el-radio>
                 <el-radio label="2" value="2">国内</el-radio>
               </el-radio-group>
             </el-form-item>
-            <!--出发地-->
             <el-form-item label="出发地" ref="placeDeparture" style="clear:both;" label-width="120px">
               <span class="redStar">*</span>
               <div class="destination-input">
@@ -34,7 +30,6 @@
               <span id="isNull" v-show="noNull">不能为空</span>
               <span v-if="this.dynamicTags3 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: absolute;top:30px;left: 10px;">不能为空</span>
             </el-form-item>
-            <!-- 目的地 -->
             <el-form-item label="目的地" ref="destinations" style="clear:both;" label-width="120px">
               <span class="redStar">*</span>
               <div class="destination-input">
@@ -48,7 +43,6 @@
               <span id="zero" v-show="errorNull">不能为空</span>
               <span v-if="this.dynamicTags4 == '' && a != false" style="color: #f56c6c;font-size: 12px; position: absolute;top:30px;left: 10px;">不能为空</span>
             </el-form-item>
-            <!-- 行程天數 -->
             <div style="overflow:hidden">
               <el-form-item style="width:300px; float:left;" label='行程天数' prop="travelDays" label-width="120px">
                 <el-input style="width:105px;margin-left:-25px;" v-model="ruleForm.travelDays" placeholder="请输入天数" ref="travelDays"></el-input>
@@ -59,34 +53,28 @@
                 <span class="travelNight">晚</span>
               </el-form-item>
             </div>
-            <!-- 订单确认类型 -->
             <el-form-item label="订单确认类型" prop="orderConfirmationType" label-width="120px">
               <el-radio-group v-model="ruleForm.orderConfirmationType" class="indent">
                 <el-radio label="1" value="1">及时确认</el-radio>
                 <el-radio label="2" value="2">二次确认</el-radio>
               </el-radio-group>
             </el-form-item>
-            <!-- 亮点词1 -->
             <el-form-item label="亮点词" prop="highlightWords1" label-width="120px">
               <el-input maxlength=8 v-model="ruleForm.highlightWords1" class="bright" placeholder="8个字以内"></el-input>
               <span class="bright-number">{{ruleForm.highlightWords1.length}}/8字</span>
             </el-form-item>
-            <!-- 亮点词2 -->
             <el-form-item prop="highlightWords2" class="bright_b" label-width="120px" style="float:left;">
               <el-input maxlength=8 v-model="ruleForm.highlightWords2" class="lightspot" placeholder="8个字以内"></el-input>
               <span class="lightspot-span">{{ruleForm.highlightWords2.length}}/8字</span>
             </el-form-item>
-            <!-- 亮点词3 -->
             <el-form-item prop="highlightWords3" style="clear:both;" label-width="120px">
               <el-input maxlength=8 v-model="ruleForm.highlightWords3" style="width:210px; float:left; margin:0 0 0 10px;" placeholder="8个字以内"></el-input>
               <span class="lightspot-span">{{ruleForm.highlightWords3.length}}/8字</span>
             </el-form-item>
-            <!-- 亮点词4 -->
             <el-form-item prop="highlightWords4" class="bright_b" label-width="120px">
               <el-input maxlength=8 v-model="ruleForm.highlightWords4" class="lightspot" placeholder="8个字以内"></el-input>
               <span class="lightspot-span">{{ruleForm.highlightWords4.length}}/8字</span>
             </el-form-item>
-            <!-- 运营标签 -->
             <el-form-item label="运营标签" ref="operationLabel" style="clear:both;" label-width="120px">
               <div class="destination-input">
                 <el-tag :key="tag2.id" v-for="tag2 in dynamicTags2" closable :disable-transitions="false" @close="handleClose2(tag2)">
@@ -126,12 +114,10 @@
               </div>
               <span v-if="isInfoImg" style="position: absolute; top: 35px; left: 10px; font-size: 12px; color: #f56c6c;">请选择1张图片</span>
             </el-form-item>
-            <!--头图弹窗-->           
             <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUpload" custom-class="city_list">
               <MaterialList :imgData="imgData" :isImg="true" v-on:checkList="checkList" v-on:closeButton="imgUpload = false" v-on:isInfoImg="firstFigure"></MaterialList>
             </el-dialog>
 
-            <!-- 视频 -->
             <el-form-item label="视频" prop="video" label-width="120px">
               <el-input v-model="ruleForm.video" disabled style="width:110px;float:left;margin-left:10px;position:relative">
               </el-input>
@@ -139,7 +125,6 @@
                 <el-button type="info" class="upload-btn">上传</el-button>
               </el-upload>
             </el-form-item>
-            <!-- 轮播图 -->
             <el-form-item label="轮播图" ref="slideshow" prop="slideshow" label-width="120px">
               <span class="redStar">*</span>
               <!-- <div class="img_upload_slideshow" :style="isInfo ? 'border: solid 1px #f56c6c;' : ''"> -->
@@ -158,29 +143,24 @@
             </el-form-item>
 
 
-            <!--轮播图弹窗-->
             <el-dialog width='1300px' top='5vh' append-to-body title="图片选择" :visible.sync="imgUploadAvatar" custom-class="city_list">
               <MaterialList :imgData="imgDataAvatar" :isType="true" v-on:isInfo="isInfoAvatar" v-on:checkList="checkListAvatar" v-on:closeButton="imgUploadAvatar = false"></MaterialList>
             </el-dialog>
 
-            <!-- 出游人群 -->
             <el-form-item label="出游人群" prop="Excursion" label-width="120px">
               <el-select v-model="ruleForm.Excursion" placeholder="请选择" class="Excursion-select">
                 <el-option :label="theme.name" :value="theme.id" v-for="theme of excurList" :key="theme.id"></el-option>
               </el-select>
             </el-form-item>
-            <!-- 主题 -->
             <el-form-item label="主题" prop="theme" label-width="120px">
               <el-select v-model="ruleForm.theme" placeholder="请选择" class="Excursion-select">
                 <el-option :label="item.name" :value="item.id" v-for="(item,index) of list" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <!-- 提前报名天数 -->
             <el-form-item label="提前报名天数" prop="advanceRegistrationDays" label-width="120px">
               <el-input v-model="ruleForm.advanceRegistrationDays" class="applyDay" placeholder="请输入天数"></el-input>
               <span class="apply_day">天</span>
             </el-form-item>
-            <!-- 最晚收客时间 -->
             <!-- <div class="latest">  时,分
               <el-form-item style="width:300px; float:left;" label='最晚收客时间' prop="timeHour" label-width="120px">
                 <el-input style="width:50px; float:left; margin-left:10px;" v-model="ruleForm.timeHour"></el-input>
@@ -191,7 +171,6 @@
                 <span style="float:left;color: #333; margin-left:10px;">分</span>
               </el-form-item>
             </div> -->
-            <!-- 产品概括 -->
             <!--<el-form-item label="产品概括" prop="productSummary" label-width="120px">
               <el-input type="textarea" :autosize="{ minRows: 8, maxRows: 8}" v-model="ruleForm.productSummary" class="Summary"></el-input>
             </el-form-item>-->
@@ -216,7 +195,6 @@
               <vue-editor class="content_explain" v-model="item.content"></vue-editor>
             </div>
           </div>
-          <!--隐藏添加说明-->
           <div class="cost_bg"  v-for="(domain, index) in domains">
             <div class="cost_title">
               <span>名称：</span><el-input  placeholder="请输入内容" style="width: 750px;" v-model="domain.title"></el-input>
@@ -299,7 +277,7 @@
           callback();
         }
       };
-      var areaIdRuleImg = (rule, value, callback) => {//头图验证
+      var areaIdRuleImg = (rule, value, callback) => {
         console.log('test')
         if(value.length === 0 || value.length > 1) {
           this.isInfoImg = true;
@@ -310,18 +288,18 @@
         }
       };
       return {
-        isInfoImg:false,//头图验证
-        a: false,//头图不能为空
+        isInfoImg:false,
+        a: false,
         validaError:[],
-        dialogVadi:false,//验证提示弹窗
+        dialogVadi:false,
         qqq:[],
-        activeID:[],//日程信息id
-        schedulsLeng:'',//几天日程信息
-        mealID:'',//mealId
+        activeID:[],
+        schedulsLeng:'',
+        mealID:'',
         tabInformation:"traffic",
-        isActive: false,//基本信息字数要求
-        content_01:'',//基本信息产品概况文本编辑器
-        content_02:'',//行程信息详情
+        isActive: false,
+        content_01:'',
+        content_02:'',
         tabIndex: 2,
         notes:[{
           title:'',
@@ -352,8 +330,7 @@
           title:'自费项目',
           content:''
         }],
-        domains:[],//费用说明隐藏
-        //基本信息
+        domains:[],
         isShowImg: false,
         imgUrl: '',
         isSlideshow: false,
@@ -362,40 +339,32 @@
         tableData1: [],
         list: [],
         excurList: [],
-        //目的地
         dynamicTags1: [],
         inputVisible1: false,
         inputValue1: '',
-        //简要说明
         content: '',
         content1: '<h1>Some initial content111</h1>',
-        //切换主题
         editableTabsValue: '1',
         editableTabs: [{
           title: '行程套餐',
           name: '1',
           content: 'Tab 1 content'
         }],
-        //限制字数
         number: '0/10',
         items: {
           text: ''
         },
-        //头图上传 ========
         isImgUrlShow: false,
-        imgUrlShow: '', // 点击查看图片
-        imgUpload: false,     // 上传弹窗
+        imgUrlShow: '', 
+        imgUpload: false,     
         imgData: [],
-        avatarImages: [], // 图片
+        avatarImages: [], 
         isInfoImg:false,
-        // 轮播图上传 =======
         isImgUrlShowAvatar: false,
-        imgUrlShowAvatar: '', // 点击查看图片
-        imgUploadAvatar: false,     // 上传弹窗
+        imgUrlShowAvatar: '', 
+        imgUploadAvatar: false,     
         imgDataAvatar: [],
-        isInfo: false, // 验证
-        // 轮播图END =======
-        //去程交通工具切换
+        isInfo: false, 
         goRoad: [{
           value: '1',
           label: '飞机'
@@ -410,9 +379,7 @@
           label: '轮船',
         }],
         selectedOptions: ['2'],
-        //去程天数
         goDate: [],
-        //返程交通工具切换
         returnRoad: [{
           value: '1',
           label: '飞机'
@@ -427,7 +394,6 @@
           label: '轮船',
         }],
         selectedOptions_01: ['1'],
-        //去程、返程当日选择
         goDay: [{
           value: '选项1',
           label: '当日'
@@ -441,7 +407,6 @@
           value: '选项4',
           label: '第一天'
         }],
-        //酒店星级
         hotelStars: [{
           value: '选项1',
           label: '三星'
@@ -452,7 +417,6 @@
           value: '选项3',
           label: '五星'
         }],
-        //酒店入住晚数
         hotelDays: [{
           value: '选项1',
           label: '一宿'
@@ -463,7 +427,6 @@
           value: '选项3',
           label: '三宿'
         }],
-        //酒店房型
         hotelRoom: [{
           value: '选项1',
           label: '单人间'
@@ -474,7 +437,6 @@
           value: '选项3',
           label: '三人间'
         }],
-        //酒店床型
         hotelType: [{
           value: '选项1',
           label: '双人床'
@@ -485,9 +447,7 @@
           value: '选项3',
           label: '双人床'
         }],
-        //文本框
         restaurants: [],
-        //日程信息详细说明
         info: '',
         ruleForm: {
           mudidi:"",
@@ -544,8 +504,6 @@
           podID:'',
           destinationID:'',
           bourn:'',
-          //交通工具
-          //去程
           plane: [{
             pod: '',
             id: 0,
@@ -564,26 +522,24 @@
             ext_Stopover: [],
             www:['2']
           }],
-          //返程
           nackPlane: [{
-            pod: '',  //套餐id
+            pod: '',  
             id: 0,
-            goOrBack:2,   //1去程 2返程
-            company: '',  //航空公司
-            theNumber: '',   //航班号
-            podCity: '',           //出发城市
-            podPlace: '',   //出发机场
-            podTime: '',    //出发时间
-            arriveCity: '',    //到达城市
-            arrivePlace: '',     //到达机场
-            arriveTime: '',      //到达时间
-            planeDay: '',       //到达天数
-            trafficMode: '1',  //出行方式
-            day: '1',      //第几天
+            goOrBack:2,   
+            company: '',  
+            theNumber: '',   
+            podCity: '',           
+            podPlace: '',   
+            podTime: '',    
+            arriveCity: '',   
+            arrivePlace: '',    
+            arriveTime: '',      
+            planeDay: '',       
+            trafficMode: '1',  
+            day: '1',      
             ext_Stopover: [],
             www: ['2']
           }],
-          //行程信息大表
           schedules: []
         },
         rules: {
@@ -654,15 +610,12 @@
           ],
           activeTime: [{ pattern: /^[0-9]+$/, message: '活动时间需为正整数'}],
         },
-        //上传图片
         fileList2: [],
-        //radio选择器
         radio: '1',
         radio1: '1',
         radio2: '1',
         radio3: '1',
         radio4: '1',
-        //日程详情住宿选择
         tabContents: [{'id':0,'name':'酒店1'},{'id':1,'name':'酒店2'}],
         num: 0,
         num1: 0,
@@ -674,7 +627,6 @@
         editableTabs3: [{
           content: ''
         }],
-        //行程信息切换
         describe: ["详细说明", "简要说明"],
         pattern: ["", ""],
         matter_radio: '0',
@@ -683,8 +635,7 @@
         lineshow: false,
         Stopline: false,
         transit: ['1'],
-        deleteTransit: true, //删除中转按钮
-        //出发地
+        deleteTransit: true, 
         place: [{
           value: '选项1',
           id: '1'
@@ -695,7 +646,6 @@
           value: '选项3',
           id: '3'
         }],
-        //目的地
         destination: [{
           value: '选项1',
           id: '1'
@@ -706,9 +656,8 @@
           value: '选项3',
           id: '3'
         }],
-        //景点，购物，自费
-        information: ['1'], //添加酒店
-        hotelshow: false, //酒店弹窗
+        information: ['1'], 
+        hotelshow: false,
         hotel: [{
           hotelAuto: '',
           hotelChinese: '',
@@ -731,37 +680,28 @@
         }],
         teturnBack: [],
         Returnline: false,
-        //日程信息酒店切换
         num6: 0,
         schedule_radio: '0',
-        //信息详情切换
         num7: 0,
         details_radio: '0',
         schedule_details: ["", "", ""],
-        //切换变量行程day的
         mynumber: 0,
-        //行程日期
         mydate: '2',
-        //日期切换
         myTravelDay: [],
-        //添加详情
         myxiangnumber: 0,
         hotell: true,
         otherl: false,
         myradio:[],
         activeName: 'first',
         travelDays: '',
-        //运营标签
         dynamicTags2: [],
         inputVisible2: false,
         inputVal: '',
         empty:'',
-        // 出发地
         dynamicTags3: [],
         inputVisible3: false,
         inputVal3: '',
         noNull: false,
-        //目的地
         dynamicTags4: [],
         inputVisible4: false,
         inputVal4: '',
@@ -769,11 +709,11 @@
         sid:'',
       }
     },
-    watch:{ //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
+    watch:{
       items: {
         handler: function() {
           var _this = this;
-          var _sum = 10; //字体限制为10个
+          var _sum = 10; 
           _this.$refs.count.setAttribute("maxlength", _sum);
           _this.number = _sum - _this.$refs.count.value.length;
         },
@@ -781,12 +721,10 @@
       },
       'ruleForm.travelDays': {
         handler: function(newValue, oldValue) {
-          //右侧导航day
           this.myTravelDay=[];
           for (let i = 0; i < newValue; i++) {
             this.myTravelDay.push(i)
           }
-          //日常信息数据
           if(newValue>oldValue){
             this.mydate = newValue-oldValue;
             for (let i = 0; i < this.mydate; i++) {
@@ -822,7 +760,7 @@
                   {IsHotel:0,Details:""}
                 ]
               });
-              this.myradio.push({'lable':'1'});   //保存行程里面酒店信息单选值
+              this.myradio.push({'lable':'1'});   
             }
           }else{
             this.ruleForm.schedules.splice(newValue,oldValue-newValue);
@@ -855,14 +793,14 @@
             for(let u = 0; u <that.schedulsLeng; u++ ){
                 that.activeID.push(obj.data.object.package[0].schedules[u].id)
             }
-            that.mealID  =  obj.data.object.package[0].id //模板id
-            that.ruleForm.productNamel = obj.data.object.title; //产品名称
-            that.ruleForm.travelType = String(obj.data.object.isForeign); //出游类型
-            that.dynamicTags3 = obj.data.object.pods//出发地
-            that.dynamicTags4 = obj.data.object.destinations//目的地
-            that.ruleForm.travelDays = obj.data.object.day//行程天数
-            that.ruleForm.travelNight = obj.data.object.night//行程晚数
-            that.ruleForm.orderConfirmationType = String(obj.data.object.confirmType)//  订单确认类型
+            that.mealID  =  obj.data.object.package[0].id 
+            that.ruleForm.productNamel = obj.data.object.title; 
+            that.ruleForm.travelType = String(obj.data.object.isForeign); 
+            that.dynamicTags3 = obj.data.object.pods
+            that.dynamicTags4 = obj.data.object.destinations
+            that.ruleForm.travelDays = obj.data.object.day
+            that.ruleForm.travelNight = obj.data.object.night
+            that.ruleForm.orderConfirmationType = String(obj.data.object.confirmType)
             if(obj.data.object.strengths[0] !== ""){
               that.ruleForm.highlightWords1 = obj.data.object.strengths[0].strength
             }
@@ -873,35 +811,32 @@
               that.ruleForm.highlightWords3 = obj.data.object.strengths[2].strength
             }
             if (obj.data.object.strengths[3]){
-              that.ruleForm.highlightWords4 = obj.data.object.strengths[3].strength    //亮点词
+              that.ruleForm.highlightWords4 = obj.data.object.strengths[3].strength   
             }
-            that.dynamicTags2 = obj.data.object.label  //TODO 运营标签暂时不好使
-            //that.ruleForm.avatarImages = obj.data.object.pictureID //TODO 基本信息头图不好使
-            that.ruleForm.video = obj.data.object.vedioID    //TODO 基本信息视频不好使
-            //that.ruleForm.slideshow = "" //TODO 基本信息轮播不好使obj.data.object.pepeatpic
-            that.ruleForm.Excursion = obj.data.object.crowdID,//基本信息出游人群
-            that.ruleForm.theme  =obj.data.object.themeID,//基本信息主题
+            that.dynamicTags2 = obj.data.object.label  
+            that.ruleForm.video = obj.data.object.vedioID   
+            that.ruleForm.Excursion = obj.data.object.crowdID,
+            that.ruleForm.theme  =obj.data.object.themeID,
             that.content_01 = obj.data.object.mark,
-             /* 出游人群，主题，产品概括目前没有传*/
             that.ruleForm.advanceRegistrationDays = obj.data.object.advanceDay
             that.ruleForm.timeHour = obj.data.object.advanceHour
             that.ruleForm.timeMinute = obj.data.object.advanceMinute
             that.ruleForm.highlightWords = obj.data.object.package[0].name //行程信息套餐名
-            that.ruleForm.origin = obj.data.object.package[0].pod //行程信息出发地
-            that.ruleForm.bourn = obj.data.object.package[0].destination //行程信息目的地
-            that.ruleForm.podID = obj.data.object.package[0].podID //行程信息出发地ID
-            that.ruleForm.destinationID = obj.data.object.package[0].destinationID//行程信息目的地ID
+            that.ruleForm.origin = obj.data.object.package[0].pod 
+            that.ruleForm.bourn = obj.data.object.package[0].destination 
+            that.ruleForm.podID = obj.data.object.package[0].podID 
+            that.ruleForm.destinationID = obj.data.object.package[0].destinationID
             that.ruleForm.plane = []
             that.ruleForm.nackPlane = []
             for (var i =0; i < obj.data.object.package[0].traffic.length; i++ ){
               let arr = [];
               if(obj.data.object.package[0].traffic[i].goOrBack == 1){
-                obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
+                obj.data.object.package[0].traffic[i].ext_Stopover = [];
                 that.ruleForm.plane.push(obj.data.object.package[0].traffic[i]);
                 arr.push(String(obj.data.object.package[0].traffic[i].trafficMode));
                 that.ruleForm.plane[i].www = arr;
               }else{
-                obj.data.object.package[0].traffic[i].ext_Stopover = [];//TODO 经停
+                obj.data.object.package[0].traffic[i].ext_Stopover = [];
                 arr.push(String(obj.data.object.package[0].traffic[i].trafficMode));
                 obj.data.object.package[0].traffic[i].www = arr;
                 that.ruleForm.nackPlane.push(obj.data.object.package[0].traffic[i]);
@@ -910,43 +845,7 @@
 
             }
 
-            //日程信息
-            /*for (let j = 0; j < obj.data.object.package[0].schedules.length; j++) {
-              setTimeout(arr => {
-               that.ruleForm.schedules[j].subject =  obj.data.object.package[0].schedules[j].subject //主题
-              // that.ruleForm.schedules[j].ext_Hotel.Details =  obj.data.object.package[0].schedules[j].info //主题
-                that.content_02 =  obj.data.object.package[0].schedules[j].info //详情
-                //早餐
-                if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].label == "早餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Myself == "0"){
-                    that.ruleForm.schedules[j].ext_Meals[0].Myself = "0"
-                }else if(JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].label == "早餐"  && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Myself == "1"){
-                  that.ruleForm.schedules[j].ext_Meals[0].Myself = "1"
-                  that.ruleForm.schedules[j].ext_Meals[0].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[0].Detail
-                }
-                //午餐
-                if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].label == "午餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Myself == "0"){
-                  that.ruleForm.schedules[j].ext_Meals[1].Myself = "0"
-                }else if(JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].label == "午餐"  && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Myself == "1"){
-                  that.ruleForm.schedules[j].ext_Meals[1].Myself = "1"
-                  that.ruleForm.schedules[j].ext_Meals[1].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[1].Detail
-                }
-                // 晚餐
-                if( JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].label == "晚餐" && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].Myself == "0"){
-                  that.ruleForm.schedules[j].ext_Meals[2].Myself = "0"
-                }else if(JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].label == "晚餐"  && JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].Myself == "1"){
-                  that.ruleForm.schedules[j].ext_Meals[2].Myself = "1"
-                  that.ruleForm.schedules[j].ext_Meals[2].Detail = JSON.parse(obj.data.object.package[0].schedules[j].ext_Meals)[2].Detail
-                }
-                that.ruleForm.schedules[j].activitys = []
-                  for (let k = 0; k < obj.data.object.package[0].schedules[j].activitys.length; k++) {
-                        that.ruleForm.schedules[j].activitys.push(obj.data.object.package[0].schedules[j].activitys[k])
-                    that.ruleForm.schedules[j].activitys[k].activityType = String(that.ruleForm.schedules[j].activitys[k].activityType)
 
-                  }
-
-                console.log( )
-              }, 100)
-            }*/
 
             that.explain = []
             for (let t = 0; t < obj.data.object.instructions.length; t++ ){
@@ -973,7 +872,7 @@
       handClick(tab, event){
         console.log(tab, event);
       },
-      myInput(){//基本信息文字限制30个字颜色变红
+      myInput(){
         if(this.ruleForm.productNamel.length>30){
           this.isActive=true;
         }else{
@@ -994,7 +893,6 @@
           menutype:3
         });
       },
-      //删除预订须知
       deleteNotice(index){
         this.$confirm('是否删除该活动信息', '提示', {
           confirmButtonText: '确定',
@@ -1009,7 +907,6 @@
           });
         })
       },
-      //删除使用说明
       deleteState(index){
         this.$confirm('是否删除该活动信息', '提示', {
           confirmButtonText: '确定',
@@ -1024,7 +921,6 @@
           });
         })
       },
-      //费用说明删除
       deleteState_01(index){
         this.$confirm('是否删除该活动信息', '提示', {
           confirmButtonText: '确定',
@@ -1039,17 +935,14 @@
           });
         })
       },
-      //添加
       getUEContent(){
         this.domains.push({
           title: '',
           content: ''
         });
       },
-      //保存
       addsave(formName) {
         this.a = true
-        //基本信息亮点词
         let strengths=[];
         if(this.ruleForm.highlightWords1!=""){
           strengths.push({"strength":this.ruleForm.highlightWords1})
@@ -1063,18 +956,15 @@
         if(this.ruleForm.highlightWords4!=""){
           strengths.push({"strength":this.ruleForm.highlightWords4})
         };
-        //运营标签
         let dynamicTagsc=[];
         for(var i=0;i<this.dynamicTags2.length;i++){
           dynamicTagsc.push({"label":this.dynamicTags2[i]})
         };
-        //经停信息转字符串
         let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
         let traff=JSON.parse(traff1);
         for(var i=0;i<traff.length;i++){
           traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
         }
-        //行程餐食信息转字符串
         let sche1=JSON.stringify(this.ruleForm.schedules);
         let sche=JSON.parse(sche1);
         for(var i=0;i<sche.length;i++){
@@ -1087,53 +977,33 @@
          this.notes.push(this.instructions[i]);
       }
 
-        //行程信息
         var object={
-          //基本信息接口数据
           id:this.$route.query.id,
           createTime:Date.parse(new Date()),
-          title:this.ruleForm.productNamel,//基本信息产品名称
-          isForeign:this.ruleForm.travelType,//基本信息产品类型
-          day:this.ruleForm.travelDays,//基本信息行程天数
-          night:this.ruleForm.travelNight,//基本信息行程晚数
-          pods:this.dynamicTags3,//基本信息出发地
-          destinations:this.dynamicTags4,//基本信息目的地
+          title:this.ruleForm.productNamel,
+          isForeign:this.ruleForm.travelType,
+          day:this.ruleForm.travelDays,
+          night:this.ruleForm.travelNight,
+          pods:this.dynamicTags3,
+          destinations:this.dynamicTags4,
           isDeleted:0,
-          confirmType:this.ruleForm.orderConfirmationType,//基本信息订单确认类型
-          strengths:strengths,//基本信息亮点词
+          confirmType:this.ruleForm.orderConfirmationType,
+          strengths:strengths,
           label:this.dynamicTags2,
-          pictureID:0,//基本信息头图?
-          vedioID:0,//基本信息视频?
-          pepeatpic:"",//基本信息轮播图?
+          pictureID:0,
+          vedioID:0,
+          pepeatpic:"",
           advanceDay:this.ruleForm.advanceRegistrationDays,
           advanceHour:this.ruleForm.timeHour,
           advanceMinute:this.ruleForm.timeMinute,
           createUser:sessionStorage.getItem('id'),
           proStat:1,
-          crowdID:this.ruleForm.Excursion,//基本信息出游人群
-          themeID:this.ruleForm.theme,//基本信息主题
+          crowdID:this.ruleForm.Excursion,
+          themeID:this.ruleForm.theme,
           mark:this.content_01,
           guid:localStorage.getItem("guid"),
-         /* //行程信息接口数据
-          package: [
-            {
-              name: this.ruleForm.highlightWords,//行程信息套餐名
-              podID: this.ruleForm.origin.podID,//行程信息出发地
-              destinationID: this.ruleForm.bourn.destinationID,//行程信息目的地
-              pod: this.ruleForm.origin.pod,
-              destination: this.ruleForm.bourn.destination,
-              isDeleted: 0,
-              createTime:this.formatDate(new Date()),
-              traffic: traff,//交通方式,
-              schedules: sche,//行程信息
-              briefMark: this.content,//简要说明
-              loadPlan: false
-            }
-          ],*/
-          instructions:this.explain.concat(this.domains), //费用说明
+          instructions:this.explain.concat(this.domains), 
           others:this.notes.concat(this.instructions),
-          /*instructions1:this.notes, //预订须知,预留接口无字段？
-          instructions2:this.instructions, //使用说明,预留接口无字段？*/
           loadPackage: true
 
         }
@@ -1204,16 +1074,13 @@
           }
         },500);
       },
-      //保存套餐信息
       handleSetMeal(formName){
 
-        //经停信息转字符串
         let traff1=JSON.stringify(this.ruleForm.plane.concat(this.ruleForm.nackPlane));
         let traff=JSON.parse(traff1);
         for(var i=0;i<traff.length;i++){
           traff[i].ext_Stopover=JSON.stringify(traff[i].ext_Stopover);
         }
-        //行程餐食信息转字符串
         let sche1=JSON.stringify(this.ruleForm.schedules);
         let sche=JSON.parse(sche1);
         for(var i=0;i<sche.length;i++){
@@ -1234,9 +1101,7 @@
         }else{
           this.ruleForm.chufadi = this.ruleForm.origin.pod
         }
-        //行程信息
         var object={
-          //基本信息接口数据
           id:this.mealID,
           name: this.ruleForm.highlightWords,
           podID: this.ruleForm.podID,
@@ -1269,9 +1134,7 @@
           }
         })
       },
-      //修改日程信息
       handleNote(formName){
-        //行程餐食信息转字符串
         let sche1=JSON.stringify(this.ruleForm.schedules);
         let sche=JSON.parse(sche1);
         for(var i=0;i<sche.length;i++){
@@ -1282,7 +1145,6 @@
         }
         for(let i=0; i < this.schedulsLeng; i++){
           var object={
-            //基本信息接口数据
             id:this.activeID[i],
             packageID:this.mealID,
             day:this.ruleForm.schedules[i].day,
@@ -1290,7 +1152,7 @@
             ext_Meals:JSON.stringify(this.ruleForm.schedules[i].ext_Meals),
             info:this.ruleForm.schedules[i].info,
             ext_Hotel:JSON.stringify(this.ruleForm.schedules[i].ext_Hotel),
-            activitys: this.ruleForm.schedules[i].activitys,//行程信息
+            activitys: this.ruleForm.schedules[i].activitys,
             createTime:this.formatDate(new Date()),
             loadPlan: false,
             code: "string"
@@ -1317,12 +1179,10 @@
        })
 
         }
-        //行程信息
 
 
 
       },
-      // 取消
       cancel(){
         this.$router.push({path: "/productList/packageTour"});
       },
@@ -1341,18 +1201,15 @@
       },
 
       childByValue: function(childValue) {
-        // childValue就是子组件传过来的值
         this.travelDays = childValue;
       },
       otherNumber() {
         this.hotell = false;
         this.otherl = true;
       },
-      //日程信息切换
       tabTravel(myindex) {
         this.mynumber = myindex;
       },
-      // 图片上传==================
       handleList(a) {
         if (a.target.id != 'showDiv') {
           this.isImgUrlShow = false;
@@ -1360,7 +1217,6 @@
           this.isImgUrlShowImg = false;
         }
       },
-      // 点击图片查看
       imgClickShow(data) {
         this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
             "id": data.img_ID,
@@ -1369,14 +1225,12 @@
           this.imgUrlShow = "http://192.168.2.65:3009/upload" + res.data.object.url;
         })
       },
-      // 上传按钮
       handleImgUpload() {
         console.log(this.ruleForm)
         console.log(this.ruleForm.avatarImages)
         this.imgData = this.ruleForm.avatarImages.map(v => v.img_ID);
         this.imgUpload = true;
       },
-      // 点击删除图片
       imgDelete(data) {
         this.ruleForm.avatarImages.splice(this.ruleForm.avatarImages.indexOf(data), 1);
         if(this.ruleForm.avatarImages.length === 1){
@@ -1385,7 +1239,6 @@
           this.isInfoImg = true;
         }
       },
-      // 图片添加
       checkList(data) {
         this.ruleForm.avatarImages = data.map(v => {
           return {
@@ -1399,9 +1252,6 @@
           this.$refs.avatarImages.clearValidate();
         }
       },
-      // 图片上传END================
-      // 轮播图上传=================
-      // 点击图片查看
       imgClickShowAvatar(data) {
         this.$http.post('http://test.dayuntong.com' + '/picture/api/get',{
             "id": data.img_ID,
@@ -1410,12 +1260,10 @@
           this.imgUrlShowAvatar = "http://192.168.2.65:3009/upload" + res.data.object.url;
         })
       },
-      // 上传按钮
       handleImgUploadAvatar() {
         this.imgDataAvatar = this.ruleForm.slideshow.map(v => v.img_ID);
         this.imgUploadAvatar = true;
       },
-      // 点击删除图片
       imgDeleteAvatar(data) {
         this.ruleForm.slideshow.splice(this.ruleForm.slideshow.indexOf(data), 1);
         if(this.ruleForm.slideshow.length >= 3 && this.ruleForm.slideshow.length <= 6){
@@ -1424,7 +1272,6 @@
           this.isInfo = true;
         }
       },
-      // 图片添加
       checkListAvatar(data) {
         this.ruleForm.slideshow = data.map(v => {
           return {
@@ -1438,8 +1285,6 @@
           this.$refs.slideshow.clearValidate();
         }
       },
-      // 轮播图上传END=========
-      //去程添加经停、删除经停
       stopping(index) {
         {
           this.ruleForm.plane[index].ext_Stopover.push({
@@ -1454,7 +1299,6 @@
       deletePanel(index) {
         this.ruleForm.plane.splice(index, 1)
       },
-      //返程添加经停、删除经停
       reDeleteItem(p, index) {
         this.ruleForm.nackPlane[index].ext_Stopover.splice(p, 1)
       },
@@ -1469,46 +1313,44 @@
           })
         }
       },
-      //交通信息添加中转
       addTransit(index) {
         this.ruleForm.plane.push({
-          pod: '',  //套餐id
+          pod: '',  
           id: 0,
-          goOrBack:1,   //1去程 2返程
-          company: '',  //航空公司
-          theNumber: '',   //航班号
-          podCity: '',           //出发城市
-          podPlace: '',   //出发机场
-          podTime: '',    //出发时间
-          arriveCity: '',    //到达城市
-          arrivePlace: '',     //到达机场
-          arriveTime: '',      //到达时间
-          planeDay: '',       //到达天数
-          trafficMode: '1',  //出行方式
-          day: '1',      //第几天
+          goOrBack:1,   
+          company: '',  
+          theNumber: '',  
+          podCity: '',           
+          podPlace: '',   
+          podTime: '',    
+          arriveCity: '',    
+          arrivePlace: '',     
+          arriveTime: '',      
+          planeDay: '',       
+          trafficMode: '1',  
+          day: '1',     
           ext_Stopover: []
         })
       },
       addRTransit(index) {
         this.ruleForm.nackPlane.push({
-          pod: '',  //套餐id
+          pod: '', 
           id: 0,
-          goOrBack:2,   //1去程 2返程
-          company: '',  //航空公司
-          theNumber: '',   //航班号
-          podCity: '',           //出发城市
-          podPlace: '',   //出发机场
-          podTime: '',    //出发时间
-          arriveCity: '',    //到达城市
-          arrivePlace: '',     //到达机场
-          arriveTime: '',      //到达时间
-          planeDay: '',       //到达天数
-          trafficMode: '1',  //出行方式
-          day: '',      //第几天
+          goOrBack:2,   
+          company: '',  
+          theNumber: '',  
+          podCity: '',           
+          podPlace: '',  
+          podTime: '',   
+          arriveCity: '',    
+          arrivePlace: '',     
+          arriveTime: '',      
+          planeDay: '',       
+          trafficMode: '1',  
+          day: '',      
           ext_Stopover: []
         })
       },
-      //添加、删除酒店
       addHotel() {
         this.hotel.push({
           hotelAuto: '',
@@ -1530,15 +1372,12 @@
         this.hotel.splice(index, 1)
         this.hotelshow = false;
       },
-      //酒店关闭取消按钮
       cloceHotel() {
         this.hotelshow = false;
       },
-      //日程信息酒店切换
       tabHotel(index) {
         this.num6 = index;
       },
-      //信息详情切换
       tabDetails(p, k, index) {
         // this.num7 = index;
       },
@@ -1558,7 +1397,6 @@
       handleRemove(file, fileList) {
         this.isShowImg = false;
       },
-      //轮播图预览
       slideshowClick(file) {
         this.isSlideshow = true;
         if (this.slideshowUrl == file.url) {
@@ -1571,15 +1409,12 @@
       handleRemove2(file, fileList) {
         this.isSlideshow = false;
       },
-      //视频删除
       handleRemoves(file, fileList) {
         // console.log(file);
       },
-      //轮播图删除
       handleRemoves1(file, fileList) {
         // console.log(file);
       },
-      //自动填充数据
       loadAll() {
         return [{
           "value": "三全鲜食（北新泾店）",
@@ -1603,7 +1438,6 @@
           }
         ];
       },
-      //添加、删除详情
       addDetails(index) {
         this.ruleForm.schedules[index].activitys.push({
           typeExt: '',
@@ -1639,7 +1473,6 @@
       tab1(index) {
         this.num1 = index;
       },
-      //主题标题添加删除
       handleTabsEdit(targetName, action) {
         if (action === 'add') {
           let newTabName = ++this.tabIndex + '';
@@ -1676,7 +1509,6 @@
       querySearch(queryString, cb) {
         var restaurants = this.restaurants;
         var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter(queryString) {
@@ -1692,17 +1524,10 @@
       handlePreview(file) {
         console.log(file);
       },
-      // 搜索方法(出发地)
       querySearch1(queryString1, cb1) {
         var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
         cb1(results1);
       },
-      // 搜索方法（出发地）
-      // createFilter1(queryString1) {
-      //   return (restaurant1) => {
-      //     return (restaurant1.country.toLowerCase().indexOf(queryString1.toLowerCase()) === 0);
-      //   }
-      // },
       beforeUploadVideo(file) {
         const isLt20M = file.size / 1024 / 1024  < 20;
         if (['video/mp4', 'video/ogg', 'video/flv','video/avi','video/wmv','video/rmvb'].indexOf(file.type) == -1) {
@@ -1713,17 +1538,11 @@
           this.$message.error('上传视频大小不能超过20MB哦!');
           return false;
         }
-        // const seconds = file.duration % 60;
-        //  if (!seconds) {
-        //     this.$message.error('上传视频时长不能超过20秒哦!');
-        //     return false;
-        // }
       },
       uploadVideoProcess(event, file, fileList){
         this.videoFlag = true;
         this.videoUploadPercent = file.percentage.toFixed(0);
       },
-      //图片预览
       handleImgClick(file){
         this.isShowImg = !this.isShowImg
         this.imgUrl = file.url
@@ -1731,7 +1550,6 @@
       handleRemove(file, fileList) {
         this.isShowImg = false;
       },
-      //轮播图预览
       slideshowClick(file){
         this.isSlideshow = true;
         if(this.slideshowUrl == file.url){
@@ -1744,15 +1562,12 @@
       handleRemove2(file, fileList){
         this.isSlideshow = false;
       },
-      //视频删除
       handleRemoves(file, fileList) {
         // console.log(file);
       },
-      //轮播图删除
       handleRemoves1(file, fileList) {
         // console.log(file);
       },
-      //运营标签
       handleClose2(tag2) {
         this.dynamicTags2.splice(this.dynamicTags2.indexOf(tag2), 1);
       },
@@ -1807,7 +1622,6 @@
         this.ruleForm.operationLabel = "";
         this.inputVisible2 = false;
       },
-      // 出发地
       querySearch3(queryString1, cb) {
         this.vague = []
         this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
@@ -1832,7 +1646,6 @@
           return (restaurant.value);
         }
       },
-      //目的地
       querySearch2(queryString2, cb) {
         this.tableData1 = []
         this.$http.post(this.GLOBAL.serverSrc + '/universal/area/api/fuzzy', {
@@ -1861,7 +1674,6 @@
           return (restaurant.value);
         }
       },
-      //出游人群
       themeList(){
         this.excurList = [];
         this.$http.post(this.GLOBAL.serverSrc + "/universal/crowd/api/crowdlist", {
@@ -1883,7 +1695,6 @@
           console.log(err);
         })
       },
-      //主题
       itemList(){
         this.list = [];
         var _this = this;
@@ -1905,7 +1716,6 @@
           console.log(error);
         })
       },
-      // 生成guid
       guid(){
         var _this = this;
         this.$http.post(this.GLOBAL.serverSrc + "/universal/utinity/api/getguid", {
@@ -1921,7 +1731,6 @@
           console.log(err);
         })
       },
-      // 出发地
       handleClose3(tag3) {
         if(tag3.id==this.ruleForm.origin.id){
           this.ruleForm.origin=[];
@@ -1939,7 +1748,6 @@
         this.ruleForm.placeDeparture = "";
         this.inputVisible3 = false;
       },
-      //aa
       handleInputConfirm3() {
         this.$refs['placeDeparture'].validate()
         if(this.ruleForm.placeDeparture !== ''){
@@ -1966,7 +1774,6 @@
           }
         }
       },
-      // 目的地
       handleClose4(tag4) {
         if(tag4.id==this.ruleForm.bourn.id){
           this.ruleForm.bourn=[];
@@ -2025,7 +1832,6 @@
 </script>
 
 <style scoped>
-  /*验证提示弹窗*/
   .tips ul{text-align: left;margin:-20px 0 30px 10px;line-height: 25px;padding: 0;}
   .tips ul li{margin: 10px 0 10px 50px;height: 20px;}
 
@@ -2101,12 +1907,10 @@
   .describe_way { float: left; }
   .description { overflow: hidden; float: left; }
   .description li { list-style: none; float: left; margin: 0 0 20px 15px; text-align: left; }
-  /*.cost_bg { margin: 12px; }*/
   .setmeal { float: left; }
   .depart { float: left; width: 140px; }
   .setout { float: left; line-height: 40px; margin: 0 10px 0 30px; }
   .setout span { color: red; margin: 0 5px 0 0; }
-  /*日程信息*/
   .type_radio li { list-style: none; float: left; margin: 0 30px 0 0; }
   .details_ul { margin: 0 0 0 60px; }
   .explain { clear: both; padding: 15px 0 0 0; width: 100%; }
@@ -2116,7 +1920,6 @@
   .DAY_two { background-color: #f7f7f7; border-bottom: 1px solid #fff; }
   .myactive { background-color: #c2c2c2; }
   .mybuttonac { background-color: #ecf5ff; border: 1px solid #c6e2ff }
-  /*基本信息*/
   .productName{ width: 548px; float: left; margin-left: 10px; }
   .Numbers{ float: left; margin: 0 0 0 20px; }
   .travelType{ float: left; margin:13px 0 0 10px; }
@@ -2166,7 +1969,6 @@
   .upload-demo>>>.el-upload-list__item{ top: -45px;
     left: -183px; background-color:#d7d7d7; float: left; width: 90px; height: 30px; padding: 0; background-size: 44%; background-repeat: no-repeat; background-position: 2px; background-image: url('../../../assets/image/pic.png') }
   .destination-input>>>.el-input--small .el-input__inner{ height: 35px!important; }
-  /*费用说明*/
   .cost{
     font-weight: bold;
     font-size: 18px;

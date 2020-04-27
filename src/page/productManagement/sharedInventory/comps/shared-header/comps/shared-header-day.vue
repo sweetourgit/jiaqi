@@ -24,7 +24,6 @@ $fontHeight: 32px;
       width: $fontHeight;
       height: $fontHeight;
     }
-    // 右下角关联的团期个数
     // .relative::after{
     //   content: attr(data-relative);
     //   font-weight: bold;
@@ -35,7 +34,6 @@ $fontHeight: 32px;
     //   color: #409EFF;
     // }
   }
-  // 当前选择的日期
   .select{
     border-radius: 4px;
     background-color: yellow;

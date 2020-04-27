@@ -51,7 +51,6 @@
         </div>
       </div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm refund">
-        <!--全退-->
         <div v-if="ruleForm.refundWay == 2">
           <el-form-item label="申请原由" prop="originally">
             <el-input :disabled="forbidden" v-model="ruleForm.originally" class="Words" placeholder="请输入申请原由" :title="ruleForm.originally"></el-input>
@@ -70,7 +69,6 @@
             <span class="Numbers">{{ruleForm.cardPeople.length}}/40字</span>
           </el-form-item>
         </div>
-        <!--部分退-->
         <div v-if="ruleForm.refundWay == 1">
           <el-form-item label="还需退款" prop="needRefund">
             <el-input :disabled="forbidden" @change="needShow()" v-model="ruleForm.needRefund" class="Words" placeholder="请输入还需退款"></el-input>
@@ -134,20 +132,20 @@ export default {
     return {
       dialogOrderRefund:false,
       orderList:{},
-      reasonList:{}, // 获取原由数组
+      reasonList:{}, 
       ruleForm:{
-        refundWay:'2',// 退款方式
-        originally:'', // 全退原由
-        cardNumber:'', // 全退汇款卡号
-        cardBank:'', // 全退汇款开户行
-        cardPeople:'', // 全退汇款开户人
-        needRefund:'',// 还需退款金额
-        partPriginally:'', // 部分退款原由
-        partCardNumber:'', // 部分退汇款卡号
-        partCardBank:'', // 部分退汇款开户行
-        partCardPeople:'', // 部分退汇款开户人
+        refundWay:'2',
+        originally:'', 
+        cardNumber:'', 
+        cardBank:'', 
+        cardPeople:'', 
+        needRefund:'',
+        partPriginally:'', 
+        partCardNumber:'', 
+        partCardBank:'', 
+        partCardPeople:'', 
       },
-      refundType:'', // 点击get获取到退款方式
+      refundType:'', 
       rules:{
         refundWay: [
           { required: true, message: "请选择退款方式", trigger: "change" }
@@ -181,43 +179,42 @@ export default {
         ],
       },
       tableDate:[],
-      nonPayment:"", //未支付金额
-      orderCode:"", // 获取订单号来判断是否有收款
+      nonPayment:"", 
+      orderCode:"", 
       forbidden: false,
-      indentID:"", // 获取订单ID
-      orderAmount:"", // 获取订单金额
-      productType:0, //获取产品类型
+      indentID:"", 
+      orderAmount:"", 
+      productType:0, 
       show1:true,
       show2:false,
-      typeID:0, // 部分退款，选择下方报个ID
-      multipleSelection: [], //选中的list
-      otherFees: 0 ,// 其他费用
-      overallDiscount:0 ,// 整体优惠
-      positiveNumber: 0 , //还需退款是正数时，实际退款金额
-      negativeNumber: 0 , //还需退款是负数时，实际退款金额
-      guests :[], // 获取报名信息
-      singlePrice:0, // 获取报名信息价格
-      allRefundPrice:0, // 总退款
-      needRefundShow:false, // 验证还需退款是否超过订单总额
+      typeID:0, 
+      multipleSelection: [], 
+      otherFees: 0 ,
+      overallDiscount:0 ,
+      positiveNumber: 0 , 
+      negativeNumber: 0 , 
+      guests :[], 
+      singlePrice:0, 
+      allRefundPrice:0, 
+      needRefundShow:false, 
       refundStatus:0,
       needRefundPriceShow:false,
       needRefund01:0,
       needRefund02:0,
       needRefund03:0,
-      totalRefund:0, // 获取当前id的总退款
-      statusRefund:'', // 获取当前订单的退款状态
+      totalRefund:0,
+      statusRefund:'', 
     };
   },
   filters: {
     numFilter (value) {
-      // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
     }
   },
   watch: {
     orderRefund: function() {
-      if (this.dialogType == 5) { // 订单详情
+      if (this.dialogType == 5) {
         setTimeout(() => {
            this.getOrder(this.orderRefundID);
         },200);
@@ -231,7 +228,7 @@ export default {
   created() {
   },
   methods: {
-    price(){ // 总金额算法
+    price(){ 
       this.getTypeId();
       if(this.ruleForm.needRefund != '' || this.typeID !=0){
         this.needRefundPriceShow = false;
@@ -244,7 +241,7 @@ export default {
         }
       }
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
       } else {
@@ -255,7 +252,6 @@ export default {
       return "textAlign:center";
     },
     changeFun(val) {
-      //保存选中项的数据
       this.multipleSelection = val;
       //console.log(val.length)
     },
@@ -269,8 +265,7 @@ export default {
       }
     },
     clickRow(row) {
-      //选中行复选框勾选
-      this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+      this.$refs.multipleTable.clearSelection(); 
       this.$refs.multipleTable.toggleRowSelection(row);
       //this.typeID = this.multipleSelection[0].id;
       this.singlePrice = this.multipleSelection[0].singlePrice;
@@ -279,33 +274,32 @@ export default {
       console.log(this.typeID)
     },
     rowClass({ row, rowIndex }) {
-      //选中行样式改变
       for (var i = 0; i < this.multipleSelection.length; i++) {
         if (this.multipleSelection[i].id == row.id) {
           return { "background-color": "#ecf5ff" };
         }
       }
     },
-    needShow(){ // 判断只退钱的时候还需退款大于订单总额验证
+    needShow(){ 
       if(this.ruleForm.needRefund > this.orderAmount && this.ruleForm.needRefund != ''){
         this.needRefundShow = true;
       }else {
         this.needRefundShow = false;
       }
     },
-    clickTab(formName){ // 切换退款方式清空表单
+    clickTab(formName){ 
       if(this.forbidden == false){
         this.$refs[formName].resetFields();
       }
     },
-    cancelOrder(formName){ // 关闭退款弹窗
+    cancelOrder(formName){
       this.ruleForm.refundWay = '2';
       this.dialogOrderRefund = false;
       this.$refs[formName].resetFields();
       this.tableDate = [];
       this.forbidden = false;
       this.ruleForm.needRefund = '';
-      this.ruleForm.originally = ''; // 全退申请原由
+      this.ruleForm.originally = ''; 
       this.ruleForm.cardNumber = '';
       this.ruleForm.cardBank = '';
       this.ruleForm.cardPeople = '';
@@ -314,11 +308,11 @@ export default {
       this.ruleForm.partCardBank = '';
       this.ruleForm.partCardPeople = '';
     },
-    getOrder(ID){ // 点击退款获取详情信息
+    getOrder(ID){ 
       this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
         id:ID,
-        //id: 1812 // 无收款
-        //id: 21 // 有收款
+        //id: 1812 
+        //id: 21
       }).then(res => {
         if (res.data.isSuccess == true) 
           this.orderList = res.data.object;
@@ -333,21 +327,21 @@ export default {
             }
           })
           if(this.orderList.orderStatus==5){
-             this.nonPayment = res.data.object.payable - res.data.object.paid; // 获取未付款金额
+             this.nonPayment = res.data.object.payable - res.data.object.paid; 
           }else{
              this.nonPayment = res.data.object.payable - (res.data.object.paid - res.data.object.realRefundPrice);
           }
           this.nonPayment=this.nonPayment>0?this.nonPayment:0;
-          this.orderCode = res.data.object.orderCode; // 获取该团期订单号
-          this.indentID = res.data.object.id; // 获取该团期订单ID
-          this.orderAmount = res.data.object.payable; // 获取该团期订单金额
-          this.productType = res.data.object.productType; // 获取该团期产品类型 
-          this.otherFees = res.data.object.otherPrice; // 其他费用
-          this.overallDiscount = res.data.object.entiretyFav; // 整体优惠
-          this.guests = res.data.object.guests ; // 获取报名人退款状态
+          this.orderCode = res.data.object.orderCode; 
+          this.indentID = res.data.object.id; 
+          this.orderAmount = res.data.object.payable; 
+          this.productType = res.data.object.productType;  
+          this.otherFees = res.data.object.otherPrice; 
+          this.overallDiscount = res.data.object.entiretyFav; 
+          this.guests = res.data.object.guests ; 
           this.guests.forEach(el => el.refundStatus==5?el.refundStatus=10:'');
-          this.totalRefund = res.data.object.allRefundPrice; // 获取总退款
-          this.statusRefund = res.data.object.refundStatus ; // 获取订单的退款状态
+          this.totalRefund = res.data.object.allRefundPrice; 
+          this.statusRefund = res.data.object.refundStatus ;
           this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/list", {
              object:{
                "orderCode":this.orderCode
@@ -357,13 +351,13 @@ export default {
                   this.reasonList = res.data.objects;
                   this.refundType = res.data.objects[0].refundType;
                   this.ruleForm.refundWay = res.data.objects[0].refundType + '';
-                  if(this.refundType == 2){ // 全退
-                    this.ruleForm.originally = res.data.objects[0].reason; // 全退申请原由
+                  if(this.refundType == 2){ 
+                    this.ruleForm.originally = res.data.objects[0].reason; 
                     this.ruleForm.cardNumber = res.data.objects[0].remittanceCode;
                     this.ruleForm.cardBank = res.data.objects[0].remittanceBank;
                     this.ruleForm.cardPeople = res.data.objects[0].remittancePerson;
-                  }else if(this.refundType == 1){ // 部分退
-                    this.ruleForm.needRefund = res.data.objects[0].needRefundPrice; // 全退申请原由
+                  }else if(this.refundType == 1){ 
+                    this.ruleForm.needRefund = res.data.objects[0].needRefundPrice; 
                     this.ruleForm.partPriginally = res.data.objects[0].reason;
                     this.ruleForm.partCardNumber = res.data.objects[0].remittanceCode;
                     this.ruleForm.partCardBank = res.data.objects[0].remittanceBank;
@@ -376,11 +370,11 @@ export default {
             this.$message.error("订单已经存在退款");
             return;
           }
-          this.collection(); // 判断是否有收款方法
+          this.collection(); 
         }
       );
     },
-    collection(){ // 有收款就不允许退款了
+    collection(){ 
       this.$http.post(this.GLOBAL.serverSrc + "/finance/collection/api/iscollection", {
         orderCode: this.orderCode
       }).then(res => {
@@ -390,7 +384,7 @@ export default {
         }
       });
     },
-    choose(index){ // 点击选择客人退款
+    choose(index){ 
       this.$confirm("是否选择该客人退款?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -407,7 +401,7 @@ export default {
           });
         });
     },
-    undo(index){ // 点击撤销客人退款
+    undo(index){ 
       this.$confirm("是否撤销该客人退款?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -436,7 +430,7 @@ export default {
       this.needRefund02 = this.typeID == 0 ? this.ruleForm.needRefund : this.needRefund01;
       this.needRefund03 = this.orderList.paid - this.allRefundPrice;
     },
-    applyRefund(formName){ // 申请退款
+    applyRefund(formName){ 
       this.getTypeId();
       //this.amount();
       if(this.allRefundPrice<0){
@@ -448,7 +442,7 @@ export default {
         return;
       }
       if(this.typeID == 0 && this.ruleForm.refundWay == 1){
-        if(this.ruleForm.needRefund < 0){ // 只退金额不退人还需还款金额必须为正数
+        if(this.ruleForm.needRefund < 0){ 
           this.$message.error("还需退款金额为正数");
           return;
         } else if(this.ruleForm.needRefund == ''){
@@ -469,35 +463,34 @@ export default {
             this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insert",{
                 object: {
                   "id": 0, // 退款单
-                  "refundCode": this.orderCode, // 退款单号
-                  "userID": sessionStorage.getItem("id"), // 申请人ID
-                  "name": sessionStorage.getItem("name"), // 申请人姓名
-                  "orgID": sessionStorage.getItem("orgID"), // 申请人部门ID
-                  "orgName": sessionStorage.getItem("orgName"), // 申请人部门名称
-                  "orderID": this.indentID,  // 订单ID
-                  "orderCode": this.orderCode, // 订单号
-                  "refundType": this.ruleForm.refundWay, // 退款方式 1=部分退款 2=全部退款
-                  "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, // 退款申请理由
-                  "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, // 还需退款
-                  "allRefundPrice": this.ruleForm.refundWay == 1 ? this.allRefundPrice:this.orderList.payable, // 总退款
+                  "refundCode": this.orderCode, 
+                  "userID": sessionStorage.getItem("id"), 
+                  "name": sessionStorage.getItem("name"), 
+                  "orgID": sessionStorage.getItem("orgID"), 
+                  "orgName": sessionStorage.getItem("orgName"), 
+                  "orderID": this.indentID, 
+                  "orderCode": this.orderCode, 
+                  "refundType": this.ruleForm.refundWay, 
+                  "reason": this.ruleForm.refundWay == 2 ? this.ruleForm.originally : this.ruleForm.partPriginally, 
+                  "needRefundPrice": this.ruleForm.needRefund=='' ? 0 :this.ruleForm.needRefund, 
+                  "allRefundPrice": this.ruleForm.refundWay == 1 ? this.allRefundPrice:this.orderList.payable, 
                   "realRefundPrice":this.ruleForm.refundWay == 1 ? aaa : (Number(this.orderList.paid)-Number(this.orderList.realRefundPrice)),
-                  //"realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), // 实际退款金额(还需退款-未付金额)
-                  "payID": 0, // 支付账户
-                  "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,// 汇款卡号
-                  "remittanceBank": this.ruleForm.refundWay == 2 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, // 汇款开户行
-                  "remittancePerson": this.ruleForm.refundWay == 2 ? this.ruleForm.cardPeople : this.ruleForm.partCardPeople, // 汇款开户人
+                  //"realRefundPrice":this.ruleForm.refundWay == 1 ?(this.typeID == 0 ? this.ruleForm.needRefund : (this.ruleForm.needRefund >= 0 ? this.positiveNumber : this.negativeNumber)):(Number(this.orderList.paid)-Number(this.allRefundPrice)), 
+                  "payID": 0, 
+                  "remittanceCode": this.ruleForm.refundWay == 2 ? this.ruleForm.cardNumber : this.ruleForm.partCardNumber,
+                  "remittanceBank": this.ruleForm.refundWay == 2 ? this.ruleForm.cardBank : this.ruleForm.partCardBank, 
+                  "remittancePerson": this.ruleForm.refundWay == 2 ? this.ruleForm.cardPeople : this.ruleForm.partCardPeople, 
                   "isDeleted": 0,
-                  "payable": this.orderAmount, // 订单金额
-                  "refundStateType": 0, // 退款状态 0 申请退款 ，1退款完成，2拒绝退款
-                  "createTime": moment(new Date()).format('YYYY-MM-DD'), // 申请时间
-                  "startTime": "2020-01-14T05:53:42.552Z", // 开始时间
-                  "endTime": "2020-01-14T05:53:42.552Z", // 结束时间
+                  "payable": this.orderAmount, 
+                  "refundStateType": 0, 
+                  "createTime": moment(new Date()).format('YYYY-MM-DD'), 
+                  "startTime": "2020-01-14T05:53:42.552Z", 
+                  "endTime": "2020-01-14T05:53:42.552Z", 
                   "productType": 1,
                   "Mark":JSON.stringify(this.getGuests()),
                   "refundPeo": this.ruleForm.refundWay == 1 ? (this.typeID !=0 ? 1 : 0) : 1,
                   "isEBS":0
-                  //"productType": this.productType // 产品类型
-                  //全退   总退款=已付金额-退款金额      还需退款=0    实际退款=已付金额-退款金额
+                  //"productType": this.productType 
                 }
               })
               .then(res => {
@@ -512,7 +505,7 @@ export default {
                    this.$message.success("申请退款成功");
                    this.allRefundPrice = 0 ;
                    this.ruleForm.needRefund = '';
-                   this.ruleForm.originally = ''; // 全退申请原由
+                   this.ruleForm.originally = ''; 
                    this.ruleForm.cardNumber = '';
                    this.ruleForm.cardBank = '';
                    this.ruleForm.cardPeople = '';
@@ -551,7 +544,7 @@ export default {
       }
       return updata;
     },
-    updateUndo(){ // 撤销业务接口
+    updateUndo(){ 
       this.$http.post(this.GLOBAL.serverSrc + "/order/guest/refundstat/update",{
         objects:this.getGuests()
       }).then(res => {

@@ -5,7 +5,6 @@
        <el-button :disabled="forbidden" @click="editBlackList()">编辑</el-button>
        <el-button :disabled="forbidden" @click="deleteLabel">删除</el-button>
      </el-row>
-    <!--list-->
      <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
        <el-table-column prop="number" fixed type="selection" width="50" align="center"></el-table-column>
        <el-table-column  prop="id" label="ID" width="100" align="center"></el-table-column>
@@ -15,7 +14,6 @@
 
      <el-pagination class="pagination" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total">
      </el-pagination>
-     <!--添加、编辑黑名单弹窗-->
       <el-dialog :title="title"  :visible.sync="dialogFormVisible" width="500px" center custom-class="city_list" @close="cancel">
         <el-form :model="rformA" label-width="100px" :rules="rules" ref="rformA">
           <el-form-item label="类型"  prop="name" class="addContact_span">
@@ -52,15 +50,15 @@ export default {
           type:'122',
           address:'233'
         },],
-        multipleSelection: [],   //选中的list
-        forbidden:true,         //按钮是否禁用
+        multipleSelection: [],   
+        forbidden:true,         
         currentPage: 1,
-        pagesize: 10, // 设定默认分页每页显示数
-        pageIndex: 1, // 设定当前页数
+        pagesize: 10, 
+        pageIndex: 1, 
         total: 0,
         title:"",
         dialogFormVisible:false,
-        rformA: {//编辑添加列表input
+        rformA: {
           name: "",
           mobile:"",
           idCard:"",
@@ -95,7 +93,7 @@ export default {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun(val) {  
         this.multipleSelection=val;
         if(this.multipleSelection.length == 1){
            this.forbidden=false;
@@ -104,7 +102,7 @@ export default {
         }
       },
       clickRow(row){
-      /*  this.$refs.multipleTable.clearSelection(); //清空用户的选择
+      /*  this.$refs.multipleTable.clearSelection(); 
         this.$refs.multipleTable.toggleRowSelection(row)*/
         if(this.multipleSelection.length>0){
           if(this.multipleSelection[0].id != row.id){
@@ -113,7 +111,7 @@ export default {
         }
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){  
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
@@ -129,19 +127,18 @@ export default {
         this.pageIndex = val;
         //this.moduleList();
       },
-      //添加、编辑列表弹窗
-      saveModule(formName){ //判断显示编辑或者添加弹窗
+      saveModule(formName){ 
          if(this.title == "添加工作流接口"){
             this.addLabelTheme(formName);
          }else{
             this.editLabelTheme(formName);
          }
       },
-      addBlackList(){//点击添加列表按钮
+      addBlackList(){
         this.title="添加工作流接口";
         this.dialogFormVisible = true;
       },
-      editBlackList(){//点击编辑列表按钮
+      editBlackList(){
         this.getLabel();
         this.title="编辑工作流接口";
         this.dialogFormVisible = true;
@@ -153,7 +150,7 @@ export default {
       deleteLabel(){
 
       },
-      /*getLabel(){//获取一条信息
+      /*getLabel(){
         this.$http.post(this.GLOBAL.serverSrc + '/order/blacklist/api/get',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -171,8 +168,7 @@ export default {
               }
         }) 
       },
-      //添加黑名单
-      addLabelTheme(formName){//添加一条列表
+      addLabelTheme(formName){
          this.$refs[formName].validate((valid) => {
           if (valid) {
             var _this = this;
@@ -208,7 +204,6 @@ export default {
           }
         });
       },
-      //编辑黑名单
       editLabelTheme(formName){
         var that = this
           this.$http.post(
@@ -243,7 +238,6 @@ export default {
             console.log(obj)
           })
       },
-      //删除黑名单
       deleteLabel(){
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
@@ -268,7 +262,6 @@ export default {
           });
         });
       },
-      //供应商列表
       pageList() {
         var that = this
         this.$http.post(

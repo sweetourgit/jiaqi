@@ -2,16 +2,12 @@
   <div>
        <el-dialog title="供应商欠款详情" :visible.sync="dialogForm" class="city_list" width="1080px">
             <div class="search">
-              <!--供应商-->
               <span class="search-title">团期</span>
               <el-input placeholder="请输入" v-model="name" class="group-no"></el-input>
-              <!--搜索-->
               <el-button type="primary" class="search-but" @click="search">搜索</el-button>
               <el-button type="primary" plain @click="reset">重置</el-button>
-            
               </br></br>
               <el-button type="primary" :disabled="forbidden">查看</el-button>
-              <!--list-->
               <el-table :data="arrearsList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">     
                   <el-table-column prop="name" label="团期" header-align="center"></el-table-column>
                   <el-table-column prop="price" label="总欠款" min-width="80" header-align="center"></el-table-column>
@@ -72,7 +68,7 @@ export default {
     getCellClass(){
       return 'textAlign:center'
     },
-    changeFun(val) {  //保存选中项的数据
+    changeFun(val) {  
       this.multipleSelection=val;
       if(this.multipleSelection.length>0){
          this.forbidden=false;
@@ -80,11 +76,11 @@ export default {
          this.forbidden=true;
       }
     },
-    clickRow(row){    //选中行复选框勾选
+    clickRow(row){    
       this.$refs.multipleTable.clearSelection();
       this.$refs.multipleTable.toggleRowSelection(row);        
     },
-    rowClass({row, rowIndex}){  //选中行样式改变
+    rowClass({row, rowIndex}){  
      for(var i=0;i<this.multipleSelection.length;i++){
         if(this.multipleSelection[i].id==row.id){
            return { "background-color": "#ecf5ff" }
@@ -132,7 +128,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/*search*/
 .search{
   padding-left: 20px;
   width:1000px;
@@ -152,7 +147,6 @@ export default {
   margin: 20px 0 15px 0;
   overflow: hidden;
 }
-/*list*/
 .table{border:1px solid #e6e6e6;border-bottom: 0;background-color: #F7F7F7;text-align: center;margin:20px 0 0 0;}
 .pagination{text-align:center;margin:30px 0 50px 0;}
 </style>

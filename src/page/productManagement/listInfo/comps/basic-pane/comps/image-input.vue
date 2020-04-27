@@ -67,7 +67,6 @@ $image-margin: 15px;
         <img :src="item.picturePath" alt="">
         <div class="interceptor">
           <ul>
-            <!-- 关闭 -->
             <li>
               <i class="el-icon-view" style="font-size: 18px;"
                 @click="$emit('wakeup-preview', item)"
@@ -95,9 +94,7 @@ import { getPictureAction } from '../../../api'
 export default {
   
   props: {
-    // 初始化数据
     proto: [Number, Array],
-    // 最大数量限制, -1为不限制数量
     numLimit: {
       type: Number,
       default: -1
@@ -108,7 +105,6 @@ export default {
     proto: {
       handler(nval){
         if(!nval) return this.list.splice(0);
-        // 统一数据格式
         if(typeof nval=== 'number'){
           nval= [{
             id: null,

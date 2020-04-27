@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--下单弹窗-->
     <el-dialog
       title="转团"
       :visible.sync="dialogFormTransfer"
@@ -56,11 +55,9 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <!--产品名称-->
           <el-form-item label="产品名称" prop="productName" class="fl cb">
             <el-input v-model="ruleForm.productName" class="ml13 w200" type="text"></el-input>
           </el-form-item>
-          <!--套餐-->
           <el-form-item label="套餐" prop="setMeal" class="fl">
             <el-select v-model="ruleForm.setMeal" placeholder="请选择">
               <el-option label="套餐1" :value="1" />
@@ -68,11 +65,9 @@
               <el-option label="套餐3" :value="3" />
             </el-select>
           </el-form-item>
-          <!--团期计划-->
           <el-form-item label="团期计划" prop="productName" class="cb">
             <el-input v-model="ruleForm.orderCode" class="ml13 w200" type="text"></el-input>
           </el-form-item>
-          <!--价格-->
           <el-form-item label="价格" prop="price" class="cb price">
             <el-radio-group v-model="ruleForm.price">
               <span
@@ -124,7 +119,6 @@
               <div class="ml13">单房差 ￥340</div>
             </el-form-item>
           -->
-          <!--其他费用-->
           <el-form-item label="其他费用" prop="otherCost" class="fl cb">
             <el-input v-model="ruleForm.otherCost" class="numw" type="number" :min="0"></el-input>
           </el-form-item>
@@ -132,7 +126,6 @@
             备注
             <el-input v-model="ruleForm.otherCostRemark" class="cost-remark"></el-input>
           </div>
-          <!--整体优惠-->
           <el-form-item label="整体优惠" prop="allDiscount" class="cb fl">
             <el-input v-model="ruleForm.allDiscount" class="numw" type="number" :min="0"></el-input>
           </el-form-item>
@@ -140,11 +133,9 @@
             备注
             <el-input v-model="ruleForm.allDisRemark" class="cost-remark"></el-input>
           </div>
-          <!--总计-->
           <el-form-item label="总计" prop="totalPrice" class="cb">
             <div class="ml13">{{ruleForm.totalPrice}}</div>
           </el-form-item>
-          <!--订单联系人-->
           <el-form-item label="订单联系人" prop="contactName" class="fl">
             <span class="ml13">姓名</span>
             <el-input v-model="ruleForm.contactName" class="numw" maxlength="10"></el-input>
@@ -153,7 +144,6 @@
             电话
             <el-input v-model="ruleForm.contactPhone" class="numw" maxlength="20"></el-input>
           </el-form-item>
-          <!--出行人信息-->
           <el-form-item label="出行人信息" class="cb">
             <div class="oh" v-for="(item,indexPrice) in salePrice" :key="indexPrice">
               <div class="tour-til">{{item.enrollName}}</div>
@@ -184,7 +174,6 @@
         </div>
       </div>
     </el-dialog>
-    <!--填写游客信息-->
     <el-dialog
       :title="'出行人信息（'+winTitle+'）'"
       :visible.sync="dialogFormTour"
@@ -234,7 +223,6 @@
         <el-button type="primary" @click="subInfo('conForm')">确 定</el-button>
       </div>
     </el-dialog>
-    <!--下单成功弹窗-->
     <el-dialog title="提示" :visible.sync="orderSuc" width="500px">
       <h3 class="ordersuc-title">下单成功</h3>
       <div class="text item">订单号：{{orderCode}}</div>
@@ -259,7 +247,6 @@ export default {
   },
   data() {
     return {
-      //下单弹窗
       dialogFormTransfer: false,
       ruleForm: {
         productName: "",
@@ -279,18 +266,17 @@ export default {
         contactPhone: "",
         remark: ""
       },
-      //游客信息
-      quota: [], //余位信息负数红色提示
-      enrolNum: [], //报名人数[1,3]形式
-      enrolNums: false, //报名人数是否为空提示
+      quota: [], 
+      enrolNum: [], 
+      enrolNums: false, 
       dialogFormTour: false,
-      salePrice: [], //报名类型价格列表数据
-      salePriceNum: [], //报名类型价格列表数据副本,显示余位用
-      tourType: 0, //报名类型索引
-      fillIndex: 0, //报名类型下游客list索引
-      preLength: [], //记录上一次报名人数[1,3]形式
-      tour: [], //总游客信息,二维数组
-      winTitle: "", //弹窗标题
+      salePrice: [], 
+      salePriceNum: [], 
+      tourType: 0, 
+      fillIndex: 0, 
+      preLength: [], 
+      tour: [], 
+      winTitle: "", 
       conForm: {
         id: 0,
         isDeleted: 0,
@@ -299,7 +285,7 @@ export default {
         enName: "",
         sex: "",
         mobile: "",
-        idCard: "", //身份证
+        idCard: "", 
         bornDate: 0,
         credType: 0,
         credCode: "",
@@ -309,9 +295,7 @@ export default {
         orgID: sessionStorage.getItem("orgID"),
         userID: sessionStorage.getItem("id")
       },
-      //下单成功弹窗
       orderSuc: false,
-      //团期计划订单信息
       teampreviewData: {},
       orderCode: "",
       ifOrderInsert: true,
@@ -348,7 +332,6 @@ export default {
         contactPhone: [
           { required: true, message: "请输入联系人电话", trigger: "blur" }
         ],
-        //游客信息
         cnName: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         enName: [
           { required: true, message: "请输入姓（拼音）", trigger: "blur" },
@@ -404,17 +387,13 @@ export default {
   },
   methods: {
     changeQuota() {
-      //余位变化方法
       this.salePrice = JSON.parse(JSON.stringify(this.salePriceNum));
       let salePriceType = {};
-      //下单方式选择确认占位和预定占位，实时减少相关余位信息，提示库存不足
       for (let i = 0; i < this.salePrice.length; i++) {
-        //如果下单方式选择预定不占，则不需要同步余位信息，提示库存不足
         this.salePrice[i].quota =
           parseInt(this.salePrice[i].quota) - parseInt(this.enrolNum[i]);
         salePriceType = this.salePrice[i];
         if (salePriceType.quota < 0) {
-          //判断是否显示库存不足
           this.quota[i] = true;
         } else {
           this.quota[i] = false;
@@ -422,7 +401,6 @@ export default {
       }
     },
     teamEnrolls(ID) {
-      //获取报名类型列表数据
       // console.log(ID)
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
@@ -446,7 +424,6 @@ export default {
         });
     },
     teampreview(ID) {
-      //团期计划订单信息预览
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/teampreview", {
           id: ID
@@ -458,15 +435,13 @@ export default {
         });
     },
     peoNum(index, enrollID, enrollName) {
-      //填写报名人数
-      let arrLength; //报名人数
-      let preLength; //记录上一次报名人数
-      preLength = this.preLength[index]; //获取上一次报名人数
-      arrLength = this.enrolNum[index]; //获取当前报名人数
-      this.preLength[index] = this.enrolNum[index]; //记录上一次报名人数为当前报名人数
+      let arrLength; 
+      let preLength; 
+      preLength = this.preLength[index]; 
+      arrLength = this.enrolNum[index]; 
+      this.preLength[index] = this.enrolNum[index];
       var len;
       if (arrLength > preLength) {
-        //修改数量时，如果增加数量，直接填充数组，否则从数组末尾减去多余对象
         len = arrLength - preLength;
         for (var i = 0; i < len; i++) {
           this.tour[index].push({
@@ -496,10 +471,10 @@ export default {
       }
     },
     fillTour(type, index) {
-      this.winTitle = this.salePrice[type].enrollName; //编辑游客信息弹窗标题
+      this.winTitle = this.salePrice[type].enrollName; 
 
       if (this.tour[type][index].cnName != "点击填写") {
-        this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); //如果已填完信息，把信息显示出来
+        this.conForm = JSON.parse(JSON.stringify(this.tour[type][index])); 
       }
       this.tourType = type;
       this.fillIndex = index;
@@ -507,7 +482,6 @@ export default {
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        //如果库存不足，不提交订单
         var blooen = "0";
         for (let i = 0; i < this.quota.length; i++) {
           if (this.quota[i] == true) {
@@ -517,7 +491,6 @@ export default {
         if (blooen == "1") {
           return false;
         }
-        //获取报名总人数
         let number = 0;
         for (let i = 0; i < this.enrolNum.length; i++) {
           if (this.enrolNum[i]) {
@@ -530,7 +503,7 @@ export default {
         } else {
           this.enrolNums = false;
         }
-        let guestAll = []; //游客信息格式转换
+        let guestAll = []; 
         if (valid) {
           for (let i = 0; i < this.tour.length; i++) {
             for (let j = 0; j < this.tour[i].length; j++) {
@@ -541,15 +514,13 @@ export default {
           let guest = [];
           for (let i = 0; i < guestAll.length; i++) {
             if (guestAll[i].cnName != "点击填写") {
-              //过滤掉未填写人员信息
               guest.push(guestAll[i]);
-              guest[i].bornDate = new Date(guest[i].bornDate).getTime(); //时间格式转换
+              guest[i].bornDate = new Date(guest[i].bornDate).getTime(); 
               guest[i].credTOV = new Date(guest[i].credTOV).getTime();
             } else {
               guest.push(guestAll[i]);
             }
           }
-          //防止重复提交订单判断
           if (this.ifOrderInsert == false) {
             return false;
           }
@@ -564,12 +535,11 @@ export default {
                 proID: this.teampreviewData.teamID,
                 // planID: this.planId,
                 planID: this.orderId,
-                orderStatus: 0, //订单状态  7未确认
-                refundStatus: 0, //退款状态
-                occupyStatus: this.ruleForm.type, //占位状态
-                payable: this.ruleForm.totalPrice, //应付款
+                orderStatus: 0, 
+                refundStatus: 0, 
+                occupyStatus: this.ruleForm.type, 
+                payable: this.ruleForm.totalPrice, 
                 favourable: [
-                  //优惠
                   {
                     id: 0,
                     orderID: 0,
@@ -611,7 +581,6 @@ export default {
                 let data = JSON.parse(res.data.result.details);
                 this.orderCode = data.OrderCode;
                 this.orderSuc = true;
-                //清空表单
                 this.$refs[formName].resetFields();
                 this.dialogFormTransfer = false;
                 this.ifOrderInsert = true;
@@ -622,7 +591,6 @@ export default {
                   data.Usercode
                 );
               } else {
-                //预留黑名单信息？？？
                 _this.$message.success("下单失败");
                 this.ifOrderInsert = true;
               }
@@ -634,7 +602,6 @@ export default {
         }
       });
     },
-    //启动工作流
     startUpWorkFlowForJQ(OrderID, FlowModel, FlowModelName, Usercode) {
       this.$http
         .post(this.GLOBAL.jqUrl + "/JQ/StartUpWorkFlowForJQ", {
@@ -647,7 +614,6 @@ export default {
           this.submitWAForJQ(Usercode, JSON.parse(res.data).data.workItemID);
         });
     },
-    //提交工作任务
     submitWAForJQ(Usercode, workItemID) {
       this.$http
         .post(this.GLOBAL.jqUrl + "/JQ/GettingUnfinishedTasksForJQ", {
@@ -661,10 +627,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let guest = JSON.parse(JSON.stringify(this.conForm));
-          guest.enrollID = this.salePrice[this.tourType].enrollID; //填充报名类型
-          guest.enrollName = this.salePrice[this.tourType].enrollName; //填充报名类型name
+          guest.enrollID = this.salePrice[this.tourType].enrollID; 
+          guest.enrollName = this.salePrice[this.tourType].enrollName; 
           if (this.ruleForm.price == 1) {
-            guest.singlePrice = this.salePrice[this.tourType].price_01; //填充价格
+            guest.singlePrice = this.salePrice[this.tourType].price_01; 
           } else {
             guest.singlePrice = this.salePrice[this.tourType].price_02;
           }
@@ -683,7 +649,6 @@ export default {
       this.$refs[formName].resetFields();
     },
     compPrice() {
-      //计算总价
       this.ruleForm.totalPrice = 0;
       for (let i = 0; i < this.enrolNum.length; i++) {
         this.ruleForm.totalPrice +=
@@ -700,7 +665,6 @@ export default {
 </script>
 
 <style scoped>
-/*下单弹窗*/
 * {
   font-size: 14px;
 }

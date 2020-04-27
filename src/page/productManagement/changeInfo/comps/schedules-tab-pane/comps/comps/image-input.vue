@@ -94,9 +94,7 @@ $image-margin: 15px;
 export default {
   
   props: {
-    // 初始化数据
     proto: String,
-    // 最大数量限制, -1为不限制数量
     numLimit: {
       type: Number,
       default: -1

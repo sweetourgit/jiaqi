@@ -54,7 +54,7 @@ export default {
     return {
       vm: {
         state: false,
-        inited: false,  //是否设置过团号，设置后不许再改变
+        inited: false,  
       },
       submitForm: {
         codePrefix: '',
@@ -92,7 +92,6 @@ export default {
     },
 
     codeValidator(rule, value, cb){
-      // 如果已经设置过则直接返回
       if(this.vm.inited) return cb();
       let { id, codePrefix, codeSuffix }= this.submitForm;
       if(!codePrefix || !codeSuffix) return cb();
@@ -112,9 +111,6 @@ export default {
       cb(new Error('清位天数必须为正整数'));
     },
 
-    /**
-     * @description: 先验证，不通过返回false，通过则将submit变形成提交的格式 
-     */
     getSubmitDate(){
       return new Promise((resolve, reject) => {
         this.$refs.submitForm.validate(validate => {

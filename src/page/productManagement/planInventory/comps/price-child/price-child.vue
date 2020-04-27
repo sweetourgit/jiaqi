@@ -70,11 +70,10 @@ export default {
       this.vm.pacId= id;
       this.vm.inited= true;
       this.vm.rate= rate;
-      // timestamp为共享库存跳转带来的制定天
       this.$refs.dateRef.init({ 
         id, 
         date: timestamp? new Date(parseInt(timestamp)): null, 
-        sureDate: timestamp? true: false, //是否初始化后选择准确日期
+        sureDate: timestamp? true: false, 
         rate
       });
       this.$refs.showRef.init({ id });

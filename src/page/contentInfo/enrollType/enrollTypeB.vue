@@ -11,7 +11,6 @@
        <el-table-column  prop="name" label="报名类型名称" min-width="120" align="center"></el-table-column>
      </el-table>
      <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-     <!--弹窗-->
      <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
       <div style="float:left; line-height:40px; margin:0 10px 0 70px;">报名类型名称：</div>
       <el-form :model="rformA" ref="rformA" label-width="100px" class="demo-ruleForm">
@@ -39,7 +38,7 @@ export default {
       pagesize:10,
       title:"",
       dialogFormVisible:false,
-      rformA: {//编辑添加列表input
+      rformA: {
         name: ""
       },
     }
@@ -52,7 +51,7 @@ export default {
         return ''
       }
     },
-    changeFun(val) {  //保存选中项的数据
+    changeFun(val) {  
       this.multipleSelection=val;
       if(this.multipleSelection.length == 1){
          this.forbidden=false;
@@ -63,7 +62,7 @@ export default {
     clickRow(row){
       this.$refs.multipleTable.toggleRowSelection(row)
     },
-    rowClass({row, rowIndex}){  //选中行样式改变
+    rowClass({row, rowIndex}){  
      for(var i=0;i<this.multipleSelection.length;i++){
         if(this.multipleSelection[i].id==row.id){
            return { "background-color": "#ecf5ff" }
@@ -92,14 +91,14 @@ export default {
       this.dialogFormVisible = false;
       this.$refs["rformA"].resetFields();4
     },
-    saveModule(formName){ //判断显示编辑或者添加弹窗
+    saveModule(formName){ 
        if(this.title == "添加报名类型"){
           this.addEnrollType(formName);
        }else{
           this.editEnrollType(formName);
        }
     },
-    getEnroll(){//获取一条信息
+    getEnroll(){
       this.$http.post(this.GLOBAL.serverSrc + '/universal/enrollb/api/get',{
          "id":this.multipleSelection[0].id
         }).then(res => {
@@ -109,7 +108,7 @@ export default {
             }
       }) 
     },
-    addEnrollType(formName){//添加一条报名类型
+    addEnrollType(formName){
       this.$refs[formName].validate((valid) => {
           if (valid) {
             var _this = this;
@@ -136,7 +135,7 @@ export default {
           }
         });
     },
-    editEnrollType(formName){//编辑一条报名类型
+    editEnrollType(formName){
       var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/universal/enrollb/api/save",
@@ -162,7 +161,7 @@ export default {
           console.log(obj)
         })
     },
-    deleteEnroll(){//删除一条报名信息
+    deleteEnroll(){
       this.$confirm("确认删除?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
@@ -186,7 +185,7 @@ export default {
         });
       });
     },
-    pageList() {//查询表格
+    pageList() {
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/universal/enrollb/api/page",

@@ -73,7 +73,6 @@ export default {
   inject: ['PROVIDE_DAY', 'PROVIDE_PACKAGE_ID'],
 
   props: {
-    //package
     proto: [Array]
   },
 
@@ -91,8 +90,6 @@ export default {
   },
 
   methods: {
-    // 初始化
-    // 10.28更新，存在一种情况，基本信息中的天数修改
     init(){
       this.schedules.splice(0);
       let payload= this.PROVIDE_DAY- this.proto.length;
@@ -100,7 +97,6 @@ export default {
       payload> 0? this.plusInit(payload): this.minusInit(payload);
     },
     
-    // 基本信息中天数增加了
     plusInit(payload){
       let length= this.proto.length;
       let result= [];
@@ -112,20 +108,17 @@ export default {
       this.schedules.push(...this.$deepCopy(this.proto), ...result);
     },
     
-    // 基本信息中天数减少了
     minusInit(payload){
       let length= this.proto.length+ payload;
       this.schedules.push(...this.$deepCopy(this.proto.slice(0, length)));
     },
 
-    // 点击侧边栏
     changeDay(e){
       let day= e.target.dataset.day;
       if(!day) return;
       this.vm.currentDay= parseInt(day);
     },
 
-    //详情状态下检查
     checkHasChange(){
       let bol= false;
       let children= this.$refs.children;

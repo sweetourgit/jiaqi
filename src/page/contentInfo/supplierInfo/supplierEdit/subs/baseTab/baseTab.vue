@@ -233,7 +233,7 @@
 </template>
 
 <script>
-// this.GLOBAL.serverSrc + '/upload/obs/api/file' 上传路径
+// this.GLOBAL.serverSrc + '/upload/obs/api/file' 
 import labelsInput from '../../comps/labelsInput'
 import { getDicOptions, checkSupplierCode, checkSupplierName, orgMaker } from '../../../api'
 import { ConditionTypeOptions, CompanyAreaOptions, getSupplierDTO, TreeNamer } from '../../../dictionary'
@@ -242,9 +242,9 @@ export default {
   components: { labelsInput },
 
   created(){
-    this.checkProto= null; // 原始数据
-    this.treeNamer= null; // 部门树数据处理对象
-    this.reactKey= null; // 同步钥匙
+    this.checkProto= null; 
+    this.treeNamer= null; 
+    this.reactKey= null; 
     this.reactLock= new Promise((resolve, reject) => this.reactKey= resolve)  // 同步锁
   },
 
@@ -254,7 +254,6 @@ export default {
 
   data(){
     return Object.assign(
-      // org
       {
         orgsData: [],
         orgProps: { multiple: true, value: 'id', label: 'orgName' },
@@ -329,7 +328,6 @@ export default {
           },
         },
       },
-      // options
       {
         SupplierTypeOptions: [],
         IsMonthlyOptions: [],
@@ -342,7 +340,6 @@ export default {
         pickerOptions: {
           disabledDate: (date) =>  date<= Date.now(),
         },
-        // 别名组件配置
         aliasInputProps: {
           factory: (name) => {
             if(!name) return;
@@ -386,7 +383,6 @@ export default {
 
       getData(){
         let data= this.$deepCopy(this.submitForm);
-        // 适配types在数据库中的存储格式
         this.typesAdaptor(data);
         this.expireTimeAdaptor(data);
         // this.orgsAdaptor(data);
@@ -419,32 +415,28 @@ export default {
       },
       uploadPreviewHandler(file){
         window.open(file.url);
-        // let win = window.open();  //打开新的空白窗口
-        // win.document.write ("<h1>这是新打开的窗口</h1>");
       },
     },
 
-    // 数据加工
     {
       initSubmitForm(payload){
-        // 类型需要特殊处理
-        // 类型多选
+
         // this.submitForm.types= this.submitForm.types.map(type => type.supplierType);
       
-        // 类型单选
+  
         payload.types= 
           payload.types[0]? 
             payload.types[0].supplierType: null;
-        // 类型单选结束
 
-        // 用filesList来绑定上传组件的file-list，因为上传组件会给file-list的元素添加status属性
+
+ 
         this.filesList.splice(0);
         this.filesList.push(...this.$deepCopy(payload.files));
 
-        // 纠正时间
+
         payload.expireTime= new Date(payload.expireTime).getTime()+ 8* 3600* 1000;
 
-        // 绑定给级联选择器的数据 例:[[1,2],[3,4]]
+
         this.orgsData= this.treeNamer.getData(payload.orgs);
 
         Object.keys(payload).forEach(attr => { 
@@ -482,30 +474,26 @@ export default {
         })
       },
 
-      /**
-       * @description: orgs是几联选择器带回的结构
-       */
+
       orgChange(orgs){
         let newOrgs= orgs.map(this.treeNamer.family.bind(this.treeNamer));
         this.treeNamer.diff(this.submitForm.orgs, newOrgs);
       },
       
-      // 后台目前是保存一次，那么所有类别重新建立一次联系（删除所有旧的，再插入新的）
-      // 多选的typesAdaptor
+
       // typesAdaptor(types){
       //   let assignObj= this.isSave? { supplierID: this.submitForm.id }: {};
       //   let oldTypes= this.proto.types;
       //   types.forEach((type, index) => {
       //     if(this.$isObject(type)) return;
       //     let hit= oldTypes.find(el => el.supplierType=== type)
-      //     // 看看是否已经保存过
       //     if(!hit) hit= this.SupplierTypeOptions.find(el => el.supplierType=== type);
       //     if(!hit) console.error('data error');
       //     types[index]= Object.assign({}, hit, assignObj);
       //   })
       // },
 
-      // 单选的typesAdaptor
+
       typesAdaptor(data){
         let { types }= data;
         let assignObj= this.isSave? { supplierID: this.submitForm.id }: {};
@@ -539,7 +527,7 @@ export default {
       }
     },
 
-    // 校验
+
     {
       simpleValidator(rule, value, cb){
         let { message }= rule;
@@ -556,7 +544,7 @@ export default {
         .catch(cb.bind(null, new Error('供应商编码重复')));
       },
 
-      // 先利用分页查找接口来验证供应商名字重复
+
       nameValidator(rule, value, cb){
         if(this.isSave) return cb();
         checkSupplierName(value)

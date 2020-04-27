@@ -1,6 +1,5 @@
 <template>
   <div style="border:1px solid #e6e6e6; max-width:1420px; overflow:hidden;margin:0 0 80px 0;">
-    <!--搜索框-->
     <div class="demo-input-suffix">
       <div>
         <!-- <span class="search-title" style="margin:0 0 0 35px;">退款单号</span>
@@ -17,7 +16,6 @@
       </div>
     </div>
     <div class="main">
-      <!--列表表格-->
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun">
         <el-table-column prop="refundCode" label="退款单号" align="center"></el-table-column>
         <el-table-column prop="refundStateType" label="状态" align="center">
@@ -42,7 +40,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--分页-->
       <!-- <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination> -->
@@ -62,16 +59,15 @@ export default {
   data() {
     return {
       refundID:0,
-      variable: 0, //设置一个变量展示弹窗
-      dialogType: 0, //弹窗类型  1：详情
+      variable: 0,
+      dialogType: 0, 
       workID:0,
-      //搜索框
-      refundNumber:'',//退款号码
-      applicant:'',//申请人
-      applyForDate:'', // 申请日期
-      states:'',// 状态
-      orderID:'',// 订单ID
-      statesType:[{ // 搜索框状态数据
+      refundNumber:'',
+      applicant:'',
+      applyForDate:'', 
+      states:'',
+      orderID:'',
+      statesType:[{ 
         value:'1',
         label:'全部'
       },{
@@ -84,16 +80,16 @@ export default {
         value:'4',
         label:'完成退款'
       }],
-      tableDate:[],//表格
-      pageshow: true,// 分页
-      pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
-      pageIndex: 1, // 设定当前页数
+      tableDate:[],
+      pageshow: true,
+      pageSize: 10, 
+      pageIndex: 1, 
       total: 0,
       current:1,
-      multipleSelection: [], //选中的list
+      multipleSelection: [], 
       flowModel:"",
-      getJqId:[], // 获取JQ_ID
-      workItemID:[], // 获取workItemID
+      getJqId:[],
+      workItemID:[], 
       instanceID:'',
     };
 
@@ -103,7 +99,7 @@ export default {
   },
   methods: {
     moment,
-    formatDate(date) {//时间转化
+    formatDate(date) {
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       m = m < 10 ? "0" + m : m;
@@ -117,7 +113,6 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
-    // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if(date == undefined) {
@@ -125,20 +120,20 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD')
     },
-    search(){ // 搜索
+    search(){ 
       this.current = 1;
       //this.getFlowModel(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
       this.getFlowModel();
     },
-    reset(curPage){ // 重置
-      this.refundNumber = '';//退款号码
-      this.applicant = '';//申请人
-      this.applyForDate = ''; // 申请日期
+    reset(curPage){ 
+      this.refundNumber = '';
+      this.applicant = '';
+      this.applyForDate = ''; 
       this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.getFlowModel();
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
       } else {
@@ -158,15 +153,13 @@ export default {
       this.getFlowModel(val,this.pageSize);
     },
     changeFun(val) {
-      //保存选中项的数据
       this.multipleSelection = val;
     },
     clickRow(row) {
-      //选中行复选框勾选
-      this.$refs.multipleTable.clearSelection(); // 清空用户的选择,注释掉可多选
+      this.$refs.multipleTable.clearSelection(); 
       this.$refs.multipleTable.toggleRowSelection(row);
     },
-    operation(i,id,instanceID) {// 显示详情
+    operation(i,id,instanceID) {
       this.variable++;
       this.dialogType = i;
       this.refundID = id;
@@ -175,9 +168,9 @@ export default {
            this.workID = this.workItemID[i].workItemID;
         }
       }
-      //this.workID = String(this.workItemID); // 把workItemID数组类型转换成字符串类型
+      //this.workID = String(this.workItemID); 
     },
-    getFlowModel(){ // 获取id=6的FlowModel
+    getFlowModel(){ 
       this.$http.post(this.GLOBAL.serverSrc + '/universal/supplier/api/dictionaryget?enumname=FlowModel')
       .then(res => {
         let model = res.data.objects;
@@ -208,9 +201,9 @@ export default {
           workItemID.push({'workItemID':v.workItemID,'instanceID':v.instanceID})
         })
         this.workItemID = workItemID;
-        this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { // 通过GUID查找退款列表代办
+        this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', { 
           "guid": getJqId,
-          "type":0 // 查看代办  0代办，1已办
+          "type":0 
         }).then(obj =>{
           this.tableDate = obj.data.objects;
           this.total = obj.data.objects.length;
@@ -257,7 +250,6 @@ export default {
   margin: 20px 0 0 930px;
   overflow: hidden;
 }
-/*表格*/
 .table {
   border: 1px solid #e6e6e6;
   border-bottom: 0;
@@ -273,6 +265,5 @@ export default {
 .cursor {
   cursor: pointer;
 }
-/*分页*/
 .pagination{float: right; margin: 10px 10px 20px 0;}
 </style>

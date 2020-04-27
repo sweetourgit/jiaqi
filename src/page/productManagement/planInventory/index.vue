@@ -53,16 +53,13 @@ export default {
   },
 
   mounted(){
-     // 修改页面高度问题
     document.querySelector(".content-body1").style.height= "auto";
     document.querySelector(".content-body1").style.paddingBottom= "50px";
-    // TODO预警
     this.todoWarn();
     this.init();
   },
 
   beforeDestroy(){
-    // 修改页面高度问题
     document.querySelector(".content-body1").style.height= null;
     document.querySelector(".content-body1").style.paddingBottom= null;
   },
@@ -76,7 +73,6 @@ export default {
   },
 
   methods: {
-    // TODO记录
     todoWarn(){
       console.warn('TODO: /cost-child/edit-form 尚未获取编辑用户，接口提交的是假值');
       console.warn('TODO: /cost-child/edit-form addCost接口有问题默认传值很奇怪');
@@ -85,28 +81,22 @@ export default {
       console.warn('TODO: 可以通过传入routeQuery tab&package来直接进入子tab');
     },
 
-    // 可传入packageId
     init(pacId){
       console.warn(JSON.stringify(this.$route.query));
       let { id, pac_id, tab, timestamp }= this.$route.query;
       let payloadAssign= {};
       if(!id) return this.$message.error('页面初始参数出错，请回退到上一页');
-      // 处理一次性路由参数
       if(pac_id || tab || timestamp){
         this.$router.replace({ path: this.$route.path, query: { id } });
-        // 讲路由套餐id以参数传入
         if(pac_id) pacId= parseInt(pac_id);
         if(tab) this.vm.currentChild= tab;
         if(timestamp) payloadAssign.timestamp= timestamp;
       }
-      // 初始化字典
       getEnrollTypeDictionary();
       getTeamListPackages(id).then(objects => {
         let result= this.mixinFactory(objects);
-        // 将套餐列表分享
         this._provided.PACKAGE_LIST.splice(0);
         this._provided.PACKAGE_LIST.push(...result);
-        // 初始化库存
         let pac= result.find(el => el.id=== pacId);
         pac? this.$refs.child.init(Object.assign(payloadAssign, pac))
           : this.$refs.child.init();
@@ -131,7 +121,6 @@ export default {
       this.$nextTick(() => this.$refs.child.init(payload))
     },
 
-    // 子emit事件总代理
     emitHandler(params){
       let { func, payload }= params;
       this[func](payload);
