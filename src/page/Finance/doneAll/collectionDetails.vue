@@ -11,7 +11,6 @@
         <el-tag type="success" v-if="fundamental.checkType=='1'" class="distributor-status">通过</el-tag>
       </div>
       <div v-if="keepComponentName == 'direct'">
-        <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
@@ -26,8 +25,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第一行 END -->
-        <!-- 第二行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">交易流水号:</div></el-col>
@@ -42,8 +39,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第二行 END -->
-        <!-- 第三行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">收款时间:</div></el-col>
@@ -60,8 +55,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.invoice == 1 ?  '是' : '否' }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第三行 END -->
-        <!-- 第四行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">凭证:</div></el-col>
@@ -82,10 +75,8 @@
           <el-col :span="6"></el-col>
           <el-col :span="6"></el-col>
         </el-row>
-        <!-- 第四行 END -->
       </div>
       <div v-else-if="keepComponentName == 'same'">
-        <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
@@ -100,8 +91,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第一行 END -->
-        <!-- 第二行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">同业社名称:</div></el-col>
@@ -116,8 +105,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第二行 END -->
-        <!-- 第四行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">摘要:</div></el-col>
@@ -143,10 +130,8 @@
             </el-col>
           </el-col>
         </el-row>
-        <!-- 第四行 END -->
       </div>
       <div v-else-if="keepComponentName == 'inner'">
-        <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">收款单号:</div></el-col>
@@ -161,8 +146,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第一行 END -->
-        <!-- 第二行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">分销商:</div></el-col>
@@ -177,8 +160,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第二行 END -->
-        <!-- 第四行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">收款时间:</div></el-col>
@@ -213,10 +194,8 @@
           <el-col :span="6"></el-col>
           <el-col :span="6"></el-col>
         </el-row>
-        <!-- 第四行 END -->
       </div>
       <div v-else="keepComponentName == 'reimburse'">
-        <!-- 第一行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color ">ID:</div></el-col>
@@ -231,8 +210,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.createTime | formatDate }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第一行 END -->
-        <!-- 第二行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">报销单号:</div></el-col>
@@ -247,8 +224,6 @@
             <el-col :span="18"><div class="grid-del ">{{ fundamental.price }}</div></el-col>
           </el-col>
         </el-row>
-        <!-- 第二行 END -->
-        <!-- 第四行 -->
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="6">
             <el-col :span="6"><div class="grid-del label-color">汇款/现金:</div></el-col>
@@ -261,10 +236,8 @@
           <el-col :span="6">
           </el-col>
         </el-row>
-        <!-- 第四行 END -->
       </div>
       <div v-if="keepComponentName !== 'collectionReimburse'">
-        <!-- 审核结果 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>审核结果</el-divider>
         <el-table :data="tableAudit" border :header-cell-style="getRowClass">
           <el-table-column prop="createTime" :formatter='dateFormatDetails' label="审批时间" align="center"></el-table-column>
@@ -272,8 +245,6 @@
           <el-table-column prop="spState" label="审批结果" align="center"></el-table-column>
           <el-table-column prop="spContent" label="审批意见" align="center"></el-table-column>
         </el-table>
-        <!-- 审核结果 END -->
-        <!-- 发票 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>发票</el-divider>
         <el-table :data="tableInvoice" border :header-cell-style="getRowClass">
           <el-table-column prop="invoiceID" label="发票类型" align="center">
@@ -300,7 +271,6 @@
           <el-table-column prop="address" label="地址" align="center"></el-table-column>
           <el-table-column prop="tel" label="电话" align="center"></el-table-column>
         </el-table>
-        <!-- 关联欠款 -->
         <el-divider content-position="left" class='title-margin title-margin-t'>关联欠款</el-divider>
         <div class="associatedIcon">
           <i class="el-icon-warning"></i>
@@ -346,10 +316,10 @@
         collCheckout: false,
         refundList:{},
         dialogFormVisible: false,
-        fundamental:{},//查看详情基本信息数组
-        tableAudit:[], //审核结果表格
-        tableInvoice:[],//发票表格
-        tableAssociated:[],//发票关联表
+        fundamental:{},
+        tableAudit:[],
+        tableInvoice:[],
+        tableAssociated:[],
         keepComponentName: null,
         keepPaymentId: null,
         msg: "",
@@ -366,14 +336,12 @@
       //    this.getOrder(this.refundList.orderID);
     },
     methods: {
-      // 点击图片钩子
       handlePreview(file) {
         window.open(file.url);
       },
       recognitionClose(str) {
         this.dialogFormVisible = false;
       },
-      // 查看认款详情
       handleRecognitionDetail(row) {
         this.msg = {
           id: row.id
@@ -387,7 +355,7 @@
         }).then(res => {
           if (res.data.isSuccess == true) {
             if (res.data.object.subject) {
-              that.collCheckout = true; //有科目值 对公的 ( 有科目值可以去认款 )
+              that.collCheckout = true;
             }
           }
         }).catch(function(res) {

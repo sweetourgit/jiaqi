@@ -131,7 +131,6 @@
         this.loading = true;
         this.getTableData();
       },
-      // 直客搜索
       HandleSearchApprove() {
         this.currentPage = 1;
         this.loading = true;
@@ -164,8 +163,8 @@
               serialNumber: "",
               abstract: "",
               isDeleted: 0,
-              collectionType: 6, // 直客1.同业2
-              localCompID: 0 // 直客0,同业变成同业社id
+              collectionType: 6,
+              localCompID: 0
               //"localCompName":""
             }
           })
@@ -197,7 +196,6 @@
         }
         return moment(date).format('YYYY-MM-DD')
       },
-      // 表格表头颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";

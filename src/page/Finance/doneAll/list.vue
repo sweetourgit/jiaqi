@@ -1,10 +1,4 @@
 <template>
-  <!--
-    更新备忘录
-    store 文件（返回列表页展示固定的tab）
-
-  -->
-
   <div class="distributor-content">
     <el-tabs v-model="tabShowWhich" @tab-click="handleClick" style="width: 98%;margin: 20px auto;">
       <el-tab-pane :label="'无收入借款管理(' + approveDataNum +')'" name="borrow">

@@ -226,7 +226,7 @@
         }).then(res => {
           if (res.data.isSuccess == true) {
             this.orderList = res.data.object;
-            this.tableDate = res.data.object.guests; // 获取订单信息页面表格内容
+            this.tableDate = res.data.object.guests;
             this.tableDate.forEach(function (v,k,arr) {
               if(arr[k]['sex'] == 0){
                 arr[k]['sex'] = '男'

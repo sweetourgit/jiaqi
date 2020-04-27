@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- 检索 -->
     <div class="plan">
       <el-form :model="ruleFormSearch" ref="ruleFormSearch" label-width="80px" style="margin-top: 20px">
         <el-row type="flex" class="row-bg">
@@ -28,8 +27,6 @@
         </el-row>
       </el-form>
     </div>
-    <!-- 检索 END -->
-    <!-- 表格 -->
     <el-table :data="approveTableDataReimburse" ref="multipleTable" class="multipleTable" :header-cell-style="getRowClass" border id="table-content" v-loading="listLoading">
       <el-table-column prop="expenseID" label="借款单号" align="center"></el-table-column>
       <el-table-column prop="checkTypeEX" label="状态" align="center">
@@ -49,7 +46,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 需要审批表格 END-->
   </div>
 </template>
 

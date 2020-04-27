@@ -1,4 +1,3 @@
-<!-- 退款-详情 -->
 <template>
   <div class="loan-management">
     <div style="text-align: right; margin:25px 20px 0 0;">
@@ -145,14 +144,14 @@
         orderVariable:0,
         orderDialogType:0,
         refundList:{},
-        tableDate:[],// 详情弹窗部分退信息表格
-        tableAudit:[],// 详情页面审核结果表格
-        orderCode:'',// 获取orderCode来获取审核结果
+        tableDate:[],
+        tableAudit:[],
+        orderCode:'',
         indentID:0,
-        multipleSelection: [], //选中的list
-        disbursementID:0, // 获取详情时支付账户的id
-        payName:'', // 选择支付账户，通过ID获取名字
-        nonPayment:0,//未付金额
+        multipleSelection: [],
+        disbursementID:0,
+        payName:'',
+        nonPayment:0,
         mark:[],
         instanceID:0,
         keepComponentName: null
@@ -171,22 +170,20 @@
         return "textAlign:center";
       },
       changeFun(val) {
-        //保存选中项的数据
         this.multipleSelection = val;
       },
       clickRow(row) {
-        //选中行复选框勾选
-        this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+        this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){
         for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
             return { "background-color": "#ecf5ff" }
           }
         }
       },
-      getJqId(result){ // 获取审批结果tableAudit
+      getJqId(result){
         this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetOpinions',{
           "jq_id":result,
           "jQ_Type":6,
@@ -196,7 +193,7 @@
           console.log(this.tableAudit)
         })
       },
-      getOrder(ID){ // 点击退款获取详情信息
+      getOrder(ID){
         this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
           id:ID,
         }).then(res => {
@@ -211,7 +208,7 @@
           }
         })
       },
-      getInvoice(ID){//详情弹窗
+      getInvoice(ID){
         this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
           id: ID
         }).then(res => {

@@ -207,8 +207,8 @@
               serialNumber: "",
               abstract: "",
               isDeleted: 0,
-              collectionType: 1, // 直客1.同业2
-              localCompID: 0 // 直客0,同业变成同业社id
+              collectionType: 1,
+              localCompID: 0
               //"localCompName":""
             }
           })
@@ -239,7 +239,6 @@
         }
         return moment(date).format('YYYY-MM-DD')
       },
-      // 表格表头颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
@@ -251,7 +250,6 @@
         let getCurrentPaymentID = row.id
         this.$router.push({ path: "/checkSheetDetail/team", query: {id: getCurrentPaymentID} })
       },
-      // 直客同业的搜索 收款账户显示的集合
       getCollectionAccount() {
         this.$http.post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/list", {
           object: {

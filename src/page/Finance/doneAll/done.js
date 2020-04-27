@@ -78,7 +78,7 @@ export default {
             } else if(paramsTab == 'refund'){
               this.$http.post(this.GLOBAL.serverSrc + '/finance/refund/api/listforguid', {
                 "guid": arr,
-                'type': 1, // 0是待办，非0已办
+                'type': 1,
               }).then(obj =>{
                 let showTabCount = 0
                 if(obj.data.objects != null){
