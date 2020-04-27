@@ -1,6 +1,5 @@
 <template>
   <div>
-       <!-- 用户授权 -->
         <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormAuth" width="1000px" class="abow_dialog" @close="cenclePer">
         <div :style="authDiocss">
           <el-form class="bottom">           
@@ -27,24 +26,24 @@
 
 <script>
 export default {
-  props:{
-    id:0,
-    variable:0,
-    dialogType:0,
-    userType:0,
+  props: {
+    id: 0,
+    variable: 0,
+    dialogType: 0,
+    userType: 0,
   },
   data() {
     return {
-       authDiocss:{
-　　　　　　height:'',
-            overflowY:'scroll'
+       authDiocss: {
+　　　　　　height: '',
+            overflowY: 'scroll'
 　　　 },
-       authData:[],
-       dialogFormAuth:false,
+       authData: [],
+       dialogFormAuth: false,
     }
   },
   watch: {
-      variable:function(){        
+      variable: function(){        
         if(this.dialogType==1){
           this.getHeight();
           this.getActs(this.id);   
@@ -53,11 +52,11 @@ export default {
      }
   },
   methods: {
-      cenclePer(){
+      cenclePer () {
          this.dialogFormAuth = false;
          this.authData = [];
       },
-      menuChanged(index){
+      menuChanged (index) {
         if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
             var actArray = this.authData[index].act.length;          
             var datajurArray = this.authData[index].dataJurisdiction.length;                          
@@ -76,7 +75,7 @@ export default {
             } 
         }
       },
-      actChanged(index){
+      actChanged (index) {
         var childrenArray = this.authData[index].act;
         var tickCount = 0,
             len = childrenArray.length
@@ -85,28 +84,28 @@ export default {
                 tickCount++;
             }
         }
-        if(tickCount == len){ //二级全勾选  一级勾选            
+        if(tickCount == len){        
             this.authData[index].isJur = true;
         }
       },
-      dataChanged(index,indexD){
+      dataChanged (index,indexD) {
          for(let i=0;i<this.authData[index].dataJurisdiction.length;i++){
             if(i!=indexD){
               this.authData[index].dataJurisdiction[i].isJur=false;
             }
          }  
       },
-      getHeight(){
+      getHeight () {
         this.authDiocss.height=document.body.clientHeight-200+"px";
       },
-      getActs(){
+      getActs () {
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/acts',{
                 "userID":this.id,
               }).then(res => {              
                 this.authData=res.data.objects;           
           })
       },
-      perSubmit(){
+      perSubmit () {
         if(this.userType==1){
           this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/do',{
                  "userID": this.id,

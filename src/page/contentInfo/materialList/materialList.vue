@@ -14,12 +14,9 @@
           </div>
         </div>
     </div>
-    <!--左侧导航-->
     <div class="left-tree">
          <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
     </div>  
-
-    <!-- 图片list -->
     <div v-show="geography == 1" class="address-big">
          <div class="address-img" v-for="img in albumList">
               <div class="marterialist-img" @click="getAlbum(img.id)">
@@ -27,20 +24,16 @@
                  <img width="100%" height="100%" :src="picSrc+img.pictures[0].url" v-if="img.pictures.length>0"/>
                  <img width="100%" height="100%" :src="'../../../static/materialList/nopic.jpg'" v-else/> 
               </div>
-              <!-- 图片介绍 -->
               <div class="introduce">
                    <div v-for="item in albumtype">
                       <div class="label" v-if="img.albumType==item.id">{{item.name}}</div>
                    </div>                  
-                   <!-- 图片数量 -->
                    <div class="number">{{img.pictures.length}}张</div>
               </div>
-              <!-- 景点名称 -->
               <div class="address-name">
                   {{img.name}}
               </div>
          </div>    
-         <!--分页-->
          <el-pagination class="pagination"
             @size-change="handleSizeChange"
             background
@@ -51,11 +44,8 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
          </el-pagination>
-         <!--分页end-->
     </div>
     </div>
-    <!-- 所有的弹窗 -->
-    <!-- 1.添加相册的弹窗 -->
     <el-dialog title="添加相册" :visible.sync="addAlbum" custom-class="city_list" append-to-body width="450px" @close="albumClose">
        <el-form :model="picForm"  ref="picForm" :rules="rules">
         <el-form-item label="名称:" prop="name" :label-width="formLabelWidth" width="250">
@@ -81,12 +71,9 @@
           <el-button type="primary" @click="albumInsert('picForm')" class="confirm">确 定</el-button>
         </div>        
     </el-dialog>
-
-    <!-- 2.单个相册详情的弹窗 -->
     <el-dialog title="相册" :visible.sync="getAlbumForm" custom-class="city_list" :append-to-body="true" width="1220px" @close="albumInfoClose" class="clearfix" style="margin-top:-50px">  
       <div class="add-address-img">
         <div class="left-img">
-          <!--图片轮播-->
           <div class="swiper-container gallery-top">
             <div class="swiper-wrapper">
               <div v-for="item in albumInfo.pictures" class="swiper-slide">
@@ -111,7 +98,6 @@
         </div>
          <div class="right-form">
            <div class="album-message">
-             <!-- 表格头部 -->
             <div class="album-title">
               <div class="blue-box"></div>
               <div class="album-text">相册信息</div>
@@ -130,7 +116,6 @@
                   <el-form-item label="目的地：">
                     <el-button plain @click="leftTree2 = leftTree2 == true?false:true" class="w200 tl" :disabled="albumDisabled">{{albumInfo.areaName}}</el-button>
                   </el-form-item>
-                  <!--修改相册目的地-->
                   <div class="left-tree2" v-if="leftTree2">
                        <el-tree :props="props1" :load="loadNode1" class="treeDemo" lazy @node-click="treeClick" :expand-on-click-node="false" node-key="id" ref="refTree"></el-tree>
                   </div>
@@ -171,11 +156,9 @@
       </div> 
     </el-dialog>
    
-    <!-- 3.添加素材弹窗 -->
     <el-dialog title="添加照片" :visible.sync="getPictureForm" custom-class="city_list" :append-to-body="true" width="1350px" @close="pictureFormClose" class="clearfix" :rules="rules">  
       <div class="add-address-imgpic">
         <div class="left-imgpic">
-          <!--图片上传-->
           <div class="upload">
               <el-upload
                 class="upload-demo"
@@ -245,31 +228,27 @@
   import Swiper from "swiper"
   import 'swiper/dist/css/swiper.min.css';
   export default {
-    data() {        
+    data () {        
       return {       
         isDest: '',
-        picSrc:'',
+        picSrc: '',
         //picSrc:'https://jiaqi-server.obs.myhwclouds.com',
-        //左侧菜单
-        list:[],
-        lists: [], //子级
+        list: [],
+        lists: [], 
         props1: {
           label: 'name',
           isLeaf: 'leaf'
         },
-        data: '', // 存单击数据
-        theContinent: '', // 所属地区id
-        node: '', // 获取tree子级数据
-        resolve: '', // 获取tree子级方法
-        level: '', // 层级数据
-        // 分页
-        pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
-        pageIndex: 1, // 设定当前页数
+        data: '', 
+        theContinent: '', 
+        node: '', 
+        resolve: '', 
+        level: '', 
+        pageSize: 10,
+        pageIndex: 1,
         total: 0,
-        albumList:[],//相册list
-        //搜索
-        searchName:'',
-        //添加相册弹窗
+        albumList: [],
+        searchName: '',
         picForm: {
             name: '',
             type: '',
@@ -277,37 +256,32 @@
             destinationId: 0
         },
         formLabelWidth: '100px',
-        addAlbum: false, //添加相册弹窗
-        leftTree1:false, //添加相册选择目的地       
-        albumtype:[],  //全部景点类型
-        geography:"", //控制右侧相册列表隐藏
-        //单个相册弹窗
-        getAlbumForm:false,
-        albumInfo:{}, //单个相册信息
-        leftTree2:false,
-        albumId:0,  //保存相册id
-        albumDisabled:true, //文本框禁用
-        saveAlbumBut:"修改属性",
-        albumNameEmpty:false,
-        //素材信息
-        picInfoShow:true,
-        companyList:[], //全部公司
-        picDisabled:true, //文本框禁用
-        savPicBut:"修改属性",        
-        picNameEmpty:false,
-        pictInfo:{}, //单个图片信息
-        checkedCompany: [], //保存单个图片的公司数据
-        activeIndex:0, //swiper当前索引
-
-
-        //素材照片弹窗
-        getPictureForm:false,
-        fileList:[],//上传的图片集合
-        insertCheCompany:[], //默认选中全部公司id
-        uid:0,//上传图片缩略图选中项
-        len:0,
-        time:0,
-        rules:{
+        addAlbum: false, 
+        leftTree1: false,        
+        albumtype: [],  
+        geography: "", 
+        getAlbumForm: false,
+        albumInfo: {},
+        leftTree2: false,
+        albumId: 0, 
+        albumDisabled: true, 
+        saveAlbumBut: "修改属性",
+        albumNameEmpty: false,
+        picInfoShow: true,
+        companyList: [], 
+        picDisabled: true,
+        savPicBut: "修改属性",        
+        picNameEmpty: false,
+        pictInfo: {}, 
+        checkedCompany: [], 
+        activeIndex: 0, 
+        getPictureForm: false,
+        fileList: [],
+        insertCheCompany: [], 
+        uid: 0,
+        len: 0,
+        time: 0,
+        rules: {
           name: [
             { required: true, message: '请输入相册名称', trigger: 'blur' },
             { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
@@ -335,7 +309,7 @@
     //   },
     // },
     methods: {
-      handleSizeChange(val){
+      handleSizeChange (val) {
         this.pageSize = val;
         this.pageIndex = 1;
         this.albumPage(1,val,this.data.id,this.searchName);
@@ -343,7 +317,6 @@
       handleCurrentChange(val){
         this.albumPage(val,this.pageSize,this.data.id,this.searchName);
       },
-      //获取景点类型
       albumtypeget(){
         this.$http.post(this.GLOBAL.serverSrc + '/tpk/album/api/albumtypeget').then(res => {
             if(res.data.isSuccess == true){

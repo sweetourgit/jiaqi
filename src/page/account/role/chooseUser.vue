@@ -1,6 +1,5 @@
 <template>
   <div>
-       <!-- 用户授权 -->
         <el-dialog title="用户授权" custom-class="city_list" :visible.sync="dialogFormUser" width="1000px" class="abow_dialog" @close="cenclePer">
         <div :style="authDiocss">
           <div class="ztree-bg">
@@ -39,12 +38,12 @@ export default {
   },
   data() {
     return {
-       authDiocss:{
-　　　　　　height:'',
-            overflowY:'scroll'
+       authDiocss: {
+　　　　　　height: '',
+            overflowY: 'scroll'
 　　　 },
-       dialogFormUser:false,
-       showList:false,
+       dialogFormUser: false,
+       showList: false,
        setting: {
           async: {
               enable: true,
@@ -75,24 +74,23 @@ export default {
      }
   },
   methods: {
-      cenclePer(){
+      cenclePer () {
          this.dialogFormUser = false;
       },
-      getHeight(){
+      getHeight () {
         this.authDiocss.height=document.body.clientHeight-200+"px";
       },
-      zTreeInit(){
+      zTreeInit () {
           var ztree = $.fn.zTree.init($("#tree"), this.setting);
       },
-      filter(treeId, parentNode, childNodes) {
+      filter (treeId, parentNode, childNodes) {
           if (!childNodes) return null;
           for (var i = 0, l = childNodes.length; i < l; i++) {
               childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
           }
           return childNodes;
       },
-      // 单击选中目录
-      onNodeClick(e, treeId, treeNode) {
+      onNodeClick (e, treeId, treeNode) {
         if(treeNode.isParent === true){
           this.parentID = treeNode.id;
         }else{
@@ -100,28 +98,28 @@ export default {
         }
         this.menuList();         
       },
-      getRowClass({ row, column, rowIndex, columnIndex }) {
+      getRowClass ({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
         } else {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun (val) {  //保存选中项的数据
         this.multipleSelection=val;
         console.log(val);
       },
-      clickRow(row){    //选中行复选框勾选
+      clickRow (row) {    //选中行复选框勾选
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass ({row, rowIndex}) {  //选中行样式改变
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      menuList(type){  //获取菜单列表
+      menuList (type) {  
         this.$http.post(this.GLOBAL.serverSrc + '/org/menu/api/list',{
              "object": {
                "id": this.parentID,
@@ -135,7 +133,7 @@ export default {
                 }
         })
       },
-      perSubmit(){
+      perSubmit () {
 
       }
 

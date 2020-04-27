@@ -41,9 +41,8 @@
   mounted(){
     this.getMainList();
   },
-  methods:{
-    //获取一级菜单
-    getMainList(key,mainMenuId){
+  methods: {
+    getMainList (key,mainMenuId) {
        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/initmenu').then(res => {
                 this.menu = res.data.objects;
                 for(let i=0;i<this.menu.length;i++){
@@ -51,8 +50,7 @@
                 }
         })
     },
-    //获取二级菜单
-    getMenuList(key,mainMenuId){
+    getMenuList (key,mainMenuId) {
        this.$http.post(this.GLOBAL.serverSrc + '/org/jurisdiction/api/menus',{
              "object": {
                 "id": mainMenuId,
@@ -67,7 +65,7 @@
               }
         })
     },
-    handleOpen(key){
+    handleOpen (key) {
       this.getMenuList(key,this.menu[key].id);
       let aa = Number(key)
       for(let i=0;i<this.menu.length;i++){
