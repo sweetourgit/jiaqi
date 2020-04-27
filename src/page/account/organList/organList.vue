@@ -196,7 +196,6 @@ export default {
   }, 
   data() {
     return {
-      // 获取组织的ID
       org:'',
       data: [],
       data1: [],
@@ -205,9 +204,7 @@ export default {
       removes: "",
       option: "",
       switchs: true,
-      // 子部门临时数据
       tableData: [],
-      // 编辑部门
       editDepartment: false,
       updata: {
         radio: "1",
@@ -221,7 +218,6 @@ export default {
       },
       updata1: {},
       updataLabelWidth: "90px",
-      // 级联选择器
       options: [],
       value: "",
       options1: [],
@@ -235,7 +231,6 @@ export default {
       arr2: [],
       bumen2: false,
       bumen1: false,
-      // 添加子部门
       addSubdivision: false,
       addInput: {
         name: "",
@@ -261,7 +256,6 @@ export default {
         orgName:[{required: true, message: "请输入部门名称", trigger: "blur"}]
       },
       Width: "90px",
-      // 添加成员
       addPersonnel: false,
       person: {
         search: ""
@@ -269,15 +263,11 @@ export default {
       LabelWidth: "87%",
       members: [],
       oppo: [],
-      //成员列表临时数据
       tableList: [],
       members1: [],
-      //每页的数据条数
       pageSize: 10,
-      //默认开始页面
       currentPage: 1,
       total: 1,
-      // 设置成员
       position: false,
       setPosition: {},
       setLabelWidth: "90px",
@@ -289,7 +279,7 @@ export default {
       treeKey: [],
       Parents: [],
       key: -1,
-      flag: true, // 调用数组第一个
+      flag: true, 
       props: {
         value: "value",
         children: "cities"
@@ -303,7 +293,7 @@ export default {
       dbSave: '',
       variable:0,
       dialogType:0,
-      userType:0,//用户1，角色2
+      userType:0,
       id:0,
     };
   },
@@ -311,8 +301,7 @@ export default {
     this.optionList();
   },
   methods: {
-    //职位
-    editPosition(index, row){
+    editPosition (index, row) {
       this.position = true;
       this.setPosition = row;
     },
@@ -320,8 +309,7 @@ export default {
       this.addSubdivision = false;
       this.$refs[a].resetFields();
     },
-    // 添加部门
-    appendSave(addInput) {
+    appendSave (addInput) {
       this.$refs[addInput].validate((valid) => {
         if(valid){
           var _this = this;
@@ -372,7 +360,7 @@ export default {
         }
       })
     },
-    chooseDate(a) {
+    chooseDate (a) {
       this.dataNum = a;
       console.log(this.dataNum);
     },
@@ -403,8 +391,7 @@ export default {
         this.dataNum = [];
       }
     },
-    //子部门删除
-    remove(index, rows) {
+    remove (index, rows) {
       let _this = this;
       this.$confirm("是否删除该部门?", "提示", {
         confirmButtonText: "确定",
@@ -420,8 +407,7 @@ export default {
         });
       });
     },
-    // 删除当前部门的子级部门
-    remove1(id, index) {
+    remove1 (id, index) {
       var _this = this;
       this.deleteNum.push(id);
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptdelete", {
@@ -439,7 +425,6 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-      //子部门列表
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
         object: {
           parentID: id
@@ -480,8 +465,7 @@ export default {
         });
       });
     },
-    //添加成员
-    addPersonnel1(){
+    addPersonnel1 () {
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/userpage", {
         object: {
           name:this.person.search,
@@ -526,13 +510,12 @@ export default {
         console.log(error);
       });
     },
-    addPersonnel2() {
+    addPersonnel2 () {
       this.addPersonnel = false;
       this.person.search='';
       this.currentPage = 1;
       this.dataNum = [];
     },
-    // 单击tree节点
     treeClick(a, b, c) {
       console.log(a)
       this.data = [];
@@ -543,7 +526,6 @@ export default {
       this.addInput.topDepartment = a.label;
       this.dbSave = a;
       var _this = this;
-      //下级部门
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
         object: {
           ParentID: a.id
@@ -567,7 +549,6 @@ export default {
       }).catch(function(error) {
         console.log(error);
       });
-      //部门人员
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlistwithorg", {
         id:a.id
       },{
@@ -594,8 +575,7 @@ export default {
         console.log(error)
       })
     },
-    //树形控件父级数据加载
-    loadNode(node, resolve) {
+    loadNode (node, resolve) {
       this.node = node.data
       this.removes = resolve
       this.data = [];
@@ -659,7 +639,7 @@ export default {
         );
       }
     },
-    getUser(key, label, id, isLeaf, resolve) {
+    getUser (key, label, id, isLeaf, resolve) {
       this.data1 = [];
       let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist",{
@@ -704,22 +684,20 @@ export default {
         console.log(error);
       });
     },
-    addSubdivisionOpen() {
+    addSubdivisionOpen () {
       if (this.Parents.isLeaf == 1) {
         this.$message.warning("此部门是末级部门，不能添加");
       } else {
         this.addSubdivision = true;
       }
     },
-    // 双击展开
-    treeDblclick(a) {
+    treeDblclick (a) {
       this.treeKey = [];
       if (this.dbSave.isLeaf == 2 || this.dbSave.isLeaf == 0) {
         this.treeKey.push(this.dbSave.id);
       }
       this.dbSave = ''
     },
-    // 编辑部门
     editDepartment1(id) {
       this.updata = {
         radio: "1",
@@ -763,11 +741,11 @@ export default {
         }).catch(err => {})
       }).catch(err => {});
     },
-    handleCurrentChange(currentPage) {
+    handleCurrentChange (currentPage) {
       this.currentPage = currentPage;
       this.addPersonnel1();
     },
-    handleSizeChange(val){
+    handleSizeChange (val) {
         this.pageSize = val;
         this.currentPage = 1;
         this.addPersonnel1();
@@ -789,8 +767,7 @@ export default {
         );
       }
     },
-    // 编辑部门弹窗
-    updataEditSave(updata) {
+    updataEditSave (updata) {
       let _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptsave", {
         object: {
@@ -824,8 +801,7 @@ export default {
         console.log(error);
       });
     },
-    //选中一个部门,s点击编辑部门里的删除
-    deleteOrg(updata){
+    deleteOrg (updata) {
       this.$confirm("是否删除该部门，所子部门则自动删除?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
@@ -858,8 +834,7 @@ export default {
       });
       
     },
-    //职位列表
-    optionList(){
+    optionList () {
       this.option = [];
       var _this = this;
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/positionlist", {
@@ -880,7 +855,7 @@ export default {
         console.log(err)
       })
     },
-    operation(i,type,id){
+    operation (i,type,id) {
           this.id=id;
           this.variable++;
           this.dialogType = i;

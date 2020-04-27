@@ -252,18 +252,17 @@ import '../../../../../static/ztree/jquery.ztree.core.js'
 
     },
       methods: {
-        zTreeInit(){
+        zTreeInit () {
           var ztree = $.fn.zTree.init($("#tree"), this.setting);
       },
-      filter(treeId, parentNode, childNodes) {
+      filter (treeId, parentNode, childNodes) {
           if (!childNodes) return null;
           for (var i = 0, l = childNodes.length; i < l; i++) {
               childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
           }
           return childNodes;
       },
-      // 单击选中目录
-      onNodeClick(e, treeId, treeNode){
+      onNodeClick (e, treeId, treeNode) {
         if(treeNode.isParent === true){
           this.parentID = treeNode.id;
         }else{
@@ -272,15 +271,14 @@ import '../../../../../static/ztree/jquery.ztree.core.js'
         this.deptName=treeNode.name;
         this.orgID=treeNode.id;
       },
-      addDep(){
+      addDep () {
         this.dialogFormVisible = true;
         setTimeout(()=>{
           this.zTreeInit();
         })
       },
       /*----------*/
-        changstatus(item){
-          //默认的值
+        changstatus (item) {
           var id = this.ruleForm1.domains.indexOf(item)
           var one = this.ruleForm.orilist
           this.ruleForm.orilist = this.ruleForm1.domains[id].value

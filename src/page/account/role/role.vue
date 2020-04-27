@@ -7,7 +7,6 @@
            <el-button :disabled="forbidden" @click="operation(1,2)">授权</el-button>
            <el-button :disabled="forbidden" @click="operation(2)">选择用户</el-button>
          </el-row>
-        <!--list-->
          <el-table :data="dataList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
            <el-table-column  prop="title" label="模板名称" min-width="210" align="center"></el-table-column>   
            <el-table-column  prop="count" label="人数" min-width="150" align="center"></el-table-column>
@@ -23,7 +22,6 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
           </el-pagination>
-       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rform" :rules="rules" ref="rform" label-width="100px" class="demo-ruleForm">
              <el-form-item label="模板名称" prop="title">
@@ -47,25 +45,25 @@
 import grantAuth from './grantAuth'
 import chooseUser from './chooseUser'
 export default {
-  components:{
-    "grant-auth":grantAuth,
-    "choose-user":chooseUser,
+  components: {
+    "grant-auth": grantAuth,
+    "choose-user": chooseUser,
   }, 
   data() {
     return {
-        guid:"",
+        guid: "",
         dataList: [],
         pageSize: 10, 
         pageIndex: 1, 
         total: 0,
-        variable:0,
-        dialogType:0,
-        userType:0,//用户1，角色2
-        id:0,
+        variable: 0,
+        dialogType: 0,
+        userType: 0,//用户1，角色2
+        id: 0,
         multipleSelection: [],   //选中的list
-        forbidden:true,         //按钮是否禁用
-        title:"",
-        dialogFormVisible:false,
+        forbidden: true,         //按钮是否禁用
+        title: "",
+        dialogFormVisible: false,
         rform: {
           title: "",
           count: "",
@@ -87,7 +85,7 @@ export default {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun (val) { 
         this.multipleSelection=val;
         if(this.multipleSelection.length>0){
            this.forbidden=false;
@@ -95,27 +93,27 @@ export default {
            this.forbidden=true;
         }
       },
-      clickRow(row){    //选中行复选框勾选
-        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+      clickRow (row) {    
+        this.$refs.multipleTable.clearSelection(); 
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass ({row, rowIndex}) {  
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      handleSizeChange(val){
+      handleSizeChange (val) {
         this.pageSize = val;
         this.pageIndex = 1;
         this.roleList(1,val);
       },
-      handleCurrentChange(val){
+      handleCurrentChange (val) {
         this.roleList(val,this.pageSize);
         this.pageIndex=val;
       },
-      roleList(pageIndex=this.pageIndex,pageSize=this.pageSize,){  
+      roleList (pageIndex=this.pageIndex,pageSize=this.pageSize) {  
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/rolepage',{
               "pageIndex": pageIndex,
               "pageSize": pageSize,
@@ -130,7 +128,7 @@ export default {
               }
           })      
       },
-      delRole(){ 
+      delRole () { 
         this.$confirm("确认删除?", "提示", {
            confirmButtonText: "确定",
            cancelButtonText: "取消",
@@ -153,21 +151,21 @@ export default {
           });
         });
       },
-      saveRole(formName){
+      saveRole (formName) {
          if(this.title == "新增"){
             this.insertRole(formName,'/org/api/roleinsert');
          }else{
             this.insertRole(formName,'/org/api/rolesave');
          }
       },
-      openRole(index,title){  
+      openRole (index,title) {  
         this.title=title;
         this.dialogFormVisible = true;
         if(index===2){
           this.getRole();
         }
       },
-      getRole(){   
+      getRole () {   
         this.$http.post(this.GLOBAL.serverSrc + '/org/api/roleget',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -177,7 +175,7 @@ export default {
               }
         }) 
       },
-      insertRole(formName,url) {  
+      insertRole (formName,url) {  
         this.$refs[formName].validate((valid) => {
           if(valid){
                    this.$http.post(this.GLOBAL.serverSrc + url,{
@@ -202,11 +200,11 @@ export default {
           }
         })
       },
-      cancel(){
+      cancel () {
         this.dialogFormVisible = false;
         this.$refs["rform"].resetFields();
       },
-      operation(i,type){
+      operation (i,type) {
           this.id=this.multipleSelection[0].id;
           this.variable++;
           this.dialogType = i;

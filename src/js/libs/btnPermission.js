@@ -19,7 +19,6 @@ Vue.directive('readonly', {
     }
   }
 });
-//权限检查方法
 Vue.prototype.$_has = function (value) {
   let isExist = false;
   let buttonpermsStr = JSON.parse(sessionStorage.getItem('butPermission'));

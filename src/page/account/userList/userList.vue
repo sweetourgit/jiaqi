@@ -1,7 +1,6 @@
 <template>
   <div class="border_size">
     <div>
-      <!--搜索框 -->
       <div class="search">
         <div class="search-first">
           <el-select v-model="value" placeholder="全部组织" clearable>
@@ -25,14 +24,12 @@
           <el-button  size="medium" type="primary" icon="el-icon-search" @click="searchSubmit"></el-button>
         </div>
       </div>
-      <!--搜索end-->
       <div class="add-user">
         <router-link to="/userlist/adduser"><el-button type="primary">添加用户</el-button></router-link>&nbsp;&nbsp;
         <el-button :disabled="forbidden" type="primary" @click="auth">授权</el-button>
         <el-button :disabled="forbidden" type="primary" @click="dialogFormCopyPer=true">复制权限</el-button>
       </div>
     </div>
-    <!--表格-->
     <div class="user-table" style="width: 1031px">
       <el-table
         ref="multipleTable" 
@@ -107,7 +104,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--分页-->
       <div class="block">
         <el-pagination
           v-if="pageshow"
@@ -121,10 +117,7 @@
           :total="total">
         </el-pagination>
       </div>
-      <!--分页end-->
     </div>
-    <!--表格end-->
-
     <el-dialog title="用户信息" custom-class="city_list" :visible.sync="dialogFormVisible" width="490px">
       <div class="bord">
         <el-form ref="form" :model="form" label-width="110px" style="width: 500px;
@@ -215,7 +208,7 @@
   export default {
     data() {
       return {
-        tableHead: {height: '60px', color: '#555555'}, // 表格头部高度
+        tableHead: {height: '60px', color: '#555555'}, 
         tableHeight: {padding: '0', height: '34px'},
         pagesize:10,
         qqq: [],
@@ -272,7 +265,7 @@
         dialogFormAuth:false,
         dialogFormCopyPer:false,
         permissionId:'',
-        multipleSelection:[], //选中的list
+        multipleSelection:[], 
         authDiocss:{
 　　　　　　height:'',
             overflowY:'scroll'
@@ -287,7 +280,7 @@
          this.authData = [];
       },
       menuChanged(index){
-        if(this.authData[index].isJur == false){  //一级未选中 则对应的二级都不选中
+        if(this.authData[index].isJur == false){ 
             var actArray = this.authData[index].act.length;          
             if(actArray>0){            
                 for(let i = 0,len = this.authData[index].act.length;i<len;i++){
@@ -295,7 +288,7 @@
                     this.authData[index].dataJurisdiction[i].isJur = false;      
                 }
             }
-        }else if(this.authData[index].isJur = true){  //一级选中  则对应的二级都选中
+        }else if(this.authData[index].isJur = true){ 
             var actArray = this.authData[index].act.length;
             if(actArray>0){
                 for(let i = 0,len = this.authData[index].act.length;i<len;i++){
@@ -317,7 +310,7 @@
                 unTickCount++;
             }
         }
-        if(tickCount == len){ //二级全勾选  一级勾选            
+        if(tickCount == len){             
             this.authData[index].isJur = true;
         }
       },
@@ -378,8 +371,7 @@
           return ''
         }
       },
-      changeFun(val) {
-        //保存选中项的数据
+      changeFun (val) {
         this.multipleSelection = val;
         if(this.multipleSelection.length>0){
            this.forbidden=false;
@@ -387,20 +379,18 @@
            this.forbidden=true;
         }
       },
-      clickRow(row) {
-      //选中行复选框勾选
+      clickRow (row) {
         this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({ row, rowIndex }){
-        //选中行样式改变
+      rowClass ({ row, rowIndex }) {
         for (var i = 0; i < this.multipleSelection.length; i++) {
           if (this.multipleSelection[i].id == row.id) {
             return { "background-color": "#ecf5ff" };
           }
         }
       },
-      handleSizeChange(val) {
+      handleSizeChange (val) {
         var that = this
         this.pagesize = val
         this.currentPage = 1
@@ -461,7 +451,7 @@
           })
 
       },
-      handleCurrentChange(val) {
+      handleCurrentChange (val) {
         var that = this
         this.$http.post(
           this.GLOBAL.serverSrc + "/org/api/userpage",
@@ -519,8 +509,7 @@
 
 
       },
-      searchSubmit(){
-        //搜索
+      searchSubmit () {
         var that = this
         this.$http.post(this.GLOBAL.serverSrc + "/org/api/userpage",
           {
@@ -579,8 +568,7 @@
           })
 
       },
-      //查看
-      find(index, row){
+      find (index, row) {
         this.dialogFormVisible = true
         this.form = row
         console.log(row)
@@ -604,8 +592,7 @@
 
       }
     },
-    created(){
-      //用户列表
+    created () {
       var that = this
       this.$http.post(
         this.GLOBAL.serverSrc + "/org/api/userpage",
