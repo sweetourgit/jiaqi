@@ -6,7 +6,6 @@
            <el-button :disabled="forbidden" @click="delJurisdiction">删除</el-button>
            <el-button :disabled="forbidden" @click="openJurisdiction(2,'编辑')">编辑</el-button>
          </el-row>
-        <!--list-->
          <el-table :data="groupList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass" @selection-change="changeFun" @row-click="clickRow">
            <el-table-column  prop="symbol" label="标识" min-width="210" align="center"></el-table-column>   
            <el-table-column  prop="name" label="名称" min-width="200" align="center"></el-table-column>
@@ -15,7 +14,6 @@
          </el-table>
          
       </el-dialog> 
-       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
           <el-form :model="rformB" :rules="rules" ref="rformB" label-width="100px" class="demo-ruleForm">
              <el-form-item label="名称" prop="name">
@@ -51,8 +49,8 @@ export default {
         dialogDate:false,
         guid:"",
         groupList: [],
-        multipleSelection: [],   //选中的list
-        forbidden:true,         //按钮是否禁用
+        multipleSelection: [],   
+        forbidden:true,        
         title:"",
         dialogFormVisible:false,
         rformB: {
@@ -85,7 +83,7 @@ export default {
           return ''
         }
       },
-      changeFun(val) {  //保存选中项的数据
+      changeFun(val) {  
         this.multipleSelection=val;
         if(this.multipleSelection.length>0){
            this.forbidden=false;
@@ -93,11 +91,11 @@ export default {
            this.forbidden=true;
         }
       },
-      clickRow(row){    //选中行复选框勾选
-        this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+      clickRow(row){   
+        this.$refs.multipleTable.clearSelection();   
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      rowClass({row, rowIndex}){  //选中行样式改变
+      rowClass({row, rowIndex}){ 
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }

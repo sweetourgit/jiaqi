@@ -33,7 +33,7 @@ export default {
      handleClick(tab, event) {
       console.log(tab, event);
      },
-     headCall: function (msg) { //回调方法，接收子组件传的参数
+     headCall: function (msg) { 
       this.msg = '(' + msg + ')';
      }
   }

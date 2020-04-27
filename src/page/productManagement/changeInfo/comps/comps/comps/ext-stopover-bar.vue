@@ -40,9 +40,7 @@
 </template>
 
 <script>
-/**
- * @description: 经停组件
- */
+
 import ErrorHandlerMixin from './ErrorHandlerMixin'
 
 export default {
@@ -79,36 +77,27 @@ export default {
 
   methods: {
 
-    /**
-     * @description: 初始化
-     */
+ 
     init(){
-      //用于比较是否发生改变的对象
       this.checkProto= this.$deepCopy(this.proto);
       Object.keys(this.proto).forEach(attr => this.submitForm[attr]= this.proto[attr]);
     },
 
-    /**
-     * @description: 检查是否有数据变动
-     */
+
     checkHasChange(){
       let bol= !this.$checkLooseEqual(this.submitForm, this.checkProto);
       console.log(`ext-stopover-bar checkHasChange: ${bol}`)
       return bol;
     },
 
-    /**
-     * @description: 统一验证
-     */
+ 
     validate(){
       this.$refs.submitForm.validate((valid) => {
         return valid;
       })
     },
 
-    /**
-     * @description: 单纯获取数据
-     */
+   
     getFormData(){
       return this.submitForm;
     }

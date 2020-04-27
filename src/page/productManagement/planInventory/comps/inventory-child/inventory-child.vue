@@ -68,7 +68,6 @@ $backgroundColor: #F7F7F7;
 </template>
 
 <script>
-// 子组件
 import signForm from './comps/sign-form'
 
 export default {
@@ -88,13 +87,10 @@ export default {
       this.tableData.splice(0);
       this.tableData.push(...this.PACKAGE_LIST);
     },
-
-    // 唤醒团号表单
     wakeSignForm(pac){
       this.$refs.signFormRef.handleOpen(pac);
     },
 
-    // 去成本
     toCostChild(pac){
       this.$emit('emit-handler', { func: 'toCostChild', payload: pac });
     },

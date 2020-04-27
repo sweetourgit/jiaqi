@@ -1,10 +1,8 @@
 <template>
   <div>
     <div id="calendar" >
-    <!-- 年份 月份 -->
     <div class="month">
         <ul class="date">
-            <!--点击会触发pickpre函数，重新刷新当前日期 @click -->
             <li class="arrow" @click="pickPre(currentYear,currentMonth)"> < </li>
             <li class="year-month" >
                {{currentYear}}-{{currentMonth}}月
@@ -13,7 +11,6 @@
         </ul>
         <el-button class="all-month" plain @click="clickStock">添加共享库存</el-button>
     </div>
-      <!-- 星期 -->
       <ul class="weekdays">
           <li style="color:red">日</li>
           <li>一</li>
@@ -23,18 +20,12 @@
           <li>五</li>
           <li style="color:red">六</li>
       </ul>
-      <!-- 日期 -->
       <ul class="days">
-          <!-- v-for循环 每一次循环用<li>标签创建一天 -->
         <template v-for="(dayobject,index) in days">
           <template v-if="dayobject.day.getMonth()+1 != currentMonth || dayobject.day.getTime() < today.getTime() - 24 * 60 * 60 * 1000">
             <li style="background: #F6F6F6;border: solid 1px #E7E7E7;border-left:none;border-top:none;cursor:not-allowed" :key="index" >
-              <!--本月-->
-              <!--如果不是本月  改变类名加灰色-->
               <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
-              <!--如果是本月  还需要判断是不是这一天-->
-              <div v-else>
-            <!--今天  同年同月同日-->     
+              <div v-else> 
                   <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                   <span v-else>{{ dayobject.day.getDate() }}</span>
                   
@@ -44,18 +35,12 @@
                     <p>关联团期:{{data.relaInventory}}</p>
                   </div>  
               </div>
-              <!--显示剩余多少数量-->
-              <!---->
           </li>
           </template>
           <template v-else>
             <li style="border: solid 1px #E7E7E7;border-left:none;border-top:none;"  :class="{'checked': n.includes(dayobject)}" @click="handleitemclick(dayobject)" :key="index" >
-              <!--本月-->
-              <!--如果不是本月  改变类名加灰色-->
               <span v-if="dayobject.day.getMonth()+1 != currentMonth" class="other-month">{{ dayobject.day.getDate() }}</span>
-              <!--如果是本月  还需要判断是不是这一天-->
-              <div v-else>
-            <!--今天  同年同月同日-->     
+              <div v-else>   
                   <span v-if="dayobject.day.getFullYear() == new Date().getFullYear() && dayobject.day.getMonth() == new Date().getMonth() && dayobject.day.getDate() == new Date().getDate()" class="active">{{ dayobject.day.getDate() }}</span>
                   <span v-else>{{ dayobject.day.getDate() }}</span>
                   <!-- {{dayobject}} -->
@@ -70,15 +55,12 @@
                     <!-- <p>上下限:{{dayobject.data.person.top}}/{{dayobject.data.person.down}}</p> -->
                   </div>  
               </div>
-              <!--显示剩余多少数量-->
-              <!---->
           </li>
           </template>
         </template>
       </ul>
     </div>
     
-    <!-- 添加共享库存弹窗 -->
     <el-dialog title="新增共享库存" :visible.sync="dialogVisible" width="578px" @close="cancelAddStock('addStock')">
       <el-form :model="addStock" :rules="rules" ref="addStock">
         <el-form-item label="库存名称" prop="name" :label-width="formLabelWidth">
@@ -97,9 +79,7 @@
         <el-button type="primary" @click="handleallclick('addStock')">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 添加共享库存弹窗ENG -->
 
-    <!-- 共享库存信息展示 -->
     <el-dialog :visible.sync="dialogStock" :show-close="false" width="1270px">
       <div class="countStock">
         <el-form :model="addStocks" :rules="rules1" ref="listStock">
@@ -133,8 +113,6 @@
       </div>
 
 
-
-      <!-- 计划信息 -->
       <div class="proList" :style="index != 0 ? 'margin-top: 20px;' : ''" v-for="(item, index) in planningInfo" :key="index">
         <div class="proListHeight">
           <span style="font-weight: 700;">团期</span>
@@ -144,7 +122,6 @@
           <span style="font-weight: 700; margin-left: 50px;">结算参考</span>
           <span style="margin-left: 20px;">1000.00</span>
         </div>
-        <!-- 报名类型信息 -->
         <div class="stockList" :style="k > 2 ? 'margin-top: 20px;' : ''" v-for="(data, k) in item.planEnroll" :key="k">
           <div style="margin-left: 30px;">
             <span style="color: red;">{{data.enrollName}}</span>
@@ -166,23 +143,19 @@
             <el-input style="width: 120px;margin-left:20px" v-model="data.price_02" disabled></el-input>
           </div>
         </div>
-        <!-- 报名类型信息ENG -->
       </div>
-      <!-- 计划信息ENG -->
 
 
 
 
       
     </el-dialog>
-    <!-- 共享库存信息展示ENG -->
   </div>
 </template>
 
 <script>
 export default {
   created: function() {
-    //在vue初始化时调用
     this.initData(null);
   },
   data() {
@@ -196,34 +169,27 @@ export default {
       n: [],
       arr: [],
       formLabelWidth: '100px',
-      // 日期信息
       currentYear: 1970,
       currentMonth: 1,
       currentDay: 1,
       currentWeek: 1,
-      // 添加共享库存弹窗
       dialogVisible: false,
-      // 浏览共享库存弹窗
       dialogStock: false,
-      planningInfo: [], // 计划信息
-      // 添加共享库存
+      planningInfo: [],
       addStock: {
         name: '',
         count: '',
         averageCost: ''
       },
-      // 修改共享库存
       addStocks: {
         id: '',
         name: '',
         count: '',
         averageCost: ''
       },
-      // 浏览共享库存
       listStock: {
 
       },
-      // 添加共享库存验证
       rules: {
         name: [
           { required: true, message: '不能为空', trigger: 'blur' },
@@ -234,7 +200,6 @@ export default {
           { pattern: /^[+]{0,1}(\d+)$/, message: '请输入正整数' }
         ]
       },
-      // 修改共享库存验证
       rules1: {
         name: [
           { required: true, message: '不能为空', trigger: 'blur' },
@@ -249,9 +214,6 @@ export default {
   },
   methods: {
     pickPre: function(year, month) {
-      // setDate(0); 上月最后一天
-      // setDate(-1); 上月倒数第二天
-      // setDate(dx) 参数dx为 上月最后一天的前后dx天
       if (
         this.today.getMonth() + 1 < this.currentMonth ||
         this.today.getFullYear() < this.currentYear
@@ -261,7 +223,6 @@ export default {
         this.initData(this.formatDate(d.getFullYear(), d.getMonth() + 1, 1));
         this.n = [];
       } else {
-        // alert("不能选择以前的");
         this.$message({
           message: '不能选择以前的',
           type: 'warning'
@@ -277,11 +238,6 @@ export default {
     initData: function(cur) {
       var date;
       var index = 0;
-      //控制显示预定的天数 ，比如下面设置只能预定三天的
-      //this.initleftcount(); 每次初始化更新数量
-      //有两种方案  一种是每次翻页 ajax获取数据初始化   http请求过多会导致资源浪费
-      // 一种是每次请求 ajax获取数据初始化    数据更新过慢会导致缺少实时性
-      //还可以setTimeout 定时请求更新数据  实现数据刷新（可能会更好）
       if (cur) {
         date = new Date(cur);
       } else {
@@ -304,8 +260,6 @@ export default {
         this.currentDay
       );
       this.days.length = 0;
-      // 今天是周日，放在第一行第7个位置，前面6个
-      //初始化本周
       for (var i = this.currentWeek; i >= 0; i--) {
         var d = new Date(str);
         d.setDate(d.getDate() - i);
@@ -317,12 +271,11 @@ export default {
         //   d.getMonth() === now.getMonth() &&
         //   d.getFullYear() === now.getFullYear()
         // ) {
-        //   dayobject.index = index++; //从今天开始显示供预定的数量
-        // } else if (index != 0 && index < 3) dayobject.index = index++; //从今天开始3天内显示供预定的数量
+        //   dayobject.index = index++; 
+        // } else if (index != 0 && index < 3) dayobject.index = index++; 
         dayobject.index = this.days.length;
-        this.days.push(dayobject); //将日期放入data 中的days数组 供页面渲染使用
+        this.days.push(dayobject); 
       }
-      //其他周
       for (var i = 1; i <= 41 - this.currentWeek; i++) {
         var d = new Date(str);
         d.setDate(d.getDate() + i);
@@ -343,7 +296,6 @@ export default {
       this.handList();
     },
     handList() {
-      // 共享库存数据
       this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorylist', {
         "object": {
           "share": 1,
@@ -360,7 +312,6 @@ export default {
             item.day.getMonth() + 1,
             item.day.getDate()
           )
-          // 清空日历里报名类型
           item.data.person = [];
           this.arr = [];
           res.data.objects.forEach(items => {
@@ -381,7 +332,6 @@ export default {
         console.log(err);
       })
     },
-    // 返回 类似 2016-01-02 格式的字符串
     formatDate: function(year, month, day) {
       var y = year;
       var m = month;
@@ -399,7 +349,6 @@ export default {
         this.dialogVisible = false;
         this.$refs[formName].resetFields();
     },
-    // 增加共享库存
     handleallclick(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -467,7 +416,6 @@ export default {
         });
       }
     },
-    // 点击日期的时候
     handleitemclick(day) {
       if (this.n.includes(day)) {
         this.n = this.n.filter(v => v != day);
@@ -480,7 +428,6 @@ export default {
         }
       }
     },
-    // 点击库存的时候
     countClick(data, isType, day){
       this.isType = isType;
       this.dialogStock = true;
@@ -530,7 +477,6 @@ export default {
         });
       })
     },
-    /* 库存删除 */
     handDelete(){
       if(this.planningInfo.length == 0){  
         this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorydelete', {

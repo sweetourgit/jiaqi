@@ -162,7 +162,6 @@ export default {
         }],
       list:[],
       options:[],
-      //目的地
       dynamicTags1: [],
         inputVisible1: false,
         inputValue1: '',
@@ -187,7 +186,6 @@ export default {
         slideshow: '',
         list: '',
         },
-      //运营标签
       dynamicTags2: [],
         inputVisible2: false,
         inputVal: '',
@@ -257,7 +255,6 @@ export default {
       this.videoFlag = true;
       this.videoUploadPercent = file.percentage.toFixed(0);
     },
-    //图片预览
     handleImgClick(file){
       this.isShowImg = !this.isShowImg
       this.imgUrl = file.url
@@ -265,7 +262,6 @@ export default {
     handleRemove(file, fileList) {
       this.isShowImg = false;
     },
-    //轮播图预览
     slideshowClick(file){
       this.isSlideshow = true;
       if(this.slideshowUrl == file.url){
@@ -278,15 +274,12 @@ export default {
     handleRemove2(file, fileList){
       this.isSlideshow = false;
     },
-    //视频删除
     handleRemoves(file, fileList) {
       // console.log(file);
     },
-    //轮播图删除
     handleRemoves1(file, fileList) {
       // console.log(file);
     },
-    //运营标签
     handleClose2(tag2) {
       this.dynamicTags2.splice(this.dynamicTags2.indexOf(tag2), 1);
     },
@@ -309,29 +302,24 @@ export default {
         this.ruleForm.operationLabel= '';
       }
     },
-    // 搜索方法(出发地)
     querySearch(queryString, cb) {
       var results = queryString ? this.tableData.filter(this.createFilter(queryString)) : [];
       cb(results);
     },
-    // 搜索方法（出发地）
     createFilter(queryString){
       return (restaurant) => {
         return (restaurant.country.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
       }
     },
-    // 搜索方法(目的地)
     querySearch1(queryString1, cb1) {
       var results1 = queryString1 ? this.tableData1.filter(this.createFilter(queryString1)) : [];
       cb1(results1);
     },
-    // 目的地
     createFilter1(queryString1){
       return (restaurant1) => {
         return (restaurant1.country.toLowerCase().indexOf(queryString1.toLowerCase()) === 0);
       }
     },
-    //保存
     addsave(ruleForm) {
       this.$refs[ruleForm].validate((valid) => {
         if(valid){
@@ -375,7 +363,6 @@ export default {
 
 
     },
-    //出游人群
     themeList(){
       this.options = [];
       this.$http.post(this.GLOBAL.serverSrc + "/universal/crowd/api/crowdlist", {
@@ -396,7 +383,6 @@ export default {
         console.log(err);
       })
     },
-    //主题
     itemList(){
       this.list = [];
       var _this = this;
@@ -418,7 +404,6 @@ export default {
         console.log(error);
       })
     },
-    //取消
     cancel(){
       this.$router.push({path: "productList"});
     },

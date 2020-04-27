@@ -74,16 +74,13 @@
       changeinfoPackage, materialList, previewDialog
     },
     provide: {
-      // 行程总天数
       PROVIDE_DAY: 0,
-      // 校验错误收集队列
       ERROR_QUEUE: []
     },
     mounted(){
       this.teaminfogetAction();
     },
     watch: {
-      // 根据packages变化改变nameChecker数组
       'vm.currentPackage': function(){
         let name= this.vm.currentPackage;
         this.vm.nameChecker.splice(0);
@@ -113,7 +110,6 @@
         vm: {
           actionLock: false,
           currentPackage: null,
-          // 除当前套餐外其余套餐的名字
           nameChecker: []
         },
         pods: [],
@@ -134,16 +130,11 @@
         });
         this.$router.push(PRODUCT_LIST_ROUTE);
       },
-      /**
-       * @description: TEAM_TRAFFIC_DTO_BACK会默认给一个天数最大值
-       * 目前有两个地方 TrafficFormMixin和这里
-       * this.newTab
-       */
+
       addTab(){
         let current= this.getCurrentRef();
         let hasChange= current && current.checkHasChange();
         let newTab= this.getNewTab();
-        // 有变动则缓存后返回
         if(hasChange){
           this.newTab= newTab;
           return this.$confirm(`当前套餐信息存在修改，是否保存?`, '提示', {
@@ -153,7 +144,6 @@
           }).then(() => {
             return this.addOrSave();
           }).catch(() => {
-            // 放弃修改如果不加这句，会两次弹窗，这里直接关闭当前项，不走校验逻辑
             this.vm.currentPackage= null;
 
             let newTabName= newTab.name;
@@ -172,11 +162,8 @@
           this.vm.currentPackage= newTabName;
         })
       },
-      // 获取新tab实例
       getNewTab(){
         let newTabName= this.getNewPackageName();
-        // 返程不再给默认最大天数
-        // TEAM_TRAFFIC_DTO_BACK.day= this._provided.PROVIDE_DAY;
         return {
           teamID:this.$route.query.id,
           loadPackage: true,
@@ -196,13 +183,10 @@
             this._provided.PROVIDE_DAY
           ),
           briefMark: '',
-          codePrefix: "", // CODE_PREFIX,
-          codeSuffix: "", //CODE_SUFFIX
+          codePrefix: "", 
+          codeSuffix: "", 
         };
       },
-      /**
-       * @description: 移除Tab
-       */
       removeTab(name) {
         let index= this.packages.findIndex(el => el.name=== name);
         let id= this.packages[index].id;
@@ -218,7 +202,7 @@
         });
       },
       changeTab(activeName, oldActiveName){
-        // 进入页面之后，会默认执行一次changeTab，这时候的activeName是undefined，组织这次默认事件触发之后的逻辑
+     
         if(!activeName) return false;
         return new Promise((res, rej) => {
           this.asyncCheckHasChange(activeName, oldActiveName).then(() => {
@@ -248,9 +232,7 @@
         let hasChange= current.checkHasChange();
         return hasChange? Promise.reject(): Promise.resolve();
       },
-      /**
-       * @description: 新增套餐时，生成不重复的新套餐的名字
-       */
+
       getNewPackageName(){
         let hit;
         let num= this.packages.length;
@@ -260,9 +242,7 @@
         } while (hit && num<= 100);
         return '未命名套餐'+ num;
       },
-      /**
-       * @description: 获取初始化信息
-       */
+ 
       teaminfogetAction(){
         if(this.vm.actionLock) return this.$message.info('数据保存中，请稍后再试');
         this.vm.actionLock= true;
@@ -286,9 +266,7 @@
             this.pods.push(...pods);
             this.destinations.push(...destinations);
             this._provided.PROVIDE_DAY= day;
-            // tab默认指向首页
             if(this.packages.length=== 0) return Promise.resolve();
-            // 如果有缓存的新tab
             if(this.newTab && this.newTab.name){
               this.packages.push(this.newTab);
               this.$nextTick(() => {
@@ -301,18 +279,14 @@
             this.newTab= null;
             return Promise.resolve();
           }).catch(err => {
-            // TODO: 错误日志
             this.$message.error(err);
           }).finally(() => {
             this.vm.actionLock= false;
           })
         })
       },
-      /**
-       * @description: 保存按钮触发的事件，先判断是保存还是新增
-       */
+
       addOrSave(){
-        // 清空错误信息队列
         this._provided.ERROR_QUEUE.splice(0);
         let current= this.getCurrentRef();
         let hasChange= current && current.checkHasChange();
@@ -324,12 +298,10 @@
         if(isSave) return this.saveAction(object);
         return this.addAction(object);
       },
-      // 是保存操作
       isSave(){
         let current= this.packages.find(el => el.name=== this.vm.currentPackage);
         return current.id=== 0 || !!current.id;
       },
-      // 获取当前package的ref
       getCurrentRef(){
         let packages= this.$refs.packageRef;
         if(!packages || packages.length=== 0) return null;
@@ -383,7 +355,6 @@
             this.vm.currentPackage= current.name;
           })
         }
-        // 删除的是尚未存入数据库的
         if(!id) return successFunc({ data: { isSuccess: true }});
         this.$http.post(this.GLOBAL.serverSrc + "/team/api/teampackagedelete", {
           id

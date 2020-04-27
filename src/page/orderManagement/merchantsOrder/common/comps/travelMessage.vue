@@ -13,11 +13,9 @@
 .tc {
   text-align: center;
 }
-/* 出行人表格end后加 */
 .oh {
   overflow: hidden;
 }
-/*通用*/
 ul {
   margin: 0;
   padding: 0;

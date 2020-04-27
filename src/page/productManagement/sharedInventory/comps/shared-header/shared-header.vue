@@ -120,7 +120,6 @@ export default {
   components: { sharedHeaderDay },
 
   computed: {
-    // 当前选择日期的int表达
     currentInt(){
       return this.getDateInt(
         new Date(this.current[0], this.current[1], this.current[2]), true);
@@ -136,7 +135,6 @@ export default {
         inAsync: false,
         state: false
       },
-      // 长度为3的数组，依次存放年月日
       current: [],
       dayArray: []
     }
@@ -158,15 +156,11 @@ export default {
       })
     },
 
-    /**
-     * @param {type} : dayDTO
-     */
     dayArrayMaker(list){
       let object= this.inventoryListToObject(list);
       return this.dayArrayPreFull(object);
     },
 
-    // 遍历结果，将
     inventoryListToObject(list){
       let result= {};
       list.forEach(el => {
@@ -176,13 +170,10 @@ export default {
       return result;
     },
 
-    // 预先填满dayArray
     dayArrayPreFull(finder){
       let result;
-      // 今天的int形式
       let todayInt= this.getDateInt(new Date(), true);
       let begin= new Date(this.current[0], this.current[1], 1).getDay();
-      // 参见eui 2019年9月
       begin= (begin=== 0? 7: begin);
       let total= this.currentMax;
       let currentMonthInt= this.getDateInt(
@@ -206,20 +197,10 @@ export default {
       return result; 
     },
 
-    /**
-     * @description: 根据行数列数找到数组中对应元素
-     * @param {Number} week: 当前行数
-     * @param {Number} day: 当前列数
-     */
     findDayDate(week, day){
       return this.dayArray[(week- 1)* 7+ day];
     },
     
-    /**
-     * @description: 将日期或当前时间转成年月日数组, 注意，这里的月份是从0开始的，没有+1
-     * @param {Date} date: 传入一个日期 
-     * @return {Array}: [year, month, day] 
-     */
     getDateArr(date){
       date= date || new Date();
       return [
@@ -229,12 +210,6 @@ export default {
       ]
     },
 
-    /**
-     * @description: 将日期转化成int形式, 后台采用的日期格式中，月份从1开始
-     * @param {Date} date: 传入一个日期  
-     * @param {Boolean} day: 是否计算到天  
-     * @return {Number}: 20190909 
-     */
     getDateInt(date, day){
       let arr= this.getDateArr(date);
       return arr[0]* 10000+ (arr[1]+ 1)* 100+ (day? arr[2]: 0);
@@ -243,7 +218,6 @@ export default {
     dayHandler(payload){
       let dayVal= this.current[2]+ payload;
       let max, newDate, dateArr;
-      // 月份减一
       if(dayVal<= 0){
         max= new Date(this.current[0], this.current[1]- 1+ 1, 0).getDate();
         newDate= new Date(this.current[0], this.current[1]- 1, max);
@@ -271,7 +245,6 @@ export default {
       this.init(newDate);
     },
 
-    // day组件点击提交
     emitSelectDay(day){
       if(!day) return;
       this.changeCurrent(null, null, day);
@@ -280,18 +253,13 @@ export default {
       this.vm.state= false;
     },
 
-    /**
-     * @description: 更改当前current的值
-     */
+  
     changeCurrent(year, month, day){
       year && this.current.splice(0, 1, year);
       (month || month=== 0) && this.current.splice(1, 1, month);
       day && this.current.splice(2, 1, day);
     },
 
-    /**
-     * @description: 根据是否弹开执行emit
-     */
     changeInAsync(bol){
       this.vm.inAsync= bol;
       !this.vm.state && this.$emit('in-async', bol); 

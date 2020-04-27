@@ -1,7 +1,6 @@
 import Vue from 'vue'
 let { $http, GLOBAL }= Vue.prototype;
 
-// 获取产品套餐列表
 export const getTeamListPackages= function(teamID){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/api/teampackagelist",{
@@ -18,7 +17,6 @@ export const getTeamListPackages= function(teamID){
   })
 }
 
-// 保存团号和清位时间
 export const saveShort= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/package/saveshort",{
@@ -33,7 +31,6 @@ export const saveShort= function(object){
   })
 }
 
-// 查看团号是否重复
 export const codeIsExist= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/package/codeisexist",{
@@ -48,7 +45,6 @@ export const codeIsExist= function(object){
   })
 }
 
-// 获取人均结算价
 export const getAverage= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/cost/api/getaverage",{
@@ -62,14 +58,12 @@ export const getAverage= function(id){
   })
 }
 
-// 获取成本列表
 export const getCostList= function(packageID){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/cost/api/list",{
       object: { packageID }
     }).then((res) => {
       let { isSuccess, objects }= res.data;
-      // 0条返回的是isSuccess是false
       if(!isSuccess) return resolve([]);
       return resolve(objects);
     }).catch((err) => {
@@ -78,7 +72,6 @@ export const getCostList= function(packageID){
   })
 }
 
-// 修改毛利率
 export const saveRate= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/cost/api/saverate",{
@@ -93,7 +86,6 @@ export const saveRate= function(object){
   })
 }
 
-// 模糊查询供应商
 export const getSupplierlist= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/universal/supplier/api/supplierlist",{
@@ -108,7 +100,6 @@ export const getSupplierlist= function(object){
   })
 }
 
-// 新增成本
 export const addCost= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/cost/api/insert",{
@@ -123,7 +114,6 @@ export const addCost= function(object){
   })
 }
 
-// 修改成本
 export const editCost= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/cost/api/save",{
@@ -138,7 +128,6 @@ export const editCost= function(object){
   })
 }
 
-// 删除成本
 export const deleteCost= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/cost/api/delete",{
@@ -153,7 +142,6 @@ export const deleteCost= function(id){
   })
 }
 
-// 新增计划
 export const addPlan= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/plan/api/insert",{
@@ -169,7 +157,6 @@ export const addPlan= function(object){
 }
 
 
-// 获取指定月份所有计划
 export const getCalendar= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/calendar/api/get",{
@@ -184,7 +171,6 @@ export const getCalendar= function(object){
   })
 }
 
-// 获取指定计划
 export const getPlan= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/plan/api/get", {
@@ -199,7 +185,6 @@ export const getPlan= function(id){
   })
 }
 
-// 保存计划
 export const savePlan= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/plan/api/save", {
@@ -214,7 +199,6 @@ export const savePlan= function(object){
   })
 }
 
-// 删除计划
 export const deletePlan= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/plan/api/delete", {
@@ -229,7 +213,6 @@ export const deletePlan= function(id){
   })
 }
 
-// 新增非共享库存
 export const addInventory= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/api/inventoryinsert", {
@@ -244,7 +227,6 @@ export const addInventory= function(object){
   })
 }
 
-// 修改库存
 export const saveInventory= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/api/inventorysave", {
@@ -259,7 +241,6 @@ export const saveInventory= function(object){
   })
 }
 
-// 获取指定库存
 export const getInventory= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/api/inventoryget", {
@@ -274,7 +255,6 @@ export const getInventory= function(id){
   })
 }
 
-// 获取指定天库存
 export const getInventoryList= function(object){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/api/inventorylist", {
@@ -289,7 +269,6 @@ export const getInventoryList= function(object){
   })
 }
 
-// 删除库存
 export const deleteInventory= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + "/team/api/inventorydelete", {
@@ -304,13 +283,10 @@ export const deleteInventory= function(id){
   })
 }
 
-// 合成报名类型
 export const getEnrollTypeDictionary= function(){
   return new Promise((resolve, reject) => {
-    // 先读缓存
     let ENROLL_TYPE_DIC= sessionStorage.getItem('ENROLL_TYPE_DIC');
     if(ENROLL_TYPE_DIC) return resolve(JSON.parse(ENROLL_TYPE_DIC));
-    // 无缓存走api
     $http.post(GLOBAL.serverSrc + "/universal/enrolla/api/list", {
       object: {}
     }).then((resa) => {
@@ -340,6 +316,3 @@ export const getEnrollTypeDictionary= function(){
     })
   })
 }
-// 报名类型的逻辑，以enrolla的id为报名类型id，选项用a与b作迪塞尔积，a leftjoin b，用许a有b空的情况
-// this.$http.post(this.GLOBAL.serverSrc + '/universal/enrolla/api/list', {
-// this.$http.post(this.GLOBAL.serverSrc + '/universal/enrollb/api/list', {

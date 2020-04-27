@@ -163,10 +163,8 @@
 </template>
 
 <script>
-// 混入
 import TrafficFormMixin from './mixins/TrafficFormMixin'
 import ErrorHandlerMixin from './mixins/ErrorHandlerMixin'
-// 字典
 
 export default {
   name: 'plane-form',
@@ -189,9 +187,7 @@ export default {
 
   methods: {
     
-    /**
-     * @description: id模糊搜索航班信息
-     */
+
     getFlightAction(queryString, cb){
       this.$http.post(
         this.GLOBAL.serverSrc + "/Flight/flighs/api/getnum",
@@ -202,7 +198,6 @@ export default {
         console.log(res)
         let { isSuccess, object }= res.data;
         if(!object) return cb();
-        // 字段对应不上，转接一下
         this.flightOptions= [object];
         cb([{ value: object.number+ '' }]);
       }).catch(err => {
@@ -215,10 +210,7 @@ export default {
       })
     },
 
-    /**
-     * @description: 字段不同，转接一下
-     * @TODO 到达城市用reachingCity，到达机场arrivalAirport，呵呵
-     */
+
     flightAttrAdapter(flight){
       let { 
         number, company,
@@ -239,9 +231,7 @@ export default {
       }
     },
     
-    /**
-     * @description: 航班id查询后，以查询到的航班信息填充表单
-     */
+
     selectFilght(flight){
       let hit= this.flightOptions.find(el => el.number== flight.value);
       Object.assign(this.submitForm, this.flightAttrAdapter(hit));

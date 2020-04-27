@@ -20,12 +20,10 @@ export default {
 
   data(){
     return Object.assign(
-      // 状态控制
       {
         state: false,
         cb: null
       },
-      // 数据
       {
         list: []
       }
@@ -33,14 +31,12 @@ export default {
   },
 
   methods: {
-    // 初始化
     wakeup(idList, cb){
       this.list.push(...idList);
       this.cb= cb;
       this.state= true;
     },
     
-    // 提交选中的数据
     emitCheckList(data){
       this.cb(data);
     },

@@ -67,14 +67,11 @@
 </template>
 
 <script>
-// 第三方组件
 import { VueEditor } from 'vue2-editor'
-// 组件
 import planeForm from './comps/plane-form'
 import busForm from './comps/bus-form'
 import shipForm from './comps/ship-form'
 import trainForm from './comps/train-form'
-// 常量
 import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK } from '../../dictionary'
 
 export default {
@@ -103,7 +100,6 @@ export default {
   data(){
     return {
       vm: {
-        //1：详细说明 2：简要说明
         description: "1",
         descriptionState: 'detail',
         content: this.briefMark+ ""
@@ -113,9 +109,6 @@ export default {
   },
 
   methods: {
-    /**
-     * @description: 初始化
-     */
     init(type){
       if(!type || type=== 'detail'){
         this.traffics.splice(0);
@@ -124,9 +117,6 @@ export default {
       console.log(this.briefMark);
       (!type || type=== 'easy') && (this.vm.content= this.briefMark);
     },
-    /**
-     * @description: 切换说明类型
-     */
     changeDescription(label){
       if(label=== '2'){
         let hasChange= this.checkHasChange('detail');
@@ -158,9 +148,6 @@ export default {
       }
     },
 
-    /**
-     * @description: 检查是否有数据变动
-     */
     checkHasChange(param){
       let type= param || this.vm.descriptionState;
       return this[`${type}CheckHasChange`]();

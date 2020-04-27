@@ -21,10 +21,7 @@
 </template>
 
 <script>
-/**
- * @description: 
- * 1. 在watch中初始化，因为第一次传的value是void 0
- */
+
 
 export default {
 

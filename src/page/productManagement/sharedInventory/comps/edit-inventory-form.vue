@@ -105,9 +105,6 @@ export default {
       cb(new Error('请输入正确的价格格式，最多两位小数'));
     },
 
-    /**
-     * @description: 先验证，不通过返回false，通过则将submit变形成提交的格式 
-     */
     getSubmitDate(){
       let copy;
       this.$refs.submitForm.validate(validate => {

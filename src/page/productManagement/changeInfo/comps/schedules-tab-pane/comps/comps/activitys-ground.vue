@@ -78,7 +78,6 @@ export default {
       this.$nextTick(() => this.vm.refresh= true);
     },
 
-    //详情状态下检查
     checkHasChange(){
       let bol= false;
       let children= this.$refs.children || [];

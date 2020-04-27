@@ -1,14 +1,10 @@
-// 不只奥是啥东西
 export const CODE_PREFIX= "LKCO";
 export const CODE_SUFFIX= "US621";
 
-// 列表页地址
 export const PRODUCT_LIST_ROUTE= '/productList/packageTour';
 
-// 默认交通方式
 export const DEFALUT_TRAFFIC_MODE= 1
 
-// 交通方式options
 export const TRAFFIC_MODE_OPTIONS= [{
   value: 1,
   label: '飞机'
@@ -23,7 +19,6 @@ export const TRAFFIC_MODE_OPTIONS= [{
   label: '轮船',
 }]
 
-// 到达时间options
 export const ARRIVE_DAY_OPTIONS= [{
   value: -2,
   label: '前天'
@@ -53,20 +48,15 @@ export const ARRIVE_DAY_OPTIONS= [{
   label: '第六天',
 }, ]
 
-/**
- * @description: 去程返程 center中转
- */
-// 标记
+
 export const GO_OR_BACK_SIGN= {
   GO: 1,
   BACK: 2,
   CENTER: 0
 }
-// TeamTrafficDTO
-// TODO: TEAM_TRAFFIC_DTO抽成能get实例的类，省的用deepCopy了
+
 const TEAM_TRAFFIC_DTO= {
-  // id
-  // packageID
+
   trafficMode: DEFALUT_TRAFFIC_MODE,
   day: 1,
   arriveDay: 0,
@@ -88,7 +78,6 @@ export const TEAM_TRAFFIC_DTO_BACK= Object.assign({
   goOrBack: GO_OR_BACK_SIGN.BACK
 }, TEAM_TRAFFIC_DTO)
 
-// 根据日程id获取活动
 export const getActivityDTO= function(scheduleID){
   return {
     scheduleID,
@@ -104,7 +93,6 @@ export const getActivityDTO= function(scheduleID){
   }
 }
 
-// 根据行程天数创建默认的日程列表
 export const getTeamScheduleDTOList= function(days){
   let result= [];
   for(let i= 1; i<= days; i++){

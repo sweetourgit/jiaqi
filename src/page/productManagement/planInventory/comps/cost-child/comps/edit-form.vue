@@ -54,7 +54,6 @@ export default {
     return Object.assign({
       vm: {
         state: false,
-        // 是否是新增
         isAdd: false
       },
       submitForm: {
@@ -111,9 +110,7 @@ export default {
       cb(new Error('输入的供应商不存在'));
     },
 
-    /**
-     * @description: 先验证，不通过返回false，通过则将submit变形成提交的格式 
-     */
+   
     getSubmitDate(){
       return new Promise((resolve, reject) => {
         this.$refs.submitForm.validate(validate => {
@@ -127,7 +124,6 @@ export default {
           }
           if(!this.vm.isAdd){
             let { supplierID, supplierType, name, money, id }= this.checkProto;
-            // 查看数据是否发生了变化
             if(this.$checkLooseEqual(this.submitForm, { suppliertype: supplierType, name, money, supplierID })) reject('数据无变化');
             //copy.money= parseFloat(copy.money);
             copy.id= id;

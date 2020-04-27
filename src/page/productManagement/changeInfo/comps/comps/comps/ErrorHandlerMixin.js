@@ -1,10 +1,7 @@
 const ErrorHandlerMixin= {
   inject: ['ERROR_QUEUE'],
   methods: {
-    /**
-     * @description: 收集报错信息，并返回错误实例
-     * @returns {Error} 
-     */
+
     makeErrorQueueMsg(msg){
       let sign= this.$vnode.tag;
       let hit= this.ERROR_QUEUE.find(el => el.sign=== sign);
@@ -15,9 +12,7 @@ const ErrorHandlerMixin= {
       return new Error(msg);
     },
 
-    /**
-     * @description: 简单校验
-     */
+
     simpleValidator(rule, value, cb){
       if(!value) return cb(this.makeErrorQueueMsg(rule.message));
       cb();

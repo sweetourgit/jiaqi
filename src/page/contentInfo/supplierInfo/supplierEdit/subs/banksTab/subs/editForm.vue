@@ -66,7 +66,6 @@ export default {
 
   data(){
     return Object.assign(
-      // 需要重置
       needReset(),
 
       {
@@ -76,7 +75,6 @@ export default {
           cardName: null,
           memo: null,
 
-          // 非表单值
           isDeleted: 0,
           createTime: null
         },
@@ -107,7 +105,6 @@ export default {
     handleClose(){
       this.$refs.submitForm.resetFields();
       let newReset= needReset();
-      // 重置状态
       Object.keys(newReset).forEach(attr => this[attr]= newReset[attr]);
     },
 

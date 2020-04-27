@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--搜索框-->
     <div class="demo-input-suffix">
       <span class="search-title" style="margin:0 0 0 35px;">产品ID</span>
       <el-input placeholder="请输入" v-model="teamID" class="group-no"></el-input>
@@ -26,8 +25,6 @@
         <!--
         <el-button :disabled="forbidden2" @click="dialogCost = true">报账单</el-button>-->
       </el-row>
-      <!--list-->
-      <!--列表表格-->
       <el-table :data="teamqueryList" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :row-style="rowClass"
         :cell-style="getCellClass" @selection-change="changeFun" @row-click="clickRow">
         <!-- <el-table-column type="index" label="序号" width="60"></el-table-column> -->
@@ -84,11 +81,9 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--分页-->
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
-      <!--报账单弹窗-->
       <el-dialog title="报账单" :visible.sync="dialogCost" class="city_list_01" width="60%">
         <el-table :data="costList" ref="costTable" class="costTable" :header-cell-style="getCostClass" border :row-style="costrowClass"
           :cell-style="getCellClass" @selection-change="changeFunCost" @row-click="clickRowCost">
@@ -105,7 +100,6 @@
         </el-table>
       </el-dialog>
       <teamOrder-insert :planId="planId" :variable="variable" :dialogType="dialogType"></teamOrder-insert>
-      <!--出团通知书弹窗-->
       <el-dialog title="出团通知书" :visible.sync="departure"class="city_list" width="60%" @close="clearDeparture()">
         <el-form label-width="120px" class="demo-ruleForm">
           <el-form-item label="出团通知书:">
@@ -146,19 +140,19 @@ export default {
   },
   data() {
     return {
-      userCodeList: null, // 获取UserList列表
+      userCodeList: null, 
       pageshow: true,
       planId: 0,
       isCheckSheet:0,
-      variable: 0, //设置一个变量展示弹窗
-      dialogType: 0, //弹窗类型  1：下单
-      title: "", //产品名称
-      groupCode: "", //团号
-      date: "", //日期
-      op: "", //操作人员
-      changedUserCode: '', // 用户名转变
-      financeState: "", //报账状态
-      teamID:"",//产品ID
+      variable: 0, 
+      dialogType: 0, 
+      title: "", 
+      groupCode: "", 
+      date: "", 
+      op: "", 
+      changedUserCode: '', 
+      financeState: "", 
+      teamID:"",
       financeType: [
         {
           value: "1",
@@ -169,13 +163,12 @@ export default {
           label: "未提交报账"
         }
       ],
-      pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
-      pageIndex: 1, // 设定当前页数
+      pageSize: 10, 
+      pageIndex: 1, 
       total: 0,
       current:1,
       teamqueryList: [],
-      multipleSelection: [], //选中的list
-      //成本
+      multipleSelection: [], 
       costList: [
         {
           id: 1,
@@ -202,12 +195,12 @@ export default {
           enclosure: "查看"
         }
       ],
-      dialogCost: false, //成本弹窗
+      dialogCost: false, 
       show1:false,
       show2:false,
-      departure:false, // 出团通知书弹窗
+      departure:false, 
       fileList:[],
-      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', // 图片上传
+      upload_url: this.GLOBAL.serverSrc + '/upload/obs/api/file', 
       s_content:[],
       img_Url:"",
       img_Name:'',
@@ -216,8 +209,8 @@ export default {
       type:'',
       fileLength:0,
       checkSheet:0,
-      // costSelection: [], //选中的list
-      // searchParams: 2 // 2 为翻页，控制名字转code
+      // costSelection: [], 
+      // searchParams: 2 
     };
   },
   created() {
@@ -247,18 +240,15 @@ export default {
       return "textAlign:center";
     },
     changeFun(val) {
-      //保存选中项的数据
       this.multipleSelection = val;
     },
     clickRow(row) {
-      //选中行复选框勾选
-      this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+      this.$refs.multipleTable.clearSelection(); 
       this.$refs.multipleTable.toggleRowSelection(row);
       this.planId = this.multipleSelection[0].id;
       this.checkSheet = this.multipleSelection[0].isCheckSheet;
     },
     rowClass({ row, rowIndex }) {
-      //选中行样式改变
       for (var i = 0; i < this.multipleSelection.length; i++) {
         if (this.multipleSelection[i].id == row.id) {
           return { "background-color": "#ecf5ff" };
@@ -283,7 +273,6 @@ export default {
       }
       //this.teamQueryList(val,this.pageSize);
     },
-    //计划list
     teamQueryList(pageIndex = this.pageIndex,pageSize = this.pageSize,title = this.title,groupCode = this.groupCode,startDate = this.date == null ? 0 : this.date[0],endDate = this.date == null ? 0 : this.date[1],op = this.op,teamID = this.teamID,financeState = this.isCheckSheet) {
       if (startDate) {
         let y = startDate.getFullYear();
@@ -325,7 +314,6 @@ export default {
           console.log(err);
         });
     },
-    //成本方法
     getCostClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f6f6f6;height:25px;textAlign:center;fontSize:15px";
@@ -334,7 +322,6 @@ export default {
       }
     },
     costrowClass({ row, rowIndex }) {
-      //选中行样式改变
       for (var i = 0; i < this.costSelection.length; i++) {
         if (this.costSelection[i].id == row.id) {
           return { "background-color": "#ecf5ff" };
@@ -342,7 +329,6 @@ export default {
       }
     },
     changeFunCost(val) {
-      //保存选中项的数据
       this.costSelection = val;
       if (this.costSelection.length == 1) {
         // this.forbidden1=false;
@@ -351,8 +337,7 @@ export default {
       }
     },
     clickRowCost(row) {
-      //选中行复选框勾选
-      //this.$refs.multipleTable.clearSelection(); //清空用户的选择
+      //this.$refs.multipleTable.clearSelection(); 
       this.$refs.costTable.toggleRowSelection(row);
     },
     operation(i,index) {
@@ -378,7 +363,7 @@ export default {
       }
 
     },
-    getUserCode(){//op输入名字获取usercode
+    getUserCode(){
       var that = this
         this.$http.post(this.GLOBAL.serverSrc + "/org/api/userlist",{
           object: {
@@ -437,7 +422,6 @@ export default {
       this.current = curPage;
       this.teamQueryList();
     },
-    //停售
     haltSales(status) {
       this.$confirm("该团期是否停售?", "提示", {
         confirmButtonText: "停售",
@@ -461,7 +445,6 @@ export default {
           });
         });
     },
-    //恢复售卖
     haltSales_01(status) {
       this.$confirm("该团期是否正常售卖?", "提示", {
         confirmButtonText: "恢复售卖",
@@ -484,7 +467,6 @@ export default {
           });
         });
     },
-    //封团
     haltSales_02(status) {
       this.$confirm("该团期是否封团?", "提示", {
         confirmButtonText: "确定",
@@ -507,8 +489,7 @@ export default {
           });
         });
     },
-    // 出团通知书
-    informDeparture(status){ // 显示出团通知书弹窗
+    informDeparture(status){ 
       this.departure = true;
       this.$http.post(this.GLOBAL.serverSrc + "/teamquery/get/api/get",{
         "id": status,
@@ -529,7 +510,7 @@ export default {
         this.addFile();
       }
     },
-    clearDeparture(){ // 取消关闭出团通知书弹窗
+    clearDeparture(){ 
       this.departure = false;
       this.fileList = [];
     },
@@ -541,7 +522,7 @@ export default {
         paths = JSON.parse(fileList[i].response).paths[0];
         this.img_Url = this.$set(this.fileList[i], "url", paths.Url);
         this.img_Name = this.$set(this.fileList[i], "name", paths.Name);
-        this.name_Suffix = file.raw.name; // 这个变量是取的后缀名
+        this.name_Suffix = file.raw.name; 
         console.log(this.name_Suffix)
         this.type = '';
       }
@@ -595,7 +576,7 @@ export default {
         }
       })
     },
-    reimbursement(status,checkSheet){ // 报账单
+    reimbursement(status,checkSheet){ 
       setTimeout(() => {
         this.$router.push({ path: "/checkSheetDetail/team?planID="+status + "&isCheckSheet=" + this.checkSheet});
       },200);

@@ -82,8 +82,8 @@
 import enrollCard from './comps/enroll-card'
 import { DAY_STATE as SHARE_STATE } from '../../../../../../dictionary'
 import { 
-  getInventoryList, // 获取指定天的所有共享库存 
-  getEnrollTypeDictionary, // 获取报名类型字典
+  getInventoryList,  
+  getEnrollTypeDictionary, 
   saveInventory,
   savePlan,
 } from '../../../../../../planInventory'
@@ -121,11 +121,8 @@ export default {
         ],
         dateHous: { required: true, message: '请选择预留时长', trigger: ['blur']},
       },
-      // 新增plan
       enrollList: [],
-      // 共享库存列表
       shareOptions: [],
-      // 报名类型列表
       enrollTypeOptions: [],
     }, { SHARE_STATE })
   },
@@ -133,15 +130,14 @@ export default {
   methods: {
     handleOpen(payload){
       let { share, dateHous, count, inventoryID, planEnroll, day, regimentType, name, average, averageCost}= payload;
-      // 共享类型
       this.vm.share= share;
-      this.vm.average= average; // 传递给enroll
+      this.vm.average= average; 
       this.submitForm.regimentType= regimentType;
       this.submitForm.dateHous= dateHous;
       this.submitForm.count= count;
       this.submitForm.inventoryID= inventoryID;
       this.submitForm.name= name;
-      this.submitForm.averageCost= averageCost; // 提交修改时带上
+      this.submitForm.averageCost= averageCost; 
       this.enrollList.push(...planEnroll);
       this.checkProto= this.$deepCopy(this.submitForm);
       this.cacheInit= payload;
@@ -158,26 +154,23 @@ export default {
     },
 
     handleClose(){
-      this.enrollList.splice(0);  // 清空子列
-      this.shareOptions.splice(0);  // 清空共享库存表单
+      this.enrollList.splice(0);  
+      this.shareOptions.splice(0);  
       this.enrollTypeOptions.splice(0);
-      this.vm.share= SHARE_STATE.NOT_SHARE; //重置共享状态
+      this.vm.share= SHARE_STATE.NOT_SHARE; 
       this.vm.state= false;
-      this.$refs.submitForm.resetFields();  // 重置表单
+      this.$refs.submitForm.resetFields();  
     },
     
-    // 选择了一条共享库存
     selectShareInventory(shareId){
       let hit= this.shareOptions.find(share => share.id=== shareId);
       if(!hit) return;
       let { count, averageCost, name }= hit;
-      // id绑在v-model上，自动改变
       this.submitForm.name= name;
       this.submitForm.count= count;
       this.submitForm.averageCost= averageCost;
     },
 
-    // 添加一个报名
     addEnrollCard(){
       let name= this.vm.enrollName;
       if(!name) return this.$message.error('请先选择报名类型');
@@ -187,7 +180,6 @@ export default {
       this.enrollList.push(newEnroll);
     },
     
-    // 删除一个enroll
     removeEnrollCard(i){
       let left= this.getEnrollRefs().map(enrollRef => enrollRef.getData());
       left.splice(i, 1);
@@ -197,7 +189,6 @@ export default {
       })
     },
 
-    // 检查报名类型是否存在
     checkEnrollTypeExists(name){
       let enrollRefs= this.getEnrollRefs();
       let hit= enrollRefs.find(enrollRef => enrollRef.submitForm.enrollName=== name);
@@ -217,11 +208,6 @@ export default {
       cb(new Error('请输入正确的价格格式，最多两位小数'));
     },
 
-    /**
-     * @description:
-     * 1. 共享库存：直接新增计划，且每次只能一个
-     * 2. 非共享库存：先新增库存再新增计划，可以有多个 vm.isMultiple
-     */
     addAction(){
       if(!this.validate()) return console.error('validator errors');
       if(!this.hasChange()){
@@ -245,7 +231,6 @@ export default {
     
     hasChange(){
       let bol= this.$checkLooseEqual(this.submitForm, this.checkProto);
-      //　报名数发生变化
       if(bol) bol= (this.cacheInit.planEnroll.length=== this.enrollList.length);
       if(bol) bol= !this.childrenHasChange(); 
       return !bol;
@@ -277,7 +262,6 @@ export default {
       return bol;
     },
 
-    // 获取所有enrollRef实例
     getEnrollRefs(){
       return this.$refs.enrollRef || [];
     },
@@ -311,7 +295,6 @@ export default {
       }
     },
 
-    // 获得一个报名实例
     getEnrollDTO(enrollName, enrollID, planID){
       let newEnroll= {
         enrollID,

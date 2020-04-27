@@ -96,7 +96,6 @@ export default {
       if(this.proto.quota) this.vm.hasQuota= true;
     },
 
-    // 配额
     quotaHandler(){
       this.vm.hasQuota= !this.vm.hasQuota;
       if(!this.vm.hasQuota) this.submitForm.quota= void 0;
@@ -124,7 +123,6 @@ export default {
       cb(new Error('请输入正确的价格格式，最多两位小数'));
     },
 
-    // 根据均价和输入价判断是否标红
     isRed(val){
       val= parseFloat(val);
       if(val=== isNaN) return false;

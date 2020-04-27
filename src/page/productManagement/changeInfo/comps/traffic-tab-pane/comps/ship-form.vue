@@ -146,10 +146,8 @@
 </template>
 
 <script>
-// 混入
 import TrafficFormMixin from './mixins/TrafficFormMixin'
 import ErrorHandlerMixin from './mixins/ErrorHandlerMixin'
-// 字典
 
 export default {
   name: 'ship-form',

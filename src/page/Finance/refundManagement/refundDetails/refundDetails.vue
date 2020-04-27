@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--详情-->
     <el-dialog :title="title" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
       @close="cancelInfoOrder()">
       <div class="controlButton">
@@ -238,7 +237,6 @@
         </el-table>
       </div>
     </el-dialog>
-    <!--借款、报销审批过程-->
     <el-dialog title="审批过程" :visible.sync="approvalShow" width="800px" @close="closeApprova()">
       <el-table :data="approvalTable" border>
         <el-table-column prop="finishedTime" label="审批时间" min-width="180" align="center">
@@ -251,7 +249,6 @@
         <el-table-column prop="No" label="审批意见" min-width="180" align="center"></el-table-column>
       </el-table>
     </el-dialog>
-    <!--发票审批过程-->
     <el-dialog title="审批过程" :visible.sync="invoiceShow" width="800px" @close="closeInvoice()">
       <el-table :data="invoiceTable" border>
         <el-table-column prop="endTime" label="审批时间" min-width="180" align="center">
@@ -269,7 +266,6 @@
       </el-table>
     </el-dialog>
     <order-information :orderID="orderID" :orderVariable="orderVariable" :orderDialogType="orderDialogType"></order-information>
-    <!--支付账户弹窗-->
     <el-dialog title="选择账户" :visible.sync="dialogAccount" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1000px"
       @close="cancelAccount()">
       <div class="controlButton">
@@ -292,7 +288,6 @@
         <el-table-column prop="openingName" label="开户人" align="center"></el-table-column>
       </el-table>
     </el-dialog>
-    <!--手续费弹窗-->
     <el-dialog title="退款手续费" :visible.sync="refundChargeShow" custom-class="city_list dialogOrder" style="margin-top:-100px" width="500px"
       @close="cancelRefundCharge()">
       <div class="controlButton">
@@ -304,7 +299,6 @@
         <el-input class="refundChargeClass" placeholder="0.00" v-model="refundCharge"> </el-input>
       </div>
     </el-dialog>
-    <!--通过、驳回弹窗-->
     <el-dialog :title="approval" :visible.sync="dialogApproval" custom-class="city_list" style="margin-top:-100px;" width="800px"
       @close="cancelApproval()">
       <div class="controlButton">
@@ -415,34 +409,34 @@ export default {
       orderID:0,
       orderVariable:0,
       orderDialogType:0,
-      dialogFormOrder:false,// 详情弹窗
-      title:"",//退款记录和审批标题
-      refundList:{},// 基本信息数组
-      tableDate:[],// 详情弹窗部分退信息表格
-      tableAudit:[],// 详情页面审核结果表格
-      dialogAccount:false, // 支付账户弹窗
-      tableAccount:[], // 支付账户表格
-      dialogApproval:false, // 通过驳回弹窗
-      approval:"",// 通过驳回标题
-      opinion:'', // 通过驳回输入框
-      orderCode:'',// 获取orderCode来获取审核结果
+      dialogFormOrder:false,
+      title:"",
+      refundList:{},
+      tableDate:[],
+      tableAudit:[],
+      dialogAccount:false, 
+      tableAccount:[], 
+      dialogApproval:false, 
+      approval:"",
+      opinion:'', 
+      orderCode:'',
       indentID:0,
-      multipleSelection: [], //选中的list
-      payID:0, //选择支付账户获取账户ID
+      multipleSelection: [], 
+      payID:0, 
       accountID:0,
-      disbursementID:0, // 获取详情时支付账户的id
+      disbursementID:0, 
       forbidden: false,
       ifDY100068:false,
-      payName:'', // 选择支付账户，通过ID获取名字
-      nonPayment:0,//未付金额
+      payName:'', 
+      nonPayment:0,
       mark:[],
       instanceID:0,
-      refundCharge:'' ,//手续费
-      refundChargeShow:false, // 手续费弹窗
-      activeName: "first", //财务信息切换
-      tableBorrowing:[], // 借款表格
-      tableAccountt:[], // 报销表格
-      tableIncoice:[], // 发票表格
+      refundCharge:'' ,
+      refundChargeShow:false, 
+      activeName: "first", 
+      tableBorrowing:[], 
+      tableAccountt:[], 
+      tableIncoice:[], 
       planId:0,
       approvalShow:false,
       approvalTable:[],
@@ -456,11 +450,10 @@ export default {
   },
   filters: {
     numFilter (value) {
-      // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
     },
-    formatDate: function (value) {//截取详情时间格式
+    formatDate: function (value) {
       return moment(value).format('YYYY-MM-DD')
     }
   },
@@ -468,13 +461,13 @@ export default {
   },
   watch: {
     variable: function() {
-      if (this.dialogType == 1) { // 退款记录详情
+      if (this.dialogType == 1) { 
         setTimeout(() => {
           this.getInvoice(this.refundID);
         },200);
         this.dialogFormOrder = true;
         this.title = "详情"
-      } else if(this.dialogType == 2){  // 审批详情
+      } else if(this.dialogType == 2){  
         setTimeout(() => {
           this.getInvoice(this.refundID,this.workID);
         },200);
@@ -492,7 +485,7 @@ export default {
     },
   },
   methods: {
-    formatDate01(date) {//时间转化
+    formatDate01(date) {
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       m = m < 10 ? "0" + m : m;
@@ -506,7 +499,6 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
-    // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if(date == undefined) {
@@ -514,7 +506,7 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD')
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
       } else {
@@ -525,24 +517,22 @@ export default {
       return "textAlign:center";
     },
     changeFun(val) {
-      //保存选中项的数据
       this.multipleSelection = val;
     },
     clickRow(row) {
-      //选中行复选框勾选
-      this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+      this.$refs.multipleTable.clearSelection(); 
       this.$refs.multipleTable.toggleRowSelection(row);
       this.payID = this.multipleSelection[0].id;
       console.log(this.payID)
     },
-    rowClass({row, rowIndex}){  //选中行样式改变
+    rowClass({row, rowIndex}){  
      for(var i=0;i<this.multipleSelection.length;i++){
         if(this.multipleSelection[i].id==row.id){
            return { "background-color": "#ecf5ff" }
         }
       }
     },
-    cancelInfoOrder(){ // 关闭详情弹窗
+    cancelInfoOrder(){ 
       this.dialogFormOrder = false;
       this.tableDate = [];
       this.tableAudit = [];
@@ -554,7 +544,7 @@ export default {
       this.auidtName = [];
       //document.getElementsByClassName("print")[0].style.display="none";
     },
-    getJqId(result){ // 获取审批结果tableAudit
+    getJqId(result){ 
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/GetInstanceActityInfoForJQ_BY_InstanceID',{
         "instanceId":this.instanceID,
         // "jq_id":result,
@@ -569,7 +559,7 @@ export default {
         console.log(this.tableAudit)
       })
     },
-    getOrder(ID){ // 点击退款获取详情信息
+    getOrder(ID){ 
       this.$http.post(this.GLOBAL.serverSrc + "/order/refund/api/get", {
           id:ID,
       }).then(res => {
@@ -584,7 +574,7 @@ export default {
         }
       })
     },
-    getInvoice(ID){//详情弹窗
+    getInvoice(ID){
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/get", {
         id: ID
       }).then(res => {
@@ -616,23 +606,23 @@ export default {
         }
       });
     },
-    orderDetails(i){ // 点击订单ID出现弹窗
+    orderDetails(i){ 
       this.orderVariable++;
       this.orderDialogType = i;
       this.orderID = this.indentID;
       this.dialogFormOrder = false;
     },
-    cancelAccount(){ // 支付账户点击取消弹窗隐藏
+    cancelAccount(){ 
       this.dialogAccount = false;
       this.tableAccount = [];
       this.dialogFormOrder = true;
     },
-    payAccount(){ // 支付账户点击支付账户弹窗显示
+    payAccount(){ 
       this.dialogAccount = true;
       this.dialogFormOrder = false;
       this.accountList();
     },
-    accountList() { // 点击支付账户查询列表
+    accountList() { 
     console.log(sessionStorage.getItem("id"))
 
       var that = this
@@ -651,10 +641,10 @@ export default {
           console.log(obj)
         })
     },
-    payment(){ // 选择支付账户
+    payment(){
       this.refundChargeShow = true;
     },
-    cancelRefundCharge(){ // 关闭手续费弹窗
+    cancelRefundCharge(){ 
       this.refundChargeShow = false;
       this.refundCharge = '';
     },
@@ -679,11 +669,11 @@ export default {
         }
     })
     },
-    cancelApproval(){ // 通过、驳回弹窗取消
+    cancelApproval(){ 
       this.dialogApproval = false ;
       this.opinion = '';
     },
-    through(){ // 点击通过显示弹窗
+    through(){ 
       this.dialogApproval = true ;
       this.approval = '审批通过';
       if(this.disbursementID == 0 && this.ifDY100068 == true){
@@ -693,13 +683,13 @@ export default {
         this.forbidden = false;
       }
     },
-    insertEBS(){ // 退款同步EBS
+    insertEBS(){ 
       this.$http.post(this.GLOBAL.serverSrc + "/finance/refund/api/insertebs",{
         refundID:this.accountID,
         accountID:this.payID,
       })
     },
-    rejected(){ // 点击驳回显示弹窗
+    rejected(){ 
       this.dialogApproval = true ;
       this.approval = '审批驳回';
     },
@@ -711,7 +701,7 @@ export default {
       }
       this.dialogApproval = false ;
     },
-    passRefund(){ //通过方法
+    passRefund(){ 
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/SubmitWorkAssignmentsForJQ_InsertOpinion', {
         "jQ_ID":this.orderCode,
         "jQ_Type":6,
@@ -734,7 +724,7 @@ export default {
           }
       })
     },
-    reject(){ // 驳回方法
+    reject(){ 
       this.$http.post(this.GLOBAL.jqUrl + '/JQ/RejectionOfWorkTasksForJQ_InsertOpinion', {
         "jQ_ID":this.orderCode,
         "jQ_Type":6,
@@ -749,8 +739,8 @@ export default {
             this.dialogFormOrder = false;
             this.$parent.commission();
             //this.EndProcessForJQ();
-            this.EndProcess(); // 工作流结束
-            this.updateReject();// 业务驳回
+            this.EndProcess(); 
+            this.updateReject();
             this.$message.success("退款驳回成功");
           }else {
             this.$message.success("退款驳回失败");
@@ -782,7 +772,7 @@ export default {
         }
       })
     },
-    updateUndo(){ // 撤销业务接口(又退人又退钱)
+    updateUndo(){ 
       if(this.tableDate.length>0){
         for(var i= 0 ; i < this.tableDate.length ; i ++){
           this.tableDate[i].refundStatus = 0;
@@ -810,7 +800,7 @@ export default {
           }
         })
     },
-    undoRefund(){ // 撤销该条退款
+    undoRefund(){ 
       this.$confirm("是否需要撤销该笔退款?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
@@ -848,7 +838,6 @@ export default {
     },
     getBorrowing(val) {
         var that = this;
-        //借款
         that.$http
           .post(this.GLOBAL.serverSrc + "/finance/payment/api/list", {
             object: {
@@ -901,7 +890,6 @@ export default {
           .catch(err => {
             console.log(err);
           });
-        //报销
         that.$http.post(this.GLOBAL.serverSrc + "/finance/expense/api/list", {
           object: {
             planID: this.planId,
@@ -923,7 +911,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-        // 发票
         that.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/listbyordercode", {
           //orderCode: "15841608842413527016"
           orderCode: this.orderCode
@@ -947,7 +934,7 @@ export default {
           }
         })
     },
-    checkInvoice(status){ // 点击发票出现弹窗
+    checkInvoice(status){ 
       this.invoiceShow = true;
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/get",{
         id:status
@@ -962,14 +949,12 @@ export default {
       this.invoiceTable = [];
     },
     approvalPay(row) {
-      //点击借款出现弹窗
       this.pid = row.guid; //
       this.paymentType = row.paymentType;
       this.infoForJQ();
       this.approvalShow = true;
     },
     infoForJQ() {
-      //借款获取审批流程
       var that = this;
       this.$http
         .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
@@ -982,13 +967,11 @@ export default {
         .catch(obj => {});
     },
     expense(row) {
-      //点击报销曲线弹窗并且获取guid
       this.pid = row.guid;
       this.expenserJQ();
       this.approvalShow = true;
     },
     expenserJQ() {
-      //报销获取审批流程
       var that = this;
       this.$http
         .post(this.GLOBAL.jqUrl + "/JQ/GetInstanceActityInfoForJQ", {
@@ -1001,7 +984,6 @@ export default {
         .catch(obj => {});
     },
     closeApprova() {
-      //关闭借款弹窗
       this.approvalTable = [];
     },
     stamp(){
@@ -1025,7 +1007,6 @@ export default {
 </script>
 
 <style scoped>
-/*下单弹窗团期信息样式*/
 .planBorder{width: 95%;margin: 0 30px 10px 0;font-size: 14px;line-height: 25px;}
 .order-title{font-size: 14pt; color:#000;line-height: 40px;}
 .controlButton{position: absolute; top: 8px; right: 10px;}

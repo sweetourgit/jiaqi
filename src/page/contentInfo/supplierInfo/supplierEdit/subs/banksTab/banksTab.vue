@@ -95,7 +95,6 @@ export default {
       }
     },
 
-    // dialog相关方法
     {
       wakeupEditForm(payload, index){
         console.log(index)
@@ -104,9 +103,7 @@ export default {
     
       saveBank(payload){
         let { data, index }= payload;
-        // 如果是编辑则添加供应商id
         if(this.isSave) data.supplierID= parseInt(this.proto.id);
-        // 如果没有创建时间
         if(!data.createTime) data.createTime= Date.now();
         if(this.$isNull(index)) return this.tableData.push(data);
         Object.assign(this.tableData[index], data);

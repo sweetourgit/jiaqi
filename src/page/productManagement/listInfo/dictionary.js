@@ -1,4 +1,4 @@
-// 获取参团游原型
+
 export const getTeamProDTO= function(){
   return {
     title: '',
@@ -8,9 +8,7 @@ export const getTeamProDTO= function(){
     pods: [],
     destinations: [],
     confirmType: 0,
-    // 亮点词
     strengths: [],
-    // 运营标签
     label: [],
     pictureID: null,
     vedioID: 100,
@@ -22,16 +20,12 @@ export const getTeamProDTO= function(){
     instructions: INSTRUCTION_TITILES.map(title => getInstructionDTO(title)),
     others: [],
     
-    /**
-     * @description: 不在表单中的项 
-     */
-    // 产品的状态 0未选择 1等待审核 2正常/已审核 3停用
     proStat: 1,
     createTime: Date.now(),
     createUser:sessionStorage.getItem('userCode'),
     loadPackage: true,
     isDeleted: 0,
-    // 接口获取
+
     guid: null,
   }
 }
@@ -50,10 +44,7 @@ export const getInstructionDTO= function(title){
 }
 
 export const MENU_TYPE= {
-  // 费用
   COST: 1,
-  // 预定须知
   RESERVE: 2,
-  // 使用说明
   INTRODUCE: 3
 }

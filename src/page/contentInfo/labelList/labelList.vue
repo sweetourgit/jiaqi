@@ -1,23 +1,19 @@
 <template style=" position: relative;">
 <div class="labelList">
   <div>
-    <!--tabs切换-->
    <!--  <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit" @tab-click="handleClick">
       <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''"></el-tab-pane>
     </el-tabs> -->
      <el-tabs v-model="editableTabsValue" type="card" addable @edit="handleTabsEdit" @tab-click="handleClick">
       <el-tab-pane :key="index+''" v-for="(item, index) in editableTabs" :label="item.typeName" :name="index+''"></el-tab-pane>
     </el-tabs>
-    <!--表格-->
     <div class="labelBorder">
       <div class="searchBox">
-        <!--清空-->
         <div style="float:left">
           <el-input placeholder="搜索标签名称" v-model="empty" class="empty" clearable></el-input>
           <el-button class="primary" @click="search()" type="primary">搜索</el-button>
           <el-button class="primary" @click="emptyButton()" type="primary">重置</el-button>
         </div>
-        <!--编辑删除主题-->
         <div style="float:right;">
           <el-button class="primary" @click="editGatherTheme($event)" type="primary">编辑集合</el-button>
           <el-button class="primary" type="danger" @click="deleteGatherTheme()">删除集合</el-button>
@@ -39,13 +35,10 @@
             </template>
           </el-table-column>
         </el-table>
-        <!--分页-->
         <el-pagination class="pageList" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange" :page-size="pagesize" :current-page.sync="currentPage" @current-change="handleCurrentChange" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
       </div>
     </div>
   </div>
-  <!--弹窗-->
-  <!--添加主题弹窗-->
   <div class="popup" v-show="gatherShow">
     <div class="mask" @click="gatherClose()"></div>
     <div class="add">
@@ -69,7 +62,6 @@
       </div>
     </div>
   </div>
-  <!--编辑主题弹窗-->
   <el-dialog title="编辑集合" :visible.sync="editGatherShow" class="city_list" width="500px" @close="editGatherClose('ruleForm_01')">
     <div class="oh">
       <div class="gatherTheme">集合名称：</div>
@@ -85,7 +77,6 @@
       </div>
     </div>
   </el-dialog>
-  <!--删除主题弹窗-->
   <div class="popup" v-show="deleteGatherShow">
     <div class="mask" @click="deleteGatherClose()"></div>
     <div class="add">
@@ -101,7 +92,6 @@
       </div>
     </div>
   </div>
-  <!--添加、编辑列表弹窗-->
   <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="500px" @close="cancel">
     <div style="float:left; line-height:40px; margin:0 10px 0 70px;">标签名称：</div>
     <el-form :model="rformA" :rules="rules" ref="rformA" label-width="100px" class="demo-ruleForm">
@@ -115,7 +105,6 @@
       <el-button type="primary" @click="saveModule('rformA')" class="confirm">确 定</el-button>
     </div>
   </el-dialog>
-  <!--绑定相关产品弹窗-->
   <el-dialog title="绑定相关产品" :visible.sync="contentShow" class="city_list" width="700px">
     <div style="overflow:hidden;">
       <el-table :data="tableDataProduct" class="labelTable" :header-cell-style="getRowClass" border :row-style="rowClass">
@@ -126,7 +115,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--绑定相关产品分页-->
       <el-pagination class="pageList_p" :page-sizes="[10,1,30,50]" background @size-change="handleSizeChange_p" :page-size="pagesize_p" :current-page.sync="currentPage_p" @current-change="handleCurrentChange_p" layout="total, sizes, prev, pager, next, jumper" :total="total_p"></el-pagination>
     </div>
   </el-dialog>
@@ -140,22 +128,19 @@
         editableTabsValue: '0',
         editableTabs: [],
         tabIndex: 0,
-        empty:'',//清空搜索框
-        //表格数据
+        empty:'',
         tableData: [],
         multipleSelection: [],
         forbidden:true,
         forbidden1:true,
-        //分页
         currentPage: 1,
         total:0,
         pagesize:10,
         title:'',
         dialogFormVisible:false,
-        rformA: {//编辑添加列表input
+        rformA: {
           labelList: ""
         },
-        //弹窗字数限制
         ruleForm:{
           highlightWords: '',
         },
@@ -176,17 +161,16 @@
             { min: 0, max: 10, message: '字数超过10汉字限制', trigger: 'blur' },
           ],
         },
-        gatherShow:false,//添加主题弹窗
-        deleteGatherShow:false,//删除主题弹窗
-        ensure:'',//删除主题
-        editGatherShow:false,//编辑主题弹窗
-        clickTab:'',//点击切换获取当前值
+        gatherShow:false,
+        deleteGatherShow:false,
+        ensure:'',
+        editGatherShow:false,
+        clickTab:'',
         sid:'',
         typeName:'',
         labelName:'',
-        contentShow:false,//绑定相关产品弹窗
-        tableDataProduct:[],//绑定相关产品弹窗里的表格
-        //绑定相关产品分页
+        contentShow:false,
+        tableDataProduct:[],
         currentPage_p: 1,
         total_p:0,
         pagesize_p:10,
@@ -196,12 +180,10 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         
     },
-    //进入页面开始执行的方法
     mounted(){
       this.pageList();
     },
     methods: {
-      //添加删除主题
       handleTabsEdit(targetName, action) {
         if (action === 'add') {
           if(this.gatherShow==false){
@@ -242,11 +224,9 @@
           }
         }
       },
-      //清空搜索框
       emptyButton(){
         this.empty = ''
       },
-      //表格标题样式
      getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px'
@@ -254,7 +234,6 @@
           return ''
         }
       },
-      //产品列表勾选button显示
       changeFun(val) {
         this.multipleSelection=val;
         if(this.multipleSelection.length==1){
@@ -262,25 +241,23 @@
         }else{
           this.forbidden=true;
         };
-        if(this.multipleSelection.length>0){//删除多选
+        if(this.multipleSelection.length>0){
           this.forbidden1=false;
         }else{
           this.forbidden1=true;
         }
-        //event.cancelBubble = true;//row-click和selection-change耦合事件
       },
-      clickRow(row){    //选中行复选框勾选
-        //this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+      clickRow(row){ 
+        //this.$refs.multipleTable.clearSelection();  
         this.$refs.multipleTable.toggleRowSelection(row);
       },
-      rowClass({row, rowIndex}){ //选中行样式改变
+      rowClass({row, rowIndex}){
        for(var i=0;i<this.multipleSelection.length;i++){
           if(this.multipleSelection[i].id==row.id){
              return { "background-color": "#ecf5ff" }
           }
         }
       },
-      //分页
       handleSizeChange(page) {
         this.currentPage = 1;
         this.pagesize = page;
@@ -290,7 +267,6 @@
         this.currentPage = currentPage;
         this.themeList();
       },
-      //添加主题弹窗关闭、确定添加
       gatherClose(){
         this.a = false;
         this.gatherShow = false;
@@ -312,7 +288,6 @@
         // this.addTheme();
         //this.ruleForm.highlightWords='';
       },
-      //删除主题弹窗关闭、确定删除
       deleteGatherClose(e){
         this.deleteGatherShow = false;
         //this.cycleId();
@@ -329,7 +304,6 @@
       deleteGatherTheme(){
         this.deleteGatherShow = true;
       },
-      //添加主题方法
       addTheme(){
         this.a = false;
         this.$refs.ruleForm.validate((valid) => {
@@ -365,7 +339,6 @@
           }
         });
       },
-      //删除主题方法
       deleteTheme(index){
         for(var i =0; i<this.editableTabs.length; i++){
           if(i== this.editableTabsValue){
@@ -389,7 +362,6 @@
             console.log(error);
           });
       },
-      //修改主题方法
       editTheme(){
         if(this.ruleForm_01.highlightWords01 === this.clickTab){
           this.editGatherShow = false;
@@ -430,46 +402,41 @@
             })
        }
       },
-      //关闭编辑主题弹窗
       editGatherClose(formName){
         this.editGatherShow = false;
         this.ruleForm_01.highlightWords01 = '';
         this.$refs[formName].resetFields();
       },
-      //获取当前项的标题
-      handleClick(tab, event) {//点击切换获取当前值
+      handleClick(tab, event) {
         this.clickTab = tab.label;
         this.themeList();
       },
-      //显示编辑主题弹窗
       editGatherTheme(e){
         this.editGatherShow = true;
         this.cycleId();
         this.ruleForm_01.highlightWords01 = this.clickTab;
       },
-      //循环主题ID
       cycleId(){
         this.clickTab = this.editableTabs[this.editableTabsValue].typeName;
         this.sid = this.editableTabs[this.editableTabsValue].id; 
       },
-      //添加、编辑列表弹窗
-      saveModule(formName){ //判断显示编辑或者添加弹窗
+      saveModule(formName){
          if(this.title == "添加标签"){
             this.addLabelTheme(formName);
          }else{
             this.editLabelTheme(formName);
          }
       },
-      addLabel(){//点击添加列表按钮
+      addLabel(){
         this.title="添加标签";
         this.dialogFormVisible = true;
       },
-      editLabel(){//点击编辑列表按钮
+      editLabel(){
         this.getLabel();
         this.title="编辑标签";
         this.dialogFormVisible = true;
       },
-      getLabel(){//获取一条信息
+      getLabel(){
         this.$http.post(this.GLOBAL.serverSrc + '/universal/olabel/api/olabelget',{
            "id":this.multipleSelection[0].id
           }).then(res => {
@@ -479,7 +446,7 @@
               }
         }) 
       },
-      addLabelTheme(formName){//添加一条列表
+      addLabelTheme(formName){
         if(this.tableData.filter(v => this.rformA.labelList == v.labelName).length != 0) {
           this.$message.error("添加失败,该标签名称已存在");
           return;
@@ -512,7 +479,7 @@
           }
         });
       },
-      editLabelTheme(formName){//编辑一条列表
+      editLabelTheme(formName){
         if(this.tableData.filter(v => this.rformA.labelList == v.labelName).length != 0) {
           this.$message.error("编辑失败,该标签名称已存在");
           return;
@@ -574,7 +541,7 @@
           });
         
       },
-      // deleteLabel(index){ //删除Module
+      // deleteLabel(index){
       //   this.$confirm("确认删除?", "提示", {
       //      confirmButtonText: "确定",
       //      cancelButtonText: "取消",
@@ -608,7 +575,6 @@
         this.dialogFormVisible = false
         this.$refs["rformA"].resetFields();
       },
-      //主题列表显示
       pageList() {
         var that = this
         this.$http.post(this.GLOBAL.serverSrc + "/universal/labletype/api/list",
@@ -642,7 +608,6 @@
       search(){
         this.themeList();
       },
-      //产品列表显示
       themeList(empty=this.empty) {
         this.cycleId();
         var that = this
@@ -672,13 +637,12 @@
             //console.log(obj)
           })
       },
-      //绑定相关产品弹窗
       binding(row){
-        this.pid = row.id;//获取表格到当前行的id
+        this.pid = row.id;
         this.product();
         this.contentShow = true;
       },
-      product(){//绑定相关产品表格
+      product(){
         var that = this
         this.$http.post(this.GLOBAL.serverSrc + "/universal/olabel/api/pageteamlabel",
           {
@@ -713,7 +677,6 @@
           });
         });
       },
-      //绑定相关产品分页
       handleSizeChange_p(page) {
         this.currentPage_p = 1;
         this.pagesize_p = page;
@@ -746,25 +709,16 @@
 
 
 <style scoped>
-/*整体样式*/
 .labelList{ font-family: '微软雅黑'; font-size: 11pt; margin: 0 0 100px 0;overflow: hidden; max-width: 900px; min-width: 630px;}
-/*外边框*/
 .labelBorder{border-left:1px solid #e6e6e6;border-right:1px solid #e6e6e6;border-bottom:1px solid #e6e6e6; margin:0 0 20px 0; overflow: hidden; clear: both;}
 .searchBox{ margin: 20px 15px 20px 15px; overflow: hidden; }
-/*穿刺去除向上的距离*/
 .el-tabs--card>>>.el-tabs__header{margin: 0 !important;}
-/*清空搜索框*/
 .empty{float: left; width: 340px;}
 .primary{float: left; margin: 0 0 0 10px;}
-/*功能按钮*/
 .actionButton{clear: both; padding: 20px 0 0 0;}
-/*表格列表*/
 .labelTable{text-align: center; margin: 20px 0 0 0;}
-/*分页*/
 .pageList{float:right; margin: 20px 0 0 0;}
-/*绑定相关产品分页*/
 .pageList_p{float: right;margin: 20px 0 0 0; overflow: hidden;}
-/*弹窗*/
 .mask{background-color: #000; width: 100%; height: 100%; position: fixed; top: 0; left: 0;filter:alpha(opacity=50);opacity:0.5; z-index: 100;}
 .add {width: 450px; height: 250px; margin:auto; position: fixed;top: 50%; left: 50%; margin-top: -125px; margin-left:-225px;background-color: #fff; overflow: hidden; border: 1px solid #eeeeee; border-radius: 3px; z-index: 1000;}
 .gatherColor{height: 40px; background: #f6f6f6;border-bottom: 1px solid #eee; line-height: 40px;}
@@ -774,10 +728,8 @@
 .el-form>>>.el-form-item{margin-bottom:0px;}
 .judge { padding: 15px 0 0 0; clear: both; text-align: center;}
 .judgeDelete { padding: 20px 0 0 0; clear: both; text-align: center;}
-/**/
 .actionButton .el-button{width:80px;padding: 0;line-height: 35px}
 .el-button.is-disabled{color: #606266;background-color: #fff;border-color: #dcdfe6}
-/*编辑集合*/
 .gatherTheme{float:left; line-height:40px; margin:0 10px 0 70px;}
 .oh{overflow: hidden;}
 .fl{float: left;}

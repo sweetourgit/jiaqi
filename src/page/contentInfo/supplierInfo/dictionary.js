@@ -1,9 +1,8 @@
-// 获取供应商原型
+
 export const getSupplierDTO= function(){
   return {
     id: 0,
-    createTime: null,	// integer($int64)
-    // code
+    createTime: null,
     name: null,
     types: null,
     productDirection: null,
@@ -16,7 +15,7 @@ export const getSupplierDTO= function(){
     handPhone: null,
     billName:	null,
     taxNumber: null,
-    expireTime: null,	// string($date-time)
+    expireTime: null,	
     memo: null,
     banks: [],
     files: [],
@@ -24,17 +23,16 @@ export const getSupplierDTO= function(){
     supplierCode: null,
     alias: [],
     
-    // 暂设常量
     orgs: [], 
     companyArea: 1,
     isDeleted: 0,
     isAgree: 2,
-    userState: 1, // 角色的数据状态 0等待审核 1正常 2停用
+    userState: 1, 
     manageType: 1
   }
 }
 
-// 状态options
+
 export const ConditionTypeOptions= [
   { value: 1, label: "正常" },
   {value: 2, label: "停用"},
@@ -55,9 +53,7 @@ export class TreeNamer {
     this._cache= {};
   }
 
-  /**
-   * @description: 根据几联选择器的数据还原它在树中的家族
-   */
+
   family(arr){
     let point= 0;
     let result= [];
@@ -80,17 +76,15 @@ export class TreeNamer {
   formate(orgList){
     let newArr= [...orgList];
     let parent;
-    // JSON.stringify保持和数据库传来的根式一致
     parent= JSON.stringify(newArr.map(el => {
       let { id, orgName }= el;
       return { id, name: orgName };
     }));
-    // 最后一个节点是叶子节点
+
     let { id: orgID, orgName }= newArr.pop();
     return { orgID, orgName, parent };
   }
 
-  // 获取几联选择器的绑定值
   getData(orgs){
     if(!orgs) return [];
     return orgs.map(org => {
@@ -102,7 +96,7 @@ export class TreeNamer {
   diff(oval, nval){
     let result= [];
     let old= oval.splice(0);
-    // 先排除掉nval中不存在的
+
     oval.push(...old.filter(el => !!nval.find(item => item.orgID=== el.orgID)));
     nval.forEach(el => {
       let hit= oval.find(item => item.orgID=== el.orgID);

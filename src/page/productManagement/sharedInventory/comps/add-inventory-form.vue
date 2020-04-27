@@ -81,7 +81,6 @@ export default {
       this.vm.state= false;
     },
 
-    // 日期验证
     dateValidator(rule, value, cb){
       if(!value) return cb(new Error('请选择日期'));
       let now= new Date();
@@ -102,9 +101,7 @@ export default {
       cb(new Error('请输入正确的价格格式，最多两位小数'));
     },
 
-    /**
-     * @description: 先验证，不通过返回false，通过则将submit变形成提交的格式 
-     */
+
     getSubmitDate(){
       let copy;
       this.$refs.submitForm.validate(validate => {

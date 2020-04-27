@@ -164,16 +164,15 @@
     },
     data(){
       return{
-        supplierDialog:true,//详情弹窗
-        teampreviewData:{},//基本信息数组
-        accountTable:[],//账户信息表格
-        types:[],//供应商类别数组
-        orgs:[],//使用部门数组
-        alias:[],//供应商其他名称数组
+        supplierDialog:true,
+        teampreviewData:{},
+        accountTable:[],
+        types:[],
+        orgs:[],
+        alias:[],
       }
     },
     methods:{
-      //表格头部样式
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return "background:#F7F7F7;color:rgb(85, 85, 85);";
@@ -187,18 +186,17 @@
       fatherMethod(){
         this.$parent.editClick(this.msg)
       },
-      //详情弹窗获取详情数据
       teamGetDetails(id){
         this.$http.post(this.GLOBAL.serverSrc + "/universal/supplier/api/supplierget", {
           id: id
         }).then(res => {
           console.log(res,'详情里面的数据')
             if (res.data.isSuccess == true) {
-              this.teampreviewData = res.data.object;// 获取基本信息数据
-              this.accountTable = res.data.object.banks;//获取账户信息数据
-              this.alias= res.data.object.alias;//获取供应商其他名称数组
-              this.types = res.data.object.types;//获取类别数组
-              this.orgs = res.data.object.orgs;//获取使用部门数组
+              this.teampreviewData = res.data.object;
+              this.accountTable = res.data.object.banks;
+              this.alias= res.data.object.alias;
+              this.types = res.data.object.types;
+              this.orgs = res.data.object.orgs;
               // if(res.data.object){
               //
               // }
@@ -221,9 +219,7 @@
 <!-- <style scoped lang='stylus'> -->
 <style>
 .supplier{position:relative;}
-/*详情按钮*/
 .supplierButton{position:absolute; top:8px; right:15px;}
-/*弹窗样式*/
 .title{font-size: 14pt;}
 .pro-info {font-size: 14px;margin: 20px 30px 10px 10px;line-height: 35px;}
 .fl{float: left;}

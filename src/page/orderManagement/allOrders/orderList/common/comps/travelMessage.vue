@@ -13,11 +13,9 @@
 .tc {
   text-align: center;
 }
-/* 出行人表格end后加 */
 .oh {
   overflow: hidden;
 }
-/*通用*/
 ul {
   margin: 0;
   padding: 0;
@@ -81,7 +79,7 @@ export default {
     orderStatus: Number,
     proto: Array,
     disabled: Boolean,
-    editDisabled: Boolean //编辑按钮只有在出行中和订单已完成状态下禁用
+    editDisabled: Boolean 
   },
 
   watch: {

@@ -1,9 +1,7 @@
 import Vue from 'vue'
 let { $http, GLOBAL, $message }= Vue.prototype;
 
-/**
- * @description: 字典接口
- */
+
 export const getOrderAction= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/order/all/api/orderget`, {
@@ -55,7 +53,7 @@ export const getTeampreviewAction= function(id){
   })
 }
 
-// 检查一个直客订单是否有审批中和审批过的收款
+
 export const checkOrderhasCollection= function(orderCode){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/finance/collection/api/iscollection`, {

@@ -179,7 +179,7 @@ export default {
   },
   data() {
     return {
-      dialogOrder:false,// 订单详情弹窗
+      dialogOrder:false,
       orderList:{},
       tableDate:[],
       orderRefundID:0,
@@ -189,14 +189,13 @@ export default {
   },
   filters: {
     numFilter (value) {
-      // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
     }
   },
   watch: {
     orderVariable: function() {
-      if (this.orderDialogType == 1) { // 订单详情
+      if (this.orderDialogType == 1) { 
         setTimeout(() => {
           this.getOrder(this.orderID);
         },200);
@@ -207,7 +206,7 @@ export default {
   created() {
   },
   methods: {
-    formatDate(date) {//时间转化
+    formatDate(date) {
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       m = m < 10 ? "0" + m : m;
@@ -221,7 +220,7 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
-    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
       } else {
@@ -234,13 +233,13 @@ export default {
     cancelOrder(){
       this.dialogOrder = false;
     },
-    getOrder(ID){ // 获取订单信息
+    getOrder(ID){ 
       this.$http.post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
           this.orderList = res.data.object;
-          this.tableDate = res.data.object.guests; // 获取订单信息页面表格内容
+          this.tableDate = res.data.object.guests;
           this.tableDate.forEach(function (v,k,arr) {
             if(arr[k]['sex'] == 0){
               arr[k]['sex'] = '男'
@@ -253,7 +252,7 @@ export default {
         }
       });
     },                                                                                                                                                                          
-    // refund(i){ // 点击退款出现退款流程弹窗
+    // refund(i){ 
     //   this.orderRefund++;
     //   this.orderRefundDialog = i;
     //   this.dialogOrder = false;

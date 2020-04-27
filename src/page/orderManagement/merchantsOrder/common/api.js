@@ -1,9 +1,7 @@
 import Vue from 'vue'
 let { $http, GLOBAL, $message }= Vue.prototype;
 
-/**
- * @description: 字典接口
- */
+
 export const getOrderAction= function(id){
   return new Promise((resolve, reject) => {
     $http.post(GLOBAL.serverSrc + `/order/all/api/orderget`, {

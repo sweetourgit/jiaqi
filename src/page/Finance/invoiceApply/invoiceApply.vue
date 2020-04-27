@@ -1,6 +1,5 @@
 <template>
   <div style="border:1px solid #e6e6e6; max-width:1420px; overflow:hidden;margin:0 0 80px 0;">
-    <!--搜索框-->
     <div class="demo-input-suffix">
       <div>
         <span class="search-title" style="margin:0 0 0 35px;">发票号码</span>
@@ -38,7 +37,6 @@
     </div>
     <div class="main">
       <el-button type="primary" class="apply" @click="addInvoiceApply(1)">申请</el-button>
-      <!--列表表格-->
       <el-table :data="tableDate" ref="multipleTable" class="table" :header-cell-style="getRowClass" border :cell-style="getCellClass" @row-click="clickRow" @selection-change="changeFun">
         <el-table-column prop="id" label="发票ID" align="center"></el-table-column>
         <el-table-column prop="state" label="状态" align="center">
@@ -72,7 +70,6 @@
           </template>
         </el-table-column>
       </el-table>
-      <!--分页-->
       <el-pagination v-if="pageshow" class="pagination" @size-change="handleSizeChange" background @current-change="handleCurrentChange"
         :current-page.sync="current" :page-sizes="[10, 30, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"
       ></el-pagination>
@@ -84,7 +81,7 @@
 
 <script>
 import moment from "moment";
-import invoiceApplyDetails from "./invoiceApplyDetails";//详情
+import invoiceApplyDetails from "./invoiceApplyDetails";
 import addInvoiceApply from "./addInvoiceApply";
 export default {
   name: "invoiceApply",
@@ -95,20 +92,18 @@ export default {
   data() {
     return {
       invoiceID:0,
-      variable: 0, //设置一个变量展示弹窗
-      dialogType: 0, //弹窗类型  1：详情
-      variableInvoice:0, // 申请发票开关
-
-      //搜索框
-      invoiceNumber:'',//发票号码
-      merchantsName:'',//商户名称
-      applyForDate:'', // 申请日期
-      states:'',// 状态
-      invoiceTitle:'',// 发票抬头
-      invoiceDate:'',// 开票日期
-      types:'', // 直客/商户
-      collectionNumber: '', // 收款单号
-      statesType:[{ // 搜索框状态数据
+      variable: 0, 
+      dialogType: 0, 
+      variableInvoice:0, 
+      invoiceNumber:'',
+      merchantsName:'',
+      applyForDate:'', 
+      states:'',
+      invoiceTitle:'',
+      invoiceDate:'',
+      types:'', 
+      collectionNumber: '',
+      statesType:[{ 
         value:'1',
         label:'待开票'
       },{
@@ -118,20 +113,20 @@ export default {
         value:'3',
         label:'开票驳回'
       }],
-      typeList:[{ // 直客/商户
+      typeList:[{ 
         value:'1',
         label:'商户'
       },{
         value:'2',
         label:'直客'
       }],
-      tableDate:[],//表格 {endTime:1580428800000 // 2020-01-31}
-      pageshow: true,// 分页
-      pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
-      pageIndex: 1, // 设定当前页数
+      tableDate:[],
+      pageshow: true,
+      pageSize: 10,  
+      pageIndex: 1, 
       total: 0,
       current:1,
-      multipleSelection: [], //选中的list
+      multipleSelection: [], 
     };
 
   },
@@ -140,7 +135,7 @@ export default {
   },
   methods: {
     moment,
-    formatDate(date) {//时间转化
+    formatDate(date) {
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       m = m < 10 ? "0" + m : m;
@@ -154,7 +149,6 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
-    // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if(date == undefined) {
@@ -162,25 +156,25 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD')
     },
-    search(){ // 搜索
+    search(){ 
       this.current = 1;
       this.pageList(this.pageIndex === 1 ? this.pageIndex : 1,this.pageSize);
     },
-    reset(curPage){ // 重置
-      this.invoiceNumber = '';//发票号码
-      this.merchantsName = '';//商户名称
-      this.applyForDate = ''; // 申请日期
-      this.states = '';// 状态
-      this.invoiceTitle = '';// 发票抬头
-      this.invoiceDate = '';// 开票日期
-      this.types = ''; // 直客/商户
-      this.collectionNumber = '' ; //收款单号
+    reset(curPage){ 
+      this.invoiceNumber = '';
+      this.merchantsName = '';
+      this.applyForDate = ''; 
+      this.states = '';
+      this.invoiceTitle = '';
+      this.invoiceDate = '';
+      this.types = ''; 
+      this.collectionNumber = '' ;
       this.pageIndex = 1 ? 1 : 1;
       this.current = curPage;
       this.pageList();
     },
 
-    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
       } else {
@@ -191,7 +185,7 @@ export default {
       return "textAlign:center";
     },
     pageList(pageIndex = this.pageIndex,pageSize = this.pageSize,invoiceNumber = this.invoiceNumber, merchantsName = this.merchantsName,selStartCreateTime=this.applyForDate == null ? 0 : this.applyForDate[0],selEndCreateTime = this.applyForDate == null ? 0 : this.applyForDate[1],states = this.states, invoiceTitle = this.invoiceTitle,selStartGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[0],selEndGrantTime = this.invoiceDate == null ? 0 : this.invoiceDate[1],types = this.types,collectionNumber =this.collectionNumber){
-      if(selStartCreateTime){ //YYYY-MM-DD 转换成时间戳
+      if(selStartCreateTime){ 
          selStartCreateTime = (new Date(selStartCreateTime)).getTime()
       }else{
         selStartCreateTime = 0 ;
@@ -254,7 +248,7 @@ export default {
       this.pageIndex = val;
       this.pageList(val,this.pageSize);
     },
-    operation(i) {// 显示详情
+    operation(i) {
       this.variable++;
       this.dialogType = i;
     },
@@ -263,12 +257,10 @@ export default {
 
     },
     changeFun(val) {
-      //保存选中项的数据
       this.multipleSelection = val;
     },
     clickRow(row) {
-      //选中行复选框勾选
-      this.$refs.multipleTable.clearSelection(); //清空用户的选择,注释掉可多选
+      this.$refs.multipleTable.clearSelection(); 
       this.$refs.multipleTable.toggleRowSelection(row);
       this.invoiceID = this.multipleSelection[0].id;
     },
@@ -311,7 +303,6 @@ export default {
 .apply{
   margin:0 0 0 10px;
 }
-/*表格*/
 .table {
   border: 1px solid #e6e6e6;
   border-bottom: 0;
@@ -327,6 +318,5 @@ export default {
 .cursor {
   cursor: pointer;
 }
-/*分页*/
 .pagination{float: right; margin: 10px 10px 20px 0;}
 </style>

@@ -35,9 +35,7 @@ export default {
   data(){
     return Object.assign({
       vm: { inited: false },
-      // 预定说明
       reserve: [],
-      // 使用说明
       introduce: []
     }, { MENU_TYPE })
   },

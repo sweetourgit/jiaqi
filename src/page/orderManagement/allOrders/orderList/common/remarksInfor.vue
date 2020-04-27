@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--备注信息弹窗-->
     <el-dialog
       title="订单备注"
       :visible.sync="dialogFormMark"
@@ -62,7 +61,6 @@ export default {
   data() {
     return {
       name: localStorage.getItem("name"),
-      //备注信息弹窗
       dialogFormMark: false,
       markFormAdd: {
         orderCode: "",
@@ -94,7 +92,6 @@ export default {
     },
     orderGetFun(orderId,orderCode) {
 
-      //查询一条订单信息 /orderquery/get/api/SIOrders
       // this.$http
       //   .post(this.GLOBAL.serverSrc + "/order/all/api/orderget", {
       //     id: orderId
@@ -177,7 +174,6 @@ export default {
         }
       });
     },
-    // 接收备注时间格式的转换   
     getTimeChange (str) {
       let time = str.replace('T',' ')
       return time

@@ -20,10 +20,7 @@
 </template>
 
 <script>
-/**
- * @description: 
- * 1. 在watch中初始化，因为第一次传的value是void 0
- */
+
 
 export default {
 
@@ -60,7 +57,6 @@ export default {
     init(){
       this.vm.inited= true;
 
-      // 接口文档是对象，但是现在传回来的都是数组，这里先做个补丁, 以后数据正确这里要删掉
       let fake= JSON.parse(this.value);
       if(Object.prototype.toString.call(fake)=== '[object Array]'){
         fake= fake[0];

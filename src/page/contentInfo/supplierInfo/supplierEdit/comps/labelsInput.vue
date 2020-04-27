@@ -27,7 +27,6 @@
     .inline-input{
       width: 300px;
     }
-    // 首页全局被改写了，这里fix下
     .el-autocomplete-suggestion li:hover{
       background-color: #F5F7FA;
     }
@@ -88,11 +87,8 @@ export default {
   props: {
     value: Array,
     placeholder: String,
-    // 要显示的是哪个属性
     tagLabelAttr: String,
-    // id是哪个属性
     tagValueAttr: String,
-    // 回调函数中以哪个值充当value
     cbLabel: String,
     inputProps: {
       type: Object,
@@ -100,7 +96,6 @@ export default {
         return {}
       }
     },
-    // 远程调用的方法
     fetchSuggestions: Function,
   },
 
@@ -109,7 +104,6 @@ export default {
   },
   
   computed: {
-    // 是远程搜索类型还是普通输入框
     isAutocomplete(){
       return !!this.fetchSuggestions;
     }

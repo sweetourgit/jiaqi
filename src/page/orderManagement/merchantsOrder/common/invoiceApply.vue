@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--备注信息弹窗-->
     <el-dialog
       title="申请发票"
       :visible.sync="dialogFormMark"
@@ -73,22 +72,21 @@ export default {
   data() {
     return {
       name: localStorage.getItem("name"),
-      //备注信息弹窗
       dialogFormMark: false,
       loadingbuttext:'申 请',
-      loadingbut:false,//提交撤销加载中
-      allPrice:0,//能开金额
-      tableDate:[],//订单数组
-      newtabledate:[],//提交数组
+      loadingbut:false,
+      allPrice:0,
+      tableDate:[],
+      newtabledate:[],
       ruleForm:{
-        unitPersonal:'1', // 单位/个人
-        invoiceTitle:'', //发票抬头
-        taxpayerNumber:'', // 纳税人识别号
-        phone:'', // 手机号
-        account:'', // 账号
-        partCardBank:'', // 开户行
-        address:'', // 地址
-        invoicePrice:'', // 开票金额
+        unitPersonal:'1', 
+        invoiceTitle:'', 
+        taxpayerNumber:'', 
+        phone:'', 
+        account:'', 
+        partCardBank:'', 
+        address:'', 
+        invoicePrice:'', 
         
       },
        rules:{
@@ -229,18 +227,18 @@ export default {
         "object": {
           "receipt":{
                 "createTime":mydatas,
-                "invoiceType":ruleForm.unitPersonal,//单位个人
-                "invoiceID":ruleForm.invoiceType,//发票类型
-                "taxpayerIDNumber":ruleForm.taxpayerNumber,//纳税人识别号
-                "invoiceHeader":ruleForm.invoiceTitle,//发票抬头
-                "tel":ruleForm.phone,//手机号
-                "invoiceItem":ruleForm.invoiceProject,//发票项目
-                "invoicePrice":ruleForm.invoicePrice,//发票金额
-                "cardNumber":ruleForm.account,//账号
-                "bankName":ruleForm.partCardBank,//开户行
-                "address":ruleForm.address,//地址
-                "userCode":sessionStorage.getItem('userCode'),//申请人
-                 "receiptType":2,//发票申请
+                "invoiceType":ruleForm.unitPersonal,
+                "invoiceID":ruleForm.invoiceType,
+                "taxpayerIDNumber":ruleForm.taxpayerNumber,
+                "invoiceHeader":ruleForm.invoiceTitle,
+                "tel":ruleForm.phone,
+                "invoiceItem":ruleForm.invoiceProject,
+                "invoicePrice":ruleForm.invoicePrice,
+                "cardNumber":ruleForm.account,
+                "bankName":ruleForm.partCardBank,
+                "address":ruleForm.address,
+                "userCode":sessionStorage.getItem('userCode'),
+                 "receiptType":2,
                 },
             "cosList":this.newtabledate
          
@@ -271,23 +269,22 @@ export default {
         })
     },
     
-    // 接收备注时间格式的转换   
     getTimeChange (str) {
       let time = str.replace('T',' ')
       return time
     }, 
-    ruleNull(){ // 清空内容
+    ruleNull(){ 
             this.ruleForm= {
-                  unitPersonal:'1', // 单位/个人
-                  invoiceTitle:'', //发票抬头
-                  taxpayerNumber:'', // 纳税人识别号
-                  phone:'', // 手机号
-                  account:'', // 账号
-                  partCardBank:'', // 开户行
-                  address:'', // 地址
-                  invoicePrice:'', // 开票金额
+                  unitPersonal:'1', 
+                  invoiceTitle:'', 
+                  taxpayerNumber:'', 
+                  phone:'', 
+                  account:'', 
+                  partCardBank:'', 
+                  address:'', 
+                  invoicePrice:'', 
                }
-               this.newtabledate=[];//清空的数组
+               this.newtabledate=[];
     },
   }
 };

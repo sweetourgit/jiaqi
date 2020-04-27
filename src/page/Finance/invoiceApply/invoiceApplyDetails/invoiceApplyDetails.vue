@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--详情-->
     <el-dialog title="详情" :visible.sync="dialogFormOrder" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
       @close="cancelInfoOrder()">
       <div class="controlButton">
@@ -123,7 +122,6 @@
         </el-table>
       </div>
     </el-dialog>
-    <!--开票、换票弹窗-->
     <el-dialog :title="title" :visible.sync="openInvoiceShow" custom-class="city_list dialogOrder" style="margin-top:-100px" width="1200px"
       @close="closeOpenInvoice()">
       <div class="controlButton">
@@ -213,17 +211,17 @@ export default {
   },
   data() {
     return {
-      dialogFormOrder:false,// 详情弹窗
-      invoiceList:{},// 基本信息数组
-      tableDate:[],// 详情弹窗中关联订单表格
-      title:"",//换票、开票标题
+      dialogFormOrder:false,
+      invoiceList:{},
+      tableDate:[],
+      title:"",
       openInvoiceShow:false,
-      ruleFormSeach:{// 单张发票金额
+      ruleFormSeach:{
         invoicePrice:'',
       },
-      invoiceDate:[],//发票表格
-      invoiceAmount:'',// 输入发票金额
-      invoiceNumber:'',// 输入发票号
+      invoiceDate:[],
+      invoiceAmount:'',
+      invoiceNumber:'',
       invoiceHeader:'',
       taxpayerIDNumber:'',
       a:false,
@@ -232,20 +230,19 @@ export default {
       ifOnly:true,
       originalBanks:'',
       invoicePrice:'',
-      sum:0,//发票金额的总和
+      sum:0,
       sum_01:0,
       invoiceHeader:'',
-      loadingbut:false,//提交撤销加载中
+      loadingbut:false,
     };
 
   },
   filters: {
     numFilter (value) {
-      // 截取当前数据到小数点后两位
       let realVal = parseFloat(value).toFixed(2)
       return realVal
     },
-    formatDate: function (value) {//截取详情时间格式
+    formatDate: function (value) {
       return moment(value).format('YYYY-MM-DD')
     }
   },
@@ -253,7 +250,7 @@ export default {
   },
   watch: {
     variable: function() {
-      if (this.dialogType == 1) { // 详情
+      if (this.dialogType == 1) { 
         setTimeout(() => {
           this.getInvoice(this.invoiceID);
         },200);
@@ -265,7 +262,7 @@ export default {
     clearNoNum(index,data){
       this.invoiceDate[index].invoicePrice = data.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');//只能输入两个小数
     },
-    formatDate01(date) {//时间转化
+    formatDate01(date) {
       var y = date.getFullYear();
       var m = date.getMonth() + 1;
       m = m < 10 ? "0" + m : m;
@@ -279,7 +276,6 @@ export default {
       second = second < 10 ? "0" + second : second;
       return y + "-" + m + "-" + d;
     },
-    // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if(date == undefined) {
@@ -288,7 +284,7 @@ export default {
       return moment(date).format('YYYY-MM-DD')
     }, 
 
-    getRowClass({ row, column, rowIndex, columnIndex }) {//表格头部颜色
+    getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#f7f7f7;height:60px;textAlign:center;color:#333;fontSize:15px";
       } else {
@@ -298,26 +294,26 @@ export default {
     getCellClass() {
       return "textAlign:center";
     },
-    cancelInfoOrder(){ // 关闭详情弹窗
+    cancelInfoOrder(){ 
       this.dialogFormOrder = false;
       this.tableDate = [];
       this.invoiceDate = [];
       
     },
-    getInvoice(ID){//详情弹窗
+    getInvoice(ID){
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/get", {
         id: ID
       }).then(res => {
         if (res.data.isSuccess == true) {
           this.invoiceList = res.data.object;
           this.guest = res.data.object.invoicePrice;
-          this.invoicePrice = res.data.object.invoicePrice; // 点击详情获取开票金额
-          this.tableDate = res.data.object.ordelist; // 点击详情获取关联订单表格
+          this.invoicePrice = res.data.object.invoicePrice; 
+          this.tableDate = res.data.object.ordelist; 
           this.invoiceDate.push(res.data.object);
           //this.invoiceDate[0].invoicePrice = "";
-          this.originalBanks =  res.data.object.invoiceNumber; // 点击详情获取开票号
+          this.originalBanks =  res.data.object.invoiceNumber; 
           this.invoiceDate[0].invoiceNumber = "";
-          this.associated(); // 点击开票或者换票 显示关联订单总计金额
+          this.associated();  
           if(this.invoiceList.invoicePrice !== ''){
             this.sum = this.guest
           }
@@ -325,7 +321,7 @@ export default {
         }
       });
     },
-    rejectedIncoice(ID){// 撤销
+    rejectedIncoice(ID){
       this.$confirm("是撤销本次发票信息?", "提示", {
          confirmButtonText: "确定",
          cancelButtonText: "取消",
@@ -335,7 +331,7 @@ export default {
          this.loadingbut = true;
         this.$http.post(this.GLOBAL.serverSrc + '/finance/Receipt/api/RevokeReceipt',{
            "id": ID,
-           "userCode": sessionStorage.getItem('userCode'),//申请人
+           "userCode": sessionStorage.getItem('userCode'),
           }).then(res => {
           console.log(res);
           if(res.data.isSuccess == true){
@@ -355,7 +351,7 @@ export default {
         });
       });
     },
-    closeOpenInvoice(){// 关闭开票、换票弹窗
+    closeOpenInvoice(){
       this.sum = 0;
       this.sum_01 = 0;
       this.openInvoiceShow = false;
@@ -363,7 +359,7 @@ export default {
       this.ruleFormSeach.invoicePrice = '';
       this.a = false;
     },
-    openInvoice(ID){ // 在详情弹窗里点击开票按钮
+    openInvoice(ID){ 
       this.invoiceDate = [];
       this.getInvoice(ID);
       this.title = '开票';
@@ -377,14 +373,14 @@ export default {
       this.dialogFormOrder = false;
       this.openInvoiceShow = true;
     },
-    split(){// 拆分
+    split(){
       if(this.ruleFormSeach.invoicePrice <= 0){
         return;
       }
       let preLength = this.invoiceDate.length;
       let str = Math.ceil(this.sum/this.ruleFormSeach.invoicePrice)
       let remainder = Math.ceil((this.sum%this.ruleFormSeach.invoicePrice) * 1000)/1000 + "";
-      remainder = remainder.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1'); // 取余后保留小数点后两位
+      remainder = remainder.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1'); 
       if(str > preLength){
         for(let i=0; i < str; i++){
           if(i>preLength-1){
@@ -402,7 +398,7 @@ export default {
         this.invoiceDate[str-1].invoicePrice = remainder;
       }
     },
-    invoiceOnly(ID){ // 验证发票号唯一性
+    invoiceOnly(ID){ 
       let number = []
       this.invoiceDate.forEach(v=>{
        number.push(v.invoiceNumber)
@@ -448,7 +444,7 @@ export default {
         });
       }
     },
-    invoiceSum(){//求发票金额的总和
+    invoiceSum(){
       let sum = 0; 
       this.invoiceDate.forEach(function(item) {
         sum += Number(item.invoicePrice);
@@ -456,21 +452,21 @@ export default {
       this.sum = sum;
       console.log(sum)
     },
-    associated(){ //求关联订单剩余开票金额的总和
+    associated(){ 
       let sum_01 = 0;
       this.tableDate.forEach(function(item) {
         sum_01 += Number(item.skPrice);
       });
       this.sum_01 = sum_01;
     },
-    openInvoicement(ID){ // 点击开票按钮
+    openInvoicement(ID){ 
       if(this.ifOnly == true){
         this.a = true;
-        let sum = 0; //求发票金额的总和
+        let sum = 0; 
         this.invoiceDate.forEach(function(item) {
           sum += Number(item.invoicePrice);
         });
-        let sum_01 = 0; //求关联订单剩余开票金额的总和
+        let sum_01 = 0; 
         this.tableDate.forEach(function(item) {
           sum_01 += Number(item.skPrice);
         });
@@ -502,7 +498,7 @@ export default {
         }
       }
     },
-    changeTicket(ID){ // 换票
+    changeTicket(ID){ 
       this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/replacereceipt", {
         object:this.invoiceDate[0]
       }).then(res => {
@@ -517,7 +513,6 @@ export default {
 </script>
 
 <style scoped>
-/*下单弹窗团期信息样式*/
 .planBorder{width: 95%;margin: 0 30px 10px 0;font-size: 14px;line-height: 25px;}
 .order-title{font-size: 14pt; color:#000;line-height: 40px;}
 .controlButton{position: absolute; top: 8px; right: 10px;}

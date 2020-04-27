@@ -40,9 +40,7 @@
 </template>
 
 <script>
-/**
- * @description: 经停组件
- */
+
 import ErrorHandlerMixin from './mixins/ErrorHandlerMixin'
 
 export default {
@@ -81,33 +79,25 @@ export default {
 
   methods: {
 
-    /**
-     * @description: 初始化
-     */
+ 
     init(){
       Object.keys(this.proto).forEach(attr => this.submitForm[attr]= this.proto[attr]);
     },
 
-    /**
-     * @description: 检查是否有数据变动
-     */
+  
     checkHasChange(){
       let bol= !this.$checkLooseEqual(this.submitForm, this.proto);
       return bol;
     },
 
-    /**
-     * @description: 统一验证
-     */
+  
     validate(){
       let bol= true;
       this.$refs.submitForm.validate((valid) => bol= valid);
       return bol;
     },
 
-    /**
-     * @description: 单纯获取数据
-     */
+ 
     getData(){
       return this.submitForm;
     }

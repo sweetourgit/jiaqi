@@ -1,4 +1,4 @@
-// data采用20191010的int形式
+
 export const inventorylistAction= function(date){
   return new Promise((resolve, reject) => {
     this.$http.post(this.GLOBAL.serverSrc + '/team/api/inventorylist', {

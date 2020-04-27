@@ -38,7 +38,6 @@ export default {
           this.activeName = "3"
         }
       },
-      // 深度观察监听
       deep: true
     }
   },

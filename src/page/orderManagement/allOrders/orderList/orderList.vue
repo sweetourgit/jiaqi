@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="demo-input-suffix">
-      <!--搜索-->
       <span class="search-title">订单ID</span>
       <el-input v-model="orderCode" class="input" @blur="orderCodeBlur()"></el-input>
       <!-- <span class="search-title">产品ID</span>
@@ -116,7 +115,6 @@
         <li @click="statusTab(1,7,9)" v-bind:class="{statusbg: orderNum==7}">作废订单</li>-->
       </ul>
       <br />
-      <!--退款状态-->
       <!-- <div class="status-title">退款状态</div> -->
       <ul class="order-status" style="margin-left:90px">
         <li
@@ -141,9 +139,7 @@
       <br />
       <el-button type="primary" class="search-but" @click="orderPage(1,pageSize)">搜索</el-button>
       <el-button type="primary" class="search-but" @click="handleReset">重置</el-button>
-      <!--订单列表-->
       <div class="pro-info" v-for="(item,index) in orderpage" :key="index">
-        <!-- 后加的折叠begin -->
         <h3>{{item.name}}</h3>
         <div class="contentHeader" @click="handleContentHeader(item,index)">
           <table>
@@ -166,20 +162,16 @@
               </div>
             </tr>
           </table>
-          <!-- 点击一个其余不折叠 -->
           <!-- <i
             :class="['contentHeaderIcon', item.showContent == false ? 'el-icon-arrow-right': 'el-icon-arrow-down']"
           ></i>-->
-          <!-- 点击一个其余折叠 -->
           <i
             :class="['contentHeaderIcon', showContent !== index ? 'el-icon-arrow-right': 'el-icon-arrow-down']"
           ></i>
         </div>
 
         <transition name="el-fade-in">
-          <!-- 点击一个其余不折叠 -->
           <!-- <div class="contentBody" v-show="item.showContent"> -->
-          <!-- 点击一个其余折叠 -->
           <div class="contentBody" v-show="showContent == index">
             <table>
               <tr>
@@ -309,7 +301,6 @@
         :total="total"
       ></el-pagination>
 
-      <!--出团通知书弹窗begin-->
       <el-dialog
         title="出团通知书"
         :visible.sync="dialogAdviceNote"
@@ -337,8 +328,6 @@
           </div>
         </div>
       </el-dialog>
-      <!--出团通知书弹窗end-->
-      <!--流程管理弹窗-->
       <process-manage
         :orderId="orderId"
         :a_variable="a_variable"
@@ -352,15 +341,12 @@
         @orderPage="orderPage"
         @childByValue="childByValue"
       ></process-manage>
-       <!--流程管理弹窗and-->
-       <!--备注信息弹窗-->
       <remarks-infor
         :orderId="orderId"
         :a_variable="a_variable"
         :dialogType="dialogType"
         :orderCodeSon="orderCodeSon"
       ></remarks-infor>
-      <!--备注信息弹窗end-->
       <order-transfer 
       :orderId="orderId" 
       :a_variable="a_variable" 
@@ -399,8 +385,8 @@ export default {
   },
   data() {
     return {
-      orderRefundDialog: 0,//退款控制显示隐藏的 
-      fileList: [], //出团通知书的图片
+      orderRefundDialog: 0,
+      fileList: [], 
       defaultProps: {
         children: "children",
         label: "label"
@@ -426,34 +412,34 @@ export default {
       ],
       refundStatus: 0,
       refundNum: null,
-      orderCode: "", //订单ID
-      orderCodeSon: null, //传给子组件
-      teamID: "", //产品ID
-      groupCode: "", //团期计划ID
+      orderCode: "", 
+      orderCodeSon: null, 
+      teamID: "", 
+      groupCode: "", 
       beginDate: "",
       endDate: "",
-      groupCode: null, //团期计划
-      name: "", //产品名称
-      podID: "", //出发地
-      pod: "", //出发地
-      destinationID: "", //目的地
-      destination: "", //目的地
-      saler: "", //销售
-      otherPrice: "", //其他费用名称
-      platform: null, //平台 1 ERP系统  2 同业系统
-      productType: "", //产品类型  Team = 1 跟团游 Free = 2 自由行
-      priceType: null, //价格类型  1直客  2同业价格
-      // localCompName: "", //商户名称
-      // orderChannels: "", //商户名称
+      groupCode: null, 
+      name: "", 
+      podID: "", 
+      pod: "", 
+      destinationID: "", 
+      destination: "", 
+      saler: "", 
+      otherPrice: "",
+      platform: null, 
+      productType: "", 
+      priceType: null, 
+      // localCompName: "", 
+      // orderChannels: "", 
       localCompID:0,
-      orgID: 0, //商户名称搜索传给后台的id
-      orgIDValue: "", //商户名称 搜索时显示的字段
-      contact: "", //订单联系人
-      orderChannel: null, //订单来源
-      whichStateTab: null, //判断tab是从1 还是2 过来的
-      enrollDetail: "", //报名信息传给后台的格式
-      salePrice:[],//拼接空数组
-      // breadcrumbSelectValue: "更多", //面包屑更多默认
+      orgID: 0, 
+      orgIDValue: "", 
+      contact: "", 
+      orderChannel: null, 
+      whichStateTab: null, 
+      enrollDetail: "",
+      salePrice:[],
+      // breadcrumbSelectValue: "更多", 
       // breadcrumbOptions: [
       //   {
       //     value: "0",
@@ -470,24 +456,23 @@ export default {
           label: "跟团游"
         }
       ],
-      //订单列表
-      pageSize: 10, // 设定默认分页每页显示数 todo 具体看需求
-      pageIndex: 1, // 设定当前页数
+      pageSize: 10, 
+      pageIndex: 1, 
       total: 0,
       orderpage: [],
       orderId: 0,
-      variable: 0, //退款
-      a_variable:0,//设置一个变量展示弹窗
-      variable_s:0,//发票申请
-      dialogType: 0, //弹窗类型  1：流程管理  2：备注信息 3出团通知书
-      orderCode: "", //订单编号
-      orderStateAllNum: {}, //订单状态 每个按钮的数量下标
+      variable: 0,
+      a_variable:0,
+      variable_s:0,
+      dialogType: 0, 
+      orderCode: "", 
+      orderStateAllNum: {}, 
       getListOneMessage: {},
-      showContent: null, //list折叠展示的
-      businessLists: [], //商户名称下拉列表展示
-      isToast: false, //商户名称模糊搜索 没有数据然后的提示语显示
-      enrollDetailShow: "", //报名信息的数量
-      dialogAdviceNote: false //出团通知书
+      showContent: null, 
+      businessLists: [], 
+      isToast: false, 
+      enrollDetailShow: "", 
+      dialogAdviceNote: false 
     };
   },
   watch: {
@@ -518,11 +503,9 @@ export default {
     //   let url = this.fileList[0].url;
     //   window.open(url);
     // },
-    // 出团通知书的发送
     adviceNoteSend() {},
     handleRemove(file, fileList) {},
     handlePreview(file, fileList) {},
-    //目的地
     querySearch(queryString, cb) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/universal/area/api/fuzzy", {
@@ -548,7 +531,6 @@ export default {
         });
     },
 
-    //商户名称模糊查询
     handleBusinessGet(queryString3, cb) {
       this.businessLists = [];
       this.$http
@@ -587,26 +569,23 @@ export default {
         return restaurant.value;
       };
     },
-    // 搜索商户名称下拉选择事件
     handleChooseOrgID(item) {
       this.orgID = item.id;
     },
-    // 商户名称input失去焦点的时候隐藏提示语 没有数据
     isToastFun() {
       this.isToast = false;
       this.orgIDValue = "";
       this.orgID = 0;
     },
 
-    // 点击list列表中的一个
     handleContentHeader(item, index) {
       // let temp = this.orderpage;
       // temp[index].showContent = !temp[index].showContent;
       // this.orderpage = temp;
-       this.variable= 0; //退款
-       this.a_variable=0;//设置一个变量展示弹窗
-       this.variable_s=0;//发票申请
-       this.dialogType= 0; //弹窗类型  1：流程管理  2：备注信息
+       this.variable= 0; 
+       this.a_variable=0;
+       this.variable_s=0;
+       this.dialogType= 0; 
       if (this.showContent != index) {
         this.showContent = index;
         this.tour = {};
@@ -615,7 +594,6 @@ export default {
         this.showContent = null;
       }
     },
-     // 请求list中的一个数据
     axiosListOneInfo(id,planID) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/order/all/api/pageinfo", {
@@ -623,8 +601,8 @@ export default {
         })
         .then(res => {
           // console.log("请求一条数据的",res)
-          let enrolls=[];//标题
-          let guest;//全部数据
+          let enrolls=[];
+          let guest;
           this.enrollDetailShow = "";
            if(res.data.object.orderStatus === 1 && res.data.object.refundStatus === 6){
               res.data.object.orderStatus = 10;
@@ -646,13 +624,11 @@ export default {
           //   this.getListOneMessage.orderChannel = "线下直客";
           // }
 
-          // 下单平台
           if (this.getListOneMessage.platform == 1) {
             this.getListOneMessage.platform = "ERP系统";
           } else {
             this.getListOneMessage.platform = "同业系统";
           }
-           //获取报名类型列表数据
           this.$http
             .post(this.GLOBAL.serverSrc + "/teamquery/get/api/enrolls", {
               id: planID
@@ -693,7 +669,6 @@ export default {
           ...enrolls.map((enroll, index) => {
             let result= [];
             result.enroll= enroll;
-            // 收集所有相同报名类型的实例，只有当前存在的报名类型需要这个属性，不存在的报名类型肯定不可以新增实例了
             enroll.children= [];
             salePriceReflect[this.enrollKeyMaker(enroll)]= result;
             return result;
@@ -702,21 +677,16 @@ export default {
         guests.forEach(guest => {
           let { enrollName, singlePrice }= guest;
           let key= `${enrollName}_${singlePrice}`;
-          // 不知道存不存在这个情况，过去有一个报名类型，但是现在没有了，这个时候hitEnroll为undefined
-          // guest的报名类型不存在于当前enrolls
           salePriceReflect[key].push(guest); 
         })
-        // 这里的el就是上边的salePriceReflect[key]
         this.salePrice.forEach(el => {
           el.enroll && el.enroll.children.push(el);
         });
       },
-      //根据报名类型和价格类型返回key
       enrollKeyMaker(enroll){
          let { enrollName, price_01, price_02 }= enroll;
         return `${enrollName}_${price_01}`
       },
-        // 报名信息
       enrollDetailMaker(){
         let str= '';
         let singlePrice;
@@ -731,11 +701,9 @@ export default {
         })
         this.guestTotal= count;
         this.getListOneMessage.enrollDetail= str;
-        //console.log( this.getListOneMessage.enrollDetail,'最后结果')
         return price;
       },
       
-    // 整理数据报名信息的格式显示
     // formatData(origindata) {
     //   let data = JSON.parse(origindata);
     //   let keys = Object.keys(data);
@@ -798,7 +766,7 @@ export default {
     
     statusTab(num, index, status) {
       if (num == 1) {
-        this.refundNum = 7; //为7 只要不等于索引值不等于退款状态号就行
+        this.refundNum = 7;
         this.refundStatus = 0;
         this.whichStateTab = num;
         this.orderNum = index;
@@ -814,7 +782,6 @@ export default {
         this.orderPage(1, this.pageSize);
       }
     },
-    //订单列表
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageIndex = 1;
@@ -825,28 +792,27 @@ export default {
       this.pageIndex = val;
     },
 
-    // 重置
     handleReset() {
-      this.orderCode = ""; //订单ID
-      this.teamID = ""; //产品ID
-      this.groupCode = null; //团期计划ID
-      this.beginDate = ""; //开始日期
-      this.endDate = ""; //结束日期
-      this.name = ""; //产品名称
-      this.pod = ""; //出发地
-      this.podID = ""; //出发地
-      this.destinationID = ""; //目的地
-      this.destination = ""; //目的地
-      this.saler = ""; //销售
-      (this.otherPrice = ""), //其他费用名称
-        (this.platform = null), //平台
-        (this.productType = ""); //产品类型
-      this.orgIDValue = ""; //商户名称
-      (this.orgID = 0), //商户名称搜索的id
-        (this.contact = ""); //订单联系人
-      // this.orderChannel = null; //订单来源
-      this.showContent = null; //折叠按钮
-      this.isSeach = null; //是否点击
+      this.orderCode = ""; 
+      this.teamID = ""; 
+      this.groupCode = null; 
+      this.beginDate = ""; 
+      this.endDate = ""; 
+      this.name = ""; 
+      this.pod = ""; 
+      this.podID = ""; 
+      this.destinationID = ""; 
+      this.destination = ""; 
+      this.saler = ""; 
+      (this.otherPrice = ""),
+        (this.platform = null), 
+        (this.productType = "");
+      this.orgIDValue = ""; 
+      (this.orgID = 0), 
+        (this.contact = ""); 
+      // this.orderChannel = null; 
+      this.showContent = null; 
+      this.isSeach = null; 
       // this.statusTab(1,0,0)
       // this.statusTab(2,0,5)
       this.orderPage(1, this.pageSize);
@@ -854,27 +820,26 @@ export default {
     orderPage(
       pageIndex = this.pageIndex,
       pageSize = this.pageSize,
-      orderCode = this.orderCode, //订单id
-      name = this.name, //产品名称
+      orderCode = this.orderCode, 
+      name = this.name, 
       // teamID = this.teamID,
-      // groupCode = this.groupCode, //团号
-      groupCode = this.groupCode, //团期计划
+      // groupCode = this.groupCode, 
+      groupCode = this.groupCode, 
       beginDate = this.beginDate,
       endDate = this.endDate,
       saler = this.saler,
-      localCompName = this.orgIDValue, //商户名称
+      localCompName = this.orgIDValue,
       localCompID= this.orgID,
-      // orderChannels = this.orderChannels, //商户名称
-      orgID = this.orgID, //商户名称 搜索时的字段
+      // orderChannels = this.orderChannels, 
+      orgID = this.orgID, 
       // productType = this.productType,
       orderStatus = this.orderStatus,
       refundStatus = this.refundStatus,
-      destinationID = this.destinationID, //目的地
-      contact = this.contact, //订单联系人
+      destinationID = this.destinationID, 
+      contact = this.contact, 
       pod = this.pod,
-      podID = this.podID //出发地
+      podID = this.podID 
     ) {
-      // 每次搜索都折叠 要不折叠的数据显示不对 因为点击折叠的位置需要调取另一个接口
       this.showContent = null;
       if (beginDate) {
         let y = beginDate.getFullYear();
@@ -918,9 +883,9 @@ export default {
         refundStatus: this.refundStatus,
         contact: contact,
         podID: podID ? podID : 0,
-        localcompID: localCompID, //商户名称
-        // orderChannels: orderChannels //商户名称
-        orgID: orgID ? orgID : 0 //商户名称搜索时的字段
+        localcompID: localCompID, 
+        // orderChannels: orderChannels 
+        orgID: orgID ? orgID : 0 
       };
       if (endDate !== 0 && beginDate !== 0) {
         // object.beginDate = beginDate
@@ -939,7 +904,6 @@ export default {
           this.total = res.data.total;
           if (res.data.isSuccess == true) {
             this.orderpage = res.data.objects;
-            // 折叠面板最开始都为隐藏false
             // this.orderpage.forEach((item,index) => {
             //   item.showContent = false;
             // });
@@ -954,12 +918,9 @@ export default {
         });
     },
    
-    // 接收数据 判断显示
     receiveDataJudgeShow(orderpage) {
       orderpage.forEach(item => {
-        // 订单状态
         if (item.orderStatus == 0) {
-          // 占位状态
           if (item.occupyStatus == 3) {
             item.occupyStatus = "确认占位";
           } else if (item.occupyStatus == 2) {
@@ -1008,7 +969,6 @@ export default {
         }else if (item.refundStatus == 6) {
           item.refundStatus = "完成退款";
         }
-        //产品类型
         // if (item.productType == 1) {
         //   item.productType = "跟团游";
         // } else {
@@ -1036,7 +996,6 @@ export default {
         this.orderPage(1, this.pageSize);
       }
     },
-    //判断结束时间不能在开始时间之前
     endDateChange() {
       let beginTime = moment(this.beginDate).format("YYYYMMDD");
       let entTime = moment(this.endDate).format("YYYYMMDD");
@@ -1077,7 +1036,6 @@ export default {
         this.orderPage(1, this.pageSize);
       }
     },
-    //列表订单状态显示
     getOrderStatus(status) {
       switch (status) {
         case 1:
@@ -1112,7 +1070,6 @@ export default {
           break;
       }
     },
-    //列表退款状态显示
     getrefundStatus(status) {
       switch (status) {
         case 1:
@@ -1156,7 +1113,6 @@ export default {
       if (i == 3) {
         this.dialogAdviceNote = true;
       }else if(i == 5) {
-        //判断订单是否有记录
          this.$http
         .post(this.GLOBAL.serverSrc + "/finance/checksheet/api/isexistchecksheetfororder", {
          id: this.orderId
@@ -1175,7 +1131,6 @@ export default {
         });
          this.a_variable = 0;
       }else if(i == 6){
-        //判断是否能开发票
        this.$http.post(this.GLOBAL.serverSrc + "/finance/Receipt/api/collection_orderRoot_search",{
             "object": {
               "orderCode":orderCode,
@@ -1200,7 +1155,6 @@ export default {
        
       }
     },
-    // 出团通知书获取
     getActiceNote() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/teamquery/get/api/get", {
@@ -1218,17 +1172,14 @@ export default {
         })
         .catch(err => {});
     },
-    // 关闭出团通知书的弹窗
     closeActiceNote() {
       this.fileList = [];
     },
 
-    // 出发日期转换格式显示
     // goDataChangeFun (data) {
     //   console.log(data)
     //   return moment(data).format('YYYY-MM-DD')
     // },
-    //周边信息 整数转浮点数
     toDecimal2(x) {
       let f = Math.round(x * 100) / 100;
       var s = f.toString();
@@ -1250,7 +1201,6 @@ export default {
 </script>
 
 <style scoped>
-/* 商户名称模糊查询显示 */
 .por {
   position: relative;
 }
@@ -1262,7 +1212,6 @@ export default {
   color: red;
   font-size: 12px;
 }
-/* 折叠面板 */
 .contentHeader {
   position: relative;
 }
@@ -1343,7 +1292,6 @@ export default {
 .statusbg {
   background-color: #f6f6f6;
 }
-/*订单列表*/
 .pro-info {
   font-size: 14px;
   background-color: #e4e4e4;
@@ -1406,7 +1354,6 @@ export default {
   margin-top: -2px;
   margin-right: 6px;
 }
-/* 出团通知书 */
 .adviceNote {
   height: 300px;
   position: relative;

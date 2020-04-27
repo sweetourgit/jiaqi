@@ -172,7 +172,6 @@ export default {
   methods: {
     select(){
       let { day, selected }= this.current;
-      // 不是当月日期
       if(!day) return;
       !selected?
         this.$emit('select-day', this.current):

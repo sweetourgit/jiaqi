@@ -56,9 +56,7 @@ export default {
   components: { basicPane, instructionsPane, othersPane },
 
   provide: {
-    // 如果是修改，则透传teamID
     PROVIDE_TEAM_ID: null,
-    // 透传错误收集队列
     ERROR_QUEUE: []
   },
 
@@ -72,7 +70,6 @@ export default {
       vm: {
         currentTabName: 'basic',
         inited: false,
-        // 保存按钮的锁
         saveActionLock: false,
       },
       basic: {},
@@ -82,18 +79,14 @@ export default {
   },
 
   methods: {
-    /**
-     * @description: 初始化
-     * @param {type} id 修改时为id，新增为undefined
-     */
     init(id){
       let proto= this.getProto(id);
       proto.then(res => {
-        // 拆分数据
+
         this.splitProto(res);
-        // 修改需要透传id
+
         id && (this._provided.PROVIDE_TEAM_ID= id);
-        // 通知$el数据初始化完成
+
         this.vm.inited= true;
         this.vm.saveActionLock= false;
       }).catch(err => {
@@ -102,13 +95,13 @@ export default {
       })
     },
 
-    // 获取数据原型
+
     getProto(id){
       if(!id) return Promise.resolve(getTeamProDTO());
       return teamgetAction.call(this, id)
     },
 
-    // 拆分原型数据到不同的模块
+ 
     splitProto(proto){
       let basic= {}
       Object.keys(proto).forEach(attr => {
@@ -134,9 +127,7 @@ export default {
       isSave? this.saveAction(data): this.addAction(data);
     },
 
-    /**
-     * @description: 保存动作的锁在init方法中重置
-     */
+
     saveAction(object){
       this.vm.saveActionLock= true;
       let { id }= this.$route.query;
@@ -153,9 +144,7 @@ export default {
       })
     },
 
-    /**
-     * @description: 添加动作的锁只有失败会重置，成功跳转页面，再进来走init重置
-     */
+  
     addAction(object){
       this.vm.saveActionLock= true;
       getGuidAction.bind(this)().then(res => {
@@ -163,7 +152,6 @@ export default {
         insertAction.bind(this)(object).then(res => {
           let { id }= res;
           this.$message.success('产品新增成功，请完善套餐信息');
-          // 带有add标识，会自动添加一个套餐
           this.$router.replace({ path: '/changeinfo', query:{ id, add: true } });
         })
       }).catch(err => {
@@ -191,7 +179,6 @@ export default {
     },
 
     validate(){
-      // 先重置错误队列
       this._provided.ERROR_QUEUE.splice(0);
       let validate= true;
       validate= this.$refs.basicRef.validate();

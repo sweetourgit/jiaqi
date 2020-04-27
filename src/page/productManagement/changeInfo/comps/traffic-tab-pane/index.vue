@@ -69,19 +69,13 @@
 </template>
 
 <script>
-/**
- * @description: 交通（中转）组件
- */
 
-// 第三方组件
 import VueEditor from '@/components/tinymce' 
 
-// 组件
 import planeForm from './comps/plane-form'
 import busForm from './comps/bus-form'
 import shipForm from './comps/ship-form'
 import trainForm from './comps/train-form'
-// 常量
 import { DEFALUT_TRAFFIC_MODE, TEAM_TRAFFIC_DTO_GO, TEAM_TRAFFIC_DTO_BACK, GO_OR_BACK_SIGN } from '../../dictionary'
 
 export default {
@@ -104,7 +98,6 @@ export default {
   },
 
   mounted(){
-    //如果有简要说明，自动切换
     if(this.vm.content){
       this.vm.description= "2";
       this.vm.descriptionState= "easy";
@@ -115,7 +108,6 @@ export default {
   data(){
     return {
       vm: {
-        //1：详细说明 2：简要说明
         description: "1",
         descriptionState: 'detail',
         content: this.briefMark+ ""
@@ -125,9 +117,7 @@ export default {
   },
 
   methods: {
-    /**
-     * @description: 初始化
-     */
+
     init(type){
       if(!type || type=== 'detail'){
         this.traffics.splice(0);
@@ -136,9 +126,6 @@ export default {
       (!type || type=== 'easy') && (this.vm.content= this.briefMark);
     },
 
-    /**
-     * @description: 切换说明类型
-     */
     changeDescription(label){
       if(label=== '2'){
         let hasChange= this.checkHasChange('detail');
@@ -170,9 +157,7 @@ export default {
       }
     },
 
-    /**
-     * @description: 添加删除交通（中转）信息
-     */
+
     addTraffic(){
       let newTraffics= this.getData().traffic;
       newTraffics.splice(
@@ -192,36 +177,26 @@ export default {
         this.traffics.splice(0);
         this.traffics.push(...newTraffics);
       }).catch(() => {
-        // 取消        
       });
     },
 
-    /**
-     * @description: 更换出行方式需要判断是否与原始数据中的出行方式一样，一样则以原始数据填充
-     * @bug 1.新增加一个中转，由中转飞机改为中转火车，再改回中转飞机，这个对象的数据与返程数据会混淆 resolve
-     * @TODO 如果发生过插入和删除，则重置数据的功能失效，不然会有幻读的可能 
-     */
+
     changeTrafficModeEmit(payload){
       let { index, trafficMode, goOrBackSign }= payload;
-      // 只有返程会自动定位到最后一个
       let protoIndex= goOrBackSign=== GO_OR_BACK_SIGN.BACK? 
         (this.proto.length- 1): index;
-      // bug: 当切换交通方式的时候，会重置其他表单的数据，这里用最新数据填充一下
       let newTraffics= this.getData().traffic;
       this.traffics.splice(0);
       this.traffics.push(...newTraffics);
 
-      // 默认数据，先切换组件形态
       this.traffics.splice(index, 1,
         this.$deepCopy(
           goOrBackSign=== GO_OR_BACK_SIGN.BACK?
             TEAM_TRAFFIC_DTO_BACK: TEAM_TRAFFIC_DTO_GO)
       );
       this.traffics[index].trafficMode= trafficMode;
-      // 解决bug 1，如果切换方式的实例不是返程，但是它的下标却与原始数据中返程下标一致，也不重置数据
       let notRestore= 
         goOrBackSign!== GO_OR_BACK_SIGN.BACK && (index=== this.proto.length-1);
-      // 如果是初始数据中的出行方式，则填充初始数据
       if(!notRestore 
           && this.proto[index] 
             && this.proto[index].trafficMode===trafficMode){
@@ -234,14 +209,11 @@ export default {
       this.$nextTick(() => this.vm.descriptionState= "detail");
     },
 
-    /**
-     * @description: 检查是否有数据变动
-     */
+
     checkHasChange(param){
       let type= param || this.vm.descriptionState;
       return this[`${type}CheckHasChange`]();
     },
-    //详情状态下检查
     detailCheckHasChange(){
       let bol= false;
       let children= this.$refs.children || [];
@@ -252,19 +224,15 @@ export default {
       console.log(`traffic-tab-pane detail checkHasChange: ${bol}`)
       return bol;
     },
-    //简易状态下检查
     easyCheckHasChange(){
       let bol= !(this.vm.content=== this.briefMark);
       console.log(`traffic-tab-pane easy checkHasChange: ${bol}`)
       return bol;
     },
 
-    /**
-     * @description: 获取数据
-     */
+
     getData(){
       let children= this.$refs.children;
-      // 如果是简单状态，先传回原始数据
       let traffic= 
         this.vm.descriptionState=== 'detail'?
           children.map(child => child.getData()): 

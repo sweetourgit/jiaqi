@@ -59,7 +59,6 @@ export default {
 
   methods: {
     init(){
-      //用时间戳生成唯一标志
       let time= Date.now();
       let copy= this.$deepCopy(this.proto).map((el, i) => {
         return Object.assign(el, {sign: ''+ time+ i});

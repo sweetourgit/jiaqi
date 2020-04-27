@@ -1,6 +1,5 @@
 <template>
   <div class="supplierList">
-    <!--搜索栏-->
     <div class="plan">
       <div style="width:1140px;">
         <div class="fl">
@@ -64,11 +63,9 @@
         <el-button type="primary" plain @click="reset()">重置</el-button>
       </div>
     </div>
-    <!--添加按钮-->
     <div style="clear:both;">
       <el-button type="primary" @click="addSupplier">添加</el-button>
     </div>
-    <!--表格-->
     <el-table :data="tableData" border class="tableData" :header-cell-style="getRowClass">
       <el-table-column prop="id" label="ID" width="150" align="center"></el-table-column>
       <el-table-column prop="name" label="供应商名称" width="230" align="center"></el-table-column>
@@ -90,7 +87,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--详情弹窗-->
     <SupplierDetails
       :flag.sync="flag"
       :msg="pid"
@@ -106,7 +102,6 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
-    <!--添加弹窗-->
     <el-dialog
       :title="title"
       :visible.sync="supplierShow"
@@ -359,7 +354,6 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-    <!--编辑弹窗-->
     <el-dialog
       :title="title"
       :visible.sync="editShow"
@@ -649,8 +643,8 @@ import SupplierDetails from "./supplierDetails/supplierDetails"
 export default {
   data() {
     return {
-      dynamicTags: [],//供应商其他名称
-      flags:true,//编辑页面的input框
+      dynamicTags: [],
+      flags:true,
       inputVisible: false,
       inputValue: '',
       // aaa: 1,
@@ -689,75 +683,73 @@ export default {
         }
       },
       pid:"",
-      userindex:0,//编辑的index
-      supplierName: "", //搜索框供应商名称
-      supplierCard: "", //搜索框ID
-      settlement: "", //搜索框结算名称
-      condition: "", //搜索框状态
-      category: "", //搜索框类别
-      visibleArea: "", //搜索框可见区域
-      // 添加区域
+      userindex:0,
+      supplierName: "", 
+      supplierCard: "", 
+      settlement: "",
+      condition: "", 
+      category: "", 
+      visibleArea: "", 
       ruleForm: {
-        name: "", //供应商名称
-        visible: "", //公司可见性
-        visible1:"",//公司可见性代码
-        supplierState: "正常", //状态
-        routeType: "", //线路
-        supplierType: "", //类别
-        supplierWay: "", //结算方式
-        userDepartment: "", //使用部门
-        orientation: "", //产品主要方向
-        expireData: "", //到期日期
-        supplierUpload: "", //附件
-        legalPerson: "", //法人代表
-        pactNumber: "", //合同编号
-        handlers: "", //经手人
-        handlersPhone: "", //经手人电话
-        principal: "", //负责人
-        principalPhone: "", //负责人电话
-        operator: "", //操作负责人
-        agreement: "", //供应商协议
-        remark: "", //备注
-        accountName: "", //汇款户名
-        openingBank: "", //开户行
-        account: "", //账号
-        note: "" ,//备注
-        supplierCode:""//供应商编码
+        name: "", 
+        visible: "",
+        visible1:"",
+        supplierState: "正常", 
+        routeType: "",
+        supplierType: "", 
+        supplierWay: "", 
+        userDepartment: "", 
+        orientation: "", 
+        expireData: "", 
+        supplierUpload: "", 
+        legalPerson: "", 
+        pactNumber: "",
+        handlers: "", 
+        handlersPhone: "", 
+        principal: "", 
+        principalPhone: "",
+        operator: "", 
+        agreement: "", 
+        remark: "", 
+        accountName: "", 
+        openingBank: "", 
+        account: "", 
+        note: "" ,
+        supplierCode:""
       },
       //编辑区域
       editForm: {
-        name: "", //供应商名称
-        visible: "", //公司可见性
-        visible1:"",//公司可见性代码
-        supplierState: "", //状态
-        supplierState1:'',//状态数值
-        routeType: "", //线路
-        supplierType: "", //类别
-        supplierType1:"",//类别的编码
-        supplierWay: "", //结算方式
-        userDepartment: "", //使用部门
-        orientation: "", //产品主要方向
-        expireData: "", //到期日期
-        supplierUpload: "", //附件
-        legalPerson: "", //法人代表
-        pactNumber: "", //合同编号
-        handlers: "", //经手人
-        handlersPhone: "", //经手人电话
-        principal: "", //负责人
-        principalPhone: "", //负责人电话
-        operator: "", //操作负责人
-        agreement: "", //供应商协议
-        agreement1:"",//供应商协议数字
-        remark: "", //备注
-        accountName: "", //汇款户名
-        openingBank: "", //开户行
-        account: "", //账号
-        note: "", //备注
-        supplierCode:"",//供应商编码
-        editbanks:'',//银行信息
-        supplierWay1:''//结算方式编号
+        name: "", 
+        visible: "", 
+        visible1:"",
+        supplierState: "", 
+        supplierState1:'',
+        routeType: "", 
+        supplierType: "", 
+        supplierType1:"",
+        supplierWay: "", 
+        userDepartment: "",
+        orientation: "", 
+        expireData: "", 
+        supplierUpload: "", 
+        legalPerson: "", 
+        pactNumber: "", 
+        handlers: "", 
+        handlersPhone: "", 
+        principal: "", 
+        principalPhone: "", 
+        operator: "",
+        agreement: "", 
+        agreement1:"",
+        remark: "",
+        accountName: "", 
+        openingBank: "", 
+        account: "", 
+        note: "",
+        supplierCode:"",
+        editbanks:'',
+        supplierWay1:''
       },
-      //状态
       conditionType: [
         {
           value: "1",
@@ -778,9 +770,7 @@ export default {
       //   account: "",
       //   note: ""
       // },
-      //验证
       //11号修改过
-      // 添加区域的正则判断
       rules: {
         name: [
           { required: true, message: "供应商名称不能为空", trigger: "blur" },
@@ -834,7 +824,6 @@ export default {
           { required: true, message: "开户行不能为空", trigger: "blur" }
         ]
       },
-      // 编辑区域的正则判断
       edit:{
         name: [
           { required: true, message: "供应商名称不能为空", trigger: "blur" },
@@ -888,7 +877,7 @@ export default {
           { required: true, message: "开户行不能为空", trigger: "blur" }
         ]
       },
-      //0settlement: [],//结算方式
+      //0settlement: [],
       condition: [
         {
           //状态
@@ -904,20 +893,19 @@ export default {
           label: "待审核"
         }
       ],
-      settlementType: [], //搜索框结算方式数字
-      borrowingType: [], //搜索框供应商类别数组
-      visibleType: [], //搜索框可见区域数组
-      pathType: [], //添加弹窗中线路数组
-      tableData: [], //表格
-      supplierShow: false, //添加弹窗
-      editShow:false,//编辑弹窗
-      branch: [], //使用部门选择器
-      fileList: [], //添加供应商上传附件
+      settlementType: [], 
+      borrowingType: [],
+      visibleType: [], 
+      pathType: [], 
+      tableData: [], 
+      supplierShow: false, 
+      editShow:false,
+      branch: [],
+      fileList: [], 
       // 11号修改
       flag:false,
       agreement: [
         {
-          //供应商协议
           value: "1",
           label: "是"
         },
@@ -926,14 +914,13 @@ export default {
           label: "否"
         }
       ],
-      tableDataBank: [], //账户信息表格
-      title: "", //标题
-      //分页
-      currentPage: 1, //当前页数
-      pagesize: 10, // 设定默认分页每页显示数
-      pageIndex: 1, // 设定当前页数
-      total: 0, //总条目数
-      options: [] //部门的数据
+      tableDataBank: [], 
+      title: "", 
+      currentPage: 1, 
+      pagesize: 10, 
+      pageIndex: 1, 
+      total: 0, 
+      options: [] 
     };
   },
   components:{
@@ -959,7 +946,6 @@ export default {
       this.inputValue = '';
     },
     moment,
-    //表格颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#F7F7F7;color:rgb(85, 85, 85);";
@@ -967,17 +953,15 @@ export default {
         return "";
       }
     },
-    //搜索框重置
     reset() {
-      (this.supplierName = ""), //搜索框供应商名称
-        (this.supplierCard = ""), //搜索框ID
-        (this.settlement = ""), //搜索框结算名称
-        (this.condition = ""), //搜索框状态
-        (this.category = ""), //搜索框类别
-        (this.visibleArea = ""); //搜索框可见区域
+      (this.supplierName = ""), 
+        (this.supplierCard = ""), 
+        (this.settlement = ""), 
+        (this.condition = ""), 
+        (this.category = ""), 
+        (this.visibleArea = ""); 
       this.supplierPage();
     },
-    //结算方式
     settlemen() {
       this.settlementType = [];
       this.$http
@@ -999,7 +983,6 @@ export default {
           console.log(err);
         });
     },
-    //供应商类别
     themeList() {
       this.borrowingType = [];
       this.$http
@@ -1022,7 +1005,6 @@ export default {
           console.log(err);
         });
     },
-    //可见区域
     visible() {
       this.visibleType = [];
       this.$http
@@ -1044,7 +1026,6 @@ export default {
           console.log(err);
         });
     },
-    // 把公司可见性传给后端
     companyList(item) {
       this.userDeparType = [];
       let sid = item;
@@ -1057,7 +1038,6 @@ export default {
         this.aaaa();
       });
     },
-    //使用部门请求的接口
     aaaa(node, resolve) {
       this.options = [];
       this.$http.post(this.GLOBAL.serverSrc + "/org/api/deptlist", {
@@ -1106,7 +1086,6 @@ export default {
     //       //this.visibleType =  res.data.objects;
     //     })
     //   },
-    //线路
     trails() {
       this.pathType = [];
       this.$http
@@ -1128,47 +1107,44 @@ export default {
           console.log(err);
         });
     },
-    //添加供应商按钮
     addSupplier() {
       this.title = "添加供应商";
       this.supplierShow = true;
     },
-    // 取消按钮关闭弹窗
     closeSupplier() {
       this.supplierShow = false;
       this.editShow = false
       this.emptyForm()
       this.tableDataBank = []
       this.ruleForm = {
-        name: "", //供应商名称
-        visible: "", //公司可见性
-        companyAreaEX: "",//公司可见性数字
-        supplierState: "正常", //状态
-        routeType: "", //线路
+        name: "", 
+        visible: "",
+        companyAreaEX: "",
+        supplierState: "正常", 
+        routeType: "", 
         routeType1:'',
-        supplierType: "", //类别
-        supplierWay: "", //结算方式
-        userDepartment: "", //使用部门
-        orientation: "", //产品主要方向
-        expireData: "", //到期日期
-        supplierUpload: "", //附件
-        legalPerson: "", //法人代表
-        pactNumber: "", //合同编号
-        handlers: "", //经手人
-        handlersPhone: "", //经手人电话
-        principal: "", //负责人
-        principalPhone: "", //负责人电话
-        operator: "", //操作负责人
-        agreement: "", //供应商协议
-        remark: "", //备注
-        accountName: "", //汇款户名
-        openingBank: "", //开户行
-        account: "", //账号
-        note: "",//备注
-        supplierCode: ""//供应商编码
+        supplierType: "", 
+        supplierWay: "", 
+        userDepartment: "", 
+        orientation: "", 
+        expireData: "", 
+        supplierUpload: "", 
+        legalPerson: "", 
+        pactNumber: "", 
+        handlers: "", 
+        handlersPhone: "", 
+        principal: "", 
+        principalPhone: "",
+        operator: "", 
+        agreement: "", 
+        remark: "",
+        accountName: "", 
+        openingBank: "", 
+        account: "", 
+        note: "",
+        supplierCode: ""
       }
     },
-    //判断显示编辑或者添加弹窗
     saveModule(formName) {
       if (this.title == "添加供应商") {
           this.addLabelTheme(formName);
@@ -1176,13 +1152,10 @@ export default {
         this.editLabelTheme(formName);
       }
     },
-    // 判断输入的编码是否重复
-    //添加一条供应商
     addLabelTheme(formName) {
       console.log(formName,456)
       console.log(this.visibleType,'供应商可见性')
       console.log(this.ruleForm.expireData,6666)
-      //公司可见性的判断
       // if (this.ruleForm.visible == '集团共享') {
       //   this.ruleForm.visible1 = 1
       // } else if (this.ruleForm.visible == '沈阳专享') {
@@ -1195,7 +1168,7 @@ export default {
       //   this.ruleForm.visible1 = 5
       // }
       let types = [];
-      let keepAlias = [] // 给alias赋值用
+      let keepAlias = [] 
       let banks =[];
       for (let i = 0; i < this.tableDataBank.length; i++) {
         banks.push({
@@ -1243,16 +1216,15 @@ export default {
                         id: 0,
                         createTime: 0,
                         isDeleted: 0,
-                        //这个地方有问题
                         userState: this.ruleForm.supplierState == "正常" ? 1 : this.ruleForm.supplierState,
                         name: this.ruleForm.name,
                         types: types,
                         productDirection: this.ruleForm.orientation,
-                        supplierCode: this.ruleForm.supplierCode, // 供应商编码
+                        supplierCode: this.ruleForm.supplierCode, 
                         isMonthly: this.ruleForm.supplierWay,
                         isAgree: this.ruleForm.agreement,
                         // companyArea: this.ruleForm.visible,
-                        companyArea: 1, // 公司可見性
+                        companyArea: 1, 
                         productArea: this.ruleForm.routeType,
                         leader: this.ruleForm.principal,
                         phone: this.ruleForm.principalPhone,
@@ -1264,12 +1236,11 @@ export default {
                         orgs: [{
                           "orgID": 0,
                           "orgName": '集团'
-                        }], // 使用部門
-                        alias: keepAlias, // 部门其他名 otherSupplier
-                        expireTime: moment(this.ruleForm.expireData).format('YYYY-MM-DD'), // 到期日期
+                        }], 
+                        alias: keepAlias, 
+                        expireTime: moment(this.ruleForm.expireData).format('YYYY-MM-DD'), 
                         memo: this.ruleForm.remark,
                         banks: banks,
-                        //附件
                         files: [{
                           "id": 0,
                           "createTime": 0,
@@ -1303,7 +1274,6 @@ export default {
         }
       });
     },
-    // 编辑时的保存
     handClick(){
 
     },
@@ -1424,7 +1394,7 @@ export default {
         this.editForm.routeType1 =9
       }
     let types = [];
-      let keepAlias = [] // 给alias赋值用
+      let keepAlias = [] 
       let banks =[];
       for (let i=0;i<this.tableDataBank.length;i++){
         banks.push({
@@ -1470,7 +1440,7 @@ export default {
                   isMonthly: this.editForm.supplierWay1,
                   isAgree: this.editForm.agreement1,
                   // companyArea: this.editForm.visible,
-                  companyArea: 1, // 公司可見性
+                  companyArea: 1, 
                   productArea: this.editForm.routeType1,
                   leader: this.editForm.principal,
                   phone: this.editForm.principalPhone,
@@ -1484,9 +1454,9 @@ export default {
                     "id": 0,
                     "orgName": "集团"
                   }
-                  ], // 使用部門
-                  alias:keepAlias, // 部门其他名 otherSupplier
-                  expireTime: moment(this.editForm.expireData).format('YYYY-MM-DD'), // 到期日期
+                  ], 
+                  alias:keepAlias, 
+                  expireTime: moment(this.editForm.expireData).format('YYYY-MM-DD'), 
                   memo: this.editForm.remark,
                   banks:banks,
                   files: [
@@ -1525,24 +1495,19 @@ export default {
         }
       });
     },
-    //申请
     confirmSupplier() {},
-    //分页
     handleSizeChange(page) {
       this.currentPage = 1;
       this.pagesize = page;
       this.supplierPage();
     },
-    //当前页面改变时会触发的事件
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
       this.supplierPage();
     },
-    //搜索
     searchButton() {
       this.supplierPage();
     },
-    //查询表格
     supplierPage(
       supplierName = this.supplierName,
       supplierCard = this.supplierCard,
@@ -1584,7 +1549,6 @@ export default {
       console.log(obj);
     });
 },
-    //清空表单
     emptyForm() {
       (this.ruleForm.accountName = ""),
         (this.ruleForm.openingBank = ""),
@@ -1597,7 +1561,6 @@ export default {
         (this.editForm.account = ""),
         (this.editForm.note = "");
     },
-    //添加账户
     addEmty(index, row) {
       if (
         this.ruleForm.accountName != "" &&
@@ -1632,7 +1595,6 @@ export default {
       }
       console.log(this.tableDataBank,777)
     },
-    //编辑账户
     handleClick(index, rows) {
       /*this.ruleForm_01.accountName = this.cardName;
         this.ruleForm_01.openingBank = this.bankName;
@@ -1640,7 +1602,6 @@ export default {
         this.ruleForm_01.note = this.memo;*/
 
     },
-    //编辑按钮
     editClick(index,data){
       this.userindex=index
       console.log(this.userindex,"当前的编辑的id")
@@ -1653,33 +1614,32 @@ export default {
       }).then(res => {
         console.log(res,"获取单条商品信息")
         this.editForm.name=res.data.object.name,
-          this.editForm.visible=res.data.object.companyAreaEX, //公司可见性
+          this.editForm.visible=res.data.object.companyAreaEX, 
           // this.editForm.supplierState=res.data.object.userStateEX,
-          this.editForm.routeType= res.data.object.productAreaEX, //线路
-          this.editForm.supplierType= res.data.object.types[0].supplierTypeEX, //类别
-          this.editForm.supplierWay= res.data.object.isMonthlyEX, //结算方式
+          this.editForm.routeType= res.data.object.productAreaEX, 
+          this.editForm.supplierType= res.data.object.types[0].supplierTypeEX, 
+          this.editForm.supplierWay= res.data.object.isMonthlyEX, 
           // this.editForm.supplierWay1 =res.data.object.isMonthly,
-          // this.editForm.userDepartment= data.supplierTypeEX, //使用部门
-          this.editForm.orientation= res.data.object.productDirection, //产品主要方向
-          this.editForm.expireData=res.data.object.expireTime , //到期日期
+          // this.editForm.userDepartment= data.supplierTypeEX, 
+          this.editForm.orientation= res.data.object.productDirection, 
+          this.editForm.expireData=res.data.object.expireTime , 
           this.editForm.supplierUpload= "", //附件
-          this.editForm.legalPerson= res.data.object.legalPerson, //法人代表
-          this.editForm.pactNumber= res.data.object.taxNumber, //合同编号
-          this.editForm.handlers= res.data.object.handPerson, //经手人
-          this.editForm.handlersPhone= res.data.object.handPhone, //经手人电话
-          this.editForm.principal= res.data.object.leader, //负责人
-          this.editForm.principalPhone= res.data.object.phone, //负责人电话
-          this.editForm.operator= res.data.object.billName, //操作负责人
-          // this.editForm.agreement= res.data.object.isAgree, //供应商协议
-          this.editForm.remark= res.data.object.memo, //备注
-          this.editForm.accountName= "", //汇款户名
-          this.editForm.openingBank= "", //开户行
-          this.editForm.account= "", //账号
-          this.editForm.note= "", //备注
-          this.editForm.supplierCode =res.data.object.supplierCode,//供应商编码
-          this.tableDataBank =res.data.object.banks,//保存银行的信息
+          this.editForm.legalPerson= res.data.object.legalPerson, 
+          this.editForm.pactNumber= res.data.object.taxNumber,
+          this.editForm.handlers= res.data.object.handPerson,
+          this.editForm.handlersPhone= res.data.object.handPhone, 
+          this.editForm.principal= res.data.object.leader, 
+          this.editForm.principalPhone= res.data.object.phone, 
+          this.editForm.operator= res.data.object.billName, 
+          // this.editForm.agreement= res.data.object.isAgree, 
+          this.editForm.remark= res.data.object.memo, 
+          this.editForm.accountName= "", 
+          this.editForm.openingBank= "", 
+          this.editForm.account= "", 
+          this.editForm.note= "", 
+          this.editForm.supplierCode =res.data.object.supplierCode,
+          this.tableDataBank =res.data.object.banks,
           this.editForm.supplierState1 =res.data.object.userState
-        // 判断是否
         if(res.data.object.isAgree==1) {
           this.editForm.agreement= "是";
         }else if(res.data.object.isAgree==2){
@@ -1701,7 +1661,6 @@ export default {
       this.flag = true
       this.$refs.mychild.teamGetDetails(id);
     },
-    //删除账户
     deleteEmty(index, rows) {
       rows.splice(index, 1);
     }
@@ -1710,10 +1669,10 @@ export default {
     this.supplierPage();
   },
   created() {
-    this.themeList(); //供应商类别
-    this.settlemen(); //结算方式
-    this.visible(); //可见区域
-    this.trails(); //线路
+    this.themeList(); 
+    this.settlemen(); 
+    this.visible(); 
+    this.trails();
   }
 };
 </script>
@@ -1723,7 +1682,7 @@ export default {
   width: 1140px;
 }
 
-/* 搜索框样式 */
+
 .name_input {
   width: 200px;
   overflow:hidden;
@@ -1768,7 +1727,7 @@ export default {
   font-size: 14px;
 }
 
-/* 表格样式 */
+
 .tableData {
   width: 1140px;
   margin: 20px 0 0 0;
@@ -1779,7 +1738,7 @@ export default {
   color:#A7F43D
 }
 
-/* 添加弹窗样式 */
+
 .addButton {
   position: absolute;
   top: 8px;
@@ -1790,7 +1749,7 @@ export default {
   font-size: 12pt;
 }
 
-/* 银行表格 */
+
 .tableDataBank {
   width: 810px;
   margin: 15px 0 0 50px;
@@ -1812,7 +1771,7 @@ export default {
   float: left;
 }
 
-/* 分页 */
+
 .pagination {
   text-align: right;
   margin: 30px 0 50px 0;

@@ -59,7 +59,6 @@ import ErrorHandlerMixin from '../../traffic-tab-pane/comps/mixins/ErrorHandlerM
 import extHotel from './comps/ext-hotel'
 import extMealsGround from './comps/ext-meals-ground'
 import activitysGround from './comps/activitys-ground'
-// 第三方组件
 import VueEditor from '@/components/tinymce'
 
 export default {
@@ -71,7 +70,6 @@ export default {
     proto: [Object],
   },
 
-  // 貌似可以不要，先留着
   provide: {
     SCHEDULES_DAY: 0,
   },
@@ -98,13 +96,10 @@ export default {
         if(attr!== 'activitys') this.$set(this.submitForm, attr, copy[attr]);
       })
       this.checkProto= this.$deepCopy(this.submitForm);
-      //错误搜集
       this._provided.SCHEDULES_DAY= this.errorPrefix;
     },
 
-    /**
-     * @description: 表单校验，先触发几个特殊控件的校验
-     */
+
     validate(){
       let result= true;
       let bol= true;
@@ -118,9 +113,7 @@ export default {
       return result;
     },
 
-    /**
-     * @description: 住宿，餐饮信息特殊验证
-     */
+   
     specialValidator(rule, value, cb){
       if(Object.prototype.toString.call(value)=== "[object Error]"){
         return cb(this.makeErrorQueueMsg(value.message));
@@ -128,10 +121,7 @@ export default {
       cb();
     },
 
-    /**
-     * @description: 提交住宿信息
-     * @bug 这个方法似乎可以删除掉，只在验证的时候被动提交值就可以了，先留着
-     */
+   
     emitInputExtHotel(payload){
       this.submitForm.ext_Hotel= payload;
     },
