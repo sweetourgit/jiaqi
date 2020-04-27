@@ -8,7 +8,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
 
         <el-tab-pane label="基本信息" name="first">
-          <div>
+          <div> 
           
             <el-form-item label="产品名称" prop="productNamel" label-width="120px">
               <el-input v-model="ruleForm.productNamel" @input="myInput" class="productName" placeholder="请输入正确产品名称"></el-input>
