@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:56:14 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:56:14
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-04-01 15:55:25
  */
@@ -122,7 +122,7 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import moment from 'moment'
 import orderDetail from '@/page/Finance/bankStatement/orderDetails.vue'
@@ -135,7 +135,7 @@ export default {
     return {
       tableData: [], // 表格数据
       ruleForm: {
-        matchType: '', // 匹配状态 
+        matchType: '', // 匹配状态
         code: '', // 交易流水号
         dateStart: '', // 开始时间
         dateEnd: '', // 结束时间
@@ -247,7 +247,6 @@ export default {
       this.dialogFormVisible = false;
       this.info = '';
     },
-    //delete未改
     deleteFun(row){
       const that = this;
       this.$confirm('是否需要删除', '提示', {
@@ -293,7 +292,6 @@ export default {
       this.pageCurrent = val;
       this.loadData();
     },
-    // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if(date == undefined) {
@@ -305,7 +303,7 @@ export default {
       const that = this;
       let dateStart = '', dateEnd = '';
       let data4D=utils.getSession4D()
-     
+
       if(this.ruleForm.dateStart){
         dateStart = moment(this.ruleForm.dateStart).format('YYYY-MM-DD 00:00:00')
       }

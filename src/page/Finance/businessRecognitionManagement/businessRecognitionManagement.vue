@@ -133,7 +133,6 @@
     data() {
       return {
         disabled: false,
-        // 顶部统计 是否显示及显示字段
         showTotal: false,
         tableManyRow: 0,
         getCollectionPriceTotal: 0,
@@ -145,15 +144,13 @@
         status: '',
         money: '',
         rec_mode: '',
-        distributor: '',// 选择的分销商
-        distributorID: '',// 选择的分销商ID
-        distributorList: [],// 分销商列表
+        distributor: '',
+        distributorID: '',
+        distributorList: [],
 
         pageSize: 10,
         currentPage: 1,
         pageCount: 2,
-
-        //待审批table
         tableData: [{}],
 
         dialogFormVisible: false,
@@ -167,11 +164,9 @@
       };
     },
     methods: {
-      // 分销商选择
       querySearchD(queryString, cb){
         const distributorList = this.distributorList;
         var results = queryString ? distributorList.filter(this.createFilter1(queryString)) : distributorList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
@@ -204,7 +199,6 @@
           }
         }
       },
-      // 加载分销商信息
       loadDistributor(name){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/universal/localcomp/api/list", {
@@ -229,7 +223,6 @@
           console.log(obj);
         });
       },
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -317,12 +310,10 @@
               item.created_at = formatDate(new Date(item.created_at*1000));
               item.rece_money = parseFloat(item.rece_money).toFixed(2);
               item.leave_match_money = parseFloat(item.leave_match_money).toFixed(2);
-              // 根据分销商ID获取名称
               if(item.distributor_code){
                 that.$http.post(that.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
                   "id": item.distributor_code
                 }).then(function(obj) {
-                  // console.log('获取分销商',obj);
                   if(obj.data.isSuccess){
                     item.distributor_code = obj.data.object.name;
                   }else{
@@ -346,10 +337,9 @@
         const that = this;
         return {
           disabledDate(time){
-            if (that.endTime) {  //如果结束时间不为空，则小于结束时间
+            if (that.endTime) {
               return new Date(that.endTime).getTime() < time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }
@@ -359,10 +349,9 @@
         const that = this;
         return {
           disabledDate(time) {
-            if (that.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+            if (that.startTime) {
               return new Date(that.startTime).getTime() > time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }

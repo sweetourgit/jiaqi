@@ -136,7 +136,7 @@
 </template>
 
 <script>
-  import approval from '@/page/Finance/aroundBorrowingManagement/approval.vue'// 审批
+  import approval from '@/page/Finance/aroundBorrowingManagement/approval.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   export default {
     name: "tradeList",
@@ -145,46 +145,35 @@
     },
     data() {
       return {
-        disabled: false,// 设置搜索项时间不可编辑
+        disabled: false,
         activeName: 'first',
         noIncomeNum: 0,
         advanceNum: 0,
         balanceNum: 0,
-
-        // 页数，页码，条数，列表table -- 无收入借款
         pageSizenoIncome: 10,
         currentPagenoIncome: 1,
         pageCountnoIncome: 0,
         tableDatanoIncome: [],
-
-        // 页数，页码，条数，列表table -- 预付款管理
         pageSizeAdvance: 10,
         currentPageAdvance: 1,
         pageCountAdvance: 0,
         tableDataAdvance: [],
-
-        // 页数，页码，条数，列表table -- 余额支付借款
         pageSizeBalance: 10,
         currentPageBalance: 1,
         pageCountBalance: 0,
         tableDataBalance: [],
-
         typeList: {
           1: '门票',
           2: '酒店',
           3: '地接',
           4: '定制游(跟团游)'
         },
-
-        dialogFormVisible: false,// 审批-显示，隐藏
-        info: '',// 详情传值字段
-
-        unfinishWorking: [] // 根据工作流查询左右未完成订单array
-
+        dialogFormVisible: false,
+        info: '',
+        unfinishWorking: []
       };
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -192,11 +181,9 @@
           return ''
         }
       },
-      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
@@ -226,10 +213,7 @@
           }
         }
       },
-
-      // 审批
       approval(row){
-//        console.log(this.unfinishWorking);
         const that = this;
         this.unfinishWorking.forEach(function (item, index, arr) {
           if(row.id == item.jq_ID){
@@ -242,7 +226,6 @@
         });
         this.dialogFormVisible = true;
       },
-      // 关闭弹窗
       closeAdd() {
         this.dialogFormVisible = false;
         this.info = '';
@@ -251,44 +234,33 @@
           that.loadUnfinished();
         }, 800);
       },
-
-      // 每页条数操作--无收入
       handleSizeChangenoIncome(val) {
         this.pageSizenoIncome = val;
         this.currentPagenoIncome = 1;
         this.loadData(1);
       },
-      // 页数操作
       handleCurrentChangenoIncome(val) {
         this.currentPagenoIncome = val;
         this.loadData(1);
       },
-
-      // 每页条数操作--预付款
       handleSizeChangeAdvance(val) {
         this.pageSizeAdvance = val;
         this.currentPageAdvance = 1;
         this.loadData(2);
       },
-      // 页数操作
       handleCurrentChangeAdvance(val) {
         this.currentPageAdvance = val;
         this.loadData(2);
       },
-
-      // 每页条数操作--余额支付
       handleSizeChangeBalance(val) {
         this.pageSizeBalance = val;
         this.currentPageBalance = 1;
         this.loadData(3);
       },
-      // 页数操作
       handleCurrentChangeBalance(val) {
         this.currentPageBalance = val;
         this.loadData(3);
       },
-
-      // 获取工作流未完成任务
       loadUnfinished(loan){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GettingUnfinishedTasksForZB", {
@@ -302,8 +274,6 @@
         }, ).then(function(response) {
           console.log('获取未完成任务', response);
           let noIncomeIDs = '', noIncomeNum = 0, advanceIDs = '', advanceNum = 0, balanceIDs = '', balanceNum = 0;
-          // 用ids 字符串调用loadData接口，获取未完成
-
 //          that.$parent.totalNum = response.data.length;
           that.unfinishWorking = that.unfinishWorking.concat(response.data);
           if(response.data.length !== 0){
@@ -323,7 +293,6 @@
           that.$parent.noIncomeNum = noIncomeNum;
           that.$parent.advanceNum = advanceNum;
           that.$parent.balanceNum = balanceNum;
-
           if(noIncomeIDs != ''){
             noIncomeIDs = noIncomeIDs.substr(0, noIncomeIDs.length - 1);
             that.loadData(1, noIncomeIDs);
@@ -352,8 +321,6 @@
           console.log(error);
         });
       },
-
-      // 加载数据
       loadData(periphery_type, ids){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/examinepage", {
@@ -367,20 +334,16 @@
           "approval_status": '',
           "id": ids
         }, ).then(function(response) {
-//          console.log('待审批list',response);
           if (response.data.code == '200') {
-//            console.log('无收入借款list',response);
             if(periphery_type == 1){
               that.noIncomeNum = response.data.data.list.length;
               that.tableDatanoIncome = response.data.data.list;
               that.pageCountnoIncome = response.data.data.total - 0;
               that.tableDatanoIncome.forEach(function (item, index, arr) {
                 item.created_at = formatDate(new Date(item.created_at*1000));
-                // 根据ID获取人名
                 that.getName(item.create_uid).then(res => {
                   item.create_uid = res;
                 });
-                // 根据code获取供应商名称
                 that.getSupplier(item.supplier_code).then(res => {
                   item.supplier_code = res;
                 });
@@ -391,11 +354,9 @@
               that.pageCountAdvance = response.data.data.total - 0;
               that.tableDataAdvance.forEach(function (item, index, arr) {
                 item.created_at = formatDate(new Date(item.created_at*1000));
-                // 根据ID获取人名
                 that.getName(item.create_uid).then(res => {
                   item.create_uid = res;
                 });
-                // 根据code获取供应商名称
                 that.getSupplier(item.supplier_code).then(res => {
                   item.supplier_code = res;
                 });
@@ -406,11 +367,9 @@
               that.pageCountBalance = response.data.data.total - 0;
               that.tableDataBalance.forEach(function (item, index, arr) {
                 item.created_at = formatDate(new Date(item.created_at*1000));
-                // 根据ID获取人名
                 that.getName(item.create_uid).then(res => {
                   item.create_uid = res;
                 });
-                // 根据code获取供应商名称
                 that.getSupplier(item.supplier_code).then(res => {
                   item.supplier_code = res;
                 });
@@ -424,8 +383,6 @@
           console.log(error);
         });
       },
-
-      // 根据id获取操作人
       getName(id){
         const that = this;
         return that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
@@ -479,7 +436,6 @@
 
     },
     created(){
-      // 加载数据(先加载工作流未完成数据，根据id查询周边待审批借款)
       this.loadUnfinished('NoIncomeLoan_ZB');
       this.loadUnfinished('IncomeLoan_ZB');
       this.loadUnfinished('BalancePayment_ZB');

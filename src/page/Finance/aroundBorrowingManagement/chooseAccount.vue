@@ -1,6 +1,5 @@
 <template>
   <div class="vivo" style="position:relative">
-    <!--申请预付款-->
     <el-dialog title="选择付款账户" :visible="dialogFormVisible2" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="close" appendToBody>
       <div class="buttonDv">
         <el-button class="el-button" type="warning" @click="close">取 消</el-button>
@@ -46,9 +45,6 @@
         tableDataZH: []
       }
     },
-    computed: {
-      // 计算属性的 getter
-    },
     watch: {
       dialogFormVisible2: {
         handler: function () {
@@ -59,7 +55,6 @@
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex === 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -67,7 +62,6 @@
           return ''
         }
       },
-      // 加载付款账户信息
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/list", {
@@ -86,11 +80,9 @@
           console.log(obj)
         })
       },
-      // 关闭
       close(){
         this.$emit('close', false);
       },
-      // 选择账户，然后关闭
       chooseBtn(row){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/choiceaccount', {

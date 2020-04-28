@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:55:22 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:55:22
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-04-01 15:57:09
  */
@@ -234,7 +234,6 @@ export default {
         return "";
       }
     },
-    // 导入财务系统
     importFun() {
       const that = this;
       this.$confirm("是否确认导入财务系统", "提示", {
@@ -247,7 +246,6 @@ export default {
           this.multipleSelection.forEach(function(item, index, arr) {
             idArr.push(item.id);
           });
-          // console.log(idArr);
           this.$http
             .post(
               this.GLOBAL.serverSrc + "/finance/bankofchina/api/ImportEBS",
@@ -257,7 +255,6 @@ export default {
               }
             )
             .then(function(response) {
-              // console.log(response)
               if (response.status == 200) {
                 that.$message.success("导入成功！");
                 that.loadData();
@@ -289,15 +286,11 @@ export default {
         return true; //可勾选
       }
     },
-
-    // 整行点击
     handleRowClick(row, column, event) {
       if (row.is_EBS == 0) {
         this.$refs.multipleTable.toggleRowSelection(row);
       }
     },
-
-    // 选择项更改
     selectionChange(val) {
       if (val.length > 0) {
         this.clickable = false;
@@ -306,8 +299,6 @@ export default {
       }
       this.multipleSelection = val;
     },
-
-    // 上传中信银行
     UploadUrl1() {
       return this.GLOBAL.serverSrc + "/finance/citic_bank/api/importexcel";
     },
@@ -331,7 +322,6 @@ export default {
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    // 上传微信支付宝明细
     UploadUrl2() {
       return (
         this.GLOBAL.serverSrc + "/finance/wa_payment_citic/api/importexcel"
@@ -356,8 +346,6 @@ export default {
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-
-    // 删除
     deleteFun(row) {
       const that = this;
       this.$confirm("是否需要删除", "提示", {
@@ -402,8 +390,6 @@ export default {
           });
         });
     },
-
-    // 搜索 重置
     searchHandInside() {
       this.pageCurrent = 1;
       this.loadData();
@@ -413,7 +399,6 @@ export default {
       this.pageCurrent = 1;
       this.loadData();
     },
-    // 加载数据
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageCurrent = 1;
@@ -466,7 +451,6 @@ export default {
           }
         });
     },
-    // 时间限制
     beginDate() {
       const that = this;
       return {

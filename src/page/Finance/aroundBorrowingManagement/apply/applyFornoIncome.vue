@@ -1,6 +1,5 @@
 <template>
   <div class="vivo" style="position:relative" id="applyFor">
-    <!--申请预付款-->
     <el-dialog title="无收入借款申请" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
@@ -53,7 +52,6 @@
           </el-form-item>
         </div>
       </el-form>
-      <!--选择收款账户-->
       <el-dialog title="选择账户" :visible="dialogFormVisible1" width=60% @close="close" append-to-body>
         <div class="table_trip" style="width: 100%;">
           <el-table ref="singleTable" :data="tableDataZH" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
@@ -100,7 +98,7 @@ import { storageLocal } from '@/js/libs/storage'
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',// 选择的供应商
+          supplier: '',
           supplierName: '',
           supplierID: '',
           supplierHC: '',
@@ -129,8 +127,7 @@ import { storageLocal } from '@/js/libs/storage'
             label: '定制游(跟团游)'
           }
         ],
-
-        supplierList: [],// 供应商列表
+        supplierList: [],
         rules: {
           supplier: [{ required: true, message: '供应商不能为空!', trigger: 'change' }],
           type: [{ required: true, message: '类型不能为空!', trigger: 'change' }],
@@ -139,17 +136,13 @@ import { storageLocal } from '@/js/libs/storage'
           payAccount: [{ required: true, message: '收款账户不能为空!', trigger: 'change' }],
           account_type: [{ required: true, message: '账户类别不能为空!', trigger: 'change' }]
         },
-
         dialogFormVisible1: false,
         tableDataZH: [],
-
         fileList: [],
-
         supplierCode: ''
       }
     },
     computed: {
-      // 计算属性的 getter
       headers(){
         return {
           'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -160,19 +153,16 @@ import { storageLocal } from '@/js/libs/storage'
       dialogFormVisible: {
         handler: function () {
           if(this.dialogFormVisible){
-            // this.loadSupplier();
             if(storageLocal.get("supplier")){
               this.supplierList = storageLocal.get("supplier");
             }else{
               this.loadSupplier();
             }
-//            alert(this.type);
           }
         }
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex === 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -180,7 +170,6 @@ import { storageLocal } from '@/js/libs/storage'
           return ''
         }
       },
-      // 关闭弹框
       closeAdd() {
         this.ruleForm = {
           type: '',
@@ -190,9 +179,9 @@ import { storageLocal } from '@/js/libs/storage'
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',// 选择的供应商
+          supplier: '',
           supplierName: '',
-          supplierID: '',// 选择的供应商ID
+          supplierID: '',
           supplierHC: '',
           supplierNameHC: '',
           supplierIDHC: '',
@@ -203,7 +192,6 @@ import { storageLocal } from '@/js/libs/storage'
         this.fileList = [];
         this.$emit('close', false);
       },
-      // 取消按钮事件
       cancalBtn(){
         if(this.ruleForm.collectionTime != '' || this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.ruleForm.money != '' || this.ruleForm.abstract != '' || this.fileList.length != 0){
           this.$confirm("是否取消本次添加?", "提示", {
@@ -220,7 +208,6 @@ import { storageLocal } from '@/js/libs/storage'
           this.closeAdd();
         }
       },
-      // 提交按钮
       submitForm(formName) {
         const that = this;
         this.$refs[formName].validate((valid) => {
@@ -290,8 +277,6 @@ import { storageLocal } from '@/js/libs/storage'
           }
         });
       },
-
-      // 选择账户function
       chooseFun(){
         const that = this;
 
@@ -328,15 +313,10 @@ import { storageLocal } from '@/js/libs/storage'
         this.ruleForm.payAccountID = row.id;
         this.close();
       },
-
-      // 上传凭证function
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess(response, file, fileList){
-        //        console.log(file);
-        //        console.log(fileList);
-        //        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
         }else{
@@ -345,16 +325,6 @@ import { storageLocal } from '@/js/libs/storage'
           }else{
             this.$message.warning('文件上传失败');
           }
-          //          this.fileList = fileList;
-          //          console.log(fileList);
-          //          this.fileList = fileList.splice(-1, 1);
-          //          for(let i = 0; i < fileList.length; i++){
-          //            console.log(i);
-          //          }
-
-          //          console.log(this.fileList);
-          //          this.fileList = {};
-          //          this.$refs.upload1.clearFiles();
         }
       },
       handleError(err, file, fileList){
@@ -370,12 +340,9 @@ import { storageLocal } from '@/js/libs/storage'
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-
-      // 供应商选择
       querySearchD(queryString, cb){
         let supplierList = this.supplierList;
         let results = queryString ? supplierList.filter(this.createFilter1(queryString)) : supplierList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
@@ -431,11 +398,9 @@ import { storageLocal } from '@/js/libs/storage'
           }
         }
       },
-
       querySearchHC(queryString, cb){
         const supplierList = this.supplierList;
         var results = queryString ? supplierList.filter(this.createFilterHC(queryString)) : supplierList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilterHC(queryString) {
@@ -444,9 +409,7 @@ import { storageLocal } from '@/js/libs/storage'
         };
       },
       handleSelectHC(item){
-        console.log(item);
         this.ruleForm.supplierIDHC = item.id;
-        // this.getSupplierCode(item.id);
         this.ruleForm.supplierHC = item.valueName;
         let nameArr = item.value.split(',');
         let nameStr = '';
@@ -458,16 +421,13 @@ import { storageLocal } from '@/js/libs/storage'
         if(nameStr.substr(nameStr.length-1,1) === ','){
           nameStr = nameStr.substr(0, nameStr.length - 1);
         }
-        // const name = 2;
         this.ruleForm.supplierNameHC = nameStr;
-        // this.loadRelatedData();
       },
       blurHandHC(){
         const that = this;
         let ida = '', namea = '';
         if(that.ruleForm.supplierHC == ''){
           that.ruleForm.supplierIDHC = '';
-          // that.tableDataXG = [];
         }else{
           this.supplierList.forEach(function (item, index, arr) {
             if(that.ruleForm.supplierHC == item.value){
@@ -478,7 +438,6 @@ import { storageLocal } from '@/js/libs/storage'
           });
           if(ida){
             that.ruleForm.supplierIDHC = ida;
-            // that.getSupplierCode(ida);
             let nameArr = namea.split(',');
             let nameStr = '';
             nameArr.forEach(function (item, index, arr) {
@@ -490,16 +449,12 @@ import { storageLocal } from '@/js/libs/storage'
               nameStr = nameStr.substr(0, nameStr.length - 1);
             }
             that.ruleForm.supplierNameHC = nameStr;
-            // const name = 2;
             this.loadRelatedData();
           }else{
             that.ruleForm.supplierIDHC = '';
-            // that.tableDataXG = [];
           }
         }
       },
-
-      // 加载供应商的
       getSupplierCode(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget",{
@@ -521,8 +476,6 @@ import { storageLocal } from '@/js/libs/storage'
           that.$message.warning("供应商编码接口请求失败~");
         });
       },
-
-      // 加载供应商信息
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
@@ -539,24 +492,19 @@ import { storageLocal } from '@/js/libs/storage'
               supplierObj.push(supplier);
             });
             that.supplierList = supplierObj;
-            // const dataSup = JSON.stringfy(supplierObj);
             storageLocal.set("supplier", supplierObj, '5m');
           }
         }).catch(function(obj) {
           console.log(obj);
         });
       },
-
-      // 开始工作流
       startWork(obj){
-//        alert('执行工作流function！');
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + '/ZB/StartUpWorkFlowForZB_V2', {
           "jQ_ID": obj.id,
           "jQ_Type": obj.periphery_type,
           "workflowCode": obj.workflowCode,
           "userCode": sessionStorage.getItem('tel'),
-//          "userCode": "zb1",// 测试
           "finishStart": "true",
           "paramValues": [{
             "itemName": "amount",
@@ -577,7 +525,6 @@ import { storageLocal } from '@/js/libs/storage'
         }).then(res => {
           console.log('工作流',res);
           let result = JSON.parse(res.data);
-//          let result = res.data;
           if (result.code == '0') {
             console.log('启动工作流成功');
             that.closeAdd();
@@ -597,17 +544,12 @@ import { storageLocal } from '@/js/libs/storage'
           console.log(err);
         })
       },
-
-      // 工作流启动失败，需要撤销此借款
       cancalLoan(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {
           "id": id
         }, ).then(function(response) {
-//            console.log('借款撤销操作',response);
           if (response.data.code == '200') {
-//            that.$message.success("撤销成功~");
-//            that.closeAdd();
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -620,12 +562,6 @@ import { storageLocal } from '@/js/libs/storage'
         });
       }
     },
-    created() {
-
-    },
-    mounted() {
-
-    }
   }
 
 </script>

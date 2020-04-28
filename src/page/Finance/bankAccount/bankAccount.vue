@@ -127,27 +127,27 @@ export default {
     return {
       //tableHeight:{padding: '0', height: '40px'},
       //tableHead:{color: '#555555'},
-      subject: "", // 搜索科目值
-      cardType: "", //搜索状态
-      currentPage: 1, // 默认开始页数
-      pagesize: 10, // 每页的数据条数
-      total: 100, // 分页总条数
+      subject: "",
+      cardType: "",
+      currentPage: 1,
+      pagesize: 10,
+      total: 100,
       dialogSupplierVisible: false,
-      currentRow: "", // 表格选中的值
+      currentRow: "",
       isRow: true,
-      dataList: [], //接收初始请求的数据
-      orgNameOptions: [], //接收公司名称的
+      dataList: [],
+      orgNameOptions: [],
       handleForm: {
         id: "",
-        orgName: "", //公司名称
-        orgNameId: null, //选中的公司名称的id
-        subject: "", //科目值
-        title: "", //账户名称
-        cardNum: "", //卡号
-        openingBank: "", //开户行
-        openingName: "", //开户人
-        cardType: "", //类型
-        ratio: "" //手续费比率
+        orgName: "",
+        orgNameId: null,
+        subject: "",
+        title: "",
+        cardNum: "",
+        openingBank: "",
+        openingName: "",
+        cardType: "",
+        ratio: ""
       },
       rules: {
         orgName: [{ required: true, message: "不能为空", trigger: "blur"}],
@@ -220,7 +220,7 @@ export default {
           name: "应付"
         }
       ],
-      multipleSelection: [] //选中list
+      multipleSelection: []
     };
   },
   created() {
@@ -235,7 +235,6 @@ export default {
         return "";
       }
     },
-    //重置
     emptySearch() {
       console.log(1);
       // this.searchType = '';
@@ -247,7 +246,6 @@ export default {
     searchButton() {
       this.getData();
     },
-    // 账号列表
     getData(subject = this.subject, cardType = this.cardType) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/page", {
@@ -264,7 +262,6 @@ export default {
           this.total = res.data.total;
         });
     },
-    // 编辑弹窗
     handleEdit(row) {
       this.$http
         .post(this.GLOBAL.serverSrc + "/finance/collectionaccount/api/get", {
@@ -286,13 +283,11 @@ export default {
         });
       this.dialogSupplierVisible = true;
     },
-    //根据orgID获取公司的名字
     getOrgName() {
       let index = this.orgNameOptions.findIndex(item => item.id == this.handleForm.orgNameId)
       this.handleForm.orgName = this.orgNameOptions[index].orgName
     },
     rowClass({ row, rowIndex }) {
-      //选中行样式改变
       for (var i = 0; i < this.multipleSelection.length; i++) {
         if (this.multipleSelection[i].id == row.id) {
           return { "background-color": "#ecf5ff" };
@@ -303,14 +298,11 @@ export default {
       this.$refs.multipleTable.toggleRowSelection(row);
     },
     changeFun(val) {
-      //保存选中项的数据
       this.multipleSelection = val;
     },
-    // 编辑弹窗关闭
     editDialog () {
       this.multipleSelection = []
     },
-    // 保存
     handleSave(Form) {
       this.$refs[Form].validate(valid => {
         if (valid) {
@@ -350,7 +342,6 @@ export default {
         }
       });
     },
-    // 请求公司的组织名字
     getorgID() {
       this.$http
         .post(this.GLOBAL.serverSrc + "/org/api/deptpage", {
@@ -371,22 +362,14 @@ export default {
           console.log(obj);
         });
     },
-    // 弹窗选中的公司名称
     currentSel(item) {
       this.handleForm.orgNameId = item;
     },
-    /*// 表格选中
-    handleChange(val) {
-      if (val) this.currentRow = val;
-      this.isRow = false;
-    },*/
-    // 每页显示条数
     pagesizes(page) {
       this.currentPage = 1;
       this.pagesize = page;
       this.getData();
     },
-    // 改变当前页
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
       this.getData();

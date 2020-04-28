@@ -1,15 +1,12 @@
 <template>
   <div class="printPage">
-    <!-- 被 print 包括的是要打印的区域，关于print开头的命名样式均为打印样式 -->
     <div ref="print">
       <div class="print-title">{{ printMsg.getTopName }} - {{ printMsg.presentRouter }} - 借款单 </div>
-      <!-- 基本信息 -->
       <div class="item-content print-hidden">
         <el-tag type="warning" v-if="printMsg.checkType=='0'" class="distributor-status">审批中</el-tag>
         <el-tag type="danger" v-if="printMsg.checkType=='2'" class="distributor-status">驳回</el-tag>
         <el-tag type="success" v-if="printMsg.checkType=='1'" class="distributor-status">通过</el-tag>
       </div>
-      <!-- 第一行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="6">
           <el-col :span="7"><div class="grid-del label-color">ID:</div></el-col>
@@ -24,8 +21,6 @@
           <el-col :span="15"><div class="grid-del ">{{ printMsg.fundamental.created_at }}</div></el-col>
         </el-col>
       </el-row>
-      <!-- 第一行 END -->
-      <!-- 第二行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <!-- 周边没有团期计划和产品名称 -->
         <!-- <el-col :span="6">
@@ -51,8 +46,6 @@
           <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.money }}</div></el-col>
         </el-col>
       </el-row>
-      <!-- 第二行 END -->
-      <!-- 第三行 -->
       <el-row type="flex" class="row-bg" justify="space-around">
         <!-- <el-col :span="6">
           <el-col :span="9"><div class="grid-del label-color">借款类型:</div></el-col>
@@ -65,25 +58,18 @@
           <el-col :span="15"><div class="grid-del">{{ printMsg.fundamental.reimbursed_money }}</div></el-col>
         </el-col> -->
         <el-col :span="6">
-          <!-- 摘要打印时隐藏 -->
           <el-col :span="6" class="print-hidden"><div class="grid-del label-color">摘要:</div></el-col>
           <el-col :span="17" class="print-hidden"><div class="grid-del ">{{ printMsg.fundamental.remark }}</div></el-col>
         </el-col>
       </el-row>
-      <!-- 第三行 END -->
-      <!-- 支付账户 -->
       <el-row type="flex" class="row-bg print-acount" justify="start">
         <el-col :span="2" :offset="1"><div class="grid-del label-color">支付账户:</div></el-col>
         <el-col :span="18"><div class="grid-del">{{ printMsg.fundamental.accountPay }}</div></el-col>
       </el-row>
-      <!-- 支付账户 -->
-      <!-- 审批人 打印时输出 -->
       <el-row type="flex" class="row-bg print-approve" justify="start">
         <el-col :span="2" :offset="1"><div class="grid-del label-color">审批人:</div></el-col>
         <el-col :span="18"><div class="grid-del" v-html="printMsg.printContent"></div></el-col>
       </el-row>
-      <!-- 审批人 打印时输出 END -->
-      <!-- 第四行 -->
       <el-row type="flex" class="row-bg print-acount-padding" justify="space-around">
         <el-col :span="6">
           <el-col :span="6"><div class="grid-del label-color">账号:</div></el-col>
@@ -98,7 +84,6 @@
           <el-col :span="15"><div class="grid-del ">{{ printMsg.fundamental.accountName }}</div></el-col>
         </el-col>
       </el-row>
-      <!-- 第四行 END -->
     </div>
   </div>
 </template>
@@ -106,7 +91,7 @@
 export default {
   name: "printPage",
   components: {
-    
+
   },
   props: {
     printMsg1: ''
@@ -130,18 +115,17 @@ export default {
     }
   },
   methods: {
-    // 打印详情
     printDetails(){
       if(this.printMsg.getTopName){
         this.$print(this.$refs.print);
       }else{
         this.$message.warning("数据加载中，请稍后重试。。。");
       }
-      
+
     },
   },
   created() {
-    
+
   },
   mounted() {
 

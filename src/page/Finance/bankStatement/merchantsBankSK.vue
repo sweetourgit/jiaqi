@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:56:21 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:56:21
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-04-01 15:55:29
  */
@@ -169,7 +169,7 @@
     <orderDetail :dialogFormVisible="dialogFormVisible" @close="close" :info="info"></orderDetail>
   </div>
 </template>
- 
+
 <script type="text/javascript">
 import moment from "moment";
 import orderDetail from "@/page/Finance/bankStatement/orderDetails.vue";
@@ -351,7 +351,6 @@ export default {
       this.pageCurrent = val;
       this.loadData();
     },
-    // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if (date == undefined) {

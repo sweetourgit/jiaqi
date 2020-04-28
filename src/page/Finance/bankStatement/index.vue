@@ -1,8 +1,8 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:55:52 
- * @Last Modified by:   WZJ 
- * @Last Modified time: 2020-03-25 14:55:52 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:55:52
+ * @Last Modified by:   WZJ
+ * @Last Modified time: 2020-03-25 14:55:52
  */
 <template>
   <div class="bankStatement">
@@ -102,13 +102,13 @@ import constructionBankSXF from '@/page/Finance/bankStatement/constructionBankSX
 import citicBankSK from '@/page/Finance/bankStatement/citicBankSK.vue'
 import citicBankSXF from '@/page/Finance/bankStatement/citicBankSXF.vue'
 import jilinCiticBankSK from '@/page/Finance/bankStatement/jilinCiticBankSK.vue'
- 
+
 export default {
   name: "bankStatement",
   components: {
-    bankOfChinaSK, // 中国银行
+    bankOfChinaSK,
     bankOfChinaSXF,
-    industrialBankSK, // 兴业银行
+    industrialBankSK,
     industrialBankSXF,
     agriculturalBankSK,
     merchantsBankSK,
@@ -121,15 +121,14 @@ export default {
   },
   data() {
     return {
-      activeName: 'first', // 当前tab选项卡默认状态
-      clickTab:'' // 点击切换获取当前值
+      activeName: 'first',
+      clickTab:''
     }
   },
   computed: {},
   methods: {
-    // 获取当前项的标题
     handleClick(tab, event) {// 点击切换获取当前值
-      
+
     },
 
     routerTo1(){

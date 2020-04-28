@@ -230,18 +230,16 @@
     data() {
       return {
         activeName: 'one',
-        activities: [],//收款编码列表数据
-        activities1: [],//发票列表数据
-        size: 'large',//时间轴size
-        timestampHide: true,//是否隐藏时间
-//        收款编码详情数据
+        activities: [],
+        activities1: [],
+        size: 'large',
+        timestampHide: true,
         dialogFormVisible: false,
         receiptCode: '',
         approval: '',
         approvalOpinions: '',
         totalMoney: '',
         tableData: [],
-//        发票详情数据
         ruleForm: {
           title: '',
           number: '',
@@ -257,7 +255,6 @@
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -265,11 +262,9 @@
           return ''
         }
       },
-//      返回上一页
       cancel(){
         this.$router.go(-1);
       },
-//      获取收款编号详情
       detailsRece(id){
         const that = this;
         that.dialogFormVisible = true;
@@ -305,7 +300,6 @@
           console.log(error);
         });
       },
-//      获取发票详情
       detailsInvo(id){
         const that = this;
         that.dialogFormVisible1 = true;
@@ -313,7 +307,6 @@
           "id": id
         }, ).then(function(response) {
           if (response.data.code == '200') {
-//            console.log('详情',response);
             that.ruleForm = {
               title: response.data.data.title,
               number: response.data.data.pay_taxes_no,
@@ -341,12 +334,10 @@
           console.log(error);
         });
       },
-//      关闭弹窗
       close(){
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
       },
-//      加载数据
       loadData(apply_type){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/recognition/recognition/receiptlist", {
@@ -388,9 +379,7 @@
     },
     created() {
       if(this.$route.query.tour_no){
-//        加载收款编码
         this.loadData(1);
-//        加载发票
         this.loadData(2);
       }else{
         this.cancel();

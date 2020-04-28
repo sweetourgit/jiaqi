@@ -85,18 +85,13 @@
           remark: '',
           explain: ''
         },
-
-        fileList: [],// 凭证列表
-
-        rec_type: '',// 认款方式
-
-        distributor: '',// 选择的分销商
-        distributorID: '',// 选择的分销商ID
-        distributorList: [],// 分销商列表
-
-        distributorType: '无',// 订单收款分销商
-
-        localCompCode: ''// 客商编码--分销商的编码
+        fileList: [],
+        rec_type: '',
+        distributor: '',
+        distributorID: '',
+        distributorList: [],
+        distributorType: '无',
+        localCompCode: ''
       }
     },
     computed: {
@@ -119,7 +114,6 @@
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -131,7 +125,6 @@
 //        console.log(value);
         this.rec_type = value;
       },
-      // 关闭弹窗
       closeAdd(){
         this.rec_type = '';
         this.distributor = '';
@@ -140,8 +133,6 @@
 
         this.$emit('close', false);
       },
-
-      // 认款提交
       submitBtn(){
         const that = this;
         if(this.distributorID === '' && this.rec_type === "1"){
@@ -159,7 +150,6 @@
           "rec_uid": sessionStorage.getItem('id'),
           "oracle_distributor_code": this.localCompCode
         }, ).then(function(response) {
-//          console.log('认款结果',response);
           if (response.data.code == '200') {
             that.$message({
               type: 'success',
@@ -183,12 +173,9 @@
           console.log(error);
         });
       },
-
-      // 分销商选择
       querySearchD(queryString, cb){
         const distributorList = this.distributorList;
         var results = queryString ? distributorList.filter(this.createFilter1(queryString)) : distributorList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
@@ -221,7 +208,6 @@
           }
         }
       },
-      // 获取客商编码，必须有！
       getLocalCompCode(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
@@ -244,11 +230,8 @@
           that.$message.warning("商户编码接口请求失败~");
         });
       },
-
-      // 加载基础数据
       loadData(){
         const that = this;
-        // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewbasic", {
           "id": this.info
         }, ).then(function(response) {
@@ -269,7 +252,6 @@
               remark: response.data.data.remark,
               explain: response.data.data.explain
             };
-            // 根据ID获取人名
             that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
               "id": response.data.data.create_uid
             },{
@@ -286,7 +268,6 @@
             }).catch(function(error) {
               console.log(error);
             });
-            // 根据账户ID获取账户名称
             that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
@@ -295,8 +276,6 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token')
                 }
               }).then(function (obj) {
-//                that.tableDataZH = obj.data.objects;
-              console.log('账户查询',obj);
               if(obj.data.isSuccess){
                 that.baseInfo.account = obj.data.object.title;
               }
@@ -317,8 +296,6 @@
           console.log(error);
         });
       },
-
-      // 加载分销商信息
       loadDistributor(name){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/universal/localcomp/api/list", {

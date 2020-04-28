@@ -107,9 +107,9 @@
 </template>
 
 <script>
-  import applyFornoIncome from '@/page/Finance/aroundBorrowingManagement/apply/applyFornoIncome.vue'// 申请
-  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择付款账户
-  import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'// 详情
+  import applyFornoIncome from '@/page/Finance/aroundBorrowingManagement/apply/applyFornoIncome.vue'
+  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'
+  import detail from '@/page/Finance/aroundBorrowingManagement/detail.vue'
   import {formatDate} from '@/js/libs/publicMethod.js'
   import { storageLocal } from '@/js/libs/storage'
   export default {
@@ -121,25 +121,20 @@
     },
     data() {
       return {
-        disabled: false,// 设置搜索项时间不可编辑
-
-        supplier: '',// 供应商
+        disabled: false,
+        supplier: '',
         supplierID: '',
         supplierList: [],
-        startTime: '',// 搜索项，开始时间
-        endTime: '',// 搜索项，结束时间
-        reimbursementPer: '',// 申请人
-        reimbursementPerID: '',// 申请人ID
-        operatorList: [],// 申请人list
-        borrowStatus: '',// 借款状态
-        accountType: '',// 对公--1,对私--2
-
-        // 页数，页码，条数
+        startTime: '',
+        endTime: '',
+        reimbursementPer: '',
+        reimbursementPerID: '',
+        operatorList: [],
+        borrowStatus: '',
+        accountType: '',
         pageSize: 10,
         currentPage: 1,
         pageCount: 0,
-
-        // 列表table
         tableData: [],
         typeList: {
           1: '门票',
@@ -147,19 +142,15 @@
           3: '地接',
           4: '定制游(跟团游)'
         },
-
-        dialogFormVisible: false,// 申请-显示，隐藏
-        dialogFormVisible1: false,// 详情-显示，隐藏
-        dialogFormVisible2: false,// 选择账户-显示，隐藏
-        info: '',// 详情传值字段
-
-        // 时间限制
+        dialogFormVisible: false,
+        dialogFormVisible1: false,
+        dialogFormVisible2: false,
+        info: '',
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate()
       };
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -167,11 +158,9 @@
           return ''
         }
       },
-      // 操作人员
       querySearchOper(queryString, cb){
         const operatorList = this.operatorList;
         var results = queryString ? operatorList.filter(this.createFilter1(queryString)) : operatorList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
@@ -201,28 +190,23 @@
           }
         }
       },
-      // 申请
       applyFor(){
         console.log('申请~');
         this.dialogFormVisible = true;
       },
-      // 详情
       detail(row){
         this.info = row.id;
         this.dialogFormVisible1 = true;
       },
-      // 选择账户
       chooseAccount(row){
         this.info = row.id;
         this.dialogFormVisible2 = true;
       },
-      // 关闭弹窗
       closeAdd(str) {
         this.dialogFormVisible = false;
         this.dialogFormVisible1 = false;
         this.dialogFormVisible2 = false;
         this.info = '';
-        // console.log(str);
         if(str !== 'detail'){
           this.loadData();
         }
@@ -230,15 +214,11 @@
         const timer = setTimeout(function () {
           that.$parent.loadData('NoIncomeLoan_ZB');
         }, 800);
-//        console.log(this.$parent.loadData(1));
       },
-
-      // 搜索
       searchFun(){
         this.currentPage = 1;
         this.loadData();
       },
-      // 重置
       resetFun(){
         this.supplier = '';
         this.supplierID = '';
@@ -251,19 +231,15 @@
         this.currentPage = 1;
         this.loadData();
       },
-      // 每页条数操作
       handleSizeChange(val) {
         this.pageSize = val;
         this.currentPage = 1;
         this.loadData()
       },
-      // 页数操作
       handleCurrentChange(val) {
         this.currentPage = val;
         this.loadData();
       },
-
-      // 加载数据
       loadData(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/listpage", {
@@ -279,7 +255,6 @@
         }, ).then(function(response) {
           console.log('无收入借款list',response);
           if (response.data.code == '200') {
-//            console.log('无收入借款list',response);
             that.tableData = response.data.data.list;
             that.pageCount = response.data.data.total - 0;
             that.tableData.forEach(function (item, index, arr) {
@@ -287,7 +262,6 @@
 //              item.receivables_at = item.receivables_at.split(" ")[0];
               item.created_at = formatDate(new Date(item.created_at*1000));
 //              item.created_at = item.created_at.split(" ")[0];
-              // 获取申请人
               that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
                 "id": item.create_uid
               },{
@@ -295,7 +269,6 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-//                console.log(response);
                 if (response.data.isSuccess) {
                   item.create_uid = response.data.object.name
                 } else {
@@ -304,8 +277,6 @@
               }).catch(function(error) {
                 console.log(error);
               });
-
-              // 获取供应商名称
               that.$http.post(that.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
                 "id": item.supplier_code
               },{
@@ -335,7 +306,6 @@
           console.log(error);
         });
       },
-      // 加载搜索项中 申请人 list
       loadOper(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/org/api/userlist", {
@@ -375,7 +345,6 @@
         }).then(function(response) {
 
           if (response.data.isSuccess) {
-//            console.log('操作人员列表',response.data.objects);
             let operatorList = [];
             response.data.objects.forEach(function (item, index, arr) {
               const operator = {
@@ -392,40 +361,31 @@
           console.log(error);
         });
       },
-
-      // 时间限制（开始时间小于结束时间）
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
-            if (that.endTime) {  //如果结束时间不为空，则小于结束时间
+            if (that.endTime) {
               return new Date(that.endTime).getTime() < time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
-            if (that.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+            if (that.startTime) {
               return new Date(that.startTime).getTime() > time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }
       },
-
-      // 供应商选择
       querySearchD(queryString, cb){
         let supplierList = this.supplierList;
         let results = queryString ? supplierList.filter(this.createFilterD(queryString)) : supplierList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilterD(queryString) {
@@ -458,8 +418,6 @@
           }
         }
       },
-
-      // 加载供应商信息
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
@@ -476,14 +434,12 @@
               supplierObj.push(supplier);
             });
             that.supplierList = supplierObj;
-            // const dataSup = JSON.stringfy(supplierObj);
             storageLocal.set("supplier", supplierObj, '5m');
           }
         }).catch(function(obj) {
           console.log(obj);
         });
       },
-
     },
     created(){
       this.loadData();

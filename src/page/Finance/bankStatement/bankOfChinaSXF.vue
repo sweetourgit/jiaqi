@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:54:40 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:54:40
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-04-01 15:58:26
  */
@@ -222,8 +222,6 @@ export default {
         return "";
       }
     },
-
-    // 导入
     importFun() {
       const that = this;
       this.$confirm("是否确认导入财务系统", "提示", {
@@ -279,14 +277,12 @@ export default {
       }
     },
 
-    // 整行点击
     handleRowClick(row, column, event) {
       if (row.is_EBS == 0) {
         this.$refs.multipleTable.toggleRowSelection(row);
       }
     },
 
-    // 选择项更改
     selectionChange(val) {
       if (val.length > 0) {
         this.clickable = false;
@@ -296,7 +292,6 @@ export default {
       this.multipleSelection = val;
     },
 
-    // 文件上传
     UploadUrl() {
       return this.GLOBAL.serverSrc + "/finance/bankofchina/api/ImportExcel";
     },
@@ -321,7 +316,6 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
 
-    // 删除
     deleteFun(row) {
       const that = this;
       this.$confirm("是否需要删除", "提示", {
@@ -367,7 +361,6 @@ export default {
         });
     },
 
-    // 搜索/重置
     searchHandInside() {
       this.pageCurrent = 1;
       this.loadData();
@@ -387,7 +380,6 @@ export default {
       this.pageCurrent = val;
       this.loadData();
     },
-    // 起始时间格式转换
     dateFormat: function(row, column) {
       let date = row[column.property];
       if (date == undefined) {
@@ -434,7 +426,6 @@ export default {
           }
         });
     },
-    // 时间限制
     beginDate() {
       const that = this;
       return {

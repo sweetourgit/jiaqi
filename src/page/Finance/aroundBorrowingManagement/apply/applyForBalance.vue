@@ -1,6 +1,5 @@
 <template>
   <div class="vivo" style="position:relative" id="applyFor">
-    <!--申请预付款-->
     <el-dialog title="余额支付借款申请" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
@@ -93,7 +92,6 @@
       return {
         readOnly: true,
         loading: false,
-//        rece_code: '',
         ruleForm: {
           type: '',
           payNumber: '',
@@ -102,7 +100,7 @@
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',// 选择的供应商
+          supplier: '',
           supplierName: '',
           supplierID: '',
           supplierHC: '',
@@ -114,13 +112,11 @@
           timeEnd: '',
           productName: ''
         },
-
         postForm: {
           timeStart: '',
           timeEnd: '',
           productName: ''
         },
-
         typeList: [
           {
             value: 1,
@@ -139,8 +135,7 @@
             label: '定制游(跟团游)'
           }
         ],
-
-        supplierList: [],// 供应商列表
+        supplierList: [],
         rules: {
           supplier: [{ required: true, message: '供应商不能为空!', trigger: 'change' }],
           type: [{ required: true, message: '类型不能为空!', trigger: 'change' }],
@@ -148,18 +143,13 @@
           abstract: [{ required: true, message: '摘要不能为空!', trigger: 'blur' }],
           payAccount: [{ required: true, message: '收款账户不能为空!', trigger: 'change' }]
         },
-
         fileList: [],
-
         tableDataXG: [],
-
-        // 时间限制
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate()
       }
     },
     computed: {
-      // 计算属性的 getter
       headers(){
         return {
           'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -170,20 +160,16 @@
       dialogFormVisible: {
         handler: function () {
           if(this.dialogFormVisible){
-            // this.loadSupplier();
             if(storageLocal.get("supplier")){
               this.supplierList = storageLocal.get("supplier");
             }else{
               this.loadSupplier();
             }
-            //            this.getCode();
-            //            alert(this.type);
           }
         }
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex === 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -191,7 +177,6 @@
           return ''
         }
       },
-      // 关闭弹框
       closeAdd() {
         this.ruleForm = {
           type: '',
@@ -201,9 +186,9 @@
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',// 选择的供应商
+          supplier: '',
           supplierName: '',
-          supplierID: '',// 选择的供应商ID
+          supplierID: '',
           supplierHC: '',
           supplierNameHC: '',
           supplierIDHC: '',
@@ -221,7 +206,6 @@
         this.tableDataXG = [];
         this.$emit('close', false);
       },
-      // 取消按钮事件
       cancalBtn(){
         if(this.ruleForm.collectionTime != '' || this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.ruleForm.money != '' || this.ruleForm.abstract != '' || this.fileList.length != 0){
           this.$confirm("是否取消本次添加?", "提示", {
@@ -238,7 +222,6 @@
           this.closeAdd();
         }
       },
-      // 提交事件
       submitForm(formName) {
         const that = this;
         this.$refs[formName].validate((valid) => {
@@ -323,23 +306,16 @@
                 })
               }
             });
-
-
           } else {
             console.log('error submit!!');
             return false;
           }
         });
       },
-
-      // 上传凭证function
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess(response, file, fileList){
-        //        console.log(file);
-        //        console.log(fileList);
-        //        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
         }else{
@@ -348,16 +324,6 @@
           }else{
             this.$message.warning('文件上传失败');
           }
-          //          this.fileList = fileList;
-          //          console.log(fileList);
-          //          this.fileList = fileList.splice(-1, 1);
-          //          for(let i = 0; i < fileList.length; i++){
-          //            console.log(i);
-          //          }
-
-          //          console.log(this.fileList);
-          //          this.fileList = {};
-          //          this.$refs.upload1.clearFiles();
         }
       },
       handleError(err, file, fileList){
@@ -373,13 +339,9 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-
-
-      // 供应商选择
       querySearchD(queryString, cb){
         const supplierList = this.supplierList;
         var results = queryString ? supplierList.filter(this.createFilter1(queryString)) : supplierList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
@@ -388,7 +350,6 @@
         };
       },
       handleSelectD(item){
-        // console.log(item);
         this.ruleForm.supplierID = item.id;
         this.getSupplierCode(item.id);
         this.ruleForm.supplier = item.valueName;
@@ -441,11 +402,9 @@
           }
         }
       },
-
       querySearchHC(queryString, cb){
         const supplierList = this.supplierList;
         var results = queryString ? supplierList.filter(this.createFilterHC(queryString)) : supplierList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilterHC(queryString) {
@@ -456,7 +415,6 @@
       handleSelectHC(item){
         console.log(item);
         this.ruleForm.supplierIDHC = item.id;
-        // this.getSupplierCode(item.id);
         this.ruleForm.supplierHC = item.valueName;
         let nameArr = item.value.split(',');
         let nameStr = '';
@@ -506,8 +464,6 @@
           }
         }
       },
-
-      // 加载供应商编码
       getSupplierCode(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget",{
@@ -529,8 +485,6 @@
           that.$message.warning("供应商编码接口请求失败~");
         });
       },
-
-      // 加载供应商信息
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
@@ -554,8 +508,6 @@
           console.log(obj);
         });
       },
-
-      // 加载相关信息
       loadRelatedData(){
         const that = this;
         this.loading = true;
@@ -596,8 +548,6 @@
           console.log(obj);
         });
       },
-
-      // 加载相关信息--重置
       emptyButtonInside(){
         const that = this;
         this.ruleForm.timeStart = '';
@@ -606,10 +556,7 @@
         this.$set(that.ruleForm, 'productName', '');
         this.loadRelatedData();
       },
-
-      // 开始工作流
       startWork(obj){
-//        alert('执行工作流function！');
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + '/ZB/StartUpWorkFlowForZB_V2', {
           "jQ_ID": obj.id,
@@ -653,36 +600,28 @@
           console.log(err);
         })
       },
-
-      // 时间限制（开始时间小于结束时间）
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
-            if (that.ruleForm.timeEnd) {  //如果结束时间不为空，则小于结束时间
+            if (that.ruleForm.timeEnd) {
               return new Date(that.ruleForm.timeEnd).getTime() < time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
-            if (that.ruleForm.timeStart) {  //如果开始时间不为空，则结束时间大于开始时间
+            if (that.ruleForm.timeStart) {
               return new Date(that.ruleForm.timeStart).getTime() > time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }
       },
-
-      // 获取收款编码
       getCode(){
         const that = this;
         return this.$http.post(this.GLOBAL.serverSrcZb + "/ong/api/receivable/get", {},
@@ -708,18 +647,12 @@
           return '';
         });
       },
-
-      // 启动工作流失败，需要撤销此借款
       cancalLoan(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/cancleloan", {
           "id": id
         }, ).then(function(response) {
-//            console.log('借款撤销操作',response);
           if (response.data.code == '200') {
-//            that.$message.success("撤销成功~");
-//            that.endWorking();
-//            that.closeAdd();
           } else {
             if(response.data.message){
               that.$message.warning(response.data.message);
@@ -732,12 +665,6 @@
         });
       }
     },
-    created() {
-
-    },
-    mounted() {
-
-    }
   }
 
 </script>

@@ -256,7 +256,6 @@
           console.log(error);
         });
       },
-      // 关联订单
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/receivables/receivables/files';
       },
@@ -314,7 +313,6 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-      // 删除明细信息
       deleteBtn(scope){
         const that = this;
         this.$confirm("是否删除此明细?", "提示", {
@@ -366,7 +364,6 @@
 
         });
       },
-      // 关闭弹窗
       closeAdd(){
         this.baseInfo = {
           status_rece: '',
@@ -400,11 +397,8 @@
 
         this.$emit('close', false);
       },
-
-      // 加载数据
       loadData(){
         const that = this;
-        // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewbasic", {
           "id": this.info
         }, ).then(function(response) {
@@ -441,7 +435,6 @@
               dateQuantun: response.data.data.rece_start + '-' + response.data.data.rece_end
             };
 
-            // 根据ID获取人名
             that.getName(response.data.data.create_uid).then(res => {
 //              console.log(res);
               that.baseInfo.create_uid = res;
@@ -452,8 +445,6 @@
                 that.baseInfo.rec_uid = res;
               });
             }
-
-            // 根据账户ID获取账户名称
             that.$http.post(that.GLOBAL.serverSrc + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
@@ -462,14 +453,12 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token')
                 }
               }).then(function (obj) {
-//              console.log('账户查询',obj);
               if(obj.data.isSuccess){
                 that.baseInfo.account = obj.data.object.title;
               }
             }).catch(function (obj) {
               console.log(obj)
             });
-            // 凭证
             if(response.data.data.fil){
               that.fileList = response.data.data.file;
               for(let i = 0; i < that.fileList.length; i++){
@@ -478,9 +467,6 @@
             }else{
               that.fileList = [];
             }
-
-
-            // 分销商为无，自动填充时间
             if(response.data.data.distributor == '无'){
               const timeToday = new Date();
               const year = timeToday.getFullYear();
@@ -498,9 +484,7 @@
         }).catch(function(error) {
           console.log(error);
         });
-
       },
-      // 根据id获取人名
       getName(id){
         const that = this;
         return that.$http.post(that.GLOBAL.serverSrc + "/org/api/userget", {
@@ -522,40 +506,29 @@
           return '';
         });
       },
-
       beginDate(){
-//      alert(begin);
         const that = this;
         return {
           disabledDate(time){
-            if (that.endTime) {  //如果结束时间不为空，则小于结束时间
+            if (that.endTime) {
               return new Date(that.endTime).getTime() < time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }
       },
       processDate(){
-//      alert(process);
         const that = this;
         return {
           disabledDate(time) {
-            if (that.startTime) {  //如果开始时间不为空，则结束时间大于开始时间
+            if (that.startTime) {
               return new Date(that.startTime).getTime() > time.getTime()
             } else {
-              // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
             }
           }
         }
       }
     },
-    created() {
-
-    },
-    mounted() {
-
-    }
   }
 
 </script>

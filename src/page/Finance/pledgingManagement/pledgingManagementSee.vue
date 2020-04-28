@@ -133,7 +133,6 @@ export default {
     cancel() {
       this.$router.push({ path: "/pledgingManagement" });
     },
-    //审批提交
     submit() {
       const that = this;
       this.$confirm('是否审核提交?', '提示', {

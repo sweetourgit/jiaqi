@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:55:05 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:55:05
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-04-01 15:57:13
  */
@@ -334,7 +334,6 @@ export default {
       this.dialogFormVisible = false;
       this.info = "";
     },
-    // 中信微信支付宝列表(暂时没有接口)
     payDetail(row) {
       this.$router.push({
         path: "/bankStatement/citicBankPayDetails",
@@ -459,10 +458,8 @@ export default {
       return {
         disabledDate(time) {
           if (that.ruleForm.dateEnd) {
-            //如果结束时间不为空，则小于结束时间
             return new Date(that.ruleForm.dateEnd).getTime() < time.getTime();
           } else {
-            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
           }
         }
       };
@@ -472,10 +469,8 @@ export default {
       return {
         disabledDate(time) {
           if (that.ruleForm.dateStart) {
-            //如果开始时间不为空，则结束时间大于开始时间
             return new Date(that.ruleForm.dateStart).getTime() > time.getTime();
           } else {
-            // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天
           }
         }
       };

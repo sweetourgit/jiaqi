@@ -162,11 +162,9 @@ export default {
     }
   },
   methods: {
-    //获取id
     clickBanle(row, event, column) {
       this.pid = row["id"];
     },
-    // 表格头部背景颜色
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#F7F7F7;color:rgb(85, 85, 85);";
@@ -204,16 +202,16 @@ export default {
             pageSize: this.pageSize,
             object: {
               bankID: this.info.id,
-              type: this.info.type // 0 中国银行；1 兴业银行；2 微信支付宝明细；
+              type: this.info.type
             }
           }
         )
         .then(function(obj) {
           if (obj.data.isSuccess) {
-         
+
             that.total = obj.data.total;
             that.tableData = obj.data.objects;
-          
+
             let totalM = 0;
             that.tableData.forEach(function(item, index, arr) {
               if(index==0){

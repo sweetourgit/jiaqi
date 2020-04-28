@@ -1,6 +1,6 @@
 /*
- * @Author: WZJ 
- * @Date: 2020-03-25 14:55:37 
+ * @Author: WZJ
+ * @Date: 2020-03-25 14:55:37
  * @Last Modified by: WZJ
  * @Last Modified time: 2020-03-30 15:36:29
  */
@@ -289,15 +289,11 @@ export default {
         return true; //可勾选
       }
     },
-
-    // 整行点击
     handleRowClick(row, column, event) {
       if (row.is_EBS == 0) {
         this.$refs.multipleTable.toggleRowSelection(row);
       }
     },
-
-    // 选择项更改
     selectionChange(val) {
       if (val.length > 0) {
         this.clickable = false;
@@ -306,8 +302,6 @@ export default {
       }
       this.multipleSelection = val;
     },
-
-    // 上传建设银行
     UploadUrl1() {
       return this.GLOBAL.serverSrc + "/finance/chinaconstbank/api/importexcel";
     },
@@ -334,7 +328,6 @@ export default {
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    // 上传微信支付宝明细
     UploadUrl2() {
       return this.GLOBAL.serverSrc + "/finance/wapaymentccb/api/importexcel";
     },
@@ -357,8 +350,6 @@ export default {
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-
-    // 删除
     deleteFun(row) {
       const that = this;
       this.$confirm("是否需要删除", "提示", {
@@ -406,8 +397,6 @@ export default {
           });
         });
     },
-
-    // 搜索 重置
     searchHandInside() {
       this.pageCurrent = 1;
       this.loadData();
@@ -417,7 +406,6 @@ export default {
       this.pageCurrent = 1;
       this.loadData();
     },
-    // 加载数据
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageCurrent = 1;
@@ -469,7 +457,6 @@ export default {
           }
         });
     },
-    // 时间限制
     beginDate() {
       const that = this;
       return {

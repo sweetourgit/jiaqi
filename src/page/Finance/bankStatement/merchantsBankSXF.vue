@@ -238,7 +238,6 @@ export default {
         return "";
       }
     },
-    // 导入财务系统
     importFun() {
       const that = this;
       this.$confirm("是否确认导入财务系统", "提示", {
@@ -293,15 +292,11 @@ export default {
         return true; //可勾选
       }
     },
-
-    // 整行点击
     handleRowClick(row, column, event) {
       if (row.is_EBS == 0) {
         this.$refs.multipleTable.toggleRowSelection(row);
       }
     },
-
-    // 选择项更改
     selectionChange(val) {
       console.log(val);
       if (val.length > 0) {
@@ -311,8 +306,6 @@ export default {
       }
       this.multipleSelection = val;
     },
-
-    // 上传招商银行
     UploadUrl1() {
       return (
         this.GLOBAL.serverSrc + "/finance/chinamerchantsbank/api/importexcel"
@@ -341,7 +334,6 @@ export default {
     beforeRemove1(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    // 上传微信支付宝明细
     UploadUrl2() {
       return this.GLOBAL.serverSrc + "/finance/wa_payment/api/ImportExcel";
     },
@@ -364,8 +356,6 @@ export default {
     beforeRemove2(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-
-    // 删除
     deleteFun(row) {
       const that = this;
       this.$confirm("是否需要删除", "提示", {
@@ -413,8 +403,6 @@ export default {
           });
         });
     },
-
-    // 搜索 重置
     searchHandInside() {
       this.pageCurrent = 1;
       this.loadData();
@@ -424,7 +412,6 @@ export default {
       this.pageCurrent = 1;
       this.loadData();
     },
-    // 加载数据
     handleSizeChange(val) {
       this.pageSize = val;
       this.pageCurrent = 1;
@@ -483,7 +470,6 @@ export default {
           }
         });
     },
-    // 时间限制
     beginDate() {
       const that = this;
       return {
@@ -502,7 +488,6 @@ export default {
       return {
         disabledDate(time) {
           if (that.ruleForm.dateStart) {
-            //如果开始时间不为空，则结束时间大于开始时间
             return new Date(that.ruleForm.dateStart).getTime() > time.getTime();
           } else {
             // return time.getTime() > Date.now()//开始时间不选时，结束时间最大值小于等于当天

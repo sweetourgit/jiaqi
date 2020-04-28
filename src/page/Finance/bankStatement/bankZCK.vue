@@ -543,14 +543,11 @@ export default {
         return true; //可勾选
       }
     },
-
-    // 整行点击 -- 中国银行
     handleRowClick1(row, column, event) {
       if (row.is_ZCK == 0) {
         this.$refs.multipleTable1.toggleRowSelection(row);
       }
     },
-    // 选择项更改
     selectionChange1(val) {
       if (val.length > 0 && this.activeName == "first") {
         this.clickable = false;
@@ -559,14 +556,11 @@ export default {
       }
       this.multipleSelection1 = val;
     },
-
-    // 整行点击 -- 兴业银行
     handleRowClick2(row, column, event) {
       if (row.is_ZCK == 0) {
         this.$refs.multipleTable2.toggleRowSelection(row);
       }
     },
-    // 选择项更改
     selectionChange2(val) {
       if (val.length > 0 && this.activeName == "second") {
         this.clickable = false;
@@ -575,8 +569,6 @@ export default {
       }
       this.multipleSelection2 = val;
     },
-
-    // 关闭当前页面
     closeBtn() {
       this.$router.push({
         path: "/bankStatement",
@@ -587,17 +579,11 @@ export default {
       });
     },
 
-    //---------------------------------------
-
-    //修改选择项更改    拆分bankOfChina 2020 3.13 拆不动了
     updateSelectionChange1(clickable, multipleSelection) {
       this.clickable = clickable;
       this.multipleSelection1 = multipleSelection;
     },
 
-    //---------------------------------------
-
-    // 提交暂存款选择项
     submitBtn() {
       const that = this;
       let idsArr = [];
@@ -632,7 +618,6 @@ export default {
             that.$message.warning("提交暂存款失败~");
           });
       } else if (this.activeName == "second") {
-        // 兴业银行暂存款提交
         this.multipleSelection2.forEach(function(item, index, arr) {
           idsArr.push(item.id);
         });
@@ -662,8 +647,6 @@ export default {
             that.$message.warning("提交暂存款失败~");
           });
       } else if (this.activeName == "seventh") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
         this.multipleSelectionForJLZX.forEach(function(item, index, arr) {
           idsArr.push(item.id);
         });
@@ -693,8 +676,6 @@ export default {
             that.$message.warning("提交暂存款失败~");
           });
       } else if (this.activeName == "fifth") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
         this.multipleSelectionForJS.forEach(function(item, index, arr) {
           idsArr.push(item.id);
         });
@@ -724,8 +705,6 @@ export default {
             that.$message.warning("提交暂存款失败~");
           });
       } else if (this.activeName == "forth") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
         this.multipleSelectionForZS.forEach(function(item, index, arr) {
           idsArr.push(item.id);
         });
@@ -755,8 +734,6 @@ export default {
             that.$message.warning("提交暂存款失败~");
           });
       } else if (this.activeName == "third") {
-        //此处功能暂时没有接口
-        // 吉林中信银行暂存款提交
         this.multipleSelectionForNY.forEach(function(item, index, arr) {
           idsArr.push(item.id);
         });
@@ -893,7 +870,6 @@ export default {
           }
         });
     },
-    // 农业银行暂存款逻辑
     loadDataForNY() {
       const that = this;
       let data4D = utils.getSession4D();
@@ -937,7 +913,6 @@ export default {
         this.$refs.multipleTableForNY.toggleRowSelection(row);
       }
     },
-    // 选择项更改
     selectionChangeForNY(val) {
       if (val.length > 0 && this.activeName == "third") {
         this.clickable = false;
@@ -946,7 +921,6 @@ export default {
       }
       this.multipleSelectionForNY = val;
     },
-    //+++++++++++++++++++++招商银行暂存款逻辑+++++++++++++++++++++
     loadDataForZS() {
       const that = this;
       let data4D = utils.getSession4D;
@@ -988,13 +962,11 @@ export default {
       this.pageCurrentForZS = val;
       this.loadDataForZS();
     },
-    // 整行点击 -- 吉林吉林中信银行
     handleRowClickForZS(row, column, event) {
       if (row.is_ZCK == 0) {
         this.$refs.multipleTableForZS.toggleRowSelection(row);
       }
     },
-    // 选择项更改
     selectionChangeForZS(val) {
       if (val.length > 0 && this.activeName == "forth") {
         this.clickable = false;
@@ -1003,7 +975,6 @@ export default {
       }
       this.multipleSelectionForZS = val;
     },
-    //+++++++++++++++++++++建设银行暂存款逻辑+++++++++++++++++++++
     loadDataForJS() {
       const that = this;
       let data4D = utils.getSession4D;
@@ -1045,13 +1016,11 @@ export default {
       this.pageCurrentForJS = val;
       this.loadDataForJS();
     },
-    // 整行点击 -- 吉林吉林中信银行
     handleRowClickForJS(row, column, event) {
       if (row.is_ZCK == 0) {
         this.$refs.multipleTableForJS.toggleRowSelection(row);
       }
     },
-    // 选择项更改
     selectionChangeForJS(val) {
       if (val.length > 0 && this.activeName == "fifth") {
         this.clickable = false;
@@ -1060,7 +1029,6 @@ export default {
       }
       this.multipleSelectionForJS = val;
     },
-    //+++++++++++++++++++++中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForZX() {
       const that = this;
       let data4D = utils.getSession4D;
@@ -1107,7 +1075,6 @@ export default {
         this.$refs.multipleTableForZX.toggleRowSelection(row);
       }
     },
-    // 选择项更改
     selectionChangeForZX(val) {
       if (val.length > 0 && this.activeName == "sixth") {
         this.clickable = false;
@@ -1116,7 +1083,6 @@ export default {
       }
       this.multipleSelectionForZX = val;
     },
-    //+++++++++++++++++++++吉林中信银行暂存款逻辑+++++++++++++++++++++
     loadDataForJLZX() {
       const that = this;
       let data4D = utils.getSession4D;
@@ -1157,13 +1123,11 @@ export default {
       this.pageCurrentForJLZX = val;
       this.loadDataForJLZX();
     },
-    // 整行点击 -- 吉林吉林中信银行
     handleRowClickForJLZX(row, column, event) {
       if (row.is_ZCK == 0) {
         this.$refs.multipleTableForJLZX.toggleRowSelection(row);
       }
     },
-    // 选择项更改
     selectionChangeForJLZX(val) {
       if (val.length > 0 && this.activeName == "seventh") {
         this.clickable = false;

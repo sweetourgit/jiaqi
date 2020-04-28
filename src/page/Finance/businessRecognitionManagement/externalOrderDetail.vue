@@ -255,7 +255,6 @@
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -263,7 +262,6 @@
           return ''
         }
       },
-//      关闭弹窗
       closeAdd(){
         this.baseInfo = {
           ID: '',
@@ -289,7 +287,6 @@
         this.tableDataXQ = [];
         this.$emit('close', false);
       },
-//      删除
       deleteDo(){
         this.$confirm("是否删除该笔收款?", "提示", {
           confirmButtonText: "确定",
@@ -362,7 +359,6 @@
           console.log(error);
         });
       },
-//      关闭订单详情
       close(){
         this.dialogFormVisible = false;
       },

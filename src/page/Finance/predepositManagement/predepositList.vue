@@ -23,7 +23,7 @@
               <span @click="predepositDetail(scope.row)" class="cursor">详情</span>
               <span>|</span>
               <span @click="predepositSave(2,scope.row)" class="cursor blue">编辑</span>
-           </template> 
+           </template>
        </el-table-column>
      </el-table>
      <div style="width:1100px;overflow:hidden">
@@ -36,7 +36,7 @@
           :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
-        </el-pagination> 
+        </el-pagination>
       </div>
       <!-- 新增、编辑弹框界面 -->
       <el-dialog :title="title" :visible.sync="dialogFormVisible" class="city_list" width="850px" @close="cancel">
@@ -113,17 +113,15 @@ export default {
     return {
       a: '',
       predepositId:0,
-      variable:0, //设置一个变量展示弹窗
+      variable:0,
       customerName:'',
       saler:'',
       customerNames:'',
       salers:'',
-      //list
       groupList: [],
-      pageSize: 10, // 设定默认分页每页显示数
-      pageIndex: 1, // 设定当前页数
+      pageSize: 10,
+      pageIndex: 1,
       total: 0,
-      //编辑添加弹窗
       accountTips:false,
       title:"",
       dialogFormVisible:false,
@@ -140,8 +138,7 @@ export default {
         cardType:'2',
         cardNo:'',
       },
-      type:1, //1添加，2编辑
-      //银行账户弹窗
+      type:1,
       accountFormVisible:false,
       collectionaccount:[],
       multipleSelection:[],
@@ -156,7 +153,7 @@ export default {
       }
     }
   },
-  created(){ 
+  created(){
     this.initData();
   },
   methods: {
@@ -197,7 +194,6 @@ export default {
       this.pageIndex = val;
       this.initData(this.customerNames, this.salers);
     },
-    //添加编辑
     predepositSave(type,item){
       this.type=type;
       if(type==1){
@@ -208,9 +204,8 @@ export default {
         this.depositForm.cardNo = '';
         this.accounts = '';
         this.title="添加";
-        this.dialogFormVisible = true;  
+        this.dialogFormVisible = true;
       }else{
-        //查询数据
         this.$http.post(this.GLOBAL.serverSrc + '/finance/introducingbroker/api/get', {
           "id": item.id
         }).then(res => {
@@ -229,7 +224,7 @@ export default {
         })
 
         this.title="编辑";
-        this.dialogFormVisible = true;        
+        this.dialogFormVisible = true;
       }
     },
     cancel(){
@@ -317,7 +312,7 @@ export default {
               this.initData(this.customerNames, this.salers);
             })
           }
-          
+
         }
       })
     },
@@ -325,7 +320,6 @@ export default {
       this.accountFormVisible=true;
       this.getData();
     },
-    //银行账户弹窗
     cancelChoose(){
       this.multipleSelection=[];
       this.accountFormVisible=false;
@@ -337,22 +331,21 @@ export default {
         return ''
       }
     },
-    changeFun(val) {  //保存选中项的数据
+    changeFun(val) {
       this.multipleSelection=val;
     },
-    clickRow(row){    //选中行复选框勾选
-      this.$refs.multipleTable.clearSelection(); //清空用户的选择  
+    clickRow(row){
+      this.$refs.multipleTable.clearSelection();
       this.$refs.multipleTable.toggleRowSelection(row);
       this.accounts = row;
     },
-    rowClass({row, rowIndex}){  //选中行样式改变
+    rowClass({row, rowIndex}){
       for(var i=0;i<this.multipleSelection.length;i++){
         if(this.multipleSelection[i].id==row.id){
             return { "background-color": "#ecf5ff" }
         }
       }
     },
-    // 重置
     handleReset() {
       this.customerName = '';
       this.customerNames = '';
@@ -360,7 +353,6 @@ export default {
       this.salers = '';
       this.initData();
     },
-    // 搜索
     handleList() {
       this.customerNames = this.customerName;
       this.salers = this.saler;

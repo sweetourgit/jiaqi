@@ -1,6 +1,5 @@
 <template>
   <div class="vivo" style="position:relative" id="applyFor">
-    <!--申请预付款-->
     <el-dialog title="预付款借款申请" :visible="dialogFormVisible" style="margin:-80px 0 0 0;" custom-class="city_list" :show-close="false" width="70%" @close="closeAdd">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
         <div class="buttonDv">
@@ -88,7 +87,6 @@
           </el-table>
         </div>
       </el-form>
-      <!--选择收款账户-->
       <el-dialog title="选择账户" :visible="dialogFormVisible1" width=60% @close="close" append-to-body>
         <div class="table_trip" style="width: 100%;">
           <el-table ref="singleTable" :data="tableDataZH" border style="width: 100%;margin-bottom: 28px;" :highlight-current-row="true" :header-cell-style="getRowClass">
@@ -107,7 +105,6 @@
             </el-table-column>
           </el-table>
         </div>
-
         <div class="footer" style="text-align: right;">
           <el-button class="el-button" type="warning" @click="close">取 消</el-button>
           <!--<el-button class="el-button" type="primary" @click="">确 认</el-button>-->
@@ -150,13 +147,11 @@
           timeEnd: '',
           productName: ''
         },
-
         postForm: {
           timeStart: '',
           timeEnd: '',
           productName: ''
         },
-
         typeList: [
           {
             value: 1,
@@ -175,8 +170,7 @@
             label: '定制游(跟团游)'
           }
         ],
-
-        supplierList: [],// 供应商列表
+        supplierList: [],
         rules: {
           supplier: [{ required: true, message: '供应商不能为空!', trigger: 'change' }],
           type: [{ required: true, message: '类型不能为空!', trigger: 'change' }],
@@ -185,23 +179,16 @@
           payAccount: [{ required: true, message: '收款账户不能为空!', trigger: 'change' }],
           account_type: [{ required: true, message: '账户类别不能为空!', trigger: 'change' }]
         },
-
         dialogFormVisible1: false,
         tableDataZH: [],
-
         fileList: [],
-
         tableDataXG: [],
-
-        // 时间限制
         startDatePicker: this.beginDate(),
         endDatePicker: this.processDate(),
-
         supplierCode: ''
       }
     },
     computed: {
-      // 计算属性的 getter
       headers(){
         return {
           'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -212,7 +199,6 @@
       dialogFormVisible: {
         handler: function () {
           if(this.dialogFormVisible){
-            // this.loadSupplier();
             if(storageLocal.get("supplier")){
               this.supplierList = storageLocal.get("supplier");
             }else{
@@ -223,7 +209,6 @@
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex === 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -231,7 +216,6 @@
           return ''
         }
       },
-      // 关闭弹窗
       closeAdd() {
         this.ruleForm = {
           type: '',
@@ -241,9 +225,9 @@
           payAccountID: '',
           money: '',
           abstract: '',
-          supplier: '',// 选择的供应商
+          supplier: '',
           supplierName: '',
-          supplierID: '',// 选择的供应商ID
+          supplierID: '',
           supplierHC: '',
           supplierNameHC: '',
           supplierIDHC: '',
@@ -262,7 +246,6 @@
         this.tableDataXG = [];
         this.$emit('close', false);
       },
-      // 取消
       cancalBtn(){
         if(this.ruleForm.collectionTime != '' || this.ruleForm.explain != '' || this.ruleForm.payAccount != '' || this.ruleForm.money != '' || this.ruleForm.abstract != '' || this.fileList.length != 0){
           this.$confirm("是否取消本次添加?", "提示", {
@@ -279,7 +262,6 @@
           this.closeAdd();
         }
       },
-      // 提交
       submitForm(formName) {
         const that = this;
         this.$refs[formName].validate((valid) => {
@@ -311,7 +293,6 @@
               });
               return;
             }
-            console.log(this.ruleForm.supplierIDHC);
             this.$http.post(this.GLOBAL.serverSrcPhp + '/api/v1/loan/periphery-loan/add', {
               "supplier_code": this.ruleForm.supplierID,
               "recoil_supplier_code": this.ruleForm.supplierIDHC,
@@ -340,7 +321,6 @@
                   type: 'success',
                   message: '创建成功!'
                 });
-
                 that.startWork(res.data.data);
               // that.$emit('loadData');
               } else {
@@ -366,11 +346,8 @@
           }
         });
       },
-
-      // 选择账户function
       chooseFun(){
         const that = this;
-
         if(this.ruleForm.supplierID === ''){
           this.$message.warning("请先选择供应商~");
         }else{
@@ -392,7 +369,6 @@
             console.log(obj)
           })
         }
-
       },
       close(){
         this.dialogFormVisible1 = false;
@@ -404,15 +380,10 @@
         this.ruleForm.payAccountID = row.id;
         this.close();
       },
-
-      // 上传凭证function
       UploadUrl(){
         return this.GLOBAL.serverSrcPhp + '/api/v1/upload/pzfiles';
       },
       handleSuccess(response, file, fileList){
-        //        console.log(file);
-        //        console.log(fileList);
-        //        console.log('response',response);
         if(response.code == 200){
           this.fileList = fileList;
         }else{
@@ -421,16 +392,6 @@
           }else{
             this.$message.warning('文件上传失败');
           }
-          //          this.fileList = fileList;
-          //          console.log(fileList);
-          //          this.fileList = fileList.splice(-1, 1);
-          //          for(let i = 0; i < fileList.length; i++){
-          //            console.log(i);
-          //          }
-
-          //          console.log(this.fileList);
-          //          this.fileList = {};
-          //          this.$refs.upload1.clearFiles();
         }
       },
       handleError(err, file, fileList){
@@ -446,12 +407,9 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-
-      // 供应商
       querySearchD(queryString, cb){
         const supplierList = this.supplierList;
         var results = queryString ? supplierList.filter(this.createFilter1(queryString)) : supplierList;
-        // 调用 callback 返回建议列表的数据
         cb(results);
       },
       createFilter1(queryString) {
@@ -514,7 +472,6 @@
           }
         }
       },
-
       querySearchHC(queryString, cb){
         const supplierList = this.supplierList;
         var results = queryString ? supplierList.filter(this.createFilterHC(queryString)) : supplierList;
@@ -527,7 +484,6 @@
         };
       },
       handleSelectHC(item){
-        console.log(item);
         this.ruleForm.supplierIDHC = item.id;
         // this.getSupplierCode(item.id);
         this.ruleForm.supplierHC = item.valueName;
@@ -581,7 +537,6 @@
           }
         }
       },
-
       getSupplierCode(id){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget",{
@@ -603,7 +558,6 @@
           that.$message.warning("供应商编码接口请求失败~");
         });
       },
-
       loadSupplier(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcZb + "/alias/supplier/api/all").then(function(obj) {
@@ -627,8 +581,6 @@
           console.log(obj);
         });
       },
-
-      //相关信息
       loadRelatedData(){
         const that = this;
         this.loading = true;
@@ -654,10 +606,8 @@
               totalMoney += parseFloat(item.cost);
               totalNum += parseInt(item.quantity);
             });
-
             that.ruleForm.money = totalMoney.toFixed(2);
             that.ruleForm.number = totalNum;
-
           }
           that.loading = false;
         }).catch(function(obj) {
@@ -665,7 +615,6 @@
           that.loading = false;
         });
       },
-      // 重置
       emptyButtonInside(){
         const that = this;
         this.ruleForm.timeStart = '';
@@ -674,8 +623,6 @@
         this.$set(that.ruleForm, 'productName', '');
         this.loadRelatedData();
       },
-
-      // 工作流
       startWork(obj){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + '/ZB/StartUpWorkFlowForZB_V2', {
@@ -728,7 +675,6 @@
           console.log(err);
         })
       },
-
       beginDate(){
         const that = this;
         return {
@@ -771,14 +717,7 @@
           console.log(error);
         });
       }
-
     },
-    created() {
-
-    },
-    mounted() {
-
-    }
   }
 
 </script>

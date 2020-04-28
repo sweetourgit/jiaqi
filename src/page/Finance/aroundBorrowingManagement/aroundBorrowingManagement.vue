@@ -32,7 +32,6 @@
           this.$router.push({ path: "/aroundBorrowingManagement/pendingApproval" });
         }
       },
-      // 加载待审批数量（-1，-1 目前看可以获取全部）
       loadData(loan){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GettingUnfinishedTasksForZB", {
@@ -44,9 +43,6 @@
           "endIndex": -1,
           "workflowCode": loan
         }, ).then(function(response) {
-          // console.log('获取未完成任务数量', response);
-//          alert(response.data.length);
-
           if(loan === 'NoIncomeLoan_ZB'){
             that.noIncomeNum = response.data.length;
           }else if(loan === 'IncomeLoan_ZB'){
@@ -54,7 +50,6 @@
           }else if(loan === 'BalancePayment_ZB'){
             that.balanceNum = response.data.length;
           }
-          // 赋值代码
         }).catch(function(error) {
           console.log(error);
         });
@@ -73,7 +68,6 @@
             this.activeName = "pendingApproval"
           }
         },
-        // 深度观察监听
         deep: true
       }
     },
@@ -87,15 +81,11 @@
       }else if(this.$route.path == "/aroundBorrowingManagement/pendingApproval"){
         this.activeName = "pendingApproval"
       }
-
-      // 加载待审批数量
       this.loadData('NoIncomeLoan_ZB');
       this.loadData('IncomeLoan_ZB');
       this.loadData('BalancePayment_ZB');
-
     },
   };
-
 </script>
 <style scoped>
 </style>

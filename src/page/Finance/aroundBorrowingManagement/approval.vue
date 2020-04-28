@@ -90,8 +90,6 @@
           </el-table>
         </div>
       </div>
-
-      <!--审批弹窗-->
       <div>
         <el-dialog style="text-align: left;" :title="approvalTitle" :visible.sync="dialogVisibleApproval" width="30%" top="20vh" append-to-body>
           <div>
@@ -105,7 +103,6 @@
           </div>
         </el-dialog>
       </div>
-      <!--审批结束-->
       <printPage ref="printHandle" :printMsg1='printMsg1' style='display:none;'></printPage>
       <chooseAccount :dialogFormVisible2="dialogFormVisible2" :info="info.id" @close="close"></chooseAccount>
     </el-dialog>
@@ -113,8 +110,8 @@
 </template>
 <script type="text/javascript">
   import {formatDate} from '@/js/libs/publicMethod.js'
-  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'// 选择付款账户
-  import printPage from '@/page/Finance/aroundBorrowingManagement/printPage.vue'// 打印
+  import chooseAccount from '@/page/Finance/aroundBorrowingManagement/chooseAccount.vue'
+  import printPage from '@/page/Finance/aroundBorrowingManagement/printPage.vue'
   export default {
     name: "collectionDetail",
     components: {
@@ -130,7 +127,6 @@
         isShowDY: false,
         printMsg1: {},
         passButtonDo: false,
-        // 基础信息
         baseInfo: {
           id: '',
           create_uid: '',
@@ -146,28 +142,19 @@
           accountPay: '',
           reimbursed_money: ''
         },
-        // 认款方式array
         periphery_type: {
           '1': '无收入借款',
           '2': '预付款',
           '3': '余额支付借款'
         },
-        // 基础信息凭证
         fileList: [],
-        // 审核结果，table数据
         tableDataResult: [],
-        // 相关信息，table数据
         tableDataRelated: [],
-
-        // 审批弹框数据
         approvalTitle: '',
         dialogVisibleApproval: false,
         approval_status: '',
         approvalMark: '',
-
-        // 选择付款账户
         dialogFormVisible2: false,
-
         approval_s_n: {
           0: '等待中',
           1: '审批中',
@@ -175,9 +162,6 @@
           3: '通过'
         }
       }
-    },
-    computed: {
-      // 计算属性的 getter
     },
     watch: {
       dialogFormVisible: {
@@ -192,7 +176,6 @@
       }
     },
     methods: {
-      // 打印详情
       touchPrint(){
         const that = this;
         let printAuditingContent = '';
@@ -213,7 +196,6 @@
         // console.log(this.printMsg1);
         this.$nextTick(() => this.$refs.printHandle.printDetails());
       },
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -231,7 +213,6 @@
           this.loadData();
         }
       },
-      // 关闭弹窗
       closeAdd(){
         this.baseInfo = {
           id: '',
@@ -251,24 +232,19 @@
 
         this.$emit('close', false);
       },
-
-      // 通过按钮事件
       approvalPass(){
         this.dialogVisibleApproval = true;
         this.approvalTitle = '审批通过';
         this.approval_status = '3';
       },
-      // 驳回按钮事件
       approvalReject(){
         this.dialogVisibleApproval = true;
         this.approvalTitle = '审批驳回';
         this.approval_status = '2';
       },
-
-      // 工作流审批
       approvalSubmitWorking(){
         const that = this;
-        if(this.approval_status == 2){// 驳回
+        if(this.approval_status == 2){
           this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/RejectionOfWorkTasksForZB", {
             "userCode": sessionStorage.getItem('tel'),
             "workItemID": this.info.workItemID,
@@ -279,11 +255,9 @@
             if(result.code == 0){
               that.approvalSubmit();
             }
-
           }).catch(function(error) {
             console.log(error);
           });
-
           this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/EndProcessForZB", {
             "jq_id": this.info.id,
             "jQ_Type": this.baseInfo.type
@@ -296,8 +270,7 @@
           }).catch(function(error) {
             console.log(error);
           });
-
-        }else if(this.approval_status == 3){// 通过
+        }else if(this.approval_status == 3){
           this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/SubmitWorkAssignmentsForZB", {
             "userCode": sessionStorage.getItem('tel'),
             "workItemID": this.info.workItemID,
@@ -312,10 +285,7 @@
             console.log(error);
           });
         }
-
       },
-
-      // 审批提交事件
       approvalSubmit(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/examine", {
@@ -344,18 +314,13 @@
         });
 
       },
-
-      // 加载数据
       loadData(){
         const that = this;
-        // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/loan/periphery-loan/info", {
           "id": this.info.id
         }, ).then(function(response) {
-          // console.log('详情',response);
           if (response.data.code == '200') {
             response.data.data.info.created_at = formatDate(new Date(response.data.data.info.created_at*1000));
-
             that.baseInfo = {
               id: response.data.data.info.id,
               create_uid: response.data.data.info.create_uid,
@@ -381,20 +346,13 @@
               that.baseInfo.accountPay = payType.account;
               that.passButtonDo = false;
             }
-
-            // 根据ID获取人名
             that.getName(response.data.data.info.create_uid).then(res => {
               that.baseInfo.create_uid = res;
             });
-            // 获取所属部门
             that.getOrgName(response.data.data.info.create_uid).then(res => {
-              // console.log('部门',res);
               that.baseInfo.orgName = res;
             });
-
-            // 获取供应商名称
             if(response.data.data.info.supplier_code){
-
               that.$http.post(that.GLOBAL.serverSrcZb + "/universal/supplier/api/supplierget", {
                 "id": response.data.data.info.supplier_code
               },{
@@ -402,7 +360,6 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 }
               }).then(function(response) {
-                // console.log(response);
                 if (response.data.isSuccess) {
                   that.baseInfo.supplier = response.data.object.name
                 } else {
@@ -416,13 +373,10 @@
                 console.log(error);
               });
             }
-
-            // 凭证
             that.fileList = JSON.parse(response.data.data.info.file);
             for(let i = 0; i < that.fileList.length; i++){
               that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
             }
-
             if(response.data.data.info.approval){
               that.tableDataResult = response.data.data.info.approval;
               that.tableDataResult.forEach(function (item, index, arr) {
@@ -433,7 +387,6 @@
               })
             }
             that.getApproval();
-
             if(response.data.data.info.rel_order){
               that.tableDataRelated = response.data.data.info.rel_order;
             }
@@ -443,10 +396,7 @@
         }).catch(function(error) {
           console.log(error);
         });
-
       },
-
-      // 根据id获取操作人
       getName(id){
         const that = this;
         return that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
@@ -456,7 +406,6 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(function(response) {
-          // console.log('名字',response.data.object.name);
           if (response.data.isSuccess) {
             return response.data.object.name;
           } else {
@@ -468,8 +417,6 @@
           return '';
         });
       },
-
-      // 根据id获取所属部门
       getOrgName(ID){
         const that = this;
         return this.$http.post(this.GLOBAL.serverSrcZb + "/org/user/api/orgshort", {
@@ -479,7 +426,6 @@
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then(function(response) {
-          // console.log(ID,'组织名称',response);
           if (response.data.isSuccess) {
             return response.data.objects[0].name
           } else {
@@ -490,18 +436,13 @@
           console.log(error);
         });
       },
-
-      // 获取审批节点
       getApproval(){
         const that = this;
         this.$http.post(this.GLOBAL.jqUrlZB + "/ZB/GetInstanceActityInfoForZB", {
           "jq_id": this.info.id,
           "jQ_Type": this.baseInfo.type
         }, ).then(function(response) {
-          // console.log('获取审批节点', response);
-          // const result = JSON.parse(response.data);
           if(response.status == 200){
-            // console.log("成功");
             response.data.extend.instanceLogInfo.forEach(function (item, index, arr) {
               if(item.finishedTime == '' && item.approvalName == '等待中'){
                 const dataSingle = {
@@ -518,7 +459,6 @@
           console.log(error);
         });
       }
-
     },
     created() {
       if(sessionStorage.getItem('userCode') == 'TC900007' || sessionStorage.getItem('userCode') == 'TC900006') {
@@ -527,9 +467,6 @@
         this.isShowDY = false;
       }
     },
-    mounted() {
-
-    }
   }
 
 </script>

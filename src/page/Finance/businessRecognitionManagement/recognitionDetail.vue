@@ -261,8 +261,6 @@
     data() {
       return {
         disabled: true,
-
-        // 基础信息
         baseInfo: {
           status_rece: '',
           rece_code: '',
@@ -283,21 +281,14 @@
           dateQuantun: '',
           can_match: '',
           rece_type: '',
-
         },
-
-        // 认款方式array
         recModeList: {
           '1': '分销商预存款',
           '2': '票付通余额支付',
           '3': '订单收款'
         },
-        // 基础信息凭证
         fileList: [],
-        // 分销商预存款，table数据
         tableDataFXS: [],
-
-        // 订单收款，table数据
         totalItem: '',
         totalMoney: '',
         startTime: '',
@@ -306,9 +297,7 @@
         tableDataXQ: [],
         showSK: true,
         showXQ: false,
-        fileListDD: [],// 订单收款上传的订单明细
-
-        // 绑定订单详情数据
+        fileListDD: [],
         dialogFormVisible: false,
         tableDataDD: [],
         payList: {
@@ -338,7 +327,6 @@
       }
     },
     methods: {
-      // 表格头部背景颜色
       getRowClass({ row, column, rowIndex, columnIndex }) {
         if (rowIndex == 0) {
           return 'background:#F7F7F7;color:rgb(85, 85, 85);'
@@ -346,7 +334,6 @@
           return ''
         }
       },
-      // 关闭弹窗
       closeAdd(){
         this.baseInfo = {
           status_rece: '',
@@ -372,7 +359,6 @@
 
         this.$emit('close', false);
       },
-      // 删除
       deleteDo(){
         this.$confirm("是否删除该笔收款?", "提示", {
           confirmButtonText: "确定",
@@ -404,7 +390,6 @@
           });
         });
       },
-      // 撤销操作
       backoutBtn(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/oprecognition/op-recognition/cancleoprec", {
@@ -426,7 +411,6 @@
           console.log(error);
         });
       },
-      // 查看绑定订单详情
       detailBtn(row){
         this.dialogFormVisible = true;
         const that = this;
@@ -464,15 +448,11 @@
           console.log(error);
         });
       },
-      // 关闭订单详情
       close(){
         this.dialogFormVisible = false;
-
       },
-      // 加载数据
       loadData(){
         const that = this;
-        // 获取基本信息
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewbasic", {
           "id": this.info
         }, ).then(function(response) {
@@ -515,14 +495,11 @@
               rece_type: response.data.data.rece_type
 
             };
-            // 获取订单信息
             if(response.data.data.rec_mode === '1' || response.data.data.rec_mode === '2'){
               that.getOrder();
             }else if(response.data.data.rec_mode === '3'){
               that.getReceive();
             }
-
-            // 根据ID获取人名
             that.getName(response.data.data.create_uid).then(res => {
               console.log(res);
               that.baseInfo.create_uid = res;
@@ -533,13 +510,10 @@
                 that.baseInfo.rec_uid = res;
               });
             }
-
-            // 根据分销商ID获取名称
             if(response.data.data.distributor_code){
               that.$http.post(that.GLOBAL.serverSrcZb + "/universal/localcomp/api/get", {
                 "id": response.data.data.distributor_code
               }).then(function(obj) {
-//              console.log('获取分销商',obj);
                 if(obj.data.isSuccess){
                   that.baseInfo.distributor_code = obj.data.object.name;
                 }else{
@@ -549,8 +523,6 @@
                 console.log(obj);
               });
             }
-
-            // 根据账户ID获取账户名称
             that.$http.post(that.GLOBAL.serverSrcZb + "/finance/collectionaccount/api/get",
               {
                 "id": response.data.data.account_id
@@ -559,14 +531,12 @@
                   'Authorization': 'Bearer ' + localStorage.getItem('token')
                 }
               }).then(function (obj) {
-//              console.log('账户查询',obj);
               if(obj.data.isSuccess){
                 that.baseInfo.account = obj.data.object.title;
               }
             }).catch(function (obj) {
               console.log(obj)
             });
-            // 凭证
             that.fileList = response.data.data.file;
             for(let i = 0; i < that.fileList.length; i++){
               that.fileList[i].url = that.GLOBAL.serverSrcPhp + that.fileList[i].url;
@@ -579,7 +549,6 @@
         });
 
       },
-      // 根据id获取人名
       getName(id){
         const that = this;
         return that.$http.post(that.GLOBAL.serverSrcZb + "/org/api/userget", {
@@ -601,7 +570,6 @@
           return '';
         });
       },
-      // 获取认款订单
       getOrder(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/predeposit/predeposit/viewrecorder", {
@@ -617,7 +585,6 @@
           console.log(error);
         });
       },
-      // 获取订单收款table
       getReceive(){
         const that = this;
         this.$http.post(this.GLOBAL.serverSrcPhp + "/api/v1/receivables/receivables/receive", {
@@ -706,7 +673,6 @@
           console.log(error);
         });
       },
-      // table中根据id获取人名，去掉重复请求
       getUser(userGetList){
         const that = this;
         userGetList.forEach(function (item, index, arr) {
@@ -719,7 +685,6 @@
           }).then(function(response) {
             console.log('名字',response.data.object.name);
             if (response.data.isSuccess) {
-//              item.create_uid = response.data.object.name;
               item.itemIndex.forEach(function (item, index, arr) {
                 that.tableDataXQ[item].create_uid = response.data.object.name;
               })
